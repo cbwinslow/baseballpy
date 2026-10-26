@@ -1,0 +1,108 @@
+[project]
+name = "baseballpy"
+version = "0.1.0"
+description = "Fast, modular, and strongly-typed baseball data ingestion layer for Statcast, MLB API, Lahman, Chadwick, and Retrosheet into DuckDB, Polars, PyArrow, and dlt."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+authors = [{ name = "C. B. Winslow" }]
+keywords = [
+  "baseball",
+  "statcast",
+  "mlb-api",
+  "retrosheet",
+  "lahman",
+  "chadwick",
+  "sabermetrics",
+  "duckdb",
+  "polars",
+  "pyarrow",
+  "dlt",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Typing :: Typed",
+]
+
+dependencies = [
+  "pyarrow>=16.0.0",
+  "duckdb>=1.0.0",
+  "polars>=1.0.0",
+  "dlt[duckdb,postgres,snowflake]>=1.0.0",
+  "narwhals>=1.10.0",
+  "msgspec>=0.18.0",
+  "httpx[http2]>=0.27.0",
+  "pydantic>=2.7.0",
+  "tenacity>=8.3.0",
+  "aiolimiter>=1.1.0",
+  "rich>=13.7.0",
+  "click>=8.1.0",
+  "fsspec>=2024.3.0",
+]
+
+[project.optional-dependencies]
+retrosheet = ["retrosheetpy>=0.4.0", "chadwickpy>=0.4.0"]
+streaming = ["websockets>=12.0"]
+pandas = ["pandas>=2.2.0"]
+all = [
+  "baseballpy[retrosheet,streaming,pandas]",
+]
+
+[project.scripts]
+baseballpy = "baseballpy.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/cbwinslow/baseballpy"
+Source = "https://github.com/cbwinslow/baseballpy"
+Issues = "https://github.com/cbwinslow/baseballpy/issues"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-asyncio>=0.23.0",
+  "pytest-mock>=3.12.0",
+  "pytest-cov>=5.0.0",
+  "hypothesis>=6.100.0",
+  "respx>=0.21.0",
+  "ruff>=0.4.0",
+  "mypy>=1.10.0",
+]
+docs = [
+  "mkdocs>=1.6.0",
+  "mkdocs-material>=9.5.0",
+  "mkdocstrings[python]>=0.25.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+asyncio_mode = "auto"

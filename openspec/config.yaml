@@ -1,0 +1,21 @@
+schema: spec-driven
+
+context: |
+  Read openspec/project.md first (constitution), AGENTS.md, and docs/DECISIONS.md.
+  baseballpy is the unified, high-performance, strongly-typed baseball data ingestion layer.
+  It extracts, normalizes, and ingests baseball data from Statcast (Baseball Savant),
+  MLB Stats API, Lahman Baseball Database, Chadwick Names Register, Retrosheet, and other
+  baseball repositories into DuckDB, Polars, PyArrow, Parquet, and dlt destinations
+  (PostgreSQL, BigQuery, Snowflake, MotherDuck).
+
+rules:
+  design:
+    - Keep Extract, Parse/Schema, and Sink decoupled via strict Python Protocols (typing.Protocol).
+    - Always define explicit PyArrow schemas with tight physical types (date32, timestamp, int32/int16, float32/float64, bool_), never raw untyped VARCHAR strings.
+    - Zero-copy columnar data flow wherever possible (Arrow RecordBatches / PyCapsule protocol).
+    - Support both historical batch ingestion and live/near-real-time game data streaming.
+    - Record all architectural decisions and source nuances in docs/DECISIONS.md.
+  tasks:
+    - Write unit/contract tests with mocked/fixture HTTP data before implementing parsers.
+    - Validate rate limits, pagination, and failure recovery for each data source.
+    - Maintain zero warnings with ruff and 100% type safety with mypy --strict.
