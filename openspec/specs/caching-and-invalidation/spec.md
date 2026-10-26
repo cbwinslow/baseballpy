@@ -1,7 +1,7 @@
 # caching-and-invalidation Specification
 
 ## Purpose
-Defines the directory layout, source-based partitioning, and hash-based invalidation mechanics for local caching across all baseball data sources.
+Defines directory layout, source-based partitioning, hash-based invalidation mechanics, and two-phase atomic write gates across all baseball data sources.
 
 ## Requirements
 
@@ -11,21 +11,22 @@ The cache MUST reside within a dedicated root (`~/.baseballpy/` by default) part
 - `cache/mlb_api/`
 - `cache/chadwick/`
 - `cache/lahman/`
-- `cache/retrosheet/`
+- `cache/retrosheet/raw/` and `cache/retrosheet/processed/`
 The base directory MUST be configurable via environment variable `BASEBALLPY_CACHE_DIR` or `PipelineConfig`.
 
-#### Scenario: Custom cache directory
-- **GIVEN** `BASEBALLPY_CACHE_DIR="/data/shared_cache"` set in environment
-- **WHEN** cache manager initializes
-- **THEN** all source directories are created under `/data/shared_cache/` instead of default user home.
+### Requirement: Two-Phase Atomic Writing (`.part` to Target)
+Every network download and columnar Parquet write MUST write to `{target_path}.part` and execute atomic `os.replace()` only after verifying record boundary and footer integrity.
+If an operation is interrupted or raises an exception, the `.part` file MUST be cleaned up, preventing corrupted or partial files from polluting the cache.
 
-### Requirement: Hash-Based Update Invalidation
-The cache manager MUST detect upstream updates before re-downloading existing datasets:
-- **Chadwick Register:** Compares remote Git commit SHA or `ETag` against cached metadata JSON.
-- **MLB Gameday:** Sends `If-None-Match` (`ETag`) headers to leverage HTTP `304 Not Modified`.
-- **Statcast Completed Seasons:** Historical seasons are immutable; never re-downloaded unless explicitly instructed with `refresh=True`.
+#### Scenario: Interrupted write cleanup
+- **GIVEN** an active download that fails or is terminated midway
+- **WHEN** the exception occurs
+- **THEN** the `.part` file is deleted and the target cache file is not created or altered.
 
-#### Scenario: Chadwick Register unchanged upstream
-- **GIVEN** a local cached Chadwick Parquet file with stored commit SHA `abc1234`
-- **WHEN** `chadwick_sync()` checks upstream and GitHub returns commit SHA `abc1234`
-- **THEN** zero bytes of table data are downloaded and local cache is reused immediately.
+### Requirement: Manifest Checkpoint Tracking
+Every partitioned source MUST maintain a `manifest.json` tracking chunk completion status (`COMPLETED`, `FAILED`), record counts, and remote ETags.
+
+#### Scenario: Checkpoint inspection skips existing partitions
+- **GIVEN** a multi-season or multi-week query
+- **WHEN** scheduled for execution
+- **THEN** chunks marked `COMPLETED` in the manifest are read directly from local Parquet cache without outbound HTTP requests.
