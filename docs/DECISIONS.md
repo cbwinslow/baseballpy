@@ -261,3 +261,19 @@ Data pipelines and analysts require visibility into what was fetched, from where
    - `destination`: Sink destination path or table.
    - `error`: Error message and stack trace if failed.
 4. Provide a rich CLI reviewer tool (`baseballpy audit summary`, `baseballpy audit tail`, `baseballpy audit stats`) to inspect and review execution logs with formatted tables.
+
+
+---
+
+## ADR 15: Full Data Preservation and Cross-Endpoint Ingestion Completeness
+
+* **Date:** 2026-10-26
+* **Status:** Accepted
+
+### Context
+Baseball analytics pipelines frequently drop columns considered "secondary" or "redundant" (e.g. dropping player names because player IDs are present, dropping spin axes or arm angles because only pitch velocity is desired, or omitting fields from Statcast because they can also be found in MLB Gameday). This creates irreversible data loss, forces researchers to write custom scrapers for omitted attributes, and breaks analytical models relying on comprehensive feature sets (e.g. bat speed, swing length, catcher framing, umpire IDs).
+
+### Decision
+1. Ingest **all** available fields, attributes, and metrics provided by any upstream endpoint.
+2. Even if an attribute is duplicated across multiple endpoints (e.g., game dates, scores, pitch velocities present in both MLB API and Statcast), each source's schema must preserve the complete raw representation.
+3. Schema normalizers will define exhaustive canonical schemas for all known upstream attributes, and dynamic column discovery (ADR 9) will ensure newly introduced metrics are preserved without data truncation.

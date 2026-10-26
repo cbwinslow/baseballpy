@@ -57,6 +57,8 @@ Supported and planned data sources:
    Never hammer endpoints. Statcast queries are chunked into daily or weekly ranges; Retrosheet files are pulled from GitHub raw mirrors; MLB Stats API calls use client caching headers (`ETag`/`If-None-Match`) and respect HTTP 429 rate limits.
 5. **Real-Time & Incremental Capability:**
    In addition to bulk historical ETL, the library supports polling or streaming active Gameday events during live games, calculating deltas, and upserting state.
+6. **Full Data Preservation Across Endpoints:**
+   Always ingest all fields, measurements, and attributes offered by an endpoint without arbitrary truncation, even when overlapping data exists across sources. Downstream users rely on full source fidelity.
 
 ## Core Phases & Roadmap
 - **Phase 1: Foundation, OpenSpec & Protocols:** Project scaffolding, core `typing.Protocol` definitions for Extractor, Normalizer, and Sink; initial CLI structure.

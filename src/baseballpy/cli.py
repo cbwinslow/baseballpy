@@ -5,6 +5,9 @@ from rich.console import Console
 from rich.table import Table
 
 from baseballpy.core.audit import default_audit_logger
+from baseballpy.sinks.duckdb import DuckDBSink
+from baseballpy.sinks.parquet import ParquetSink
+from baseballpy.sources.statcast.extractor import StatcastExtractor
 
 console = Console()
 
@@ -16,33 +19,44 @@ def main() -> None:
     pass
 
 
-@main.command()
+@main.command("statcast")
+@click.option("--start", "-s", type=str, required=True, help="Start date (YYYY-MM-DD)")
+@click.option("--end", "-e", type=str, required=True, help="End date (YYYY-MM-DD)")
 @click.option(
-    "--source",
-    "-s",
-    type=click.Choice(["statcast", "mlb_api", "lahman", "chadwick", "retrosheet"]),
-    required=True,
-    help="Data source to ingest",
-)
-@click.option(
-    "--destination",
-    "-d",
-    type=str,
-    default="baseball.duckdb",
-    help="Target destination path (e.g. DuckDB file, Parquet folder)",
+    "--destination", "-d", type=str, default="baseball.duckdb", help="Target destination path"
 )
 @click.option(
     "--format",
     "-f",
-    type=click.Choice(["duckdb", "parquet", "csv"]),
+    type=click.Choice(["duckdb", "parquet"]),
     default="duckdb",
     help="Output format",
 )
-def ingest(source: str, destination: str, format: str) -> None:
-    """Ingest baseball datasets into specified database or columnar format."""
+@click.option("--table", "-t", type=str, default="statcast_pitches", help="DuckDB table name")
+@click.option("--refresh", is_flag=True, help="Bypass local cache and force fresh download")
+def statcast_cmd(
+    start: str, end: str, destination: str, format: str, table: str, refresh: bool
+) -> None:
+    """Download Statcast pitch-level tracking data with chunking and rate limits."""
     console.print(
-        f"[bold green]baseballpy[/bold green] - Ingesting source: [cyan]{source}[/cyan] into [yellow]{destination}[/yellow] (format: {format})"
+        f"[bold green]baseballpy[/bold green] - Fetching Statcast from [cyan]{start}[/cyan] to [cyan]{end}[/cyan]"
     )
+    extractor = StatcastExtractor()
+    arrow_table = extractor.extract(start_date=start, end_date=end, refresh=refresh)
+    console.print(f"Extracted [bold]{len(arrow_table):,}[/bold] pitch records.")
+
+    if format == "duckdb":
+        sink = DuckDBSink()
+        written = sink.write(arrow_table, destination=destination, table_name=table)
+        console.print(
+            f"Loaded [bold green]{written:,}[/bold green] rows into DuckDB [yellow]{destination}[/yellow] table [cyan]{table}[/cyan]."
+        )
+    elif format == "parquet":
+        psink = ParquetSink()
+        written = psink.write(arrow_table, destination=destination)
+        console.print(
+            f"Wrote [bold green]{written:,}[/bold green] rows to Parquet file [yellow]{destination}[/yellow]."
+        )
 
 
 @main.group()
@@ -78,8 +92,8 @@ def audit_summary(limit: int) -> None:
             if ev.status == "SUCCESS"
             else f"[bold red]{ev.status}[/bold red]"
         )
-        cached_str = "[green]✓[/green]" if ev.cache_hit else "[dim]—[/dim]"
-        throughput_str = f"{ev.throughput_rps:,.0f} r/s" if ev.throughput_rps > 0 else "—"
+        cached_str = "[green]Y[/green]" if ev.cache_hit else "[dim]-[/dim]"
+        throughput_str = f"{ev.throughput_rps:,.0f} r/s" if ev.throughput_rps > 0 else "-"
         table.add_row(
             ev.timestamp_utc[:19],
             ev.operation,

@@ -47,6 +47,17 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 
 ---
 
+## 3. Full Data Preservation & Cross-Endpoint Completeness Mandate
+
+1. **No Arbitrary Field Truncation:**
+   - Every extractor and normalizer MUST capture, parse, and ingest **ALL** data attributes, columns, and metadata made available by an upstream endpoint.
+   - Never omit, drop, or cherry-pick fields under the assumption that "the user won't need this" or "this field is redundant."
+2. **Endpoint Completeness Regardless of Duplication:**
+   - If an endpoint provides data that is also available from another source (for example, exit velocity available from both Statcast search and MLB Gameday live feeds, or player names available in both Chadwick and Statcast), the pipeline MUST still capture and preserve that data within each respective source's schema.
+   - Downstream models, analysts, and auditing workflows rely on raw source fidelity. Do not drop fields to deduplicate across sources.
+
+---
+
 ## 3. Domain Mastery & Baseball Invariants
 
 1. **Unique Identifiers & Keys:**
