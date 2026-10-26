@@ -18,6 +18,7 @@ from baseballpy.core.protocols import (
     SinkProtocol,
     StreamExtractorProtocol,
 )
+from baseballpy.database import BaseballDatabase, connect_db, sync_database
 from baseballpy.sinks import (
     CompressionCodec,
     DltSink,
@@ -194,6 +195,7 @@ __all__ = [
     "SinkProtocol",
     "StreamExtractorProtocol",
     # Classes / Sources
+    "BaseballDatabase",
     "ChadwickExtractor",
     "ChadwickNormalizer",
     "ChadwickRegister",
@@ -215,7 +217,9 @@ __all__ = [
     "StatcastLeaderboardExtractor",
     "StatcastLeaderboardNormalizer",
     "StatcastNormalizer",
-    # Convenience Functions - Sinks
+    # Convenience Functions - Sinks & Database
+    "connect_db",
+    "sync_database",
     "to_duckdb",
     "to_parquet",
     "to_polars",

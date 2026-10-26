@@ -57,12 +57,21 @@ class StatcastExtractor:
         self.manifest = ManifestTracker(self.cache_config.statcast_dir / "manifest.json")
 
     def _get_cache_path(self, start_dt: date, end_dt: date, **filters: Any) -> Path:
-        """Derive cache file path for a date chunk and filter combination."""
+        """Derive cache file path for a date chunk with Hive-partitioning by season."""
         filter_str = "_".join(f"{k}-{v}" for k, v in sorted(filters.items()) if v is not None)
         filename = f"{start_dt.isoformat()}_{end_dt.isoformat()}"
         if filter_str:
             filename = f"{filename}_{filter_str}"
-        return self.cache_config.statcast_dir / f"{filename}.parquet"
+
+        # 1. Check legacy flat file for backward compatibility
+        legacy_path = self.cache_config.statcast_dir / f"{filename}.parquet"
+        if legacy_path.exists():
+            return legacy_path
+
+        # 2. Modern Hive-partitioned directory: season=YYYY/
+        season_dir = self.cache_config.statcast_dir / f"season={start_dt.year}"
+        season_dir.mkdir(parents=True, exist_ok=True)
+        return season_dir / f"{filename}.parquet"
 
     async def _fetch_chunk(
         self,

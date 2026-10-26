@@ -129,6 +129,48 @@ leaders = con.execute("""
 print(leaders)
 ```
 
+### Consolidated DuckDB Multi-Season Database & Cross-Source Joins
+```python
+import baseballpy as bp
+
+# 1. Connect to consolidated DuckDB database
+# Automatically discovers all Parquet cache partitions and registers unified views!
+con = bp.connect_db()
+
+# 2. Query across ALL downloaded seasons as a single unified PostgreSQL-style table
+pitches_summary = con.sql("""
+    SELECT 
+        season,
+        pitch_type,
+        COUNT(*) as total_pitches,
+        AVG(release_speed) as avg_velocity
+    FROM statcast_pitches
+    GROUP BY season, pitch_type
+    ORDER BY season DESC, total_pitches DESC
+""").pl()
+print(pitches_summary)
+
+# 3. Cross-source SQL Join (Statcast + Chadwick Crosswalk + Lahman Master Directory)
+cross_join = con.sql("""
+    SELECT 
+        p.season,
+        p.pitch_type,
+        reg.name_last,
+        reg.name_first,
+        lahman.weight,
+        lahman.height,
+        AVG(p.release_speed) as avg_velo
+    FROM statcast_pitches p
+    JOIN chadwick_register reg ON p.pitcher = reg.key_mlbam
+    LEFT JOIN lahman_people lahman ON reg.key_bbref = lahman.bbrefID
+    WHERE p.season = 2024
+    GROUP BY p.season, p.pitch_type, reg.name_last, reg.name_first, lahman.weight, lahman.height
+    ORDER BY avg_velo DESC
+    LIMIT 10
+""").df()
+print(cross_join)
+```
+
 ### Ingesting Statcast Pitches Directly into DuckDB
 ```python
 import baseballpy as bp

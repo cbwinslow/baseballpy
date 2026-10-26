@@ -93,8 +93,8 @@ def test_statcast_extractor_mocked(tmp_path: Path) -> None:
     assert len(table) == 4
     assert "game_pk" in table.column_names
 
-    # Check cache directory contains parquet files
-    cached_files = list(cache_config.statcast_dir.glob("*.parquet"))
+    # Check cache directory contains parquet files (in season=2024/ partition)
+    cached_files = list(cache_config.statcast_dir.glob("**/*.parquet"))
     assert len(cached_files) == 2
 
 

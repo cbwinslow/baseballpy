@@ -31,11 +31,14 @@ def test_top_level_exports() -> None:
     assert bp.DuckDBSink is not None
     assert bp.ParquetSink is not None
     assert bp.PolarsSink is not None
+    assert bp.BaseballDatabase is not None
 
     # Convenience Functions
     assert callable(bp.resolve_player)
     assert callable(bp.crosswalk)
     assert callable(bp.get_register)
+    assert callable(bp.connect_db)
+    assert callable(bp.sync_database)
     assert callable(bp.statcast)
     assert callable(bp.statcast_search)
     assert callable(bp.get_leaderboard)

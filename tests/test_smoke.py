@@ -125,8 +125,8 @@ def test_smoke_statcast_multi_chunk_idempotency_and_manifest(tmp_path: Path) -> 
     assert len(table) == 6
     assert search_route.call_count == 3
 
-    # Check that exactly 3 parquet files exist in cache
-    parquet_files = sorted(list(cache_config.statcast_dir.glob("*.parquet")))
+    # Check that exactly 3 parquet files exist in cache (season=2024/ partition)
+    parquet_files = sorted(list(cache_config.statcast_dir.glob("**/*.parquet")))
     assert len(parquet_files) == 3
 
     # Check manifest records all 3 chunks

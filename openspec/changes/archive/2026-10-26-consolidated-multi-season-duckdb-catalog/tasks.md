@@ -1,0 +1,22 @@
+# Tasks: Consolidated Multi-Season DuckDB Catalog and Partition Organization
+
+- [x] 1. Statcast Hive-Partitioning Storage <!-- id: 1 -->
+  - [x] 1.1 Update `StatcastExtractor._get_cache_path` to write to `season=YYYY/` partitions
+  - [x] 1.2 Implement backward-compatible fallback for legacy flat chunk paths
+- [x] 2. Implement DuckDB Database Catalog (`src/baseballpy/database.py`) <!-- id: 2 -->
+  - [x] 2.1 Author `BaseballDatabase` class with connection management and view sync
+  - [x] 2.2 Implement auto-discovery for Statcast, Retrosheet, Lahman, and Chadwick Parquet stores
+  - [x] 2.3 Expose top-level helpers `connect_db()` and `sync_database()` in `baseballpy`
+- [x] 3. Telemetry & Error Handling <!-- id: 3 -->
+  - [x] 3.1 Wrap database sync operations in `default_audit_logger.track`
+  - [x] 3.2 Ensure graceful behavior when only a subset of datasets have been downloaded
+- [x] 4. Verification & Testing <!-- id: 4 -->
+  - [x] 4.1 Author `tests/test_database.py` verifying multi-season view queries and cross-source joins
+  - [x] 4.2 Run `uv run pytest` across all test modules
+  - [x] 4.3 Run `uv run ruff check .` and `uv run ruff format --check .`
+  - [x] 4.4 Run `uv run mypy src` (100% strict type safety)
+- [x] 5. Documentation & OpenSpec Archival <!-- id: 5 -->
+  - [x] 5.1 Record ADR 21 in `docs/DECISIONS.md`
+  - [x] 5.2 Update `docs/QUICKSTART.md` with DuckDB consolidated multi-season query examples
+  - [x] 5.3 Archive change into `openspec/changes/archive/`
+  - [x] 5.4 Commit and push to git

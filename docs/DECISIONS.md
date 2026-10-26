@@ -385,3 +385,30 @@ As the `baseballpy` codebase expands to encompass 5 distinct data sources (Statc
 3. **Structured Telemetry Invariant:**
    - Ensure every public ingestion, transformation, and sink method executes within `default_audit_logger.track(...)` context to guarantee structured telemetry logging in `audit.jsonl` with zero clobbering.
 
+---
+
+## ADR 21: Consolidated Multi-Season DuckDB Catalog and Hive Partition Organization
+
+* **Date:** 2026-10-26
+* **Status:** Accepted
+
+### Context
+Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2023 today, 2024 next week, and joining with cumulative Lahman 1871–2025 records). Relational database users (PostgreSQL, MySQL) expect unified single-table queries without manual file merging, clobbering, or managing fragmented folder paths. Furthermore, analysts require cross-source SQL joins (e.g. connecting Statcast pitch metrics to Chadwick crosswalk keys, Lahman biographical records, and Retrosheet boxscores) with high performance and zero storage duplication.
+
+### Decision
+1. **Statcast Hive-Partitioning Storage:**
+   - Partition Statcast cache files by season: `~/.baseballpy/cache/statcast/processed/season=YYYY/*.parquet`.
+   - Retain backward compatibility fallback to read legacy flat parquet chunk files if present.
+2. **Consolidated DuckDB Catalog (`baseballpy.database`):**
+   - Introduce `BaseballDatabase` with `connect_db()` and `sync_database()`.
+   - Automatically registers consolidated DuckDB SQL views with `hive_partitioning = true` and `union_by_name = true` over all Parquet stores:
+     - `statcast_pitches`
+     - `retrosheet_events`, `retrosheet_boxscores_batting`, `retrosheet_boxscores_pitching`, `retrosheet_gamelogs`
+     - `lahman_batting`, `lahman_pitching`, `lahman_people`, `lahman_teams` (all 27 Lahman tables)
+     - `chadwick_register`
+   - Enables zero-copy, cross-source SQL joins using Chadwick crosswalk keys (`key_mlbam`, `key_retro`, `key_bbref`, `key_fangraphs`).
+3. **Homelab & Partition Pruning Guarantees:**
+   - Because DuckDB reads Parquet files directly, queries filtering on `WHERE season = YYYY` prune unneeded season partitions without scanning their bytes.
+   - Database storage overhead is near-zero because the catalog stores lightweight views pointing directly to the underlying columnar Parquet files.
+
+
