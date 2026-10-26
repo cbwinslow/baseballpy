@@ -297,3 +297,20 @@ Baseball data providers (Baseball Savant, MLB Stats API, Chadwick Bureau, Lahman
    - Comprehensive column-by-column schema tables mapping: Column Name, PyArrow Physical Type, Nullable, Raw Example, and Domain Description.
    - Known anomalies, sentinel strings, and era-specific quirks.
 3. Every new column or endpoint addition must be reflected in `docs/sources/` during the OpenSpec change cycle.
+
+
+---
+
+## ADR 17: Two-Phase Atomic Ingestion Gates, Manifest Checkpointing, and Raw/Processed Partitioning
+
+* **Date:** 2026-10-26
+* **Status:** Accepted
+
+### Context
+Bulk network downloads spanning entire seasons or decades are susceptible to interruption (network drops, process cancellation, rate limit pauses, power failure). Naive implementations write directly to the target file; when interrupted, they leave truncated, malformed files that crash subsequent queries or cause silent data omissions. Furthermore, without checkpoint manifests, re-running a job re-downloads gigabytes of already-fetched data.
+
+### Decision
+1. Implement a universal `AtomicFileWriter` and `ManifestTracker` in `baseballpy.core.atomic`.
+2. All network payloads must be written to temporary `.part` files and atomically renamed via `os.replace()` only after verifying format integrity.
+3. Partitioned sources maintain a `manifest.json` recording chunk completion status, record counts, and remote ETags/hashes, enabling instant pause and resume across runs.
+4. Adopt a two-tier folder structure (`raw/` and `processed/`) for multi-file historical sources like Retrosheet. Parsers (e.g. `chadwickpy`) read from `raw/` and emit directly into strongly-typed `processed/` Parquet files.

@@ -127,7 +127,25 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 
 ---
 
-## 8. Testing, Verification & Tooling Mandates
+## 8. Atomic Download Gate, Manifest Checkpointing & Pause/Resume Mandate
+
+1. **Two-Phase Atomic Commit:**
+   - Network downloads MUST NEVER write directly to their final cache filenames.
+   - All network streams must write to a temporary file (e.g. `{filename}.part`).
+   - Only after checksum, footer validation (for Parquet), or record boundary validation passes may the file be atomically renamed (`os.replace()`) to its final destination.
+   - Interrupted downloads leave only `.part` artifacts, which must be safely discarded on retry, preventing corrupted partial files.
+2. **Pause / Resume via Manifest Checkpointing:**
+   - Partitioned datasets (Statcast date chunks, Retrosheet seasons) must maintain a `manifest.json` checkpoint recording chunk completion status, record counts, and ETags.
+   - Re-running an interrupted extraction MUST inspect the manifest and resume from the first uncompleted chunk without re-downloading completed partitions.
+3. **Two-Tier Raw/Processed Partitioning:**
+   - Sources with raw archive files (e.g. Retrosheet `.EVA`/`.EVN` event files and Lahman zip archives) must enforce clean two-tier folder separation:
+     - `raw/`: Unmodified upstream text/archive files.
+     - `processed/`: Clean, strongly-typed PyArrow Parquet files.
+   - Parsing engines (such as `chadwickpy`) must operate purely as in-memory transformations from `raw/` to `processed/` with zero unintended file collisions across seasons.
+
+---
+
+## 9. Testing, Verification & Tooling Mandates
 
 1. **Package Manager:** Use `uv` exclusively for dependency resolution, virtual environments, and command execution.
 2. **Code Quality Policy:** Zero warnings policy on `uvx ruff check .` and `uvx ruff format --check .`.

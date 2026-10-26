@@ -19,6 +19,7 @@ from baseballpy.core.protocols import (
 )
 from baseballpy.sinks.duckdb import DuckDBSink
 from baseballpy.sinks.parquet import ParquetSink
+from baseballpy.sources import retrosheet
 from baseballpy.sources.chadwick.register import ChadwickRegister, PlayerRecord
 from baseballpy.sources.statcast.extractor import StatcastExtractor
 from baseballpy.sources.statcast.normalizer import StatcastNormalizer
@@ -101,6 +102,7 @@ __all__ = [
     "StreamExtractorProtocol",
     "__version__",
     "resolve_player",
+    "retrosheet",
     "statcast",
     "to_duckdb",
     "to_parquet",

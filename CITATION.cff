@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use baseballpy in your research, software, or publications, please cite it as below."
+authors:
+  - family-names: "Winslow"
+    given-names: "Blaine"
+title: "baseballpy: Fast, Modular, and Strongly-Typed Baseball Data Ingestion Layer"
+version: "0.1.0"
+date-released: 2026-10-26
+url: "https://github.com/cbwinslow/baseballpy"
+repository-code: "https://github.com/cbwinslow/baseballpy"
+license: "GPL-3.0-or-later"
+keywords:
+  - baseball
+  - sabermetrics
+  - statcast
+  - retrosheet
+  - chadwick
+  - mlb-api
+  - duckdb
+  - pyarrow
+  - polars

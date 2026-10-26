@@ -11,6 +11,7 @@ import pyarrow.parquet as pq
 from aiolimiter import AsyncLimiter
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential_jitter
 
+from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
 from baseballpy.sources.statcast.normalizer import StatcastNormalizer
@@ -53,6 +54,7 @@ class StatcastExtractor:
         self.limiter = AsyncLimiter(rate, 1.0)
         self.semaphore = asyncio.Semaphore(self.rate_limit_config.max_concurrency)
         self.normalizer = StatcastNormalizer()
+        self.manifest = ManifestTracker(self.cache_config.statcast_dir / "manifest.json")
 
     def _get_cache_path(self, start_dt: date, end_dt: date, **filters: Any) -> Path:
         """Derive cache file path for a date chunk and filter combination."""
@@ -72,8 +74,9 @@ class StatcastExtractor:
     ) -> pa.Table:
         """Fetch and normalize a single date chunk with caching and rate limiting."""
         cache_path = self._get_cache_path(start_dt, end_dt, **filters)
+        chunk_id = cache_path.stem
 
-        if not refresh and cache_path.exists():
+        if not refresh and cache_path.exists() and self.manifest.is_completed(chunk_id):
             return pq.read_table(cache_path)
 
         params: dict[str, Any] = {
@@ -102,7 +105,8 @@ class StatcastExtractor:
         table = self.normalizer.normalize(raw_csv)
 
         if self.cache_config.enabled and len(table) > 0:
-            pq.write_table(table, cache_path, compression="snappy")
+            atomic_write_parquet(table, cache_path, compression="snappy")
+            self.manifest.set_completed(chunk_id, records_count=len(table))
 
         return table
 

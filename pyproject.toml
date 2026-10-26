@@ -3,9 +3,10 @@ name = "baseballpy"
 version = "0.1.0"
 description = "Fast, modular, and strongly-typed baseball data ingestion layer for Statcast, MLB API, Lahman, Chadwick, and Retrosheet into DuckDB, Polars, PyArrow, and dlt."
 readme = "README.md"
-license = "Apache-2.0"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE", "NOTICE"]
 requires-python = ">=3.11"
-authors = [{ name = "C. B. Winslow" }]
+authors = [{ name = "Blaine Winslow" }]
 keywords = [
   "baseball",
   "statcast",
@@ -23,7 +24,7 @@ classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Science/Research",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: Apache Software License",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
@@ -35,6 +36,7 @@ classifiers = [
 ]
 
 dependencies = [
+  "chadwickpy>=0.4.0",
   "pyarrow>=16.0.0",
   "duckdb>=1.0.0",
   "polars>=1.0.0",

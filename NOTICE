@@ -1,0 +1,18 @@
+retrosheetpy
+Copyright (C) 2026 C. B. Winslow and retrosheetpy contributors
+Licensed under GPL-3.0-or-later (see LICENSE).
+
+retrosheetpy depends on chadwickpy (https://pypi.org/project/chadwickpy/), a Python
+translation of the Chadwick baseball tools (https://github.com/chadwickbureau/chadwick,
+Copyright (C) 2002-2023 Dr T L Turocy and the Chadwick Baseball Bureau, GPL-2.0-or-later;
+full text in COPYING-chadwick). The GPL-3.0-or-later terms used here are compatible with it.
+
+Retrosheet data
+---------------
+This package ships no Retrosheet data. It downloads files from https://www.retrosheet.org
+on request. The information used was obtained free of charge from, and is copyrighted by,
+Retrosheet. Interested parties may contact Retrosheet at https://www.retrosheet.org.
+Follow Retrosheet's data-use notice when you publish anything made from its files.
+
+retrosheetpy is an independent project. It is not written, endorsed or sponsored by
+Retrosheet, Dr Turocy or the Chadwick Baseball Bureau.

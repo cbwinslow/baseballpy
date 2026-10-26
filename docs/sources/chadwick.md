@@ -40,7 +40,7 @@ import baseballpy as bb
 
 # O(1) in-memory resolution by any ID
 player = bb.resolve_player(mlbam=660271)
-print(player.key_retro)     # "ohtas001"
-print(player.key_bbref)     # "ohtansh01"
-print(player.key_fangraphs) # 19755
+print(player.key_retro)  # "ohtas001"
+print(player.key_bbref)  # "ohtansh01"
+print(player.key_fangraphs)  # 19755
 ```
