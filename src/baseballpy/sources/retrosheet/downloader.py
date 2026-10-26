@@ -159,7 +159,7 @@ class RetrosheetDownloader:
         with default_audit_logger.track(
             operation="retrosheet_download_gamelog",
             source="retrosheet",
-            endpoint=f"{self.base_url}/gamelog/gl{year}.txt",
+            endpoint=f"{self.base_url}/seasons/{year}/GL{year}.TXT",
             destination=str(target_path),
         ) as tracker:
             if not refresh and self.manifest.is_completed(chunk_id) and target_path.exists():
@@ -169,7 +169,17 @@ class RetrosheetDownloader:
                 )
                 return target_path
 
-            self.download_file(f"gamelog/gl{year}.txt", target_path, refresh=refresh)
+            # Attempt uppercase GL{year}.TXT (used in 2025 and historical), lowercase gl{year}.txt (used in 2024), and gamelog/
+            candidates = [
+                f"seasons/{year}/GL{year}.TXT",
+                f"seasons/{year}/gl{year}.txt",
+                f"gamelog/gl{year}.txt",
+                f"gamelog/GL{year}.TXT",
+            ]
+            for cand in candidates:
+                if self.download_file(cand, target_path, refresh=refresh) and target_path.exists():
+                    break
+
             lines_count = (
                 target_path.read_text(encoding="utf-8", errors="replace").count("\n")
                 if target_path.exists()

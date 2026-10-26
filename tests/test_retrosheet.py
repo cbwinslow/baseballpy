@@ -243,3 +243,21 @@ def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
     teams_table = source.reference("teams")
     assert len(teams_table) == 1
     assert teams_table["team_id"].to_pylist() == ["BOS"]
+
+
+@respx.mock
+def test_retrosheet_downloader_2025_casing(tmp_path: Path) -> None:
+    """Verify download_gamelog resolves uppercase GL2025.TXT used by 2025 Retrosheet."""
+    cache_config = CacheConfig(base_dir=tmp_path)
+    source = RetrosheetSource(cache_config=cache_config)
+
+    # Mock 2025 with uppercase GL2025.TXT
+    respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2025/GL2025.TXT").mock(
+        return_value=httpx.Response(
+            200, content=b"20250327,0,Thu,BAL,AL,1,BOS,AL,1,5,3,54,D,0,0,0,BOS07,37000,180\n"
+        )
+    )
+
+    gl_path = source.downloader.download_gamelog(2025)
+    assert gl_path.exists()
+    assert b"20250327" in gl_path.read_bytes()
