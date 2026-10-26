@@ -1,6 +1,8 @@
 """Canonical PyArrow schemas for Retrosheet datasets."""
 
 import pyarrow as pa
+from chadwickpy.tools.daily import COLUMNS as DAILY_COLUMNS
+from chadwickpy.tools.sub import COLUMNS as SUB_COLUMNS
 
 # 1. Retrosheet Play-by-Play Event Schema (Chadwick cwevent 97 standard fields)
 RETROSHEET_EVENT_FIELDS = [
@@ -98,32 +100,19 @@ RETROSHEET_EVENT_FIELDS = [
     ("ASS1_FLD_CD", pa.int8()),
     ("ASS2_FLD_CD", pa.int8()),
     ("ASS3_FLD_CD", pa.int8()),
-    ("ASS4_FLD_CD", pa.int8()),
-    ("ASS5_FLD_CD", pa.int8()),
-    ("EVENT_ID", pa.int32()),
+    ("ERR1_FLD_CD_NEW", pa.int8()),
+    ("ERR2_FLD_CD_NEW", pa.int8()),
+    ("ERR3_FLD_CD_NEW", pa.int8()),
+    ("BAT_LAST_ID", pa.int8()),
 ]
 
 RETROSHEET_EVENT_SCHEMA = pa.schema(RETROSHEET_EVENT_FIELDS)
 
-# 2. Retrosheet Roster Schema (.ROS)
-RETROSHEET_ROSTER_SCHEMA = pa.schema(
-    [
-        ("player_id", pa.string()),
-        ("last_name", pa.string()),
-        ("first_name", pa.string()),
-        ("bats", pa.string()),
-        ("throws", pa.string()),
-        ("team", pa.string()),
-        ("position", pa.string()),
-        ("year", pa.int16()),
-    ]
-)
-
-# 3. Retrosheet Game Log Schema (161 standard columns)
+# 2. Retrosheet Historical Game Log Schema (161 standard fields)
 RETROSHEET_GAMELOG_SCHEMA = pa.schema(
     [
         ("date", pa.date32()),
-        ("game_number", pa.int8()),
+        ("game_num", pa.int8()),
         ("day_of_week", pa.string()),
         ("visiting_team", pa.string()),
         ("visiting_league", pa.string()),
@@ -133,106 +122,110 @@ RETROSHEET_GAMELOG_SCHEMA = pa.schema(
         ("home_game_num", pa.int16()),
         ("visiting_score", pa.int16()),
         ("home_score", pa.int16()),
-        ("length_outs", pa.int16()),
+        ("outs_total", pa.int16()),
         ("day_night", pa.string()),
-        ("completion_info", pa.string()),
-        ("forfeit_info", pa.string()),
-        ("protest_info", pa.string()),
+        ("completion", pa.string()),
+        ("forfeit", pa.string()),
+        ("protest", pa.string()),
         ("park_id", pa.string()),
         ("attendance", pa.int32()),
-        ("time_minutes", pa.int16()),
+        ("time_of_game", pa.int16()),
         ("visiting_line_score", pa.string()),
         ("home_line_score", pa.string()),
-        # Visiting offensive stats
-        ("visiting_ab", pa.int16()),
-        ("visiting_hits", pa.int16()),
-        ("visiting_2b", pa.int16()),
-        ("visiting_3b", pa.int16()),
-        ("visiting_hr", pa.int16()),
-        ("visiting_rbi", pa.int16()),
-        ("visiting_sh", pa.int16()),
-        ("visiting_sf", pa.int16()),
-        ("visiting_hbp", pa.int16()),
-        ("visiting_bb", pa.int16()),
-        ("visiting_ibb", pa.int16()),
-        ("visiting_so", pa.int16()),
-        ("visiting_sb", pa.int16()),
-        ("visiting_cs", pa.int16()),
-        ("visiting_gidp", pa.int16()),
-        ("visiting_ci", pa.int16()),
-        ("visiting_lob", pa.int16()),
-        ("visiting_pitchers_used", pa.int16()),
-        ("visiting_ind_er", pa.int16()),
-        ("visiting_team_er", pa.int16()),
-        ("visiting_wild_pitches", pa.int16()),
-        ("visiting_balks", pa.int16()),
-        # Visiting defensive stats
-        ("visiting_putouts", pa.int16()),
-        ("visiting_assists", pa.int16()),
-        ("visiting_errors", pa.int16()),
-        ("visiting_passed_balls", pa.int16()),
-        ("visiting_double_plays", pa.int16()),
-        ("visiting_triple_plays", pa.int16()),
-        # Home offensive stats
-        ("home_ab", pa.int16()),
-        ("home_hits", pa.int16()),
-        ("home_2b", pa.int16()),
-        ("home_3b", pa.int16()),
-        ("home_hr", pa.int16()),
-        ("home_rbi", pa.int16()),
-        ("home_sh", pa.int16()),
-        ("home_sf", pa.int16()),
-        ("home_hbp", pa.int16()),
-        ("home_bb", pa.int16()),
-        ("home_ibb", pa.int16()),
-        ("home_so", pa.int16()),
-        ("home_sb", pa.int16()),
-        ("home_cs", pa.int16()),
-        ("home_gidp", pa.int16()),
-        ("home_ci", pa.int16()),
-        ("home_lob", pa.int16()),
-        ("home_pitchers_used", pa.int16()),
-        ("home_ind_er", pa.int16()),
-        ("home_team_er", pa.int16()),
-        ("home_wild_pitches", pa.int16()),
-        ("home_balks", pa.int16()),
-        # Home defensive stats
-        ("home_putouts", pa.int16()),
-        ("home_assists", pa.int16()),
-        ("home_errors", pa.int16()),
-        ("home_passed_balls", pa.int16()),
-        ("home_double_plays", pa.int16()),
-        ("home_triple_plays", pa.int16()),
-        # Umpires & Managers
-        ("hp_umpire_id", pa.string()),
-        ("hp_umpire_name", pa.string()),
-        ("1b_umpire_id", pa.string()),
-        ("1b_umpire_name", pa.string()),
-        ("2b_umpire_id", pa.string()),
-        ("2b_umpire_name", pa.string()),
-        ("3b_umpire_id", pa.string()),
-        ("3b_umpire_name", pa.string()),
-        ("lf_umpire_id", pa.string()),
-        ("lf_umpire_name", pa.string()),
-        ("rf_umpire_id", pa.string()),
-        ("rf_umpire_name", pa.string()),
-        ("visiting_manager_id", pa.string()),
-        ("visiting_manager_name", pa.string()),
-        ("home_manager_id", pa.string()),
-        ("home_manager_name", pa.string()),
+        # Visiting offense
+        ("v_ab", pa.int16()),
+        ("v_h", pa.int16()),
+        ("v_2b", pa.int16()),
+        ("v_3b", pa.int16()),
+        ("v_hr", pa.int16()),
+        ("v_rbi", pa.int16()),
+        ("v_sh", pa.int16()),
+        ("v_sf", pa.int16()),
+        ("v_hbp", pa.int16()),
+        ("v_bb", pa.int16()),
+        ("v_ibb", pa.int16()),
+        ("v_so", pa.int16()),
+        ("v_sb", pa.int16()),
+        ("v_cs", pa.int16()),
+        ("v_gidp", pa.int16()),
+        ("v_ci", pa.int16()),
+        ("v_lob", pa.int16()),
+        # Visiting pitching
+        ("v_pitchers_used", pa.int16()),
+        ("v_ind_er", pa.int16()),
+        ("v_team_er", pa.int16()),
+        ("v_wp", pa.int16()),
+        ("v_balks", pa.int16()),
+        # Visiting defense
+        ("v_putouts", pa.int16()),
+        ("v_assists", pa.int16()),
+        ("v_errors", pa.int16()),
+        ("v_passed_balls", pa.int16()),
+        ("v_double_plays", pa.int16()),
+        ("v_triple_plays", pa.int16()),
+        # Home offense
+        ("h_ab", pa.int16()),
+        ("h_h", pa.int16()),
+        ("h_2b", pa.int16()),
+        ("h_3b", pa.int16()),
+        ("h_hr", pa.int16()),
+        ("h_rbi", pa.int16()),
+        ("h_sh", pa.int16()),
+        ("h_sf", pa.int16()),
+        ("h_hbp", pa.int16()),
+        ("h_bb", pa.int16()),
+        ("h_ibb", pa.int16()),
+        ("h_so", pa.int16()),
+        ("h_sb", pa.int16()),
+        ("h_cs", pa.int16()),
+        ("h_gidp", pa.int16()),
+        ("h_ci", pa.int16()),
+        ("h_lob", pa.int16()),
+        # Home pitching
+        ("h_pitchers_used", pa.int16()),
+        ("h_ind_er", pa.int16()),
+        ("h_team_er", pa.int16()),
+        ("h_wp", pa.int16()),
+        ("h_balks", pa.int16()),
+        # Home defense
+        ("h_putouts", pa.int16()),
+        ("h_assists", pa.int16()),
+        ("h_errors", pa.int16()),
+        ("h_passed_balls", pa.int16()),
+        ("h_double_plays", pa.int16()),
+        ("h_triple_plays", pa.int16()),
+        # Umpires
+        ("hp_ump_id", pa.string()),
+        ("hp_ump_name", pa.string()),
+        ("1b_ump_id", pa.string()),
+        ("1b_ump_name", pa.string()),
+        ("2b_ump_id", pa.string()),
+        ("2b_ump_name", pa.string()),
+        ("3b_ump_id", pa.string()),
+        ("3b_ump_name", pa.string()),
+        ("lf_ump_id", pa.string()),
+        ("lf_ump_name", pa.string()),
+        ("rf_ump_id", pa.string()),
+        ("rf_ump_name", pa.string()),
+        # Managers
+        ("v_manager_id", pa.string()),
+        ("v_manager_name", pa.string()),
+        ("h_manager_id", pa.string()),
+        ("h_manager_name", pa.string()),
         # Pitchers of record
-        ("winning_pitcher_id", pa.string()),
-        ("winning_pitcher_name", pa.string()),
-        ("losing_pitcher_id", pa.string()),
-        ("losing_pitcher_name", pa.string()),
-        ("saving_pitcher_id", pa.string()),
-        ("saving_pitcher_name", pa.string()),
-        ("gwrbi_batter_id", pa.string()),
-        ("gwrbi_batter_name", pa.string()),
-        ("visiting_starting_pitcher_id", pa.string()),
-        ("visiting_starting_pitcher_name", pa.string()),
-        ("home_starting_pitcher_id", pa.string()),
-        ("home_starting_pitcher_name", pa.string()),
+        ("win_pitcher_id", pa.string()),
+        ("win_pitcher_name", pa.string()),
+        ("lose_pitcher_id", pa.string()),
+        ("lose_pitcher_name", pa.string()),
+        ("save_pitcher_id", pa.string()),
+        ("save_pitcher_name", pa.string()),
+        ("gwrbi_id", pa.string()),
+        ("gwrbi_name", pa.string()),
+        # Starting pitchers
+        ("v_start_pitcher_id", pa.string()),
+        ("v_start_pitcher_name", pa.string()),
+        ("h_start_pitcher_id", pa.string()),
+        ("h_start_pitcher_name", pa.string()),
         # Lineups (Visiting starters 1-9: id, name, pos)
         ("v_b1_id", pa.string()),
         ("v_b1_name", pa.string()),
@@ -291,5 +284,209 @@ RETROSHEET_GAMELOG_SCHEMA = pa.schema(
         ("h_b9_pos", pa.int8()),
         ("additional_info", pa.string()),
         ("acquisition_info", pa.string()),
+    ]
+)
+
+# 3. Retrosheet Roster Schema (.ROS)
+RETROSHEET_ROSTER_SCHEMA = pa.schema(
+    [
+        ("player_id", pa.string()),
+        ("last_name", pa.string()),
+        ("first_name", pa.string()),
+        ("bats", pa.string()),
+        ("throws", pa.string()),
+        ("team", pa.string()),
+        ("position", pa.string()),
+        ("year", pa.int16()),
+    ]
+)
+
+# 4. Boxscore Batting Schema
+RETROSHEET_BOX_BATTING_SCHEMA = pa.schema(
+    [
+        ("game_id", pa.string()),
+        ("team_id", pa.string()),
+        ("player_id", pa.string()),
+        ("player_name", pa.string()),
+        ("slot", pa.int8()),
+        ("pos", pa.int8()),
+        ("ab", pa.int16()),
+        ("r", pa.int16()),
+        ("h", pa.int16()),
+        ("d", pa.int16()),
+        ("t", pa.int16()),
+        ("hr", pa.int16()),
+        ("rbi", pa.int16()),
+        ("bb", pa.int16()),
+        ("ibb", pa.int16()),
+        ("so", pa.int16()),
+        ("hbp", pa.int16()),
+        ("sh", pa.int16()),
+        ("sf", pa.int16()),
+        ("sb", pa.int16()),
+        ("cs", pa.int16()),
+        ("gidp", pa.int16()),
+        ("pa", pa.int16()),
+    ]
+)
+
+# 5. Boxscore Pitching Schema
+RETROSHEET_BOX_PITCHING_SCHEMA = pa.schema(
+    [
+        ("game_id", pa.string()),
+        ("team_id", pa.string()),
+        ("pitcher_id", pa.string()),
+        ("pitcher_name", pa.string()),
+        ("starter_fl", pa.bool_()),
+        ("seq", pa.int8()),
+        ("outs_recorded", pa.int16()),
+        ("bf", pa.int16()),
+        ("h", pa.int16()),
+        ("r", pa.int16()),
+        ("er", pa.int16()),
+        ("bb", pa.int16()),
+        ("ibb", pa.int16()),
+        ("so", pa.int16()),
+        ("hr", pa.int16()),
+        ("hbp", pa.int16()),
+        ("wp", pa.int16()),
+        ("bk", pa.int16()),
+        ("pitches", pa.int16()),
+        ("strikes", pa.int16()),
+        ("w", pa.bool_()),
+        ("l", pa.bool_()),
+        ("sv", pa.bool_()),
+        ("cg", pa.bool_()),
+        ("sho", pa.bool_()),
+        ("gf", pa.bool_()),
+    ]
+)
+
+# 6. Daily Player Splits Schema (154 columns generated by daily.COLUMNS)
+RETROSHEET_DAILY_SPLITS_FIELDS = []
+for col in DAILY_COLUMNS:
+    if col in (
+        "GAME_ID",
+        "TEAM_ID",
+        "PLAYER_ID",
+        "OPPONENT_ID",
+        "PARK_ID",
+        "GAME_DT",
+        "APPEAR_DT",
+    ):
+        RETROSHEET_DAILY_SPLITS_FIELDS.append((col, pa.string()))
+    elif col in ("HOME_FL", "B_G_DH", "B_G_PH", "B_G_PR"):
+        RETROSHEET_DAILY_SPLITS_FIELDS.append((col, pa.int8()))
+    else:
+        RETROSHEET_DAILY_SPLITS_FIELDS.append((col, pa.int16()))
+
+RETROSHEET_DAILY_SPLITS_SCHEMA = pa.schema(RETROSHEET_DAILY_SPLITS_FIELDS)
+
+# 7. Substitutions Schema (26 columns generated by sub.COLUMNS)
+RETROSHEET_SUBSTITUTIONS_FIELDS = []
+for col in SUB_COLUMNS:
+    if col in ("GAME_ID", "SUB_ID", "REMOVED_ID", "PITCH_SEQ_TX", "COUNT_TX"):
+        RETROSHEET_SUBSTITUTIONS_FIELDS.append((col, pa.string()))
+    else:
+        RETROSHEET_SUBSTITUTIONS_FIELDS.append((col, pa.int16()))
+
+RETROSHEET_SUBSTITUTIONS_SCHEMA = pa.schema(RETROSHEET_SUBSTITUTIONS_FIELDS)
+
+# 8. Reference Tables Schemas
+RETROSHEET_BALLPARKS_SCHEMA = pa.schema(
+    [
+        ("park_id", pa.string()),
+        ("name", pa.string()),
+        ("aka", pa.string()),
+        ("city", pa.string()),
+        ("state", pa.string()),
+        ("start_date", pa.string()),
+        ("end_date", pa.string()),
+        ("league", pa.string()),
+        ("notes", pa.string()),
+    ]
+)
+
+RETROSHEET_TEAMS_SCHEMA = pa.schema(
+    [
+        ("team_id", pa.string()),
+        ("league", pa.string()),
+        ("city", pa.string()),
+        ("nickname", pa.string()),
+        ("first_year", pa.int16()),
+        ("last_year", pa.int16()),
+    ]
+)
+
+RETROSHEET_EJECTIONS_SCHEMA = pa.schema(
+    [
+        ("game_id", pa.string()),
+        ("date", pa.string()),
+        ("dh", pa.int8()),
+        ("ejectee_id", pa.string()),
+        ("ejectee_name", pa.string()),
+        ("team_id", pa.string()),
+        ("job", pa.string()),
+        ("umpire_id", pa.string()),
+        ("umpire_name", pa.string()),
+        ("inning", pa.int8()),
+        ("reason", pa.string()),
+    ]
+)
+
+RETROSHEET_COACHES_SCHEMA = pa.schema(
+    [
+        ("coach_id", pa.string()),
+        ("year", pa.int16()),
+        ("team_id", pa.string()),
+        ("role", pa.string()),
+        ("start_date", pa.string()),
+        ("end_date", pa.string()),
+    ]
+)
+
+RETROSHEET_RELATIVES_SCHEMA = pa.schema(
+    [
+        ("id1", pa.string()),
+        ("relation", pa.string()),
+        ("id2", pa.string()),
+    ]
+)
+
+RETROSHEET_BIOFILE_SCHEMA = pa.schema(
+    [
+        ("player_id", pa.string()),
+        ("name_last", pa.string()),
+        ("name_first", pa.string()),
+        ("nickname", pa.string()),
+        ("birth_date", pa.string()),
+        ("birth_city", pa.string()),
+        ("birth_state", pa.string()),
+        ("birth_country", pa.string()),
+        ("play_debut", pa.string()),
+        ("play_lastgame", pa.string()),
+        ("mgr_debut", pa.string()),
+        ("mgr_lastgame", pa.string()),
+        ("coach_debut", pa.string()),
+        ("coach_lastgame", pa.string()),
+        ("ump_debut", pa.string()),
+        ("ump_lastgame", pa.string()),
+        ("death_date", pa.string()),
+        ("death_city", pa.string()),
+        ("death_state", pa.string()),
+        ("death_country", pa.string()),
+        ("bats", pa.string()),
+        ("throws", pa.string()),
+        ("height", pa.string()),
+        ("weight", pa.string()),
+        ("cemetery", pa.string()),
+        ("ceme_city", pa.string()),
+        ("ceme_state", pa.string()),
+        ("ceme_country", pa.string()),
+        ("ceme_note", pa.string()),
+        ("birth_name", pa.string()),
+        ("name_chg", pa.string()),
+        ("bat_chg", pa.string()),
+        ("hof", pa.string()),
     ]
 )

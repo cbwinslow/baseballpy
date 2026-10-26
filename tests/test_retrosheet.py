@@ -10,9 +10,13 @@ from baseballpy.core.config import CacheConfig
 from baseballpy.sources.retrosheet.api import RetrosheetSource
 from baseballpy.sources.retrosheet.downloader import GITHUB_RETROSHEET_BASE
 from baseballpy.sources.retrosheet.parser import (
+    RetrosheetBoxScoreParser,
+    RetrosheetDailySplitsParser,
     RetrosheetEventParser,
     RetrosheetGameLogParser,
+    RetrosheetReferenceParser,
     RetrosheetRosterParser,
+    RetrosheetSubstitutionsParser,
 )
 
 
@@ -39,6 +43,107 @@ def test_parse_events_via_chadwick(tmp_path: Path) -> None:
     assert table["INN_CT"].to_pylist() == [1]
     assert table["EVENT_CD"].to_pylist() == [20]  # Single -> 20
     assert pa.types.is_int16(table.schema.field("EVENT_CD").type)
+
+
+def test_parse_boxscores(tmp_path: Path) -> None:
+    fake_eva = (
+        b"id,BOS202404010\n"
+        b"info,date,2024/04/01\n"
+        b"info,hometeam,BOS\n"
+        b"info,visteam,BAL\n"
+        b"start,play01,Batter One,0,1,4\n"
+        b"start,pitch01,Pitcher One,1,1,1\n"
+        b"play,1,0,play01,00,,S\n"
+        b"data,er,pitch01,0\n"
+    )
+    eva_path = tmp_path / "2024BOS.EVA"
+    eva_path.write_bytes(fake_eva)
+
+    parser = RetrosheetBoxScoreParser()
+    batting, pitching = parser.parse_files([eva_path], year=2024)
+
+    assert isinstance(batting, pa.Table)
+    assert isinstance(pitching, pa.Table)
+    assert len(batting) > 0
+    assert len(pitching) > 0
+
+    # Batter One had 1 hit in 1 at-bat
+    batter_row = batting.filter(pa.compute.equal(batting["player_id"], "play01"))
+    assert len(batter_row) == 1
+    assert batter_row["h"].to_pylist() == [1]
+    assert batter_row["ab"].to_pylist() == [1]
+
+    # Pitcher One allowed 1 hit
+    pitcher_row = pitching.filter(pa.compute.equal(pitching["pitcher_id"], "pitch01"))
+    assert len(pitcher_row) == 1
+    assert pitcher_row["h"].to_pylist() == [1]
+    assert pitcher_row["starter_fl"].to_pylist() == [True]
+
+
+def test_parse_daily_splits(tmp_path: Path) -> None:
+    fake_eva = (
+        b"id,BOS202404010\n"
+        b"info,date,2024/04/01\n"
+        b"info,hometeam,BOS\n"
+        b"info,visteam,BAL\n"
+        b"start,play01,Batter One,0,1,4\n"
+        b"start,pitch01,Pitcher One,1,1,1\n"
+        b"play,1,0,play01,00,,S\n"
+        b"data,er,pitch01,0\n"
+    )
+    eva_path = tmp_path / "2024BOS.EVA"
+    eva_path.write_bytes(fake_eva)
+
+    parser = RetrosheetDailySplitsParser()
+    table = parser.parse_files([eva_path], year=2024)
+
+    assert isinstance(table, pa.Table)
+    assert len(table) == 2  # 1 batter appearance, 1 pitcher appearance
+    assert "GAME_ID" in table.column_names
+    assert "B_H" in table.column_names
+    assert "P_H" in table.column_names
+
+
+def test_parse_substitutions(tmp_path: Path) -> None:
+    fake_eva = (
+        b"id,BOS202404010\n"
+        b"info,date,2024/04/01\n"
+        b"info,hometeam,BOS\n"
+        b"info,visteam,BAL\n"
+        b"start,play01,Batter One,0,1,4\n"
+        b"start,pitch01,Pitcher One,1,1,1\n"
+        b"play,1,0,play01,00,,S\n"
+        b"sub,sub01,Sub Batter,0,1,4\n"
+        b"play,1,0,sub01,00,,K\n"
+        b"data,er,pitch01,0\n"
+    )
+    eva_path = tmp_path / "2024BOS.EVA"
+    eva_path.write_bytes(fake_eva)
+
+    parser = RetrosheetSubstitutionsParser()
+    table = parser.parse_files([eva_path], year=2024)
+
+    assert isinstance(table, pa.Table)
+    assert len(table) >= 1
+    assert "SUB_ID" in table.column_names
+
+
+def test_parse_reference_tables(tmp_path: Path) -> None:
+    parks_csv = tmp_path / "ballparks.csv"
+    parks_csv.write_text(
+        "PARKID,NAME,AKA,CITY,STATE,START,END,LEAGUE,NOTES\n"
+        "BOS07,Fenway Park,,Boston,MA,04/20/1912,,AL,\n",
+        encoding="utf-8",
+    )
+
+    parser = RetrosheetReferenceParser()
+    table = parser.parse_file("ballparks", parks_csv)
+
+    assert isinstance(table, pa.Table)
+    assert len(table) == 1
+    assert table["park_id"].to_pylist() == ["BOS07"]
+    assert table["name"].to_pylist() == ["Fenway Park"]
+    assert table["city"].to_pylist() == ["Boston"]
 
 
 def test_parse_gamelogs(tmp_path: Path) -> None:
@@ -121,3 +226,18 @@ def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
     )
     cached_table = source.events(2024, refresh=False)
     assert len(cached_table) == 1
+
+    # 3. Boxscores extraction and caching
+    batting, pitching = source.boxscores(2024)
+    assert len(batting) > 0
+    assert len(pitching) > 0
+    assert source.manifest.is_completed("box_batting_2024")
+    assert source.manifest.is_completed("box_pitching_2024")
+
+    # 4. Reference tables
+    respx.get(f"{GITHUB_RETROSHEET_BASE}/reference/teams.csv").mock(
+        return_value=httpx.Response(200, content=b"TEAM,LEAGUE,CITY,NICKNAME,FIRST,LAST\nBOS,AL,Boston,Red Sox,1901,2024\n")
+    )
+    teams_table = source.reference("teams")
+    assert len(teams_table) == 1
+    assert teams_table["team_id"].to_pylist() == ["BOS"]

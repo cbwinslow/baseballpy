@@ -1,4 +1,4 @@
-"""Tests for Statcast (Baseball Savant) extraction, chunking, and normalization."""
+"""Tests for Statcast (Baseball Savant) extraction, chunking, leaderboards, and normalization."""
 
 from datetime import date
 from pathlib import Path
@@ -13,6 +13,11 @@ from baseballpy.sources.statcast.extractor import (
     SAVANT_BASE_URL,
     StatcastExtractor,
     split_date_range,
+)
+from baseballpy.sources.statcast.leaderboards import (
+    SAVANT_BASE,
+    StatcastLeaderboardExtractor,
+    StatcastLeaderboardNormalizer,
 )
 from baseballpy.sources.statcast.normalizer import StatcastNormalizer
 
@@ -91,3 +96,52 @@ def test_statcast_extractor_mocked(tmp_path: Path) -> None:
     # Check cache directory contains parquet files
     cached_files = list(cache_config.statcast_dir.glob("*.parquet"))
     assert len(cached_files) == 2
+
+
+def test_savant_leaderboards_normalizer() -> None:
+    normalizer = StatcastLeaderboardNormalizer()
+    # Simulated Expected Statistics CSV with BOM
+    sample_csv = (
+        '\ufeff"last_name, first_name","player_id","year","pa","bip","ba","est_ba","est_ba_minus_ba_diff","slg","est_slg","woba","est_woba"\n'
+        '"Judge, Aaron",592450,2024,704,402,0.322,0.315,-0.007,0.701,0.685,0.472,0.460\n'
+    ).encode("utf-8")
+
+    table = normalizer.normalize(sample_csv)
+    assert isinstance(table, pa.Table)
+    assert len(table) == 1
+    assert "player_id" in table.column_names
+    assert table.schema.field("player_id").type == pa.int32()
+    assert table.schema.field("est_ba").type == pa.float32()
+    assert table["player_id"].to_pylist() == [592450]
+    assert table["est_ba"].to_pylist()[0] == pytest.approx(0.315, rel=1e-3)
+
+
+@respx.mock
+def test_savant_leaderboards_extractor_mocked(tmp_path: Path) -> None:
+    cache_config = CacheConfig(base_dir=tmp_path)
+    extractor = StatcastLeaderboardExtractor(cache_config=cache_config)
+
+    sample_bat_tracking = (
+        b'"id","name","swings_competitive","avg_bat_speed","swing_length"\n'
+        b'592450,"Aaron Judge",850,77.5,7.2\n'
+        b'660271,"Shohei Ohtani",920,76.2,7.4\n'
+    )
+
+    respx.get(f"{SAVANT_BASE}/bat-tracking").mock(
+        return_value=httpx.Response(200, content=sample_bat_tracking)
+    )
+
+    table = extractor.get_leaderboard("bat_tracking", year=2024)
+    assert len(table) == 2
+    assert "avg_bat_speed" in table.column_names
+    assert table["id"].to_pylist() == [592450, 660271]
+
+    # Verify atomic parquet cache file created and manifest recorded
+    cache_files = list((cache_config.statcast_dir / "leaderboards").glob("*.parquet"))
+    assert len(cache_files) == 1
+    assert extractor.manifest.is_completed("bat_tracking_2024")
+
+    # Second call should read from parquet cache without network calls
+    respx.get(f"{SAVANT_BASE}/bat-tracking").mock(return_value=httpx.Response(500))
+    cached = extractor.get_leaderboard("bat_tracking", year=2024, refresh=False)
+    assert len(cached) == 2

@@ -2,17 +2,18 @@
 
 ## Upstream Overview
 - **Provider:** Major League Baseball Advanced Media (MLBAM) / Baseball Savant
-- **Base Endpoint URL:** `https://baseballsavant.mlb.com/statcast_search/csv`
+- **Base Endpoint URL:** `https://baseballsavant.mlb.com`
 - **Method:** `GET`
-- **Response Format:** CSV (Comma-Separated Values)
-- **Rate Limit Policy:** Max 2.5 requests/second (enforced via `aiolimiter`)
-- **Server Caps:** Upstream truncates results at ~25,000 rows. Queries spanning > 5–7 days frequently fail with HTTP 504 Gateway Timeout.
-- **baseballpy Solution:** Automatic weekly date chunking (`split_date_range`), token bucket rate limiting, and persistent HTTP/2 connection pooling.
+- **Response Format:** CSV (Comma-Separated Values, UTF-8 with optional BOM)
+- **Rate Limit Policy:** Max 2.5 requests/second (token bucket enforced via `aiolimiter`)
+- **Server Caps:** Upstream truncates pitch queries at ~25,000 rows. Queries spanning > 5–7 days frequently fail with HTTP 504 Gateway Timeout.
+- **baseballpy Solution:** Automatic weekly date chunking (`split_date_range`), token bucket rate limiting, persistent HTTP/2 connection pooling, atomic `.part` writing, and manifest checkpointing.
 
 ---
 
-## Query Parameters
+## 1. Granular Pitch-Level Search Endpoint (`/statcast_search/csv`)
 
+### Query Parameters
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `all` | `string` | `"true"` | Enables returning all pitches matching criteria |
@@ -24,10 +25,7 @@
 | `batters_lookup[]` | `int` | Optional | MLBAM player ID filter for batters |
 | `team` | `string` | Optional | 3-letter team abbreviation filter |
 
----
-
-## Exhaustive Column & Schema Dictionary
-
+### Pitch-Level Schema Dictionary (94 Columns)
 Every column below is captured, parsed, and ingested without arbitrary truncation per ADR 15.
 
 | Column Name | PyArrow Physical Type | Nullable | Example Raw Value | Description |
@@ -43,87 +41,174 @@ Every column below is captured, parsed, and ingested without arbitrary truncatio
 | `player_name` | `string()` | No | `"Cole, Gerrit"` | Formatted name of pitcher (Last, First) |
 | `home_team` | `dictionary(int8, string)` | No | `NYY` | Home team 3-letter abbreviation |
 | `away_team` | `dictionary(int8, string)` | No | `LAD` | Away team 3-letter abbreviation |
-| `inning` | `int8()` | No | `1` | Game inning number |
-| `inning_topbot` | `dictionary(int8, string)` | No | `Top` | Half-inning indicator (`Top` or `Bot`) |
-| `balls` | `int8()` | No | `1` | Ball count prior to pitch |
-| `strikes` | `int8()` | No | `1` | Strike count prior to pitch |
-| `outs_when_up` | `int8()` | No | `0` | Out count prior to pitch (0, 1, or 2) |
-| `pitch_type` | `dictionary(int8, string)` | Yes | `FF` | 2-letter pitch classification code (`FF`, `SL`, `CH`, `CU`, `SI`, `ST`, `FC`, `FS`) |
-| `pitch_name` | `dictionary(int8, string)` | Yes | `4-Seam Fastball` | Full descriptive pitch classification name |
-| `release_speed` | `float32()` | Yes | `98.2` | Pitch velocity at release point (mph) |
-| `effective_speed` | `float32()` | Yes | `97.9` | Perceived velocity adjusted for release extension (mph) |
-| `release_spin_rate`| `float32()` | Yes | `2450.0` | Total pitch revolutions per minute (rpm) |
-| `release_extension`| `float32()` | Yes | `6.7` | Distance from pitching rubber toward plate at release (ft) |
-| `spin_axis` | `float32()` | Yes | `210.0` | 2D spin direction angle in degrees (0–360°) |
-| `release_pos_x` | `float32()` | Yes | `-1.85` | Horizontal release position coordinate (ft, catcher perspective) |
-| `release_pos_y` | `float32()` | Yes | `53.8` | Distance from home plate at release coordinate (ft) |
-| `release_pos_z` | `float32()` | Yes | `6.12` | Vertical release position coordinate (ft above ground) |
-| `arm_angle` | `float32()` | Yes | `38.5` | Pitcher arm slot angle at release in degrees |
-| `zone` | `int8()` | Yes | `5` | 13-zone strike zone coordinate (1–9 in-zone, 11–14 chase) |
-| `plate_x` | `float32()` | Yes | `0.12` | Horizontal location crossing front of plate (ft) |
-| `plate_z` | `float32()` | Yes | `2.45` | Vertical location crossing front of plate (ft) |
-| `sz_top` | `float32()` | Yes | `3.41` | Top of batter's individualized strike zone (ft) |
-| `sz_bot` | `float32()` | Yes | `1.55` | Bottom of batter's individualized strike zone (ft) |
-| `pfx_x` | `float32()` | Yes | `-0.65` | Horizontal pitch break induced by spin/movement (inches/ft) |
-| `pfx_z` | `float32()` | Yes | `1.42` | Vertical pitch break induced by spin/movement (inches/ft) |
-| `vx0` | `float32()` | Yes | `5.82` | Velocity vector X-component at y=50ft (ft/s) |
-| `vy0` | `float32()` | Yes | `-142.6` | Velocity vector Y-component at y=50ft (ft/s) |
-| `vz0` | `float32()` | Yes | `-5.12` | Velocity vector Z-component at y=50ft (ft/s) |
-| `ax` | `float32()` | Yes | `-9.2` | Acceleration vector X-component (ft/s²) |
-| `ay` | `float32()` | Yes | `31.4` | Acceleration vector Y-component (ft/s²) |
-| `az` | `float32()` | Yes | `-15.8` | Acceleration vector Z-component (ft/s²) |
-| `stand` | `dictionary(int8, string)` | No | `L` | Batter stance handedness (`L` or `R`) |
-| `p_throws` | `dictionary(int8, string)` | No | `R` | Pitcher throwing handedness (`L` or `R`) |
-| `type` | `dictionary(int8, string)` | No | `X` | Pitch outcome code: `S` (strike), `B` (ball), `X` (in play) |
-| `events` | `dictionary(int8, string)` | Yes | `single` | Final plate appearance outcome event (null on non-terminal pitches) |
-| `description` | `dictionary(int8, string)` | No | `hit_into_play`| Pitch result descriptor (`called_strike`, `swinging_strike`, `ball`, etc.) |
-| `des` | `string()` | Yes | `"Shohei Ohtani singles..."` | Plain English narrative play description |
-| `bb_type` | `dictionary(int8, string)` | Yes | `line_drive` | Batted ball trajectory: `ground_ball`, `line_drive`, `fly_ball`, `popup` |
-| `hit_location` | `int8()` | Yes | `9` | Official scoring position of primary defensive fielder (1–9) |
-| `launch_speed` | `float32()` | Yes | `105.4` | Exit velocity off bat (mph) |
-| `launch_angle` | `float32()` | Yes | `14.0` | Vertical launch angle off bat (degrees) |
-| `launch_speed_angle`| `int8()` | Yes | `4` | Batted ball classification bucket (1=Weak, 2=Topped, 3=Under, 4=Flare/Burner, 5=Solid, 6=Barrel) |
-| `hit_distance_sc` | `float32()` | Yes | `340.0` | Projected or actual batted ball distance (ft) |
-| `hc_x` | `float32()` | Yes | `165.2` | Hit chart landing coordinate X |
-| `hc_y` | `float32()` | Yes | `120.5` | Hit chart landing coordinate Y |
-| `bat_speed` | `float32()` | Yes | `76.5` | Bat sweet-spot velocity at contact (mph, 2024+) |
-| `swing_length` | `float32()` | Yes | `7.1` | Total trajectory distance of bat head during swing (ft, 2024+) |
-| `estimated_ba_using_speedangle` | `float32()` | Yes | `0.720` | Expected Batting Average (xBA) based on launch metrics |
-| `estimated_woba_using_speedangle` | `float32()` | Yes | `0.850` | Expected wOBA (xwOBA) based on launch metrics |
-| `woba_value` | `float32()` | Yes | `0.900` | Linear weight value assigned to plate appearance outcome |
-| `woba_denom` | `float32()` | Yes | `1.0` | Denominator indicator for wOBA calculations |
-| `babip_value` | `float32()` | Yes | `1.0` | BABIP indicator |
-| `iso_value` | `float32()` | Yes | `0.0` | Isolated power value |
-| `delta_home_win_exp`| `float32()` | Yes | `0.012` | Change in home team win probability resulting from pitch |
-| `delta_run_exp` | `float32()` | Yes | `0.420` | Change in run expectancy resulting from pitch (RE24 delta) |
-| `on_1b` | `int32()` | Yes | `660271` | MLBAM player ID of runner on 1st base (null if empty) |
-| `on_2b` | `int32()` | Yes | `null` | MLBAM player ID of runner on 2nd base (null if empty) |
-| `on_3b` | `int32()` | Yes | `null` | MLBAM player ID of runner on 3rd base (null if empty) |
-| `home_score` | `int16()` | No | `0` | Home team score prior to pitch |
-| `away_score` | `int16()` | No | `0` | Away team score prior to pitch |
-| `bat_score` | `int16()` | No | `0` | Batting team score prior to pitch |
-| `fld_score` | `int16()` | No | `0` | Fielding team score prior to pitch |
-| `post_home_score` | `int16()` | No | `0` | Home team score after pitch conclusion |
-| `post_away_score` | `int16()` | No | `0` | Away team score after pitch conclusion |
-| `post_bat_score` | `int16()` | No | `0` | Batting team score after pitch conclusion |
-| `post_fld_score` | `int16()` | No | `0` | Fielding team score after pitch conclusion |
-| `fielder_2` | `int32()` | Yes | `663728` | MLBAM ID of Catcher |
-| `fielder_3` | `int32()` | Yes | `518934` | MLBAM ID of First Baseman |
-| `fielder_4` | `int32()` | Yes | `543760` | MLBAM ID of Second Baseman |
-| `fielder_5` | `int32()` | Yes | `518692` | MLBAM ID of Third Baseman |
-| `fielder_6` | `int32()` | Yes | `624413` | MLBAM ID of Shortstop |
-| `fielder_7` | `int32()` | Yes | `642715` | MLBAM ID of Left Fielder |
-| `fielder_8` | `int32()` | Yes | `592450` | MLBAM ID of Center Fielder |
-| `fielder_9` | `int32()` | Yes | `650402` | MLBAM ID of Right Fielder |
-| `pitcher_1` | `int32()` | Yes | `543037` | MLBAM ID of Pitcher (redundant field preserved) |
-| `fielder_2_1` | `int32()` | Yes | `663728` | MLBAM ID of Catcher (redundant field preserved) |
-| `if_fielding_alignment` | `dictionary(int8, string)` | Yes | `Standard` | Infield defensive shift alignment |
-| `of_fielding_alignment` | `dictionary(int8, string)` | Yes | `Standard` | Outfield defensive shift alignment |
-| `spin_dir` | `string()` | Yes | `null` | Deprecated spin direction text |
-| `spin_rate_deprecated` | `string()` | Yes | `null` | Deprecated spin rate column |
-| `break_angle_deprecated` | `string()` | Yes | `null` | Deprecated PITCHf/x break angle |
-| `break_length_deprecated`| `string()` | Yes | `null` | Deprecated PITCHf/x break length |
-| `tfs_deprecated` | `string()` | Yes | `null` | Deprecated time field |
-| `tfs_zulu_deprecated` | `string()` | Yes | `null` | Deprecated UTC timestamp text |
-| `umpire` | `string()` | Yes | `null` | Umpire metadata |
-| `sv_id` | `string()` | Yes | `null` | Video/PITCHf/x clip identifier |
+| `pitch_type` | `dictionary(int8, string)` | Yes | `FF` | Pitch classification (FF, SL, CH, CU, SI, FC, ST, SV, KN, FS) |
+| `release_speed` | `float32()` | Yes | `97.4` | Pitch release speed in MPH |
+| `release_pos_x` | `float32()` | Yes | `-1.82` | Horizontal release coordinate in feet |
+| `release_pos_z` | `float32()` | Yes | `5.91` | Vertical release coordinate in feet |
+| `events` | `dictionary(int8, string)` | Yes | `strikeout` | Outcome event if final pitch of plate appearance |
+| `description` | `dictionary(int8, string)` | No | `swinging_strike` | Pitch result description |
+| `spin_rate` | `float32()` | Yes | `2412.0` | Release spin rate in RPM |
+| `launch_speed` | `float32()` | Yes | `104.2` | Batted ball exit velocity in MPH |
+| `launch_angle` | `float32()` | Yes | `28.0` | Batted ball launch angle in degrees |
+| `bat_speed` | `float32()` | Yes | `76.3` | Bat tracking: speed of sweet spot at impact (MPH) |
+| `swing_length` | `float32()` | Yes | `7.1` | Bat tracking: distance traveled by sweet spot in swing (feet) |
+
+---
+
+## 2. Dedicated Analytical Leaderboards (`/leaderboard/*`)
+
+All leaderboards export CSV when passed `&csv=true`.
+
+### 1. Expected Statistics (`/leaderboard/expected_statistics`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/expected_statistics?type={batter|pitcher}&year={year}&min={min}&csv=true`
+- **Columns:**
+  - `player_id`: `int32()` — MLBAM player ID
+  - `player_name`: `string()` — Player name
+  - `year`: `int16()` — Season
+  - `pa`: `int16()` — Plate appearances
+  - `bip`: `int16()` — Balls in play
+  - `ba`: `float32()` — Batting average
+  - `est_ba`: `float32()` — Expected batting average (xBA)
+  - `est_ba_diff`: `float32()` — BA vs xBA differential
+  - `slg`: `float32()` — Slugging percentage
+  - `est_slg`: `float32()` — Expected slugging percentage (xSLG)
+  - `est_slg_diff`: `float32()` — SLG vs xSLG differential
+  - `woba`: `float32()` — Weighted On-Base Average (wOBA)
+  - `est_woba`: `float32()` — Expected wOBA (xwOBA)
+  - `est_woba_diff`: `float32()` — wOBA vs xwOBA differential
+
+### 2. Exit Velocity & Barrels (`/leaderboard/statcast`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/statcast?type={batter|pitcher}&year={year}&min={min}&csv=true`
+- **Columns:**
+  - `player_id`: `int32()`
+  - `player_name`: `string()`
+  - `attempts`: `int16()` — Batted ball events
+  - `avg_hit_angle`: `float32()` — Average launch angle
+  - `anglesweetspotpercent`: `float32()` — Sweet spot % (8°–32°)
+  - `max_hit_speed`: `float32()` — Maximum exit velocity
+  - `avg_hit_speed`: `float32()` — Average exit velocity
+  - `ev50`: `float32()` — 50th percentile exit velocity
+  - `fbld`: `float32()` — Fly ball / line drive EV
+  - `gb`: `float32()` — Ground ball EV
+  - `max_distance`: `int16()` — Maximum projected distance (ft)
+  - `avg_distance`: `int16()` — Average projected distance (ft)
+  - `avg_hr_distance`: `int16()` — Average home run distance (ft)
+  - `ev95plus`: `int16()` — Hard hit balls (95+ MPH)
+  - `ev95percent`: `float32()` — Hard hit percentage
+  - `barrels`: `int16()` — Total barrels
+  - `brl_percent`: `float32()` — Barrels per BBE %
+  - `brl_pa`: `float32()` — Barrels per PA %
+
+### 3. Sprint Speed & Running Splits (`/leaderboard/sprint_speed`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/sprint_speed?year={year}&min={min}&csv=true`
+- **Columns:**
+  - `player_id`: `int32()`
+  - `player_name`: `string()`
+  - `team_id`: `int32()`
+  - `team`: `string()`
+  - `position`: `string()`
+  - `age`: `int8()`
+  - `competitive_runs`: `int16()`
+  - `bolts`: `int16()` — Runs >= 30 ft/sec
+  - `hp_to_1b`: `float32()` — Home-to-first time (seconds)
+  - `sprint_speed`: `float32()` — Top sprint speed (ft/sec)
+
+### 4. Bat Tracking (`/leaderboard/bat-tracking`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/bat-tracking?year={year}&type=batter&min={min}&csv=true`
+- **Columns:**
+  - `id`: `int32()` — MLBAM player ID
+  - `name`: `string()` — Player name
+  - `swings_competitive`: `int16()`
+  - `percent_swings_competitive`: `float32()`
+  - `contact`: `int16()`
+  - `avg_bat_speed`: `float32()` — Average bat speed (MPH)
+  - `hard_swing_rate`: `float32()` — % of swings >= 75 MPH
+  - `squared_up_per_bat_contact`: `float32()`
+  - `squared_up_per_swing`: `float32()`
+  - `blast_per_bat_contact`: `float32()`
+  - `blast_per_swing`: `float32()`
+  - `swing_length`: `float32()` — Swing length (ft)
+  - `swords`: `int16()`
+  - `batter_run_value`: `float32()`
+  - `whiffs`: `int16()`
+  - `whiff_per_swing`: `float32()`
+  - `batted_ball_events`: `int16()`
+
+### 5. Outs Above Average (`/leaderboard/outs_above_average`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/outs_above_average?type={type}&startYear={year}&endYear={year}&min={min}&csv=true`
+- **Columns:**
+  - `player_id`: `int32()`
+  - `player_name`: `string()`
+  - `display_team_name`: `string()`
+  - `year`: `int16()`
+  - `primary_pos_formatted`: `string()`
+  - `fielding_runs_prevented`: `float32()`
+  - `outs_above_average`: `float32()`
+  - `outs_above_average_infront`: `float32()`
+  - `outs_above_average_lateral_toward3bline`: `float32()`
+  - `outs_above_average_lateral_toward1bline`: `float32()`
+  - `outs_above_average_behind`: `float32()`
+  - `outs_above_average_rhh`: `float32()`
+  - `outs_above_average_lhh`: `float32()`
+  - `actual_success_rate`: `float32()`
+  - `adj_estimated_success_rate`: `float32()`
+  - `diff_success_rate`: `float32()`
+
+### 6. Arm Strength (`/leaderboard/arm-strength`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/arm-strength?year={year}&min={min}&csv=true`
+- **Columns:**
+  - `player_id`: `int32()`
+  - `fielder_name`: `string()`
+  - `team_name`: `string()`
+  - `primary_position`: `int8()`
+  - `total_throws`: `int16()`
+  - `max_arm_strength`: `float32()` — Maximum throw velocity in MPH
+  - `arm_overall`: `float32()` — Average top throw velocity
+
+### 7. Catcher Pop Time (`/leaderboard/poptime`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/poptime?year={year}&min2b={min}&csv=true`
+- **Columns:**
+  - `entity_id`: `int32()`
+  - `entity_name`: `string()`
+  - `team_id`: `int32()`
+  - `age`: `int8()`
+  - `maxeff_arm_2b_3b_sba`: `float32()` — Arm strength on stolen base attempts
+  - `exchange_2b_3b_sba`: `float32()` — Exchange time in seconds
+  - `pop_2b_sba`: `float32()` — 2B pop time in seconds
+
+### 8. Catcher Framing (`/leaderboard/catcher-framing`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/catcher-framing?year={year}&min={min}&csv=true`
+- **Columns:**
+  - `id`: `int32()`
+  - `name`: `string()`
+  - `pitches`: `int32()`
+  - `rv_tot`: `float32()` — Runs Extra Strikes (framing run value)
+  - `pct_tot`: `float32()` — Strike rate on called pitches in shadow zone
+
+### 9. Pitch Arsenals (`/leaderboard/pitch-arsenals`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/pitch-arsenals?year={year}&min={min}&type=avg_speed&csv=true`
+- **Columns:**
+  - `pitcher`: `int32()` — MLBAM ID
+  - `player_name`: `string()`
+  - `ff_avg_speed`: `float32()` (Four-seam)
+  - `si_avg_speed`: `float32()` (Sinker)
+  - `fc_avg_speed`: `float32()` (Cutter)
+  - `sl_avg_speed`: `float32()` (Slider)
+  - `ch_avg_speed`: `float32()` (Changeup)
+  - `cu_avg_speed`: `float32()` (Curveball)
+  - `fs_avg_speed`: `float32()` (Splitter)
+  - `kn_avg_speed`: `float32()` (Knuckleball)
+  - `st_avg_speed`: `float32()` (Sweeper)
+  - `sv_avg_speed`: `float32()` (Slurve)
+
+### 10. Automated Ball-Strike (ABS) Challenges (`/leaderboard/abs-challenges`)
+- **URL:** `https://baseballsavant.mlb.com/leaderboard/abs-challenges?challengeType={challengeType}&level=mlb&year={year}&csv=true`
+- **Columns:**
+  - `entity_name`: `string()`
+  - `team_abbr`: `string()`
+  - `year`: `int16()`
+  - `n_challenges`: `int16()`
+  - `n_overturns`: `int16()`
+  - `n_confirms`: `int16()`
+  - `rate_overturns`: `float32()`
+  - `runs_above_average`: `float32()`

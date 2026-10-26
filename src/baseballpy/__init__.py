@@ -17,9 +17,13 @@ from baseballpy.core.protocols import (
     SinkProtocol,
     StreamExtractorProtocol,
 )
+from baseballpy.sinks.dlt import DltSink
 from baseballpy.sinks.duckdb import DuckDBSink
 from baseballpy.sinks.parquet import ParquetSink
+from baseballpy.sinks.polars import PolarsSink
+from baseballpy.sources import mlb_api as mlb
 from baseballpy.sources import retrosheet
+from baseballpy.sources import statcast as statcast_module
 from baseballpy.sources.chadwick.register import ChadwickRegister, PlayerRecord
 from baseballpy.sources.statcast.extractor import StatcastExtractor
 from baseballpy.sources.statcast.normalizer import StatcastNormalizer
@@ -83,27 +87,30 @@ def to_parquet(
 
 def to_polars(table: pa.Table) -> pl.DataFrame:
     """Zero-copy handoff from Arrow Table to Polars DataFrame."""
-    df = pl.from_arrow(table)
-    assert isinstance(df, pl.DataFrame)
-    return df
+    sink = PolarsSink()
+    return sink.to_dataframe(table)
 
 
 __all__ = [
     "ChadwickRegister",
     "DuckDBSink",
+    "ParquetSink",
+    "PolarsSink",
+    "DltSink",
     "ExtractorProtocol",
     "LiveEventConsumerProtocol",
     "NormalizerProtocol",
-    "ParquetSink",
-    "PlayerRecord",
     "SinkProtocol",
+    "StreamExtractorProtocol",
     "StatcastExtractor",
     "StatcastNormalizer",
-    "StreamExtractorProtocol",
+    "PlayerRecord",
     "__version__",
     "resolve_player",
     "retrosheet",
     "statcast",
+    "statcast_module",
+    "mlb",
     "to_duckdb",
     "to_parquet",
     "to_polars",

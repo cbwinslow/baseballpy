@@ -10,6 +10,23 @@ from baseballpy.core.config import CacheConfig, RateLimitConfig
 
 GITHUB_RETROSHEET_BASE = "https://raw.githubusercontent.com/chadwickbureau/retrosheet/master"
 
+POSTSEASON_GAMELOGS = {
+    "wild_card": "GLWC.TXT",
+    "division_series": "GLDV.TXT",
+    "lcs": "GLLC.TXT",
+    "world_series": "GLWS.TXT",
+    "all_star": "GLAS.TXT",
+}
+
+REFERENCE_TABLES = {
+    "ballparks": "reference/ballparks.csv",
+    "teams": "reference/teams.csv",
+    "ejections": "reference/ejections.csv",
+    "coaches": "reference/coaches.csv",
+    "relatives": "reference/relatives.csv",
+    "biofile": "reference/biofile.csv",
+}
+
 
 class RetrosheetDownloader:
     """Downloads raw Retrosheet event files, rosters, and game logs with atomic writes."""
@@ -48,8 +65,10 @@ class RetrosheetDownloader:
 
         return True
 
-    def download_season(self, year: int, refresh: bool = False) -> list[Path]:
-        """Download season manifest TEAM{year}, event files (.EVA/.EVN), and rosters."""
+    def download_season(
+        self, year: int, include_postseason: bool = False, refresh: bool = False
+    ) -> list[Path]:
+        """Download season manifest TEAM{year}, event files (.EVA/.EVN/.EVE), and rosters."""
         chunk_id = f"season_{year}"
         season_dir = self._get_season_dir(year)
 
@@ -98,6 +117,31 @@ class RetrosheetDownloader:
                     if event_path.exists():
                         downloaded_files.append(event_path)
 
+            # 2. Optionally download postseason and all-star event files (.EVE)
+            if include_postseason:
+                postseason_suffixes = [
+                    "AS.EVE",
+                    "ALW1.EVE",
+                    "ALW2.EVE",
+                    "NLW1.EVE",
+                    "NLW2.EVE",
+                    "ALD1.EVE",
+                    "ALD2.EVE",
+                    "NLD1.EVE",
+                    "NLD2.EVE",
+                    "ALCS.EVE",
+                    "NLCS.EVE",
+                    "WS.EVE",
+                ]
+                for suffix in postseason_suffixes:
+                    ps_filename = f"{year}{suffix}"
+                    ps_path = season_dir / ps_filename
+                    if (
+                        self.download_file(f"seasons/{year}/{ps_filename}", ps_path, refresh=refresh)
+                        and ps_path.exists()
+                    ):
+                        downloaded_files.append(ps_path)
+
             self.manifest.set_completed(chunk_id, records_count=len(downloaded_files))
             tracker.set_cache_hit(False)
             tracker.set_records(len(downloaded_files))
@@ -113,7 +157,7 @@ class RetrosheetDownloader:
         with default_audit_logger.track(
             operation="retrosheet_download_gamelog",
             source="retrosheet",
-            endpoint=f"{self.base_url}/gamelogs/gl{year}.txt",
+            endpoint=f"{self.base_url}/gamelog/gl{year}.txt",
             destination=str(target_path),
         ) as tracker:
             if not refresh and self.manifest.is_completed(chunk_id) and target_path.exists():
@@ -123,7 +167,81 @@ class RetrosheetDownloader:
                 )
                 return target_path
 
-            self.download_file(f"gamelogs/gl{year}.txt", target_path, refresh=refresh)
+            self.download_file(f"gamelog/gl{year}.txt", target_path, refresh=refresh)
+            lines_count = (
+                target_path.read_text(encoding="utf-8", errors="replace").count("\n")
+                if target_path.exists()
+                else 0
+            )
+            self.manifest.set_completed(chunk_id, records_count=lines_count)
+            tracker.set_cache_hit(False)
+            tracker.set_records(lines_count)
+            return target_path
+
+    def download_postseason_gamelog(self, kind: str, refresh: bool = False) -> Path:
+        """Download postseason or exhibition game log (wild_card, division_series, lcs, world_series, all_star)."""
+        filename = POSTSEASON_GAMELOGS.get(kind.lower())
+        if not filename:
+            raise ValueError(
+                f"Unknown postseason gamelog kind '{kind}'. Valid kinds: {list(POSTSEASON_GAMELOGS.keys())}"
+            )
+
+        chunk_id = f"gamelog_postseason_{kind.lower()}"
+        gamelog_dir = self.raw_dir / "gamelogs"
+        gamelog_dir.mkdir(parents=True, exist_ok=True)
+        target_path = gamelog_dir / filename
+
+        with default_audit_logger.track(
+            operation="retrosheet_download_postseason_gamelog",
+            source="retrosheet",
+            endpoint=f"{self.base_url}/gamelog/{filename}",
+            destination=str(target_path),
+        ) as tracker:
+            if not refresh and self.manifest.is_completed(chunk_id) and target_path.exists():
+                tracker.set_cache_hit(True)
+                tracker.set_records(
+                    target_path.read_text(encoding="utf-8", errors="replace").count("\n")
+                )
+                return target_path
+
+            self.download_file(f"gamelog/{filename}", target_path, refresh=refresh)
+            lines_count = (
+                target_path.read_text(encoding="utf-8", errors="replace").count("\n")
+                if target_path.exists()
+                else 0
+            )
+            self.manifest.set_completed(chunk_id, records_count=lines_count)
+            tracker.set_cache_hit(False)
+            tracker.set_records(lines_count)
+            return target_path
+
+    def download_reference_table(self, table_name: str, refresh: bool = False) -> Path:
+        """Download a reference CSV (ballparks, teams, ejections, coaches, relatives, biofile)."""
+        rel_path = REFERENCE_TABLES.get(table_name.lower())
+        if not rel_path:
+            raise ValueError(
+                f"Unknown reference table '{table_name}'. Valid tables: {list(REFERENCE_TABLES.keys())}"
+            )
+
+        chunk_id = f"reference_{table_name.lower()}"
+        ref_dir = self.raw_dir / "reference"
+        ref_dir.mkdir(parents=True, exist_ok=True)
+        target_path = ref_dir / f"{table_name.lower()}.csv"
+
+        with default_audit_logger.track(
+            operation="retrosheet_download_reference",
+            source="retrosheet",
+            endpoint=f"{self.base_url}/{rel_path}",
+            destination=str(target_path),
+        ) as tracker:
+            if not refresh and self.manifest.is_completed(chunk_id) and target_path.exists():
+                tracker.set_cache_hit(True)
+                tracker.set_records(
+                    target_path.read_text(encoding="utf-8", errors="replace").count("\n")
+                )
+                return target_path
+
+            self.download_file(rel_path, target_path, refresh=refresh)
             lines_count = (
                 target_path.read_text(encoding="utf-8", errors="replace").count("\n")
                 if target_path.exists()
