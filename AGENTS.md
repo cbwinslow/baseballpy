@@ -152,3 +152,14 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 3. **Type Safety:** 100% strict type checking with `uvx mypy --strict src`.
 4. **Mocked Network Tests:** Unit tests MUST never make real external HTTP requests. Use `respx` to mock `httpx` responses or load recorded fixture payloads from `tests/fixtures/`.
 5. **Property-Based Testing:** Use `hypothesis` to test schema normalization against arbitrary string permutations, NaN/null representations, and out-of-bounds timestamps.
+
+
+---
+
+## 10. Dynamic Configuration & Production Smoke Testing Mandates
+
+1. **Pydantic V2 BaseSettings Configuration:**
+   - All runtime configuration (`CacheConfig`, `AuditConfig`, `RateLimitConfig`, `StreamingConfig`, `QuarantineConfig`, `PipelineConfig`) MUST inherit from `pydantic_settings.BaseSettings`.
+   - All paths, timeouts, and rate limits MUST be overridable via environment variables prefixed with `BASEBALLPY_` (e.g. `BASEBALLPY_HOME`, `BASEBALLPY_CACHE_DIR`, `BASEBALLPY_RATE_MAX_CONCURRENCY`).
+2. **Production Smoke Testing:**
+   - Maintain end-to-end multi-season smoke tests (`tests/test_smoke.py`) verifying chunking, manifest checkpointing, zero-loss idempotency, atomic rollbacks on network interruptions, and cross-source sink pipelines.
