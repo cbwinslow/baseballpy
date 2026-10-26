@@ -70,7 +70,17 @@ config = PipelineConfig(
 | **Retrosheet** | Teams Database | `retro.reference("teams")` | `pa.Table` | Historical franchise lineage from 1871 |
 | **Retrosheet** | Ejections Database | `retro.reference("ejections")` | `pa.Table` | Umpire ejection logs and reasons |
 | **Retrosheet** | Personnel (Coaches/Bio) | `retro.reference("coaches")` | `pa.Table` | Coaching staff and biological registry |
-| **Chadwick** | Player ID Crosswalk | `chadwick.search(last="Ohtani")` | `pa.Table` | Cross-links MLBAM, Retro, B-Ref, FanGraphs |
+| **Chadwick** | Player ID Crosswalk | `crosswalk(id, from_type, to_type)` | `Any` | Fast system-to-system translation |
+| **Chadwick** | Player Register Search | `get_register().search_name("Pete Alonso")`| `list[PlayerRecord]` | 16-shard index with nickname & fuzzy resolution |
+| **Lahman** | Regular Season Batting (1871-2025) | `lahman.batting()` | `pa.Table` | 22 fields: G, AB, R, H, 2B, 3B, HR, RBI, SB |
+| **Lahman** | Regular Season Pitching (1871-2025)| `lahman.pitching()` | `pa.Table` | 30 fields: W, L, G, GS, CG, SHO, SV, IPouts, ERA |
+| **Lahman** | Master Biographical Directory | `lahman.people()` | `pa.Table` | 24 fields: names, birth/death, bats/throws |
+| **Lahman** | Teams & Standings | `lahman.teams()` | `pa.Table` | 48 fields: team standings, runs, park factors |
+| **Lahman** | Fielding Statistics | `lahman.fielding()` | `pa.Table` | 18 fields: PO, A, E, DP, PB, InnOuts |
+| **Lahman** | Player Salaries | `lahman.salaries()` | `pa.Table` | Historical player salaries |
+| **Lahman** | Hall of Fame Ballots | `lahman.hall_of_fame()` | `pa.Table` | Ballots, votes, and inductee status |
+| **Lahman** | All-Star Game Rosters | `lahman.allstar()` | `pa.Table` | All-Star game rosters and starts |
+| **Lahman** | Manual SABR Box Archive Import | `lahman.import_archive(path)` | `int` | Imports local SABR Box zip or folder |
 | **MLB API** | Schedule & Outcomes | `mlb.schedule(season=2024)` | `pa.Table` | Game dates, teams, venues, scores |
 | **MLB API** | Boxscore | `mlb.boxscore(game_pk=745789)` | `tuple[pa.Table, pa.Table]` | In-depth game boxscore batting & pitching |
 | **MLB API** | Standings | `mlb.standings(season=2024)` | `pa.Table` | Division, wild-card standings, run differentials |
@@ -82,6 +92,38 @@ config = PipelineConfig(
 ---
 
 ## 4. End-to-End Examples
+
+### Chadwick Register Crosswalk & Nickname Search
+```python
+from baseballpy.sources.chadwick import get_register, crosswalk, PlayerIdType
+
+# 1. Direct ID crosswalk
+retro_id = crosswalk(660271, from_type=PlayerIdType.MLBAM, to_type=PlayerIdType.RETRO)
+print(retro_id)  # "ohtas001"
+
+# 2. Nickname-aware search
+reg = get_register()
+players = reg.search_name("Pete Alonso")
+print(players[0].full_name)  # "Peter Alonso"
+
+### Querying Lahman Historical Statistics (1871-2025)
+```python
+from baseballpy.sources.lahman import batting, pitching, teams
+
+# 1. Fetch batting stats (cached locally as Parquet)
+bat_df = batting()
+
+# 2. Ingest into DuckDB for high-speed SQL
+import duckdb
+con = duckdb.connect()
+con.register("batting", bat_df)
+leaders = con.execute("""
+    SELECT playerID, yearID, teamID, HR, SB 
+    FROM batting 
+    WHERE HR >= 50 AND SB >= 50
+""").fetchdf()
+print(leaders)
+```
 
 ### Ingesting Statcast Pitches Directly into DuckDB
 ```python

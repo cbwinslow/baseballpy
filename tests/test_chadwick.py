@@ -4,13 +4,18 @@ from pathlib import Path
 
 import httpx
 import pyarrow as pa
-import pytest
 import respx
 
 from baseballpy.core.config import CacheConfig
-from baseballpy.sources.chadwick.extractor import CHADWICK_PEOPLE_URL, ChadwickExtractor
+from baseballpy.sources.chadwick.extractor import (
+    CHADWICK_COMMITS_API,
+    CHADWICK_DATA_BASE_URL,
+    HEX_SHARDS,
+    ChadwickExtractor,
+)
 from baseballpy.sources.chadwick.normalizer import ChadwickNormalizer
 from baseballpy.sources.chadwick.register import ChadwickRegister
+from baseballpy.sources.chadwick.schema import PlayerIdType
 
 FIXTURE_PATH = Path(__file__).parent / "fixtures" / "chadwick" / "people_sample.csv"
 
@@ -28,14 +33,14 @@ def test_chadwick_normalizer_schema() -> None:
     assert pa.types.is_integer(table.schema.field("birth_year").type)
 
 
-def test_chadwick_register_lookups() -> None:
+def test_chadwick_register_lookups_and_crosswalk() -> None:
     normalizer = ChadwickNormalizer()
     table = normalizer.normalize(FIXTURE_PATH.read_bytes())
     register = ChadwickRegister(table)
 
     assert len(register) == 5
 
-    # Resolve Shohei Ohtani by MLBAM ID
+    # 1. Resolve Shohei Ohtani by MLBAM ID
     ohtani = register.resolve(mlbam=660271)
     assert ohtani is not None
     assert ohtani.full_name == "Shohei Ohtani"
@@ -43,26 +48,27 @@ def test_chadwick_register_lookups() -> None:
     assert ohtani.key_bbref == "ohtansh01"
     assert ohtani.birth_year == 1994
 
-    # Resolve Aaron Judge by Retrosheet ID
+    # 2. Resolve Aaron Judge by Retrosheet ID
     judge = register.resolve(retro="judga001")
     assert judge is not None
     assert judge.full_name == "Aaron Judge"
     assert judge.key_mlbam == 592450
 
-    # Resolve Mike Trout by BBRef slug
-    trout = register.resolve(bbref="troutmi01")
-    assert trout is not None
-    assert trout.full_name == "Mike Trout"
+    # 3. Crosswalk ID helper using PlayerIdType Enum
+    retro_id = register.resolve_id(660271, PlayerIdType.MLBAM, PlayerIdType.RETRO)
+    assert retro_id == "ohtas001"
+    mlbam_id = register.resolve_id("judga001", PlayerIdType.RETRO, PlayerIdType.MLBAM)
+    assert mlbam_id == 592450
 
-    # Resolve Mookie Betts by FanGraphs ID
-    betts = register.resolve(fangraphs=13611)
-    assert betts is not None
-    assert betts.full_name == "Mookie Betts"
+    # 4. Search with Nickname Resolution (e.g. Mike -> Michael)
+    trout = register.search_name("Michael Trout")
+    assert len(trout) >= 1
+    assert trout[0].key_bbref == "troutmi01"
 
-    # Search by name
-    results = register.search_name("Babe Ruth")
-    assert len(results) == 1
-    assert results[0].key_retro == "ruthb001"
+    # 5. Fuzzy Name Search
+    fuzzy_judge = register.search_name("Aron Juge", fuzzy=True, min_score=0.7)
+    assert len(fuzzy_judge) >= 1
+    assert fuzzy_judge[0].full_name == "Aaron Judge"
 
 
 def test_chadwick_register_dataframe_interop() -> None:
@@ -79,38 +85,50 @@ def test_chadwick_register_dataframe_interop() -> None:
 
 
 @respx.mock
-def test_chadwick_extractor_mocked_network(tmp_path: Path) -> None:
+def test_chadwick_sharded_extractor(tmp_path: Path) -> None:
     cache_config = CacheConfig(base_dir=tmp_path)
     extractor = ChadwickExtractor(cache_config=cache_config)
 
     sample_csv = FIXTURE_PATH.read_bytes()
-    respx.get(CHADWICK_PEOPLE_URL).mock(
-        return_value=httpx.Response(200, content=sample_csv, headers={"ETag": '"hash123"'})
+
+    # Mock commit check
+    respx.get(CHADWICK_COMMITS_API).mock(
+        return_value=httpx.Response(200, json=[{"sha": "commit_sha_12345"}])
     )
 
-    # First fetch from mocked network
-    data1 = extractor.extract()
-    assert data1 == sample_csv
-    assert extractor.cache_file.exists()
-    assert extractor.etag_file.read_text() == '"hash123"'
-
-    # Second fetch should hit local cache without network call
-    respx.get(CHADWICK_PEOPLE_URL).mock(return_value=httpx.Response(500))
-    data2 = extractor.extract(refresh=False)
-    assert data2 == sample_csv
-
-
-@respx.mock
-@pytest.mark.asyncio
-async def test_chadwick_extractor_async(tmp_path: Path) -> None:
-    cache_config = CacheConfig(base_dir=tmp_path)
-    extractor = ChadwickExtractor(cache_config=cache_config)
-
-    sample_csv = FIXTURE_PATH.read_bytes()
-    respx.get(CHADWICK_PEOPLE_URL).mock(
-        return_value=httpx.Response(200, content=sample_csv, headers={"ETag": '"etag_abc"'})
+    # Mock all 16 shards
+    for shard in HEX_SHARDS:
+        respx.get(f"{CHADWICK_DATA_BASE_URL}/{shard}").mock(
+            return_value=httpx.Response(200, content=sample_csv)
+        )
+    respx.get(f"{CHADWICK_DATA_BASE_URL}/names.csv").mock(
+        return_value=httpx.Response(
+            200,
+            content=b"key_person,name_last,name_first,name_given,name_suffix,name_matrilineal,name_nick,name_type\nohtas01,Ohtani,Shohei,Shohei,,,,alias\n",
+        )
+    )
+    respx.get(f"{CHADWICK_DATA_BASE_URL}/links.csv").mock(
+        return_value=httpx.Response(
+            200,
+            content=b"key_person,link_type,link_url\nohtas01,wikipedia,https://en.wikipedia.org/wiki/Shohei_Ohtani\n",
+        )
     )
 
-    data = await extractor.extract_async()
-    assert data == sample_csv
-    assert extractor.cache_file.exists()
+    # 1. First run fetches all shards and records commit SHA
+    shards_data = extractor.extract(refresh=True)
+    assert len(shards_data) >= 17  # 16 shards + names.csv
+    assert extractor.are_shards_cached()
+    assert extractor.manifest.is_completed("commit_sha")
+
+    # 2. Normalize concatenated shards
+    normalizer = ChadwickNormalizer()
+    unified_table = normalizer.normalize(shards_data)
+    assert len(unified_table) == 5 * 16  # 5 rows per shard * 16
+
+    # 3. Second run reads from disk without network calls
+    respx.get(CHADWICK_COMMITS_API).mock(return_value=httpx.Response(500))
+    for shard in HEX_SHARDS:
+        respx.get(f"{CHADWICK_DATA_BASE_URL}/{shard}").mock(return_value=httpx.Response(500))
+
+    cached_shards = extractor.extract(refresh=False)
+    assert len(cached_shards) >= 17

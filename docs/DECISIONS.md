@@ -330,3 +330,29 @@ Baseball researchers, data engineers, and automated agent pipelines operate acro
 1. Standardize all subsystem configuration (`CacheConfig`, `AuditConfig`, `RateLimitConfig`, `StreamingConfig`, `QuarantineConfig`, `PipelineConfig`) on `pydantic-settings` (`BaseSettings`).
 2. Provide seamless environment variable binding with the `BASEBALLPY_` prefix (e.g. `BASEBALLPY_CACHE_DIR`, `BASEBALLPY_RATE_MAX_CONCURRENCY`, `BASEBALLPY_HOME`), `.env` support, and runtime overrides.
 3. Establish a permanent end-to-end smoke testing suite (`tests/test_smoke.py`) validating multi-season Retrosheet extraction, 15-day multi-chunk Statcast pitch searches, simulated network failure recovery with atomic rollback, and cross-source DuckDB/Polars warehouse integration.
+
+
+---
+
+## ADR 19: Lahman Database Dual-Mode Ingestion and Hex-Sharded Chadwick Register
+
+* **Date:** 2026-10-26
+* **Status:** Accepted
+
+### Context
+1. **Lahman Database Distribution Limitations:**
+   The legacy `chadwickbureau/baseballdatabank` repository is defunct and discontinued at 2021, while the official Society for American Baseball Research (SABR) distribution utilizes `sabr.app.box.com` which employs dynamic session tokens, breaking automated scrapers. 
+2. **Chadwick Register Upstream Sharding:**
+   Upstream `chadwickbureau/register` deprecated and removed the monolithic `data/people.csv` (returning HTTP 404), replacing it with 16 hexadecimal partitions (`people-0.csv` through `people-f.csv`) alongside metadata files `names.csv` (nicknames and aliases) and `links.csv` (external entity URLs).
+
+### Decision
+1. **Lahman Database Dual Ingestion Strategy:**
+   - **Mode A (Automated Extraction):** Direct automated extraction from the verified, active GitHub repository `cbwinslow/lahman-database-csv/main/data/` (1871–2025 SABR release covering all 27 tables) with atomic `.part` writing and Parquet compilation.
+   - **Mode B (Manual Local Import):** Provide `lahman.import_archive(archive_path)` allowing users to supply an official `.zip` or unzipped folder downloaded from SABR Box. The function validates the CSVs, copies them into `~/.baseballpy/cache/lahman/raw/`, and immediately compiles them into strongly-typed Parquet tables in `processed/`.
+   - Provide high-level table accessors: `batting()`, `pitching()`, `people()`, `teams()`, `fielding()`, `salaries()`, `hall_of_fame()`, `allstar()`, etc.
+   - Introduce `LahmanTable` enum for type-safe table references.
+2. **Sharded Chadwick Register with Active Commit Tracking:**
+   - `ChadwickExtractor` downloads all 16 shards (`people-0.csv` through `people-f.csv`) + `names.csv` + `links.csv` using bounded concurrency.
+   - `ChadwickNormalizer` concatenates the shards into a single unified `pyarrow.Table` and processes `names.csv` for nickname aliases.
+   - Tracks GitHub commit SHAs to detect upstream weekly updates automatically, eliminating unnecessary re-downloads.
+   - Introduces `PlayerIdType` enum and `ChadwickRegister.resolve_id(val, from_type, to_type)` for cross-system ID translation.

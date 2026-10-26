@@ -1,0 +1,28 @@
+# Tasks: Lahman Database Ingestion and Modern Chadwick Register Shards
+
+- [x] 1. Modernize Chadwick Register Subsystem <!-- id: 1 -->
+  - [x] 1.1 Implement `PlayerIdType` enum in `src/baseballpy/sources/chadwick/schema.py`
+  - [x] 1.2 Update `ChadwickExtractor` to download all 16 `people-0.csv`..`people-f.csv` shards, `names.csv`, and `links.csv` with commit SHA tracking
+  - [x] 1.3 Update `ChadwickNormalizer` to concatenate all 16 shards, parse `names.csv` nickname mappings, and emit strongly typed Arrow Table
+  - [x] 1.4 Enhance `ChadwickRegister` with `resolve_id(val, from_type, to_type)`, nickname-aware search, and fuzzy name matching
+  - [x] 1.5 Update tests in `tests/test_chadwick.py`
+- [x] 2. Build Complete Lahman Database Source (`src/baseballpy/sources/lahman`) <!-- id: 2 -->
+  - [x] 2.1 Implement `LahmanTable` enum and canonical PyArrow schemas in `schema.py`
+  - [x] 2.2 Implement `LahmanExtractor` fetching from `cbwinslow/lahman-database-csv/main/data/` with manifest checkpointing
+  - [x] 2.3 Implement `LahmanNormalizer` converting raw CSVs into physical typed PyArrow Tables
+  - [x] 2.4 Implement `LahmanSource` orchestrator with:
+    - [x] `import_archive(path)` for local SABR Box zip or folder import
+    - [x] Dynamic table accessor methods: `batting()`, `pitching()`, `people()`, `teams()`, `fielding()`, `allstar()`, `hall_of_fame()`, `salaries()`, `get_table(table_name)`
+  - [x] 2.5 Author unit tests in `tests/test_lahman.py`
+- [x] 3. Documentation & Spec Synchronization <!-- id: 3 -->
+  - [x] 3.1 Update `docs/sources/chadwick.md` documenting 16 shards, `names.csv`, and crosswalk usage
+  - [x] 3.2 Author comprehensive `docs/sources/lahman.md` documenting all 27 tables, columns, manual SABR Box import guide, and API methods
+  - [x] 3.3 Record ADR 19 in `docs/DECISIONS.md`
+  - [x] 3.4 Update `docs/QUICKSTART.md` with Lahman and Chadwick crosswalk examples
+- [x] 4. Verification and OpenSpec Archival <!-- id: 4 -->
+  - [x] 4.1 Run full test suite (`uv run pytest`)
+  - [x] 4.2 Run `uv run ruff check .` and `uv run ruff format --check .`
+  - [x] 4.3 Run `uv run mypy src`
+  - [x] 4.4 Update living specs in `openspec/specs/`
+  - [x] 4.5 Archive change into `openspec/changes/archive/`
+  - [x] 4.6 Git commit and push to remote
