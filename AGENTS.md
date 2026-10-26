@@ -13,6 +13,13 @@ Read `openspec/project.md` and `docs/DECISIONS.md` before making architectural o
    - Record all architectural tradeoffs, dependency introductions, format choices, and domain-specific workarounds in `docs/DECISIONS.md` as Architecture Decision Records (ADRs).
 3. **Documentation Sync:**
    - Keep `README.md`, `CLAUDE.md`, and API docstrings in lockstep with code implementations. Never leave undocumented public interfaces.
+4. **Exhaustive Endpoint & Schema Documentation Mandate:**
+   - Every integrated data source MUST have a dedicated, detailed specification document in `docs/sources/<source>.md`.
+   - The documentation MUST exhaustively record:
+     - All remote URLs, endpoints, query parameters, headers, and HTTP methods.
+     - Upstream rate limits, timeout behavior, and server-side row caps.
+     - An exhaustive column dictionary cataloging **every single table attribute**, its upstream raw string format, its coerced PyArrow physical storage type, nullability, and domain definition.
+     - Known upstream anomalies, sentinel values, and era-specific quirks.
 
 ---
 

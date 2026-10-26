@@ -277,3 +277,23 @@ Baseball analytics pipelines frequently drop columns considered "secondary" or "
 1. Ingest **all** available fields, attributes, and metrics provided by any upstream endpoint.
 2. Even if an attribute is duplicated across multiple endpoints (e.g., game dates, scores, pitch velocities present in both MLB API and Statcast), each source's schema must preserve the complete raw representation.
 3. Schema normalizers will define exhaustive canonical schemas for all known upstream attributes, and dynamic column discovery (ADR 9) will ensure newly introduced metrics are preserved without data truncation.
+
+
+---
+
+## ADR 16: Upstream Schema & Endpoint Cataloging Policy
+
+* **Date:** 2026-10-26
+* **Status:** Accepted
+
+### Context
+Baseball data providers (Baseball Savant, MLB Stats API, Chadwick Bureau, Lahman, Retrosheet) distribute data with varying, poorly documented, or evolving schemas. Without an authoritative, exhaustive catalog of endpoints, parameters, tables, and column data types inside our repository, agents and developers are forced to guess data types or rely on informal scrapers, leading to inconsistent typing and missing fields.
+
+### Decision
+1. Maintain an exhaustive, human-readable and machine-auditable reference catalog for every supported data source in `docs/sources/<source>.md`.
+2. Each source document must provide:
+   - Complete endpoint URLs, query parameters, and supported filters.
+   - Exact rate-limiting thresholds and connection caps.
+   - Comprehensive column-by-column schema tables mapping: Column Name, PyArrow Physical Type, Nullable, Raw Example, and Domain Description.
+   - Known anomalies, sentinel strings, and era-specific quirks.
+3. Every new column or endpoint addition must be reflected in `docs/sources/` during the OpenSpec change cycle.
