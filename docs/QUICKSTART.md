@@ -95,26 +95,30 @@ config = PipelineConfig(
 
 ### Chadwick Register Crosswalk & Nickname Search
 ```python
-from baseballpy.sources.chadwick import get_register, crosswalk, PlayerIdType
+import baseballpy as bp
 
-# 1. Direct ID crosswalk
-retro_id = crosswalk(660271, from_type=PlayerIdType.MLBAM, to_type=PlayerIdType.RETRO)
+# 1. Direct ID crosswalk using type-safe PlayerIdType Enum
+retro_id = bp.crosswalk(660271, from_type=bp.PlayerIdType.MLBAM, to_type=bp.PlayerIdType.RETRO)
 print(retro_id)  # "ohtas001"
 
-# 2. Nickname-aware search
-reg = get_register()
+# 2. Nickname-aware search (resolves Pete -> Peter)
+reg = bp.get_register()
 players = reg.search_name("Pete Alonso")
 print(players[0].full_name)  # "Peter Alonso"
+```
 
 ### Querying Lahman Historical Statistics (1871-2025)
 ```python
-from baseballpy.sources.lahman import batting, pitching, teams
+import baseballpy as bp
+import duckdb
 
 # 1. Fetch batting stats (cached locally as Parquet)
-bat_df = batting()
+bat_df = bp.batting()
 
-# 2. Ingest into DuckDB for high-speed SQL
-import duckdb
+# 2. Or retrieve by table enum
+teams_df = bp.LahmanSource().get_table(bp.LahmanTable.TEAMS)
+
+# 3. Ingest into DuckDB for high-speed SQL
 con = duckdb.connect()
 con.register("batting", bat_df)
 leaders = con.execute("""
@@ -127,27 +131,30 @@ print(leaders)
 
 ### Ingesting Statcast Pitches Directly into DuckDB
 ```python
-from baseballpy.sources.statcast import statcast_search
-from baseballpy.sinks.duckdb import DuckDBSink
+import baseballpy as bp
 
 # 1. Fetch pitches across date range (automatically chunked & cached)
-pitches = statcast_search(start_date="2024-04-01", end_date="2024-04-15")
+pitches = bp.statcast("2024-04-01", "2024-04-15")
 
-# 2. Write directly to DuckDB zero-copy
-sink = DuckDBSink()
-sink.write(pitches, destination="baseball.duckdb", table_name="statcast_pitches")
+# 2. Write directly to DuckDB zero-copy with type-safe WriteMode
+bp.to_duckdb(
+    pitches,
+    destination="baseball.duckdb",
+    table_name="statcast_pitches",
+    mode=bp.WriteMode.APPEND,
+)
 ```
 
-### High-Speed Polars Analytics
+### High-Speed Polars Analytics with Leaderboards
 ```python
-from baseballpy.sources.statcast import get_leaderboard
-from baseballpy.sinks.polars import PolarsSink
+import polars as pl
+import baseballpy as bp
 
-# Ingest bat tracking leaderboard
-bat_tracking = get_leaderboard("bat_tracking", year=2024)
+# Ingest bat tracking leaderboard using StatcastLeaderboard Enum
+bat_tracking = bp.get_leaderboard(bp.StatcastLeaderboard.BAT_TRACKING, year=2024)
 
 # Zero-copy Polars DataFrame
-df = PolarsSink().to_dataframe(bat_tracking)
+df = bp.to_polars(bat_tracking)
 
 # Fast aggregation
 fastest_swings = (

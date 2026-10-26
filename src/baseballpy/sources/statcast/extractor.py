@@ -183,3 +183,18 @@ class StatcastExtractor:
                 return future.result()
         else:
             return asyncio.run(self.extract_async(start_date, end_date, refresh=refresh, **filters))
+
+
+_default_extractor = StatcastExtractor()
+
+
+def statcast_search(
+    start_date: str | date,
+    end_date: str | date,
+    refresh: bool = False,
+    **filters: Any,
+) -> pa.Table:
+    """Synchronously extract Statcast pitch data (safe for Jupyter and scripts)."""
+    return _default_extractor.extract(
+        start_date=start_date, end_date=end_date, refresh=refresh, **filters
+    )

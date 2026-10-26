@@ -1,6 +1,45 @@
-"""Canonical PyArrow schemas for MLB Stats API endpoints."""
+"""Canonical PyArrow schemas and Enums for MLB Stats API endpoints."""
+
+from enum import IntEnum, StrEnum
 
 import pyarrow as pa
+
+
+class GameType(StrEnum):
+    """Official MLB contest type classifications."""
+
+    REGULAR = "R"
+    POSTSEASON = "P"
+    SPRING = "S"
+    EXHIBITION = "E"
+    ALLSTAR = "A"
+
+
+class SportId(IntEnum):
+    """MLB sport / affiliate tier hierarchy."""
+
+    MLB = 1
+    AAA = 11
+    AA = 12
+    HIGH_A = 13
+    SINGLE_A = 14
+    ROOKIE = 16
+    WINTER = 17
+
+
+class GameState(StrEnum):
+    """Game status lifecycle codes."""
+
+    SCHEDULED = "S"
+    PRE_GAME = "P"
+    WARMUP = "PW"
+    IN_PROGRESS = "I"
+    DELAYED = "PR"
+    FINAL = "F"
+    COMPLETED_EARLY = "C"
+    POSTPONED = "D"
+    SUSPENDED = "U"
+
 
 # 1. Schedule Schema
 MLB_SCHEDULE_SCHEMA = pa.schema(

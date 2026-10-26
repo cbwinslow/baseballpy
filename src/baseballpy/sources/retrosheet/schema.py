@@ -1,8 +1,60 @@
-"""Canonical PyArrow schemas for Retrosheet datasets."""
+"""Canonical PyArrow schemas and Enums for Retrosheet datasets."""
+
+from enum import IntEnum, StrEnum
 
 import pyarrow as pa
 from chadwickpy.tools.daily import COLUMNS as DAILY_COLUMNS
 from chadwickpy.tools.sub import COLUMNS as SUB_COLUMNS
+
+
+class RetrosheetReferenceTable(StrEnum):
+    """Reference datasets provided by Retrosheet."""
+
+    BALLPARKS = "ballparks"
+    TEAMS = "teams"
+    EJECTIONS = "ejections"
+    COACHES = "coaches"
+    RELATIVES = "relatives"
+    BIOFILE = "biofile"
+
+
+class GameLogType(StrEnum):
+    """Retrosheet historical game log categories."""
+
+    REGULAR = "regular"
+    ALLSTAR = "allstar"
+    WILDCARD = "wildcard"
+    DIVISION = "division"
+    LCS = "lcs"
+    WORLD_SERIES = "world_series"
+
+
+class EventCode(IntEnum):
+    """Official Chadwick play outcome event codes."""
+
+    UNKNOWN = 0
+    GENERIC_OUT = 2
+    STRIKEOUT = 3
+    STOLEN_BASE = 4
+    DEFENSIVE_INDIFFERENCE = 5
+    CAUGHT_STEALING = 6
+    PICKOFF_ERROR = 8
+    WILD_PITCH = 9
+    PASSED_BALL = 10
+    BALK = 11
+    OTHER_ADVANCE = 12
+    FOUL_ERROR = 13
+    WALK = 14
+    INTENTIONAL_WALK = 15
+    HIT_BY_PITCH = 16
+    INTERFERENCE = 17
+    ERROR = 18
+    FIELDERS_CHOICE = 19
+    SINGLE = 20
+    DOUBLE = 21
+    TRIPLE = 22
+    HOME_RUN = 23
+
 
 # 1. Retrosheet Play-by-Play Event Schema (Chadwick cwevent 97 standard fields)
 RETROSHEET_EVENT_FIELDS = [

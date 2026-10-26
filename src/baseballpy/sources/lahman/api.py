@@ -8,6 +8,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import atomic_write_parquet
+from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig
 from baseballpy.sources.lahman.extractor import LahmanExtractor
 from baseballpy.sources.lahman.normalizer import LahmanNormalizer
@@ -36,45 +37,55 @@ class LahmanSource:
         if not path.exists():
             raise FileNotFoundError(f"Lahman archive path does not exist: {path}")
 
-        imported_count = 0
+        with default_audit_logger.track(
+            operation="lahman_import_archive",
+            source="lahman",
+            endpoint=str(path),
+            destination=str(self.processed_dir),
+        ) as tracker:
+            imported_count = 0
 
-        # Handle ZIP file
-        if path.is_file() and path.suffix.lower() == ".zip":
-            with zipfile.ZipFile(path, "r") as zf:
-                for member in zf.namelist():
-                    if member.lower().endswith(".csv") and not member.startswith("__MACOSX"):
-                        filename = Path(member).name
-                        target_raw = self.raw_dir / filename
-                        with zf.open(member) as src, open(target_raw, "wb") as dst:
-                            shutil.copyfileobj(src, dst)
-                        # Process immediately to Parquet
-                        table_name = target_raw.stem
-                        content = target_raw.read_bytes()
-                        table = self.normalizer.normalize(content, table_name=table_name)
-                        target_parquet = self.processed_dir / f"{table_name}.parquet"
-                        atomic_write_parquet(table, target_parquet)
-                        self.extractor.manifest.set_completed(table_name, records_count=len(table))
-                        imported_count += 1
-            return imported_count
+            # Handle ZIP file
+            if path.is_file() and path.suffix.lower() == ".zip":
+                with zipfile.ZipFile(path, "r") as zf:
+                    for member in zf.namelist():
+                        if member.lower().endswith(".csv") and not member.startswith("__MACOSX"):
+                            filename = Path(member).name
+                            target_raw = self.raw_dir / filename
+                            with zf.open(member) as src, open(target_raw, "wb") as dst:
+                                shutil.copyfileobj(src, dst)
+                            # Process immediately to Parquet
+                            table_name = target_raw.stem
+                            content = target_raw.read_bytes()
+                            table = self.normalizer.normalize(content, table_name=table_name)
+                            target_parquet = self.processed_dir / f"{table_name}.parquet"
+                            atomic_write_parquet(table, target_parquet)
+                            self.extractor.manifest.set_completed(
+                                table_name, records_count=len(table)
+                            )
+                            imported_count += 1
+                tracker.set_records(imported_count)
+                return imported_count
 
-        # Handle directory
-        if path.is_dir():
-            for csv_file in path.glob("**/*.csv"):
-                if csv_file.name.startswith("."):
-                    continue
-                target_raw = self.raw_dir / csv_file.name
-                shutil.copy2(csv_file, target_raw)
+            # Handle directory
+            if path.is_dir():
+                for csv_file in path.glob("**/*.csv"):
+                    if csv_file.name.startswith("."):
+                        continue
+                    target_raw = self.raw_dir / csv_file.name
+                    shutil.copy2(csv_file, target_raw)
 
-                table_name = target_raw.stem
-                content = target_raw.read_bytes()
-                table = self.normalizer.normalize(content, table_name=table_name)
-                target_parquet = self.processed_dir / f"{table_name}.parquet"
-                atomic_write_parquet(table, target_parquet)
-                self.extractor.manifest.set_completed(table_name, records_count=len(table))
-                imported_count += 1
-            return imported_count
+                    table_name = target_raw.stem
+                    content = target_raw.read_bytes()
+                    table = self.normalizer.normalize(content, table_name=table_name)
+                    target_parquet = self.processed_dir / f"{table_name}.parquet"
+                    atomic_write_parquet(table, target_parquet)
+                    self.extractor.manifest.set_completed(table_name, records_count=len(table))
+                    imported_count += 1
+                tracker.set_records(imported_count)
+                return imported_count
 
-        raise ValueError(f"Unsupported archive format: {path}. Expected .zip or directory.")
+            raise ValueError(f"Unsupported archive format: {path}. Expected .zip or directory.")
 
     def get_table(
         self,
@@ -85,21 +96,32 @@ class LahmanSource:
         name_str = str(table_name)
         target_parquet = self.processed_dir / f"{name_str}.parquet"
 
-        # 1. Load from Parquet cache if available
-        if not refresh and target_parquet.exists():
-            return pq.read_table(target_parquet)
+        with default_audit_logger.track(
+            operation="lahman_get_table",
+            source="lahman",
+            endpoint=name_str,
+            destination=str(target_parquet),
+        ) as tracker:
+            # 1. Load from Parquet cache if available
+            if not refresh and target_parquet.exists():
+                tracker.set_cache_hit(True)
+                table = pq.read_table(target_parquet)
+                tracker.set_records(len(table))
+                return table
 
-        # 2. Extract raw CSV (from cache or remote GitHub mirror)
-        raw_bytes = self.extractor.extract_table(name_str, refresh=refresh)
+            # 2. Extract raw CSV (from cache or remote GitHub mirror)
+            raw_bytes = self.extractor.extract_table(name_str, refresh=refresh)
 
-        # 3. Normalize into strongly typed PyArrow Table
-        table = self.normalizer.normalize(raw_bytes, table_name=name_str)
+            # 3. Normalize into strongly typed PyArrow Table
+            table = self.normalizer.normalize(raw_bytes, table_name=name_str)
 
-        # 4. Save to processed Parquet cache
-        if self.cache_config.enabled and len(table) > 0:
-            atomic_write_parquet(table, target_parquet)
+            # 4. Save to processed Parquet cache
+            if self.cache_config.enabled and len(table) > 0:
+                atomic_write_parquet(table, target_parquet)
 
-        return table
+            tracker.set_cache_hit(False)
+            tracker.set_records(len(table))
+            return table
 
     def people(self, refresh: bool = False) -> pa.Table:
         """Extract People table (biographical player registry)."""

@@ -356,3 +356,32 @@ Baseball researchers, data engineers, and automated agent pipelines operate acro
    - `ChadwickNormalizer` concatenates the shards into a single unified `pyarrow.Table` and processes `names.csv` for nickname aliases.
    - Tracks GitHub commit SHAs to detect upstream weekly updates automatically, eliminating unnecessary re-downloads.
    - Introduces `PlayerIdType` enum and `ChadwickRegister.resolve_id(val, from_type, to_type)` for cross-system ID translation.
+
+---
+
+## ADR 20: Comprehensive Domain Enums, Unified Top-Level Namespace, and Telemetry Instrumentation
+
+* **Date:** 2026-10-26
+* **Status:** Accepted
+
+### Context
+As the `baseballpy` codebase expands to encompass 5 distinct data sources (Statcast, MLB Stats API, Retrosheet, Lahman, Chadwick) and 4 sink engines (DuckDB, Parquet, Polars, dlt), users need first-class developer ergonomics:
+1. Hardcoded string literals (e.g. `"bat_tracking"`, `"FF"`, `"R"`, `"ballparks"`, `"append"`, `"snappy"`) risk typographical errors, lack IDE auto-completion, and complicate refactoring.
+2. Fragmented deep import paths (e.g. `baseballpy.sources.statcast.leaderboards.get_leaderboard`, `baseballpy.sources.lahman.api.batting`) create friction for data scientists and analysts accustomed to simple top-level imports.
+3. Every operation must guarantee structured telemetry tracking in `audit.jsonl` with microsecond UTC timestamps, operation labels, record counts, and zero log clobbering.
+
+### Decision
+1. **Comprehensive Subsystem Enums:**
+   - Standardize all domain classifications on `enum.StrEnum` and `enum.IntEnum`:
+     - **Chadwick:** `PlayerIdType` (`MLBAM`, `RETRO`, `BBREF`, `FANGRAPHS`, `PERSON`, `UUID`, etc.)
+     - **Lahman:** `LahmanTable` (27 canonical tables: `BATTING`, `PITCHING`, `PEOPLE`, `TEAMS`, `FIELDING`, etc.)
+     - **Statcast:** `StatcastLeaderboard` (11 leaderboards), `PitchType` (14 pitch pitch types), `PlayerType` (`BATTER`, `PITCHER`)
+     - **Retrosheet:** `RetrosheetReferenceTable` (`BALLPARKS`, `TEAMS`, `BIOFILE`, `EJECTIONS`, `COACHES`, `RELATIVES`), `GameLogType` (`REGULAR`, `ALLSTAR`, `POSTSEASON`, `WORLD_SERIES`), `EventCode` (24 Chadwick play outcome codes)
+     - **MLB API:** `GameType` (`REGULAR`, `POSTSEASON`, `SPRING`, `ALLSTAR`), `SportId` (`MLB`, `AAA`, `AA`, etc.), `GameState` (`SCHEDULED`, `LIVE`, `FINAL`, `DELAYED`, etc.)
+     - **Sinks:** `WriteMode` (`APPEND`, `REPLACE`), `CompressionCodec` (`SNAPPY`, `ZSTD`, `GZIP`, `NONE`)
+   - All string comparisons preserve 100% backward compatibility via `StrEnum` subclassing.
+2. **Unified Top-Level Namespace (`baseballpy`):**
+   - Expose all core sources, enums, convenience extractors (`statcast`, `get_leaderboard`, `crosswalk`, `batting`, `pitching`, `teams`, `get_boxscore`, `get_schedule`, `events`, `game_logs`), and sinks (`to_duckdb`, `to_parquet`, `to_polars`) directly under `baseballpy`.
+3. **Structured Telemetry Invariant:**
+   - Ensure every public ingestion, transformation, and sink method executes within `default_audit_logger.track(...)` context to guarantee structured telemetry logging in `audit.jsonl` with zero clobbering.
+

@@ -3,7 +3,52 @@
 Preserves ALL upstream fields per ADR 15, strongly-typed with optimized physical types.
 """
 
+from enum import StrEnum
+
 import pyarrow as pa
+
+
+class StatcastLeaderboard(StrEnum):
+    """Supported analytical leaderboards on Baseball Savant."""
+
+    BAT_TRACKING = "bat_tracking"
+    EXIT_VELOCITY = "exit_velocity"
+    EXPECTED_STATISTICS = "expected_statistics"
+    SPRINT_SPEED = "sprint_speed"
+    RUNNING_SPLITS = "running_splits"
+    OUTS_ABOVE_AVERAGE = "outs_above_average"
+    ARM_STRENGTH = "arm_strength"
+    POPTIME = "poptime"
+    CATCHER_FRAMING = "catcher_framing"
+    PITCH_ARSENALS = "pitch_arsenals"
+    ABS_CHALLENGES = "abs_challenges"
+
+
+class PitchType(StrEnum):
+    """Official MLBAM pitch type codes."""
+
+    FOUR_SEAM = "FF"
+    SLIDER = "SL"
+    CHANGEUP = "CH"
+    CURVEBALL = "CU"
+    SINKER = "SI"
+    CUTTER = "FC"
+    SWEEPER = "ST"
+    SPLITTER = "FS"
+    SLURVE = "SV"
+    KNUCKLEBALL = "KN"
+    SLOW_CURVE = "CS"
+    FORK = "FO"
+    PITCH_OUT = "PO"
+    INTENTIONAL_BALL = "IN"
+
+
+class PlayerType(StrEnum):
+    """Perspective filter for pitch-level searches."""
+
+    BATTER = "batter"
+    PITCHER = "pitcher"
+
 
 # Dictionary-encoded types for high-frequency repeated categoricals
 D_STRING = pa.dictionary(pa.int8(), pa.string())

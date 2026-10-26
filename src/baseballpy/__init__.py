@@ -5,6 +5,7 @@ Chadwick Registers, and Retrosheet into DuckDB, Polars, PyArrow, and dlt.
 """
 
 from datetime import date
+from pathlib import Path
 from typing import Any
 
 import polars as pl
@@ -17,16 +18,85 @@ from baseballpy.core.protocols import (
     SinkProtocol,
     StreamExtractorProtocol,
 )
-from baseballpy.sinks.dlt import DltSink
-from baseballpy.sinks.duckdb import DuckDBSink
-from baseballpy.sinks.parquet import ParquetSink
-from baseballpy.sinks.polars import PolarsSink
+from baseballpy.sinks import (
+    CompressionCodec,
+    DltSink,
+    DuckDBSink,
+    ParquetSink,
+    PolarsSink,
+    WriteMode,
+)
+from baseballpy.sources import chadwick, lahman, mlb_api, retrosheet
 from baseballpy.sources import mlb_api as mlb
-from baseballpy.sources import retrosheet
 from baseballpy.sources import statcast as statcast_module
-from baseballpy.sources.chadwick.register import ChadwickRegister, PlayerRecord
-from baseballpy.sources.statcast.extractor import StatcastExtractor
-from baseballpy.sources.statcast.normalizer import StatcastNormalizer
+from baseballpy.sources.chadwick import (
+    ChadwickExtractor,
+    ChadwickNormalizer,
+    ChadwickRegister,
+    PlayerIdType,
+    PlayerRecord,
+    crosswalk,
+    get_register,
+)
+from baseballpy.sources.lahman import (
+    LahmanExtractor,
+    LahmanNormalizer,
+    LahmanSource,
+    LahmanTable,
+    allstar,
+    batting,
+    fielding,
+    hall_of_fame,
+    import_archive,
+    people,
+    pitching,
+    salaries,
+    teams,
+)
+from baseballpy.sources.mlb_api import (
+    GamedayLiveStreamer,
+    GameState,
+    GameType,
+    MlbApiExtractor,
+    MlbApiNormalizer,
+    MlbApiSource,
+    SportId,
+    get_boxscore,
+    get_draft,
+    get_roster,
+    get_schedule,
+    get_standings,
+    get_teams,
+    get_transactions,
+    get_venues,
+    stream_game,
+)
+from baseballpy.sources.retrosheet import (
+    EventCode,
+    GameLogType,
+    RetrosheetDownloader,
+    RetrosheetReferenceTable,
+    RetrosheetSource,
+    boxscores,
+    daily_splits,
+    events,
+    game_logs,
+    postseason_game_logs,
+    reference,
+    rosters,
+    substitutions,
+)
+from baseballpy.sources.statcast import (
+    PitchType,
+    PlayerType,
+    StatcastExtractor,
+    StatcastLeaderboard,
+    StatcastLeaderboardExtractor,
+    StatcastLeaderboardNormalizer,
+    StatcastNormalizer,
+    get_leaderboard,
+    statcast_search,
+)
 
 __version__ = "0.1.0"
 
@@ -68,21 +138,23 @@ def to_duckdb(
     table: pa.Table,
     destination: str = "baseball.duckdb",
     table_name: str = "pitches",
-    mode: str = "append",
+    mode: str | WriteMode = WriteMode.APPEND,
 ) -> int:
     """Sink an Arrow table directly into DuckDB without pandas conversion."""
     sink = DuckDBSink()
-    return sink.write(table, destination=destination, table_name=table_name, mode=mode)
+    mode_str = mode.value if isinstance(mode, WriteMode) else mode
+    return sink.write(table, destination=destination, table_name=table_name, mode=mode_str)
 
 
 def to_parquet(
     table: pa.Table,
-    destination: str,
-    compression: str = "snappy",
+    destination: str | Path,
+    compression: str | CompressionCodec = CompressionCodec.SNAPPY,
 ) -> int:
     """Sink an Arrow table to a compressed Parquet file."""
     sink = ParquetSink()
-    return sink.write(table, destination=destination, compression=compression)
+    comp_str = compression.value if isinstance(compression, CompressionCodec) else compression
+    return sink.write(table, destination=str(destination), compression=comp_str)
 
 
 def to_polars(table: pa.Table) -> pl.DataFrame:
@@ -92,26 +164,96 @@ def to_polars(table: pa.Table) -> pl.DataFrame:
 
 
 __all__ = [
-    "ChadwickRegister",
-    "DuckDBSink",
-    "ParquetSink",
-    "PolarsSink",
-    "DltSink",
+    # Version
+    "__version__",
+    # Submodules
+    "chadwick",
+    "lahman",
+    "mlb",
+    "mlb_api",
+    "retrosheet",
+    "statcast_module",
+    # Enums
+    "CompressionCodec",
+    "EventCode",
+    "GameLogType",
+    "GameState",
+    "GameType",
+    "LahmanTable",
+    "PitchType",
+    "PlayerIdType",
+    "PlayerType",
+    "RetrosheetReferenceTable",
+    "SportId",
+    "StatcastLeaderboard",
+    "WriteMode",
+    # Protocols
     "ExtractorProtocol",
     "LiveEventConsumerProtocol",
     "NormalizerProtocol",
     "SinkProtocol",
     "StreamExtractorProtocol",
-    "StatcastExtractor",
-    "StatcastNormalizer",
+    # Classes / Sources
+    "ChadwickExtractor",
+    "ChadwickNormalizer",
+    "ChadwickRegister",
+    "DltSink",
+    "DuckDBSink",
+    "GamedayLiveStreamer",
+    "LahmanExtractor",
+    "LahmanNormalizer",
+    "LahmanSource",
+    "MlbApiExtractor",
+    "MlbApiNormalizer",
+    "MlbApiSource",
+    "ParquetSink",
     "PlayerRecord",
-    "__version__",
-    "resolve_player",
-    "retrosheet",
-    "statcast",
-    "statcast_module",
-    "mlb",
+    "PolarsSink",
+    "RetrosheetDownloader",
+    "RetrosheetSource",
+    "StatcastExtractor",
+    "StatcastLeaderboardExtractor",
+    "StatcastLeaderboardNormalizer",
+    "StatcastNormalizer",
+    # Convenience Functions - Sinks
     "to_duckdb",
     "to_parquet",
     "to_polars",
+    # Convenience Functions - Statcast
+    "get_leaderboard",
+    "statcast",
+    "statcast_search",
+    # Convenience Functions - Chadwick
+    "crosswalk",
+    "get_register",
+    "resolve_player",
+    # Convenience Functions - Lahman
+    "allstar",
+    "batting",
+    "fielding",
+    "hall_of_fame",
+    "import_archive",
+    "people",
+    "pitching",
+    "salaries",
+    "teams",
+    # Convenience Functions - MLB API
+    "get_boxscore",
+    "get_draft",
+    "get_roster",
+    "get_schedule",
+    "get_standings",
+    "get_teams",
+    "get_transactions",
+    "get_venues",
+    "stream_game",
+    # Convenience Functions - Retrosheet
+    "boxscores",
+    "daily_splits",
+    "events",
+    "game_logs",
+    "postseason_game_logs",
+    "reference",
+    "rosters",
+    "substitutions",
 ]

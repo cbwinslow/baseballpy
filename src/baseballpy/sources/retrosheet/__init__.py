@@ -21,23 +21,31 @@ from baseballpy.sources.retrosheet.parser import (
     RetrosheetRosterParser,
     RetrosheetSubstitutionsParser,
 )
+from baseballpy.sources.retrosheet.schema import (
+    EventCode,
+    GameLogType,
+    RetrosheetReferenceTable,
+)
 
 __all__ = [
+    "EventCode",
+    "GameLogType",
+    "RetrosheetBoxScoreParser",
+    "RetrosheetDailySplitsParser",
     "RetrosheetDownloader",
     "RetrosheetEventParser",
     "RetrosheetGameLogParser",
-    "RetrosheetRosterParser",
-    "RetrosheetBoxScoreParser",
-    "RetrosheetDailySplitsParser",
-    "RetrosheetSubstitutionsParser",
     "RetrosheetReferenceParser",
+    "RetrosheetReferenceTable",
+    "RetrosheetRosterParser",
     "RetrosheetSource",
-    "events",
+    "RetrosheetSubstitutionsParser",
     "boxscores",
     "daily_splits",
-    "substitutions",
+    "events",
     "game_logs",
     "postseason_game_logs",
-    "rosters",
     "reference",
+    "rosters",
+    "substitutions",
 ]

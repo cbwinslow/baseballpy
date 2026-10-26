@@ -1,0 +1,23 @@
+# Tasks: Comprehensive Enums, Structured Telemetry Audit, and Top-Level API Polish
+
+- [x] 1. Implement Enums across subsystems <!-- id: 1 -->
+  - [x] 1.1 Author `StatcastLeaderboard`, `PitchType`, and `PlayerType` enums in `statcast`
+  - [x] 1.2 Author `RetrosheetReferenceTable`, `GameLogType`, and `EventCode` enums in `retrosheet`
+  - [x] 1.3 Author `GameType`, `SportId`, and `GameState` enums in `mlb_api`
+  - [x] 1.4 Author `WriteMode` and `CompressionCodec` enums in `sinks`
+- [x] 2. Telemetry & Audit Instrumentation <!-- id: 2 -->
+  - [x] 2.1 Wrap `LahmanSource.import_archive` and `LahmanSource.get_table` in `default_audit_logger.track`
+  - [x] 2.2 Verify zero unhandled exceptions and atomic writes in all paths
+- [x] 3. Expose Unified Top-Level Package Namespace (`src/baseballpy/__init__.py`) <!-- id: 3 -->
+  - [x] 3.1 Export all sources, extractors, normalizers, sinks, enums, and convenience functions
+  - [x] 3.2 Ensure `__all__` is comprehensive and accurate
+- [x] 4. Documentation & ADR Sync <!-- id: 4 -->
+  - [x] 4.1 Record ADR 20 in `docs/DECISIONS.md`
+  - [x] 4.2 Update `docs/QUICKSTART.md` with Enum usage patterns
+- [x] 5. Verification & OpenSpec Archival <!-- id: 5 -->
+  - [x] 5.1 Write unit tests for all new enums and top-level exports in `tests/test_enums.py`
+  - [x] 5.2 Run `uv run pytest` (all tests passing)
+  - [x] 5.3 Run `uv run ruff check .` and `uv run ruff format --check .`
+  - [x] 5.4 Run `uv run mypy src` (100% strict type safety)
+  - [x] 5.5 Archive change into `openspec/changes/archive/`
+  - [x] 5.6 Git commit and push to remote
