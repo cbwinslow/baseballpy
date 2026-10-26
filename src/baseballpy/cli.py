@@ -121,11 +121,21 @@ def audit_tail(limit: int) -> None:
 
     for ev in events:
         status_color = "green" if ev.status == "SUCCESS" else "red"
-        console.print(
-            f"[{status_color}]●[/{status_color}] [bold]{ev.operation}[/bold] ({ev.source}) - {ev.timestamp_utc}"
+        time_info = (
+            f"started: {ev.started_at_utc[11:19]}Z -> completed: {ev.completed_at_utc[11:19]}Z"
+            if ev.started_at_utc and ev.completed_at_utc
+            else ev.timestamp_utc
         )
         console.print(
-            f"   Status: {ev.status} | Records: {ev.records_count:,} | Duration: {ev.duration_seconds}s | Cache Hit: {ev.cache_hit}"
+            f"[{status_color}]●[/{status_color}] [bold]{ev.operation}[/bold] ({ev.source}) - {time_info}"
+        )
+        timing_detail = f"{ev.duration_seconds}s"
+        if ev.download_seconds is not None:
+            timing_detail += (
+                f" (download: {ev.download_seconds}s, processing: {ev.processing_seconds or 0.0}s)"
+            )
+        console.print(
+            f"   Status: {ev.status} | Records: {ev.records_count:,} | Duration: {timing_detail} | Cache Hit: {ev.cache_hit}"
         )
         if ev.endpoint:
             console.print(f"   Endpoint: [dim]{ev.endpoint}[/dim]")
