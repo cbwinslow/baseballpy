@@ -70,7 +70,10 @@ class GamedayLiveStreamer:
                             play_events = play.get("playEvents", [])
                             for event in play_events:
                                 ev_idx = event.get("index", 0)
-                                if ab_idx == self.watermark_at_bat and ev_idx <= self.watermark_event:
+                                if (
+                                    ab_idx == self.watermark_at_bat
+                                    and ev_idx <= self.watermark_event
+                                ):
                                     continue
 
                                 is_pitch = event.get("isPitch", False)

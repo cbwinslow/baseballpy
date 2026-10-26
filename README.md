@@ -119,13 +119,17 @@ batting, pitching = mlb.get_boxscore(game_pk=745789)
 # 3. League standings
 standings = mlb.get_standings(season=2024)
 
+
 # 4. Real-time live game streaming with state diffing
 async def watch_game(game_pk: int):
     async for event in mlb.stream_game(game_pk, poll_interval=1.5):
         if event["is_pitch"]:
-            print(f"Pitch: {event['pitch_type']} at {event['start_speed']} mph - {event['description']}")
+            print(
+                f"Pitch: {event['pitch_type']} at {event['start_speed']} mph - {event['description']}"
+            )
         elif event["event"]:
             print(f"Play Result: {event['event']} - {event['description']}")
+
 
 # asyncio.run(watch_game(745789))
 ```

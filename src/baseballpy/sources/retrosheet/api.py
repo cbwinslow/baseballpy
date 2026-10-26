@@ -55,7 +55,9 @@ class RetrosheetSource:
         batting_chunk_id = f"box_batting_{year}"
         pitching_chunk_id = f"box_pitching_{year}"
 
-        batting_file = self.processed_dir / "boxscores_batting" / f"season={year}" / "batting.parquet"
+        batting_file = (
+            self.processed_dir / "boxscores_batting" / f"season={year}" / "batting.parquet"
+        )
         pitching_file = (
             self.processed_dir / "boxscores_pitching" / f"season={year}" / "pitching.parquet"
         )
@@ -211,9 +213,7 @@ _default_source = RetrosheetSource()
 
 def events(year: int, include_postseason: bool = False, refresh: bool = False) -> pa.Table:
     """Extract Retrosheet play-by-play events for a season."""
-    return _default_source.events(
-        year=year, include_postseason=include_postseason, refresh=refresh
-    )
+    return _default_source.events(year=year, include_postseason=include_postseason, refresh=refresh)
 
 
 def boxscores(year: int, refresh: bool = False) -> tuple[pa.Table, pa.Table]:

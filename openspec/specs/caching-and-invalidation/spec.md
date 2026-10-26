@@ -12,7 +12,7 @@ The cache MUST reside within a dedicated root (`~/.baseballpy/` by default) part
 - `cache/chadwick/`
 - `cache/lahman/`
 - `cache/retrosheet/raw/` and `cache/retrosheet/processed/`
-The base directory MUST be configurable via environment variable `BASEBALLPY_CACHE_DIR` or `PipelineConfig`.
+The base directory MUST be configurable via environment variables (`BASEBALLPY_HOME`, `BASEBALLPY_CACHE_DIR`, `BASEBALLPY_CACHE_STATCAST_DIR_OVERRIDE`, etc.) or `PipelineConfig` powered by Pydantic Settings.
 
 ### Requirement: Two-Phase Atomic Writing (`.part` to Target)
 Every network download and columnar Parquet write MUST write to `{target_path}.part` and execute atomic `os.replace()` only after verifying record boundary and footer integrity.

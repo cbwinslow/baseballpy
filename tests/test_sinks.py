@@ -87,6 +87,7 @@ def test_polars_sink(sample_table: pa.Table) -> None:
 
 def test_dlt_sink(tmp_path: Path, sample_table: pa.Table) -> None:
     import dlt
+
     pipeline = dlt.pipeline(
         pipeline_name="test_baseball_dlt",
         destination=dlt.destinations.duckdb(str(tmp_path / "dlt_baseball.duckdb")),

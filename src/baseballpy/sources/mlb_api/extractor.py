@@ -51,6 +51,7 @@ class MlbApiExtractor:
             source="mlb_api",
             endpoint=url,
         ) as tracker:
+
             @retry(
                 reraise=True,
                 stop=stop_after_attempt(self.rate_limit_config.max_retries),
@@ -102,9 +103,7 @@ class MlbApiExtractor:
 
         return table
 
-    def extract_boxscore(
-        self, game_pk: int, refresh: bool = False
-    ) -> tuple[pa.Table, pa.Table]:
+    def extract_boxscore(self, game_pk: int, refresh: bool = False) -> tuple[pa.Table, pa.Table]:
         """Extract and normalize game boxscore into (batting_table, pitching_table)."""
         batting_file = self._get_cache_file("boxscores_batting", f"{game_pk}")
         pitching_file = self._get_cache_file("boxscores_pitching", f"{game_pk}")
@@ -126,7 +125,9 @@ class MlbApiExtractor:
                 atomic_write_parquet(batting_table, batting_file)
             if len(pitching_table) > 0:
                 atomic_write_parquet(pitching_table, pitching_file)
-            self.manifest.set_completed(ident, records_count=len(batting_table) + len(pitching_table))
+            self.manifest.set_completed(
+                ident, records_count=len(batting_table) + len(pitching_table)
+            )
 
         return batting_table, pitching_table
 

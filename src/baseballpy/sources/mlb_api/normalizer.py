@@ -106,9 +106,7 @@ class MlbApiNormalizer:
 
         return pa.Table.from_arrays(arrays, schema=MLB_LIVE_PLAYS_SCHEMA)
 
-    def normalize_boxscore(
-        self, data: dict[str, Any], game_pk: int
-    ) -> tuple[pa.Table, pa.Table]:
+    def normalize_boxscore(self, data: dict[str, Any], game_pk: int) -> tuple[pa.Table, pa.Table]:
         """Normalize /v1/game/{game_pk}/boxscore into (batting_table, pitching_table)."""
         teams = data.get("teams", {})
         batting_records: list[dict[str, Any]] = []
@@ -216,7 +214,9 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_STANDINGS_SCHEMA)
 
-        arrays = [pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_STANDINGS_SCHEMA]
+        arrays = [
+            pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_STANDINGS_SCHEMA
+        ]
         return pa.Table.from_arrays(arrays, schema=MLB_STANDINGS_SCHEMA)
 
     def normalize_teams(self, data: dict[str, Any]) -> pa.Table:
@@ -271,7 +271,9 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_ROSTERS_SCHEMA)
 
-        arrays = [pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_ROSTERS_SCHEMA]
+        arrays = [
+            pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_ROSTERS_SCHEMA
+        ]
         return pa.Table.from_arrays(arrays, schema=MLB_ROSTERS_SCHEMA)
 
     def normalize_transactions(self, data: dict[str, Any]) -> pa.Table:
@@ -299,7 +301,9 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_TRANSACTIONS_SCHEMA)
 
-        arrays = [pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_TRANSACTIONS_SCHEMA]
+        arrays = [
+            pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_TRANSACTIONS_SCHEMA
+        ]
         return pa.Table.from_arrays(arrays, schema=MLB_TRANSACTIONS_SCHEMA)
 
     def normalize_draft(self, data: dict[str, Any], year: int) -> pa.Table:
@@ -356,5 +360,7 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_VENUES_SCHEMA)
 
-        arrays = [pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_VENUES_SCHEMA]
+        arrays = [
+            pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_VENUES_SCHEMA
+        ]
         return pa.Table.from_arrays(arrays, schema=MLB_VENUES_SCHEMA)

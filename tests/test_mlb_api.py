@@ -133,7 +133,12 @@ async def test_gameday_live_streamer_diffing() -> None:
                                 "pitchData": {
                                     "startSpeed": 98.4,
                                     "endSpeed": 90.1,
-                                    "coordinates": {"pX": -0.2, "pZ": 2.5, "szTop": 3.4, "szBottom": 1.5},
+                                    "coordinates": {
+                                        "pX": -0.2,
+                                        "pZ": 2.5,
+                                        "szTop": 3.4,
+                                        "szBottom": 1.5,
+                                    },
                                 },
                                 "details": {
                                     "type": {"code": "FF"},
@@ -149,7 +154,12 @@ async def test_gameday_live_streamer_diffing() -> None:
                                 "pitchData": {
                                     "startSpeed": 99.1,
                                     "endSpeed": 91.0,
-                                    "coordinates": {"pX": 0.1, "pZ": 2.8, "szTop": 3.4, "szBottom": 1.5},
+                                    "coordinates": {
+                                        "pX": 0.1,
+                                        "pZ": 2.8,
+                                        "szTop": 3.4,
+                                        "szBottom": 1.5,
+                                    },
                                 },
                                 "details": {
                                     "type": {"code": "FF"},
@@ -164,13 +174,15 @@ async def test_gameday_live_streamer_diffing() -> None:
                     }
                 ]
             }
-        }
+        },
     }
 
     async with httpx.AsyncClient() as client:
         with respx.mock:
             respx.get("https://statsapi.mlb.com/api/v1.1/game/745789/feed/live").mock(
-                return_value=httpx.Response(200, json=fake_live_payload, headers={"ETag": "W/'123'"})
+                return_value=httpx.Response(
+                    200, json=fake_live_payload, headers={"ETag": "W/'123'"}
+                )
             )
 
             streamer = GamedayLiveStreamer(game_pk=745789, poll_interval=0.01, client=client)
@@ -240,7 +252,9 @@ def test_mlb_source_orchestrator(tmp_path: Path) -> None:
         ]
     }
 
-    respx.get(f"{MLB_BASE_URL}/v1/standings").mock(return_value=httpx.Response(200, json=fake_standings))
+    respx.get(f"{MLB_BASE_URL}/v1/standings").mock(
+        return_value=httpx.Response(200, json=fake_standings)
+    )
 
     table = source.standings(2024)
     assert len(table) == 1

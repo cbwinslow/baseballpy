@@ -50,6 +50,7 @@ dependencies = [
   "rich>=13.7.0",
   "click>=8.1.0",
   "fsspec>=2024.3.0",
+  "pydantic-settings>=2.16.1",
 ]
 
 [project.optional-dependencies]

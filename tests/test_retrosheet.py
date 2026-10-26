@@ -236,7 +236,9 @@ def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
 
     # 4. Reference tables
     respx.get(f"{GITHUB_RETROSHEET_BASE}/reference/teams.csv").mock(
-        return_value=httpx.Response(200, content=b"TEAM,LEAGUE,CITY,NICKNAME,FIRST,LAST\nBOS,AL,Boston,Red Sox,1901,2024\n")
+        return_value=httpx.Response(
+            200, content=b"TEAM,LEAGUE,CITY,NICKNAME,FIRST,LAST\nBOS,AL,Boston,Red Sox,1901,2024\n"
+        )
     )
     teams_table = source.reference("teams")
     assert len(teams_table) == 1

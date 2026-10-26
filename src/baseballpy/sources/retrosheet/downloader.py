@@ -137,7 +137,9 @@ class RetrosheetDownloader:
                     ps_filename = f"{year}{suffix}"
                     ps_path = season_dir / ps_filename
                     if (
-                        self.download_file(f"seasons/{year}/{ps_filename}", ps_path, refresh=refresh)
+                        self.download_file(
+                            f"seasons/{year}/{ps_filename}", ps_path, refresh=refresh
+                        )
                         and ps_path.exists()
                     ):
                         downloaded_files.append(ps_path)

@@ -57,7 +57,9 @@ class MlbApiSource:
         """Extract venues/ballparks."""
         return self.extractor.extract_venues(refresh=refresh)
 
-    def stream_game(self, game_pk: int, poll_interval: float = 2.0) -> AsyncIterator[dict[str, Any]]:
+    def stream_game(
+        self, game_pk: int, poll_interval: float = 2.0
+    ) -> AsyncIterator[dict[str, Any]]:
         """Stream discrete live events for an ongoing game contest."""
         streamer = GamedayLiveStreamer(game_pk=game_pk, poll_interval=poll_interval)
         return streamer.stream_events()

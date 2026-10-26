@@ -118,9 +118,7 @@ class RetrosheetBoxScoreParser:
     def __init__(self, league: League | None = None) -> None:
         self.league = league
 
-    def parse_files(
-        self, paths: list[Path], year: int | None = None
-    ) -> tuple[pa.Table, pa.Table]:
+    def parse_files(self, paths: list[Path], year: int | None = None) -> tuple[pa.Table, pa.Table]:
         """Parse event files and return (batting_table, pitching_table)."""
         if not paths:
             return (

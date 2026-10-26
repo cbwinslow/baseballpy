@@ -68,8 +68,7 @@ class StatcastLeaderboardNormalizer:
 
         # Clean header names (lowercase, strip, replace spaces/dashes with underscores)
         cleaned_headers = [
-            h.strip().replace(" ", "_").replace("-", "_").replace(".", "_").lower()
-            for h in header
+            h.strip().replace(" ", "_").replace("-", "_").replace(".", "_").lower() for h in header
         ]
 
         rows: list[list[Any]] = []
@@ -91,11 +90,18 @@ class StatcastLeaderboardNormalizer:
             raw_vals = [row[col_idx] for row in rows]
 
             # 1. Integer candidate
-            if (
-                col_name == "id"
-                or any(
-                    id_pattern in col_name
-                    for id_pattern in ("_id", "player_id", "entity_id", "pitcher", "year", "age", "bolts", "swings", "attempts")
+            if col_name == "id" or any(
+                id_pattern in col_name
+                for id_pattern in (
+                    "_id",
+                    "player_id",
+                    "entity_id",
+                    "pitcher",
+                    "year",
+                    "age",
+                    "bolts",
+                    "swings",
+                    "attempts",
                 )
             ):
                 int_vals = [_safe_int(v) for v in raw_vals]
@@ -130,7 +136,9 @@ class StatcastLeaderboardNormalizer:
                 str_vals = [v.strip() if v else None for v in raw_vals]
                 arrays.append(pa.array(str_vals, type=pa.string()))
 
-        schema = pa.schema([(cleaned_headers[i], arrays[i].type) for i in range(len(cleaned_headers))])
+        schema = pa.schema(
+            [(cleaned_headers[i], arrays[i].type) for i in range(len(cleaned_headers))]
+        )
         return pa.Table.from_arrays(arrays, schema=schema)
 
 
@@ -191,6 +199,7 @@ class StatcastLeaderboardExtractor:
             endpoint=url,
             destination=str(cache_path),
         ) as tracker:
+
             @retry(
                 reraise=True,
                 stop=stop_after_attempt(self.rate_limit_config.max_retries),
@@ -223,9 +232,7 @@ class StatcastLeaderboardExtractor:
 _default_extractor = StatcastLeaderboardExtractor()
 
 
-def get_leaderboard(
-    name: str, year: int = 2024, refresh: bool = False, **kwargs: Any
-) -> pa.Table:
+def get_leaderboard(name: str, year: int = 2024, refresh: bool = False, **kwargs: Any) -> pa.Table:
     """Extract any Baseball Savant leaderboard by name."""
     return _default_extractor.get_leaderboard(name=name, year=year, refresh=refresh, **kwargs)
 

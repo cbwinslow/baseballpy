@@ -1,9 +1,11 @@
-"""Configuration models for downloaders, cache managers, and sinks."""
+"""Configuration models for downloaders, cache managers, and sinks powered by Pydantic Settings."""
 
 import os
+from functools import lru_cache
 from pathlib import Path
 
-from pydantic import BaseModel, Field
+from pydantic import Field, model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 def get_default_base_dir() -> Path:
@@ -15,8 +17,15 @@ def get_default_base_dir() -> Path:
     return (Path.home() / ".baseballpy").resolve()
 
 
-class CacheConfig(BaseModel):
-    """Cache configuration partitioned by data source."""
+class CacheConfig(BaseSettings):
+    """Cache configuration partitioned by data source, loadable via BASEBALLPY_CACHE_* env."""
+
+    model_config = SettingsConfigDict(
+        env_prefix="BASEBALLPY_CACHE_",
+        extra="ignore",
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
     base_dir: Path = Field(
         default_factory=get_default_base_dir,
@@ -24,7 +33,23 @@ class CacheConfig(BaseModel):
     )
     enabled: bool = Field(default=True, description="Whether caching is enabled")
     ttl_seconds: int = Field(
-        default=86400 * 30, description="Time-to-live for cached historical files"
+        default=86400 * 30, description="Time-to-live for cached historical files in seconds"
+    )
+
+    statcast_dir_override: Path | None = Field(
+        default=None, description="Explicit directory override for Statcast cache"
+    )
+    mlb_api_dir_override: Path | None = Field(
+        default=None, description="Explicit directory override for MLB API cache"
+    )
+    retrosheet_dir_override: Path | None = Field(
+        default=None, description="Explicit directory override for Retrosheet cache"
+    )
+    chadwick_dir_override: Path | None = Field(
+        default=None, description="Explicit directory override for Chadwick cache"
+    )
+    lahman_dir_override: Path | None = Field(
+        default=None, description="Explicit directory override for Lahman cache"
     )
 
     @property
@@ -37,52 +62,62 @@ class CacheConfig(BaseModel):
     @property
     def statcast_dir(self) -> Path:
         """Partitioned cache directory for Statcast."""
-        path = self.cache_root / "statcast"
+        path = self.statcast_dir_override or (self.cache_root / "statcast")
         path.mkdir(parents=True, exist_ok=True)
         return path
 
     @property
     def mlb_api_dir(self) -> Path:
         """Partitioned cache directory for MLB Stats API."""
-        path = self.cache_root / "mlb_api"
+        path = self.mlb_api_dir_override or (self.cache_root / "mlb_api")
         path.mkdir(parents=True, exist_ok=True)
         return path
 
     @property
     def chadwick_dir(self) -> Path:
         """Partitioned cache directory for Chadwick Register."""
-        path = self.cache_root / "chadwick"
+        path = self.chadwick_dir_override or (self.cache_root / "chadwick")
         path.mkdir(parents=True, exist_ok=True)
         return path
 
     @property
     def lahman_dir(self) -> Path:
         """Partitioned cache directory for Lahman database."""
-        path = self.cache_root / "lahman"
+        path = self.lahman_dir_override or (self.cache_root / "lahman")
         path.mkdir(parents=True, exist_ok=True)
         return path
 
     @property
     def retrosheet_dir(self) -> Path:
         """Partitioned cache directory for Retrosheet."""
-        path = self.cache_root / "retrosheet"
+        path = self.retrosheet_dir_override or (self.cache_root / "retrosheet")
         path.mkdir(parents=True, exist_ok=True)
         return path
 
 
-class AuditConfig(BaseModel):
-    """Audit logging and telemetry configuration."""
+class AuditConfig(BaseSettings):
+    """Audit logging and telemetry configuration, loadable via BASEBALLPY_AUDIT_* env."""
+
+    model_config = SettingsConfigDict(
+        env_prefix="BASEBALLPY_AUDIT_",
+        extra="ignore",
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
     base_dir: Path = Field(
         default_factory=get_default_base_dir,
-        description="Root base directory",
+        description="Root base directory for logs",
     )
     enabled: bool = Field(default=True, description="Whether audit logging is enabled")
+    log_dir_override: Path | None = Field(
+        default=None, description="Explicit directory override for audit logs"
+    )
 
     @property
     def log_dir(self) -> Path:
         """Directory for logs."""
-        path = self.base_dir / "logs"
+        path = self.log_dir_override or (self.base_dir / "logs")
         path.mkdir(parents=True, exist_ok=True)
         return path
 
@@ -92,18 +127,30 @@ class AuditConfig(BaseModel):
         return self.log_dir / "audit.jsonl"
 
 
-class RateLimitConfig(BaseModel):
-    """Rate limit, concurrency, and retry configuration for network extractors."""
+class RateLimitConfig(BaseSettings):
+    """Rate limit, concurrency, and retry configuration for network extractors, loadable via BASEBALLPY_RATE_* env."""
+
+    model_config = SettingsConfigDict(
+        env_prefix="BASEBALLPY_RATE_",
+        extra="ignore",
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
     default_requests_per_second: float = Field(
         default=5.0, description="Default max outbound HTTP requests per second"
     )
+    savant_rps: float = Field(
+        default=2.5, description="Token bucket rate limit for baseballsavant.mlb.com"
+    )
+    statsapi_rps: float = Field(
+        default=8.0, description="Token bucket rate limit for statsapi.mlb.com"
+    )
+    github_rps: float = Field(
+        default=15.0, description="Token bucket rate limit for raw.githubusercontent.com"
+    )
     host_rates: dict[str, float] = Field(
-        default_factory=lambda: {
-            "baseballsavant.mlb.com": 2.5,
-            "statsapi.mlb.com": 8.0,
-            "raw.githubusercontent.com": 15.0,
-        },
+        default_factory=dict,
         description="Host-specific token bucket rate limits in requests per second",
     )
     max_concurrency: int = Field(
@@ -113,9 +160,29 @@ class RateLimitConfig(BaseModel):
     backoff_factor: float = Field(default=1.5, description="Exponential backoff factor")
     timeout_seconds: float = Field(default=30.0, description="HTTP request timeout in seconds")
 
+    @model_validator(mode="after")
+    def populate_host_rates(self) -> "RateLimitConfig":
+        """Merge host-specific defaults if not explicitly provided."""
+        defaults = {
+            "baseballsavant.mlb.com": self.savant_rps,
+            "statsapi.mlb.com": self.statsapi_rps,
+            "raw.githubusercontent.com": self.github_rps,
+        }
+        for host, rate in defaults.items():
+            if host not in self.host_rates:
+                self.host_rates[host] = rate
+        return self
 
-class StreamingConfig(BaseModel):
-    """Configuration for real-time live game event streaming."""
+
+class StreamingConfig(BaseSettings):
+    """Configuration for real-time live game event streaming, loadable via BASEBALLPY_STREAM_* env."""
+
+    model_config = SettingsConfigDict(
+        env_prefix="BASEBALLPY_STREAM_",
+        extra="ignore",
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
     poll_interval_seconds: float = Field(
         default=5.0, description="Interval in seconds between polling live game feeds"
@@ -128,28 +195,51 @@ class StreamingConfig(BaseModel):
     )
 
 
-class QuarantineConfig(BaseModel):
-    """Configuration for dead-letter quarantine of corrupted or unparseable records."""
+class QuarantineConfig(BaseSettings):
+    """Configuration for dead-letter quarantine of corrupted records, loadable via BASEBALLPY_QUARANTINE_* env."""
+
+    model_config = SettingsConfigDict(
+        env_prefix="BASEBALLPY_QUARANTINE_",
+        extra="ignore",
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
     base_dir: Path = Field(
         default_factory=get_default_base_dir,
-        description="Root base directory",
+        description="Root base directory for quarantine",
     )
     enabled: bool = Field(default=True, description="Whether to capture unparseable records")
+    quarantine_dir_override: Path | None = Field(
+        default=None, description="Explicit directory override for quarantine"
+    )
 
     @property
     def quarantine_dir(self) -> Path:
         """Directory for persisting unparseable or malformed payloads."""
-        path = self.base_dir / "quarantine"
+        path = self.quarantine_dir_override or (self.base_dir / "quarantine")
         path.mkdir(parents=True, exist_ok=True)
         return path
 
 
-class PipelineConfig(BaseModel):
-    """Top-level pipeline configuration."""
+class PipelineConfig(BaseSettings):
+    """Top-level pipeline configuration combining all subsystem settings."""
+
+    model_config = SettingsConfigDict(
+        env_prefix="BASEBALLPY_",
+        extra="ignore",
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
     cache: CacheConfig = Field(default_factory=CacheConfig)
     audit: AuditConfig = Field(default_factory=AuditConfig)
     rate_limit: RateLimitConfig = Field(default_factory=RateLimitConfig)
     streaming: StreamingConfig = Field(default_factory=StreamingConfig)
     quarantine: QuarantineConfig = Field(default_factory=QuarantineConfig)
+
+
+@lru_cache(maxsize=1)
+def get_config() -> PipelineConfig:
+    """Return singleton PipelineConfig instance."""
+    return PipelineConfig()

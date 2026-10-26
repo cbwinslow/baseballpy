@@ -314,3 +314,19 @@ Bulk network downloads spanning entire seasons or decades are susceptible to int
 2. All network payloads must be written to temporary `.part` files and atomically renamed via `os.replace()` only after verifying format integrity.
 3. Partitioned sources maintain a `manifest.json` recording chunk completion status, record counts, and remote ETags/hashes, enabling instant pause and resume across runs.
 4. Adopt a two-tier folder structure (`raw/` and `processed/`) for multi-file historical sources like Retrosheet. Parsers (e.g. `chadwickpy`) read from `raw/` and emit directly into strongly-typed `processed/` Parquet files.
+
+
+---
+
+## ADR 18: Pydantic Settings Runtime Configuration and Production Smoke Testing Suite
+
+* **Date:** 2026-10-26
+* **Status:** Accepted
+
+### Context
+Baseball researchers, data engineers, and automated agent pipelines operate across wildly different infrastructure setups (local workstations, Docker containers, AWS/GCP cloud runners, Airflow pods, Databricks). Hardcoding cache directories or relying on fragile custom dictionary parsing for rate limits, base directories, and concurrency parameters limits portability. Furthermore, end-to-end multi-season workflows spanning multiple distinct data providers need deterministic regression testing that validates partition isolation, two-phase atomic write guarantees, and cache idempotency under realistic conditions.
+
+### Decision
+1. Standardize all subsystem configuration (`CacheConfig`, `AuditConfig`, `RateLimitConfig`, `StreamingConfig`, `QuarantineConfig`, `PipelineConfig`) on `pydantic-settings` (`BaseSettings`).
+2. Provide seamless environment variable binding with the `BASEBALLPY_` prefix (e.g. `BASEBALLPY_CACHE_DIR`, `BASEBALLPY_RATE_MAX_CONCURRENCY`, `BASEBALLPY_HOME`), `.env` support, and runtime overrides.
+3. Establish a permanent end-to-end smoke testing suite (`tests/test_smoke.py`) validating multi-season Retrosheet extraction, 15-day multi-chunk Statcast pitch searches, simulated network failure recovery with atomic rollback, and cross-source DuckDB/Polars warehouse integration.

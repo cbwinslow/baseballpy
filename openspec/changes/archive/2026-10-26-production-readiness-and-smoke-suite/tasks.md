@@ -1,0 +1,23 @@
+# Tasks: Production Readiness, Pydantic V2 Settings, and Comprehensive Smoke Suite
+
+- [x] 1. Upgrade `src/baseballpy/core/config.py` to `pydantic-settings` (`BaseSettings`) <!-- id: 1 -->
+  - [x] 1.1 Implement `CacheConfig`, `AuditConfig`, `RateLimitConfig`, `StreamingConfig`, `QuarantineConfig`, and `PipelineConfig` using `pydantic_settings.BaseSettings`
+  - [x] 1.2 Enable `SettingsConfigDict` with `env_prefix="BASEBALLPY_"` and `extra="ignore"`
+  - [x] 1.3 Add helper methods for dynamic directory overrides and configuration validation
+  - [x] 1.4 Write unit tests in `tests/test_config.py` verifying environment variable loading and defaults
+- [x] 2. Implement Comprehensive Multi-Season Smoke Suite (`tests/test_smoke.py`) <!-- id: 2 -->
+  - [x] 2.1 Test multi-season Retrosheet download, manifest checkpointing, and cache hits
+  - [x] 2.2 Test multi-chunk Statcast pitch ingestion (3 consecutive 5-day intervals) and idempotency
+  - [x] 2.3 Test failure injection, `.part` gate protection, and graceful retry recovery
+  - [x] 2.4 Test cross-source sink integration (DuckDB, Parquet, Polars) in a single workflow
+- [x] 3. Author Strategic Innovations Roadmap (`docs/ROADMAP.md`) and ADR 18 <!-- id: 3 -->
+  - [x] 3.1 Detail 15 strategic innovations with architectural design, data models, and sabermetric motivation
+  - [x] 3.2 Author ADR 18 in `docs/DECISIONS.md` documenting configuration schema and future extensibility
+  - [x] 3.3 Author `docs/QUICKSTART.md` dataset-to-function lookup guide
+- [x] 4. Verification and OpenSpec Archival <!-- id: 4 -->
+  - [x] 4.1 Run `uv run pytest` to ensure all unit and smoke tests pass
+  - [x] 4.2 Run `uv run ruff check .` and `uv run ruff format --check .`
+  - [x] 4.3 Run `uv run mypy src`
+  - [x] 4.4 Update living specs in `openspec/specs/`
+  - [x] 4.5 Archive change into `openspec/changes/archive/`
+  - [x] 4.6 Git commit and push to remote
