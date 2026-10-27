@@ -4,7 +4,7 @@ Claude is the brain: it reads the contract, finds the root cause, designs the in
 
 ## How it is wired
 
-No ACP, MCP or plugin is needed. `agy` has a headless print mode, so delegation is one Bash call to `scripts/agy_delegate.py`, which wraps:
+No ACP, MCP or plugin is needed. `agy` has a headless print mode, so delegation is one Bash call to `scripts/agy_delegate.py`. **Print mode denies agy's shell commands, and a denied call ends its turn with an empty answer**, so the default `emit` mode runs agy read-only (plan mode) and has it answer with each file as `=== FILE: path ===` plus a code block; the wrapper writes only paths under `--allow` prefixes and retries (up to 3 attempts) when a run ends on a denied action. `--mode edit` lets agy edit directly but it cannot run tests. `--dangerously-skip-permissions` is never used. The wrapper wraps:
 
 ```bash
 agy -p "<contract + brief>" --model gemini-3.8-flash-medium --effort medium \
@@ -14,7 +14,7 @@ agy -p "<contract + brief>" --model gemini-3.8-flash-medium --effort medium \
 - Binary: `~/AppData/Local/agy/bin/agy` (on PATH). `agy models` lists models; `agy agents` lists the agent definitions (`python-pro`, `code-reviewer`, `openspec-spec-writer`, `retrosheet-data-validator`, ... defined under `~/.gemini/antigravity*/` and `~/.agents/skills`).
 - The wrapper prefixes the repository contract (decoupling, no hand-edits of generated files, only the listed files, no git commit/push, no network in tests), runs in the repo working directory, prints the result JSON fields and `git diff --stat`. It never commits.
 - `--plan-only` runs read-only (`--mode plan`) for second opinions and research summaries.
-- Verified 2026-10-27: a trivial task ran in 18 s (about 21k tokens) and produced a correct, typed, documented file.
+- Verified 2026-10-27: three real slices (ingest core, five adapters, CLI commands; 6-7 minutes and about 100-150k tokens each) were written this way; each needed review fixes (see the change `agy-delegation-and-agent-policy`). agy cannot run tests, so Claude always runs the gates. Command: `uv run python scripts/agy_delegate.py brief.md --allow src/pkg/ --allow tests/test_x.py`.
 
 ## When to delegate
 

@@ -437,10 +437,11 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Alternatives rejected:** hand-written per-endpoint modules (does not scale to ~120 datasets); storing only flattened typed columns (violates full-preservation mandate).
 
 ## ADR 25: Unified Pipeline and Full-Surface CLI
-- **Status:** Proposed (OpenSpec change `unified-pipeline-and-cli`).
-- **Context:** `Pipeline.run` was mandated but absent; CLI covered one source.
+- **Status:** Partly implemented 2026-10-27 (OpenSpec change `unified-pipeline-and-cli`, design section 8); the change stays open.
+- **Context:** `Pipeline.run` was mandated but absent; CLI covered one source. The per-source orchestrators already existed and were verified, so the pipeline layers on them instead of replacing them.
 - **Decision:** `Pipeline`/`Job`/`JobResult` compose registry-resolved extractor/normalizer/sink via protocols; CLI offers `ingest`, `catalog`, `db`, `stream`, `docs`, `audit`, `quarantine`, `doctor`, `migrate-layout`, `refs`; signature-level protocol contract tests.
-- **Consequences:** One code path for resume/audit/quarantine; `ingest all` possible; `*Source` classes become facades.
+- **As built:** `baseballpy.ingest` (source-agnostic `Job`/`JobResult`/`RunReport`, `parse_seasons`, `IngestAdapter` Protocol + registry, bounded-concurrency runner that collects failures and maps Ctrl-C to CANCELLED) plus one thin adapter per source under `sources/<source>/adapter.py`; commands `ingest`, `catalog status`, `doctor` in `cli_ingest.py`. Adding a source is one adapter and one registration; the runner and CLI never import a concrete source (tested). First delegated code (agy), reviewed by Claude.
+- **Consequences:** One code path for resume/audit/quarantine at job level; `ingest all` possible; dataset filters are per source (a name unknown to one adapter is a usage error), so cross-source `--datasets` needs `source:dataset` syntax (open).
 
 ## ADR 26: License Position, Dependency Review, CI and Docs Policy
 - **Status:** Accepted — license, helpers and dependency decisions implemented; CI/docs/test-policy parts pending (OpenSpec change `repo-hygiene-and-docs-sync`).

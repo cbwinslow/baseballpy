@@ -6,6 +6,7 @@ import click
 from rich.console import Console
 from rich.table import Table
 
+from baseballpy.cli_ingest import register_commands
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.migrate import migrate_layout
@@ -395,6 +396,9 @@ def audit_stats() -> None:
     table.add_row("Average Duration", f"{stats['average_duration_seconds']:.2f} seconds")
 
     console.print(table)
+
+
+register_commands(main, catalog)
 
 
 if __name__ == "__main__":

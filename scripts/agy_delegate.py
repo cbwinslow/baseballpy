@@ -19,6 +19,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+MAX_ATTEMPTS = 3
+
 CONTRACT = """You are implementing one task in the baseballpy repository (working directory).
 Rules (non-negotiable):
 - Follow AGENTS.md and CLAUDE.md. Keep Extract / Parse / Sink decoupled behind typing.Protocol;
@@ -28,7 +30,9 @@ Rules (non-negotiable):
 - No network access except through baseballpy.core.http.HttpClient; tests must not use the network.
 - Never swallow exceptions. Strict typing (mypy --strict), docstrings on public items, ruff clean.
 - Do not invent facts about upstream data; if the task lacks information, stop and say so.
-- Shell commands are denied in this mode: read files with your file tools, do not run tests.
+- run_command is DENIED in this mode and a denied call ENDS YOUR TURN with no answer. Never call it
+  (not even `dir`, `ls`, `cat`, `pytest`): explore only with view_file, list_dir, grep_search and
+  find_by_name, then write your final answer.
 {output_rules}
 TASK:
 """
@@ -92,13 +96,21 @@ def main() -> int:
     ]
     if args.agent:
         cmd += ["--agent", args.agent]
-    done = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", check=False)
-    try:
-        result = json.loads(done.stdout)
-    except json.JSONDecodeError:
-        print(done.stdout, done.stderr, sep="\n", file=sys.stderr)
-        return 2
-    response = result.get("response", "")
+    result: dict[str, object] = {}
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        done = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", check=False)
+        try:
+            result = json.loads(done.stdout)
+        except json.JSONDecodeError:
+            print(done.stdout, done.stderr, sep="\n", file=sys.stderr)
+            return 2
+        if result.get("response") or not result.get("denied_actions"):
+            break
+        print(
+            f"[attempt {attempt}: agy ended on a denied tool call with no answer; retrying]",
+            file=sys.stderr,
+        )
+    response = str(result.get("response", ""))
     usage = result.get("usage", {})
     if args.mode == "emit":
         written, refused = write_files(response, args.allow, Path.cwd())
