@@ -23,6 +23,6 @@ Rules for the run (token-saving, per owner request):
 - CI workflow files exist; coverage ≥ 85%; architecture-boundary tests pass.
 
 ## Status (updated 2026-10-27)
-- Done and archived (`archive/2026-10-27-*`): `harden-ingestion-core`, `restructure-data-lake`, `complete-source-coverage`.
+- Done and archived (`archive/2026-10-27-*`): `harden-ingestion-core`, `restructure-data-lake`, `complete-source-coverage`, `statcast-minor-league-pitches`, `statcast-chunk-alignment` (found and fixed after the coverage change closed).
 - `repo-hygiene-and-docs-sync`: tasks 1-3 done (license, coerce helpers, dependencies); 4-7 (lint policy, CI, docs rewrite, spec merge and archive) open.
 - `unified-pipeline-and-cli`: not started (`baseballpy ingest`, `catalog status`, `doctor`).
