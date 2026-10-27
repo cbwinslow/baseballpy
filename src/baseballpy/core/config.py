@@ -278,5 +278,10 @@ class PipelineConfig(BaseSettings):
 
 @lru_cache(maxsize=1)
 def get_config() -> PipelineConfig:
-    """Return singleton PipelineConfig instance."""
+    """Return the lazily-built singleton PipelineConfig (call ``reset_config`` after env changes)."""
     return PipelineConfig()
+
+
+def reset_config() -> None:
+    """Drop the cached PipelineConfig so the next ``get_config()`` re-reads the environment."""
+    get_config.cache_clear()

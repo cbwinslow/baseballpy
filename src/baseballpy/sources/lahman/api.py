@@ -1,13 +1,12 @@
 """High-level public interface for the SABR Lahman Baseball Database."""
 
-import shutil
 import zipfile
 from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import atomic_write_parquet
+from baseballpy.core.atomic import atomic_write, atomic_write_parquet
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig
 from baseballpy.sources.lahman.extractor import LahmanExtractor
@@ -26,6 +25,12 @@ class LahmanSource:
         self.processed_dir = self.cache_config.lahman_dir / "processed"
         self.raw_dir.mkdir(parents=True, exist_ok=True)
         self.processed_dir.mkdir(parents=True, exist_ok=True)
+
+    @staticmethod
+    def _write_raw(target: Path, data: bytes) -> None:
+        """Write a raw CSV atomically (never leaves a partial file under its final name)."""
+        with atomic_write(target) as part:
+            part.write_bytes(data)
 
     def import_archive(self, archive_path: Path | str) -> int:
         """Import a local Lahman ZIP archive or unzipped directory downloaded from SABR Box.
@@ -52,8 +57,8 @@ class LahmanSource:
                         if member.lower().endswith(".csv") and not member.startswith("__MACOSX"):
                             filename = Path(member).name
                             target_raw = self.raw_dir / filename
-                            with zf.open(member) as src, open(target_raw, "wb") as dst:
-                                shutil.copyfileobj(src, dst)
+                            with zf.open(member) as src:
+                                self._write_raw(target_raw, src.read())
                             # Process immediately to Parquet
                             table_name = target_raw.stem
                             content = target_raw.read_bytes()
@@ -73,7 +78,7 @@ class LahmanSource:
                     if csv_file.name.startswith("."):
                         continue
                     target_raw = self.raw_dir / csv_file.name
-                    shutil.copy2(csv_file, target_raw)
+                    self._write_raw(target_raw, csv_file.read_bytes())
 
                     table_name = target_raw.stem
                     content = target_raw.read_bytes()

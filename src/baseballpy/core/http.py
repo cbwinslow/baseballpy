@@ -25,7 +25,7 @@ from tenacity import (
     wait_exponential_jitter,
 )
 
-from baseballpy.core.config import RateLimitConfig
+from baseballpy.core.config import RateLimitConfig, get_config
 from baseballpy.core.lazy import lazy_singleton
 
 RETRYABLE_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
@@ -251,7 +251,7 @@ class HttpClient:
         return future.result()
 
 
-get_http_client = lazy_singleton(HttpClient)
+get_http_client = lazy_singleton(lambda: HttpClient(get_config().rate_limit))
 
 __all__ = [
     "HttpClient",

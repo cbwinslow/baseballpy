@@ -39,6 +39,18 @@ def _fsync_path(path: Path) -> None:
         os.close(fd)
 
 
+def _replace_with_retry(src: Path, dst: Path, attempts: int = 50) -> None:
+    """``os.replace`` that tolerates transient Windows sharing violations (readers mid-open)."""
+    for attempt in range(attempts):
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(0.02)
+
+
 @contextmanager
 def atomic_write(target_path: Path | str, mode: str = "wb") -> Generator[Path, None, None]:
     """Context manager for two-phase atomic file writing.
@@ -55,7 +67,7 @@ def atomic_write(target_path: Path | str, mode: str = "wb") -> Generator[Path, N
         yield part_path
         if part_path.exists():
             _fsync_path(part_path)
-            os.replace(part_path, path)
+            _replace_with_retry(part_path, path)
     except BaseException:
         if part_path.exists():
             with suppress(OSError):
@@ -106,7 +118,8 @@ class _FileLock:
         while True:
             try:
                 fd = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-            except FileExistsError:
+            except (FileExistsError, PermissionError):
+                # PermissionError: Windows reports a lock file pending deletion this way.
                 self._break_if_stale()
                 if time.monotonic() >= deadline:
                     raise TimeoutError(f"could not acquire manifest lock {self.path}") from None
@@ -156,11 +169,24 @@ class ManifestTracker:
 
     def _read_disk(self) -> dict[str, Any] | None:
         """Read the manifest from disk, preserving corrupt files; None if absent."""
-        if not self.path.exists():
-            return None
+        text: str | None = None
+        for attempt in range(50):
+            try:
+                text = self.path.read_text(encoding="utf-8")
+                break
+            except FileNotFoundError:
+                return None
+            except PermissionError:
+                # transient sharing violation while another writer replaces the file
+                if attempt == 49:
+                    raise
+                time.sleep(0.02)
+            except UnicodeDecodeError as exc:
+                self._preserve_corrupt(f"{type(exc).__name__}: {exc}")
+                return None
         try:
-            loaded = json.loads(self.path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, UnicodeDecodeError, OSError) as exc:
+            loaded = json.loads(text or "")
+        except json.JSONDecodeError as exc:
             self._preserve_corrupt(f"{type(exc).__name__}: {exc}")
             return None
         if not isinstance(loaded, dict) or not isinstance(loaded.get("chunks", {}), dict):

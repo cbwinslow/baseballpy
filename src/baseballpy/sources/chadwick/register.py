@@ -360,13 +360,13 @@ class ChadwickRegister:
         parquet_path = config.chadwick_dir / "people.parquet"
         names_parquet = config.chadwick_dir / "names.parquet"
 
-        if not refresh and parquet_path.exists():
+        extractor = ChadwickExtractor(cache_config=config)
+        if not refresh and parquet_path.exists() and extractor.is_cache_current(refresh=False):
             table = pq.read_table(parquet_path)
             names_table = pq.read_table(names_parquet) if names_parquet.exists() else None
             return cls(table, names_table=names_table)
 
         # Extract and normalize
-        extractor = ChadwickExtractor(cache_config=config)
         normalizer = ChadwickNormalizer()
         raw_shards = extractor.extract(refresh=refresh)
         table = normalizer.normalize(raw_shards)
