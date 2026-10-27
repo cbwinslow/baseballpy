@@ -17,16 +17,20 @@ The authoritative list of endpoints/datasets, parameters, keys and partitioning 
 ```python
 @dataclass(frozen=True)
 class MlbEndpoint:
-    dataset: str                  # registry name, e.g. "people_stats_season"
-    path: str                     # "/v1/people/{personId}/stats"
-    version: str = "v1"           # "v1.1" for game feed
-    params: Mapping[str, str]     # fixed params, e.g. {"stats": "season", "group": "hitting"}
-    fan_out: FanOut | None        # how to iterate: per season, per team, per person, per game_pk, per date window
-    root: str                     # JSON path of the record list, e.g. "dates[].games[]"
-    parent_fields: Mapping[str,str]  # fields hoisted from ancestors, e.g. {"game_date": "dates[].date"}
+    dataset: str  # registry name, e.g. "people_stats_season"
+    path: str  # "/v1/people/{personId}/stats"
+    version: str = "v1"  # "v1.1" for game feed
+    params: Mapping[str, str]  # fixed params, e.g. {"stats": "season", "group": "hitting"}
+    fan_out: (
+        FanOut | None
+    )  # how to iterate: per season, per team, per person, per game_pk, per date window
+    root: str  # JSON path of the record list, e.g. "dates[].games[]"
+    parent_fields: Mapping[
+        str, str
+    ]  # fields hoisted from ancestors, e.g. {"game_date": "dates[].date"}
     spec: DatasetSpec
     freshness: CachePolicy
-    hydrate: str | None           # value for ?hydrate= (schedule, teams, people, venues support it)
+    hydrate: str | None  # value for ?hydrate= (schedule, teams, people, venues support it)
 ```
 - `MlbApiExtractor.fetch(endpoint, **path_params)` -> raw JSON bytes (stored in `raw/mlb_api/<dataset>/...`), via `HttpClient`.
 - `MlbApiNormalizer.normalize(endpoint, payload)` walks `root`, hoists parent fields, flattens, applies spec.

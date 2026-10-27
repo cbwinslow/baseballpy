@@ -6,6 +6,7 @@ private event loop owned by the client.
 """
 
 import asyncio
+import concurrent.futures
 import threading
 import time
 from collections.abc import Awaitable, Mapping
@@ -128,7 +129,10 @@ class HttpClient:
 
     def _submit(self, coro: Awaitable[T]) -> "asyncio.Future[T]":
         loop = self._ensure_loop()
-        future = asyncio.run_coroutine_threadsafe(coro, loop)  # type: ignore[arg-type]
+        future: concurrent.futures.Future[T] = asyncio.run_coroutine_threadsafe(
+            coro,  # type: ignore[arg-type]
+            loop,
+        )
         return asyncio.wrap_future(future)
 
     def close(self) -> None:
@@ -190,7 +194,7 @@ class HttpClient:
             if isinstance(exc, RetryableStatus) and exc.retry_after is not None:
                 return exc.retry_after
             return float(
-                wait_exponential_jitter(initial=self.rate.backoff_factor, max=60.0)(state)
+                wait_exponential_jitter(multiplier=self.rate.backoff_factor, max=60.0)(state)
             )
 
         async def _once() -> HttpResult:

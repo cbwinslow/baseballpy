@@ -18,15 +18,17 @@ class LakeConfig(BaseSettings):            # env_prefix BASEBALLPY_
 ```python
 @dataclass(frozen=True)
 class DatasetSpec:
-    source: str            # "statcast" | "mlb_api" | "lahman" | "chadwick" | "retrosheet"
-    name: str              # "pitches", "schedule", "Batting", ...
-    view: str              # DuckDB view name, e.g. "statcast_pitches"
+    source: str  # "statcast" | "mlb_api" | "lahman" | "chadwick" | "retrosheet"
+    name: str  # "pitches", "schedule", "Batting", ...
+    view: str  # DuckDB view name, e.g. "statcast_pitches"
     schema: pa.Schema
     partition: Literal["season", "none"]
     keys: tuple[str, ...]  # natural/primary key columns used for upserts and dup tests
     description: str
-    endpoint_doc: str      # relative link to docs/sources/<source>.md anchor
-DATASETS: dict[str, DatasetSpec]   # keyed "<source>.<name>"
+    endpoint_doc: str  # relative link to docs/sources/<source>.md anchor
+
+
+DATASETS: dict[str, DatasetSpec]  # keyed "<source>.<name>"
 ```
 All of: path derivation, view creation, doc generation, the CLI `ingest` command and tests iterate `DATASETS`; nothing hardcodes a dataset name elsewhere.
 

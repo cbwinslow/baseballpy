@@ -65,7 +65,12 @@ class Quarantine:
                 }
                 handle.write(json.dumps(line) + "\n")
         logger.warning(
-            "quarantined %d record(s) from %s/%s: %s -> %s", len(items), source, dataset, reason, path
+            "quarantined %d record(s) from %s/%s: %s -> %s",
+            len(items),
+            source,
+            dataset,
+            reason,
+            path,
         )
         # Local import: audit depends on config only; avoids any import cycle with sinks.
         from baseballpy.core.audit import get_audit_logger
@@ -96,7 +101,7 @@ def checked_cast(
     """
     chunked = array if isinstance(array, pa.ChunkedArray) else pa.chunked_array([array])
     try:
-        return pc.cast(chunked, target, safe=True)  # type: ignore[no-any-return]
+        return pc.cast(chunked, target, safe=True)
     except (pa.ArrowInvalid, pa.ArrowNotImplementedError, pa.ArrowTypeError):
         pass
 

@@ -94,5 +94,6 @@ def test_dlt_sink(tmp_path: Path, sample_table: pa.Table) -> None:
         dataset_name="test_data",
     )
     sink = DltSink(pipeline=pipeline)
-    load_info = sink.write(sample_table, destination="test_pitches")
-    assert load_info is not None
+    rows = sink.write(sample_table, destination="test_pitches")
+    assert rows == 2
+    assert sink.last_load_info is not None
