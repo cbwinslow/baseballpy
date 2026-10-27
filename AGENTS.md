@@ -170,7 +170,8 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 
 1. **Enumerate, never hand-pick:** when a provider lists its own options (stat types and groups, sports/levels, standings and roster types, files in a git tree), ingest every one. Anything that cannot be ingested stays registered `unsupported` with probe evidence (`docs/*_probe.json`), or its raw bytes are kept; it is never silently skipped. Hand-written datasets that select fields get a complete-field twin.
 2. **Generated schema modules are never edited by hand** (`tables.py`, `lb_tables.py`, `mlb_tables.py`, `stat_combos.py`): change the generator in `scripts/` or the catalog and regenerate; commit the fixtures and probe JSON it writes. Types come from data, never from column names.
-3. **Bounded downloads:** requests that announce huge results (all-time pools, > 20,000 rows) are refused unless explicitly allowed; a per-request 404 is tolerated only for endpoints that opt in and is recorded and counted.
+3. **`unsupported` needs real evidence:** before declaring an endpoint or dataset unreachable, try the provider's own UI requests, documented parameters and well-known open-source clients (and web search); record what was tried. A wrong `unsupported` is data left behind (minor-league Statcast was declared unreachable until `minors=true` was found).
+4. **Bounded downloads:** requests that announce huge results (all-time pools, > 20,000 rows) are refused unless explicitly allowed; a per-request 404 is tolerated only for endpoints that opt in and is recorded and counted.
 
 ## 12. OpenSpec Hygiene
 

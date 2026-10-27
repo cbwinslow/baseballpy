@@ -16,7 +16,7 @@ import pyarrow.parquet as pq
 from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger, get_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
-from baseballpy.core.datasets import get_dataset
+from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
@@ -37,6 +37,10 @@ class TruncatedResultError(RuntimeError):
 
 #: first season Savant serves pitch-level data for (PITCHf/x era; probed 2026-10-27)
 FIRST_SEASON = 2008
+#: first season with minor-league tracking data (probed 2026-10-27: nothing in 2014-2020)
+FIRST_MINORS_SEASON = 2021
+#: affiliated minor-league sports whose calendars bound the minor-league season
+MINOR_SPORTS = (11, 12, 13, 14)
 MLB_SEASONS_URL = "https://statsapi.mlb.com/api/v1/seasons"
 PITCH_KEY = ("game_pk", "at_bat_number", "pitch_number")
 GAME_TYPES = {
@@ -61,8 +65,14 @@ class StatcastQuery:
     game_types: tuple[str, ...] = ()
     team: str | None = None
     player_type: str | None = None
+    #: the minor-league population (``minors=true``); its own dataset, ``pitches_minors``
+    minors: bool = False
+    #: ``hfLevel`` filter (``AAA``, ``A``, ...); only valid together with ``minors``
+    levels: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
+        if self.levels and not self.minors:
+            raise ValueError("levels filter requires minors=True (hfLevel is ignored otherwise)")
         unknown = [g for g in self.game_types if g not in GAME_TYPES]
         if unknown:
             raise ValueError(
@@ -73,12 +83,16 @@ class StatcastQuery:
 
     @property
     def is_unfiltered(self) -> bool:
-        """True when the query selects every pitch (the canonical, persisted population)."""
-        return not self.game_types and self.team is None
+        """True when the query selects a whole population (MLB, or all minors): it is persisted."""
+        return not self.game_types and self.team is None and not self.levels
 
     def params(self) -> dict[str, str]:
         """Savant query parameters for the set filters."""
         out: dict[str, str] = {}
+        if self.minors:
+            out["minors"] = "true"
+        if self.levels:
+            out["hfLevel"] = "".join(f"{level}|" for level in self.levels)
         if self.game_types:
             out["hfGT"] = "".join(f"{g}|" for g in self.game_types)
         if self.team is not None:
@@ -90,7 +104,7 @@ class StatcastQuery:
     @classmethod
     def from_filters(cls, filters: dict[str, Any]) -> "StatcastQuery":
         """Build from raw keyword filters (legacy ``statcast_search(**filters)`` calls)."""
-        known = {"game_types", "team", "player_type"}
+        known = {"game_types", "team", "player_type", "minors", "levels"}
         extra = set(filters) - known
         if extra:
             raise TypeError(f"unsupported Statcast filter(s) {sorted(extra)}; use {sorted(known)}")
@@ -99,6 +113,8 @@ class StatcastQuery:
             game_types=tuple(types),
             team=filters.get("team"),
             player_type=filters.get("player_type"),
+            minors=bool(filters.get("minors", False)),
+            levels=tuple(filters.get("levels") or ()),
         )
 
 
@@ -111,6 +127,7 @@ class StatcastSeasonReport:
     rows: int
     cached_chunks: int
     duplicate_keys: int
+    skipped_reason: str | None = None
 
 
 def split_date_range(
@@ -130,6 +147,27 @@ def split_date_range(
         current = chunk_end + timedelta(days=1)
 
     return ranges
+
+
+def grid_windows(start_date: date, end_date: date, chunk_days: int = 5) -> list[tuple[date, date]]:
+    """Windows covering ``start_date..end_date`` on a fixed per-year grid.
+
+    Block *k* of a year is January 1 + k x ``chunk_days`` (the last block is clipped at December
+    31), so a given day always belongs to the same window whatever range the caller asked for and
+    persisted windows can never overlap (``split_date_range`` anchors at the caller's start).
+    """
+    if start_date > end_date:
+        raise ValueError(f"start_date ({start_date}) cannot be after end_date ({end_date})")
+    windows: list[tuple[date, date]] = []
+    current = start_date
+    while current <= end_date:
+        jan1 = date(current.year, 1, 1)
+        block = (current - jan1).days // chunk_days
+        block_start = jan1 + timedelta(days=block * chunk_days)
+        block_end = min(block_start + timedelta(days=chunk_days - 1), date(current.year, 12, 31))
+        windows.append((block_start, block_end))
+        current = block_end + timedelta(days=1)
+    return windows
 
 
 def _to_date(value: str | date) -> date:
@@ -155,12 +193,17 @@ class StatcastExtractor:
         )
         self.normalizer = StatcastNormalizer()
         self.spec = get_dataset("statcast", "pitches")
+        self.spec_minors = get_dataset("statcast", "pitches_minors")
         self.store = ProcessedStore(self.cache_config)
         self.raw = RawStore(self.cache_config)
         self.manifest = self.cache_config.dataset_manifest("statcast", "pitches")
+        self.manifest_minors = self.cache_config.dataset_manifest("statcast", "pitches_minors")
         # discard orphaned .part files from killed runs
         cleanup_stale_parts(self.cache_config.raw_root / "statcast")
         cleanup_stale_parts(self.cache_config.processed_root / "statcast")
+
+    def _spec(self, minors: bool) -> DatasetSpec:
+        return self.spec_minors if minors else self.spec
 
     def _today(self) -> date:
         return self.cache_config.today or datetime.now().date()
@@ -170,15 +213,24 @@ class StatcastExtractor:
         """Deterministic chunk id: ``<start>_<end>`` (only unfiltered chunks are persisted)."""
         return f"{start_dt.isoformat()}_{end_dt.isoformat()}"
 
-    def _get_cache_path(self, start_dt: date, end_dt: date) -> Path:
+    def _get_cache_path(self, start_dt: date, end_dt: date, minors: bool = False) -> Path:
         """Path of the processed part for a date chunk (``season=YYYY/part-<chunk>.parquet``)."""
-        return self.store.part_path(self.spec, self._chunk_id(start_dt, end_dt), start_dt.year)
+        return self.store.part_path(
+            self._spec(minors), self._chunk_id(start_dt, end_dt), start_dt.year
+        )
 
     def _is_chunk_fresh(
-        self, chunk_id: str, cache_path: Path, start_dt: date, end_dt: date, refresh: bool
+        self,
+        chunk_id: str,
+        cache_path: Path,
+        start_dt: date,
+        end_dt: date,
+        refresh: bool,
+        minors: bool = False,
     ) -> tuple[bool, int]:
         """Return (fresh, recorded_row_count) per the freshness policy."""
-        entry = self.manifest.get_chunk(manifest_key(chunk_id, start_dt.year))
+        manifest = self.manifest_minors if minors else self.manifest
+        entry = manifest.get_chunk(manifest_key(chunk_id, start_dt.year))
         if entry is None:
             return False, 0
         rows = int(entry.get("records_count", 0) or 0)
@@ -206,7 +258,7 @@ class StatcastExtractor:
             if self.cache_config.enabled and query.is_unfiltered and len(table) > 0:
                 self.raw.put(
                     "statcast",
-                    "pitches",
+                    "pitches_minors" if query.minors else "pitches",
                     f"{self._chunk_id(start_dt, end_dt)}.csv",
                     result.content,
                     season=start_dt.year,
@@ -235,22 +287,25 @@ class StatcastExtractor:
         """Fetch/normalize one date chunk; returns (table, served_from_cache)."""
         query = query or StatcastQuery()
         persisted = self.cache_config.enabled and query.is_unfiltered
-        cache_path = self._get_cache_path(start_dt, end_dt)
+        spec = self._spec(query.minors)
+        cache_path = self._get_cache_path(start_dt, end_dt, query.minors)
         chunk_id = self._chunk_id(start_dt, end_dt)
 
         if persisted:
-            fresh, rows = self._is_chunk_fresh(chunk_id, cache_path, start_dt, end_dt, refresh)
+            fresh, rows = self._is_chunk_fresh(
+                chunk_id, cache_path, start_dt, end_dt, refresh, query.minors
+            )
             if fresh:
                 if rows == 0:
-                    return self.spec.schema.empty_table(), True
-                return pq.read_table(cache_path, schema=self.spec.schema), True
+                    return spec.schema.empty_table(), True
+                return pq.read_table(cache_path, schema=spec.schema), True
 
         table = await self._fetch_window(start_dt, end_dt, query)
 
         if persisted:
             # zero-row chunks are written too, so an empty day is never re-fetched and every
             # season keeps a stable schema for the views
-            self.store.put(self.spec, table, chunk_id=chunk_id, season=start_dt.year)
+            self.store.put(spec, table, chunk_id=chunk_id, season=start_dt.year)
         return table, False
 
     async def extract_async(
@@ -264,7 +319,7 @@ class StatcastExtractor:
         """Asynchronously extract and concat all date chunks for the requested range."""
         query = query or StatcastQuery.from_filters(filters)
         start, end = _to_date(start_date), _to_date(end_date)
-        chunks = split_date_range(start, end, chunk_days=self.chunk_days)
+        chunks = grid_windows(start, end, chunk_days=self.chunk_days)
         gate = asyncio.Semaphore(self.rate_limit_config.max_concurrency)
 
         async def _bounded(s: date, e: date) -> tuple[pa.Table, bool]:
@@ -275,16 +330,34 @@ class StatcastExtractor:
             operation="statcast_extract",
             source="statcast",
             endpoint=SAVANT_BASE_URL,
-            destination=str(self.store.dataset_dir(self.spec)),
+            destination=str(self.store.dataset_dir(self._spec(query.minors))),
         ) as tracker:
             results = await asyncio.gather(*[_bounded(s, e) for s, e in chunks])
             tables = [table for table, _ in results]
             tracker.set_cache_hit(bool(results) and all(hit for _, hit in results))
 
             if not tables:
-                table = self.spec.schema.empty_table()
+                table = self._spec(query.minors).schema.empty_table()
             else:
                 table = pa.concat_tables(tables, promote_options="default")
+            # whole grid windows are fetched and stored; the caller gets exactly its days
+            if table.num_rows and "game_date" in table.column_names:
+                days = table.column("game_date")
+                inside = pc.and_(
+                    pc.greater_equal(days, pa.scalar(start, pa.date32())),
+                    pc.less_equal(days, pa.scalar(end, pa.date32())),
+                )
+                table = table.filter(inside)
+            if self.cache_config.enabled and query.is_unfiltered:
+                for year in sorted({s.year for s, _ in chunks}):
+                    surplus = self.duplicate_keys(year, query.minors)
+                    if surplus:
+                        logger.warning(
+                            "statcast.%s season %s has %s duplicate pitch keys",
+                            self._spec(query.minors).name,
+                            year,
+                            surplus,
+                        )
 
             tracker.set_records(len(table))
             return table
@@ -315,12 +388,44 @@ class StatcastExtractor:
 
     # ------------------------------------------------------------------ season ingestion
 
-    def season_window(self, season: int) -> tuple[date, date]:
+    def _minor_window(self, season: int) -> tuple[date, date]:
+        """Union of the affiliated minor-league calendars (sports 11-14) of a season."""
+        cache = self.cache_config.http_cache_root / "mlb-seasons" / f"minors-{season}.json"
+        if cache.exists():
+            record = json.loads(cache.read_text(encoding="utf-8"))
+            return _to_date(record["start"]), min(_to_date(record["end"]), self._today())
+        starts: list[date] = []
+        ends: list[date] = []
+        for sport in MINOR_SPORTS:
+            result = self.http.get_sync(
+                MLB_SEASONS_URL, params={"sportId": sport, "season": season}
+            )
+            for item in json.loads(result.content).get("seasons", []):
+                begin = item.get("springStartDate") or item.get("regularSeasonStartDate")
+                finish = item.get("postSeasonEndDate") or item.get("seasonEndDate")
+                if begin and finish:
+                    starts.append(_to_date(begin))
+                    ends.append(_to_date(finish))
+        if not starts:
+            raise ValueError(f"MLB Stats API has no minor-league season {season}")
+        first, last = min(starts), max(ends)
+        if season < self._today().year:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(
+                json.dumps({"start": first.isoformat(), "end": last.isoformat()}),
+                encoding="utf-8",
+            )
+        return first, min(last, self._today())
+
+    def season_window(self, season: int, minors: bool = False) -> tuple[date, date]:
         """First and last day of a season's games (spring training to the end of the postseason).
 
-        Read from the MLB Stats API ``/v1/seasons?season=<year>`` and cached under
-        ``cache/http/mlb-seasons`` (past seasons never change).
+        Read from the MLB Stats API ``/v1/seasons?season=<year>`` (``minors``: the union of the
+        affiliated minor-league calendars) and cached under ``cache/http/mlb-seasons`` (past
+        seasons never change).
         """
+        if minors:
+            return self._minor_window(season)
         cache = self.cache_config.http_cache_root / "mlb-seasons" / f"{season}.json"
         if cache.exists():
             record = json.loads(cache.read_text(encoding="utf-8"))
@@ -339,30 +444,43 @@ class StatcastExtractor:
             raise ValueError(f"MLB season {season} has no start/end dates: {record}")
         return _to_date(start), min(_to_date(end), self._today())
 
-    def ingest_season(self, season: int, refresh: bool = False) -> StatcastSeasonReport:
+    def ingest_season(
+        self, season: int, refresh: bool = False, minors: bool = False
+    ) -> StatcastSeasonReport:
         """Ingest every pitch of one season (spring training through the postseason).
 
         Windows come from the MLB season calendar, each is fetched/bisected independently and
         written as its own part, so a re-run only fetches what is missing or still volatile.
+        ``minors`` ingests the minor-league population into ``pitches_minors`` (2021 onwards;
+        earlier seasons are reported as skipped without any request).
         """
-        return asyncio.run(self._ingest_season_async(season, refresh))
+        if minors and season < FIRST_MINORS_SEASON:
+            reason = (
+                f"no minor-league tracking data before {FIRST_MINORS_SEASON} (probed 2026-10-27)"
+            )
+            logger.info("pitches_minors season %s skipped: %s", season, reason)
+            return StatcastSeasonReport(season, 0, 0, 0, 0, skipped_reason=reason)
+        return asyncio.run(self._ingest_season_async(season, refresh, minors))
 
-    async def _ingest_season_async(self, season: int, refresh: bool) -> StatcastSeasonReport:
-        start, end = self.season_window(season)
-        windows = split_date_range(start, end, chunk_days=self.chunk_days)
+    async def _ingest_season_async(
+        self, season: int, refresh: bool, minors: bool = False
+    ) -> StatcastSeasonReport:
+        start, end = self.season_window(season, minors)
+        query = StatcastQuery(minors=minors)
+        windows = grid_windows(start, end, chunk_days=self.chunk_days)
         gate = asyncio.Semaphore(self.rate_limit_config.max_concurrency)
 
         async def _one(s: date, e: date) -> tuple[int, bool]:
             async with gate:
-                table, hit = await self._fetch_chunk(s, e, refresh=refresh)
+                table, hit = await self._fetch_chunk(s, e, refresh=refresh, query=query)
                 return table.num_rows, hit
 
         results = await asyncio.gather(*[_one(s, e) for s, e in windows])
-        duplicates = self.duplicate_keys(season)
+        duplicates = self.duplicate_keys(season, minors)
         if duplicates:
             logger.warning(
-                "statcast.pitches season %s has %s duplicate (game_pk, at_bat_number, "
-                "pitch_number) keys",
+                "statcast.%s season %s has %s duplicate (game_pk, at_bat_number, pitch_number) keys",
+                self._spec(minors).name,
                 season,
                 duplicates,
             )
@@ -375,15 +493,20 @@ class StatcastExtractor:
         )
 
     def ingest_all(
-        self, start: int = FIRST_SEASON, end: int | None = None, refresh: bool = False
+        self,
+        start: int | None = None,
+        end: int | None = None,
+        refresh: bool = False,
+        minors: bool = False,
     ) -> list[StatcastSeasonReport]:
-        """Ingest ``start..end`` seasons (default: 2008 through the current season), resumable."""
+        """Ingest ``start..end`` seasons (default: first season with data to today), resumable."""
+        first = start if start is not None else (FIRST_MINORS_SEASON if minors else FIRST_SEASON)
         last = end if end is not None else self._today().year
-        return [self.ingest_season(season, refresh) for season in range(start, last + 1)]
+        return [self.ingest_season(season, refresh, minors) for season in range(first, last + 1)]
 
-    def duplicate_keys(self, season: int) -> int:
+    def duplicate_keys(self, season: int, minors: bool = False) -> int:
         """Number of surplus rows sharing a pitch key within a season (0 when keys are unique)."""
-        files = sorted(self.store.dataset_dir(self.spec, season).glob("part-*.parquet"))
+        files = sorted(self.store.dataset_dir(self._spec(minors), season).glob("part-*.parquet"))
         if not files:
             return 0
         table = pa.concat_tables(
@@ -429,13 +552,16 @@ def statcast_search(
     )
 
 
-def ingest_season(season: int, refresh: bool = False) -> StatcastSeasonReport:
-    """Ingest one full season of pitches into the lake."""
-    return get_default_extractor().ingest_season(season, refresh=refresh)
+def ingest_season(season: int, refresh: bool = False, minors: bool = False) -> StatcastSeasonReport:
+    """Ingest one full season of pitches (``minors``: minor-league pitches) into the lake."""
+    return get_default_extractor().ingest_season(season, refresh=refresh, minors=minors)
 
 
 def ingest_all(
-    start: int = FIRST_SEASON, end: int | None = None, refresh: bool = False
+    start: int | None = None,
+    end: int | None = None,
+    refresh: bool = False,
+    minors: bool = False,
 ) -> list[StatcastSeasonReport]:
     """Ingest the seasons ``start..end`` of pitches into the lake (resumable)."""
-    return get_default_extractor().ingest_all(start, end, refresh)
+    return get_default_extractor().ingest_all(start, end, refresh, minors)

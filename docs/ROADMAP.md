@@ -2,7 +2,7 @@
 
 This document outlines the strategic engineering roadmap for `baseballpy`, establishing 18 high-value capability pillars designed to make `baseballpy` the foundational data engineering and sabermetric computing library in Python—far surpassing legacy packages (`pybaseball`, `baseballr`, `mlbstatsapi`) in speed, type safety, coverage, and AI-native workflows.
 
-> **Status 2026-10-27.** Pillar 1 item 1 (Lahman) is delivered (27 strict tables, `cbwinslow/lahman-database-csv` only). Item 5 (MiLB Statcast) is blocked upstream for pitch search (`sportId`/`hfLevel` are ignored or empty; see `docs/sources/statcast.md`), while minor-league *MLB Stats API* data (all sports/levels) is ingested. The other pillars are not started. Coverage numbers live in the generated docs and probes (`docs/*_probe.json`), not here.
+> **Status 2026-10-27.** Pillar 1 item 1 (Lahman) is delivered (27 strict tables, `cbwinslow/lahman-database-csv` only). Item 5 (MiLB Statcast) is delivered for pitch search (`StatcastQuery(minors=True)`, dataset `pitches_minors`, 2021 onwards) and minor-league *MLB Stats API* data (all sports/levels) is ingested. The other pillars are not started. Coverage numbers live in the generated docs and probes (`docs/*_probe.json`), not here.
 
 ---
 

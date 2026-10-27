@@ -29,6 +29,22 @@ from baseballpy.sources.statcast.extractor import (
 FIXTURE_PATH = Path(__file__).parent / "fixtures" / "statcast" / "sample_pitches.csv"
 
 
+def _window_csv(request: httpx.Request) -> httpx.Response:
+    """Savant stand-in: the sample pitches dated inside the requested window, keys unique per window."""
+    import csv
+    import io
+
+    start, end = request.url.params["game_date_gt"], request.url.params["game_date_lt"]
+    rows = list(csv.reader(io.StringIO(FIXTURE_PATH.read_text("utf-8"))))
+    header, body = rows[0], rows[1:]
+    pk, day = header.index("game_pk"), header.index("game_date")
+    for row in body:
+        row[pk], row[day] = start.replace("-", ""), end
+    buf = io.StringIO()
+    csv.writer(buf, lineterminator="\n").writerows([header, *body])
+    return httpx.Response(200, content=buf.getvalue().encode("utf-8"))
+
+
 def _spec(name: str) -> DatasetSpec:
     return get_dataset("retrosheet", name)
 
@@ -110,14 +126,11 @@ def test_smoke_statcast_multi_chunk_idempotency_and_manifest(tmp_path: Path) -> 
     cache_config = LakeConfig(home=tmp_path)
     extractor = StatcastExtractor(cache_config=cache_config, chunk_days=5)
 
-    sample_csv = FIXTURE_PATH.read_bytes()
     # Mock savant search endpoint
-    search_route = respx.get(SAVANT_BASE_URL).mock(
-        return_value=httpx.Response(200, content=sample_csv)
-    )
+    search_route = respx.get(SAVANT_BASE_URL).mock(side_effect=_window_csv)
 
-    # 15 days: 2024-04-01 to 2024-04-15 -> 3 chunks (04-01..05, 04-06..10, 04-11..15)
-    table = extractor.extract(start_date="2024-04-01", end_date="2024-04-15")
+    # 15 days on the grid: 2024-03-31..04-14 -> 3 chunks (03-31..04-04, 04-05..09, 04-10..14)
+    table = extractor.extract(start_date="2024-03-31", end_date="2024-04-14")
 
     # Each chunk fixture has 2 rows -> total 6 rows
     assert len(table) == 6
@@ -135,7 +148,7 @@ def test_smoke_statcast_multi_chunk_idempotency_and_manifest(tmp_path: Path) -> 
     # Test idempotency: Mock route to return 500 error to ensure network is not touched
     search_route.mock(return_value=httpx.Response(500))
 
-    cached_table = extractor.extract(start_date="2024-04-01", end_date="2024-04-15")
+    cached_table = extractor.extract(start_date="2024-03-31", end_date="2024-04-14")
     assert len(cached_table) == 6
     # Call count should not have increased
     assert search_route.call_count == 3
@@ -179,9 +192,8 @@ def test_smoke_cross_source_duckdb_and_polars_pipeline(tmp_path: Path) -> None:
 
     # 1. Statcast data
     statcast_extractor = StatcastExtractor(cache_config=cache_config, chunk_days=5)
-    sample_pitches = FIXTURE_PATH.read_bytes()
-    respx.get(SAVANT_BASE_URL).mock(return_value=httpx.Response(200, content=sample_pitches))
-    pitches_table = statcast_extractor.extract(start_date="2024-04-01", end_date="2024-04-05")
+    respx.get(SAVANT_BASE_URL).mock(side_effect=_window_csv)
+    pitches_table = statcast_extractor.extract(start_date="2024-03-31", end_date="2024-04-04")
     assert len(pitches_table) == 2
 
     # 2. MLB Stats API Schedule data

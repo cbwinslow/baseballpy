@@ -62,6 +62,17 @@ def register_all() -> dict[str, DatasetSpec]:
         "season",
     )
 
+    _add(
+        "statcast",
+        "pitches_minors",
+        "statcast_pitches_minors",
+        STATCAST_SCHEMA,
+        ("game_pk", "at_bat_number", "pitch_number"),
+        "Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).",
+        "sources/statcast.md#1-pitch-level-search-statcast_searchcsv---dataset-pitches",
+        "season",
+    )
+
     for board in SAVANT_LEADERBOARDS:
         if board.slug not in LEADERBOARD_SCHEMAS:
             continue  # variant added but its schema not generated yet (a test catches this)

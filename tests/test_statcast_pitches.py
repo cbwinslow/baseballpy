@@ -78,11 +78,13 @@ def test_query_params_and_validation() -> None:
 def _by_window(request: httpx.Request) -> httpx.Response:
     """Savant stand-in: the live 2024 fixture with a window-unique game_pk (unique pitch keys)."""
     start = request.url.params["game_date_gt"]
+    end = request.url.params["game_date_lt"]
     rows = list(csv.reader(io.StringIO((FIXTURES / "live_2024.csv").read_text("utf-8"))))
     header, body = rows[0], rows[1:]
-    pk = header.index("game_pk")
+    pk, day = header.index("game_pk"), header.index("game_date")
     for row in body:
         row[pk] = start.replace("-", "")
+        row[day] = end  # the pitches belong to the last day of the window that was asked for
     buf = io.StringIO()
     csv.writer(buf, quoting=csv.QUOTE_ALL, lineterminator="\n").writerows([header, *body])
     return httpx.Response(200, content=buf.getvalue().encode("utf-8"))
@@ -197,7 +199,7 @@ def test_empty_windows_are_recorded_and_not_refetched(tmp_path: Path) -> None:
         return_value=httpx.Response(
             200,
             json={
-                "seasons": [{"springStartDate": "2024-02-01", "postSeasonEndDate": "2024-02-05"}]
+                "seasons": [{"springStartDate": "2024-01-31", "postSeasonEndDate": "2024-02-04"}]
             },
         )
     )

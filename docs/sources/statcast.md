@@ -19,15 +19,16 @@ is from that probe, not from memory.
 |---|---|
 | Request | `all=true&type=details&game_date_gt=<d>&game_date_lt=<d>` (+ optional filters below) |
 | Seasons | 2008 - present: the export has **119 columns in every era** (2008 included); batted-ball and bat-tracking columns are simply empty before they existed (`launch_speed` is empty in 2008 and filled from 2015, `arm_angle` from 2020, `bat_speed` and the swing-path columns from 2024; checked on 2015-06-15, 2017-06-15, 2020-08-15, 2023-06-15, 2024-06-15, 2025-06-15) |
-| Windows | 5-day chunks (`chunk_days`); spring training through the postseason, taken from the MLB calendar (`GET statsapi.mlb.com/api/v1/seasons?sportId=1&season=<Y>` -> `springStartDate`..`postSeasonEndDate`, cached in `cache/http/mlb-seasons`) |
+| Windows | 5-day chunks (`chunk_days`) on a **fixed per-year grid** (block k = January 1 + 5k days, the last block of a year is clipped at December 31, `grid_windows`), so overlapping, nested or adjacent requests never store a pitch twice; `extract` fetches whole grid windows and returns exactly the requested `game_date` range. Season windows (spring training through the postseason) come from the MLB calendar (`GET statsapi.mlb.com/api/v1/seasons?sportId=1&season=<Y>` -> `springStartDate`..`postSeasonEndDate`, cached in `cache/http/mlb-seasons`) |
 | Partition / key | `season`; `(game_pk, at_bat_number, pitch_number)`; `ingest_season` reports surplus duplicate keys |
 | Idempotency | one part per window (`part-<start>_<end>.parquet`), written atomically; a re-run only fetches missing windows, windows within 3 days of today, or when `refresh=True`; empty days are stored as empty parts |
 | Spring training | `game_type` `S` rows are returned by the unfiltered search (3,692 pitches on 2024-03-10) |
 
 **Filters (`StatcastQuery`)** - verified live: `hfGT=R|F|...` (game types `S R F D L W A`), `team=<abbr>`,
 `player_type=batter|pitcher` (changes nothing: `all=true` returns every pitch). A filtered query returns rows but is
-**never written to the lake** (it would duplicate pitches). `sportId`/`hfLevel` do not select minor leagues
-(`sportId` is ignored, `hfLevel=11|` returned 0 rows), so minor-league Statcast is **unsupported** here.
+**never written to the lake** (it would duplicate pitches).
+
+**Minor leagues (`pitches_minors`).** `minors=true` returns the minor-league population with the same 119 columns (probed 2026-10-27: 6,042 pitches on 2024-06-15, home teams `ABQ, BUF, LOU, ...`); `hfLevel=<L>|` filters it only together with `minors=true` (`AAA|` 4,594 and `A|` 1,448 rows that day; `AA|`, `A+|`, `A-|`, `R|` returned 0). Data exists from 2021 (nothing in 2014-2020), so `ingest_all(minors=True)` starts there. `sportId`, `sport_id`, `level` and `hfMilb` are ignored and `hfLevel` without `minors=true` returns 0 rows (an earlier version of this page wrongly called minor-league pitches unreachable). The season window is the union of the MLB calendars of sports 11-14. Minor-league and MLB pitches are separate datasets (`statcast_pitches_minors`, `statcast_pitches`); a level-filtered query is returned but not persisted.
 
 **API:** `statcast_search(start, end, query=StatcastQuery(...))`, `ingest_season(year)`, `ingest_all(2008, end)`.
 
@@ -1463,3 +1464,138 @@ Rolling last-N-batted-ball xwOBA windows (50/100/250) per batter and pitcher: a 
 | `_extras` | string | yes | — |  |
 
 <!-- END GENERATED:statcast.leaderboard_rolling -->
+
+<!-- BEGIN GENERATED:statcast.pitches_minors -->
+### Dataset: pitches_minors
+
+Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
+
+- **View:** `statcast_pitches_minors`
+- **Processed path:** `processed/statcast/pitches_minors/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `at_bat_number`, `pitch_number`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `game_date` | date32[day] | yes | — |  |
+| `game_year` | int16 | yes | — |  |
+| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `at_bat_number` | int16 | yes | — |  |
+| `pitch_number` | int16 | yes | — |  |
+| `pitcher` | int32 | yes | — |  |
+| `batter` | int32 | yes | — |  |
+| `player_name` | string | yes | — |  |
+| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `inning` | int8 | yes | — |  |
+| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `balls` | int8 | yes | — |  |
+| `strikes` | int8 | yes | — |  |
+| `outs_when_up` | int8 | yes | — |  |
+| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `release_speed` | float | yes | — |  |
+| `effective_speed` | float | yes | — |  |
+| `release_spin_rate` | float | yes | — |  |
+| `release_extension` | float | yes | — |  |
+| `spin_axis` | float | yes | — |  |
+| `release_pos_x` | float | yes | — |  |
+| `release_pos_y` | float | yes | — |  |
+| `release_pos_z` | float | yes | — |  |
+| `arm_angle` | float | yes | — |  |
+| `zone` | int8 | yes | — |  |
+| `plate_x` | float | yes | — |  |
+| `plate_z` | float | yes | — |  |
+| `sz_top` | float | yes | — |  |
+| `sz_bot` | float | yes | — |  |
+| `pfx_x` | float | yes | — |  |
+| `pfx_z` | float | yes | — |  |
+| `vx0` | float | yes | — |  |
+| `vy0` | float | yes | — |  |
+| `vz0` | float | yes | — |  |
+| `ax` | float | yes | — |  |
+| `ay` | float | yes | — |  |
+| `az` | float | yes | — |  |
+| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `des` | string | yes | — |  |
+| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `hit_location` | int8 | yes | — |  |
+| `launch_speed` | float | yes | — |  |
+| `launch_angle` | float | yes | — |  |
+| `launch_speed_angle` | int8 | yes | — |  |
+| `hit_distance_sc` | float | yes | — |  |
+| `hc_x` | float | yes | — |  |
+| `hc_y` | float | yes | — |  |
+| `bat_speed` | float | yes | — |  |
+| `swing_length` | float | yes | — |  |
+| `estimated_ba_using_speedangle` | float | yes | — |  |
+| `estimated_woba_using_speedangle` | float | yes | — |  |
+| `woba_value` | float | yes | — |  |
+| `woba_denom` | float | yes | — |  |
+| `babip_value` | float | yes | — |  |
+| `iso_value` | float | yes | — |  |
+| `delta_home_win_exp` | float | yes | — |  |
+| `delta_run_exp` | float | yes | — |  |
+| `on_1b` | int32 | yes | — |  |
+| `on_2b` | int32 | yes | — |  |
+| `on_3b` | int32 | yes | — |  |
+| `home_score` | int16 | yes | — |  |
+| `away_score` | int16 | yes | — |  |
+| `bat_score` | int16 | yes | — |  |
+| `fld_score` | int16 | yes | — |  |
+| `post_home_score` | int16 | yes | — |  |
+| `post_away_score` | int16 | yes | — |  |
+| `post_bat_score` | int16 | yes | — |  |
+| `post_fld_score` | int16 | yes | — |  |
+| `fielder_2` | int32 | yes | — |  |
+| `fielder_3` | int32 | yes | — |  |
+| `fielder_4` | int32 | yes | — |  |
+| `fielder_5` | int32 | yes | — |  |
+| `fielder_6` | int32 | yes | — |  |
+| `fielder_7` | int32 | yes | — |  |
+| `fielder_8` | int32 | yes | — |  |
+| `fielder_9` | int32 | yes | — |  |
+| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `spin_dir` | string | yes | — |  |
+| `spin_rate_deprecated` | string | yes | — |  |
+| `break_angle_deprecated` | string | yes | — |  |
+| `break_length_deprecated` | string | yes | — |  |
+| `tfs_deprecated` | string | yes | — |  |
+| `tfs_zulu_deprecated` | string | yes | — |  |
+| `umpire` | string | yes | — |  |
+| `sv_id` | string | yes | — |  |
+| `miss_distance` | float | yes | — |  |
+| `estimated_slg_using_speedangle` | float | yes | — |  |
+| `delta_pitcher_run_exp` | float | yes | — |  |
+| `hyper_speed` | float | yes | — |  |
+| `home_score_diff` | int16 | yes | — |  |
+| `bat_score_diff` | int16 | yes | — |  |
+| `home_win_exp` | float | yes | — |  |
+| `bat_win_exp` | float | yes | — |  |
+| `age_pit_legacy` | int16 | yes | — |  |
+| `age_bat_legacy` | int16 | yes | — |  |
+| `age_pit` | int16 | yes | — |  |
+| `age_bat` | int16 | yes | — |  |
+| `n_thruorder_pitcher` | int16 | yes | — |  |
+| `n_priorpa_thisgame_player_at_bat` | int16 | yes | — |  |
+| `pitcher_days_since_prev_game` | int16 | yes | — |  |
+| `batter_days_since_prev_game` | int16 | yes | — |  |
+| `pitcher_days_until_next_game` | int16 | yes | — |  |
+| `batter_days_until_next_game` | int16 | yes | — |  |
+| `api_break_z_with_gravity` | float | yes | — |  |
+| `api_break_x_arm` | float | yes | — |  |
+| `api_break_x_batter_in` | float | yes | — |  |
+| `attack_angle` | float | yes | — |  |
+| `attack_direction` | float | yes | — |  |
+| `swing_path_tilt` | float | yes | — |  |
+| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — |  |
+| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:statcast.pitches_minors -->

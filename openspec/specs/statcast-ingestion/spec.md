@@ -55,3 +55,9 @@ Leaderboards without a CSV download MUST be ingested from the JSON value embedde
 ### Requirement: Season Game Feeds
 `StatcastGameFeed.ingest_season(season, max_games)` MUST fetch the feed of every final game of the season (MLB schedule), skip games already stored, and keep the immutable raw response with its sha256.
 
+
+### Requirement: Minor-League Pitches
+The system MUST ingest Savant's minor-league pitch export (`statcast_search/csv` with `minors=true`) into the dataset `statcast.pitches_minors` with the same strict schema and key as `pitches`, partitioned by season, for every season with data (2021 onwards). The unfiltered minors population is persisted; an `hfLevel` filter (valid only with `minors=true`) is returned but never persisted. Minor-league and MLB pitches MUST NOT share a dataset; seasons before 2021 are skipped with a recorded reason and no request.
+
+### Requirement: Aligned Windows
+Persisted pitch windows MUST lie on a fixed per-year grid (block k = January 1 + k x chunk_days, clipped at December 31) independent of the caller's request, so overlapping, nested or adjacent requests never store the same pitch twice. A request MUST return exactly the pitches of its requested `game_date` range.

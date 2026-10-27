@@ -52,8 +52,10 @@ def fast_rates(*hosts: str, **kw: float | int) -> RateLimitConfig:
     )
 
 
-def make_csv(rows: int) -> bytes:
-    body = [PITCH_LINES[0]] + [PITCH_LINES[1 + (i % 2)] for i in range(rows)]
+def make_csv(rows: int, day: str = "2024-04-05") -> bytes:
+    body = [PITCH_LINES[0]] + [
+        PITCH_LINES[1 + (i % 2)].replace("2024-04-05", day) for i in range(rows)
+    ]
     return ("\n".join(body) + "\n").encode()
 
 
@@ -78,17 +80,19 @@ def test_statcast_bisects_when_row_cap_is_hit(
         q = request.url.params
         start, end = q["game_date_gt"], q["game_date_lt"]
         seen.append((start, end))
-        return httpx.Response(200, content=make_csv(3 if start != end else 2))
+        return httpx.Response(200, content=make_csv(3 if start != end else 2, day=end))
 
     respx.get(SAVANT_BASE_URL).mock(side_effect=handler)
     extractor, http = _statcast(tmp_path, date(2026, 6, 1))
     try:
-        table = extractor.extract("2024-04-01", "2024-04-05")
+        table = extractor.extract("2024-03-31", "2024-04-04")  # exactly one grid window
     finally:
         http.close()
     assert len(table) == 10  # five single-day leaves x 2 rows, no duplicates, nothing truncated
     leaves = {w for w in seen if w[0] == w[1]}
-    assert leaves == {(f"2024-04-0{d}", f"2024-04-0{d}") for d in range(1, 6)}
+    assert leaves == {("2024-03-31", "2024-03-31")} | {
+        (f"2024-04-0{d}", f"2024-04-0{d}") for d in range(1, 5)
+    }
     ops = [e.operation for e in get_audit_logger().read_events()]
     assert "statcast_row_cap_bisect" in ops
 
@@ -152,7 +156,7 @@ def test_statcast_recent_days_always_revalidated(tmp_path: Path) -> None:
         extractor.extract("2026-05-30", "2026-05-31")
     finally:
         http.close()
-    assert route.call_count == 2
+    assert route.call_count == 4, "two grid windows (05-26..05-30, 05-31..06-04), twice"
 
 
 @respx.mock
