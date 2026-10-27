@@ -1,8 +1,11 @@
-"""Canonical PyArrow schemas and Enums for Chadwick Bureau Player Register."""
+"""Strict PyArrow schemas (generated from the real headers) and Enums for the Chadwick Register."""
 
 from enum import StrEnum
 
 import pyarrow as pa
+
+from baseballpy.core.schema_tools import schema_from_columns
+from baseballpy.sources.chadwick.tables import CHADWICK_COLUMNS, CHADWICK_KEYS
 
 
 class PlayerIdType(StrEnum):
@@ -19,58 +22,14 @@ class PlayerIdType(StrEnum):
     WIKIDATA = "key_wikidata"
 
 
-CHADWICK_PEOPLE_SCHEMA = pa.schema(
-    [
-        ("key_person", pa.string()),
-        ("key_uuid", pa.string()),
-        ("key_mlbam", pa.int32()),
-        ("key_retro", pa.string()),
-        ("key_bbref", pa.string()),
-        ("key_bbref_minors", pa.string()),
-        ("key_fangraphs", pa.int32()),
-        ("key_npb", pa.string()),
-        ("key_sr_nfl", pa.string()),
-        ("key_sr_nba", pa.string()),
-        ("key_sr_nhl", pa.string()),
-        ("key_wikidata", pa.string()),
-        ("name_last", pa.string()),
-        ("name_first", pa.string()),
-        ("name_given", pa.string()),
-        ("name_suffix", pa.string()),
-        ("name_matrilineal", pa.string()),
-        ("name_nick", pa.string()),
-        ("birth_year", pa.int16()),
-        ("birth_month", pa.int8()),
-        ("birth_day", pa.int8()),
-        ("death_year", pa.int16()),
-        ("death_month", pa.int8()),
-        ("death_day", pa.int8()),
-        ("pro_played_first", pa.int16()),
-        ("pro_played_last", pa.int16()),
-        ("mlb_played_first", pa.int16()),
-        ("mlb_played_last", pa.int16()),
-        ("col_played_first", pa.int16()),
-        ("col_played_last", pa.int16()),
-    ]
-)
+#: Strict schema per dataset (typed columns + trailing ``_extras`` JSON string).
+CHADWICK_SCHEMAS: dict[str, pa.Schema] = {
+    dataset: schema_from_columns(columns) for dataset, columns in CHADWICK_COLUMNS.items()
+}
+#: Documented key per dataset (uniqueness verified on the full register).
+CHADWICK_PRIMARY_KEYS = CHADWICK_KEYS
 
-CHADWICK_NAMES_SCHEMA = pa.schema(
-    [
-        ("key_person", pa.string()),
-        ("name_last", pa.string()),
-        ("name_first", pa.string()),
-        ("name_given", pa.string()),
-        ("name_suffix", pa.string()),
-        ("name_matrilineal", pa.string()),
-        ("name_nick", pa.string()),
-        ("name_type", pa.string()),
-    ]
-)
-
-CHADWICK_LINKS_SCHEMA = pa.schema(
-    [
-        ("key_person", pa.string()),
-        ("link_type", pa.string()),
-        ("link_url", pa.string()),
-    ]
-)
+CHADWICK_PEOPLE_SCHEMA = CHADWICK_SCHEMAS["register"]
+CHADWICK_NAMES_SCHEMA = CHADWICK_SCHEMAS["register_names"]
+CHADWICK_LINKS_SCHEMA = CHADWICK_SCHEMAS["register_links"]
+CHADWICK_COUNTRIES_SCHEMA = CHADWICK_SCHEMAS["register_countries"]

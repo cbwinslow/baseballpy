@@ -1,15 +1,18 @@
-"""Extractor for the sharded Chadwick Bureau Register from GitHub with commit SHA revalidation."""
+"""Extractor for the Chadwick Bureau Register: tree-driven discovery, pinned refs, SHA revalidation."""
 
 import asyncio
 import concurrent.futures
 import logging
+import re
+from datetime import UTC, datetime
 from pathlib import Path
 
 from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
+from baseballpy.core.github_tree import TreeTruncatedError, fetch_tree
 from baseballpy.core.http import HttpClient, HttpStatusError, TransportError, get_http_client
-from baseballpy.core.sources_lock import SourceRef, get_source_ref
+from baseballpy.core.sources_lock import SourceRef, get_source_ref, github_headers
 from baseballpy.core.stores import RawStore
 
 logger = logging.getLogger(__name__)
@@ -20,12 +23,24 @@ CHADWICK_COMMITS_API = (
     "https://api.github.com/repos/chadwickbureau/register/commits?path=data&page=1&per_page=1"
 )
 HEX_SHARDS = [f"people-{c}.csv" for c in "0123456789abcdef"]
-AUXILIARY_FILES = ("names.csv", "links.csv")
+AUXILIARY_FILES = ("names.csv", "links.csv", "countries.csv")
 SHA_CHUNK = "commit_sha"
+
+#: file name (in ``data/``) -> dataset whose ``raw/chadwick/<dataset>/`` directory stores it
+AUXILIARY_DATASETS = {
+    "names.csv": "register_names",
+    "links.csv": "register_links",
+    "countries.csv": "register_countries",
+}
+_SHARD = re.compile(r"^people-[0-9a-f]\.csv$")
+
+
+def _now_iso() -> str:
+    return datetime.now(UTC).isoformat()
 
 
 class ChadwickExtractor:
-    """Extracts all 16 sharded Chadwick Bureau Register files with SHA revalidation."""
+    """Extracts the sharded Chadwick Register and its auxiliary files at a pinned commit."""
 
     def __init__(
         self,
@@ -55,23 +70,62 @@ class ChadwickExtractor:
     @property
     def names_file(self) -> Path:
         """Path for cached names.csv (nicknames and aliases)."""
-        return self.cache_config.raw_dir("chadwick", "names") / "names.csv"
+        return self.cache_config.raw_dir("chadwick", "register_names") / "names.csv"
 
     @property
     def links_file(self) -> Path:
-        """Path for cached links.csv (external player links)."""
-        return self.cache_config.raw_dir("chadwick", "links") / "links.csv"
+        """Path for cached links.csv (external player identifiers)."""
+        return self.cache_config.raw_dir("chadwick", "register_links") / "links.csv"
+
+    @property
+    def countries_file(self) -> Path:
+        """Path for cached countries.csv (ISO/IOC/FIFA country codes)."""
+        return self.cache_config.raw_dir("chadwick", "register_countries") / "countries.csv"
+
+    def _raw_path(self, filename: str) -> Path:
+        if _SHARD.match(filename):
+            return self.shards_dir / filename
+        dataset = AUXILIARY_DATASETS[filename]
+        return self.cache_config.raw_dir("chadwick", dataset) / filename
+
+    def discover_files(self, refresh: bool = False) -> list[str]:
+        """File names under ``data/`` that belong to the register, discovered from the git tree.
+
+        A tree that lacks any of the 16 hex shards is a hard error (a partial register would
+        silently lose players). Files in ``data/`` that no dataset covers are reported as coverage
+        gaps. If the tree itself cannot be fetched, the known file list is used with a warning.
+        """
+        try:
+            entries = fetch_tree(self.source_ref, self.cache_config, self.http, refresh=refresh)
+        except (HttpStatusError, TransportError, ValueError, TreeTruncatedError) as exc:
+            logger.warning(
+                "could not discover Chadwick files from the git tree (%s); using the known list",
+                exc,
+            )
+            return [*HEX_SHARDS, *AUXILIARY_FILES]
+        names = sorted(
+            e.path.removeprefix("data/")
+            for e in entries
+            if e.path.startswith("data/") and e.path.count("/") == 1
+        )
+        shards = [n for n in names if _SHARD.match(n)]
+        missing = sorted(set(HEX_SHARDS) - set(shards))
+        if missing:
+            raise RuntimeError(f"Chadwick tree is missing register shard(s) {missing}")
+        aux = [n for n in names if n in AUXILIARY_DATASETS]
+        uncovered = [n for n in names if n not in shards and n not in aux and n.endswith(".csv")]
+        if uncovered:
+            logger.warning("Chadwick tree has data file(s) no dataset covers yet: %s", uncovered)
+        return [*shards, *aux]
 
     def get_latest_commit_sha(self) -> str | None:
-        """Query the GitHub API for the latest commit SHA of the data directory.
+        """Query the GitHub API (authenticated when ``GITHUB_TOKEN`` is set) for the latest SHA.
 
         Failures are logged (never silently ignored) and reported as ``None`` so callers can
         decide how to degrade.
         """
         try:
-            result = self.http.get_sync(
-                CHADWICK_COMMITS_API, headers={"Accept": "application/vnd.github+json"}
-            )
+            result = self.http.get_sync(CHADWICK_COMMITS_API, headers=github_headers())
             commits = result.json()
         except (HttpStatusError, TransportError, ValueError) as exc:
             logger.warning("could not determine latest Chadwick register commit: %s", exc)
@@ -85,16 +139,21 @@ class ChadwickExtractor:
 
     def are_shards_cached(self) -> bool:
         """Verify all 16 hex shards exist on disk."""
-        if not self.names_file.exists():
-            return False
         return all((self.shards_dir / shard).exists() for shard in HEX_SHARDS)
 
+    def _recorded_files_present(self, entry: dict[str, object]) -> bool:
+        files = entry.get("files")
+        names = [str(f) for f in files] if isinstance(files, list) else list(HEX_SHARDS)
+        return all(self._raw_path(n).exists() for n in names)
+
     def is_cache_current(self, refresh: bool) -> bool:
-        """Apply the freshness policy; after the TTL, revalidate against the upstream SHA."""
+        """Apply the freshness policy; after 24 h a floating ref is revalidated against upstream."""
         if refresh or not self.are_shards_cached():
             return False
         entry = self.manifest.get_chunk(SHA_CHUNK)
         if entry is None or entry.get("status") != "COMPLETED":
+            return False
+        if not self._recorded_files_present(entry):
             return False
         if self.source_ref.pinned:
             # reproducible mode: current iff fetched at exactly the locked commit
@@ -106,23 +165,16 @@ class ChadwickExtractor:
             logger.warning("serving possibly stale Chadwick register (SHA check failed)")
             return True
         if latest == entry.get("sha"):
-            self.manifest.set_completed(
-                SHA_CHUNK,
-                records_count=int(entry.get("records_count", 0)),
-                metadata={"sha": latest},
+            self.manifest.put_entry(
+                SHA_CHUNK, {**entry, "fetched_at": _now_iso(), "completed_at": _now_iso()}
             )
             return True
         logger.info("Chadwick register changed upstream (%s); re-downloading", latest)
         return False
 
-    def _download(
-        self, filename: str, dataset: str, required: bool, source_ref: str
-    ) -> bytes | None:
-        result = self.http.get_sync(
-            f"{self.data_base_url}/{filename}", allow=(200,) if required else (200, 404)
-        )
-        if result.status == 404:
-            return None
+    def _download(self, filename: str, source_ref: str) -> bytes:
+        dataset = "register" if _SHARD.match(filename) else AUXILIARY_DATASETS[filename]
+        result = self.http.get_sync(f"{self.data_base_url}/{filename}")
         self.raw.put(
             "chadwick",
             dataset,
@@ -134,7 +186,7 @@ class ChadwickExtractor:
         return result.content
 
     def extract(self, refresh: bool = False) -> dict[str, bytes]:
-        """Download all 16 hex shards and auxiliary files, or load from a current cache.
+        """Download the 16 hex shards and auxiliary files, or load them from a current cache.
 
         A missing shard is a hard error: a partial register would silently lose players.
         """
@@ -148,29 +200,23 @@ class ChadwickExtractor:
                 tracker.set_cache_hit(True)
                 return self._read_cached_files()
 
+            files = self.discover_files(refresh=refresh)
             latest_sha = (
                 self.source_ref.ref if self.source_ref.pinned else self.get_latest_commit_sha()
             )
-            jobs: list[tuple[str, str, bool]] = [(shard, "register", True) for shard in HEX_SHARDS]
-            jobs.append(("names.csv", "names", False))
-            jobs.append(("links.csv", "links", False))
-
             results: dict[str, bytes] = {}
             workers = max(1, self.rate_limit_config.max_concurrency)
             with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
                 futures = {
-                    name: pool.submit(self._download, name, dataset, required, latest_sha or "")
-                    for name, dataset, required in jobs
+                    name: pool.submit(self._download, name, latest_sha or "") for name in files
                 }
                 for name, future in futures.items():
-                    content = future.result()
-                    if content is not None:
-                        results[name] = content
+                    results[name] = future.result()
 
             self.manifest.set_completed(
                 SHA_CHUNK,
                 records_count=len(results),
-                metadata={"sha": latest_sha or ""},
+                metadata={"sha": latest_sha or "", "files": sorted(results)},
             )
             tracker.set_cache_hit(False)
             tracker.set_records(sum(len(b) for b in results.values()))
@@ -187,7 +233,8 @@ class ChadwickExtractor:
             path = self.shards_dir / shard
             if path.exists():
                 files[shard] = path.read_bytes()
-        for name, path in (("names.csv", self.names_file), ("links.csv", self.links_file)):
+        for name in AUXILIARY_FILES:
+            path = self._raw_path(name)
             if path.exists():
                 files[name] = path.read_bytes()
         return files

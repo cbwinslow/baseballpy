@@ -120,16 +120,6 @@ COMMON_NICKNAMES: dict[str, list[str]] = {
 }
 
 
-def _read_links(raw: bytes) -> list[dict[str, str | None]]:
-    """Parse links.csv rows (key_person, link_type, link_url) as strings; unknown cols dropped."""
-    import csv
-    import io
-
-    wanted = ("key_person", "link_type", "link_url")
-    reader = csv.DictReader(io.StringIO(raw.decode("utf-8", errors="replace"), newline=""))
-    return [{k: (row.get(k) or None) for k in wanted} for row in reader]
-
-
 class ChadwickRegister:
     """Indexed player identity register for instant cross-system resolution."""
 
@@ -229,14 +219,16 @@ class ChadwickRegister:
             ndict = self._names_table.to_pydict()
             for i in range(len(self._names_table)):
                 pid = ndict["key_person"][i]
-                first = (ndict["name_first"][i] or "").strip().lower()
-                last = (ndict["name_last"][i] or "").strip().lower()
-                nick = (ndict["name_nick"][i] or "").strip().lower()
-                full_alias = f"{first} {last}".strip()
-                if pid and full_alias:
-                    self._aliases.setdefault(full_alias, set()).add(pid)
-                if pid and nick and last:
-                    self._aliases.setdefault(f"{nick} {last}".strip(), set()).add(pid)
+                if not pid:
+                    continue
+                last = (ndict["altname_last"][i] or ndict["name_last"][i] or "").strip().lower()
+                for first_col in ("altname_first", "altname_given", "name_first"):
+                    first = (ndict[first_col][i] or "").strip().lower()
+                    if first and last:
+                        self._aliases.setdefault(f"{first} {last}", set()).add(pid)
+                nick = (ndict["altname_nick"][i] or "").strip().lower()
+                if nick and last:
+                    self._aliases.setdefault(f"{nick} {last}", set()).add(pid)
 
     def resolve(
         self,
@@ -372,8 +364,9 @@ class ChadwickRegister:
         config = cache_config or LakeConfig()
         store = ProcessedStore(config)
         register_spec = get_dataset("chadwick", "register")
-        names_spec = get_dataset("chadwick", "names")
-        links_spec = get_dataset("chadwick", "links")
+        names_spec = get_dataset("chadwick", "register_names")
+        links_spec = get_dataset("chadwick", "register_links")
+        countries_spec = get_dataset("chadwick", "register_countries")
 
         extractor = ChadwickExtractor(cache_config=config)
         if not refresh and store.is_cached(register_spec) and extractor.is_cache_current(False):
@@ -389,6 +382,16 @@ class ChadwickRegister:
         names_table = None
         if "names.csv" in raw_shards:
             names_table = normalizer.normalize_names(raw_shards["names.csv"])
+        links_table = (
+            normalizer.normalize_links(raw_shards["links.csv"])
+            if "links.csv" in raw_shards
+            else None
+        )
+        countries_table = (
+            normalizer.normalize_countries(raw_shards["countries.csv"])
+            if "countries.csv" in raw_shards
+            else None
+        )
 
         # Persist as typed Parquet in processed/
         if config.enabled and len(table) > 0:
@@ -396,11 +399,8 @@ class ChadwickRegister:
             store.put(register_spec, table, source_ref=ref)
             if names_table is not None and len(names_table) > 0:
                 store.put(names_spec, names_table, source_ref=ref)
-            if "links.csv" in raw_shards:
-                links = pa.Table.from_pylist(
-                    list(_read_links(raw_shards["links.csv"])), schema=links_spec.schema
-                )
-                if len(links) > 0:
-                    store.put(links_spec, links, source_ref=ref)
+            for spec, aux in ((links_spec, links_table), (countries_spec, countries_table)):
+                if aux is not None and len(aux) > 0:
+                    store.put(spec, aux, source_ref=ref)
 
         return cls(table, names_table=names_table)

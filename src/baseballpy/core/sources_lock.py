@@ -63,6 +63,14 @@ class SourceRef:
         return f"{self.raw_base()}/{path.lstrip('/')}"
 
 
+def github_headers() -> dict[str, str]:
+    """Headers for GitHub API calls; ``GITHUB_TOKEN`` (if set) lifts the 60 requests/hour limit."""
+    headers = {"Accept": "application/vnd.github+json"}
+    if token := os.getenv("GITHUB_TOKEN"):
+        headers["Authorization"] = f"Bearer {token}"
+    return headers
+
+
 def user_lock_path(home: Path | None = None) -> Path:
     """Per-lake override location for the lock file."""
     return (home or get_default_base_dir()) / LOCK_FILENAME
@@ -133,10 +141,9 @@ class RefChange:
 def resolve_latest_sha(repo: str, http: HttpClient | None = None) -> str:
     """Latest commit SHA of the default branch (``GITHUB_TOKEN`` lifts the 60 req/h limit)."""
     client = http or get_http_client()
-    headers = {"Accept": "application/vnd.github+json"}
-    if token := os.getenv("GITHUB_TOKEN"):
-        headers["Authorization"] = f"Bearer {token}"
-    result = client.get_sync(f"{API_HOST}/repos/{repo}/commits?per_page=1", headers=headers)
+    result = client.get_sync(
+        f"{API_HOST}/repos/{repo}/commits?per_page=1", headers=github_headers()
+    )
     commits = result.json()
     if not (isinstance(commits, list) and commits and isinstance(commits[0], dict)):
         raise ValueError(f"unexpected GitHub response for {repo}: {str(commits)[:200]}")

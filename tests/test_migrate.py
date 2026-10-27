@@ -162,7 +162,7 @@ def test_full_migration_maps_every_dataset_and_verifies_rows(v1: LakeConfig) -> 
     assert (raw / "lahman/Batting/Batting.csv").exists()
     assert (proc / "lahman/Batting/part-data.parquet").exists()
     assert (raw / "chadwick/register/people-0.csv").exists()
-    assert (raw / "chadwick/names/names.csv").exists()
+    assert (raw / "chadwick/register_names/names.csv").exists()
     assert (proc / "chadwick/register/part-data.parquet").exists()
     assert (proc / "mlb_api/schedule/season=2024/part-schedule_2024.parquet").exists()
     assert (proc / "mlb_api/teams/part-teams_mlb.parquet").exists()

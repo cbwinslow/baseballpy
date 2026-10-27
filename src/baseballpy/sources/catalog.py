@@ -9,11 +9,7 @@ from typing import Literal
 import pyarrow as pa
 
 from baseballpy.core.datasets import DATASETS, DatasetSpec, register
-from baseballpy.sources.chadwick.schema import (
-    CHADWICK_LINKS_SCHEMA,
-    CHADWICK_NAMES_SCHEMA,
-    CHADWICK_PEOPLE_SCHEMA,
-)
+from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_SCHEMAS
 from baseballpy.sources.lahman.schema import LAHMAN_PRIMARY_KEYS, LAHMAN_SCHEMAS
 from baseballpy.sources.mlb_api import schemas as mlb
 from baseballpy.sources.retrosheet import schema as retro
@@ -161,33 +157,21 @@ def register_all() -> dict[str, DatasetSpec]:
     chadwick_doc = (
         "sources/chadwick.md#exhaustive-master-register-schema-dictionary-chadwick_people_schema"
     )
-    _add(
-        "chadwick",
-        "register",
-        "chadwick_register",
-        CHADWICK_PEOPLE_SCHEMA,
-        ("key_person",),
-        "Master player-ID crosswalk (people-*.csv shards).",
-        chadwick_doc,
-    )
-    _add(
-        "chadwick",
-        "names",
-        "chadwick_names",
-        CHADWICK_NAMES_SCHEMA,
-        ("key_person", "name_type", "name_last", "name_first"),
-        "Alternate names and nicknames.",
-        chadwick_doc,
-    )
-    _add(
-        "chadwick",
-        "links",
-        "chadwick_links",
-        CHADWICK_LINKS_SCHEMA,
-        ("key_person", "link_type", "link_url"),
-        "External player links.",
-        chadwick_doc,
-    )
+    for name, desc in (
+        ("register", "Master player-ID crosswalk (data/people-*.csv shards)."),
+        ("register_names", "Alternate names, spellings and nicknames (data/names.csv)."),
+        ("register_links", "External player identifiers by source (data/links.csv)."),
+        ("register_countries", "ISO / IOC / FIFA country codes (data/countries.csv)."),
+    ):
+        _add(
+            "chadwick",
+            name,
+            f"chadwick_{name}",
+            CHADWICK_SCHEMAS[name],
+            CHADWICK_PRIMARY_KEYS[name],
+            desc,
+            chadwick_doc,
+        )
 
     retro_doc = "sources/retrosheet.md"
     for r_name, r_schema, r_keys, r_part, r_anchor, r_desc in (

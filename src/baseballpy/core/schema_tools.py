@@ -21,7 +21,7 @@ from baseballpy.core.quarantine import Quarantine, checked_cast
 logger = logging.getLogger(__name__)
 
 EXTRAS = "_extras"
-NULL_TOKENS = ("", "NA", "N/A", "null", "NULL", "None")
+NULL_TOKENS = ("",)  # sources use empty cells for NULL; "NA" is real data (lgID NA, Namibia)
 BOM = "﻿"
 
 _CAMEL_1 = re.compile(r"(.)([A-Z][a-z]+)")

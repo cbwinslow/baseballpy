@@ -431,14 +431,18 @@ class _Planner:
         manifest = base / "manifest.json"
         for f in _files(base / "shards", "people-*.csv"):
             self._add(f, "raw", "chadwick", "register", f.name)
-        for name, dataset in (("names.csv", "names"), ("links.csv", "links")):
+        for name, dataset in (
+            ("names.csv", "register_names"),
+            ("links.csv", "register_links"),
+            ("countries.csv", "register_countries"),
+        ):
             if (base / name).is_file():
                 self._add(base / name, "raw", "chadwick", dataset, name)
         self._attach_manifest("chadwick", "register", "raw", manifest, "commit_sha", "commit_sha")
         for old, dataset in (
             ("people.parquet", "register"),
-            ("names.parquet", "names"),
-            ("links.parquet", "links"),
+            ("names.parquet", "register_names"),
+            ("links.parquet", "register_links"),
         ):
             if (base / old).is_file():
                 self._add(base / old, "processed", "chadwick", dataset, "part-data.parquet")

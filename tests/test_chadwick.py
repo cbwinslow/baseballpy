@@ -8,7 +8,6 @@ import respx
 
 from baseballpy.core.config import LakeConfig
 from baseballpy.sources.chadwick.extractor import (
-    CHADWICK_COMMITS_API,
     CHADWICK_DATA_BASE_URL,
     HEX_SHARDS,
     ChadwickExtractor,
@@ -18,6 +17,22 @@ from baseballpy.sources.chadwick.register import ChadwickRegister
 from baseballpy.sources.chadwick.schema import PlayerIdType
 
 FIXTURE_PATH = Path(__file__).parent / "fixtures" / "chadwick" / "people_sample.csv"
+
+
+def mock_register_tree(ref: str, extra: tuple[str, ...] = ("names.csv", "links.csv")) -> None:
+    """Mock ``GET /git/trees/<ref>`` for chadwickbureau/register with all 16 shards + ``extra``."""
+    files = [f"data/{name}" for name in (*HEX_SHARDS, *extra)]
+    respx.get(
+        f"https://api.github.com/repos/chadwickbureau/register/git/trees/{ref}?recursive=1"
+    ).mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "truncated": False,
+                "tree": [{"path": p, "type": "blob", "size": 1, "sha": "x"} for p in files],
+            },
+        )
+    )
 
 
 def test_chadwick_normalizer_schema() -> None:
@@ -91,10 +106,9 @@ def test_chadwick_sharded_extractor(tmp_path: Path) -> None:
 
     sample_csv = FIXTURE_PATH.read_bytes()
 
-    # Mock commit check
-    respx.get(CHADWICK_COMMITS_API).mock(
-        return_value=httpx.Response(200, json=[{"sha": "commit_sha_12345"}])
-    )
+    from baseballpy.core.sources_lock import get_source_ref
+
+    mock_register_tree(get_source_ref("chadwick_register").ref)
 
     # Mock all 16 shards
     for shard in HEX_SHARDS:
@@ -126,7 +140,6 @@ def test_chadwick_sharded_extractor(tmp_path: Path) -> None:
     assert len(unified_table) == 5 * 16  # 5 rows per shard * 16
 
     # 3. Second run reads from disk without network calls
-    respx.get(CHADWICK_COMMITS_API).mock(return_value=httpx.Response(500))
     for shard in HEX_SHARDS:
         respx.get(f"{CHADWICK_DATA_BASE_URL}/{shard}").mock(return_value=httpx.Response(500))
 

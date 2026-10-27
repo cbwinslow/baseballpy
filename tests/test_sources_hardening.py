@@ -566,9 +566,31 @@ def test_lahman_source_url_is_owner_repo_only() -> None:
 FLOATING_CHADWICK = "https://raw.githubusercontent.com/chadwickbureau/register/master/data"
 
 
+def _mock_tree(ref: str) -> None:
+    files = [f"data/{name}" for name in (*HEX_SHARDS, "names.csv", "links.csv")]
+    respx.get(
+        f"https://api.github.com/repos/chadwickbureau/register/git/trees/{ref}?recursive=1"
+    ).mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "truncated": False,
+                "tree": [{"path": p, "type": "blob", "size": 1, "sha": "x"} for p in files],
+            },
+        )
+    )
+
+
 def _mock_register(
     sha: str = "sha1", status: int = 200, base: str = CHADWICK_DATA_BASE_URL
 ) -> None:
+    from baseballpy.core.sources_lock import get_source_ref
+
+    _mock_tree(
+        base.rsplit("/", 2)[-2]
+        if base != CHADWICK_DATA_BASE_URL
+        else get_source_ref("chadwick_register").ref
+    )
     respx.get(CHADWICK_COMMITS_API).mock(return_value=httpx.Response(200, json=[{"sha": sha}]))
     for shard in HEX_SHARDS:
         respx.get(f"{base}/{shard}").mock(
@@ -577,7 +599,9 @@ def _mock_register(
     respx.get(f"{base}/names.csv").mock(
         return_value=httpx.Response(200, content=b"key_person\nx\n")
     )
-    respx.get(f"{base}/links.csv").mock(return_value=httpx.Response(404))
+    respx.get(f"{base}/links.csv").mock(
+        return_value=httpx.Response(200, content=b"key_person,source,value\nx,tsn,1\n")
+    )
 
 
 def _chadwick(

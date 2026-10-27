@@ -44,11 +44,11 @@ each source section is independently committable. Every section ends with: fixtu
   - [ ] 4.6 `ingest_all(start, end)` with resume
   - [ ] 4.7 Tests: fixtures for each file kind, 404-absent handling, resume after interruption, header drift in reference CSV
   - [ ] 4.8 Live probe: one old season (e.g. 1950), one modern (2023), 2025
-- [ ] 5. Chadwick Register (C-8) <!-- id: 5 -->
-  - [ ] 5.1 Tree discovery of shards/aux files; SHA revalidation every 24 h
-  - [ ] 5.2 Header-based schema + `_extras`; `register_names`, `register_links` datasets when present
-  - [ ] 5.3 Replace silent `except` in SHA lookup; authenticated API option
-  - [ ] 5.4 Tests incl. missing shard -> hard error, SHA change -> refetch
+- [x] 5. Chadwick Register (C-8) <!-- id: 5 -->
+  - [x] 5.1 Tree discovery of shards/aux files; SHA revalidation every 24 h
+  - [x] 5.2 Header-based schema + `_extras`; `register_names`, `register_links` datasets when present
+  - [x] 5.3 Replace silent `except` in SHA lookup; authenticated API option
+  - [x] 5.4 Tests incl. missing shard -> hard error, SHA change -> refetch
 - [ ] 6. Documentation (C-9) <!-- id: 6 -->
   - [ ] 6.1 Rewrite `docs/sources/*.md`: endpoints, params, headers, methods, rate limits, caps, quirks, era notes, keys, partitioning, freshness, generated column dictionaries for **every** dataset
   - [ ] 6.2 Update `docs/ENDPOINT_CATALOG.md` "verified on / status" columns from `docs/endpoint_probe.json`

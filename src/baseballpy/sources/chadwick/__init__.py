@@ -6,6 +6,7 @@ from baseballpy.sources.chadwick.extractor import ChadwickExtractor
 from baseballpy.sources.chadwick.normalizer import ChadwickNormalizer
 from baseballpy.sources.chadwick.register import ChadwickRegister, PlayerRecord
 from baseballpy.sources.chadwick.schema import (
+    CHADWICK_COUNTRIES_SCHEMA,
     CHADWICK_LINKS_SCHEMA,
     CHADWICK_NAMES_SCHEMA,
     CHADWICK_PEOPLE_SCHEMA,
@@ -29,6 +30,7 @@ def crosswalk(
 
 
 __all__ = [
+    "CHADWICK_COUNTRIES_SCHEMA",
     "CHADWICK_LINKS_SCHEMA",
     "CHADWICK_NAMES_SCHEMA",
     "CHADWICK_PEOPLE_SCHEMA",
