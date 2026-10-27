@@ -102,6 +102,7 @@ Retrosheet data is immutable at a pinned commit: raw files and processed chunks 
 - `chadwick_cwdaily`: https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwdaily.rst
 - `chadwick_cwevent`: https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwevent.rst
 - `chadwick_cwsub`: https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwsub.rst
+- `retrosheet_glfields`: Retrosheet game-log field guide (glfields.txt), read from the copy in the book companion repository maxtoki/baseball_R because retrosheet.org was unreachable: https://raw.githubusercontent.com/maxtoki/baseball_R/master/data/glfields.txt
 
 <!-- END GENERATED:retrosheet.description_sources -->
 
@@ -735,167 +736,167 @@ Regular-season game logs.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `date` | date32[day] | yes | — | TODO |
-| `game_num` | int8 | yes | — | TODO |
-| `day_of_week` | string | yes | — | TODO |
-| `visiting_team` | string | yes | — | TODO |
-| `visiting_league` | string | yes | — | TODO |
-| `visiting_game_num` | int16 | yes | — | TODO |
-| `home_team` | string | yes | — | TODO |
-| `home_league` | string | yes | — | TODO |
-| `home_game_num` | int16 | yes | — | TODO |
-| `visiting_score` | int16 | yes | — | TODO |
-| `home_score` | int16 | yes | — | TODO |
-| `outs_total` | int16 | yes | — | TODO |
-| `day_night` | string | yes | — | TODO |
-| `completion` | string | yes | — | TODO |
-| `forfeit` | string | yes | — | TODO |
-| `protest` | string | yes | — | TODO |
-| `park_id` | string | yes | — | TODO |
-| `attendance` | int32 | yes | — | TODO |
-| `time_of_game` | int16 | yes | — | TODO |
-| `visiting_line_score` | string | yes | — | TODO |
-| `home_line_score` | string | yes | — | TODO |
-| `v_ab` | int16 | yes | — | TODO |
-| `v_h` | int16 | yes | — | TODO |
-| `v_2b` | int16 | yes | — | TODO |
-| `v_3b` | int16 | yes | — | TODO |
-| `v_hr` | int16 | yes | — | TODO |
-| `v_rbi` | int16 | yes | — | TODO |
-| `v_sh` | int16 | yes | — | TODO |
-| `v_sf` | int16 | yes | — | TODO |
-| `v_hbp` | int16 | yes | — | TODO |
-| `v_bb` | int16 | yes | — | TODO |
-| `v_ibb` | int16 | yes | — | TODO |
-| `v_so` | int16 | yes | — | TODO |
-| `v_sb` | int16 | yes | — | TODO |
-| `v_cs` | int16 | yes | — | TODO |
-| `v_gidp` | int16 | yes | — | TODO |
-| `v_ci` | int16 | yes | — | TODO |
-| `v_lob` | int16 | yes | — | TODO |
-| `v_pitchers_used` | int16 | yes | — | TODO |
-| `v_ind_er` | int16 | yes | — | TODO |
-| `v_team_er` | int16 | yes | — | TODO |
-| `v_wp` | int16 | yes | — | TODO |
-| `v_balks` | int16 | yes | — | TODO |
-| `v_putouts` | int16 | yes | — | TODO |
-| `v_assists` | int16 | yes | — | TODO |
-| `v_errors` | int16 | yes | — | TODO |
-| `v_passed_balls` | int16 | yes | — | TODO |
-| `v_double_plays` | int16 | yes | — | TODO |
-| `v_triple_plays` | int16 | yes | — | TODO |
-| `h_ab` | int16 | yes | — | TODO |
-| `h_h` | int16 | yes | — | TODO |
-| `h_2b` | int16 | yes | — | TODO |
-| `h_3b` | int16 | yes | — | TODO |
-| `h_hr` | int16 | yes | — | TODO |
-| `h_rbi` | int16 | yes | — | TODO |
-| `h_sh` | int16 | yes | — | TODO |
-| `h_sf` | int16 | yes | — | TODO |
-| `h_hbp` | int16 | yes | — | TODO |
-| `h_bb` | int16 | yes | — | TODO |
-| `h_ibb` | int16 | yes | — | TODO |
-| `h_so` | int16 | yes | — | TODO |
-| `h_sb` | int16 | yes | — | TODO |
-| `h_cs` | int16 | yes | — | TODO |
-| `h_gidp` | int16 | yes | — | TODO |
-| `h_ci` | int16 | yes | — | TODO |
-| `h_lob` | int16 | yes | — | TODO |
-| `h_pitchers_used` | int16 | yes | — | TODO |
-| `h_ind_er` | int16 | yes | — | TODO |
-| `h_team_er` | int16 | yes | — | TODO |
-| `h_wp` | int16 | yes | — | TODO |
-| `h_balks` | int16 | yes | — | TODO |
-| `h_putouts` | int16 | yes | — | TODO |
-| `h_assists` | int16 | yes | — | TODO |
-| `h_errors` | int16 | yes | — | TODO |
-| `h_passed_balls` | int16 | yes | — | TODO |
-| `h_double_plays` | int16 | yes | — | TODO |
-| `h_triple_plays` | int16 | yes | — | TODO |
-| `hp_ump_id` | string | yes | — | TODO |
-| `hp_ump_name` | string | yes | — | TODO |
-| `1b_ump_id` | string | yes | — | TODO |
-| `1b_ump_name` | string | yes | — | TODO |
-| `2b_ump_id` | string | yes | — | TODO |
-| `2b_ump_name` | string | yes | — | TODO |
-| `3b_ump_id` | string | yes | — | TODO |
-| `3b_ump_name` | string | yes | — | TODO |
-| `lf_ump_id` | string | yes | — | TODO |
-| `lf_ump_name` | string | yes | — | TODO |
-| `rf_ump_id` | string | yes | — | TODO |
-| `rf_ump_name` | string | yes | — | TODO |
-| `v_manager_id` | string | yes | — | TODO |
-| `v_manager_name` | string | yes | — | TODO |
-| `h_manager_id` | string | yes | — | TODO |
-| `h_manager_name` | string | yes | — | TODO |
-| `win_pitcher_id` | string | yes | — | TODO |
-| `win_pitcher_name` | string | yes | — | TODO |
-| `lose_pitcher_id` | string | yes | — | TODO |
-| `lose_pitcher_name` | string | yes | — | TODO |
-| `save_pitcher_id` | string | yes | — | TODO |
-| `save_pitcher_name` | string | yes | — | TODO |
-| `gwrbi_id` | string | yes | — | TODO |
-| `gwrbi_name` | string | yes | — | TODO |
-| `v_start_pitcher_id` | string | yes | — | TODO |
-| `v_start_pitcher_name` | string | yes | — | TODO |
-| `h_start_pitcher_id` | string | yes | — | TODO |
-| `h_start_pitcher_name` | string | yes | — | TODO |
-| `v_b1_id` | string | yes | — | TODO |
-| `v_b1_name` | string | yes | — | TODO |
-| `v_b1_pos` | int8 | yes | — | TODO |
-| `v_b2_id` | string | yes | — | TODO |
-| `v_b2_name` | string | yes | — | TODO |
-| `v_b2_pos` | int8 | yes | — | TODO |
-| `v_b3_id` | string | yes | — | TODO |
-| `v_b3_name` | string | yes | — | TODO |
-| `v_b3_pos` | int8 | yes | — | TODO |
-| `v_b4_id` | string | yes | — | TODO |
-| `v_b4_name` | string | yes | — | TODO |
-| `v_b4_pos` | int8 | yes | — | TODO |
-| `v_b5_id` | string | yes | — | TODO |
-| `v_b5_name` | string | yes | — | TODO |
-| `v_b5_pos` | int8 | yes | — | TODO |
-| `v_b6_id` | string | yes | — | TODO |
-| `v_b6_name` | string | yes | — | TODO |
-| `v_b6_pos` | int8 | yes | — | TODO |
-| `v_b7_id` | string | yes | — | TODO |
-| `v_b7_name` | string | yes | — | TODO |
-| `v_b7_pos` | int8 | yes | — | TODO |
-| `v_b8_id` | string | yes | — | TODO |
-| `v_b8_name` | string | yes | — | TODO |
-| `v_b8_pos` | int8 | yes | — | TODO |
-| `v_b9_id` | string | yes | — | TODO |
-| `v_b9_name` | string | yes | — | TODO |
-| `v_b9_pos` | int8 | yes | — | TODO |
-| `h_b1_id` | string | yes | — | TODO |
-| `h_b1_name` | string | yes | — | TODO |
-| `h_b1_pos` | int8 | yes | — | TODO |
-| `h_b2_id` | string | yes | — | TODO |
-| `h_b2_name` | string | yes | — | TODO |
-| `h_b2_pos` | int8 | yes | — | TODO |
-| `h_b3_id` | string | yes | — | TODO |
-| `h_b3_name` | string | yes | — | TODO |
-| `h_b3_pos` | int8 | yes | — | TODO |
-| `h_b4_id` | string | yes | — | TODO |
-| `h_b4_name` | string | yes | — | TODO |
-| `h_b4_pos` | int8 | yes | — | TODO |
-| `h_b5_id` | string | yes | — | TODO |
-| `h_b5_name` | string | yes | — | TODO |
-| `h_b5_pos` | int8 | yes | — | TODO |
-| `h_b6_id` | string | yes | — | TODO |
-| `h_b6_name` | string | yes | — | TODO |
-| `h_b6_pos` | int8 | yes | — | TODO |
-| `h_b7_id` | string | yes | — | TODO |
-| `h_b7_name` | string | yes | — | TODO |
-| `h_b7_pos` | int8 | yes | — | TODO |
-| `h_b8_id` | string | yes | — | TODO |
-| `h_b8_name` | string | yes | — | TODO |
-| `h_b8_pos` | int8 | yes | — | TODO |
-| `h_b9_id` | string | yes | — | TODO |
-| `h_b9_name` | string | yes | — | TODO |
-| `h_b9_pos` | int8 | yes | — | TODO |
-| `additional_info` | string | yes | — | TODO |
-| `acquisition_info` | string | yes | — | TODO |
+| `date` | date32[day] | yes | — | Date in the form "yyyymmdd" (src: retrosheet_glfields) |
+| `game_num` | int8 | yes | — | Number of game (src: retrosheet_glfields) |
+| `day_of_week` | string | yes | — | Day of week (src: retrosheet_glfields) |
+| `visiting_team` | string | yes | — | Visiting team (src: retrosheet_glfields) |
+| `visiting_league` | string | yes | — | Visiting league (src: retrosheet_glfields) |
+| `visiting_game_num` | int16 | yes | — | Visiting team game number (src: retrosheet_glfields) |
+| `home_team` | string | yes | — | Home team (src: retrosheet_glfields) |
+| `home_league` | string | yes | — | Home league (src: retrosheet_glfields) |
+| `home_game_num` | int16 | yes | — | Home team game number (src: retrosheet_glfields) |
+| `visiting_score` | int16 | yes | — | Visiting team score (src: retrosheet_glfields) |
+| `home_score` | int16 | yes | — | Home team score (src: retrosheet_glfields) |
+| `outs_total` | int16 | yes | — | Length of game in outs (src: retrosheet_glfields) |
+| `day_night` | string | yes | — | Day/night indicator (src: retrosheet_glfields) |
+| `completion` | string | yes | — | Completion information (src: retrosheet_glfields) |
+| `forfeit` | string | yes | — | Forfeit information (src: retrosheet_glfields) |
+| `protest` | string | yes | — | Protest information (src: retrosheet_glfields) |
+| `park_id` | string | yes | — | Park ID (src: retrosheet_glfields) |
+| `attendance` | int32 | yes | — | Attendance (src: retrosheet_glfields) |
+| `time_of_game` | int16 | yes | — | Time of game in minutes (src: retrosheet_glfields) |
+| `visiting_line_score` | string | yes | — | Visiting line scores (src: retrosheet_glfields) |
+| `home_line_score` | string | yes | — | Home line scores (src: retrosheet_glfields) |
+| `v_ab` | int16 | yes | — | Visiting team offensive: at-bats (src: retrosheet_glfields) |
+| `v_h` | int16 | yes | — | Visiting team offensive: hits (src: retrosheet_glfields) |
+| `v_2b` | int16 | yes | — | Visiting team offensive: doubles (src: retrosheet_glfields) |
+| `v_3b` | int16 | yes | — | Visiting team offensive: triples (src: retrosheet_glfields) |
+| `v_hr` | int16 | yes | — | Visiting team offensive: homeruns (src: retrosheet_glfields) |
+| `v_rbi` | int16 | yes | — | Visiting team offensive: RBI (src: retrosheet_glfields) |
+| `v_sh` | int16 | yes | — | Visiting team offensive: sacrifice hits (src: retrosheet_glfields) |
+| `v_sf` | int16 | yes | — | Visiting team offensive: prior to 1954 when sacrifice flies were allowed (src: retrosheet_glfields) |
+| `v_hbp` | int16 | yes | — | Visiting team offensive: sacrifice flies (since 1954) (src: retrosheet_glfields) |
+| `v_bb` | int16 | yes | — | Visiting team offensive: hit-by-pitch (src: retrosheet_glfields) |
+| `v_ibb` | int16 | yes | — | Visiting team offensive: walks (src: retrosheet_glfields) |
+| `v_so` | int16 | yes | — | Visiting team offensive: intentional walks (src: retrosheet_glfields) |
+| `v_sb` | int16 | yes | — | Visiting team offensive: strikeouts (src: retrosheet_glfields) |
+| `v_cs` | int16 | yes | — | Visiting team offensive: stolen bases (src: retrosheet_glfields) |
+| `v_gidp` | int16 | yes | — | Visiting team offensive: caught stealing (src: retrosheet_glfields) |
+| `v_ci` | int16 | yes | — | Visiting team offensive: grounded into double plays (src: retrosheet_glfields) |
+| `v_lob` | int16 | yes | — | Visiting team offensive: awarded first on catcher's interference (src: retrosheet_glfields) |
+| `v_pitchers_used` | int16 | yes | — | Visiting team pitching: pitchers used ( 1 means it was a complete game ) (src: retrosheet_glfields) |
+| `v_ind_er` | int16 | yes | — | Visiting team pitching: individual earned runs (src: retrosheet_glfields) |
+| `v_team_er` | int16 | yes | — | Visiting team pitching: team earned runs (src: retrosheet_glfields) |
+| `v_wp` | int16 | yes | — | Visiting team pitching: wild pitches (src: retrosheet_glfields) |
+| `v_balks` | int16 | yes | — | Visiting team pitching: balks (src: retrosheet_glfields) |
+| `v_putouts` | int16 | yes | — | Visiting team defensive: putouts (src: retrosheet_glfields) |
+| `v_assists` | int16 | yes | — | Visiting team defensive: the number of innings pitched (src: retrosheet_glfields) |
+| `v_errors` | int16 | yes | — | Visiting team defensive: putout was awarded when a runner was declared out for (src: retrosheet_glfields) |
+| `v_passed_balls` | int16 | yes | — | Visiting team defensive: being hit by a batted ball (src: retrosheet_glfields) |
+| `v_double_plays` | int16 | yes | — | Visiting team defensive: assists (src: retrosheet_glfields) |
+| `v_triple_plays` | int16 | yes | — | Visiting team defensive: errors (src: retrosheet_glfields) |
+| `h_ab` | int16 | yes | — | Home team offensive: at-bats (src: retrosheet_glfields) |
+| `h_h` | int16 | yes | — | Home team offensive: hits (src: retrosheet_glfields) |
+| `h_2b` | int16 | yes | — | Home team offensive: doubles (src: retrosheet_glfields) |
+| `h_3b` | int16 | yes | — | Home team offensive: triples (src: retrosheet_glfields) |
+| `h_hr` | int16 | yes | — | Home team offensive: homeruns (src: retrosheet_glfields) |
+| `h_rbi` | int16 | yes | — | Home team offensive: RBI (src: retrosheet_glfields) |
+| `h_sh` | int16 | yes | — | Home team offensive: sacrifice hits (src: retrosheet_glfields) |
+| `h_sf` | int16 | yes | — | Home team offensive: prior to 1954 when sacrifice flies were allowed (src: retrosheet_glfields) |
+| `h_hbp` | int16 | yes | — | Home team offensive: sacrifice flies (since 1954) (src: retrosheet_glfields) |
+| `h_bb` | int16 | yes | — | Home team offensive: hit-by-pitch (src: retrosheet_glfields) |
+| `h_ibb` | int16 | yes | — | Home team offensive: walks (src: retrosheet_glfields) |
+| `h_so` | int16 | yes | — | Home team offensive: intentional walks (src: retrosheet_glfields) |
+| `h_sb` | int16 | yes | — | Home team offensive: strikeouts (src: retrosheet_glfields) |
+| `h_cs` | int16 | yes | — | Home team offensive: stolen bases (src: retrosheet_glfields) |
+| `h_gidp` | int16 | yes | — | Home team offensive: caught stealing (src: retrosheet_glfields) |
+| `h_ci` | int16 | yes | — | Home team offensive: grounded into double plays (src: retrosheet_glfields) |
+| `h_lob` | int16 | yes | — | Home team offensive: awarded first on catcher's interference (src: retrosheet_glfields) |
+| `h_pitchers_used` | int16 | yes | — | Home team pitching: pitchers used ( 1 means it was a complete game ) (src: retrosheet_glfields) |
+| `h_ind_er` | int16 | yes | — | Home team pitching: individual earned runs (src: retrosheet_glfields) |
+| `h_team_er` | int16 | yes | — | Home team pitching: team earned runs (src: retrosheet_glfields) |
+| `h_wp` | int16 | yes | — | Home team pitching: wild pitches (src: retrosheet_glfields) |
+| `h_balks` | int16 | yes | — | Home team pitching: balks (src: retrosheet_glfields) |
+| `h_putouts` | int16 | yes | — | Home team defensive: putouts (src: retrosheet_glfields) |
+| `h_assists` | int16 | yes | — | Home team defensive: the number of innings pitched (src: retrosheet_glfields) |
+| `h_errors` | int16 | yes | — | Home team defensive: putout was awarded when a runner was declared out for (src: retrosheet_glfields) |
+| `h_passed_balls` | int16 | yes | — | Home team defensive: being hit by a batted ball (src: retrosheet_glfields) |
+| `h_double_plays` | int16 | yes | — | Home team defensive: assists (src: retrosheet_glfields) |
+| `h_triple_plays` | int16 | yes | — | Home team defensive: errors (src: retrosheet_glfields) |
+| `hp_ump_id` | string | yes | — | Home plate umpire ID (src: retrosheet_glfields) |
+| `hp_ump_name` | string | yes | — | Home plate umpire name (src: retrosheet_glfields) |
+| `1b_ump_id` | string | yes | — | 1B umpire ID (src: retrosheet_glfields) |
+| `1b_ump_name` | string | yes | — | 1B umpire name (src: retrosheet_glfields) |
+| `2b_ump_id` | string | yes | — | 2B umpire ID (src: retrosheet_glfields) |
+| `2b_ump_name` | string | yes | — | 2B umpire name (src: retrosheet_glfields) |
+| `3b_ump_id` | string | yes | — | 3B umpire ID (src: retrosheet_glfields) |
+| `3b_ump_name` | string | yes | — | 3B umpire name (src: retrosheet_glfields) |
+| `lf_ump_id` | string | yes | — | LF umpire ID (src: retrosheet_glfields) |
+| `lf_ump_name` | string | yes | — | LF umpire name (src: retrosheet_glfields) |
+| `rf_ump_id` | string | yes | — | RF umpire ID (src: retrosheet_glfields) |
+| `rf_ump_name` | string | yes | — | RF umpire name (src: retrosheet_glfields) |
+| `v_manager_id` | string | yes | — | Visiting team manager ID (src: retrosheet_glfields) |
+| `v_manager_name` | string | yes | — | Visiting team manager name (src: retrosheet_glfields) |
+| `h_manager_id` | string | yes | — | Home team manager ID (src: retrosheet_glfields) |
+| `h_manager_name` | string | yes | — | Home team manager name (src: retrosheet_glfields) |
+| `win_pitcher_id` | string | yes | — | Winning pitcher ID (src: retrosheet_glfields) |
+| `win_pitcher_name` | string | yes | — | Winning pitcher name (src: retrosheet_glfields) |
+| `lose_pitcher_id` | string | yes | — | Losing pitcher ID (src: retrosheet_glfields) |
+| `lose_pitcher_name` | string | yes | — | Losing pitcher name (src: retrosheet_glfields) |
+| `save_pitcher_id` | string | yes | — | Saving pitcher ID (src: retrosheet_glfields) |
+| `save_pitcher_name` | string | yes | — | Saving pitcher name (src: retrosheet_glfields) |
+| `gwrbi_id` | string | yes | — | Game Winning RBI batter ID (src: retrosheet_glfields) |
+| `gwrbi_name` | string | yes | — | Game Winning RBI batter name (src: retrosheet_glfields) |
+| `v_start_pitcher_id` | string | yes | — | Visiting starting pitcher ID (src: retrosheet_glfields) |
+| `v_start_pitcher_name` | string | yes | — | Visiting starting pitcher name (src: retrosheet_glfields) |
+| `h_start_pitcher_id` | string | yes | — | Home starting pitcher ID (src: retrosheet_glfields) |
+| `h_start_pitcher_name` | string | yes | — | Home starting pitcher name (src: retrosheet_glfields) |
+| `v_b1_id` | string | yes | — | Visiting starting players, batting order 1: ID (src: retrosheet_glfields) |
+| `v_b1_name` | string | yes | — | Visiting starting players, batting order 1: name (src: retrosheet_glfields) |
+| `v_b1_pos` | int8 | yes | — | Visiting starting players, batting order 1: defensive position (src: retrosheet_glfields) |
+| `v_b2_id` | string | yes | — | Visiting starting players, batting order 2: ID (src: retrosheet_glfields) |
+| `v_b2_name` | string | yes | — | Visiting starting players, batting order 2: name (src: retrosheet_glfields) |
+| `v_b2_pos` | int8 | yes | — | Visiting starting players, batting order 2: defensive position (src: retrosheet_glfields) |
+| `v_b3_id` | string | yes | — | Visiting starting players, batting order 3: ID (src: retrosheet_glfields) |
+| `v_b3_name` | string | yes | — | Visiting starting players, batting order 3: name (src: retrosheet_glfields) |
+| `v_b3_pos` | int8 | yes | — | Visiting starting players, batting order 3: defensive position (src: retrosheet_glfields) |
+| `v_b4_id` | string | yes | — | Visiting starting players, batting order 4: ID (src: retrosheet_glfields) |
+| `v_b4_name` | string | yes | — | Visiting starting players, batting order 4: name (src: retrosheet_glfields) |
+| `v_b4_pos` | int8 | yes | — | Visiting starting players, batting order 4: defensive position (src: retrosheet_glfields) |
+| `v_b5_id` | string | yes | — | Visiting starting players, batting order 5: ID (src: retrosheet_glfields) |
+| `v_b5_name` | string | yes | — | Visiting starting players, batting order 5: name (src: retrosheet_glfields) |
+| `v_b5_pos` | int8 | yes | — | Visiting starting players, batting order 5: defensive position (src: retrosheet_glfields) |
+| `v_b6_id` | string | yes | — | Visiting starting players, batting order 6: ID (src: retrosheet_glfields) |
+| `v_b6_name` | string | yes | — | Visiting starting players, batting order 6: name (src: retrosheet_glfields) |
+| `v_b6_pos` | int8 | yes | — | Visiting starting players, batting order 6: defensive position (src: retrosheet_glfields) |
+| `v_b7_id` | string | yes | — | Visiting starting players, batting order 7: ID (src: retrosheet_glfields) |
+| `v_b7_name` | string | yes | — | Visiting starting players, batting order 7: name (src: retrosheet_glfields) |
+| `v_b7_pos` | int8 | yes | — | Visiting starting players, batting order 7: defensive position (src: retrosheet_glfields) |
+| `v_b8_id` | string | yes | — | Visiting starting players, batting order 8: ID (src: retrosheet_glfields) |
+| `v_b8_name` | string | yes | — | Visiting starting players, batting order 8: name (src: retrosheet_glfields) |
+| `v_b8_pos` | int8 | yes | — | Visiting starting players, batting order 8: defensive position (src: retrosheet_glfields) |
+| `v_b9_id` | string | yes | — | Visiting starting players, batting order 9: ID (src: retrosheet_glfields) |
+| `v_b9_name` | string | yes | — | Visiting starting players, batting order 9: name (src: retrosheet_glfields) |
+| `v_b9_pos` | int8 | yes | — | Visiting starting players, batting order 9: defensive position (src: retrosheet_glfields) |
+| `h_b1_id` | string | yes | — | Home starting players, batting order 1: ID (src: retrosheet_glfields) |
+| `h_b1_name` | string | yes | — | Home starting players, batting order 1: name (src: retrosheet_glfields) |
+| `h_b1_pos` | int8 | yes | — | Home starting players, batting order 1: defensive position (src: retrosheet_glfields) |
+| `h_b2_id` | string | yes | — | Home starting players, batting order 2: ID (src: retrosheet_glfields) |
+| `h_b2_name` | string | yes | — | Home starting players, batting order 2: name (src: retrosheet_glfields) |
+| `h_b2_pos` | int8 | yes | — | Home starting players, batting order 2: defensive position (src: retrosheet_glfields) |
+| `h_b3_id` | string | yes | — | Home starting players, batting order 3: ID (src: retrosheet_glfields) |
+| `h_b3_name` | string | yes | — | Home starting players, batting order 3: name (src: retrosheet_glfields) |
+| `h_b3_pos` | int8 | yes | — | Home starting players, batting order 3: defensive position (src: retrosheet_glfields) |
+| `h_b4_id` | string | yes | — | Home starting players, batting order 4: ID (src: retrosheet_glfields) |
+| `h_b4_name` | string | yes | — | Home starting players, batting order 4: name (src: retrosheet_glfields) |
+| `h_b4_pos` | int8 | yes | — | Home starting players, batting order 4: defensive position (src: retrosheet_glfields) |
+| `h_b5_id` | string | yes | — | Home starting players, batting order 5: ID (src: retrosheet_glfields) |
+| `h_b5_name` | string | yes | — | Home starting players, batting order 5: name (src: retrosheet_glfields) |
+| `h_b5_pos` | int8 | yes | — | Home starting players, batting order 5: defensive position (src: retrosheet_glfields) |
+| `h_b6_id` | string | yes | — | Home starting players, batting order 6: ID (src: retrosheet_glfields) |
+| `h_b6_name` | string | yes | — | Home starting players, batting order 6: name (src: retrosheet_glfields) |
+| `h_b6_pos` | int8 | yes | — | Home starting players, batting order 6: defensive position (src: retrosheet_glfields) |
+| `h_b7_id` | string | yes | — | Home starting players, batting order 7: ID (src: retrosheet_glfields) |
+| `h_b7_name` | string | yes | — | Home starting players, batting order 7: name (src: retrosheet_glfields) |
+| `h_b7_pos` | int8 | yes | — | Home starting players, batting order 7: defensive position (src: retrosheet_glfields) |
+| `h_b8_id` | string | yes | — | Home starting players, batting order 8: ID (src: retrosheet_glfields) |
+| `h_b8_name` | string | yes | — | Home starting players, batting order 8: name (src: retrosheet_glfields) |
+| `h_b8_pos` | int8 | yes | — | Home starting players, batting order 8: defensive position (src: retrosheet_glfields) |
+| `h_b9_id` | string | yes | — | Home starting players, batting order 9: ID (src: retrosheet_glfields) |
+| `h_b9_name` | string | yes | — | Home starting players, batting order 9: name (src: retrosheet_glfields) |
+| `h_b9_pos` | int8 | yes | — | Home starting players, batting order 9: defensive position (src: retrosheet_glfields) |
+| `additional_info` | string | yes | — | Additional information (src: retrosheet_glfields) |
+| `acquisition_info` | string | yes | — | Acquisition information (src: retrosheet_glfields) |
 
 <!-- END GENERATED:retrosheet.gamelogs -->
 
@@ -911,167 +912,167 @@ Postseason and all-star game logs.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `date` | date32[day] | yes | — | TODO |
-| `game_num` | int8 | yes | — | TODO |
-| `day_of_week` | string | yes | — | TODO |
-| `visiting_team` | string | yes | — | TODO |
-| `visiting_league` | string | yes | — | TODO |
-| `visiting_game_num` | int16 | yes | — | TODO |
-| `home_team` | string | yes | — | TODO |
-| `home_league` | string | yes | — | TODO |
-| `home_game_num` | int16 | yes | — | TODO |
-| `visiting_score` | int16 | yes | — | TODO |
-| `home_score` | int16 | yes | — | TODO |
-| `outs_total` | int16 | yes | — | TODO |
-| `day_night` | string | yes | — | TODO |
-| `completion` | string | yes | — | TODO |
-| `forfeit` | string | yes | — | TODO |
-| `protest` | string | yes | — | TODO |
-| `park_id` | string | yes | — | TODO |
-| `attendance` | int32 | yes | — | TODO |
-| `time_of_game` | int16 | yes | — | TODO |
-| `visiting_line_score` | string | yes | — | TODO |
-| `home_line_score` | string | yes | — | TODO |
-| `v_ab` | int16 | yes | — | TODO |
-| `v_h` | int16 | yes | — | TODO |
-| `v_2b` | int16 | yes | — | TODO |
-| `v_3b` | int16 | yes | — | TODO |
-| `v_hr` | int16 | yes | — | TODO |
-| `v_rbi` | int16 | yes | — | TODO |
-| `v_sh` | int16 | yes | — | TODO |
-| `v_sf` | int16 | yes | — | TODO |
-| `v_hbp` | int16 | yes | — | TODO |
-| `v_bb` | int16 | yes | — | TODO |
-| `v_ibb` | int16 | yes | — | TODO |
-| `v_so` | int16 | yes | — | TODO |
-| `v_sb` | int16 | yes | — | TODO |
-| `v_cs` | int16 | yes | — | TODO |
-| `v_gidp` | int16 | yes | — | TODO |
-| `v_ci` | int16 | yes | — | TODO |
-| `v_lob` | int16 | yes | — | TODO |
-| `v_pitchers_used` | int16 | yes | — | TODO |
-| `v_ind_er` | int16 | yes | — | TODO |
-| `v_team_er` | int16 | yes | — | TODO |
-| `v_wp` | int16 | yes | — | TODO |
-| `v_balks` | int16 | yes | — | TODO |
-| `v_putouts` | int16 | yes | — | TODO |
-| `v_assists` | int16 | yes | — | TODO |
-| `v_errors` | int16 | yes | — | TODO |
-| `v_passed_balls` | int16 | yes | — | TODO |
-| `v_double_plays` | int16 | yes | — | TODO |
-| `v_triple_plays` | int16 | yes | — | TODO |
-| `h_ab` | int16 | yes | — | TODO |
-| `h_h` | int16 | yes | — | TODO |
-| `h_2b` | int16 | yes | — | TODO |
-| `h_3b` | int16 | yes | — | TODO |
-| `h_hr` | int16 | yes | — | TODO |
-| `h_rbi` | int16 | yes | — | TODO |
-| `h_sh` | int16 | yes | — | TODO |
-| `h_sf` | int16 | yes | — | TODO |
-| `h_hbp` | int16 | yes | — | TODO |
-| `h_bb` | int16 | yes | — | TODO |
-| `h_ibb` | int16 | yes | — | TODO |
-| `h_so` | int16 | yes | — | TODO |
-| `h_sb` | int16 | yes | — | TODO |
-| `h_cs` | int16 | yes | — | TODO |
-| `h_gidp` | int16 | yes | — | TODO |
-| `h_ci` | int16 | yes | — | TODO |
-| `h_lob` | int16 | yes | — | TODO |
-| `h_pitchers_used` | int16 | yes | — | TODO |
-| `h_ind_er` | int16 | yes | — | TODO |
-| `h_team_er` | int16 | yes | — | TODO |
-| `h_wp` | int16 | yes | — | TODO |
-| `h_balks` | int16 | yes | — | TODO |
-| `h_putouts` | int16 | yes | — | TODO |
-| `h_assists` | int16 | yes | — | TODO |
-| `h_errors` | int16 | yes | — | TODO |
-| `h_passed_balls` | int16 | yes | — | TODO |
-| `h_double_plays` | int16 | yes | — | TODO |
-| `h_triple_plays` | int16 | yes | — | TODO |
-| `hp_ump_id` | string | yes | — | TODO |
-| `hp_ump_name` | string | yes | — | TODO |
-| `1b_ump_id` | string | yes | — | TODO |
-| `1b_ump_name` | string | yes | — | TODO |
-| `2b_ump_id` | string | yes | — | TODO |
-| `2b_ump_name` | string | yes | — | TODO |
-| `3b_ump_id` | string | yes | — | TODO |
-| `3b_ump_name` | string | yes | — | TODO |
-| `lf_ump_id` | string | yes | — | TODO |
-| `lf_ump_name` | string | yes | — | TODO |
-| `rf_ump_id` | string | yes | — | TODO |
-| `rf_ump_name` | string | yes | — | TODO |
-| `v_manager_id` | string | yes | — | TODO |
-| `v_manager_name` | string | yes | — | TODO |
-| `h_manager_id` | string | yes | — | TODO |
-| `h_manager_name` | string | yes | — | TODO |
-| `win_pitcher_id` | string | yes | — | TODO |
-| `win_pitcher_name` | string | yes | — | TODO |
-| `lose_pitcher_id` | string | yes | — | TODO |
-| `lose_pitcher_name` | string | yes | — | TODO |
-| `save_pitcher_id` | string | yes | — | TODO |
-| `save_pitcher_name` | string | yes | — | TODO |
-| `gwrbi_id` | string | yes | — | TODO |
-| `gwrbi_name` | string | yes | — | TODO |
-| `v_start_pitcher_id` | string | yes | — | TODO |
-| `v_start_pitcher_name` | string | yes | — | TODO |
-| `h_start_pitcher_id` | string | yes | — | TODO |
-| `h_start_pitcher_name` | string | yes | — | TODO |
-| `v_b1_id` | string | yes | — | TODO |
-| `v_b1_name` | string | yes | — | TODO |
-| `v_b1_pos` | int8 | yes | — | TODO |
-| `v_b2_id` | string | yes | — | TODO |
-| `v_b2_name` | string | yes | — | TODO |
-| `v_b2_pos` | int8 | yes | — | TODO |
-| `v_b3_id` | string | yes | — | TODO |
-| `v_b3_name` | string | yes | — | TODO |
-| `v_b3_pos` | int8 | yes | — | TODO |
-| `v_b4_id` | string | yes | — | TODO |
-| `v_b4_name` | string | yes | — | TODO |
-| `v_b4_pos` | int8 | yes | — | TODO |
-| `v_b5_id` | string | yes | — | TODO |
-| `v_b5_name` | string | yes | — | TODO |
-| `v_b5_pos` | int8 | yes | — | TODO |
-| `v_b6_id` | string | yes | — | TODO |
-| `v_b6_name` | string | yes | — | TODO |
-| `v_b6_pos` | int8 | yes | — | TODO |
-| `v_b7_id` | string | yes | — | TODO |
-| `v_b7_name` | string | yes | — | TODO |
-| `v_b7_pos` | int8 | yes | — | TODO |
-| `v_b8_id` | string | yes | — | TODO |
-| `v_b8_name` | string | yes | — | TODO |
-| `v_b8_pos` | int8 | yes | — | TODO |
-| `v_b9_id` | string | yes | — | TODO |
-| `v_b9_name` | string | yes | — | TODO |
-| `v_b9_pos` | int8 | yes | — | TODO |
-| `h_b1_id` | string | yes | — | TODO |
-| `h_b1_name` | string | yes | — | TODO |
-| `h_b1_pos` | int8 | yes | — | TODO |
-| `h_b2_id` | string | yes | — | TODO |
-| `h_b2_name` | string | yes | — | TODO |
-| `h_b2_pos` | int8 | yes | — | TODO |
-| `h_b3_id` | string | yes | — | TODO |
-| `h_b3_name` | string | yes | — | TODO |
-| `h_b3_pos` | int8 | yes | — | TODO |
-| `h_b4_id` | string | yes | — | TODO |
-| `h_b4_name` | string | yes | — | TODO |
-| `h_b4_pos` | int8 | yes | — | TODO |
-| `h_b5_id` | string | yes | — | TODO |
-| `h_b5_name` | string | yes | — | TODO |
-| `h_b5_pos` | int8 | yes | — | TODO |
-| `h_b6_id` | string | yes | — | TODO |
-| `h_b6_name` | string | yes | — | TODO |
-| `h_b6_pos` | int8 | yes | — | TODO |
-| `h_b7_id` | string | yes | — | TODO |
-| `h_b7_name` | string | yes | — | TODO |
-| `h_b7_pos` | int8 | yes | — | TODO |
-| `h_b8_id` | string | yes | — | TODO |
-| `h_b8_name` | string | yes | — | TODO |
-| `h_b8_pos` | int8 | yes | — | TODO |
-| `h_b9_id` | string | yes | — | TODO |
-| `h_b9_name` | string | yes | — | TODO |
-| `h_b9_pos` | int8 | yes | — | TODO |
-| `additional_info` | string | yes | — | TODO |
-| `acquisition_info` | string | yes | — | TODO |
+| `date` | date32[day] | yes | — | Date in the form "yyyymmdd" (src: retrosheet_glfields) |
+| `game_num` | int8 | yes | — | Number of game (src: retrosheet_glfields) |
+| `day_of_week` | string | yes | — | Day of week (src: retrosheet_glfields) |
+| `visiting_team` | string | yes | — | Visiting team (src: retrosheet_glfields) |
+| `visiting_league` | string | yes | — | Visiting league (src: retrosheet_glfields) |
+| `visiting_game_num` | int16 | yes | — | Visiting team game number (src: retrosheet_glfields) |
+| `home_team` | string | yes | — | Home team (src: retrosheet_glfields) |
+| `home_league` | string | yes | — | Home league (src: retrosheet_glfields) |
+| `home_game_num` | int16 | yes | — | Home team game number (src: retrosheet_glfields) |
+| `visiting_score` | int16 | yes | — | Visiting team score (src: retrosheet_glfields) |
+| `home_score` | int16 | yes | — | Home team score (src: retrosheet_glfields) |
+| `outs_total` | int16 | yes | — | Length of game in outs (src: retrosheet_glfields) |
+| `day_night` | string | yes | — | Day/night indicator (src: retrosheet_glfields) |
+| `completion` | string | yes | — | Completion information (src: retrosheet_glfields) |
+| `forfeit` | string | yes | — | Forfeit information (src: retrosheet_glfields) |
+| `protest` | string | yes | — | Protest information (src: retrosheet_glfields) |
+| `park_id` | string | yes | — | Park ID (src: retrosheet_glfields) |
+| `attendance` | int32 | yes | — | Attendance (src: retrosheet_glfields) |
+| `time_of_game` | int16 | yes | — | Time of game in minutes (src: retrosheet_glfields) |
+| `visiting_line_score` | string | yes | — | Visiting line scores (src: retrosheet_glfields) |
+| `home_line_score` | string | yes | — | Home line scores (src: retrosheet_glfields) |
+| `v_ab` | int16 | yes | — | Visiting team offensive: at-bats (src: retrosheet_glfields) |
+| `v_h` | int16 | yes | — | Visiting team offensive: hits (src: retrosheet_glfields) |
+| `v_2b` | int16 | yes | — | Visiting team offensive: doubles (src: retrosheet_glfields) |
+| `v_3b` | int16 | yes | — | Visiting team offensive: triples (src: retrosheet_glfields) |
+| `v_hr` | int16 | yes | — | Visiting team offensive: homeruns (src: retrosheet_glfields) |
+| `v_rbi` | int16 | yes | — | Visiting team offensive: RBI (src: retrosheet_glfields) |
+| `v_sh` | int16 | yes | — | Visiting team offensive: sacrifice hits (src: retrosheet_glfields) |
+| `v_sf` | int16 | yes | — | Visiting team offensive: prior to 1954 when sacrifice flies were allowed (src: retrosheet_glfields) |
+| `v_hbp` | int16 | yes | — | Visiting team offensive: sacrifice flies (since 1954) (src: retrosheet_glfields) |
+| `v_bb` | int16 | yes | — | Visiting team offensive: hit-by-pitch (src: retrosheet_glfields) |
+| `v_ibb` | int16 | yes | — | Visiting team offensive: walks (src: retrosheet_glfields) |
+| `v_so` | int16 | yes | — | Visiting team offensive: intentional walks (src: retrosheet_glfields) |
+| `v_sb` | int16 | yes | — | Visiting team offensive: strikeouts (src: retrosheet_glfields) |
+| `v_cs` | int16 | yes | — | Visiting team offensive: stolen bases (src: retrosheet_glfields) |
+| `v_gidp` | int16 | yes | — | Visiting team offensive: caught stealing (src: retrosheet_glfields) |
+| `v_ci` | int16 | yes | — | Visiting team offensive: grounded into double plays (src: retrosheet_glfields) |
+| `v_lob` | int16 | yes | — | Visiting team offensive: awarded first on catcher's interference (src: retrosheet_glfields) |
+| `v_pitchers_used` | int16 | yes | — | Visiting team pitching: pitchers used ( 1 means it was a complete game ) (src: retrosheet_glfields) |
+| `v_ind_er` | int16 | yes | — | Visiting team pitching: individual earned runs (src: retrosheet_glfields) |
+| `v_team_er` | int16 | yes | — | Visiting team pitching: team earned runs (src: retrosheet_glfields) |
+| `v_wp` | int16 | yes | — | Visiting team pitching: wild pitches (src: retrosheet_glfields) |
+| `v_balks` | int16 | yes | — | Visiting team pitching: balks (src: retrosheet_glfields) |
+| `v_putouts` | int16 | yes | — | Visiting team defensive: putouts (src: retrosheet_glfields) |
+| `v_assists` | int16 | yes | — | Visiting team defensive: the number of innings pitched (src: retrosheet_glfields) |
+| `v_errors` | int16 | yes | — | Visiting team defensive: putout was awarded when a runner was declared out for (src: retrosheet_glfields) |
+| `v_passed_balls` | int16 | yes | — | Visiting team defensive: being hit by a batted ball (src: retrosheet_glfields) |
+| `v_double_plays` | int16 | yes | — | Visiting team defensive: assists (src: retrosheet_glfields) |
+| `v_triple_plays` | int16 | yes | — | Visiting team defensive: errors (src: retrosheet_glfields) |
+| `h_ab` | int16 | yes | — | Home team offensive: at-bats (src: retrosheet_glfields) |
+| `h_h` | int16 | yes | — | Home team offensive: hits (src: retrosheet_glfields) |
+| `h_2b` | int16 | yes | — | Home team offensive: doubles (src: retrosheet_glfields) |
+| `h_3b` | int16 | yes | — | Home team offensive: triples (src: retrosheet_glfields) |
+| `h_hr` | int16 | yes | — | Home team offensive: homeruns (src: retrosheet_glfields) |
+| `h_rbi` | int16 | yes | — | Home team offensive: RBI (src: retrosheet_glfields) |
+| `h_sh` | int16 | yes | — | Home team offensive: sacrifice hits (src: retrosheet_glfields) |
+| `h_sf` | int16 | yes | — | Home team offensive: prior to 1954 when sacrifice flies were allowed (src: retrosheet_glfields) |
+| `h_hbp` | int16 | yes | — | Home team offensive: sacrifice flies (since 1954) (src: retrosheet_glfields) |
+| `h_bb` | int16 | yes | — | Home team offensive: hit-by-pitch (src: retrosheet_glfields) |
+| `h_ibb` | int16 | yes | — | Home team offensive: walks (src: retrosheet_glfields) |
+| `h_so` | int16 | yes | — | Home team offensive: intentional walks (src: retrosheet_glfields) |
+| `h_sb` | int16 | yes | — | Home team offensive: strikeouts (src: retrosheet_glfields) |
+| `h_cs` | int16 | yes | — | Home team offensive: stolen bases (src: retrosheet_glfields) |
+| `h_gidp` | int16 | yes | — | Home team offensive: caught stealing (src: retrosheet_glfields) |
+| `h_ci` | int16 | yes | — | Home team offensive: grounded into double plays (src: retrosheet_glfields) |
+| `h_lob` | int16 | yes | — | Home team offensive: awarded first on catcher's interference (src: retrosheet_glfields) |
+| `h_pitchers_used` | int16 | yes | — | Home team pitching: pitchers used ( 1 means it was a complete game ) (src: retrosheet_glfields) |
+| `h_ind_er` | int16 | yes | — | Home team pitching: individual earned runs (src: retrosheet_glfields) |
+| `h_team_er` | int16 | yes | — | Home team pitching: team earned runs (src: retrosheet_glfields) |
+| `h_wp` | int16 | yes | — | Home team pitching: wild pitches (src: retrosheet_glfields) |
+| `h_balks` | int16 | yes | — | Home team pitching: balks (src: retrosheet_glfields) |
+| `h_putouts` | int16 | yes | — | Home team defensive: putouts (src: retrosheet_glfields) |
+| `h_assists` | int16 | yes | — | Home team defensive: the number of innings pitched (src: retrosheet_glfields) |
+| `h_errors` | int16 | yes | — | Home team defensive: putout was awarded when a runner was declared out for (src: retrosheet_glfields) |
+| `h_passed_balls` | int16 | yes | — | Home team defensive: being hit by a batted ball (src: retrosheet_glfields) |
+| `h_double_plays` | int16 | yes | — | Home team defensive: assists (src: retrosheet_glfields) |
+| `h_triple_plays` | int16 | yes | — | Home team defensive: errors (src: retrosheet_glfields) |
+| `hp_ump_id` | string | yes | — | Home plate umpire ID (src: retrosheet_glfields) |
+| `hp_ump_name` | string | yes | — | Home plate umpire name (src: retrosheet_glfields) |
+| `1b_ump_id` | string | yes | — | 1B umpire ID (src: retrosheet_glfields) |
+| `1b_ump_name` | string | yes | — | 1B umpire name (src: retrosheet_glfields) |
+| `2b_ump_id` | string | yes | — | 2B umpire ID (src: retrosheet_glfields) |
+| `2b_ump_name` | string | yes | — | 2B umpire name (src: retrosheet_glfields) |
+| `3b_ump_id` | string | yes | — | 3B umpire ID (src: retrosheet_glfields) |
+| `3b_ump_name` | string | yes | — | 3B umpire name (src: retrosheet_glfields) |
+| `lf_ump_id` | string | yes | — | LF umpire ID (src: retrosheet_glfields) |
+| `lf_ump_name` | string | yes | — | LF umpire name (src: retrosheet_glfields) |
+| `rf_ump_id` | string | yes | — | RF umpire ID (src: retrosheet_glfields) |
+| `rf_ump_name` | string | yes | — | RF umpire name (src: retrosheet_glfields) |
+| `v_manager_id` | string | yes | — | Visiting team manager ID (src: retrosheet_glfields) |
+| `v_manager_name` | string | yes | — | Visiting team manager name (src: retrosheet_glfields) |
+| `h_manager_id` | string | yes | — | Home team manager ID (src: retrosheet_glfields) |
+| `h_manager_name` | string | yes | — | Home team manager name (src: retrosheet_glfields) |
+| `win_pitcher_id` | string | yes | — | Winning pitcher ID (src: retrosheet_glfields) |
+| `win_pitcher_name` | string | yes | — | Winning pitcher name (src: retrosheet_glfields) |
+| `lose_pitcher_id` | string | yes | — | Losing pitcher ID (src: retrosheet_glfields) |
+| `lose_pitcher_name` | string | yes | — | Losing pitcher name (src: retrosheet_glfields) |
+| `save_pitcher_id` | string | yes | — | Saving pitcher ID (src: retrosheet_glfields) |
+| `save_pitcher_name` | string | yes | — | Saving pitcher name (src: retrosheet_glfields) |
+| `gwrbi_id` | string | yes | — | Game Winning RBI batter ID (src: retrosheet_glfields) |
+| `gwrbi_name` | string | yes | — | Game Winning RBI batter name (src: retrosheet_glfields) |
+| `v_start_pitcher_id` | string | yes | — | Visiting starting pitcher ID (src: retrosheet_glfields) |
+| `v_start_pitcher_name` | string | yes | — | Visiting starting pitcher name (src: retrosheet_glfields) |
+| `h_start_pitcher_id` | string | yes | — | Home starting pitcher ID (src: retrosheet_glfields) |
+| `h_start_pitcher_name` | string | yes | — | Home starting pitcher name (src: retrosheet_glfields) |
+| `v_b1_id` | string | yes | — | Visiting starting players, batting order 1: ID (src: retrosheet_glfields) |
+| `v_b1_name` | string | yes | — | Visiting starting players, batting order 1: name (src: retrosheet_glfields) |
+| `v_b1_pos` | int8 | yes | — | Visiting starting players, batting order 1: defensive position (src: retrosheet_glfields) |
+| `v_b2_id` | string | yes | — | Visiting starting players, batting order 2: ID (src: retrosheet_glfields) |
+| `v_b2_name` | string | yes | — | Visiting starting players, batting order 2: name (src: retrosheet_glfields) |
+| `v_b2_pos` | int8 | yes | — | Visiting starting players, batting order 2: defensive position (src: retrosheet_glfields) |
+| `v_b3_id` | string | yes | — | Visiting starting players, batting order 3: ID (src: retrosheet_glfields) |
+| `v_b3_name` | string | yes | — | Visiting starting players, batting order 3: name (src: retrosheet_glfields) |
+| `v_b3_pos` | int8 | yes | — | Visiting starting players, batting order 3: defensive position (src: retrosheet_glfields) |
+| `v_b4_id` | string | yes | — | Visiting starting players, batting order 4: ID (src: retrosheet_glfields) |
+| `v_b4_name` | string | yes | — | Visiting starting players, batting order 4: name (src: retrosheet_glfields) |
+| `v_b4_pos` | int8 | yes | — | Visiting starting players, batting order 4: defensive position (src: retrosheet_glfields) |
+| `v_b5_id` | string | yes | — | Visiting starting players, batting order 5: ID (src: retrosheet_glfields) |
+| `v_b5_name` | string | yes | — | Visiting starting players, batting order 5: name (src: retrosheet_glfields) |
+| `v_b5_pos` | int8 | yes | — | Visiting starting players, batting order 5: defensive position (src: retrosheet_glfields) |
+| `v_b6_id` | string | yes | — | Visiting starting players, batting order 6: ID (src: retrosheet_glfields) |
+| `v_b6_name` | string | yes | — | Visiting starting players, batting order 6: name (src: retrosheet_glfields) |
+| `v_b6_pos` | int8 | yes | — | Visiting starting players, batting order 6: defensive position (src: retrosheet_glfields) |
+| `v_b7_id` | string | yes | — | Visiting starting players, batting order 7: ID (src: retrosheet_glfields) |
+| `v_b7_name` | string | yes | — | Visiting starting players, batting order 7: name (src: retrosheet_glfields) |
+| `v_b7_pos` | int8 | yes | — | Visiting starting players, batting order 7: defensive position (src: retrosheet_glfields) |
+| `v_b8_id` | string | yes | — | Visiting starting players, batting order 8: ID (src: retrosheet_glfields) |
+| `v_b8_name` | string | yes | — | Visiting starting players, batting order 8: name (src: retrosheet_glfields) |
+| `v_b8_pos` | int8 | yes | — | Visiting starting players, batting order 8: defensive position (src: retrosheet_glfields) |
+| `v_b9_id` | string | yes | — | Visiting starting players, batting order 9: ID (src: retrosheet_glfields) |
+| `v_b9_name` | string | yes | — | Visiting starting players, batting order 9: name (src: retrosheet_glfields) |
+| `v_b9_pos` | int8 | yes | — | Visiting starting players, batting order 9: defensive position (src: retrosheet_glfields) |
+| `h_b1_id` | string | yes | — | Home starting players, batting order 1: ID (src: retrosheet_glfields) |
+| `h_b1_name` | string | yes | — | Home starting players, batting order 1: name (src: retrosheet_glfields) |
+| `h_b1_pos` | int8 | yes | — | Home starting players, batting order 1: defensive position (src: retrosheet_glfields) |
+| `h_b2_id` | string | yes | — | Home starting players, batting order 2: ID (src: retrosheet_glfields) |
+| `h_b2_name` | string | yes | — | Home starting players, batting order 2: name (src: retrosheet_glfields) |
+| `h_b2_pos` | int8 | yes | — | Home starting players, batting order 2: defensive position (src: retrosheet_glfields) |
+| `h_b3_id` | string | yes | — | Home starting players, batting order 3: ID (src: retrosheet_glfields) |
+| `h_b3_name` | string | yes | — | Home starting players, batting order 3: name (src: retrosheet_glfields) |
+| `h_b3_pos` | int8 | yes | — | Home starting players, batting order 3: defensive position (src: retrosheet_glfields) |
+| `h_b4_id` | string | yes | — | Home starting players, batting order 4: ID (src: retrosheet_glfields) |
+| `h_b4_name` | string | yes | — | Home starting players, batting order 4: name (src: retrosheet_glfields) |
+| `h_b4_pos` | int8 | yes | — | Home starting players, batting order 4: defensive position (src: retrosheet_glfields) |
+| `h_b5_id` | string | yes | — | Home starting players, batting order 5: ID (src: retrosheet_glfields) |
+| `h_b5_name` | string | yes | — | Home starting players, batting order 5: name (src: retrosheet_glfields) |
+| `h_b5_pos` | int8 | yes | — | Home starting players, batting order 5: defensive position (src: retrosheet_glfields) |
+| `h_b6_id` | string | yes | — | Home starting players, batting order 6: ID (src: retrosheet_glfields) |
+| `h_b6_name` | string | yes | — | Home starting players, batting order 6: name (src: retrosheet_glfields) |
+| `h_b6_pos` | int8 | yes | — | Home starting players, batting order 6: defensive position (src: retrosheet_glfields) |
+| `h_b7_id` | string | yes | — | Home starting players, batting order 7: ID (src: retrosheet_glfields) |
+| `h_b7_name` | string | yes | — | Home starting players, batting order 7: name (src: retrosheet_glfields) |
+| `h_b7_pos` | int8 | yes | — | Home starting players, batting order 7: defensive position (src: retrosheet_glfields) |
+| `h_b8_id` | string | yes | — | Home starting players, batting order 8: ID (src: retrosheet_glfields) |
+| `h_b8_name` | string | yes | — | Home starting players, batting order 8: name (src: retrosheet_glfields) |
+| `h_b8_pos` | int8 | yes | — | Home starting players, batting order 8: defensive position (src: retrosheet_glfields) |
+| `h_b9_id` | string | yes | — | Home starting players, batting order 9: ID (src: retrosheet_glfields) |
+| `h_b9_name` | string | yes | — | Home starting players, batting order 9: name (src: retrosheet_glfields) |
+| `h_b9_pos` | int8 | yes | — | Home starting players, batting order 9: defensive position (src: retrosheet_glfields) |
+| `additional_info` | string | yes | — | Additional information (src: retrosheet_glfields) |
+| `acquisition_info` | string | yes | — | Acquisition information (src: retrosheet_glfields) |
 
 <!-- END GENERATED:retrosheet.gamelogs_postseason -->
 

@@ -22,6 +22,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import retro_glfields
+
 from baseballpy.core.config import RateLimitConfig
 from baseballpy.core.datasets import DATASETS
 from baseballpy.core.http import HttpClient
@@ -295,6 +297,35 @@ def build_retrosheet(http: HttpClient) -> dict[str, Any]:
             out[dataset] = {
                 c: {"text": fields[c], "source": key} for c in sorted(names) if c in fields
             }
+    games = build_gamelogs(http)
+    out["_sources"].update(games.pop("_sources"))
+    out.update(games)
+    return out
+
+
+GLFIELDS_URL = "https://raw.githubusercontent.com/maxtoki/baseball_R/master/data/glfields.txt"
+GLFIELDS_NOTE = (
+    "Retrosheet game-log field guide (glfields.txt), read from the copy in the book companion "
+    f"repository maxtoki/baseball_R because retrosheet.org was unreachable: {GLFIELDS_URL}"
+)
+GAMELOG_DATASETS = ("gamelogs", "gamelogs_postseason")
+
+
+def build_gamelogs(http: HttpClient) -> dict[str, Any]:
+    """Game-log columns from the field guide; field ``n`` is the ``n``-th schema column."""
+    fields = retro_glfields.describe(
+        retro_glfields.parse(http.get_sync(GLFIELDS_URL).content.decode("utf-8", "replace"))
+    )
+    out: dict[str, Any] = {"_sources": {"retrosheet_glfields": GLFIELDS_NOTE}}
+    catalog.register_all()
+    for dataset in GAMELOG_DATASETS:
+        names = [c for d, c in columns_of("retrosheet") if d == dataset and c != "_extras"]
+        if len(names) != len(fields):
+            raise SystemExit(f"{dataset}: {len(names)} columns but {len(fields)} documented fields")
+        out[dataset] = {
+            name: {"text": fields[i], "source": "retrosheet_glfields"}
+            for i, name in enumerate(names, start=1)
+        }
     return out
 
 

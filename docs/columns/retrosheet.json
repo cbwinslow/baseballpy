@@ -2,7 +2,8 @@
  "_sources": {
   "chadwick_cwdaily": "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwdaily.rst",
   "chadwick_cwevent": "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwevent.rst",
-  "chadwick_cwsub": "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwsub.rst"
+  "chadwick_cwsub": "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwsub.rst",
+  "retrosheet_glfields": "Retrosheet game-log field guide (glfields.txt), read from the copy in the book companion repository maxtoki/baseball_R because retrosheet.org was unreachable: https://raw.githubusercontent.com/maxtoki/baseball_R/master/data/glfields.txt"
  },
  "daily_splits": {
   "APPEAR_DT": {
@@ -1442,6 +1443,1298 @@
   "WP_FL": {
    "source": "chadwick_cwevent",
    "text": "Wild pitch flag"
+  }
+ },
+ "gamelogs": {
+  "1b_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "1B umpire ID"
+  },
+  "1b_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "1B umpire name"
+  },
+  "2b_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "2B umpire ID"
+  },
+  "2b_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "2B umpire name"
+  },
+  "3b_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "3B umpire ID"
+  },
+  "3b_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "3B umpire name"
+  },
+  "acquisition_info": {
+   "source": "retrosheet_glfields",
+   "text": "Acquisition information"
+  },
+  "additional_info": {
+   "source": "retrosheet_glfields",
+   "text": "Additional information"
+  },
+  "attendance": {
+   "source": "retrosheet_glfields",
+   "text": "Attendance"
+  },
+  "completion": {
+   "source": "retrosheet_glfields",
+   "text": "Completion information"
+  },
+  "date": {
+   "source": "retrosheet_glfields",
+   "text": "Date in the form \"yyyymmdd\""
+  },
+  "day_night": {
+   "source": "retrosheet_glfields",
+   "text": "Day/night indicator"
+  },
+  "day_of_week": {
+   "source": "retrosheet_glfields",
+   "text": "Day of week"
+  },
+  "forfeit": {
+   "source": "retrosheet_glfields",
+   "text": "Forfeit information"
+  },
+  "game_num": {
+   "source": "retrosheet_glfields",
+   "text": "Number of game"
+  },
+  "gwrbi_id": {
+   "source": "retrosheet_glfields",
+   "text": "Game Winning RBI batter ID"
+  },
+  "gwrbi_name": {
+   "source": "retrosheet_glfields",
+   "text": "Game Winning RBI batter name"
+  },
+  "h_2b": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: doubles"
+  },
+  "h_3b": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: triples"
+  },
+  "h_ab": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: at-bats"
+  },
+  "h_assists": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: the number of innings pitched"
+  },
+  "h_b1_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 1: ID"
+  },
+  "h_b1_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 1: name"
+  },
+  "h_b1_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 1: defensive position"
+  },
+  "h_b2_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 2: ID"
+  },
+  "h_b2_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 2: name"
+  },
+  "h_b2_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 2: defensive position"
+  },
+  "h_b3_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 3: ID"
+  },
+  "h_b3_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 3: name"
+  },
+  "h_b3_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 3: defensive position"
+  },
+  "h_b4_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 4: ID"
+  },
+  "h_b4_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 4: name"
+  },
+  "h_b4_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 4: defensive position"
+  },
+  "h_b5_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 5: ID"
+  },
+  "h_b5_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 5: name"
+  },
+  "h_b5_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 5: defensive position"
+  },
+  "h_b6_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 6: ID"
+  },
+  "h_b6_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 6: name"
+  },
+  "h_b6_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 6: defensive position"
+  },
+  "h_b7_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 7: ID"
+  },
+  "h_b7_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 7: name"
+  },
+  "h_b7_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 7: defensive position"
+  },
+  "h_b8_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 8: ID"
+  },
+  "h_b8_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 8: name"
+  },
+  "h_b8_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 8: defensive position"
+  },
+  "h_b9_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 9: ID"
+  },
+  "h_b9_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 9: name"
+  },
+  "h_b9_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 9: defensive position"
+  },
+  "h_balks": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: balks"
+  },
+  "h_bb": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: hit-by-pitch"
+  },
+  "h_ci": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: grounded into double plays"
+  },
+  "h_cs": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: stolen bases"
+  },
+  "h_double_plays": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: assists"
+  },
+  "h_errors": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: putout was awarded when a runner was declared out for"
+  },
+  "h_gidp": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: caught stealing"
+  },
+  "h_h": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: hits"
+  },
+  "h_hbp": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: sacrifice flies (since 1954)"
+  },
+  "h_hr": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: homeruns"
+  },
+  "h_ibb": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: walks"
+  },
+  "h_ind_er": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: individual earned runs"
+  },
+  "h_lob": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: awarded first on catcher's interference"
+  },
+  "h_manager_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home team manager ID"
+  },
+  "h_manager_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home team manager name"
+  },
+  "h_passed_balls": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: being hit by a batted ball"
+  },
+  "h_pitchers_used": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: pitchers used ( 1 means it was a complete game )"
+  },
+  "h_putouts": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: putouts"
+  },
+  "h_rbi": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: RBI"
+  },
+  "h_sb": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: strikeouts"
+  },
+  "h_sf": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: prior to 1954 when sacrifice flies were allowed"
+  },
+  "h_sh": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: sacrifice hits"
+  },
+  "h_so": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: intentional walks"
+  },
+  "h_start_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting pitcher ID"
+  },
+  "h_start_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting pitcher name"
+  },
+  "h_team_er": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: team earned runs"
+  },
+  "h_triple_plays": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: errors"
+  },
+  "h_wp": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: wild pitches"
+  },
+  "home_game_num": {
+   "source": "retrosheet_glfields",
+   "text": "Home team game number"
+  },
+  "home_league": {
+   "source": "retrosheet_glfields",
+   "text": "Home league"
+  },
+  "home_line_score": {
+   "source": "retrosheet_glfields",
+   "text": "Home line scores"
+  },
+  "home_score": {
+   "source": "retrosheet_glfields",
+   "text": "Home team score"
+  },
+  "home_team": {
+   "source": "retrosheet_glfields",
+   "text": "Home team"
+  },
+  "hp_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home plate umpire ID"
+  },
+  "hp_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home plate umpire name"
+  },
+  "lf_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "LF umpire ID"
+  },
+  "lf_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "LF umpire name"
+  },
+  "lose_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Losing pitcher ID"
+  },
+  "lose_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Losing pitcher name"
+  },
+  "outs_total": {
+   "source": "retrosheet_glfields",
+   "text": "Length of game in outs"
+  },
+  "park_id": {
+   "source": "retrosheet_glfields",
+   "text": "Park ID"
+  },
+  "protest": {
+   "source": "retrosheet_glfields",
+   "text": "Protest information"
+  },
+  "rf_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "RF umpire ID"
+  },
+  "rf_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "RF umpire name"
+  },
+  "save_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Saving pitcher ID"
+  },
+  "save_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Saving pitcher name"
+  },
+  "time_of_game": {
+   "source": "retrosheet_glfields",
+   "text": "Time of game in minutes"
+  },
+  "v_2b": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: doubles"
+  },
+  "v_3b": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: triples"
+  },
+  "v_ab": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: at-bats"
+  },
+  "v_assists": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: the number of innings pitched"
+  },
+  "v_b1_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 1: ID"
+  },
+  "v_b1_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 1: name"
+  },
+  "v_b1_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 1: defensive position"
+  },
+  "v_b2_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 2: ID"
+  },
+  "v_b2_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 2: name"
+  },
+  "v_b2_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 2: defensive position"
+  },
+  "v_b3_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 3: ID"
+  },
+  "v_b3_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 3: name"
+  },
+  "v_b3_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 3: defensive position"
+  },
+  "v_b4_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 4: ID"
+  },
+  "v_b4_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 4: name"
+  },
+  "v_b4_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 4: defensive position"
+  },
+  "v_b5_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 5: ID"
+  },
+  "v_b5_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 5: name"
+  },
+  "v_b5_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 5: defensive position"
+  },
+  "v_b6_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 6: ID"
+  },
+  "v_b6_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 6: name"
+  },
+  "v_b6_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 6: defensive position"
+  },
+  "v_b7_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 7: ID"
+  },
+  "v_b7_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 7: name"
+  },
+  "v_b7_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 7: defensive position"
+  },
+  "v_b8_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 8: ID"
+  },
+  "v_b8_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 8: name"
+  },
+  "v_b8_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 8: defensive position"
+  },
+  "v_b9_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 9: ID"
+  },
+  "v_b9_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 9: name"
+  },
+  "v_b9_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 9: defensive position"
+  },
+  "v_balks": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: balks"
+  },
+  "v_bb": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: hit-by-pitch"
+  },
+  "v_ci": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: grounded into double plays"
+  },
+  "v_cs": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: stolen bases"
+  },
+  "v_double_plays": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: assists"
+  },
+  "v_errors": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: putout was awarded when a runner was declared out for"
+  },
+  "v_gidp": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: caught stealing"
+  },
+  "v_h": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: hits"
+  },
+  "v_hbp": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: sacrifice flies (since 1954)"
+  },
+  "v_hr": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: homeruns"
+  },
+  "v_ibb": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: walks"
+  },
+  "v_ind_er": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: individual earned runs"
+  },
+  "v_lob": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: awarded first on catcher's interference"
+  },
+  "v_manager_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team manager ID"
+  },
+  "v_manager_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team manager name"
+  },
+  "v_passed_balls": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: being hit by a batted ball"
+  },
+  "v_pitchers_used": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: pitchers used ( 1 means it was a complete game )"
+  },
+  "v_putouts": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: putouts"
+  },
+  "v_rbi": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: RBI"
+  },
+  "v_sb": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: strikeouts"
+  },
+  "v_sf": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: prior to 1954 when sacrifice flies were allowed"
+  },
+  "v_sh": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: sacrifice hits"
+  },
+  "v_so": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: intentional walks"
+  },
+  "v_start_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting pitcher ID"
+  },
+  "v_start_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting pitcher name"
+  },
+  "v_team_er": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: team earned runs"
+  },
+  "v_triple_plays": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: errors"
+  },
+  "v_wp": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: wild pitches"
+  },
+  "visiting_game_num": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team game number"
+  },
+  "visiting_league": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting league"
+  },
+  "visiting_line_score": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting line scores"
+  },
+  "visiting_score": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team score"
+  },
+  "visiting_team": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team"
+  },
+  "win_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Winning pitcher ID"
+  },
+  "win_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Winning pitcher name"
+  }
+ },
+ "gamelogs_postseason": {
+  "1b_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "1B umpire ID"
+  },
+  "1b_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "1B umpire name"
+  },
+  "2b_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "2B umpire ID"
+  },
+  "2b_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "2B umpire name"
+  },
+  "3b_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "3B umpire ID"
+  },
+  "3b_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "3B umpire name"
+  },
+  "acquisition_info": {
+   "source": "retrosheet_glfields",
+   "text": "Acquisition information"
+  },
+  "additional_info": {
+   "source": "retrosheet_glfields",
+   "text": "Additional information"
+  },
+  "attendance": {
+   "source": "retrosheet_glfields",
+   "text": "Attendance"
+  },
+  "completion": {
+   "source": "retrosheet_glfields",
+   "text": "Completion information"
+  },
+  "date": {
+   "source": "retrosheet_glfields",
+   "text": "Date in the form \"yyyymmdd\""
+  },
+  "day_night": {
+   "source": "retrosheet_glfields",
+   "text": "Day/night indicator"
+  },
+  "day_of_week": {
+   "source": "retrosheet_glfields",
+   "text": "Day of week"
+  },
+  "forfeit": {
+   "source": "retrosheet_glfields",
+   "text": "Forfeit information"
+  },
+  "game_num": {
+   "source": "retrosheet_glfields",
+   "text": "Number of game"
+  },
+  "gwrbi_id": {
+   "source": "retrosheet_glfields",
+   "text": "Game Winning RBI batter ID"
+  },
+  "gwrbi_name": {
+   "source": "retrosheet_glfields",
+   "text": "Game Winning RBI batter name"
+  },
+  "h_2b": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: doubles"
+  },
+  "h_3b": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: triples"
+  },
+  "h_ab": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: at-bats"
+  },
+  "h_assists": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: the number of innings pitched"
+  },
+  "h_b1_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 1: ID"
+  },
+  "h_b1_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 1: name"
+  },
+  "h_b1_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 1: defensive position"
+  },
+  "h_b2_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 2: ID"
+  },
+  "h_b2_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 2: name"
+  },
+  "h_b2_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 2: defensive position"
+  },
+  "h_b3_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 3: ID"
+  },
+  "h_b3_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 3: name"
+  },
+  "h_b3_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 3: defensive position"
+  },
+  "h_b4_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 4: ID"
+  },
+  "h_b4_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 4: name"
+  },
+  "h_b4_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 4: defensive position"
+  },
+  "h_b5_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 5: ID"
+  },
+  "h_b5_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 5: name"
+  },
+  "h_b5_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 5: defensive position"
+  },
+  "h_b6_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 6: ID"
+  },
+  "h_b6_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 6: name"
+  },
+  "h_b6_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 6: defensive position"
+  },
+  "h_b7_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 7: ID"
+  },
+  "h_b7_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 7: name"
+  },
+  "h_b7_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 7: defensive position"
+  },
+  "h_b8_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 8: ID"
+  },
+  "h_b8_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 8: name"
+  },
+  "h_b8_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 8: defensive position"
+  },
+  "h_b9_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 9: ID"
+  },
+  "h_b9_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 9: name"
+  },
+  "h_b9_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting players, batting order 9: defensive position"
+  },
+  "h_balks": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: balks"
+  },
+  "h_bb": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: hit-by-pitch"
+  },
+  "h_ci": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: grounded into double plays"
+  },
+  "h_cs": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: stolen bases"
+  },
+  "h_double_plays": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: assists"
+  },
+  "h_errors": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: putout was awarded when a runner was declared out for"
+  },
+  "h_gidp": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: caught stealing"
+  },
+  "h_h": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: hits"
+  },
+  "h_hbp": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: sacrifice flies (since 1954)"
+  },
+  "h_hr": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: homeruns"
+  },
+  "h_ibb": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: walks"
+  },
+  "h_ind_er": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: individual earned runs"
+  },
+  "h_lob": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: awarded first on catcher's interference"
+  },
+  "h_manager_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home team manager ID"
+  },
+  "h_manager_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home team manager name"
+  },
+  "h_passed_balls": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: being hit by a batted ball"
+  },
+  "h_pitchers_used": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: pitchers used ( 1 means it was a complete game )"
+  },
+  "h_putouts": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: putouts"
+  },
+  "h_rbi": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: RBI"
+  },
+  "h_sb": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: strikeouts"
+  },
+  "h_sf": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: prior to 1954 when sacrifice flies were allowed"
+  },
+  "h_sh": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: sacrifice hits"
+  },
+  "h_so": {
+   "source": "retrosheet_glfields",
+   "text": "Home team offensive: intentional walks"
+  },
+  "h_start_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting pitcher ID"
+  },
+  "h_start_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home starting pitcher name"
+  },
+  "h_team_er": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: team earned runs"
+  },
+  "h_triple_plays": {
+   "source": "retrosheet_glfields",
+   "text": "Home team defensive: errors"
+  },
+  "h_wp": {
+   "source": "retrosheet_glfields",
+   "text": "Home team pitching: wild pitches"
+  },
+  "home_game_num": {
+   "source": "retrosheet_glfields",
+   "text": "Home team game number"
+  },
+  "home_league": {
+   "source": "retrosheet_glfields",
+   "text": "Home league"
+  },
+  "home_line_score": {
+   "source": "retrosheet_glfields",
+   "text": "Home line scores"
+  },
+  "home_score": {
+   "source": "retrosheet_glfields",
+   "text": "Home team score"
+  },
+  "home_team": {
+   "source": "retrosheet_glfields",
+   "text": "Home team"
+  },
+  "hp_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "Home plate umpire ID"
+  },
+  "hp_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "Home plate umpire name"
+  },
+  "lf_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "LF umpire ID"
+  },
+  "lf_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "LF umpire name"
+  },
+  "lose_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Losing pitcher ID"
+  },
+  "lose_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Losing pitcher name"
+  },
+  "outs_total": {
+   "source": "retrosheet_glfields",
+   "text": "Length of game in outs"
+  },
+  "park_id": {
+   "source": "retrosheet_glfields",
+   "text": "Park ID"
+  },
+  "protest": {
+   "source": "retrosheet_glfields",
+   "text": "Protest information"
+  },
+  "rf_ump_id": {
+   "source": "retrosheet_glfields",
+   "text": "RF umpire ID"
+  },
+  "rf_ump_name": {
+   "source": "retrosheet_glfields",
+   "text": "RF umpire name"
+  },
+  "save_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Saving pitcher ID"
+  },
+  "save_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Saving pitcher name"
+  },
+  "time_of_game": {
+   "source": "retrosheet_glfields",
+   "text": "Time of game in minutes"
+  },
+  "v_2b": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: doubles"
+  },
+  "v_3b": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: triples"
+  },
+  "v_ab": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: at-bats"
+  },
+  "v_assists": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: the number of innings pitched"
+  },
+  "v_b1_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 1: ID"
+  },
+  "v_b1_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 1: name"
+  },
+  "v_b1_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 1: defensive position"
+  },
+  "v_b2_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 2: ID"
+  },
+  "v_b2_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 2: name"
+  },
+  "v_b2_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 2: defensive position"
+  },
+  "v_b3_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 3: ID"
+  },
+  "v_b3_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 3: name"
+  },
+  "v_b3_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 3: defensive position"
+  },
+  "v_b4_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 4: ID"
+  },
+  "v_b4_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 4: name"
+  },
+  "v_b4_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 4: defensive position"
+  },
+  "v_b5_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 5: ID"
+  },
+  "v_b5_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 5: name"
+  },
+  "v_b5_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 5: defensive position"
+  },
+  "v_b6_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 6: ID"
+  },
+  "v_b6_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 6: name"
+  },
+  "v_b6_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 6: defensive position"
+  },
+  "v_b7_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 7: ID"
+  },
+  "v_b7_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 7: name"
+  },
+  "v_b7_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 7: defensive position"
+  },
+  "v_b8_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 8: ID"
+  },
+  "v_b8_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 8: name"
+  },
+  "v_b8_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 8: defensive position"
+  },
+  "v_b9_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 9: ID"
+  },
+  "v_b9_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 9: name"
+  },
+  "v_b9_pos": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting players, batting order 9: defensive position"
+  },
+  "v_balks": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: balks"
+  },
+  "v_bb": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: hit-by-pitch"
+  },
+  "v_ci": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: grounded into double plays"
+  },
+  "v_cs": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: stolen bases"
+  },
+  "v_double_plays": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: assists"
+  },
+  "v_errors": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: putout was awarded when a runner was declared out for"
+  },
+  "v_gidp": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: caught stealing"
+  },
+  "v_h": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: hits"
+  },
+  "v_hbp": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: sacrifice flies (since 1954)"
+  },
+  "v_hr": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: homeruns"
+  },
+  "v_ibb": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: walks"
+  },
+  "v_ind_er": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: individual earned runs"
+  },
+  "v_lob": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: awarded first on catcher's interference"
+  },
+  "v_manager_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team manager ID"
+  },
+  "v_manager_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team manager name"
+  },
+  "v_passed_balls": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: being hit by a batted ball"
+  },
+  "v_pitchers_used": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: pitchers used ( 1 means it was a complete game )"
+  },
+  "v_putouts": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: putouts"
+  },
+  "v_rbi": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: RBI"
+  },
+  "v_sb": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: strikeouts"
+  },
+  "v_sf": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: prior to 1954 when sacrifice flies were allowed"
+  },
+  "v_sh": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: sacrifice hits"
+  },
+  "v_so": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team offensive: intentional walks"
+  },
+  "v_start_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting pitcher ID"
+  },
+  "v_start_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting starting pitcher name"
+  },
+  "v_team_er": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: team earned runs"
+  },
+  "v_triple_plays": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team defensive: errors"
+  },
+  "v_wp": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team pitching: wild pitches"
+  },
+  "visiting_game_num": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team game number"
+  },
+  "visiting_league": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting league"
+  },
+  "visiting_line_score": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting line scores"
+  },
+  "visiting_score": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team score"
+  },
+  "visiting_team": {
+   "source": "retrosheet_glfields",
+   "text": "Visiting team"
+  },
+  "win_pitcher_id": {
+   "source": "retrosheet_glfields",
+   "text": "Winning pitcher ID"
+  },
+  "win_pitcher_name": {
+   "source": "retrosheet_glfields",
+   "text": "Winning pitcher name"
   }
  },
  "substitutions": {
