@@ -8,17 +8,14 @@ All parsing is performed in memory via `chadwickpy` (pure Python port of the Cha
 ---
 
 ## 2. Partitioning & Directory Layout
-Enforces two-tier raw/processed separation under `~/.baseballpy/cache/retrosheet/`:
-- `raw/seasons/{year}/`: Raw DiamondWare `.EVA`, `.EVN`, `.EVE` event files and `.ROS` rosters.
-- `raw/gamelogs/`: Raw `gl{year}.txt` and postseason logs (`GLWC.TXT`, `GLDV.TXT`, `GLLC.TXT`, `GLWS.TXT`, `GLAS.TXT`).
-- `raw/reference/`: Raw reference CSVs (`ballparks.csv`, `teams.csv`, `ejections.csv`, `coaches.csv`, `relatives.csv`, `biofile.csv`).
-- `processed/events/season={year}/`: Strongly-typed Parquet for 97-field play-by-play events.
-- `processed/boxscores_batting/season={year}/`: Strongly-typed Parquet for batting box scores.
-- `processed/boxscores_pitching/season={year}/`: Strongly-typed Parquet for pitching box scores.
-- `processed/daily_splits/season={year}/`: Strongly-typed Parquet for daily player lines (154 fields).
-- `processed/substitutions/season={year}/`: Strongly-typed Parquet for player substitutions.
-- `processed/gamelogs/`: 161-column historical game logs.
-- `processed/reference/`: Standardized reference tables.
+Raw event, roster, gamelog and reference files MUST be stored under `raw/retrosheet/<dataset>/[season=YYYY/]`; parsed output under `processed/retrosheet/<dataset>/[season=YYYY/]part-<chunk>.parquet`. Regular-season and postseason events MUST be separate datasets (`events`, `events_postseason`).
+- `raw/retrosheet/event_files/season={year}/`: `TEAM{year}` and the `.EVA`, `.EVN`, `.EVE` event files.
+- `raw/retrosheet/rosters/season={year}/`: `.ROS` rosters.
+- `raw/retrosheet/gamelogs/`: raw `gl{year}.txt` and postseason logs (`GLWC.TXT`, `GLDV.TXT`, `GLLC.TXT`, `GLWS.TXT`, `GLAS.TXT`).
+- `raw/retrosheet/reference_<name>/<name>.csv`: raw reference CSVs (`ballparks`, `teams`, `ejections`, `coaches`, `relatives`, `biofile`).
+- `processed/retrosheet/events/season={year}/` and `events_postseason/`: strongly-typed play-by-play events.
+- `processed/retrosheet/boxscores_batting|boxscores_pitching|daily_splits|substitutions|rosters/season={year}/`: strongly-typed per-season tables.
+- `processed/retrosheet/gamelogs/season={year}/`, `gamelogs_postseason/`, `reference_<name>/`: game logs and standardized reference tables.
 
 ---
 

@@ -189,3 +189,8 @@ Franchise directory and roster movements.
 ## 8. Venues / Ballparks (`/v1/venues`)
 - **URL:** `/api/v1/venues`
 - **Columns:** `venue_id`, `venue_name`, `city`, `state`, `country`, `capacity`, `turf_type`, `roof_type`.
+
+## Storage Layout (lake v2)
+- Raw JSON payloads: `raw/mlb_api/<dataset>/[season=YYYY/]<ident>.json`.
+- Typed Parquet: `processed/mlb_api/<dataset>/[season=YYYY/]part-<ident>.parquet` for `schedule`, `box_batting`, `box_pitching`, `standings`, `teams`, `rosters`, `transactions`, `draft`, `venues` (views `mlb_<dataset>`).
+- Boxscores are immutable only once the game is final; the `final` flag lives in the `box_batting` manifest (`box_<game_pk>`).

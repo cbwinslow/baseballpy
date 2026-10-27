@@ -108,8 +108,8 @@ def migrate_layout_cmd(dry_run: bool, delete_old: bool) -> None:
         return
     if dry_run:
         plan = Table(title=f"Migration plan for {config.home} (dry run)")
-        plan.add_column("v1 file", style="dim")
-        plan.add_column("v2 location", style="cyan")
+        plan.add_column("v1 file", style="dim", overflow="fold")
+        plan.add_column("v2 location", style="cyan", overflow="fold")
         for step in report.steps:
             plan.add_row(
                 str(step.src.relative_to(config.home)), str(step.dst.relative_to(config.home))

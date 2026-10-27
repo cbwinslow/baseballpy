@@ -191,3 +191,8 @@ Generated via `chadwickpy.tools.sub.sub_lines`:
 
 #### F. Biographical File (`reference/biofile.csv`)
 - Columns: `player_id`, `name_last`, `name_first`, `birth_date`, `birth_city`, `birth_state`, `birth_country`, `death_date`, `bats`, `throws`, `height`, `weight`, `debut_date`, `final_game_date`, `college`, `high_school`.
+
+## Storage Layout (lake v2)
+- Raw: `raw/retrosheet/event_files/season=YYYY/` (`TEAM<year>`, `.EVA/.EVN/.EVE`), `raw/retrosheet/rosters/season=YYYY/*.ROS`, `raw/retrosheet/gamelogs/`, `raw/retrosheet/reference_<name>/<name>.csv`. All files are fetched at the commit pinned in `core/sources_lock.json`.
+- Processed: `processed/retrosheet/<dataset>/[season=YYYY/]part-<chunk>.parquet` for `events`, `events_postseason`, `boxscores_batting`, `boxscores_pitching`, `daily_splits`, `substitutions`, `gamelogs`, `gamelogs_postseason`, `rosters` and `reference_<name>` (views `retrosheet_<dataset>`).
+- Regular-season and postseason events are separate datasets, so `retrosheet_events` never double-counts games.

@@ -212,3 +212,8 @@ All leaderboards export CSV when passed `&csv=true`.
   - `n_confirms`: `int16()`
   - `rate_overturns`: `float32()`
   - `runs_above_average`: `float32()`
+
+## Storage Layout (lake v2)
+- Raw Savant CSV responses: `raw/statcast/pitches/season=YYYY/<start>_<end>[_filters].csv` (a window that hit the 25,000-row cap is bisected and only the complete sub-windows are stored).
+- Typed pitches: `processed/statcast/pitches/season=YYYY/part-<start>_<end>[_filters].parquet` (DuckDB view `statcast_pitches`).
+- Leaderboards: `raw/statcast/leaderboard_<name>/season=YYYY/<chunk>.csv` and `processed/statcast/leaderboard_<name>/season=YYYY/part-<chunk>.parquet` (view `statcast_leaderboard_<name>`); they never share a directory with pitches.

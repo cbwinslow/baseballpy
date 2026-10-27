@@ -5,14 +5,31 @@ Defines directory layout, source-based partitioning, hash-based invalidation mec
 
 ## Requirements
 
-### Requirement: Source-Partitioned Directory Hierarchy
-The cache MUST reside within a dedicated root (`~/.baseballpy/` by default) partitioned by source:
-- `cache/statcast/`
-- `cache/mlb_api/`
-- `cache/chadwick/`
-- `cache/lahman/`
-- `cache/retrosheet/raw/` and `cache/retrosheet/processed/`
-The base directory MUST be configurable via environment variables (`BASEBALLPY_HOME`, `BASEBALLPY_CACHE_DIR`, `BASEBALLPY_CACHE_STATCAST_DIR_OVERRIDE`, etc.) or `PipelineConfig` powered by Pydantic Settings.
+### Requirement: Four-Tier Local Layout
+All persisted data MUST live under `$BASEBALLPY_HOME` (default `~/.baseballpy/`) in `raw/`, `processed/`, `quarantine/`, `cache/http/`, `databases/` and `logs/`, with a `VERSION` file holding the layout version (2). Datasets MUST live only in `raw/` and `processed/`: `raw/<source>/<dataset>/[season=YYYY/]` holds immutable upstream bytes and `processed/<source>/<dataset>/[season=YYYY/]part-<chunk>.parquet` holds typed Parquet, one dataset per directory. Path helpers MUST NOT create directories; writers create them on write. Locations are configurable with `BASEBALLPY_HOME` and the per-tier `BASEBALLPY_*_OVERRIDE` settings of `LakeConfig`.
+
+#### Scenario: Cache deletion is safe
+- **GIVEN** a populated lake
+- **WHEN** `cache/` is deleted
+- **THEN** no dataset is lost and all DuckDB views still resolve.
+
+#### Scenario: Datasets do not share partitions
+- **GIVEN** Retrosheet regular-season and postseason events for 2023
+- **THEN** they are stored in `processed/retrosheet/events/season=2023/` and `processed/retrosheet/events_postseason/season=2023/` respectively
+- **AND** `SELECT count(*) FROM retrosheet_events` equals the regular-season row count only.
+
+#### Scenario: Path helpers are read-only
+- **WHEN** `LakeConfig.raw_dir(...)`/`processed_dir(...)` are evaluated on an empty home
+- **THEN** no directory is created.
+
+### Requirement: Dataset Registry and Views
+Every dataset MUST be described by a `DatasetSpec` (schema, keys, partitioning, view name, documentation anchor) in the registry; the DuckDB catalog MUST create one view per dataset with data, reading only `processed/`, with a single `season` column for season-partitioned data. Read-only connections MUST NOT create views and MUST raise `DatabaseReadOnlyError` naming `baseballpy db sync` when views are missing.
+
+### Requirement: Layout Migration
+`baseballpy migrate-layout` MUST convert a v1 tree to v2 idempotently, verify checksums and row counts, carry v1 manifest entries over, report (never move) unknown files, never delete v1 data unless `--delete-old` is passed, and write `VERSION` last. A detected v1 tree MUST only produce a one-time warning; nothing is moved automatically.
+
+### Requirement: Reproducible Source Refs
+GitHub-hosted sources MUST be fetched at a pinned commit SHA recorded in `core/sources_lock.json` (overridable per source by environment) and in each manifest entry's `source_ref`; a chunk recorded at a different ref MUST be refetched. `baseballpy refs update` MUST resolve the latest SHAs through the shared HTTP client.
 
 ### Requirement: Two-Phase Atomic Writing (`.part` to Target)
 Every network download and columnar Parquet write MUST write to `{target_path}.part` and execute atomic `os.replace()` only after verifying record boundary and footer integrity.

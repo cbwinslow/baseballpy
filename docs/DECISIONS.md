@@ -423,7 +423,7 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Alternatives rejected:** per-source retry decorators (duplication, drift); SQLite manifest (extra dependency for little gain over lockfile + JSON).
 
 ## ADR 23: Four-Tier Data Lake Layout (raw / processed / quarantine / cache)
-- **Status:** Proposed (OpenSpec change `restructure-data-lake`).
+- **Status:** Accepted — implemented (OpenSpec change `restructure-data-lake`); layout version 2. Implementation notes: Lahman tables without a strongly-typed schema yet and Savant leaderboards are not in the dataset registry; `BaseballDatabase` discovers them under `processed/` so their data stays queryable until `complete-source-coverage` registers typed schemas. `migrate-layout` keeps one parquet part per v1 file (no concatenation) and drops the regular-season duplicates that v1 `events_all` carried.
 - **Context:** `cache/` doubled as the dataset store; sources had inconsistent tiers; datasets shared partitions causing duplicates in views.
 - **Decision:** `$BASEBALLPY_HOME/{raw,processed,quarantine,cache/http,databases,logs}`; one dataset per directory; Hive `season=` partitions; `VERSION` file; pinned GitHub refs; registry-driven DuckDB views; `migrate-layout` command.
 - **Consequences:** Deleting `cache/` is always safe; reprocessing from `raw/` needs no network; one-time migration for v1 users.

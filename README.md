@@ -179,19 +179,34 @@ baseballpy statcast --start 2024-05-01 --end 2024-05-05 --output pitches.parquet
 
 ---
 
-## Cache Configuration
+## Data Lake Layout
 
-By default, cached datasets are stored under `~/.baseballpy/cache/` partitioned by source:
-- `~/.baseballpy/cache/statcast/`
-- `~/.baseballpy/cache/mlb_api/`
-- `~/.baseballpy/cache/retrosheet/`
-- `~/.baseballpy/cache/chadwick/`
-- `~/.baseballpy/cache/lahman/`
+Everything lives under `$BASEBALLPY_HOME` (default `~/.baseballpy`), layout version 2 (see
+[docs/examples/layout.txt](docs/examples/layout.txt) for a real listing):
 
-To customize the cache location:
-```bash
-export BASEBALLPY_CACHE_DIR=/path/to/custom/cache
+```text
+$BASEBALLPY_HOME
+├── raw/<source>/<dataset>/[season=YYYY/]<upstream files>          immutable upstream bytes (+ manifest.json)
+├── processed/<source>/<dataset>/[season=YYYY/]part-<chunk>.parquet  typed Parquet, one dataset per directory
+├── quarantine/<source>/<YYYY-MM-DD>/<dataset>-<id>.jsonl          rows that failed coercion (dead letters)
+├── cache/http/                                                    HTTP bookkeeping only; always safe to delete
+├── databases/baseball.duckdb                                      views over processed/ (no data copies)
+├── logs/audit.jsonl
+└── VERSION                                                        layout version (2)
 ```
+
+- DuckDB views (`baseballpy db sync`) read only `processed/`; each registered dataset gets one view
+  (`statcast_pitches`, `retrosheet_events`, `retrosheet_events_postseason`, `lahman_batting`,
+  `chadwick_register`, `mlb_schedule`, ...), plus `v_player_crosswalk` and `v_season_catalog`.
+- GitHub-hosted sources (Retrosheet, Chadwick Register, Lahman) are fetched at commit SHAs pinned in
+  `src/baseballpy/core/sources_lock.json`; `baseballpy refs show` lists them and
+  `baseballpy refs update` moves them forward. Override per source with
+  `BASEBALLPY_RETROSHEET_REF`, `BASEBALLPY_CHADWICK_REF`, `BASEBALLPY_LAHMAN_REF`.
+- Upgrading from the old `cache/<source>/` layout: `baseballpy migrate-layout --dry-run`, review, then
+  `baseballpy migrate-layout` (copies and verifies; add `--delete-old` to remove migrated v1 files).
+
+To relocate the lake: `export BASEBALLPY_HOME=/path/to/lake` (individual tiers can be moved with
+`BASEBALLPY_RAW_ROOT_OVERRIDE`, `BASEBALLPY_PROCESSED_ROOT_OVERRIDE`, ...).
 
 ---
 

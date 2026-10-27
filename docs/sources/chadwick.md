@@ -8,7 +8,7 @@
 - **Note on Upstream Deprecation:** Upstream Chadwick Bureau **deprecated and removed** the monolithic `people.csv` file. `baseballpy` automatically retrieves all 16 shards, tracks GitHub commit SHAs to detect weekly upstream updates, and compiles them into a unified, strongly-typed PyArrow Table.
 - **Rate Limit Policy:** Max 15 requests/second (Fastly-backed GitHub CDN).
 - **Update Frequency:** Weekly upon player debuts, roster moves, or historical discoveries.
-- **baseballpy Solution:** Automatic commit SHA tracking via GitHub API. Downloads all 16 shards concurrently using bounded concurrency (`Semaphore(4)`), validates them through two-phase atomic write gates (`.part`), and caches locally as an indexed Parquet table (`~/.baseballpy/cache/chadwick/people.parquet`) for sub-microsecond in-memory hash lookups.
+- **baseballpy Solution:** Automatic commit SHA tracking via GitHub API. Downloads all 16 shards concurrently using bounded concurrency (`Semaphore(4)`), validates them through two-phase atomic write gates (`.part`), and stores the raw shards under `~/.baseballpy/raw/chadwick/register/` and caches locally as an indexed Parquet table (`~/.baseballpy/processed/chadwick/register/part-data.parquet`) for sub-microsecond in-memory hash lookups.
 
 ---
 

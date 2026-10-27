@@ -27,7 +27,7 @@ All paths and rate limits are managed via Pydantic Settings (`BASEBALLPY_*`):
 
 ```bash
 export BASEBALLPY_HOME="~/.baseballpy"
-export BASEBALLPY_CACHE_DIR="/data/baseball_cache"
+export BASEBALLPY_PROCESSED_ROOT_OVERRIDE="/fast-disk/baseball/processed"  # optional: move one tier
 export BASEBALLPY_RATE_MAX_CONCURRENCY=8
 export BASEBALLPY_RATE_SAVANT_RPS=2.5
 export BASEBALLPY_AUDIT_ENABLED=true
@@ -36,10 +36,10 @@ export BASEBALLPY_AUDIT_ENABLED=true
 Or configure dynamically in Python:
 ```python
 from pathlib import Path
-from baseballpy.core.config import CacheConfig, PipelineConfig
+from baseballpy.core.config import LakeConfig, PipelineConfig
 
 config = PipelineConfig(
-    cache=CacheConfig(base_dir=Path("/custom/storage")),
+    lake=LakeConfig(home=Path("/custom/storage")),
 )
 ```
 

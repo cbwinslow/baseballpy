@@ -31,10 +31,10 @@ Prerequisite: `harden-ingestion-core` tasks 1-5 complete (HttpClient, manifest l
 - [x] 7. Cleanup <!-- id: 7 -->
   - [x] 7.1 `git rm` `test.duckdb`, `test2.duckdb` if tracked; delete from disk
   - [x] 7.2 Verify `.gitignore` covers `*.duckdb`, `*.part`, `__pycache__`
-- [ ] 8. Verification <!-- id: 8 -->
-  - [ ] 8.1 `uv run pytest`, `uvx ruff check .`, `uvx ruff format --check .`, `uvx mypy --strict src`
-  - [ ] 8.2 Manual: `baseballpy migrate-layout --dry-run` on real home dir, review output; run for real; `baseballpy db sync`; compare per-view row counts to pre-migration
-  - [ ] 8.3 Manual: download one Statcast week + one Retrosheet season fresh into an empty `BASEBALLPY_HOME`, confirm tree matches the Target Layout exactly (`find` listing saved to `docs/examples/layout.txt`)
-- [ ] 9. Docs <!-- id: 9 -->
-  - [ ] 9.1 ADR 23; update `openspec/specs/caching-and-invalidation/spec.md` from deltas
-  - [ ] 9.2 Layout section in README, QUICKSTART, every `docs/sources/*.md` (paths)
+- [x] 8. Verification <!-- id: 8 -->
+  - [x] 8.1 `uv run pytest`, `uvx ruff check .`, `uvx ruff format --check .`, `uvx mypy --strict src`
+  - [x] 8.2 Manual: `baseballpy migrate-layout --dry-run` on real home dir, review output; run for real; `baseballpy db sync`; compare per-view row counts to pre-migration
+  - [x] 8.3 Manual: download one Statcast week + one Retrosheet season fresh into an empty `BASEBALLPY_HOME`, confirm tree matches the Target Layout exactly (`find` listing saved to `docs/examples/layout.txt`)
+- [x] 9. Docs <!-- id: 9 -->
+  - [x] 9.1 ADR 23; update `openspec/specs/caching-and-invalidation/spec.md` from deltas
+  - [x] 9.2 Layout section in README, QUICKSTART, every `docs/sources/*.md` (paths)

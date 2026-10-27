@@ -9,7 +9,7 @@
 - **Why Automated Scrapers Fail on SABR Box:** The official download link on SABR routes through `sabr.app.box.com`, which requires ephemeral session cookies and interactive verification. Direct HTTP scripts hitting Box break.
 - **baseballpy Dual-Mode Solution:**
   1. **Mode A (Automated Extraction):** Direct zero-configuration download from the verified GitHub repository `cbwinslow/lahman-database-csv`, containing the complete 1871–2025 SABR release with 27 tables.
-  2. **Mode B (Manual Local Import):** A built-in helper `lahman.import_archive(path)` allowing users to supply an official `.zip` or unzipped folder downloaded manually from SABR Box. The helper moves/copies the raw CSVs into `~/.baseballpy/cache/lahman/raw/` and compiles them immediately into strongly-typed Parquet tables in `~/.baseballpy/cache/lahman/processed/`.
+  2. **Mode B (Manual Local Import):** A built-in helper `lahman.import_archive(path)` allowing users to supply an official `.zip` or unzipped folder downloaded manually from SABR Box. The helper copies the raw CSVs into `~/.baseballpy/raw/lahman/<Table>/<Table>.csv` and compiles them immediately into strongly-typed Parquet tables at `~/.baseballpy/processed/lahman/<Table>/part-data.parquet`.
 
 ---
 

@@ -618,14 +618,17 @@ def _migrate_events_postseason(step: Step, report: MigrationReport) -> None:
     else:
         filtered = table
     dropped = table.num_rows - filtered.num_rows
+    report.postseason_duplicate_rows_dropped += dropped
     if filtered.num_rows == 0:
-        report.postseason_duplicate_rows_dropped += dropped
+        return
+    if step.dst.exists() and _rows(step.dst) == filtered.num_rows:
+        report.skipped.append(step)
         return
     atomic_write_parquet(filtered, step.dst, compression=PARQUET_COMPRESSION)
     if _rows(step.dst) != filtered.num_rows:
         raise MigrationError(f"row count mismatch for {step.dst}")
-    report.postseason_duplicate_rows_dropped += dropped
     report.rows_verified += filtered.num_rows
+    report.copied.append(step)
 
 
 def _carry_manifests(step: Step, config: LakeConfig) -> int:
@@ -683,7 +686,6 @@ def migrate_layout(
         for step in steps:
             if step.kind == "events_postseason":
                 _migrate_events_postseason(step, report)
-                report.copied.append(step)
             elif _same_file(step.src, step.dst):
                 report.skipped.append(step)
             else:
