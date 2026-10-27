@@ -412,3 +412,39 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
    - Database storage overhead is near-zero because the catalog stores lightweight views pointing directly to the underlying columnar Parquet files.
 
 
+
+---
+
+## ADR 22: Hardened Ingestion Core (HttpClient, Freshness, Quarantine, Manifest Locking)
+- **Status:** Proposed (OpenSpec change `harden-ingestion-core`).
+- **Context:** Review found unused rate limiters, a never-read TTL, silent failures, a non-thread-safe manifest, and non-conformant sinks.
+- **Decision:** All network I/O goes through `core/http.HttpClient`; cache freshness is a first-class `CachePolicy` (historical seasons immutable, current data TTL); unparseable rows go to a dead-letter quarantine; manifests use lockfile + merge-on-save; audit records `CANCELLED`; sinks gain keyed upsert and identifier validation.
+- **Consequences:** One place to tune networking; stale-data bugs removed; slight latency cost for lock acquisition; `default_audit_logger` becomes lazy.
+- **Alternatives rejected:** per-source retry decorators (duplication, drift); SQLite manifest (extra dependency for little gain over lockfile + JSON).
+
+## ADR 23: Four-Tier Data Lake Layout (raw / processed / quarantine / cache)
+- **Status:** Proposed (OpenSpec change `restructure-data-lake`).
+- **Context:** `cache/` doubled as the dataset store; sources had inconsistent tiers; datasets shared partitions causing duplicates in views.
+- **Decision:** `$BASEBALLPY_HOME/{raw,processed,quarantine,cache/http,databases,logs}`; one dataset per directory; Hive `season=` partitions; `VERSION` file; pinned GitHub refs; registry-driven DuckDB views; `migrate-layout` command.
+- **Consequences:** Deleting `cache/` is always safe; reprocessing from `raw/` needs no network; one-time migration for v1 users.
+- **Alternatives rejected:** keeping per-source ad-hoc layouts; storing data in DuckDB only (loses columnar file portability and partial re-processing).
+
+## ADR 24: Complete Source Coverage via Registry, Generated Schemas, and `_extras`
+- **Status:** Proposed (OpenSpec change `complete-source-coverage`).
+- **Context:** Only a fraction of upstream endpoints/tables were ingested; schemas dropped fields; docs drifted.
+- **Decision:** A `DATASETS` registry drives ingestion, views, docs and tests; schemas are generated from real upstream headers/payloads and committed; unmapped fields are never dropped (`_extras`); GitHub-hosted sources are discovered via the tree API; docs and column dictionaries are generated; `docs/ENDPOINT_CATALOG.md` + live probe track coverage.
+- **Consequences:** Adding an endpoint is data + schema + fixture, not new code paths; larger storage footprint (raw JSON retained).
+- **Alternatives rejected:** hand-written per-endpoint modules (does not scale to ~120 datasets); storing only flattened typed columns (violates full-preservation mandate).
+
+## ADR 25: Unified Pipeline and Full-Surface CLI
+- **Status:** Proposed (OpenSpec change `unified-pipeline-and-cli`).
+- **Context:** `Pipeline.run` was mandated but absent; CLI covered one source.
+- **Decision:** `Pipeline`/`Job`/`JobResult` compose registry-resolved extractor/normalizer/sink via protocols; CLI offers `ingest`, `catalog`, `db`, `stream`, `docs`, `audit`, `quarantine`, `doctor`, `migrate-layout`, `refs`; signature-level protocol contract tests.
+- **Consequences:** One code path for resume/audit/quarantine; `ingest all` possible; `*Source` classes become facades.
+
+## ADR 26: License Position, Dependency Review, CI and Docs Policy
+- **Status:** Proposed (OpenSpec change `repo-hygiene-and-docs-sync`).
+- **Context:** `CLAUDE.md` (Apache-2.0) contradicted `LICENSE`/`pyproject` (GPL-3.0-or-later); `chadwickpy` is GPL; several dependencies were unused or under-used; no CI.
+- **Decision:** Default to GPL-3.0-or-later consistently (owner may override; fallback tasks documented); isolate GPL imports in one adapter regardless; apply the dependency decision table (remove `fsspec`/`websockets` defaults, split `dlt` extras, adopt `narwhals`/`polars` helpers); add CI with coverage gate, socket guard, live-test separation; generate docs and fail CI on drift.
+- **Consequences:** Smaller default install; enforced architecture boundaries by tests; license clarity for downstream users.
+- **Alternatives rejected:** relicensing to Apache-2.0 now (requires removing/optionalizing GPL dependency and rewriting Retrosheet parsing).

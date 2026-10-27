@@ -1,0 +1,59 @@
+# Tasks: Complete Source Coverage
+
+Prerequisites: `harden-ingestion-core` (tasks 1-6) and `restructure-data-lake` (tasks 1-4). Work source by source;
+each source section is independently committable. Every section ends with: fixtures, tests, generated docs, live probe.
+
+- [ ] 0. Shared machinery (C-2, C-9) <!-- id: 0 -->
+  - [ ] 0.1 `core/schema_tools.py`: `snake()`, `flatten()`, `map_by_header()`, `normalize_records()` with `_extras` + drift log
+  - [ ] 0.2 `scripts/gen_schemas.py` (fetch/flatten/propose types) and `scripts/probe_endpoints.py` (probe every catalog row; write `docs/endpoint_probe.json`)
+  - [ ] 0.3 `docs generate` command + `docs/columns/<source>.yaml` description files + stale-docs test
+  - [ ] 0.4 Registry completeness test (catalog row <-> DatasetSpec <-> docs section <-> fixture)
+- [ ] 1. MLB Stats API (C-1, C-2) <!-- id: 1 -->
+  - [ ] 1.1 `MlbEndpoint` framework, fan-out strategies, hydrate support, raw JSON store
+  - [ ] 1.2 Reference/meta datasets (`mlb_ref_*`) and enum-vs-data validation test
+  - [ ] 1.3 Core datasets: seasons, sports, leagues, divisions, conferences, teams (+affiliates, history, coaches, personnel, alumni, roster types: active/40Man/fullSeason/fullRoster/depthChart/gameday/nonRosterInvitees), venues, positions
+  - [ ] 1.4 People datasets: people, people_search (names), people_changes, free_agents, people_stats for every stats type × group (season, career, yearByYear, gameLog, statSplits, byDateRange, sabermetrics, expectedStatistics, winProbability, pitchArsenal, hotColdZones, sprayChart, playLog, projected, etc. — enumerate from `/v1/statTypes`), awards per person
+  - [ ] 1.5 League datasets: standings (all `standingsTypes`), stats, stats_leaders (all `leagueLeaderTypes`), team_stats, team_leaders, attendance, awards + recipients, draft, draft_prospects, draft_latest, transactions, jobs (umpires, datacasters, official scorers), game_pace, high_low, schedule (regular/postseason/series/tied/all game types, hydrated), schedule_events
+  - [ ] 1.6 Game datasets: schedule-derived `game_pk` list; game_feed_* tables (see design §2), linescore, boxscore (full), play_by_play, win_probability, context_metrics, content, color, changes
+  - [ ] 1.7 Streamer rewrite (design §3) incl. `LiveEvent`, diffPatch/timestamps, status lifecycle, `StreamExtractorProtocol` signature, quarantine, Arrow mapping
+  - [ ] 1.8 Public API: one function per dataset in `baseballpy.mlb`; keep legacy names (`get_schedule`, ...) as thin wrappers
+  - [ ] 1.9 Tests: fixtures per endpoint family, fan-out tests, stream tests (diffPatch, 304, delays, suspended, Final), Hypothesis on flatten
+  - [ ] 1.10 Live probe all endpoints in catalog §MLB; record unsupported ones
+- [ ] 2. Statcast / Savant (C-4, C-5) <!-- id: 2 -->
+  - [ ] 2.1 Regenerate pitch schema from live headers across eras (2008, 2015, 2020, 2023, 2024, 2025); union columns; nullable era columns
+  - [ ] 2.2 `StatcastQuery` (typed filters: season, game_types, player_type, team, sport_id, ...) in chunk key
+  - [ ] 2.3 `ingest_season()` / `ingest_all()`; windows from MLB schedule; truncation bisect; idempotent upsert keys
+  - [ ] 2.4 Leaderboard registry + explicit schemas for every leaderboard in catalog §Savant, all variants/years; remove heuristic normalizer and `int(float())` truncation
+  - [ ] 2.5 `custom_leaderboard()`; park factors; percentile rankings; batted-ball; pitch tempo; spin; jump; catch probability; run values (per catalog)
+  - [ ] 2.6 `/gf` game feed dataset (probe; mark unsupported if blocked)
+  - [ ] 2.7 Fix `StatcastLeaderboard` enum <-> routes mismatch (generate enum from registry); test equality
+  - [ ] 2.8 Tests: recorded CSV fixtures per leaderboard incl. regression for `bats`, `average_*`, `pa`, `hp_to_1b` typing; row-cap bisect; multi-era pitch fixtures
+  - [ ] 2.9 Live probe; record min_year per leaderboard
+- [ ] 3. Lahman (C-6) <!-- id: 3 -->
+  - [ ] 3.1 Sources: ONLY `cbwinslow/lahman-database-csv` (pinned ref; `BASEBALLPY_LAHMAN_REPO`/`_REF` overridable) or user-supplied archive; NEVER `chadwickbureau/baseballdatabank`; no auto-fallback; manifest records `remote@sha`/`local-import`; stale-year warning; test greps `src/` and `docs/` for `baseballdatabank` (allowed only in the historical ADR/archive text that explains why it is rejected)
+  - [ ] 3.2 Generate 27 strict schemas from real headers; PKs; `_extras`
+  - [ ] 3.3 Data-quality checks (PK uniqueness, FK sanity) as warnings
+  - [ ] 3.4 Atomic raw writes in `import_archive`; zip safety (size limit, no path traversal)
+  - [ ] 3.5 Tests with a trimmed fixture per table (27 fixtures), drift test (extra column preserved)
+- [ ] 4. Retrosheet (C-7) <!-- id: 4 -->
+  - [ ] 4.1 Tree discovery + cache; dataset-to-pattern registry
+  - [ ] 4.2 Bounded-concurrency downloader with `ABSENT` status and sha256; season completeness rule
+  - [ ] 4.3 Datasets: event_files, events, events_postseason, boxscores, daily_splits, substitutions, rosters, gamelogs, gamelogs_postseason, schedule, box files (parse if supported), all `reference/*` CSVs (generic reference parser by header)
+  - [ ] 4.4 Streamed Parquet writing + process-pool parsing; remove list-of-dict accumulation
+  - [ ] 4.5 `_chadwick_adapter.py` isolating GPL imports; helpful ImportError
+  - [ ] 4.6 `ingest_all(start, end)` with resume
+  - [ ] 4.7 Tests: fixtures for each file kind, 404-absent handling, resume after interruption, header drift in reference CSV
+  - [ ] 4.8 Live probe: one old season (e.g. 1950), one modern (2023), 2025
+- [ ] 5. Chadwick Register (C-8) <!-- id: 5 -->
+  - [ ] 5.1 Tree discovery of shards/aux files; SHA revalidation every 24 h
+  - [ ] 5.2 Header-based schema + `_extras`; `register_names`, `register_links` datasets when present
+  - [ ] 5.3 Replace silent `except` in SHA lookup; authenticated API option
+  - [ ] 5.4 Tests incl. missing shard -> hard error, SHA change -> refetch
+- [ ] 6. Documentation (C-9) <!-- id: 6 -->
+  - [ ] 6.1 Rewrite `docs/sources/*.md`: endpoints, params, headers, methods, rate limits, caps, quirks, era notes, keys, partitioning, freshness, generated column dictionaries for **every** dataset
+  - [ ] 6.2 Update `docs/ENDPOINT_CATALOG.md` "verified on / status" columns from `docs/endpoint_probe.json`
+  - [ ] 6.3 ADR 24; merge spec deltas into `openspec/specs/*`
+- [ ] 7. Verification <!-- id: 7 -->
+  - [ ] 7.1 `uv run pytest`, `uvx ruff check .`, `uvx ruff format --check .`, `uvx mypy --strict src`
+  - [ ] 7.2 Manual full-coverage run into a scratch `BASEBALLPY_HOME`: `baseballpy ingest all --seasons 2023` then `--seasons 1950` (Lahman/Retrosheet/MLB) and Statcast 2008 + 2024 one week each; confirm every registered dataset has ≥1 processed partition or a documented `unsupported`/`empty` reason (`baseballpy catalog status` prints the table)
+  - [ ] 7.3 Manual: spot-check 10 random columns per source against the upstream website values
