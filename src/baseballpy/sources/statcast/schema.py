@@ -42,6 +42,8 @@ class StatcastLeaderboard(StrEnum):
     SWING_TAKE = "swing_take"
     ABS_CHALLENGES = "abs_challenges"
     PITCH_CLOCK = "pitch_clock"
+    ACTIVE_SPIN = "active_spin"
+    CATCH_PROBABILITY = "catch_probability"
     FIELDING_RUN_VALUE = "fielding_run_value"
     ROLLING = "rolling"
     PARK_FACTORS = "park_factors"

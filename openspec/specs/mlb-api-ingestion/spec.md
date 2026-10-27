@@ -75,3 +75,5 @@ All-time stat types ignore the season: `ingest_season` MUST skip them, `ingest_h
 ### Requirement: Half-Inning Ends
 The streamer MUST emit a `half_inning_end` event (once) when a completed plate appearance records the third out (AGENTS.md section 5).
 
+### Requirement: Provider Lists Are the Registry
+Every standings type, roster type and game type listed by the provider MUST be present in the registry (and the `GameType` enum MUST equal `/v1/gameTypes`); `baseballpy catalog audit` MUST report any difference as MISSING or STALE.

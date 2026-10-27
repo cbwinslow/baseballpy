@@ -33,6 +33,9 @@ class LeaderboardDef:
     #: name of the JS variable holding the rows when ``fmt == "html_json"``
     html_var: str = "data"
     unsupported: str | None = None
+    #: when the ``unsupported`` verdict was last verified and what was tried
+    verified_on: str | None = None
+    tried: tuple[str, ...] = ()
 
     @property
     def dataset(self) -> str:
@@ -366,6 +369,21 @@ LEADERBOARDS: tuple[LeaderboardDef, ...] = (
         fmt="html_json",
     ),
     _lb(
+        "active_spin",
+        "active-spin",
+        "Active spin (measured vs inferred) per pitcher and pitch type; the `min` qualifier breaks this route, so it is not sent.",
+        "player-season",
+        ("entity_id", "pitch_hand"),
+    ),
+    _lb(
+        "catch_probability",
+        "catch_probability",
+        "Fielder catch probability by star bucket (2016 onwards). The `type` parameter empties this route (and produced anonymous rows in an earlier probe), so it is not sent.",
+        "player-season",
+        ("player_id",),
+        min_param="min",
+    ),
+    _lb(
         "park_factors",
         "statcast-park-factors",
         "Statcast park factor indices per venue and 3-year span (embedded JSON on the page).",
@@ -382,20 +400,14 @@ LEADERBOARDS: tuple[LeaderboardDef, ...] = (
         fmt="html_json",
     ),
     LeaderboardDef(
-        "catch_probability",
-        "catch_probability",
-        "Outfield catch probability by star bucket.",
-        "player-season",
-        (),
-        unsupported="2016-2020 return 30 anonymous rows (null player_id), empty from 2021 on",
-    ),
-    LeaderboardDef(
         "directional_outs_above_average",
         "directional_outs_above_average",
         "Directional OAA.",
         "player-season",
         (),
         unsupported="route answers 404 (probed 2026-10-27); directions are columns of outs_above_average",
+        verified_on="2026-10-27",
+        tried=("GET /leaderboard/directional_outs_above_average?year=2024&csv=true -> HTTP 404",),
     ),
     LeaderboardDef(
         "catcher_throwing",
@@ -404,14 +416,8 @@ LEADERBOARDS: tuple[LeaderboardDef, ...] = (
         "player-season",
         (),
         unsupported="route answers 404; pop time/arm strength are in `poptime`",
-    ),
-    LeaderboardDef(
-        "active_spin",
-        "active-spin",
-        "Active spin.",
-        "player-season",
-        (),
-        unsupported="page answers HTML for csv=true; active spin is a column of spin_direction_pitches",
+        verified_on="2026-10-27",
+        tried=("GET /leaderboard/catcher_throwing?year=2024&min=q&csv=true -> HTTP 404",),
     ),
     LeaderboardDef(
         "year_to_year",
@@ -420,6 +426,8 @@ LEADERBOARDS: tuple[LeaderboardDef, ...] = (
         "player-season",
         (),
         unsupported="route answers 404 (comparison tool, derivable from other leaderboards)",
+        verified_on="2026-10-27",
+        tried=("GET /leaderboard/year-to-year?year=2024&csv=true -> HTTP 404",),
     ),
     LeaderboardDef(
         "bat_speed",
@@ -428,6 +436,8 @@ LEADERBOARDS: tuple[LeaderboardDef, ...] = (
         "player-season",
         (),
         unsupported="route answers 404; bat speed is a column of bat_tracking",
+        verified_on="2026-10-27",
+        tried=("GET /leaderboard/bat-speed?year=2024&csv=true -> HTTP 404",),
     ),
 )
 

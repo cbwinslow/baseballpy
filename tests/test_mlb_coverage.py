@@ -246,6 +246,7 @@ def test_unknown_upstream_field_goes_to_extras_and_bad_cells_to_quarantine(tmp_p
 
 def test_game_type_and_sport_enums_exist_in_the_live_reference_data() -> None:
     game_types = {r["id"] for r in _fixture("ref_game_types")}
+    assert {m.value for m in GameType} == game_types, "GameType must equal /v1/gameTypes"
     for member in GameType:
         assert member.value in game_types, f"GameType.{member.name} not served by /v1/gameTypes"
     sports = {r["id"] for r in _fixture("ref_sports")["sports"]}

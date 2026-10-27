@@ -1,0 +1,65 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 150359,
+    "fullName": "A.J. Burnett",
+    "link": "/api/v1/people/150359"
+   },
+   "jerseyNumber": "34",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "TR",
+    "description": "Traded"
+   },
+   "parentTeamId": 147
+  },
+  {
+   "person": {
+    "id": 595918,
+    "fullName": "A.J. Cole",
+    "link": "/api/v1/people/595918"
+   },
+   "jerseyNumber": "67",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "CL",
+    "description": "Claimed"
+   },
+   "parentTeamId": 147
+  },
+  {
+   "person": {
+    "id": 111213,
+    "fullName": "Aaron Boone",
+    "link": "/api/v1/people/111213"
+   },
+   "jerseyNumber": "19",
+   "position": {
+    "code": "5",
+    "name": "Third Base",
+    "type": "Infielder",
+    "abbreviation": "3B"
+   },
+   "status": {
+    "code": "RL",
+    "description": "Released"
+   },
+   "parentTeamId": 147
+  }
+ ],
+ "link": "/api/v1/teams/147/roster",
+ "teamId": 147,
+ "rosterType": "allTime"
+}

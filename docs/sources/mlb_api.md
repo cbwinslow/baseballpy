@@ -18364,3 +18364,157 @@ Every venue with location, field info, time zone and external ids hydrated.
 | `_extras` | string | yes | — |  |
 
 <!-- END GENERATED:mlb_api.venues_hydrated -->
+
+<!-- BEGIN GENERATED:mlb_api.standings_current_half -->
+### Dataset: standings_current_half
+
+Standings, type currentHalf.
+
+- **View:** `mlb_standings_current_half`
+- **Processed path:** `processed/mlb_api/standings_current_half/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `team_id`, `records_standings_type`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `records_standings_type` | string | yes | `records.standingsType` |  |
+| `records_league_id` | int32 | yes | `records.league.id` |  |
+| `records_league_link` | string | yes | `records.league.link` |  |
+| `records_division_id` | int32 | yes | `records.division.id` |  |
+| `records_division_link` | string | yes | `records.division.link` |  |
+| `records_sport_id` | int32 | yes | `records.sport.id` |  |
+| `records_sport_link` | string | yes | `records.sport.link` |  |
+| `records_round_robin_status` | string | yes | `records.roundRobin.status` |  |
+| `records_last_updated` | timestamp[us, tz=UTC] | yes | `records.lastUpdated` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `season` | string | yes | — |  |
+| `streak_streak_code` | string | yes | `streak.streakCode` |  |
+| `streak_streak_type` | string | yes | `streak.streakType` |  |
+| `streak_streak_number` | int32 | yes | `streak.streakNumber` |  |
+| `clinch_indicator` | string | yes | `clinchIndicator` |  |
+| `division_rank` | string | yes | `divisionRank` |  |
+| `league_rank` | string | yes | `leagueRank` |  |
+| `sport_rank` | string | yes | `sportRank` |  |
+| `games_played` | int32 | yes | `gamesPlayed` |  |
+| `games_back` | string | yes | `gamesBack` |  |
+| `wild_card_games_back` | string | yes | `wildCardGamesBack` |  |
+| `league_games_back` | string | yes | `leagueGamesBack` |  |
+| `spring_league_games_back` | string | yes | `springLeagueGamesBack` |  |
+| `sport_games_back` | string | yes | `sportGamesBack` |  |
+| `division_games_back` | string | yes | `divisionGamesBack` |  |
+| `conference_games_back` | string | yes | `conferenceGamesBack` |  |
+| `league_record_wins` | int32 | yes | `leagueRecord.wins` |  |
+| `league_record_losses` | int32 | yes | `leagueRecord.losses` |  |
+| `league_record_ties` | int32 | yes | `leagueRecord.ties` |  |
+| `league_record_pct` | string | yes | `leagueRecord.pct` |  |
+| `last_updated` | timestamp[us, tz=UTC] | yes | `lastUpdated` |  |
+| `records_split_records` | string | yes | `records.splitRecords` |  |
+| `records_division_records` | string | yes | `records.divisionRecords` |  |
+| `records_overall_records` | string | yes | `records.overallRecords` |  |
+| `records_league_records` | string | yes | `records.leagueRecords` |  |
+| `records_expected_records` | string | yes | `records.expectedRecords` |  |
+| `runs_allowed` | int32 | yes | `runsAllowed` |  |
+| `runs_scored` | int32 | yes | `runsScored` |  |
+| `division_champ` | bool | yes | `divisionChamp` |  |
+| `division_leader` | bool | yes | `divisionLeader` |  |
+| `has_wildcard` | bool | yes | `hasWildcard` |  |
+| `clinched` | bool | yes | — |  |
+| `elimination_number` | string | yes | `eliminationNumber` |  |
+| `elimination_number_sport` | string | yes | `eliminationNumberSport` |  |
+| `elimination_number_league` | string | yes | `eliminationNumberLeague` |  |
+| `elimination_number_division` | string | yes | `eliminationNumberDivision` |  |
+| `elimination_number_conference` | string | yes | `eliminationNumberConference` |  |
+| `wild_card_elimination_number` | string | yes | `wildCardEliminationNumber` |  |
+| `magic_number` | string | yes | `magicNumber` |  |
+| `wins` | int32 | yes | — |  |
+| `losses` | int32 | yes | — |  |
+| `run_differential` | int32 | yes | `runDifferential` |  |
+| `winning_percentage` | string | yes | `winningPercentage` |  |
+| `wild_card_rank` | string | yes | `wildCardRank` |  |
+| `wild_card_leader` | bool | yes | `wildCardLeader` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.standings_current_half -->
+
+<!-- BEGIN GENERATED:mlb_api.team_roster_all_time -->
+### Dataset: team_roster_all_time
+
+Team roster, type allTime.
+
+- **View:** `mlb_team_roster_all_time`
+- **Processed path:** `processed/mlb_api/team_roster_all_time/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `team_id`, `person_id`, `position_code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `team_id` | int32 | yes | — |  |
+| `person_id` | int32 | yes | `person.id` |  |
+| `person_full_name` | string | yes | `person.fullName` |  |
+| `person_link` | string | yes | `person.link` |  |
+| `jersey_number` | string | yes | `jerseyNumber` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `status_code` | string | yes | `status.code` |  |
+| `status_description` | string | yes | `status.description` |  |
+| `parent_team_id` | int32 | yes | `parentTeamId` |  |
+| `note` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.team_roster_all_time -->
+
+<!-- BEGIN GENERATED:mlb_api.team_roster_coach -->
+### Dataset: team_roster_coach
+
+Team roster, type coach.
+
+- **View:** `mlb_team_roster_coach`
+- **Processed path:** `processed/mlb_api/team_roster_coach/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `team_id`, `person_id`, `job`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `team_id` | int32 | yes | — |  |
+| `person_id` | int32 | yes | `person.id` |  |
+| `person_full_name` | string | yes | `person.fullName` |  |
+| `person_link` | string | yes | `person.link` |  |
+| `jersey_number` | string | yes | `jerseyNumber` |  |
+| `job` | string | yes | — |  |
+| `job_id` | string | yes | `jobId` |  |
+| `title` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.team_roster_coach -->
+
+<!-- BEGIN GENERATED:mlb_api.team_roster_gameday -->
+### Dataset: team_roster_gameday
+
+Team roster, type gameday.
+
+- **View:** `mlb_team_roster_gameday`
+- **Processed path:** `processed/mlb_api/team_roster_gameday/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `team_id`, `person_id`, `position_code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `team_id` | int32 | yes | — |  |
+| `person_id` | int32 | yes | `person.id` |  |
+| `person_full_name` | string | yes | `person.fullName` |  |
+| `person_link` | string | yes | `person.link` |  |
+| `jersey_number` | string | yes | `jerseyNumber` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `status_code` | string | yes | `status.code` |  |
+| `status_description` | string | yes | `status.description` |  |
+| `parent_team_id` | int32 | yes | `parentTeamId` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.team_roster_gameday -->

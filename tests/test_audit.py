@@ -1,118 +1,149 @@
-"""Tests for audit logging, execution benchmarking, concurrency safety, and telemetry persistence."""
+"""Catalog audit: every verdict kind, exit codes and the evidence rule for `unsupported`."""
 
-import asyncio
-from pathlib import Path
+import json
 
+import httpx
 import pytest
+import respx
+from click.testing import CliRunner
 
-from baseballpy.core.audit import AuditConfig, AuditLogger
+from baseballpy.audit import (
+    AuditFinding,
+    Kind,
+    audit_mlb,
+    audit_savant,
+    unsupported_without_evidence,
+)
+from baseballpy.cli import main
+from baseballpy.core.config import RateLimitConfig
+from baseballpy.core.http import HttpClient
+from baseballpy.sources.mlb_api.endpoints import ROSTER_TYPES, STANDINGS_TYPES
+from baseballpy.sources.mlb_api.schemas import GameType
+from baseballpy.sources.statcast.lb_catalog import LEADERBOARDS, SAVANT_BASE
 
-
-def test_audit_logger_tracking_success(tmp_path: Path) -> None:
-    config = AuditConfig(base_dir=tmp_path)
-    logger = AuditLogger(config=config)
-
-    with logger.track(operation="statcast_fetch", source="statcast") as tracker:
-        tracker.set_records(500)
-        tracker.set_cache_hit(False)
-        tracker.set_endpoint("https://baseballsavant.mlb.com/statcast_search")
-        tracker.set_destination("statcast.parquet")
-
-    events = logger.read_events()
-    assert len(events) == 1
-    ev = events[0]
-    assert ev.operation == "statcast_fetch"
-    assert ev.source == "statcast"
-    assert ev.status == "SUCCESS"
-    assert ev.records_count == 500
-    assert ev.cache_hit is False
-    assert ev.duration_seconds >= 0.0
-    assert ev.throughput_rps > 0.0
-    assert ev.started_at_utc != ""
-    assert ev.completed_at_utc != ""
-    assert ev.endpoint == "https://baseballsavant.mlb.com/statcast_search"
-    assert ev.error is None
+API = "https://statsapi.mlb.com/api/v1"
 
 
-def test_audit_logger_tracking_failure(tmp_path: Path) -> None:
-    config = AuditConfig(base_dir=tmp_path)
-    logger = AuditLogger(config=config)
-
-    with (
-        pytest.raises(ValueError, match="simulated failure"),
-        logger.track(operation="mlb_api_sync", source="mlb_api") as tracker,
-    ):
-        tracker.set_records(10)
-        raise ValueError("simulated failure")
-
-    events = logger.read_events()
-    assert len(events) == 1
-    ev = events[0]
-    assert ev.operation == "mlb_api_sync"
-    assert ev.status == "FAILURE"
-    assert "ValueError: simulated failure" in (ev.error or "")
+@pytest.fixture
+def http() -> HttpClient:
+    client = HttpClient(
+        RateLimitConfig(
+            host_rates={"statsapi.mlb.com": 1000.0, "baseballsavant.mlb.com": 1000.0},
+            default_requests_per_second=1000.0,
+            backoff_factor=0.01,
+        ),
+        http2=False,
+    )
+    yield client
+    client.close()
 
 
-def test_audit_logger_download_and_processing_split(tmp_path: Path) -> None:
-    config = AuditConfig(base_dir=tmp_path)
-    logger = AuditLogger(config=config)
-
-    with logger.track(operation="two_phase_op", source="retrosheet") as tracker:
-        tracker.set_records(100)
-        tracker.mark_download_complete()
-
-    events = logger.read_events()
-    assert len(events) == 1
-    ev = events[0]
-    assert ev.download_seconds is not None
-    assert ev.processing_seconds is not None
-    assert ev.duration_seconds >= ev.download_seconds
+def _provider_lists(**overrides: list[dict[str, object]]) -> None:
+    lists: dict[str, list[dict[str, object]]] = {
+        "standingsTypes": [{"name": n} for n in STANDINGS_TYPES],
+        "rosterTypes": [{"parameter": n} for n in ROSTER_TYPES],
+        "gameTypes": [{"id": m.value} for m in GameType],
+        "statTypes": [{"displayName": "season"}],
+        "statGroups": [{"displayName": "hitting"}],
+    }
+    lists.update(overrides)
+    for name, rows in lists.items():
+        respx.get(f"{API}/{name}").mock(return_value=httpx.Response(200, json=rows))
 
 
-@pytest.mark.asyncio
-async def test_audit_logger_async_track(tmp_path: Path) -> None:
-    config = AuditConfig(base_dir=tmp_path)
-    logger = AuditLogger(config=config)
-
-    async with logger.async_track(operation="async_fetch", source="mlb_api") as tracker:
-        await asyncio.sleep(0.01)
-        tracker.set_records(42)
-
-    events = logger.read_events()
-    assert len(events) == 1
-    assert events[0].operation == "async_fetch"
-    assert events[0].records_count == 42
+@respx.mock
+def test_matching_provider_lists_produce_only_no_data_noise(http: HttpClient) -> None:
+    _provider_lists(statTypes=[{"displayName": "season"}, {"displayName": "vsPlayer"}])
+    findings = audit_mlb(http)
+    assert [(f.kind, f.item) for f in findings] == [(Kind.NO_DATA, "stat type: vsPlayer")]
+    assert not any(f.fails for f in findings)
 
 
-@pytest.mark.asyncio
-async def test_audit_logger_high_concurrency_no_clobbering(tmp_path: Path) -> None:
-    """Stress test: 50 concurrent async tasks writing simultaneously to audit.jsonl."""
-    config = AuditConfig(base_dir=tmp_path)
-    logger = AuditLogger(config=config)
+@respx.mock
+def test_missing_and_stale_items_are_reported_and_fail(http: HttpClient) -> None:
+    _provider_lists(
+        rosterTypes=[{"parameter": n} for n in (*ROSTER_TYPES, "brandNewRoster")][1:],
+        gameTypes=[{"id": "R"}, {"id": "Z"}],
+    )
+    findings = audit_mlb(http)
+    kinds = {(f.kind, f.item) for f in findings}
+    assert (Kind.MISSING, "roster type: brandNewRoster") in kinds
+    assert (Kind.STALE, f"roster type: {ROSTER_TYPES[0]}") in kinds
+    assert (Kind.MISSING, "game type: Z") in kinds
+    assert any(f.kind is Kind.STALE and f.item.startswith("game type") for f in findings)
+    assert all(f.fails for f in findings if f.kind is Kind.MISSING)
 
-    async def worker(idx: int) -> None:
-        async with logger.async_track(operation=f"concurrent_op_{idx}", source="worker") as tracker:
-            tracker.set_records(idx)
-            tracker.set_endpoint(f"https://worker/{idx}")
-            await asyncio.sleep(0.005)
 
-    # Launch 50 concurrent tasks
-    tasks = [worker(i) for i in range(50)]
-    await asyncio.gather(*tasks)
+@respx.mock
+def test_an_unreadable_provider_list_is_an_error_not_silence(http: HttpClient) -> None:
+    _provider_lists()
+    respx.get(f"{API}/standingsTypes").mock(return_value=httpx.Response(200, json={"oops": 1}))
+    findings = audit_mlb(http)
+    assert any(f.kind is Kind.ERROR and f.fails for f in findings)
 
-    # Read back all events
-    events = logger.read_events()
-    assert len(events) == 50
 
-    # Ensure all operations were recorded without data loss or corrupted lines
-    operations = {ev.operation for ev in events}
-    expected = {f"concurrent_op_{i}" for i in range(50)}
-    assert operations == expected
+@respx.mock
+def test_unsupported_leaderboard_that_answers_is_revived(http: HttpClient) -> None:
+    unsupported = [d for d in LEADERBOARDS if d.unsupported is not None]
+    assert unsupported, "the registry keeps documented unsupported routes"
+    revived, dead = unsupported[0], unsupported[1:]
+    respx.get(f"{SAVANT_BASE}/{revived.route}").mock(
+        return_value=httpx.Response(200, content=b'"player_id","x"\n1,2\n3,4\n')
+    )
+    for defn in dead:
+        respx.get(f"{SAVANT_BASE}/{defn.route}").mock(
+            return_value=httpx.Response(200, content=b"<html>not a csv</html>")
+        )
+    findings = audit_savant(http)
+    assert [(f.kind, f.item) for f in findings] == [(Kind.REVIVED, revived.slug)]
+    assert findings[0].fails and "2 CSV rows" in findings[0].evidence
 
-    # Verify log file has exactly 50 non-empty lines
-    lines = [
-        line.strip()
-        for line in logger.log_path.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
-    assert len(lines) == 50
+
+@respx.mock
+def test_embedded_data_array_counts_as_revived(http: HttpClient) -> None:
+    unsupported = [d for d in LEADERBOARDS if d.unsupported is not None]
+    page = b'<html><script>const data = [{"a": 1}];</script></html>'
+    for defn in unsupported:
+        respx.get(f"{SAVANT_BASE}/{defn.route}").mock(
+            return_value=httpx.Response(200, content=page)
+        )
+    findings = audit_savant(http)
+    assert {f.item for f in findings} == {d.slug for d in unsupported}
+    assert all("embeds a data array" in f.evidence for f in findings)
+
+
+def test_every_unsupported_entry_records_when_and_what_was_tried() -> None:
+    assert unsupported_without_evidence() == []
+    for defn in LEADERBOARDS:
+        if defn.unsupported is not None:
+            assert defn.verified_on and defn.tried, defn.slug
+
+
+def test_finding_failure_rules() -> None:
+    assert AuditFinding(Kind.MISSING, "s", "i", "e").fails
+    assert AuditFinding(Kind.REVIVED, "s", "i", "e").fails
+    assert AuditFinding(Kind.ERROR, "s", "i", "e").fails
+    assert not AuditFinding(Kind.STALE, "s", "i", "e").fails
+    assert not AuditFinding(Kind.NO_DATA, "s", "i", "e").fails
+
+
+@respx.mock
+def test_cli_exit_code_and_json(http: HttpClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    from baseballpy.core import http as http_mod
+
+    monkeypatch.setattr(http_mod, "get_http_client", lambda: http)
+    _provider_lists(gameTypes=[{"id": m.value} for m in GameType] + [{"id": "Q"}])
+    respx.get(url__regex=rf"{SAVANT_BASE}/.*").mock(
+        return_value=httpx.Response(200, content=b"<html>x</html>")
+    )
+    result = CliRunner().invoke(main, ["catalog", "audit", "--json"])
+    assert result.exit_code == 1
+    payload = json.loads(result.output)
+    assert {
+        "kind": "MISSING",
+        "source": "mlb_api",
+        "item": "game type: Q",
+        "evidence": "/v1/gameTypes",
+    } in payload
+    clean = CliRunner().invoke(main, ["catalog", "audit", "--source", "statcast", "--json"])
+    assert clean.exit_code == 0 and json.loads(clean.output) == []

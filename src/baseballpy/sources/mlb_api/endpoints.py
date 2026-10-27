@@ -50,6 +50,9 @@ class MlbEndpoint:
     #: freshness policy key (see ``core/freshness.py``); reference data is daily
     freshness: str = "reference"
     unsupported: str | None = None
+    #: when the ``unsupported`` verdict was last verified and what was tried (evidence, not memory)
+    verified_on: str | None = None
+    tried: tuple[str, ...] = ()
     #: fetched in ``limit``/``offset`` pages (the total is ``stats[0].totalSplits``)
     paginated: bool = False
     #: a 404 for one request means "nothing there" (recorded as an empty part, counted in the report)
@@ -279,9 +282,20 @@ STANDINGS_TYPES = (
     "byConference",
     "byLeague",
     "byOrganization",
+    "currentHalf",
 )
 
-ROSTER_TYPES = ("active", "40Man", "fullSeason", "fullRoster", "nonRosterInvitees", "depthChart")
+ROSTER_TYPES = (
+    "active",
+    "40Man",
+    "fullSeason",
+    "fullRoster",
+    "nonRosterInvitees",
+    "depthChart",
+    "allTime",
+    "coach",
+    "gameday",
+)
 
 
 def _ep(
@@ -319,7 +333,9 @@ _ROSTERS = [
         "v1/teams/{team_id}/roster",
         ("roster",),
         f"Team roster, type {kind}.",
-        ("team_id", "person.id", "position.code"),
+        ("team_id", "person.id", "job")
+        if kind == "coach"
+        else ("team_id", "person.id", "position.code"),
         "team_season",
         {"rosterType": kind, "season": "{season}"},
         "roster",
@@ -727,6 +743,8 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         {"leagueId": "103,104", "season": "{season}"},
         "reference",
         unsupported="probe returned HTTP 400 with leagueId/season; see docs/mlb_probe.json",
+        verified_on="2026-10-27",
+        tried=("GET /v1/attendance?leagueId=103,104&season=2024 -> HTTP 400",),
     ),
     MlbEndpoint(
         "game_color",
@@ -736,6 +754,8 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         (),
         "game",
         unsupported="route answers 404 for a final game (probed 2026-10-27)",
+        verified_on="2026-10-27",
+        tried=("GET /v1/game/745000/feed/color -> HTTP 404",),
     ),
     MlbEndpoint(
         "home_run_derby",
@@ -745,6 +765,8 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         (),
         "game",
         unsupported="route answers 404 for the probed game (probed 2026-10-27)",
+        verified_on="2026-10-27",
+        tried=("GET /v1/homeRunDerby/511073 -> HTTP 404",),
     ),
     MlbEndpoint(
         "ref_sky_conditions",
@@ -753,6 +775,8 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "Sky condition codes.",
         ("code",),
         unsupported="route answers 404 (probed 2026-10-27)",
+        verified_on="2026-10-27",
+        tried=("GET /v1/skyConditions -> HTTP 404",),
     ),
 )
 

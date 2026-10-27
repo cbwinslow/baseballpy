@@ -145,6 +145,55 @@ def db_sync() -> None:
 
 
 @main.group()
+def catalog() -> None:
+    """Inspect and audit what the registry covers."""
+    pass
+
+
+@catalog.command("audit")
+@click.option(
+    "--source",
+    "sources",
+    multiple=True,
+    type=click.Choice(["mlb_api", "statcast"]),
+    help="Limit the audit to one source (repeatable). Default: all audited sources.",
+)
+@click.option("--json", "as_json", is_flag=True, help="Print the findings as JSON.")
+def catalog_audit(sources: tuple[str, ...], as_json: bool) -> None:
+    """Compare provider-listed items with the registry (exit 1 on MISSING/REVIVED/ERROR)."""
+    import json as _json
+
+    from baseballpy.audit import run_audit
+    from baseballpy.core.http import get_http_client
+
+    findings = run_audit(get_http_client(), sources or ("mlb_api", "statcast"))
+    if as_json:
+        click.echo(
+            _json.dumps(
+                [
+                    {
+                        "kind": f.kind.value,
+                        "source": f.source,
+                        "item": f.item,
+                        "evidence": f.evidence,
+                    }
+                    for f in findings
+                ],
+                indent=2,
+            )
+        )
+    else:
+        table = Table(title="Catalog audit")
+        for column in ("kind", "source", "item", "evidence"):
+            table.add_column(column)
+        for f in findings:
+            table.add_row(f.kind.value, f.source, f.item, f.evidence)
+        console.print(table if findings else "[bold green]No findings.[/bold green]")
+    if any(f.fails for f in findings):
+        raise SystemExit(1)
+
+
+@main.group()
 def docs() -> None:
     """Generate the per-dataset column dictionaries in docs/sources/*.md."""
     pass

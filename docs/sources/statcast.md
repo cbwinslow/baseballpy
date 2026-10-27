@@ -89,21 +89,20 @@ download; its rows are the `var data = [...]` array embedded in the page (`lb_pa
 | `leaderboard_swing_take` | `/leaderboard/swing-take` | - | `year` | `0` | 2008 | player-season | `player_id, year` |
 | `leaderboard_abs_challenges` | `/leaderboard/abs-challenges` | `type=batter` | `none` | `0` | snapshot (flat) | player-season-level | `entity_name, team_abbr, year, level` |
 | `leaderboard_pitch_clock` | `/leaderboard/pitch-timer-infractions` | - | `season` | `None` | 2023 | player-season | `entity_id, year` |
+| `leaderboard_fielding_run_value` | `/leaderboard/fielding-run-value` | `gameType=Regular`, `type=fielder` | `season_range` | `None` | 2008 | player-season | `id, team_id` |
+| `leaderboard_rolling` | `/leaderboard/rolling` | - | `none` | `None` | snapshot (flat) | player-window | `player_id, cat, cat_bin` |
+| `leaderboard_active_spin` | `/leaderboard/active-spin` | - | `year` | `None` | 2020 | player-season | `entity_id, pitch_hand` |
+| `leaderboard_catch_probability` | `/leaderboard/catch_probability` | - | `year` | `0` | 2016 | player-season | `player_id` |
 | `leaderboard_park_factors` | `/leaderboard/statcast-park-factors` | `type=year`, `stat=index_wOBA`, `condition=All`, `rolling=3`, `parks=mlb` | `year` | `None` | 2008 | venue-season | `venue_id, key_year` |
 
 ### Routes probed and not ingested
 
 | Route | Reason (probed 2026-10-27) |
 |---|---|
-| `/leaderboard/catch_probability` (`catch_probability`) | 2016-2020 return 30 anonymous rows (null player_id), empty from 2021 on |
 | `/leaderboard/directional_outs_above_average` (`directional_outs_above_average`) | route answers 404 (probed 2026-10-27); directions are columns of outs_above_average |
-| `/leaderboard/fielding-run-value` (`fielding_run_value`) | page answers 200 HTML and offers no CSV download or embedded data array |
 | `/leaderboard/catcher_throwing` (`catcher_throwing`) | route answers 404; pop time/arm strength are in `poptime` |
-| `/leaderboard/active-spin` (`active_spin`) | page answers HTML for csv=true; active spin is a column of spin_direction_pitches |
 | `/leaderboard/year-to-year` (`year_to_year`) | route answers 404 (comparison tool, derivable from other leaderboards) |
-| `/leaderboard/rolling` (`rolling`) | page is an interactive chart (1.3 MB HTML) with no CSV export |
 | `/leaderboard/bat-speed` (`bat_speed`) | route answers 404; bat speed is a column of bat_tracking |
-
 
 **API:** `get_leaderboard(slug_or_legacy_name, year, type=...)`, `StatcastLeaderboardExtractor.ingest_leaderboard(slug)`,
 `ingest_all()`, `custom_leaderboard(year, selections=[...])` (ad hoc: `/leaderboard/custom`, types inferred, never persisted).
@@ -1599,3 +1598,65 @@ Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
 | `_extras` | string | yes | — |  |
 
 <!-- END GENERATED:statcast.pitches_minors -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_active_spin -->
+### Dataset: leaderboard_active_spin
+
+Active spin (measured vs inferred) per pitcher and pitch type; the `min` qualifier breaks this route, so it is not sent.
+
+- **View:** `statcast_leaderboard_active_spin`
+- **Processed path:** `processed/statcast/leaderboard_active_spin/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `entity_id`, `pitch_hand`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `entity_name` | string | yes | — |  |
+| `entity_id` | int32 | yes | — |  |
+| `pitch_hand` | string | yes | — |  |
+| `active_spin_fourseam` | double | yes | — |  |
+| `active_spin_sinker` | double | yes | — |  |
+| `active_spin_cutter` | double | yes | — |  |
+| `active_spin_changeup` | double | yes | — |  |
+| `active_spin_splitter` | double | yes | — |  |
+| `active_spin_curve` | double | yes | — |  |
+| `active_spin_slider` | double | yes | — |  |
+| `active_spin_sweeper` | double | yes | — |  |
+| `active_spin_slurve` | double | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:statcast.leaderboard_active_spin -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_catch_probability -->
+### Dataset: leaderboard_catch_probability
+
+Fielder catch probability by star bucket (2016 onwards). The `type` parameter empties this route (and produced anonymous rows in an earlier probe), so it is not sent.
+
+- **View:** `statcast_leaderboard_catch_probability`
+- **Processed path:** `processed/statcast/leaderboard_catch_probability/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `last_name_first_name` | string | yes | `last_name, first_name` |  |
+| `player_id` | int32 | yes | — |  |
+| `oaa` | int16 | yes | — |  |
+| `n_fieldout_5stars` | int16 | yes | — |  |
+| `n_opp_5stars` | int16 | yes | — |  |
+| `n_5star_percent` | double | yes | — |  |
+| `n_fieldout_4stars` | int16 | yes | — |  |
+| `n_opp_4stars` | int16 | yes | — |  |
+| `n_4star_percent` | double | yes | — |  |
+| `n_fieldout_3stars` | int16 | yes | — |  |
+| `n_opp_3stars` | int16 | yes | — |  |
+| `n_3star_percent` | double | yes | — |  |
+| `n_fieldout_2stars` | int16 | yes | — |  |
+| `n_opp_2stars` | int16 | yes | — |  |
+| `n_2star_percent` | double | yes | — |  |
+| `n_fieldout_1stars` | int16 | yes | — |  |
+| `n_opp_1stars` | int16 | yes | — |  |
+| `n_1star_percent` | double | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:statcast.leaderboard_catch_probability -->

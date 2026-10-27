@@ -13,6 +13,12 @@ class GameType(StrEnum):
     SPRING = "S"
     EXHIBITION = "E"
     ALLSTAR = "A"
+    WILD_CARD = "F"
+    DIVISION_SERIES = "D"
+    LEAGUE_CHAMPIONSHIP = "L"
+    WORLD_SERIES = "W"
+    CHAMPIONSHIP = "C"
+    INTRASQUAD = "I"
 
 
 class SportId(IntEnum):

@@ -1,0 +1,65 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 694341,
+    "fullName": "Brendan Beck",
+    "link": "/api/v1/people/694341"
+   },
+   "jerseyNumber": "89",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "A",
+    "description": "Active"
+   },
+   "parentTeamId": 147
+  },
+  {
+   "person": {
+    "id": 670280,
+    "fullName": "David Bednar",
+    "link": "/api/v1/people/670280"
+   },
+   "jerseyNumber": "53",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "A",
+    "description": "Active"
+   },
+   "parentTeamId": 147
+  },
+  {
+   "person": {
+    "id": 641355,
+    "fullName": "Cody Bellinger",
+    "link": "/api/v1/people/641355"
+   },
+   "jerseyNumber": "35",
+   "position": {
+    "code": "7",
+    "name": "Outfielder",
+    "type": "Outfielder",
+    "abbreviation": "LF"
+   },
+   "status": {
+    "code": "A",
+    "description": "Active"
+   },
+   "parentTeamId": 147
+  }
+ ],
+ "link": "/api/v1/teams/147/roster",
+ "teamId": 147,
+ "rosterType": "gameday"
+}

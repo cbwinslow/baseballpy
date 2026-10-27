@@ -61,3 +61,6 @@ The system MUST ingest Savant's minor-league pitch export (`statcast_search/csv`
 
 ### Requirement: Aligned Windows
 Persisted pitch windows MUST lie on a fixed per-year grid (block k = January 1 + k x chunk_days, clipped at December 31) independent of the caller's request, so overlapping, nested or adjacent requests never store the same pitch twice. A request MUST return exactly the pitches of its requested `game_date` range.
+
+### Requirement: Verified `unsupported` Verdicts
+A Savant route may be recorded as `unsupported` only after the bare route and each documented parameter were tried one at a time; the entry MUST record `verified_on` and `tried`, and the audit MUST re-probe it with default parameters and report REVIVED when it answers.

@@ -2400,6 +2400,38 @@
   "ref_sky_conditions": {
    "status": "unsupported",
    "reason": "route answers 404 (probed 2026-10-27)"
+  },
+  "team_roster_all_time": {
+   "status": "ok",
+   "requests_ok": 30,
+   "requests_failed": 0,
+   "sample_rows": 47642,
+   "columns": 13,
+   "key_unique_per_request": true
+  },
+  "team_roster_coach": {
+   "status": "ok",
+   "requests_ok": 30,
+   "requests_failed": 0,
+   "sample_rows": 410,
+   "columns": 8,
+   "key_unique_per_request": false
+  },
+  "team_roster_gameday": {
+   "status": "ok",
+   "requests_ok": 30,
+   "requests_failed": 0,
+   "sample_rows": 1286,
+   "columns": 12,
+   "key_unique_per_request": true
+  },
+  "standings_current_half": {
+   "status": "ok",
+   "requests_ok": 2,
+   "requests_failed": 0,
+   "sample_rows": 60,
+   "columns": 57,
+   "key_unique_per_request": true
   }
  }
 }

@@ -27,4 +27,5 @@ Rules for the run (token-saving, per owner request):
 - `repo-hygiene-and-docs-sync`: tasks 1-3 done (license, coerce helpers, dependencies); 4-7 (lint policy, CI, docs rewrite, spec merge and archive) open.
 - `unified-pipeline-and-cli`: not started (`baseballpy ingest`, `catalog status`, `doctor`).
 - Proposed (not started), in suggested order: `catalog-completeness-audit` (needs `repo-hygiene-and-docs-sync` 5.1 for the weekly job), `retrosheet-box-accounts` (first task: obtain `boxfile.txt`), `column-descriptions-from-provider-metadata`, `historical-backfill-plan` (execution depends on `unified-pipeline-and-cli`).
-- Done and archived since: `agent-goal-seek-runbook` (`docs/agents/GOAL_SEEK_PROMPT.md`).
+- Done and archived since: `catalog-audit-first-run-fixes` (first audit run: 2 wrong `unsupported` verdicts, 3 roster types, 1 standings type, 6 game types), `agent-goal-seek-runbook` (`docs/agents/GOAL_SEEK_PROMPT.md`).
+- Proposed since: `mlb-parameterized-stat-types` (26 stat types with no data; audit finding F-6). `catalog-completeness-audit` is partly implemented (library, CLI, evidence metadata): CI job and wider sampling remain.

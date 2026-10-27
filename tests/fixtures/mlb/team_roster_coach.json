@@ -1,0 +1,41 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 111213,
+    "fullName": "Aaron Boone",
+    "link": "/api/v1/people/111213"
+   },
+   "jerseyNumber": "17",
+   "job": "Manager",
+   "jobId": "MNGR",
+   "title": "Manager"
+  },
+  {
+   "person": {
+    "id": 110385,
+    "fullName": "Brad Ausmus",
+    "link": "/api/v1/people/110385"
+   },
+   "jerseyNumber": "65",
+   "job": "Bench Coach",
+   "jobId": "COAB",
+   "title": "Bench Coach"
+  },
+  {
+   "person": {
+    "id": 494875,
+    "fullName": "James Rowson",
+    "link": "/api/v1/people/494875"
+   },
+   "jerseyNumber": "82",
+   "job": "Hitting Coach",
+   "jobId": "COAT",
+   "title": "Hitting Coach"
+  }
+ ],
+ "link": "/api/v1/teams/147/coaches",
+ "teamId": 147,
+ "rosterType": "coach"
+}
