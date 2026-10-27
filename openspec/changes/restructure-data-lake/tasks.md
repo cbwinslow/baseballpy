@@ -24,10 +24,10 @@ Prerequisite: `harden-ingestion-core` tasks 1-5 complete (HttpClient, manifest l
   - [x] 5.1 Implement `core/migrate.py` per design mapping table; `VERSION` file
   - [x] 5.2 Synthetic v1-tree integration test incl. idempotency and `--dry-run`
   - [x] 5.3 First-use detection hint (log once)
-- [ ] 6. Pinned refs (L-8) <!-- id: 6 -->
-  - [ ] 6.1 `core/sources_lock.py` + URL builders using refs; record `source_ref` in manifests
-  - [ ] 6.2 `refs update` implementation (HttpClient, `GITHUB_TOKEN` support)
-  - [ ] 6.3 Tests with respx
+- [x] 6. Pinned refs (L-8) <!-- id: 6 -->
+  - [x] 6.1 `core/sources_lock.py` + URL builders using refs; record `source_ref` in manifests
+  - [x] 6.2 `refs update` implementation (HttpClient, `GITHUB_TOKEN` support)
+  - [x] 6.3 Tests with respx
 - [x] 7. Cleanup <!-- id: 7 -->
   - [x] 7.1 `git rm` `test.duckdb`, `test2.duckdb` if tracked; delete from disk
   - [x] 7.2 Verify `.gitignore` covers `*.duckdb`, `*.part`, `__pycache__`

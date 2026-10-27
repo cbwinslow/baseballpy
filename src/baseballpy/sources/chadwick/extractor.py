@@ -9,11 +9,13 @@ from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, HttpStatusError, TransportError, get_http_client
+from baseballpy.core.sources_lock import SourceRef, get_source_ref
 from baseballpy.core.stores import RawStore
 
 logger = logging.getLogger(__name__)
 
-CHADWICK_DATA_BASE_URL = "https://raw.githubusercontent.com/chadwickbureau/register/master/data"
+#: Default (pinned) data URL; instances derive theirs from the lock / env override.
+CHADWICK_DATA_BASE_URL = f"{get_source_ref('chadwick_register').raw_base()}/data"
 CHADWICK_COMMITS_API = (
     "https://api.github.com/repos/chadwickbureau/register/commits?path=data&page=1&per_page=1"
 )
@@ -30,12 +32,16 @@ class ChadwickExtractor:
         cache_config: LakeConfig | None = None,
         rate_limit_config: RateLimitConfig | None = None,
         http: HttpClient | None = None,
+        ref: str | None = None,
     ) -> None:
         self.cache_config = cache_config or LakeConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
         self.http = http or (
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
+        locked = get_source_ref("chadwick_register", self.cache_config.home)
+        self.source_ref = SourceRef(locked.key, locked.repo, ref) if ref else locked
+        self.data_base_url = f"{self.source_ref.raw_base()}/data"
         self.manifest = self.cache_config.dataset_manifest("chadwick", "register", "raw")
         self.raw = RawStore(self.cache_config)
         # discard orphaned .part files from killed runs
@@ -90,6 +96,9 @@ class ChadwickExtractor:
         entry = self.manifest.get_chunk(SHA_CHUNK)
         if entry is None or entry.get("status") != "COMPLETED":
             return False
+        if self.source_ref.pinned:
+            # reproducible mode: current iff fetched at exactly the locked commit
+            return bool(entry.get("sha") == self.source_ref.ref)
         if self.cache_config.is_fresh(entry, "chadwick"):
             return True
         latest = self.get_latest_commit_sha()
@@ -110,7 +119,7 @@ class ChadwickExtractor:
         self, filename: str, dataset: str, required: bool, source_ref: str
     ) -> bytes | None:
         result = self.http.get_sync(
-            f"{CHADWICK_DATA_BASE_URL}/{filename}", allow=(200,) if required else (200, 404)
+            f"{self.data_base_url}/{filename}", allow=(200,) if required else (200, 404)
         )
         if result.status == 404:
             return None
@@ -132,14 +141,16 @@ class ChadwickExtractor:
         with default_audit_logger.track(
             operation="chadwick_extract_shards",
             source="chadwick",
-            endpoint=CHADWICK_DATA_BASE_URL,
+            endpoint=self.data_base_url,
             destination=str(self.shards_dir),
         ) as tracker:
             if self.is_cache_current(refresh):
                 tracker.set_cache_hit(True)
                 return self._read_cached_files()
 
-            latest_sha = self.get_latest_commit_sha()
+            latest_sha = (
+                self.source_ref.ref if self.source_ref.pinned else self.get_latest_commit_sha()
+            )
             jobs: list[tuple[str, str, bool]] = [(shard, "register", True) for shard in HEX_SHARDS]
             jobs.append(("names.csv", "names", False))
             jobs.append(("links.csv", "links", False))

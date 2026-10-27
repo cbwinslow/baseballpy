@@ -1,0 +1,17 @@
+{
+  "retrosheet": {
+    "repo": "chadwickbureau/retrosheet",
+    "ref": "ee82e50bad713c27df6ca12a81d206de4267e073",
+    "resolved_at": "2026-10-27"
+  },
+  "chadwick_register": {
+    "repo": "chadwickbureau/register",
+    "ref": "781c175e748b89e5730fd3f5de0086b9355b2f92",
+    "resolved_at": "2026-10-27"
+  },
+  "lahman": {
+    "repo": "cbwinslow/lahman-database-csv",
+    "ref": "0377e0b8d3f1b8f6710cc4faee7d842d0e81f344",
+    "resolved_at": "2026-10-27"
+  }
+}

@@ -12,10 +12,12 @@ from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, HttpResult, get_http_client
+from baseballpy.core.sources_lock import get_source_ref
 from baseballpy.core.stores import RawStore
 from baseballpy.sources.lahman.schema import LahmanTable
 
-LAHMAN_GITHUB_BASE = "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/main/data"
+#: Default (pinned) data URL; instances derive theirs from the lock / env override.
+LAHMAN_GITHUB_BASE = f"{get_source_ref('lahman').raw_base()}/data"
 
 
 class LahmanExtractor:
@@ -33,6 +35,8 @@ class LahmanExtractor:
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
         self.raw = RawStore(self.cache_config)
+        self.source_ref = get_source_ref("lahman", self.cache_config.home)
+        self.base_url = f"{self.source_ref.raw_base()}/data"
         # discard orphaned .part files from killed runs
         cleanup_stale_parts(self.cache_config.raw_root / "lahman")
 
@@ -47,11 +51,14 @@ class LahmanExtractor:
     def _is_cached(self, name: str, refresh: bool) -> bool:
         """A table is cached only if the file exists AND the manifest recorded its completion."""
         target = self.get_raw_path(name)
+        entry = self.manifest_for(name).get_chunk(name)
+        if entry is not None and entry.get("source_ref") not in (None, self.source_ref.ref):
+            return False  # fetched at a different upstream ref: stale
         return (
             not refresh
             and target.exists()
             and target.stat().st_size > 0
-            and self.cache_config.is_fresh(self.manifest_for(name).get_chunk(name), "lahman")
+            and self.cache_config.is_fresh(entry, "lahman")
         )
 
     def _store(self, name: str, result: HttpResult) -> bytes:
@@ -62,13 +69,17 @@ class LahmanExtractor:
                 name,
                 f"{name}.csv",
                 content,
+                source_ref=self.source_ref.ref,
                 etag=result.etag or "",
             )
             self.manifest_for(name).set_completed(
                 name,
                 records_count=content.count(b"\n"),
                 etag=result.etag or "",
-                metadata={"source": f"{LAHMAN_GITHUB_BASE}/{name}.csv"},
+                metadata={
+                    "source": f"{self.base_url}/{name}.csv",
+                    "source_ref": self.source_ref.ref,
+                },
             )
         return content
 
@@ -79,7 +90,7 @@ class LahmanExtractor:
     ) -> bytes:
         """Extract a single Lahman table CSV, hitting cache if available."""
         name_str = str(table_name)
-        url = f"{LAHMAN_GITHUB_BASE}/{name_str}.csv"
+        url = f"{self.base_url}/{name_str}.csv"
         with default_audit_logger.track(
             operation="lahman_extract_table",
             source="lahman",
@@ -104,7 +115,7 @@ class LahmanExtractor:
     ) -> bytes:
         """Asynchronously extract a single Lahman table CSV."""
         name_str = str(table_name)
-        url = f"{LAHMAN_GITHUB_BASE}/{name_str}.csv"
+        url = f"{self.base_url}/{name_str}.csv"
         async with default_audit_logger.async_track(
             operation="lahman_extract_table_async",
             source="lahman",

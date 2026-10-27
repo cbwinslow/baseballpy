@@ -7,6 +7,7 @@ from rich.table import Table
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.migrate import migrate_layout
+from baseballpy.core.sources_lock import ENV_OVERRIDES, get_source_ref, load_lock, update_lock
 from baseballpy.database import BaseballDatabase
 from baseballpy.sinks.duckdb import DuckDBSink
 from baseballpy.sinks.parquet import ParquetSink
@@ -138,6 +139,50 @@ def db_sync() -> None:
     console.print(
         f"Registered [bold green]{count}[/bold green] views in [yellow]{database.db_path}[/yellow]."
     )
+
+
+@main.group()
+def refs() -> None:
+    """Show or update the pinned upstream commit SHAs (reproducible GitHub sources)."""
+    pass
+
+
+@refs.command("show")
+def refs_show() -> None:
+    """List the effective pinned ref of every GitHub-hosted source."""
+    table = Table(title="Pinned source refs")
+    table.add_column("Source", style="cyan")
+    table.add_column("Repository")
+    table.add_column("Ref", style="green")
+    table.add_column("Env override", style="dim")
+    for key in sorted(load_lock()):
+        src = get_source_ref(key)
+        table.add_row(key, src.repo, src.ref, ENV_OVERRIDES.get(key, ""))
+    console.print(table)
+
+
+@refs.command("update")
+@click.option("--dry-run", is_flag=True, help="Resolve and print the latest SHAs without writing.")
+def refs_update(dry_run: bool) -> None:
+    """Resolve the latest commit SHA of each source (set GITHUB_TOKEN to avoid rate limits)."""
+    changes = update_lock(dry_run=dry_run)
+    table = Table(title="Source refs (dry run)" if dry_run else "Source refs")
+    table.add_column("Source", style="cyan")
+    table.add_column("Old", style="dim")
+    table.add_column("New", style="green")
+    table.add_column("Changed")
+    for change in changes:
+        table.add_row(
+            change.key,
+            change.old[:12],
+            change.new[:12],
+            "[yellow]yes[/yellow]" if change.changed else "-",
+        )
+    console.print(table)
+    if any(c.changed for c in changes) and not dry_run:
+        console.print(
+            "Lock updated. Chunks fetched at an older ref are refreshed the next time they are requested."
+        )
 
 
 @main.group()

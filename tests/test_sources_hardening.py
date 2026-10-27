@@ -560,23 +560,30 @@ def test_lahman_source_url_is_owner_repo_only() -> None:
 # ----------------------------------------------------------------------------- chadwick
 
 
-def _mock_register(sha: str = "sha1", status: int = 200) -> None:
+FLOATING_CHADWICK = "https://raw.githubusercontent.com/chadwickbureau/register/master/data"
+
+
+def _mock_register(
+    sha: str = "sha1", status: int = 200, base: str = CHADWICK_DATA_BASE_URL
+) -> None:
     respx.get(CHADWICK_COMMITS_API).mock(return_value=httpx.Response(200, json=[{"sha": sha}]))
     for shard in HEX_SHARDS:
-        respx.get(f"{CHADWICK_DATA_BASE_URL}/{shard}").mock(
+        respx.get(f"{base}/{shard}").mock(
             return_value=httpx.Response(status, content=b"key_person\nx\n")
         )
-    respx.get(f"{CHADWICK_DATA_BASE_URL}/names.csv").mock(
+    respx.get(f"{base}/names.csv").mock(
         return_value=httpx.Response(200, content=b"key_person\nx\n")
     )
-    respx.get(f"{CHADWICK_DATA_BASE_URL}/links.csv").mock(return_value=httpx.Response(404))
+    respx.get(f"{base}/links.csv").mock(return_value=httpx.Response(404))
 
 
-def _chadwick(tmp_path: Path, **cfg: object) -> tuple[ChadwickExtractor, HttpClient]:
+def _chadwick(
+    tmp_path: Path, ref: str | None = None, **cfg: object
+) -> tuple[ChadwickExtractor, HttpClient]:
     rates = fast_rates("raw.githubusercontent.com", "api.github.com")
     http = HttpClient(rates, http2=False)
     cache = LakeConfig(home=tmp_path / "c", **cfg)  # type: ignore[arg-type]
-    return ChadwickExtractor(cache_config=cache, rate_limit_config=rates, http=http), http
+    return ChadwickExtractor(cache_config=cache, rate_limit_config=rates, http=http, ref=ref), http
 
 
 @respx.mock
@@ -594,11 +601,11 @@ def test_chadwick_missing_shard_is_hard_error(tmp_path: Path) -> None:
 
 @respx.mock
 def test_chadwick_revalidates_sha_after_ttl_and_refetches_on_change(tmp_path: Path) -> None:
-    _mock_register("sha1")
-    ext, http = _chadwick(tmp_path, ttl_overrides={"chadwick": 0})
+    _mock_register("sha1", base=FLOATING_CHADWICK)
+    ext, http = _chadwick(tmp_path, ref="master", ttl_overrides={"chadwick": 0})
     try:
         ext.extract(refresh=True)
-        shard = respx.get(f"{CHADWICK_DATA_BASE_URL}/people-0.csv")
+        shard = respx.get(f"{FLOATING_CHADWICK}/people-0.csv")
         before = shard.call_count
         ext.extract()  # TTL 0 -> revalidate; same sha -> served from cache, no shard download
         assert shard.call_count == before
@@ -616,8 +623,8 @@ def test_chadwick_revalidates_sha_after_ttl_and_refetches_on_change(tmp_path: Pa
 def test_chadwick_sha_failure_is_logged_and_cache_served(
     tmp_path: Path, caplog: pytest.LogCaptureFixture
 ) -> None:
-    _mock_register("sha1")
-    ext, http = _chadwick(tmp_path, ttl_overrides={"chadwick": 0})
+    _mock_register("sha1", base=FLOATING_CHADWICK)
+    ext, http = _chadwick(tmp_path, ref="master", ttl_overrides={"chadwick": 0})
     try:
         ext.extract(refresh=True)
         respx.get(CHADWICK_COMMITS_API).mock(return_value=httpx.Response(403))
@@ -648,3 +655,41 @@ def test_retrosheet_allstar_pseudo_teams_may_be_absent(tmp_path: Path) -> None:
         http.close()
     assert [f.name for f in files] == ["2003BOS.EVA"]
     assert dl.manifest.is_completed("season_2003")
+
+
+@respx.mock
+def test_chadwick_pinned_ref_needs_no_api_call_and_records_source_ref(tmp_path: Path) -> None:
+    from baseballpy.core.sources_lock import get_source_ref
+
+    _mock_register("ignored")
+    api = respx.get(CHADWICK_COMMITS_API)
+    ext, http = _chadwick(tmp_path, ttl_overrides={"chadwick": 0})
+    try:
+        ext.extract(refresh=True)
+        ext.extract()  # pinned + same ref: current regardless of TTL
+    finally:
+        http.close()
+    ref = get_source_ref("chadwick_register").ref
+    assert api.call_count == 0
+    assert ext.manifest.get_chunk("commit_sha")["sha"] == ref  # type: ignore[index]
+    entry = ext.manifest.get_chunk("people-0.csv")
+    assert entry is not None and entry["source_ref"] == ref
+
+
+@respx.mock
+def test_chadwick_changed_pinned_ref_invalidates_cache(tmp_path: Path) -> None:
+    other = "https://raw.githubusercontent.com/chadwickbureau/register/" + "a" * 40 + "/data"
+    _mock_register()
+    _mock_register(base=other)
+    ext, http = _chadwick(tmp_path)
+    ext2, http2 = _chadwick(tmp_path, ref="a" * 40)
+    try:
+        ext.extract(refresh=True)
+        shard = respx.get(f"{other}/people-0.csv")
+        assert not ext2.is_cache_current(refresh=False)  # different ref -> stale
+        ext2.extract()
+        assert shard.call_count == 1
+        assert ext2.is_cache_current(refresh=False)
+    finally:
+        http.close()
+        http2.close()

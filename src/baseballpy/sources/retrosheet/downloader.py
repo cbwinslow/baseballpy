@@ -10,10 +10,12 @@ from baseballpy.core.atomic import ManifestTracker, atomic_write, cleanup_stale_
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, get_http_client
+from baseballpy.core.sources_lock import get_source_ref
 
 logger = logging.getLogger(__name__)
 
-GITHUB_RETROSHEET_BASE = "https://raw.githubusercontent.com/chadwickbureau/retrosheet/master"
+#: Default (pinned) base URL; instances derive theirs from the lock / env override.
+GITHUB_RETROSHEET_BASE = get_source_ref("retrosheet").raw_base()
 
 POSTSEASON_GAMELOGS = {
     "wild_card": "GLWC.TXT",
@@ -83,10 +85,18 @@ class RetrosheetDownloader:
         self.http = http or (
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
-        self.base_url = GITHUB_RETROSHEET_BASE
+        self.source_ref = get_source_ref("retrosheet", self.cache_config.home)
+        self.base_url = self.source_ref.raw_base()
         self.manifest = self.cache_config.dataset_manifest("retrosheet", "event_files", "raw")
         # discard orphaned .part files from killed runs
         cleanup_stale_parts(self.cache_config.raw_root / "retrosheet")
+
+    def _chunk_current(self, manifest: ManifestTracker, chunk_id: str) -> bool:
+        """COMPLETED and not recorded at a different upstream ref (legacy entries are trusted)."""
+        entry = manifest.get_chunk(chunk_id)
+        if entry is None or entry.get("status") != "COMPLETED":
+            return False
+        return entry.get("source_ref") in (None, self.source_ref.ref)
 
     def _get_season_dir(self, year: int) -> Path:
         """``raw/retrosheet/event_files/season=YYYY`` (TEAM, event and postseason files)."""
@@ -140,7 +150,7 @@ class RetrosheetDownloader:
             endpoint=f"{self.base_url}/seasons/{year}/",
             destination=str(season_dir),
         ) as tracker:
-            if not refresh and self.manifest.is_completed(chunk_id):
+            if not refresh and self._chunk_current(self.manifest, chunk_id):
                 tracker.set_cache_hit(True)
                 event_files = sorted(season_dir.glob("*.EV*"))
                 tracker.set_records(len(event_files))
@@ -205,7 +215,11 @@ class RetrosheetDownloader:
                 )
                 self.manifest.set_absent(chunk_id, f"missing files: {', '.join(missing)}")
             else:
-                self.manifest.set_completed(chunk_id, records_count=len(downloaded_files))
+                self.manifest.set_completed(
+                    chunk_id,
+                    records_count=len(downloaded_files),
+                    metadata={"source_ref": self.source_ref.ref},
+                )
             tracker.set_cache_hit(False)
             tracker.set_records(len(downloaded_files))
             return downloaded_files
@@ -226,7 +240,7 @@ class RetrosheetDownloader:
             endpoint=f"{self.base_url}/{candidates[0]}",
             destination=str(target_path),
         ) as tracker:
-            if not refresh and manifest.is_completed(chunk_id) and target_path.exists():
+            if not refresh and self._chunk_current(manifest, chunk_id) and target_path.exists():
                 tracker.set_cache_hit(True)
                 tracker.set_records(_count_lines(target_path))
                 return target_path
@@ -235,7 +249,9 @@ class RetrosheetDownloader:
                 outcome = self.download_file(candidate, target_path, refresh=refresh)
                 if outcome is not FetchOutcome.ABSENT:
                     lines = _count_lines(target_path)
-                    manifest.set_completed(chunk_id, records_count=lines)
+                    manifest.set_completed(
+                        chunk_id, records_count=lines, metadata={"source_ref": self.source_ref.ref}
+                    )
                     tracker.set_cache_hit(False)
                     tracker.set_records(lines)
                     return target_path
