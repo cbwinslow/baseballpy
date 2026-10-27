@@ -1,11 +1,15 @@
 """Configuration models for downloaders, cache managers, and sinks powered by Pydantic Settings."""
 
 import os
+from datetime import date
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from baseballpy.core.freshness import DEFAULT_TTLS, is_fresh
 
 
 def get_default_base_dir() -> Path:
@@ -36,6 +40,14 @@ class CacheConfig(BaseSettings):
         default=86400 * 30, description="Time-to-live for cached historical files in seconds"
     )
 
+    ttl_overrides: dict[str, int | None] = Field(
+        default_factory=dict,
+        description="Per-dataset TTL seconds (None = immutable); keys match freshness.DEFAULT_TTLS",
+    )
+    today: date | None = Field(
+        default=None, description="Override for 'today' (deterministic tests); None = real date"
+    )
+
     statcast_dir_override: Path | None = Field(
         default=None, description="Explicit directory override for Statcast cache"
     )
@@ -51,6 +63,31 @@ class CacheConfig(BaseSettings):
     lahman_dir_override: Path | None = Field(
         default=None, description="Explicit directory override for Lahman cache"
     )
+
+    def ttl_for(self, dataset: str) -> int | None:
+        """TTL seconds for a dataset family (None = immutable); falls back to ``ttl_seconds``."""
+        if dataset in self.ttl_overrides:
+            return self.ttl_overrides[dataset]
+        if dataset in DEFAULT_TTLS:
+            return DEFAULT_TTLS[dataset]
+        return self.ttl_seconds
+
+    def is_fresh(
+        self,
+        entry: dict[str, Any] | None,
+        dataset: str,
+        *,
+        season: int | None = None,
+        refresh: bool = False,
+    ) -> bool:
+        """Apply the freshness policy for ``dataset`` to a manifest ``entry``."""
+        return is_fresh(
+            entry,
+            ttl_seconds=self.ttl_for(dataset),
+            season=season,
+            today=self.today,
+            refresh=refresh,
+        )
 
     @property
     def cache_root(self) -> Path:

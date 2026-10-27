@@ -1,17 +1,25 @@
 """Structured audit logging, execution benchmarking, and telemetry engine."""
 
 import asyncio
+import logging
 import threading
 import time
 from collections.abc import AsyncGenerator, Generator
 from contextlib import asynccontextmanager, contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import msgspec
 
 from baseballpy.core.config import AuditConfig
+from baseballpy.core.lazy import lazy_singleton
+
+logger = logging.getLogger(__name__)
+
+STATUS_SUCCESS = "SUCCESS"
+STATUS_FAILURE = "FAILURE"
+STATUS_CANCELLED = "CANCELLED"
 
 
 class AuditEvent(msgspec.Struct, kw_only=True):
@@ -22,7 +30,7 @@ class AuditEvent(msgspec.Struct, kw_only=True):
     completed_at_utc: str = ""
     operation: str
     source: str
-    status: str  # "SUCCESS", "FAILURE", "RETRY"
+    status: str  # "SUCCESS", "FAILURE", "CANCELLED", "RETRY"
     records_count: int = 0
     duration_seconds: float = 0.0
     download_seconds: float | None = None
@@ -84,6 +92,56 @@ class ExecutionTracker:
             self.processing_seconds = round(processing_seconds, 4)
 
 
+class _Run:
+    """Shared bookkeeping for ``track`` and ``async_track`` (single implementation)."""
+
+    def __init__(self, tracker: ExecutionTracker) -> None:
+        self.tracker = tracker
+        self.started_utc = datetime.now(UTC).isoformat()
+        self.start_perf = time.perf_counter()
+        self.status = STATUS_SUCCESS
+        self.error_msg: str | None = None
+
+    def record_exception(self, exc: BaseException) -> None:
+        """Map an exception to an audit status (cancellation is never SUCCESS)."""
+        if isinstance(exc, asyncio.CancelledError | KeyboardInterrupt | GeneratorExit):
+            self.status = STATUS_CANCELLED
+        else:
+            self.status = STATUS_FAILURE
+        self.error_msg = f"{type(exc).__name__}: {exc}"
+        self.tracker.error = self.error_msg
+
+    def build_event(self) -> AuditEvent:
+        """Finalize timings and build the event to persist."""
+        tracker = self.tracker
+        duration = time.perf_counter() - self.start_perf
+        completed_utc = datetime.now(UTC).isoformat()
+        if tracker.download_seconds is not None and tracker.processing_seconds is None:
+            tracker.processing_seconds = max(0.0, round(duration - tracker.download_seconds, 4))
+        throughput = (
+            float(tracker.records_count) / duration
+            if duration > 0 and tracker.records_count > 0
+            else 0.0
+        )
+        return AuditEvent(
+            timestamp_utc=completed_utc,
+            started_at_utc=self.started_utc,
+            completed_at_utc=completed_utc,
+            operation=tracker.operation,
+            source=tracker.source,
+            status=self.status,
+            records_count=tracker.records_count,
+            duration_seconds=round(duration, 4),
+            download_seconds=tracker.download_seconds,
+            processing_seconds=tracker.processing_seconds,
+            throughput_rps=round(throughput, 1),
+            cache_hit=tracker.cache_hit,
+            endpoint=tracker.endpoint,
+            destination=tracker.destination,
+            error=self.error_msg,
+        )
+
+
 class AuditLogger:
     """Thread-safe, async-safe, append-only structured audit logger for pipeline operations."""
 
@@ -115,56 +173,15 @@ class AuditLogger:
         destination: str = "",
     ) -> Generator[ExecutionTracker, None, None]:
         """Context manager benchmarking an operation and persisting structured telemetry."""
-        tracker = ExecutionTracker(
-            operation=operation,
-            source=source,
-            endpoint=endpoint,
-            destination=destination,
-        )
-        started_utc = datetime.now(UTC).isoformat()
-        start_time = time.perf_counter()
-        status = "SUCCESS"
-        error_msg: str | None = None
-
+        tracker = ExecutionTracker(operation, source, endpoint, destination)
+        run = _Run(tracker)
         try:
             yield tracker
-        except Exception as exc:
-            status = "FAILURE"
-            error_msg = f"{type(exc).__name__}: {exc}"
-            tracker.error = error_msg
+        except BaseException as exc:
+            run.record_exception(exc)
             raise
         finally:
-            end_time = time.perf_counter()
-            duration = end_time - start_time
-            completed_utc = datetime.now(UTC).isoformat()
-
-            # If download was tracked, remaining time is processing
-            if tracker.download_seconds is not None and tracker.processing_seconds is None:
-                tracker.processing_seconds = max(0.0, round(duration - tracker.download_seconds, 4))
-
-            throughput = (
-                float(tracker.records_count) / duration
-                if duration > 0 and tracker.records_count > 0
-                else 0.0
-            )
-            event = AuditEvent(
-                timestamp_utc=completed_utc,
-                started_at_utc=started_utc,
-                completed_at_utc=completed_utc,
-                operation=tracker.operation,
-                source=tracker.source,
-                status=status,
-                records_count=tracker.records_count,
-                duration_seconds=round(duration, 4),
-                download_seconds=tracker.download_seconds,
-                processing_seconds=tracker.processing_seconds,
-                throughput_rps=round(throughput, 1),
-                cache_hit=tracker.cache_hit,
-                endpoint=tracker.endpoint,
-                destination=tracker.destination,
-                error=error_msg,
-            )
-            self.log(event)
+            self.log(run.build_event())
 
     @asynccontextmanager
     async def async_track(
@@ -174,63 +191,25 @@ class AuditLogger:
         endpoint: str = "",
         destination: str = "",
     ) -> AsyncGenerator[ExecutionTracker, None]:
-        """Asynchronous context manager benchmarking coroutine operations and persisting telemetry."""
-        tracker = ExecutionTracker(
-            operation=operation,
-            source=source,
-            endpoint=endpoint,
-            destination=destination,
-        )
-        started_utc = datetime.now(UTC).isoformat()
-        start_time = time.perf_counter()
-        status = "SUCCESS"
-        error_msg: str | None = None
-
+        """Asynchronous variant of :meth:`track`; the file write runs off the event loop."""
+        tracker = ExecutionTracker(operation, source, endpoint, destination)
+        run = _Run(tracker)
         try:
             yield tracker
-        except Exception as exc:
-            status = "FAILURE"
-            error_msg = f"{type(exc).__name__}: {exc}"
-            tracker.error = error_msg
+        except BaseException as exc:
+            run.record_exception(exc)
             raise
         finally:
-            end_time = time.perf_counter()
-            duration = end_time - start_time
-            completed_utc = datetime.now(UTC).isoformat()
-
-            if tracker.download_seconds is not None and tracker.processing_seconds is None:
-                tracker.processing_seconds = max(0.0, round(duration - tracker.download_seconds, 4))
-
-            throughput = (
-                float(tracker.records_count) / duration
-                if duration > 0 and tracker.records_count > 0
-                else 0.0
-            )
-            event = AuditEvent(
-                timestamp_utc=completed_utc,
-                started_at_utc=started_utc,
-                completed_at_utc=completed_utc,
-                operation=tracker.operation,
-                source=tracker.source,
-                status=status,
-                records_count=tracker.records_count,
-                duration_seconds=round(duration, 4),
-                download_seconds=tracker.download_seconds,
-                processing_seconds=tracker.processing_seconds,
-                throughput_rps=round(throughput, 1),
-                cache_hit=tracker.cache_hit,
-                endpoint=tracker.endpoint,
-                destination=tracker.destination,
-                error=error_msg,
-            )
-            # Offload file write to thread pool to preserve event loop latency
-            await asyncio.to_thread(self.log, event)
+            event = run.build_event()
+            # shield so a cancelled caller still persists its CANCELLED event
+            await asyncio.shield(asyncio.to_thread(self.log, event))
 
     def read_events(self, limit: int | None = None) -> list[AuditEvent]:
         """Read and decode historical audit events from the JSONL log file."""
         if not self.log_path.exists():
             return []
         events: list[AuditEvent] = []
+        skipped = 0
         with self._lock, open(self.log_path, "rb") as f:
             for line in f:
                 line = line.strip()
@@ -239,7 +218,9 @@ class AuditLogger:
                 try:
                     events.append(self._decoder.decode(line))
                 except msgspec.DecodeError:
-                    continue
+                    skipped += 1
+        if skipped:
+            logger.warning("skipped %d corrupt audit line(s) in %s", skipped, self.log_path)
         if limit is not None and limit > 0:
             return events[-limit:]
         return events
@@ -258,7 +239,7 @@ class AuditLogger:
 
         total_ops = len(events)
         total_records = sum(e.records_count for e in events)
-        successes = sum(1 for e in events if e.status == "SUCCESS")
+        successes = sum(1 for e in events if e.status == STATUS_SUCCESS)
         cache_hits = sum(1 for e in events if e.cache_hit)
         total_duration = sum(e.duration_seconds for e in events)
 
@@ -275,5 +256,24 @@ class AuditLogger:
         }
 
 
-# Global default audit logger
-default_audit_logger = AuditLogger()
+get_audit_logger = lazy_singleton(AuditLogger)
+
+
+class _LazyAuditLogger:
+    """Proxy that resolves the real logger on first attribute access (honors late config)."""
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(get_audit_logger(), name)
+
+
+# Backward-compatible module-level name; no file system work happens at import time.
+default_audit_logger: AuditLogger = cast(AuditLogger, _LazyAuditLogger())
+
+__all__ = [
+    "AuditConfig",
+    "AuditEvent",
+    "AuditLogger",
+    "ExecutionTracker",
+    "default_audit_logger",
+    "get_audit_logger",
+]
