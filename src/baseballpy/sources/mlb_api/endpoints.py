@@ -37,6 +37,10 @@ PARTITIONED_SCOPES = frozenset(
 )
 
 
+#: placeholders that fan a request out over provider-listed subjects (sports, teams)
+FAN_OUT_MARKERS = ("{sport_id}", "{team_id}")
+
+
 @dataclass(frozen=True)
 class MlbEndpoint:
     """One MLB Stats API dataset."""
@@ -61,6 +65,21 @@ class MlbEndpoint:
     fan_out: tuple[str, ...] = ()
     #: a 404 for one request means "nothing there" (recorded as an empty part, counted in the report)
     tolerate_missing: bool = False
+
+    def __post_init__(self) -> None:
+        """Derive the 404 tolerance of sport and team fan-out requests from the declaration.
+
+        The provider lists sports (winter leagues, ...) and teams (affiliates, ...) that have no
+        data for a season or resource and answers 404 "Object not found" for them; the generic
+        path records and counts it instead of failing the whole run.
+        """
+        fanned = any(
+            marker in text
+            for marker in FAN_OUT_MARKERS
+            for text in (self.path, *map(str, self.params.values()))
+        )
+        if fanned and not self.paginated and not self.tolerate_missing:
+            object.__setattr__(self, "tolerate_missing", True)
 
     @property
     def heavy(self) -> bool:

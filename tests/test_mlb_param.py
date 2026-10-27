@@ -153,3 +153,16 @@ def test_audit_accounts_for_unsupported_stat_types(monkeypatch: pytest.MonkeyPat
         finally:
             client.close()
     assert [f.item for f in findings] == ["stat type: neverHeardOf"]
+
+
+def test_sport_and_team_fan_out_endpoints_tolerate_the_providers_404() -> None:
+    from baseballpy.sources.mlb_api.endpoints import ENDPOINTS, FAN_OUT_MARKERS
+
+    fanned = [
+        e
+        for e in ENDPOINTS
+        if not e.paginated
+        and any(m in t for m in FAN_OUT_MARKERS for t in (e.path, *map(str, e.params.values())))
+    ]
+    assert {e.name for e in fanned} >= {"teams_season", "team_alumni"}
+    assert all(e.tolerate_missing for e in fanned)

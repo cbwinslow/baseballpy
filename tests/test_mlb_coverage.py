@@ -442,6 +442,20 @@ def test_award_without_a_recipients_list_is_counted_and_not_refetched(tmp_path: 
     again = extractor.ingest("award_recipients", ctx)
     assert (again.cached, again.missing, gone.call_count) == (2, 0, 1)
     # endpoints that do not opt in still fail loudly on a 404
-    respx.get(f"{MLB_BASE_URL}/v1/teams").mock(return_value=httpx.Response(404))
+    respx.get(f"{MLB_BASE_URL}/v1/sports").mock(return_value=httpx.Response(404))
     with pytest.raises(HttpStatusError):
-        extractor.ingest("teams_season", Context(season=2024))
+        extractor.ingest("ref_sports", Context(season=2024))
+
+
+@respx.mock
+def test_sport_without_teams_is_counted_not_fatal(tmp_path: Path) -> None:
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    respx.get(f"{MLB_BASE_URL}/v1/teams", params={"sportId": "1"}).mock(
+        return_value=httpx.Response(200, json=_fixture("teams_season"))
+    )
+    respx.get(f"{MLB_BASE_URL}/v1/teams", params={"sportId": "31"}).mock(
+        return_value=httpx.Response(404, json={"message": "Object not found"})
+    )
+    report = extractor.ingest("teams_season", Context(season=2024, sport_ids=(1, 31)))
+    assert (report.requests, report.missing) == (2, 1) and report.rows >= 1
