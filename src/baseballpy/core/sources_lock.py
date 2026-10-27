@@ -35,6 +35,9 @@ ENV_OVERRIDES = {
     "chadwick_register": "BASEBALLPY_CHADWICK_REF",
     "lahman": "BASEBALLPY_LAHMAN_REF",
 }
+#: lock key -> environment variable that overrides its repository (own fork / mirror)
+REPO_OVERRIDES = {"lahman": "BASEBALLPY_LAHMAN_REPO"}
+FORBIDDEN_REPOS = ("baseballdatabank",)
 _SHA = re.compile(r"^[0-9a-f]{40}$")
 
 
@@ -87,7 +90,12 @@ def get_source_ref(key: str, home: Path | None = None) -> SourceRef:
     lock = load_lock(home)
     if key not in lock:
         raise KeyError(f"no pinned ref for {key!r}; known: {sorted(lock)}")
-    repo = lock[key]["repo"]
+    repo = os.getenv(REPO_OVERRIDES.get(key, ""), "") or lock[key]["repo"]
+    if any(bad in repo.lower() for bad in FORBIDDEN_REPOS):
+        raise ValueError(
+            f"{repo!r} is not an allowed source for {key}: its data stops around 2023. "
+            "Use cbwinslow/lahman-database-csv, your own fork, or LahmanSource.import_archive()."
+        )
     ref = os.getenv(ENV_OVERRIDES.get(key, ""), "") or lock[key]["ref"]
     return SourceRef(key=key, repo=repo, ref=ref)
 

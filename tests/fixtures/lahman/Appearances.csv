@@ -1,0 +1,6 @@
+yearID,teamID,lgID,playerID,G_all,GS,G_batting,G_defense,G_p,G_c,G_1b,G_2b,G_3b,G_ss,G_lf,G_cf,G_rf,G_of,G_dh,G_ph,G_pr
+2004,SFN,NL,aardsda01,11,0,11,11,11,0,0,0,0,0,0,0,0,0,0,0,0
+2006,CHN,NL,aardsda01,45,0,43,45,45,0,0,0,0,0,0,0,0,0,0,0,0
+2007,CHA,AL,aardsda01,25,0,2,25,25,0,0,0,0,0,0,0,0,0,0,0,0
+2008,BOS,AL,aardsda01,47,0,5,47,47,0,0,0,0,0,0,0,0,0,0,0,0
+2009,SEA,AL,aardsda01,73,0,3,73,73,0,0,0,0,0,0,0,0,0,0,0,0

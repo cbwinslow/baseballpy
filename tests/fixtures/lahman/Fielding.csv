@@ -1,0 +1,6 @@
+playerID,yearID,stint,teamID,lgID,POS,G,GS,InnOuts,PO,A,E,DP,PB,WP,SB,CS,ZR
+aardsda01,2004,1,SFN,NL,P,11,0,32,0,0,0,0,,,,,
+aardsda01,2006,1,CHN,NL,P,45,0,159,1,5,0,1,,,,,
+aardsda01,2007,1,CHA,AL,P,25,0,97,2,4,1,0,,,,,
+aardsda01,2008,1,BOS,AL,P,47,0,146,3,6,0,0,,,,,
+aardsda01,2009,1,SEA,AL,P,73,0,214,2,5,0,1,,,,,

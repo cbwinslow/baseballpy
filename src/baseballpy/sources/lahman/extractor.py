@@ -11,13 +11,24 @@ from pathlib import Path
 from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
-from baseballpy.core.http import HttpClient, HttpResult, get_http_client
+from baseballpy.core.http import (
+    HttpClient,
+    HttpResult,
+    HttpStatusError,
+    TransportError,
+    get_http_client,
+)
 from baseballpy.core.sources_lock import get_source_ref
 from baseballpy.core.stores import RawStore
 from baseballpy.sources.lahman.schema import LahmanTable
 
 #: Default (pinned) data URL; instances derive theirs from the lock / env override.
+LOCAL_IMPORT = "local-import"
 LAHMAN_GITHUB_BASE = f"{get_source_ref('lahman').raw_base()}/data"
+
+
+class LahmanSourceError(RuntimeError):
+    """The configured Lahman remote could not deliver a table (no other repository is tried)."""
 
 
 class LahmanExtractor:
@@ -52,6 +63,9 @@ class LahmanExtractor:
         """A table is cached only if the file exists AND the manifest recorded its completion."""
         target = self.get_raw_path(name)
         entry = self.manifest_for(name).get_chunk(name)
+        if entry is not None and entry.get("origin") == LOCAL_IMPORT:
+            # user-supplied data is authoritative until the caller explicitly refreshes
+            return not refresh and self.get_raw_path(name).exists()
         if entry is not None and entry.get("source_ref") not in (None, self.source_ref.ref):
             return False  # fetched at a different upstream ref: stale
         return (
@@ -78,10 +92,24 @@ class LahmanExtractor:
                 etag=result.etag or "",
                 metadata={
                     "source": f"{self.base_url}/{name}.csv",
+                    "origin": f"{self.source_ref.repo}@{self.source_ref.ref}",
                     "source_ref": self.source_ref.ref,
                 },
             )
         return content
+
+    def _hint(self, name: str, exc: Exception) -> LahmanSourceError:
+        return LahmanSourceError(
+            f"could not fetch Lahman table {name} from {self.source_ref.repo}@{self.source_ref.ref} "
+            f"({exc}). No other repository is tried; download the release yourself and call "
+            "LahmanSource.import_archive(path) or point BASEBALLPY_LAHMAN_REPO at your own fork."
+        )
+
+    def _get(self, url: str, name: str) -> HttpResult:
+        try:
+            return self.http.get_sync(url)
+        except (HttpStatusError, TransportError) as exc:
+            raise self._hint(name, exc) from exc
 
     def extract_table(
         self,
@@ -103,7 +131,7 @@ class LahmanExtractor:
                 tracker.set_records(content.count(b"\n"))
                 return content
 
-            content = self._store(name_str, self.http.get_sync(url))
+            content = self._store(name_str, self._get(url, name_str))
             tracker.set_cache_hit(False)
             tracker.set_records(content.count(b"\n"))
             return content
@@ -128,7 +156,11 @@ class LahmanExtractor:
                 tracker.set_records(content.count(b"\n"))
                 return content
 
-            content = self._store(name_str, await self.http.get(url))
+            try:
+                result = await self.http.get(url)
+            except (HttpStatusError, TransportError) as exc:
+                raise self._hint(name_str, exc) from exc
+            content = self._store(name_str, result)
             tracker.set_cache_hit(False)
             tracker.set_records(content.count(b"\n"))
             return content

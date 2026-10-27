@@ -4,7 +4,7 @@ Prerequisites: `harden-ingestion-core` (tasks 1-6) and `restructure-data-lake` (
 each source section is independently committable. Every section ends with: fixtures, tests, generated docs, live probe.
 
 - [ ] 0. Shared machinery (C-2, C-9) <!-- id: 0 -->
-  - [ ] 0.1 `core/schema_tools.py`: `snake()`, `flatten()`, `map_by_header()`, `normalize_records()` with `_extras` + drift log
+  - [x] 0.1 `core/schema_tools.py`: `snake()`, `flatten()`, `map_by_header()`, `normalize_records()` with `_extras` + drift log
   - [ ] 0.2 `scripts/gen_schemas.py` (fetch/flatten/propose types) and `scripts/probe_endpoints.py` (probe every catalog row; write `docs/endpoint_probe.json`)
   - [ ] 0.3 `docs generate` command + `docs/columns/<source>.yaml` description files + stale-docs test
   - [ ] 0.4 Registry completeness test (catalog row <-> DatasetSpec <-> docs section <-> fixture)
@@ -29,12 +29,12 @@ each source section is independently committable. Every section ends with: fixtu
   - [ ] 2.7 Fix `StatcastLeaderboard` enum <-> routes mismatch (generate enum from registry); test equality
   - [ ] 2.8 Tests: recorded CSV fixtures per leaderboard incl. regression for `bats`, `average_*`, `pa`, `hp_to_1b` typing; row-cap bisect; multi-era pitch fixtures
   - [ ] 2.9 Live probe; record min_year per leaderboard
-- [ ] 3. Lahman (C-6) <!-- id: 3 -->
-  - [ ] 3.1 Sources: ONLY `cbwinslow/lahman-database-csv` (pinned ref; `BASEBALLPY_LAHMAN_REPO`/`_REF` overridable) or user-supplied archive; NEVER `chadwickbureau/baseballdatabank`; no auto-fallback; manifest records `remote@sha`/`local-import`; stale-year warning; test greps `src/` and `docs/` for `baseballdatabank` (allowed only in the historical ADR/archive text that explains why it is rejected)
-  - [ ] 3.2 Generate 27 strict schemas from real headers; PKs; `_extras`
-  - [ ] 3.3 Data-quality checks (PK uniqueness, FK sanity) as warnings
-  - [ ] 3.4 Atomic raw writes in `import_archive`; zip safety (size limit, no path traversal)
-  - [ ] 3.5 Tests with a trimmed fixture per table (27 fixtures), drift test (extra column preserved)
+- [x] 3. Lahman (C-6) <!-- id: 3 -->
+  - [x] 3.1 Sources: ONLY `cbwinslow/lahman-database-csv` (pinned ref; `BASEBALLPY_LAHMAN_REPO`/`_REF` overridable) or user-supplied archive; NEVER `chadwickbureau/baseballdatabank`; no auto-fallback; manifest records `remote@sha`/`local-import`; stale-year warning; test greps `src/` and `docs/` for `baseballdatabank` (allowed only in the historical ADR/archive text that explains why it is rejected)
+  - [x] 3.2 Generate 27 strict schemas from real headers; PKs; `_extras`
+  - [x] 3.3 Data-quality checks (PK uniqueness, FK sanity) as warnings
+  - [x] 3.4 Atomic raw writes in `import_archive`; zip safety (size limit, no path traversal)
+  - [x] 3.5 Tests with a trimmed fixture per table (27 fixtures), drift test (extra column preserved)
 - [ ] 4. Retrosheet (C-7) <!-- id: 4 -->
   - [ ] 4.1 Tree discovery + cache; dataset-to-pattern registry
   - [ ] 4.2 Bounded-concurrency downloader with `ABSENT` status and sha256; season completeness rule

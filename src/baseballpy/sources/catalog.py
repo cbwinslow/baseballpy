@@ -14,23 +14,12 @@ from baseballpy.sources.chadwick.schema import (
     CHADWICK_NAMES_SCHEMA,
     CHADWICK_PEOPLE_SCHEMA,
 )
-from baseballpy.sources.lahman.schema import KNOWN_SCHEMAS as LAHMAN_SCHEMAS
+from baseballpy.sources.lahman.schema import LAHMAN_PRIMARY_KEYS, LAHMAN_SCHEMAS
 from baseballpy.sources.mlb_api import schemas as mlb
 from baseballpy.sources.retrosheet import schema as retro
 from baseballpy.sources.statcast.schema import STATCAST_SCHEMA
 
 Partition = Literal["season", "none"]
-
-LAHMAN_KEYS: dict[str, tuple[str, ...]] = {
-    "People": ("playerID",),
-    "Batting": ("playerID", "yearID", "stint"),
-    "Pitching": ("playerID", "yearID", "stint"),
-    "Teams": ("yearID", "lgID", "teamID"),
-    "Fielding": ("playerID", "yearID", "stint", "POS"),
-    "Salaries": ("yearID", "teamID", "lgID", "playerID"),
-    "HallOfFame": ("playerID", "yearid", "votedBy"),
-    "AllstarFull": ("playerID", "yearID", "gameNum", "gameID"),
-}
 
 
 def _add(
@@ -164,7 +153,7 @@ def register_all() -> dict[str, DatasetSpec]:
             table_name,
             f"lahman_{table_name.lower()}",
             schema,
-            LAHMAN_KEYS[table_name],
+            LAHMAN_PRIMARY_KEYS[table_name],
             f"Lahman {table_name} table.",
             "sources/lahman.md#all-27-supported-tables",
         )

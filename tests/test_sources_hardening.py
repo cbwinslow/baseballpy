@@ -520,10 +520,13 @@ def test_lahman_normalizer_preserves_unknown_columns_and_quarantines_bad_cells(
     )
     with caplog.at_level("WARNING"):
         table = LahmanNormalizer(quarantine=q).normalize(csv, table_name="Batting")
-    assert "newMetric" in table.column_names
-    assert table["newMetric"].to_pylist() == [7, 8]
+    assert "newMetric" not in table.column_names
+    assert [json.loads(x) for x in table["_extras"].to_pylist()] == [
+        {"newMetric": "7"},
+        {"newMetric": "8"},
+    ]
     assert table["yearID"].to_pylist() == [1957, None]
-    assert any("schema drift" in r.message for r in caplog.records)
+    assert any("schema_drift" in r.message for r in caplog.records)
     assert list((tmp_path / "quarantine" / "lahman").rglob("*.jsonl"))
 
 

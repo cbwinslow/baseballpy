@@ -1,5 +1,6 @@
 """High-level public interface for the SABR Lahman Baseball Database."""
 
+import logging
 import zipfile
 from pathlib import Path
 
@@ -11,9 +12,16 @@ from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS, DatasetSpec
 from baseballpy.core.stores import ProcessedStore, RawStore
 from baseballpy.sources import catalog
-from baseballpy.sources.lahman.extractor import LahmanExtractor
+from baseballpy.sources.lahman.extractor import LOCAL_IMPORT, LahmanExtractor
 from baseballpy.sources.lahman.normalizer import LahmanNormalizer
+from baseballpy.sources.lahman.quality import quality_report
 from baseballpy.sources.lahman.schema import LahmanTable
+
+logger = logging.getLogger(__name__)
+
+#: zip-bomb guards for user-supplied archives
+MAX_MEMBER_BYTES = 512 * 1024 * 1024
+MAX_TOTAL_BYTES = 2 * 1024 * 1024 * 1024
 
 
 def lahman_spec(table_name: str, schema: pa.Schema | None = None) -> DatasetSpec:
@@ -46,10 +54,49 @@ class LahmanSource:
     def _import_csv(self, filename: str, data: bytes) -> None:
         """Store one user-supplied CSV in raw/ and compile it to typed Parquet in processed/."""
         table_name = Path(filename).stem
-        self.raw.put("lahman", table_name, f"{table_name}.csv", data, source_ref="user-supplied")
+        self.raw.put("lahman", table_name, f"{table_name}.csv", data, source_ref=LOCAL_IMPORT)
         table = self.normalizer.normalize(data, table_name=table_name)
-        self.store.put(lahman_spec(table_name, table.schema), table, source_ref="user-supplied")
-        self.extractor.manifest_for(table_name).set_completed(table_name, records_count=len(table))
+        self.store.put(
+            lahman_spec(table_name, table.schema),
+            table,
+            source_ref=LOCAL_IMPORT,
+            metadata=self._quality(table_name, table),
+        )
+        self.extractor.manifest_for(table_name).set_completed(
+            table_name,
+            records_count=len(table),
+            metadata={"origin": LOCAL_IMPORT, "source": LOCAL_IMPORT},
+        )
+
+    def _people_ids(self) -> pa.ChunkedArray | None:
+        """``People.playerID`` from the processed store if already present (never fetches)."""
+        people = self.store.part_path(lahman_spec("People"), "data")
+        if not people.exists():
+            return None
+        return pq.read_table(people, columns=["playerID"])["playerID"]
+
+    def _quality(self, name: str, table: pa.Table) -> dict[str, object]:
+        """Run data-quality checks; findings are logged as warnings and kept in the manifest."""
+        findings = quality_report(
+            name, table, people_ids=self._people_ids(), today=self.cache_config.today_or_now()
+        )
+        for key, value in findings.items():
+            logger.warning("lahman data quality: %s %s=%s", name, key, value)
+        return {"quality": findings} if findings else {}
+
+    @staticmethod
+    def _check_zip_safety(members: list[zipfile.ZipInfo]) -> None:
+        """Reject path traversal and oversized members before anything is extracted."""
+        total = 0
+        for info in members:
+            parts = Path(info.filename.replace("\\", "/")).parts
+            if ".." in parts or Path(info.filename).is_absolute():
+                raise ValueError(f"unsafe path in Lahman archive: {info.filename!r}")
+            if info.file_size > MAX_MEMBER_BYTES:
+                raise ValueError(f"Lahman archive member too large: {info.filename!r}")
+            total += info.file_size
+        if total > MAX_TOTAL_BYTES:
+            raise ValueError("Lahman archive expands beyond the allowed size")
 
     def import_archive(self, archive_path: Path | str) -> int:
         """Import a local Lahman ZIP archive or unzipped directory downloaded from SABR Box.
@@ -72,11 +119,17 @@ class LahmanSource:
             # Handle ZIP file
             if path.is_file() and path.suffix.lower() == ".zip":
                 with zipfile.ZipFile(path, "r") as zf:
-                    for member in zf.namelist():
-                        if member.lower().endswith(".csv") and not member.startswith("__MACOSX"):
-                            with zf.open(member) as src:
-                                self._import_csv(Path(member).name, src.read())
-                            imported_count += 1
+                    members = [
+                        info
+                        for info in zf.infolist()
+                        if info.filename.lower().endswith(".csv")
+                        and not info.filename.startswith("__MACOSX")
+                    ]
+                    self._check_zip_safety(members)
+                    for info in members:
+                        with zf.open(info) as src:
+                            self._import_csv(Path(info.filename).name, src.read())
+                        imported_count += 1
                 tracker.set_records(imported_count)
                 return imported_count
 
@@ -123,7 +176,12 @@ class LahmanSource:
 
             # 4. Save to processed Parquet
             if self.cache_config.enabled and len(table) > 0:
-                self.store.put(lahman_spec(name_str, table.schema), table)
+                self.store.put(
+                    lahman_spec(name_str, table.schema),
+                    table,
+                    source_ref=self.extractor.source_ref.ref,
+                    metadata=self._quality(name_str, table),
+                )
 
             tracker.set_cache_hit(False)
             tracker.set_records(len(table))
