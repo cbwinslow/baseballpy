@@ -179,3 +179,10 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 2. Every deviation from a change's design is written into that change's `proposal.md`/`design.md` ("As built") and, if it is a decision, an ADR in `docs/DECISIONS.md`.
 3. Hand-typed counts and numbers do not belong in docs: use generated dictionaries and the probe JSON.
 4. Autonomous runs follow `docs/agents/GOAL_SEEK_PROMPT.md`; keep it aligned with this file.
+
+## 13. Design Philosophy, Research and Delegation
+
+1. Stay decoupled, reusable and dynamic: registry- and generator-driven behavior, `Protocol` boundaries, no scattered per-source special cases; prefer a declarative table plus one generic function.
+2. Search the web for existing solutions (other libraries, the provider's repositories, issues) before writing any workaround, and record the findings in the change's design.
+3. Bulk code that Claude has already designed may be delegated to `agy`; every delegated diff is reviewed in full and gated (`docs/agents/AGY_DELEGATION.md`). Claude `Agent`/workflow subagents remain off unless the owner asks.
+

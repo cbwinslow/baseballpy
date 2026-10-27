@@ -9,9 +9,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `AGENTS.md` is the engineering contract (decoupling, full data preservation, rate limits, atomic writes, quarantine, audit logging). `openspec/project.md`, `openspec/specs/*` and `docs/DECISIONS.md` (ADRs) are the living specs.
 - All work is an OpenSpec change under `openspec/changes/<name>/` (`proposal.md`, `design.md`, `tasks.md`, spec deltas). Execution order and rules: `openspec/changes/EXECUTION_ORDER.md`. Tick `tasks.md` as you go, merge deltas into `openspec/specs/*` and move finished changes to `openspec/changes/archive/<date>-<name>/`. Record decisions in `docs/DECISIONS.md`.
 - **Never leave upstream data behind.** Every field, endpoint, group, level and file the provider offers is captured (typed column or `_extras`), even when another source has it. If something cannot be ingested, it stays registered as `unsupported` with probe evidence, or its raw bytes are kept; it is never silently skipped.
-- **Owner rules:** no subagents or workflows (work linearly in the session); Lahman comes only from `cbwinslow/lahman-database-csv` or user-supplied data, never `chadwickbureau/baseballdatabank`; commit per section with conventional messages, do not push; run the gates after every section; manual/live checks are really run and summarised in the commit.
+- **Owner rules:** no Claude `Agent`/workflow subagents (work linearly in the session); the one allowed delegate is `agy` (see below); Lahman comes only from `cbwinslow/lahman-database-csv` or user-supplied data, never `chadwickbureau/baseballdatabank`; commit after every green slice with conventional messages, do not push; run the gates after every section; manual/live checks are really run and summarised in the commit.
 
 Autonomous runs: use `docs/agents/GOAL_SEEK_PROMPT.md` (loop with verification, audit and web-research protocol).
+
+## Design philosophy: decoupled, reusable, dynamic
+
+Keep the codebase loosely coupled so a change in one place cannot break another: extract / parse / sink meet only at `typing.Protocol` boundaries; behavior comes from the dataset registry, generators and data, not from hard-coded dataset names or per-source special cases; prefer one small declarative table plus one generic function over several intertwined hand-written functions. When a fix seems to need a special case, look for the general mechanism that removes the case. `tests/test_architecture.py` enforces the import boundaries; do not weaken it.
+
+## Search the web before building a workaround
+
+When a problem appears (unreachable host, odd parameter, unreadable format, failing probe, a design question), web-search for how others solved it first (pybaseball, baseballr, sportsdataverse, Chadwick tools, the provider's GitHub, issues, docs) and record what you found in the OpenSpec design. Do this early and often; a workaround that was not compared with existing practice is a defect. Standard-mode search first, extended when thin.
+
+## Delegating code to `agy` (Gemini)
+
+`agy` is installed (`agy models`, `agy agents`). Claude designs, root-causes and reviews; `agy` (`gemini-3.8-flash-medium`) writes bulk code from a precise brief: `uv run python scripts/agy_delegate.py <brief.md> [--agent python-pro]`. Use it at your discretion for well-specified code, tests, fixtures and mechanical edits; always read the full diff and run the gates afterwards. Details, brief template and review protocol: `docs/agents/AGY_DELEGATION.md`.
 
 ## Commands
 
