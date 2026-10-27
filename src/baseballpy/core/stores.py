@@ -12,6 +12,7 @@ import pyarrow.parquet as pq
 from baseballpy.core.atomic import atomic_write, atomic_write_parquet
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec
+from baseballpy.core.layout import ensure_version_file, hint_if_legacy
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ class RawStore:
 
     def __init__(self, config: LakeConfig | None = None) -> None:
         self.config = config or LakeConfig()
+        hint_if_legacy(self.config)
 
     def path_for(self, source: str, dataset: str, name: str, season: int | None = None) -> Path:
         """Location of a raw file (does not create anything)."""
@@ -52,6 +54,7 @@ class RawStore:
         etag: str = "",
     ) -> Path:
         """Atomically write ``data`` and record size + sha256 in the dataset's raw manifest."""
+        ensure_version_file(self.config)
         directory = self.config.raw_dir(source, dataset, season, create=True)
         path = directory / _safe_chunk_id(name)
         with atomic_write(path) as part:
@@ -89,6 +92,7 @@ class ProcessedStore:
 
     def __init__(self, config: LakeConfig | None = None) -> None:
         self.config = config or LakeConfig()
+        hint_if_legacy(self.config)
 
     def dataset_dir(self, spec: DatasetSpec, season: int | None = None) -> Path:
         """Directory holding ``spec``'s parquet parts for ``season`` (no creation)."""
@@ -118,6 +122,7 @@ class ProcessedStore:
     ) -> Path:
         """Atomically write ``table`` (footer validated) and record the chunk in the manifest."""
         path = self.part_path(spec, chunk_id, season)
+        ensure_version_file(self.config)
         path.parent.mkdir(parents=True, exist_ok=True)
         atomic_write_parquet(table, path, compression=PARQUET_COMPRESSION)
         self.config.dataset_manifest(spec.source, spec.name, "processed").set_completed(

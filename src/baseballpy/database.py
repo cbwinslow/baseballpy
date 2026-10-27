@@ -16,6 +16,7 @@ import pyarrow.parquet as pq
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS
+from baseballpy.core.layout import hint_if_legacy
 from baseballpy.core.sql import quote_ident, quote_literal
 from baseballpy.sources import catalog
 
@@ -64,6 +65,7 @@ class BaseballDatabase:
     ) -> None:
         catalog.register_all()
         self.cache_config = cache_config or LakeConfig()
+        hint_if_legacy(self.cache_config)
         if db_path is None:
             self.db_path = self.cache_config.database_path
         elif str(db_path) == ":memory:":

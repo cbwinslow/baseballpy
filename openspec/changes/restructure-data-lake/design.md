@@ -58,12 +58,12 @@ Mapping table (v1 -> v2):
 | `cache/retrosheet/raw/<year>/*` | `raw/retrosheet/event_files/season=<year>/*` (rosters to `raw/retrosheet/rosters/season=<year>/`) |
 | `cache/retrosheet/raw/gamelogs/*`, `reference/*` | `raw/retrosheet/gamelogs/...`, `raw/retrosheet/reference_<name>/` |
 | `cache/retrosheet/processed/events/season=Y/events.parquet` | `processed/retrosheet/events/season=Y/part-events.parquet` |
-| `.../events_all.parquet` | `processed/retrosheet/events_postseason/season=Y/part-events_all.parquet` |
+| `.../events_all.parquet` | `processed/retrosheet/events_postseason/season=Y/part-events.parquet`, keeping only games absent from the regular-season `events` part (v1 `events_all` held regular + postseason rows; the dropped duplicates are counted in the report) |
 | other `processed/<x>/season=Y/*` | `processed/retrosheet/<x>/season=Y/...` |
 | `cache/lahman/raw/*.csv` / `processed/*.parquet` | `raw/lahman/<Table>/<Table>.csv` / `processed/lahman/<Table>/data.parquet` |
 | `cache/chadwick/shards`, `names.csv`, `links.csv`, `processed/register.parquet` | `raw/chadwick/register/...`, `processed/chadwick/register/data.parquet` |
-| `cache/mlb_api/<category>/<ident>.parquet` | concatenated per category/season into `processed/mlb_api/<dataset>/season=Y/part-*.parquet` (schedule/standings/transactions/draft by year in ident; teams/venues flat) |
-Behavior: copy (not move) unless `--delete-old`; verify row counts after copy; write `VERSION=2` last; skip files that already exist with equal size+sha256; print a summary table (moved/skipped/unknown). `--dry-run` prints the plan only.
+| `cache/mlb_api/<category>/<ident>.parquet` | `processed/mlb_api/<dataset>/[season=Y/]part-<ident>.parquet`, one part per v1 file (no concatenation, so re-runs stay deterministic): schedule/standings/transactions/draft take the season from the ident; teams/venues/rosters are flat; boxscores take the season from the migrated schedule (`game_pk`) and are reported as unknown when it cannot be determined |
+Behavior: copy (not move) unless `--delete-old`; verify sha256 and parquet row counts after each copy; carry the matching v1 manifest entries into the v2 dataset manifests (so freshness decisions and zero-row chunks survive); write `VERSION=2` last; skip files that already exist with equal size+sha256; print a summary table (moved/skipped/unknown). `--dry-run` prints the plan only.
 
 ## 6. Pinned refs (L-8)
 `core/sources_lock.py`: `LOCK = {"retrosheet": {"repo": "chadwickbureau/retrosheet", "ref": "<sha>"}, "chadwick_register": {...}, "lahman": {...}}`. `refs update` queries `GET /repos/{repo}/commits?per_page=1` (through `HttpClient`, authenticated if `GITHUB_TOKEN` is set to avoid the 60/h limit), rewrites the lock file, and prints the diff. URLs are built as `https://raw.githubusercontent.com/{repo}/{ref}/{path}`. Manifest `source_ref` makes a ref change invalidate affected chunks.

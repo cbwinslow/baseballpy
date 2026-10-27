@@ -257,6 +257,18 @@ class ManifestTracker:
             {"status": "ABSENT", "reason": reason, "failed_at": datetime.now(UTC).isoformat()},
         )
 
+    def put_entry(self, chunk_id: str, entry: dict[str, Any]) -> None:
+        """Store ``entry`` verbatim (keeps timestamps/status); used when migrating manifests."""
+        self._set(chunk_id, dict(entry))
+
+    def chunks(self) -> dict[str, dict[str, Any]]:
+        """Snapshot of every chunk entry currently on disk."""
+        with self._rlock:
+            self.reload()
+            return {
+                k: dict(v) for k, v in self._data.get("chunks", {}).items() if isinstance(v, dict)
+            }
+
     def _set(self, chunk_id: str, entry: dict[str, Any]) -> None:
         with self._rlock:
             self._data.setdefault("chunks", {})[chunk_id] = entry

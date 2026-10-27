@@ -20,10 +20,10 @@ Prerequisite: `harden-ingestion-core` tasks 1-5 complete (HttpClient, manifest l
   - [x] 4.3 Read-only behavior + `DatabaseReadOnlyError`
   - [x] 4.4 Add `v_player_crosswalk`, `v_season_catalog`
   - [x] 4.5 Tests: no leaderboard rows in pitches, no duplicate events, all registered datasets get views
-- [ ] 5. Migration (L-9) <!-- id: 5 -->
-  - [ ] 5.1 Implement `core/migrate.py` per design mapping table; `VERSION` file
-  - [ ] 5.2 Synthetic v1-tree integration test incl. idempotency and `--dry-run`
-  - [ ] 5.3 First-use detection hint (log once)
+- [x] 5. Migration (L-9) <!-- id: 5 -->
+  - [x] 5.1 Implement `core/migrate.py` per design mapping table; `VERSION` file
+  - [x] 5.2 Synthetic v1-tree integration test incl. idempotency and `--dry-run`
+  - [x] 5.3 First-use detection hint (log once)
 - [ ] 6. Pinned refs (L-8) <!-- id: 6 -->
   - [ ] 6.1 `core/sources_lock.py` + URL builders using refs; record `source_ref` in manifests
   - [ ] 6.2 `refs update` implementation (HttpClient, `GITHUB_TOKEN` support)

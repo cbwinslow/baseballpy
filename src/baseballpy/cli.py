@@ -5,6 +5,9 @@ from rich.console import Console
 from rich.table import Table
 
 from baseballpy.core.audit import default_audit_logger
+from baseballpy.core.config import LakeConfig
+from baseballpy.core.migrate import migrate_layout
+from baseballpy.database import BaseballDatabase
 from baseballpy.sinks.duckdb import DuckDBSink
 from baseballpy.sinks.parquet import ParquetSink
 from baseballpy.sources.statcast.extractor import StatcastExtractor
@@ -79,6 +82,62 @@ def statcast_cmd(
         console.print(
             f"Wrote [bold green]{written:,}[/bold green] rows to Parquet file [yellow]{destination}[/yellow]."
         )
+
+
+@main.command("migrate-layout")
+@click.option("--dry-run", is_flag=True, help="Print the plan without touching any file.")
+@click.option(
+    "--delete-old",
+    is_flag=True,
+    help="Delete migrated v1 files after verification (unknown files are never touched).",
+)
+def migrate_layout_cmd(dry_run: bool, delete_old: bool) -> None:
+    """Migrate a v1 data lake (cache/<source>/...) to layout v2 (raw/ + processed/)."""
+    config = LakeConfig()
+    report = migrate_layout(config, dry_run=dry_run, delete_old=delete_old)
+    if report.already_migrated:
+        console.print(
+            f"[green]Lake at {config.home} is already on layout v2; nothing to do.[/green]"
+        )
+        return
+    if not report.steps and not report.unknown:
+        console.print(
+            f"[dim]No v1 data found under {config.home / 'cache'}; nothing to migrate.[/dim]"
+        )
+        return
+    if dry_run:
+        plan = Table(title=f"Migration plan for {config.home} (dry run)")
+        plan.add_column("v1 file", style="dim")
+        plan.add_column("v2 location", style="cyan")
+        for step in report.steps:
+            plan.add_row(
+                str(step.src.relative_to(config.home)), str(step.dst.relative_to(config.home))
+            )
+        console.print(plan)
+    summary = Table(title="Migration summary", show_header=False)
+    for label, count in report.summary_rows():
+        summary.add_row(label, f"{count:,}")
+    console.print(summary)
+    for path in report.unknown:
+        console.print(f"[yellow]unknown, left in place:[/yellow] {path}")
+    if not dry_run and report.version_written:
+        console.print("[bold green]Layout v2 VERSION written.[/bold green]")
+
+
+@main.group()
+def db() -> None:
+    """Manage the DuckDB catalog (views over processed/ Parquet)."""
+    pass
+
+
+@db.command("sync")
+def db_sync() -> None:
+    """Create or refresh a DuckDB view for every dataset that has processed data."""
+    database = BaseballDatabase()
+    count = database.sync_views()
+    console.print(
+        f"Registered [bold green]{count}[/bold green] views in [yellow]{database.db_path}[/yellow]."
+    )
 
 
 @main.group()
