@@ -4,6 +4,7 @@ import json
 from collections.abc import Generator
 from pathlib import Path
 
+import click
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
@@ -191,5 +192,5 @@ def test_resolve_dataset_direct() -> None:
     bare = resolve_dataset("pitches")
     assert bare.key == "statcast.pitches"
 
-    with pytest.raises(Exception):
+    with pytest.raises(click.BadParameter):
         resolve_dataset("nonexistent_unknown_dataset_xyz")
