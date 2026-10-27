@@ -58,3 +58,13 @@ Output: rich tables for humans; `--json` prints one JSON object per job result (
 - Integration with respx + tmp lake: `Pipeline.run_many` over 3 fake datasets; kill mid-run via task cancel -> `CANCELLED` + resumable; re-run skips completed; `--dry-run` makes zero HTTP calls; failures produce non-zero exit.
 - CLI tests with `click.testing.CliRunner` for every command (help text, JSON output, exit codes).
 - Manual end-to-end: `baseballpy ingest all --seasons 2023 --sources lahman,chadwick,retrosheet,mlb --dry-run` then real run into a scratch home; `catalog status` shows no MISSING; `db query "select count(*) from statcast_pitches"` works.
+
+## 8. As-built amendment (2026-10-27): adapters over the existing orchestrators
+Sections 1-3 assumed `DatasetSpec.make_extractor/make_normalizer` hooks and one generic extract-normalize-sink loop. The code that exists after `complete-source-coverage` differs: each source already has tested orchestrators (`StatcastSource.ingest_season`, `MlbApiSource.ingest_season/ingest_reference/ingest_history/ingest_people_stats`, `RetrosheetSource.ingest_season/ingest_reference`, leaderboard `ingest_leaderboard`, Lahman and Chadwick loaders) with source-specific signatures and report types. Rewriting them behind one generic loop would re-open working, verified code (splash damage, AGENTS section 2), so the pipeline layers on top instead:
+
+- `baseballpy/ingest/types.py`: `Selection` (seasons, sources, datasets, refresh), `Job` (source, task, params; stable `job_id`), `JobStatus`, `JobResult`, `RunReport`.
+- `baseballpy/ingest/selection.py`: pure parser for `2023`, `2015-2024`, `2015,2018`, `all`.
+- `baseballpy/ingest/adapters.py`: `IngestAdapter` Protocol (`source`, `plan(selection) -> list[Job]`, `run(job, refresh) -> JobResult`) and an `ADAPTERS` registry keyed by source name; one thin adapter module per source calls the existing orchestrator and maps its report into `JobResult`. The runner never imports a concrete source.
+- `baseballpy/ingest/runner.py`: `plan()` (dry run, zero network), `run_jobs()` (bounded concurrency, failures collected not swallowed, per-job audit event, cancellation -> `CANCELLED`, re-run skips what the orchestrators' manifests already mark complete).
+- CLI (`ingest`, `catalog status`, `doctor`) consumes only `ingest.*` and the dataset registry.
+Adding a source = one adapter module registered in `ADAPTERS`; nothing else changes. ADR 25 is updated when this lands.
