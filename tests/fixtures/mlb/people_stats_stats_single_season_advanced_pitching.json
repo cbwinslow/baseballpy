@@ -1,0 +1,98 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "statsSingleSeasonAdvanced"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "age": 33,
+      "winningPercentage": ".615",
+      "runsScoredPer9": "3.60",
+      "battersFaced": 390,
+      "babip": ".273",
+      "obp": ".290",
+      "slg": ".358",
+      "ops": ".648",
+      "strikeoutsPer9": "9.38",
+      "baseOnBallsPer9": "2.75",
+      "homeRunsPer9": "1.04",
+      "hitsPer9": "7.39",
+      "strikesoutsToWalks": "3.41",
+      "inheritedRunners": 0,
+      "inheritedRunnersScored": 0,
+      "bequeathedRunners": 5,
+      "bequeathedRunnersScored": 1,
+      "stolenBases": 15,
+      "caughtStealing": 2,
+      "qualityStarts": 8,
+      "gamesFinished": 0,
+      "doubles": 14,
+      "triples": 1,
+      "gidp": 7,
+      "gidpOpp": 40,
+      "wildPitches": 0,
+      "balks": 0,
+      "pickoffs": 0,
+      "totalSwings": 738,
+      "swingAndMisses": 184,
+      "strikeoutsMinusWalksPercentage": ".179",
+      "gidpPercentage": ".175",
+      "battersFacedPerGame": "22.94",
+      "inningsPitchedPerGame": "5.59",
+      "buntsFailed": 3,
+      "buntsMissedTipped": 0,
+      "whiffPercentage": ".248",
+      "flyBallPercentage": ".270",
+      "ballsInPlay": 256,
+      "runSupport": 52,
+      "strikePercentage": ".650",
+      "pitchesPerInning": "16.15",
+      "pitchesPerPlateAppearance": "3.933",
+      "walksPerPlateAppearance": ".074",
+      "strikeoutsPerPlateAppearance": ".254",
+      "homeRunsPerPlateAppearance": ".028",
+      "walksPerStrikeout": ".293",
+      "iso": ".138",
+      "flyOuts": 54,
+      "popOuts": 28,
+      "lineOuts": 24,
+      "groundOuts": 72,
+      "flyHits": 15,
+      "popHits": 0,
+      "lineHits": 37,
+      "groundHits": 26
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,86 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "opponentsFaced"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "totalSplits": 111,
+   "exemptions": [],
+   "splits": [
+    {
+     "gameType": "R",
+     "group": "pitching",
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 682928,
+      "fullName": "CJ Abrams",
+      "link": "/api/v1/people/682928",
+      "firstName": "Paul",
+      "lastName": "Abrams"
+     },
+     "battingTeam": {
+      "id": 120,
+      "name": "Washington Nationals",
+      "link": "/api/v1/teams/120"
+     }
+    },
+    {
+     "gameType": "R",
+     "group": "pitching",
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 677800,
+      "fullName": "Wilyer Abreu",
+      "link": "/api/v1/people/677800",
+      "firstName": "Wilyer",
+      "lastName": "Abreu"
+     },
+     "battingTeam": {
+      "id": 111,
+      "name": "Boston Red Sox",
+      "link": "/api/v1/teams/111"
+     }
+    },
+    {
+     "gameType": "R",
+     "group": "pitching",
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 624413,
+      "fullName": "Pete Alonso",
+      "link": "/api/v1/people/624413",
+      "firstName": "Peter",
+      "lastName": "Alonso"
+     },
+     "battingTeam": {
+      "id": 121,
+      "name": "New York Mets",
+      "link": "/api/v1/teams/121"
+     }
+    }
+   ]
+  }
+ ]
+}

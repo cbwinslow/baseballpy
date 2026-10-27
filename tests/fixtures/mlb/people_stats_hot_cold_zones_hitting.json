@@ -1,0 +1,268 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "hotColdZones"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "name": "battingAverage",
+      "zones": [
+       {
+        "zone": "01",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".237"
+       },
+       {
+        "zone": "02",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".326"
+       },
+       {
+        "zone": "03",
+        "color": "rgba(234, 147, 153, .55)",
+        "temp": "warm",
+        "value": ".262"
+       },
+       {
+        "zone": "04",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".351"
+       },
+       {
+        "zone": "05",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".477"
+       },
+       {
+        "zone": "06",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".341"
+       },
+       {
+        "zone": "07",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".385"
+       },
+       {
+        "zone": "08",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".350"
+       },
+       {
+        "zone": "09",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".364"
+       },
+       {
+        "zone": "11",
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".216"
+       },
+       {
+        "zone": "12",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".233"
+       },
+       {
+        "zone": "13",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".102"
+       },
+       {
+        "zone": "14",
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".204"
+       }
+      ]
+     }
+    },
+    {
+     "stat": {
+      "name": "sluggingPercentage",
+      "zones": [
+       {
+        "zone": "01",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".500"
+       },
+       {
+        "zone": "02",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".870"
+       },
+       {
+        "zone": "03",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".595"
+       },
+       {
+        "zone": "04",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".737"
+       },
+       {
+        "zone": "05",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "1.291"
+       },
+       {
+        "zone": "06",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".682"
+       },
+       {
+        "zone": "07",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".654"
+       },
+       {
+        "zone": "08",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".683"
+       },
+       {
+        "zone": "09",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".667"
+       },
+       {
+        "zone": "11",
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".378"
+       },
+       {
+        "zone": "12",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".326"
+       },
+       {
+        "zone": "13",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".102"
+       },
+       {
+        "zone": "14",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".286"
+       }
+      ]
+     }
+    },
+    {
+     "stat": {
+      "name": "exitVelocity",
+      "zones": [
+       {
+        "zone": "01",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "96.65"
+       },
+       {
+        "zone": "02",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "97.72"
+       },
+       {
+        "zone": "03",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "92.72"
+       },
+       {
+        "zone": "04",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "98.06"
+       },
+       {
+        "zone": "05",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "103.24"
+       },
+       {
+        "zone": "06",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "98.20"
+       },
+       {
+        "zone": "07",
+        "color": "rgba(234, 147, 153, .55)",
+        "temp": "warm",
+        "value": "91.14"
+       },
+       {
+        "zone": "08",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "99.45"
+       },
+       {
+        "zone": "09",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "101.05"
+       },
+       {
+        "zone": "11",
+        "color": "rgba(234, 147, 153, .55)",
+        "temp": "warm",
+        "value": "89.72"
+       },
+       {
+        "zone": "12",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": "79.37"
+       },
+       {
+        "zone": "13",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": "81.05"
+       },
+       {
+        "zone": "14",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "97.23"
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

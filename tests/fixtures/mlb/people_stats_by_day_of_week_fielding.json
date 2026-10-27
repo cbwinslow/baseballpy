@@ -1,0 +1,127 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "byDayOfWeek"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 16,
+      "gamesStarted": 16,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 16,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "dayOfWeek": 1,
+     "numTeams": 1,
+     "numLeagues": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 25,
+      "gamesStarted": 25,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 25,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "dayOfWeek": 2,
+     "numTeams": 1,
+     "numLeagues": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 25,
+      "gamesStarted": 25,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 25,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "dayOfWeek": 3,
+     "numTeams": 1,
+     "numLeagues": 1
+    }
+   ]
+  }
+ ]
+}

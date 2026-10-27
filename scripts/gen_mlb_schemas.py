@@ -27,8 +27,18 @@ from baseballpy.core.schema_tools import snake
 from baseballpy.sources.mlb_api.flatten import Scalar, infer_type, iter_records, trim_payload
 
 BASE = "https://statsapi.mlb.com/api/"
-GROUPS = ("hitting", "pitching", "fielding", "catching", "running")
+
+
+def stat_groups(http: HttpClient) -> list[str]:
+    """Every stat group the provider lists (``/v1/statGroups``): nothing is skipped by choice."""
+    groups = [g["displayName"] for g in get_json(http, "v1/statGroups", {}) or []]
+    if not groups:
+        raise SystemExit("/v1/statGroups returned nothing; refusing to probe a guessed list")
+    return groups
+
+
 KEY_CANDIDATES = (
+    "person_id",
     "player.id",
     "team.id",
     "sport.id",
@@ -43,12 +53,37 @@ KEY_CANDIDATES = (
     "opponent.id",
     "game.gamePk",
     "position.abbreviation",
+    "stat.pitchType.code",
+    "stat.zone",
     "numTeams",
     "rank",
 )
 SAMPLE_SEASONS = (2024, 2015)
+#: extra seasons for endpoints that are empty in the sample seasons but have data elsewhere
+EXTRA_SEASONS = {
+    "standings_first_half": (1981, 1994, 2020),
+    "standings_second_half": (1981, 1994, 2020),
+    "standings_postseason": (2020, 2008, 1995),
+}
 SAMPLE_TEAMS = (147, 119)
 SAMPLE_GAMES = (745000, 775296)
+SAMPLE_PEOPLE = tuple(
+    (pid, "")
+    for pid in (
+        660271,  # Ohtani: two-way
+        543037,  # Cole: starter
+        592450,  # Judge
+        605141,  # Betts
+        477132,  # Kershaw
+        521692,  # S. Perez: catcher
+        623352,  # Hader: reliever
+        545361,  # Trout: multi-year career
+        518692,  # Freeman
+        665742,  # Soto
+    )
+)
+SAMPLE_AWARDS = ("MLBHOF", "ALMVP", "NLCY", "ALROY", "WSMVP", "ALPNT", "ALGG")
+SAMPLE_SINCE = "2024-06-24T00:00:00Z"
 FIXTURE_KEEP = 3
 REF_FIXTURE_KEEP = 100  # reference lists are small; enum tests need them complete
 FIXTURES = Path("tests/fixtures/mlb")
@@ -69,23 +104,45 @@ def get_json(http: HttpClient, path: str, params: dict[str, Any]) -> Any | None:
 
 
 def minimal_key(records: list[dict[str, Scalar]]) -> tuple[str, ...]:
-    """Shortest prefix of ``KEY_CANDIDATES`` (present columns only) that makes rows unique."""
-    present = [c for c in KEY_CANDIDATES if any(c in r for r in records)]
-    for size in range(1, len(present) + 1):
-        cols = present[:size]
-        seen = {tuple(r.get(c) for c in cols) for r in records}
-        if len(seen) == len(records):
-            return tuple(cols)
-    return ()
+    """Smallest set of always-populated columns that makes the rows unique.
+
+    Tries the preferred ``KEY_CANDIDATES`` prefix first, then greedily adds the populated scalar
+    column that separates the most rows; returns ``()`` only when no combination works.
+    """
+    if not records:
+        return ()
+    populated = [
+        k
+        for k in dict.fromkeys(k for r in records for k in r)
+        if all(r.get(k) is not None for r in records)
+        and all(not (isinstance(r.get(k), str) and len(str(r.get(k))) > 80) for r in records)
+    ]
+
+    def unique(cols: list[str]) -> bool:
+        return len({tuple(r.get(c) for c in cols) for r in records}) == len(records)
+
+    preferred = [c for c in KEY_CANDIDATES if c in populated]
+    for size in range(1, len(preferred) + 1):
+        if unique(preferred[:size]):
+            return tuple(preferred[:size])
+    chosen = list(preferred)
+    while not unique(chosen) and len(chosen) < 8:
+        rest = [c for c in populated if c not in chosen]
+        if not rest:
+            return ()
+        chosen.append(
+            max(rest, key=lambda c: len({tuple(r.get(x) for x in [*chosen, c]) for r in records}))
+        )
+    return tuple(chosen) if unique(chosen) else ()
 
 
-def probe_combos(http: HttpClient) -> tuple[list[Any], list[Any]]:
+def probe_combos(http: HttpClient, groups: list[str]) -> tuple[list[Any], list[Any]]:
     """Stat type x group combinations that return league-wide splits, with their keys."""
     stat_types = [t["displayName"] for t in get_json(http, "v1/statTypes", {}) or []]
     players: list[Any] = []
     teams: list[Any] = []
     for stat in stat_types:
-        for group in GROUPS:
+        for group in groups:
             for label, path, out, extra in (
                 ("player", "v1/stats", players, {"playerPool": "ALL", "limit": 400}),
                 ("team", "v1/teams/stats", teams, {}),
@@ -104,19 +161,43 @@ def probe_combos(http: HttpClient) -> tuple[list[Any], list[Any]]:
     return players, teams
 
 
-def write_combos(players: list[Any], teams: list[Any]) -> None:
+def probe_people_combos(http: HttpClient, groups: list[str]) -> list[Any]:
+    """Stat type x group combinations that return splits for the sample people."""
+    stat_types = [t["displayName"] for t in get_json(http, "v1/statTypes", {}) or []]
+    combos: dict[tuple[str, str], list[dict[str, Scalar]]] = {}
+    for stat in stat_types:
+        for group in groups:
+            for pid, _ in SAMPLE_PEOPLE:
+                data = get_json(
+                    http, f"v1/people/{pid}/stats", {"stats": stat, "group": group, "season": 2024}
+                )
+                records = list(iter_records(data, ("stats", "*", "splits"))) if data else []
+                if records:
+                    combos.setdefault((stat, group), []).extend(
+                        {**r, "person_id": pid} for r in records
+                    )
+    out = []
+    for (stat, group), records in combos.items():
+        out.append((stat, group, minimal_key(records)))
+        print(f"  person {stat:24s} {group:9s} {len(records):5d} rows key={out[-1][2]}")
+    return out
+
+
+def write_combos(players: list[Any], teams: list[Any], people: list[Any]) -> None:
     """Write ``stat_combos.py``."""
 
-    def render(rows: list[Any]) -> str:
-        body = "".join(f"    ({s!r}, {g!r}, {k!r}),\n" for s, g, k in rows)
+    def render(rows: list[Any], fallback: tuple[str, ...]) -> str:
+        body = "".join(f"    ({s!r}, {g!r}, {(k or fallback)!r}),\n" for s, g, k in rows)
         return f"(\n{body})" if rows else "()"
 
     Path("src/baseballpy/sources/mlb_api/stat_combos.py").write_text(
         '"""GENERATED by scripts/gen_mlb_schemas.py (stat type x group combinations that return data)."""\n\n'
         "#: (stat type, group, key columns) for ``/v1/stats`` (league-wide player pool)\n"
-        f"PLAYER_STAT_COMBOS: tuple[tuple[str, str, tuple[str, ...]], ...] = {render(players)}\n"
+        f"PLAYER_STAT_COMBOS: tuple[tuple[str, str, tuple[str, ...]], ...] = {render(players, ('season',))}\n"
         "#: (stat type, group, key columns) for ``/v1/teams/stats``\n"
-        f"TEAM_STAT_COMBOS: tuple[tuple[str, str, tuple[str, ...]], ...] = {render(teams)}\n",
+        f"TEAM_STAT_COMBOS: tuple[tuple[str, str, tuple[str, ...]], ...] = {render(teams, ('season',))}\n"
+        "#: (stat type, group, key columns) for ``/v1/people/{id}/stats`` (per person)\n"
+        f"PEOPLE_STAT_COMBOS: tuple[tuple[str, str, tuple[str, ...]], ...] = {render(people, ('person_id',))}\n",
         encoding="utf-8",
     )
 
@@ -219,10 +300,13 @@ def main() -> int:
     http = HttpClient(RateLimitConfig())
     if not args.skip_combos and not args.only:
         print("phase 1: stat combos")
-        players, teams = probe_combos(http)
+        groups = stat_groups(http)
+        print(f"  stat groups: {groups}")
+        players, teams = probe_combos(http, groups)
+        people = probe_people_combos(http, groups)
         if not args.check:
-            write_combos(players, teams)
-        print(f"  {len(players)} player combos, {len(teams)} team combos")
+            write_combos(players, teams, people)
+        print(f"  {len(players)} player, {len(teams)} team, {len(people)} person combos")
     # endpoints are built from stat_combos.py, so import them only after phase 1
     import baseballpy.sources.mlb_api.endpoints as endpoints_mod
     import baseballpy.sources.mlb_api.stat_combos as combos_mod
@@ -231,6 +315,12 @@ def main() -> int:
     importlib.reload(endpoints_mod)
     from baseballpy.sources.mlb_api.endpoints import ENDPOINTS, Context, requests_for
 
+    EXTRA_CTX = {
+        "person_ids": tuple(p for p, _ in SAMPLE_PEOPLE),
+        "award_ids": SAMPLE_AWARDS,
+        "updated_since": SAMPLE_SINCE,
+        "query": "Judge",
+    }
     leaders = [t["displayName"] for t in get_json(http, "v1/leagueLeaderTypes", {}) or []]
     games = sample_games(http)
     ctxs = [
@@ -240,6 +330,7 @@ def main() -> int:
             team_ids=SAMPLE_TEAMS if season == SAMPLE_SEASONS[0] else (),
             game_pks=games,
             leader_categories=leaders,
+            **EXTRA_CTX,
         )
         for season in SAMPLE_SEASONS
     ]
@@ -249,6 +340,7 @@ def main() -> int:
         team_ids=SAMPLE_TEAMS,
         game_pks=games,
         leader_categories=leaders,
+        **EXTRA_CTX,
     )
     all_teams = tuple(
         t["id"]
@@ -261,6 +353,7 @@ def main() -> int:
             team_ids=all_teams,
             game_pks=games,
             leader_categories=leaders,
+            **EXTRA_CTX,
         )
     )
     tables: dict[str, list[tuple[str, str, str]]] = {}
@@ -273,7 +366,10 @@ def main() -> int:
             probe[ep.name] = {"status": "unsupported", "reason": ep.unsupported}
             continue
         started = time.perf_counter()
-        result = profile(http, ep, ctxs if ep.scope != "teams_season" else [ctxs[-1]], requests_for)
+        use = ctxs if ep.scope != "teams_season" else [ctxs[-1]]
+        for year in EXTRA_SEASONS.get(ep.name, ()):
+            use = [*use, Context(season=year, sport_ids=(1,), **EXTRA_CTX)]
+        result = profile(http, ep, use, requests_for)
         records = result["records"]
         status = "ok" if records else "empty"
         key_ok = None

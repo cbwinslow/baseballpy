@@ -1,0 +1,44 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "outsAboveAverage"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "attempts": 258,
+      "totalOutsAboveAverage": 7,
+      "totalOutsAboveAverageUnrounded": 6.9135,
+      "totalOutsAboveAverageBack": 4,
+      "totalOutsAboveAverageBackUnrounded": 3.8132,
+      "outsAboveAverageBackStraight": 1,
+      "outsAboveAverageBackStraightUnrounded": 1.1307,
+      "outsAboveAverageBackLeft": 2,
+      "outsAboveAverageBackLeftUnrounded": 2.1944,
+      "outsAboveAverageBackRight": 2,
+      "outsAboveAverageBackRightUnrounded": 1.6187,
+      "totalOutsAboveAverageIn": 3,
+      "totalOutsAboveAverageInUnrounded": 3.0748,
+      "outsAboveAverageInStraight": 1,
+      "outsAboveAverageInStraightUnrounded": 0.814,
+      "outsAboveAverageInLeft": 1,
+      "outsAboveAverageInLeftUnrounded": 1.0676,
+      "outsAboveAverageInRight": 1,
+      "outsAboveAverageInRightUnrounded": 1.1932,
+      "fieldingRunsPrevented": 6,
+      "fieldingRunsPreventedUnrounded": 6.2221
+     },
+     "player": {
+      "id": 592450,
+      "fullName": "Aaron Judge",
+      "link": "/api/v1/people/592450"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

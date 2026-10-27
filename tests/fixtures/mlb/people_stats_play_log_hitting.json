@@ -1,0 +1,271 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "playLog"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "play": {
+       "details": {
+        "call": {
+         "code": "X",
+         "description": "Hit Into Play - Out(s)"
+        },
+        "description": "Shohei Ohtani grounds into a force out, shortstop Ha-Seong Kim to second baseman Xander Bogaerts.   Mookie Betts out at 2nd.    Shohei Ohtani to 1st.  ",
+        "event": "fielders_choice",
+        "eventType": "fielders_choice",
+        "isInPlay": true,
+        "isStrike": false,
+        "isBall": false,
+        "isBaseHit": false,
+        "isAtBat": true,
+        "isPlateAppearance": true,
+        "type": {
+         "code": "CH",
+         "description": "Changeup"
+        },
+        "batSide": {
+         "code": "L",
+         "description": "Left"
+        },
+        "pitchHand": {
+         "code": "R",
+         "description": "Right"
+        }
+       },
+       "count": {
+        "balls": 2,
+        "strikes": 1,
+        "outs": 0,
+        "inning": 1,
+        "isTopInning": true,
+        "runnerOn1b": true,
+        "runnerOn2b": false,
+        "runnerOn3b": false
+       },
+       "playId": "0a84f12e-bc66-4dfc-b6c6-2a7124ee1306",
+       "pitchNumber": 4,
+       "atBatNumber": 2,
+       "isPitch": true
+      }
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "opponent": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-03-20",
+     "gameType": "R",
+     "isHome": false,
+     "pitcher": {
+      "id": 506433,
+      "fullName": "Yu Darvish",
+      "link": "/api/v1/people/506433"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "game": {
+      "gamePk": 745444,
+      "link": "/api/v1.1/game/745444/feed/live",
+      "content": {
+       "link": "/api/v1/game/745444/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "play": {
+       "details": {
+        "call": {
+         "code": "D",
+         "description": "Hit Into Play - No Out(s)"
+        },
+        "description": "Shohei Ohtani singles on a sharp line drive to right fielder Fernando Tatis Jr. ",
+        "event": "single",
+        "eventType": "single",
+        "isInPlay": true,
+        "isStrike": false,
+        "isBall": false,
+        "isBaseHit": true,
+        "isAtBat": true,
+        "isPlateAppearance": true,
+        "type": {
+         "code": "SI",
+         "description": "Sinker"
+        },
+        "batSide": {
+         "code": "L",
+         "description": "Left"
+        },
+        "pitchHand": {
+         "code": "R",
+         "description": "Right"
+        }
+       },
+       "count": {
+        "balls": 2,
+        "strikes": 2,
+        "outs": 2,
+        "inning": 3,
+        "isTopInning": true,
+        "runnerOn1b": false,
+        "runnerOn2b": false,
+        "runnerOn3b": false
+       },
+       "playId": "8ed8f305-2ff7-48e4-9d16-4a2cf2ae2498",
+       "pitchNumber": 5,
+       "atBatNumber": 18,
+       "isPitch": true
+      }
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "opponent": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-03-20",
+     "gameType": "R",
+     "isHome": false,
+     "pitcher": {
+      "id": 506433,
+      "fullName": "Yu Darvish",
+      "link": "/api/v1/people/506433"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "game": {
+      "gamePk": 745444,
+      "link": "/api/v1.1/game/745444/feed/live",
+      "content": {
+       "link": "/api/v1/game/745444/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "play": {
+       "details": {
+        "call": {
+         "code": "X",
+         "description": "Hit Into Play - Out(s)"
+        },
+        "description": "Shohei Ohtani grounds into a force out, third baseman Tyler Wade to shortstop Ha-Seong Kim.   Mookie Betts out at 2nd.    Shohei Ohtani to 1st.  ",
+        "event": "fielders_choice",
+        "eventType": "fielders_choice",
+        "isInPlay": true,
+        "isStrike": false,
+        "isBall": false,
+        "isBaseHit": false,
+        "isAtBat": true,
+        "isPlateAppearance": true,
+        "type": {
+         "code": "SI",
+         "description": "Sinker"
+        },
+        "batSide": {
+         "code": "L",
+         "description": "Left"
+        },
+        "pitchHand": {
+         "code": "L",
+         "description": "Left"
+        }
+       },
+       "count": {
+        "balls": 1,
+        "strikes": 0,
+        "outs": 0,
+        "inning": 5,
+        "isTopInning": true,
+        "runnerOn1b": true,
+        "runnerOn2b": false,
+        "runnerOn3b": false
+       },
+       "playId": "9081fa8e-058e-41ac-8802-6213ca956df9",
+       "pitchNumber": 2,
+       "atBatNumber": 37,
+       "isPitch": true
+      }
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "opponent": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-03-20",
+     "gameType": "R",
+     "isHome": false,
+     "pitcher": {
+      "id": 676680,
+      "fullName": "Tom Cosgrove",
+      "link": "/api/v1/people/676680"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "game": {
+      "gamePk": 745444,
+      "link": "/api/v1.1/game/745444/feed/live",
+      "content": {
+       "link": "/api/v1/game/745444/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    }
+   ]
+  }
+ ]
+}

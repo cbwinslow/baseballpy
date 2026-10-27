@@ -156,6 +156,8 @@ class EndpointReport:
     rows: int
     cached: int
     unsupported: str | None = None
+    missing: int = 0  # requests answered 404 and recorded as empty (``tolerate_missing``)
+    raw_only: int = 0  # requests stored as raw JSON only (the probe found no records to type)
 
 
 class MlbEndpointExtractor:
@@ -177,6 +179,7 @@ class MlbEndpointExtractor:
         self.raw = RawStore(self.cache_config)
         cleanup_stale_parts(self.cache_config.raw_root / "mlb_api")
         cleanup_stale_parts(self.cache_config.processed_root / "mlb_api")
+        self.missing = 0
 
     @staticmethod
     def spec(endpoint: MlbEndpoint) -> DatasetSpec:
@@ -198,7 +201,12 @@ class MlbEndpointExtractor:
     ) -> list[tuple[str, HttpResult]]:
         """The response(s) of a request as ``(raw file name, result)``; paginated ones loop."""
         if not endpoint.paginated:
-            return [(f"{request.ident}.json", self.http.get_sync(url, params=request.params))]
+            result = self.http.get_sync(
+                url,
+                params=request.params,
+                allow=(200, 404) if endpoint.tolerate_missing else (200,),
+            )
+            return [(f"{request.ident}.json", result)]
         pages: list[tuple[str, HttpResult]] = []
         offset = 0
         while True:
@@ -252,6 +260,22 @@ class MlbEndpointExtractor:
             destination=str(part),
         ) as tracker:
             pages = self._get_pages(endpoint, request, url, allow_heavy)
+            if pages[0][1].status == 404:
+                # nothing there (e.g. an award without a recipients list): keep an empty typed part
+                self.missing += 1
+                logger.info("%s: HTTP 404 for %s; recorded as empty", endpoint.name, url)
+                empty = spec.schema.empty_table()
+                if self.cache_config.enabled:
+                    self.store.put(
+                        spec,
+                        empty,
+                        chunk_id=request.ident,
+                        season=request.season,
+                        metadata={"http_status": 404},
+                    )
+                tracker.set_cache_hit(False)
+                tracker.set_records(0)
+                return empty
             tables = [
                 self.normalizer.normalize(endpoint, result.json(), extra=request.extra)
                 for _, result in pages
@@ -273,6 +297,40 @@ class MlbEndpointExtractor:
             tracker.set_records(len(table))
             return table
 
+    def _ingest_raw_only(self, ep: MlbEndpoint, ctx: Context, refresh: bool) -> EndpointReport:
+        """Endpoints with no generated schema still keep every response as raw JSON (lossless).
+
+        The generation probe saw no records for them (e.g. ``standings_first_half`` in 2024), so
+        there is nothing to type yet; the raw files are typed later by regenerating the schemas.
+        """
+        n = stored = cached = 0
+        for request in requests_for(ep, ctx):
+            n += 1
+            name = f"{request.ident}.json"
+            path = self.raw.path_for("mlb_api", ep.name, name, request.season)
+            if path.exists() and not refresh:
+                cached += 1
+                continue
+            url = f"{MLB_BASE_URL}/{request.path}"
+            result = self.http.get_sync(
+                url,
+                params=request.params,
+                allow=(200, 404) if ep.tolerate_missing else (200,),
+            )
+            if result.status != 200:
+                continue
+            self.raw.put(
+                "mlb_api",
+                ep.name,
+                name,
+                result.content,
+                season=request.season,
+                source_ref=url,
+                etag=result.etag or "",
+            )
+            stored += 1
+        return EndpointReport(ep.name, n, 0, cached, raw_only=stored + cached)
+
     def ingest(
         self,
         endpoint: MlbEndpoint | str,
@@ -285,21 +343,16 @@ class MlbEndpointExtractor:
         if ep.unsupported is not None:
             return EndpointReport(ep.name, 0, 0, 0, unsupported=ep.unsupported)
         if ep.name not in MLB_SCHEMAS:
-            return EndpointReport(
-                ep.name,
-                0,
-                0,
-                0,
-                unsupported="no schema: the generation probe returned no records (docs/mlb_probe.json)",
-            )
+            return self._ingest_raw_only(ep, ctx, refresh)
         rows = cached = n = 0
+        self.missing = 0
         for request in requests_for(ep, ctx):
             n += 1
             was_cached = self._is_cached(ep, request, refresh)
             table = self.fetch_request(ep, request, refresh, allow_heavy)
             rows += table.num_rows
             cached += int(was_cached)
-        return EndpointReport(ep.name, n, rows, cached)
+        return EndpointReport(ep.name, n, rows, cached, missing=self.missing)
 
 
 def read_endpoint(

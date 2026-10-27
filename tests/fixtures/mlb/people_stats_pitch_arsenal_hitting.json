@@ -1,0 +1,49 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "pitchArsenal"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "percentage": 0.2850599,
+      "count": 809,
+      "totalPitches": 2838,
+      "averageSpeed": 94.92089512360943,
+      "type": {
+       "code": "FF",
+       "description": "Four-seam FB"
+      }
+     }
+    },
+    {
+     "stat": {
+      "percentage": 0.07152925,
+      "count": 203,
+      "totalPitches": 2838,
+      "averageSpeed": 81.87414061083742,
+      "type": {
+       "code": "ST",
+       "description": "Sweeper"
+      }
+     }
+    },
+    {
+     "stat": {
+      "percentage": 0.0024665256,
+      "count": 7,
+      "totalPitches": 2838,
+      "averageSpeed": 81.8865352857143,
+      "type": {
+       "code": "SV",
+       "description": "Slurve"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

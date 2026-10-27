@@ -50,36 +50,13 @@ Returns official contest schedules, doubleheaders, game status lifecycles, and v
 ---
 
 ## 2. Real-Time Live Gameday Feed (`/v1.1/game/{game_pk}/feed/live`)
-Provides the complete live event stream, continuous pitch trajectories, play descriptions, strike zone dimensions, and in-game substitutions.
+Implemented in `sources/mlb_api/stream.py` (`GamedayLiveStreamer`, verified 2026-10-27 against recorded real feeds of game 745000; no game was live to stream).
 
-### Live Event Schema (`mlb_live_plays`)
-| Column Name | PyArrow Physical Type | Nullable | Description |
-| :--- | :--- | :---: | :--- |
-| `game_pk` | `int32()` | No | Game identifier |
-| `at_bat_index` | `int16()` | No | Plate appearance sequential index (0-based) |
-| `event_index` | `int16()` | No | Play event index within plate appearance |
-| `is_pitch` | `bool_()` | No | True if event is a pitch, False if pickoff/action |
-| `pitch_type` | `string()` | Yes | Pitch classification code (FF, SL, CH, etc.) |
-| `start_speed` | `float32()` | Yes | Pitch velocity at release (MPH) |
-| `end_speed` | `float32()` | Yes | Pitch velocity crossing front of plate (MPH) |
-| `sz_top` | `float32()` | Yes | Batter strike zone top coordinate in feet |
-| `sz_bottom` | `float32()` | Yes | Batter strike zone bottom coordinate in feet |
-| `px` | `float32()` | Yes | Horizontal pitch location crossing plate (ft) |
-| `pz` | `float32()` | Yes | Vertical pitch location crossing plate (ft) |
-| `x` | `float32()` | Yes | Horizontal hit/pitch coordinate in video space |
-| `y` | `float32()` | Yes | Vertical hit/pitch coordinate in video space |
-| `description` | `string()` | No | Play / pitch description |
-| `call_code` | `string()` | Yes | Pitch call code (`B`, `S`, `X`, etc.) |
-| `event` | `string()` | Yes | Outcome event (`single`, `strikeout`, etc.) |
-| `event_type` | `string()` | Yes | Event classification |
-| `batter_id` | `int32()` | No | Batter MLBAM ID |
-| `pitcher_id` | `int32()` | No | Pitcher MLBAM ID |
-| `inning` | `int8()` | No | Inning number |
-| `is_top_inning` | `bool_()` | No | True if top of inning, False if bottom |
-| `outs` | `int8()` | No | Outs prior to play |
-| `balls` | `int8()` | No | Balls count |
-| `strikes` | `int8()` | No | Strikes count |
-| `timestamp` | `timestamp("us", tz="UTC")` | Yes | Microsecond UTC event timestamp |
+- **Polling:** `GET .../feed/live` once for the baseline, then `GET .../feed/live/timestamps` (list of change codes such as `20240623_183855`) and `GET .../feed/live/diffPatch?startTimecode=<last>&endTimecode=<newest>`, an RFC 6902 patch list (`replace/add/remove/copy/move/test`) that `apply_patch` applies to a local copy of the feed. Real patches of 2-30 timestamps reproduce the full feed exactly. **Live finding:** for wide windows (about 10+ timestamps) the server answers with the *complete feed document* instead of a patch list; the streamer accepts that. If `timestamps`/`diffPatch` are unavailable or the patched copy does not reach the announced timestamp, the streamer falls back to the full feed (ETag / `metaData.timeStamp` comparison).
+- **Events (`LiveEvent`, msgspec, frozen):** key `(game_pk, at_bat_index, event_index)`; `event_kind` is `pitch`, `pickoff`, `stolen_base`, `substitution`, `action`, `play_result` (once per completed plate appearance, `event_index = -1`) or `game_status` (`at_bat_index = -1`, `event_index` = status sequence); pitch fields (speed, plate location, zone, spin, breaks, plate time, extension), hit fields (launch speed/angle, distance, trajectory, hardness), count, batter/pitcher ids, `ts_utc` and `received_utc` in microseconds. `to_arrow(events)` maps them onto the strict `game_feed_play_events` schema through the same flattener as historical ingestion, so live and historical rows share one table. `stream_live_events(game_pk)` yields `LiveEvent`s; `stream_events(game_pk)` (the `StreamExtractorProtocol` method) yields the same as dicts.
+- **Lifecycle:** waiting states (`Preview`, `Warmup`, ...) poll until `max_inactivity_minutes`; `Delayed` backs off to 30 s; `Suspended`, `Postponed`, `Cancelled`, `Final`, `Game Over` emit a `game_status` event and end the stream. A watermark `{at_bat, event, results_through, status, status_seq, timestamp}` is written to `cache/stream/<game_pk>.json` after each poll, so a later stream of the same game (e.g. a resumed suspended game) emits only new events (`resume=False` replays everything).
+- **Errors:** network failures are retried by `HttpClient` and then propagate (audit status `FAILURE`); undecodable payloads are quarantined and polling continues; a patch that cannot be applied logs a warning and uses the full feed. Half-inning ends are not emitted as events (derivable from `about.halfInning`).
+- **Replay check:** 24 real patches of game 745000 through the streamer: 1 full fetch, 40 events equal to the 40 events of the full feed, no duplicates.
 
 ---
 
@@ -203,7 +180,8 @@ typed Parquet part per request.
 - **Stats:** `stats_<statType>_<group>` (`/v1/stats`, league-wide, paginated 1000 rows) and `team_stats_<statType>_<group>` exist for every statType x group (hitting, pitching, fielding, catching, running) that returned data for 2024; the list is `stat_combos.py`.
 - **API:** `get_endpoint(name, season)`, `MlbApiSource.ingest_reference()`, `ingest_season(season, include_games=False, max_games=None)`.
 - **Standings sentinels:** in the hand-written `standings` dataset `gamesBack`/`wildCardGamesBack` `-` is 0 games and `eliminationNumber` `E` is 0 (`-` is NULL); they used to be quarantined on every run.
-- **Not covered here:** the live streamer rewrite (diffPatch/timestamps), people-level stats (`/v1/people/{id}/stats`), award recipients and the draft/transactions fan-out beyond the hand-written datasets; `stats` combos that need a player id (e.g. `playLog`, `sprayChart`) return nothing league-wide.
+- **People and awards:** `people_stats_<statType>_<group>` (`/v1/people/{id}/stats`, one request per person, 81 combinations that returned data for the sample players; opt-in through `ingest_people_stats` because it is thousands of requests), `award_recipients` (`/v1/awards/{id}/recipients`, one request per award id of `ref_awards`; several recipients per award-season are normal), `people_changes`/`game_changes` (`updatedSince=`, append-only incremental logs) and `people_search` (`names=`). Scopes `since` and `query` datasets are unpartitioned.
+- **Not covered here:** boxscore players (a dict keyed by player id, not a list, so the record walker does not apply); stat combinations that exist only for specific player ids are limited to the sampled players' results.
 
 | Dataset family | Datasets | Status (probe 2026-10-27) |
 |---|---|---|
@@ -2861,7 +2839,7 @@ League-wide fielding stats, type careerAdvanced (player pool ALL).
 - **View:** `mlb_stats_career_advanced_fielding`
 - **Processed path:** `processed/mlb_api/stats_career_advanced_fielding/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `player_id`, `team_id`, `sport_id`, `league_id`, `position_abbreviation`
+- **Key:** `player_id`, `team_id`, `sport_id`, `position_abbreviation`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -3171,7 +3149,7 @@ League-wide fielding stats, type career (player pool ALL).
 - **View:** `mlb_stats_career_fielding`
 - **Processed path:** `processed/mlb_api/stats_career_fielding/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `player_id`, `team_id`, `sport_id`, `league_id`, `position_abbreviation`
+- **Key:** `player_id`, `team_id`, `sport_id`, `position_abbreviation`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -6139,7 +6117,7 @@ Team fielding stats, type atGameStart.
 - **View:** `mlb_team_stats_at_game_start_fielding`
 - **Processed path:** `processed/mlb_api/team_stats_at_game_start_fielding/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`, `game_game_pk`
+- **Key:** `team_id`, `season`, `date`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -6261,7 +6239,7 @@ Team pitching stats, type atGameStart.
 - **View:** `mlb_team_stats_at_game_start_pitching`
 - **Processed path:** `processed/mlb_api/team_stats_at_game_start_pitching/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`, `game_game_pk`
+- **Key:** `team_id`, `season`, `date`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -7597,7 +7575,7 @@ Team fielding stats, type gameLog.
 - **View:** `mlb_team_stats_game_log_fielding`
 - **Processed path:** `processed/mlb_api/team_stats_game_log_fielding/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`, `game_game_pk`
+- **Key:** `team_id`, `season`, `date`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -7719,7 +7697,7 @@ Team pitching stats, type gameLog.
 - **View:** `mlb_team_stats_game_log_pitching`
 - **Processed path:** `processed/mlb_api/team_stats_game_log_pitching/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`, `game_game_pk`
+- **Key:** `team_id`, `season`, `date`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -9698,3 +9676,8691 @@ Every plate appearance of a final game from the live feed (result, about, count,
 | `_extras` | string | yes | — |  |
 
 <!-- END GENERATED:mlb_api.game_feed_plays -->
+
+<!-- BEGIN GENERATED:mlb_api.award_recipients -->
+### Dataset: award_recipients
+
+Recipients of every award for a season (one request per award id; several rows per award-season are normal).
+
+- **View:** `mlb_award_recipients`
+- **Processed path:** `processed/mlb_api/award_recipients/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `id`, `season`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `request_award_id` | string | yes | — |  |
+| `id` | string | yes | — |  |
+| `name` | string | yes | — |  |
+| `date` | date32[day] | yes | — |  |
+| `season` | string | yes | — |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `player_primary_position_code` | string | yes | `player.primaryPosition.code` |  |
+| `player_primary_position_name` | string | yes | `player.primaryPosition.name` |  |
+| `player_primary_position_type` | string | yes | `player.primaryPosition.type` |  |
+| `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` |  |
+| `player_name_first_last` | string | yes | `player.nameFirstLast` |  |
+| `votes` | int32 | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.award_recipients -->
+
+<!-- BEGIN GENERATED:mlb_api.game_changes -->
+### Dataset: game_changes
+
+Games changed since a timestamp (incremental sync log; append-only).
+
+- **View:** `mlb_game_changes`
+- **Processed path:** `processed/mlb_api/game_changes/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `game_pk`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `dates_date` | date32[day] | yes | `dates.date` |  |
+| `dates_total_items` | int32 | yes | `dates.totalItems` |  |
+| `dates_total_events` | int32 | yes | `dates.totalEvents` |  |
+| `dates_total_games` | int32 | yes | `dates.totalGames` |  |
+| `dates_total_games_in_progress` | int32 | yes | `dates.totalGamesInProgress` |  |
+| `dates_events` | string | yes | `dates.events` |  |
+| `game_pk` | int32 | yes | `gamePk` |  |
+| `game_guid` | string | yes | `gameGuid` |  |
+| `link` | string | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `season` | string | yes | — |  |
+| `game_date` | timestamp[us, tz=UTC] | yes | `gameDate` |  |
+| `official_date` | date32[day] | yes | `officialDate` |  |
+| `status_abstract_game_state` | string | yes | `status.abstractGameState` |  |
+| `status_coded_game_state` | string | yes | `status.codedGameState` |  |
+| `status_detailed_state` | string | yes | `status.detailedState` |  |
+| `status_status_code` | string | yes | `status.statusCode` |  |
+| `status_start_time_tbd` | bool | yes | `status.startTimeTBD` |  |
+| `status_abstract_game_code` | string | yes | `status.abstractGameCode` |  |
+| `teams_away_team_id` | int32 | yes | `teams.away.team.id` |  |
+| `teams_away_team_name` | string | yes | `teams.away.team.name` |  |
+| `teams_away_team_link` | string | yes | `teams.away.team.link` |  |
+| `teams_away_league_record_wins` | int32 | yes | `teams.away.leagueRecord.wins` |  |
+| `teams_away_league_record_losses` | int32 | yes | `teams.away.leagueRecord.losses` |  |
+| `teams_away_league_record_ties` | int32 | yes | `teams.away.leagueRecord.ties` |  |
+| `teams_away_league_record_pct` | string | yes | `teams.away.leagueRecord.pct` |  |
+| `teams_away_score` | int32 | yes | `teams.away.score` |  |
+| `teams_away_is_winner` | bool | yes | `teams.away.isWinner` |  |
+| `teams_away_split_squad` | bool | yes | `teams.away.splitSquad` |  |
+| `teams_away_series_number` | int32 | yes | `teams.away.seriesNumber` |  |
+| `teams_home_team_id` | int32 | yes | `teams.home.team.id` |  |
+| `teams_home_team_name` | string | yes | `teams.home.team.name` |  |
+| `teams_home_team_link` | string | yes | `teams.home.team.link` |  |
+| `teams_home_league_record_wins` | int32 | yes | `teams.home.leagueRecord.wins` |  |
+| `teams_home_league_record_losses` | int32 | yes | `teams.home.leagueRecord.losses` |  |
+| `teams_home_league_record_ties` | int32 | yes | `teams.home.leagueRecord.ties` |  |
+| `teams_home_league_record_pct` | string | yes | `teams.home.leagueRecord.pct` |  |
+| `teams_home_score` | int32 | yes | `teams.home.score` |  |
+| `teams_home_is_winner` | bool | yes | `teams.home.isWinner` |  |
+| `teams_home_split_squad` | bool | yes | `teams.home.splitSquad` |  |
+| `teams_home_series_number` | int32 | yes | `teams.home.seriesNumber` |  |
+| `venue_id` | int32 | yes | `venue.id` |  |
+| `venue_name` | string | yes | `venue.name` |  |
+| `venue_link` | string | yes | `venue.link` |  |
+| `content_link` | string | yes | `content.link` |  |
+| `is_tie` | bool | yes | `isTie` |  |
+| `game_number` | int32 | yes | `gameNumber` |  |
+| `public_facing` | bool | yes | `publicFacing` |  |
+| `double_header` | string | yes | `doubleHeader` |  |
+| `gameday_type` | string | yes | `gamedayType` |  |
+| `tiebreaker` | string | yes | — |  |
+| `calendar_event_id` | string | yes | `calendarEventID` |  |
+| `season_display` | string | yes | `seasonDisplay` |  |
+| `day_night` | string | yes | `dayNight` |  |
+| `scheduled_innings` | int32 | yes | `scheduledInnings` |  |
+| `reverse_home_away_status` | bool | yes | `reverseHomeAwayStatus` |  |
+| `inning_break_length` | int32 | yes | `inningBreakLength` |  |
+| `games_in_series` | int32 | yes | `gamesInSeries` |  |
+| `series_game_number` | int32 | yes | `seriesGameNumber` |  |
+| `series_description` | string | yes | `seriesDescription` |  |
+| `record_source` | string | yes | `recordSource` |  |
+| `if_necessary` | string | yes | `ifNecessary` |  |
+| `if_necessary_description` | string | yes | `ifNecessaryDescription` |  |
+| `rescheduled_from` | timestamp[us, tz=UTC] | yes | `rescheduledFrom` |  |
+| `rescheduled_from_date` | date32[day] | yes | `rescheduledFromDate` |  |
+| `description` | string | yes | — |  |
+| `status_reason` | string | yes | `status.reason` |  |
+| `resumed_from` | timestamp[us, tz=UTC] | yes | `resumedFrom` |  |
+| `resumed_from_date` | date32[day] | yes | `resumedFromDate` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.game_changes -->
+
+<!-- BEGIN GENERATED:mlb_api.people_changes -->
+### Dataset: people_changes
+
+People changed since a timestamp (incremental sync log; append-only).
+
+- **View:** `mlb_people_changes`
+- **Processed path:** `processed/mlb_api/people_changes/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — |  |
+| `full_name` | string | yes | `fullName` |  |
+| `link` | string | yes | — |  |
+| `first_name` | string | yes | `firstName` |  |
+| `last_name` | string | yes | `lastName` |  |
+| `birth_date` | date32[day] | yes | `birthDate` |  |
+| `current_age` | int32 | yes | `currentAge` |  |
+| `birth_city` | string | yes | `birthCity` |  |
+| `birth_state_province` | string | yes | `birthStateProvince` |  |
+| `birth_country` | string | yes | `birthCountry` |  |
+| `height` | string | yes | — |  |
+| `weight` | int32 | yes | — |  |
+| `active` | bool | yes | — |  |
+| `primary_position_code` | string | yes | `primaryPosition.code` |  |
+| `primary_position_name` | string | yes | `primaryPosition.name` |  |
+| `primary_position_type` | string | yes | `primaryPosition.type` |  |
+| `primary_position_abbreviation` | string | yes | `primaryPosition.abbreviation` |  |
+| `use_name` | string | yes | `useName` |  |
+| `use_last_name` | string | yes | `useLastName` |  |
+| `boxscore_name` | string | yes | `boxscoreName` |  |
+| `gender` | string | yes | — |  |
+| `is_player` | bool | yes | `isPlayer` |  |
+| `is_verified` | bool | yes | `isVerified` |  |
+| `bat_side_code` | string | yes | `batSide.code` |  |
+| `bat_side_description` | string | yes | `batSide.description` |  |
+| `pitch_hand_code` | string | yes | `pitchHand.code` |  |
+| `pitch_hand_description` | string | yes | `pitchHand.description` |  |
+| `name_first_last` | string | yes | `nameFirstLast` |  |
+| `name_slug` | string | yes | `nameSlug` |  |
+| `first_last_name` | string | yes | `firstLastName` |  |
+| `last_first_name` | string | yes | `lastFirstName` |  |
+| `last_init_name` | string | yes | `lastInitName` |  |
+| `init_last_name` | string | yes | `initLastName` |  |
+| `full_fml_name` | string | yes | `fullFMLName` |  |
+| `full_lfm_name` | string | yes | `fullLFMName` |  |
+| `strike_zone_top` | double | yes | `strikeZoneTop` |  |
+| `strike_zone_bottom` | double | yes | `strikeZoneBottom` |  |
+| `name_title` | string | yes | `nameTitle` |  |
+| `name_suffix` | string | yes | `nameSuffix` |  |
+| `middle_name` | string | yes | `middleName` |  |
+| `draft_year` | int32 | yes | `draftYear` |  |
+| `name_matrilineal` | string | yes | `nameMatrilineal` |  |
+| `primary_number` | string | yes | `primaryNumber` |  |
+| `nick_name` | string | yes | `nickName` |  |
+| `death_date` | date32[day] | yes | `deathDate` |  |
+| `last_played_date` | date32[day] | yes | `lastPlayedDate` |  |
+| `mlb_debut_date` | date32[day] | yes | `mlbDebutDate` |  |
+| `pronunciation` | string | yes | — |  |
+| `death_city` | string | yes | `deathCity` |  |
+| `death_state_province` | string | yes | `deathStateProvince` |  |
+| `death_country` | string | yes | `deathCountry` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_changes -->
+
+<!-- BEGIN GENERATED:mlb_api.people_search -->
+### Dataset: people_search
+
+People matching a name query (on demand).
+
+- **View:** `mlb_people_search`
+- **Processed path:** `processed/mlb_api/people_search/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — |  |
+| `full_name` | string | yes | `fullName` |  |
+| `link` | string | yes | — |  |
+| `first_name` | string | yes | `firstName` |  |
+| `last_name` | string | yes | `lastName` |  |
+| `primary_number` | string | yes | `primaryNumber` |  |
+| `birth_date` | date32[day] | yes | `birthDate` |  |
+| `current_age` | int32 | yes | `currentAge` |  |
+| `birth_city` | string | yes | `birthCity` |  |
+| `birth_state_province` | string | yes | `birthStateProvince` |  |
+| `birth_country` | string | yes | `birthCountry` |  |
+| `height` | string | yes | — |  |
+| `weight` | int32 | yes | — |  |
+| `active` | bool | yes | — |  |
+| `primary_position_code` | string | yes | `primaryPosition.code` |  |
+| `primary_position_name` | string | yes | `primaryPosition.name` |  |
+| `primary_position_type` | string | yes | `primaryPosition.type` |  |
+| `primary_position_abbreviation` | string | yes | `primaryPosition.abbreviation` |  |
+| `use_name` | string | yes | `useName` |  |
+| `use_last_name` | string | yes | `useLastName` |  |
+| `middle_name` | string | yes | `middleName` |  |
+| `boxscore_name` | string | yes | `boxscoreName` |  |
+| `nick_name` | string | yes | `nickName` |  |
+| `gender` | string | yes | — |  |
+| `is_player` | bool | yes | `isPlayer` |  |
+| `is_verified` | bool | yes | `isVerified` |  |
+| `draft_year` | int32 | yes | `draftYear` |  |
+| `mlb_debut_date` | date32[day] | yes | `mlbDebutDate` |  |
+| `bat_side_code` | string | yes | `batSide.code` |  |
+| `bat_side_description` | string | yes | `batSide.description` |  |
+| `pitch_hand_code` | string | yes | `pitchHand.code` |  |
+| `pitch_hand_description` | string | yes | `pitchHand.description` |  |
+| `name_first_last` | string | yes | `nameFirstLast` |  |
+| `name_slug` | string | yes | `nameSlug` |  |
+| `first_last_name` | string | yes | `firstLastName` |  |
+| `last_first_name` | string | yes | `lastFirstName` |  |
+| `last_init_name` | string | yes | `lastInitName` |  |
+| `init_last_name` | string | yes | `initLastName` |  |
+| `full_fml_name` | string | yes | `fullFMLName` |  |
+| `full_lfm_name` | string | yes | `fullLFMName` |  |
+| `strike_zone_top` | double | yes | `strikeZoneTop` |  |
+| `strike_zone_bottom` | double | yes | `strikeZoneBottom` |  |
+| `death_date` | date32[day] | yes | `deathDate` |  |
+| `death_city` | string | yes | `deathCity` |  |
+| `death_state_province` | string | yes | `deathStateProvince` |  |
+| `death_country` | string | yes | `deathCountry` |  |
+| `last_played_date` | date32[day] | yes | `lastPlayedDate` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_search -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_available_stats_catching -->
+### Dataset: people_stats_available_stats_catching
+
+Per-player catching stats, type availableStats (one request per person).
+
+- **View:** `mlb_people_stats_available_stats_catching`
+- **Processed path:** `processed/mlb_api/people_stats_available_stats_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `type` | string | yes | — |  |
+| `group` | string | yes | — |  |
+| `groups` | string | yes | — |  |
+| `teams` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_available_stats_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_available_stats_fielding -->
+### Dataset: people_stats_available_stats_fielding
+
+Per-player fielding stats, type availableStats (one request per person).
+
+- **View:** `mlb_people_stats_available_stats_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_available_stats_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `type` | string | yes | — |  |
+| `group` | string | yes | — |  |
+| `groups` | string | yes | — |  |
+| `teams` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_available_stats_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_available_stats_hitting -->
+### Dataset: people_stats_available_stats_hitting
+
+Per-player hitting stats, type availableStats (one request per person).
+
+- **View:** `mlb_people_stats_available_stats_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_available_stats_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `type` | string | yes | — |  |
+| `group` | string | yes | — |  |
+| `groups` | string | yes | — |  |
+| `teams` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_available_stats_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_available_stats_pitching -->
+### Dataset: people_stats_available_stats_pitching
+
+Per-player pitching stats, type availableStats (one request per person).
+
+- **View:** `mlb_people_stats_available_stats_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_available_stats_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `type` | string | yes | — |  |
+| `group` | string | yes | — |  |
+| `groups` | string | yes | — |  |
+| `teams` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_available_stats_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_available_stats_running -->
+### Dataset: people_stats_available_stats_running
+
+Per-player running stats, type availableStats (one request per person).
+
+- **View:** `mlb_people_stats_available_stats_running`
+- **Processed path:** `processed/mlb_api/people_stats_available_stats_running/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `type` | string | yes | — |  |
+| `group` | string | yes | — |  |
+| `groups` | string | yes | — |  |
+| `teams` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_available_stats_running -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_date_range_advanced_fielding -->
+### Dataset: people_stats_by_date_range_advanced_fielding
+
+Per-player fielding stats, type byDateRangeAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_by_date_range_advanced_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_by_date_range_advanced_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `num_teams`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `sport_code` | string | yes | `sport.code` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_date_range_advanced_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_date_range_advanced_hitting -->
+### Dataset: people_stats_by_date_range_advanced_hitting
+
+Per-player hitting stats, type byDateRangeAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_by_date_range_advanced_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_by_date_range_advanced_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `sport_code` | string | yes | `sport.code` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_date_range_advanced_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_date_range_advanced_pitching -->
+### Dataset: people_stats_by_date_range_advanced_pitching
+
+Per-player pitching stats, type byDateRangeAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_by_date_range_advanced_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_by_date_range_advanced_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_winning_percentage` | string | yes | `stat.winningPercentage` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_strikesouts_to_walks` | string | yes | `stat.strikesoutsToWalks` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_strikeouts_minus_walks_percentage` | string | yes | `stat.strikeoutsMinusWalksPercentage` |  |
+| `stat_batters_faced_per_game` | string | yes | `stat.battersFacedPerGame` |  |
+| `stat_innings_pitched_per_game` | string | yes | `stat.inningsPitchedPerGame` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `sport_code` | string | yes | `sport.code` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_date_range_advanced_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_day_of_week_fielding -->
+### Dataset: people_stats_by_day_of_week_fielding
+
+Per-player fielding stats, type byDayOfWeek (one request per person).
+
+- **View:** `mlb_people_stats_by_day_of_week_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_by_day_of_week_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `league_id`, `season`, `day_of_week`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `day_of_week` | int32 | yes | `dayOfWeek` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_day_of_week_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_day_of_week_hitting -->
+### Dataset: people_stats_by_day_of_week_hitting
+
+Per-player hitting stats, type byDayOfWeek (one request per person).
+
+- **View:** `mlb_people_stats_by_day_of_week_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_by_day_of_week_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `league_id`, `season`, `day_of_week`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `day_of_week` | int32 | yes | `dayOfWeek` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_day_of_week_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_day_of_week_pitching -->
+### Dataset: people_stats_by_day_of_week_pitching
+
+Per-player pitching stats, type byDayOfWeek (one request per person).
+
+- **View:** `mlb_people_stats_by_day_of_week_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_by_day_of_week_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `league_id`, `season`, `day_of_week`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `day_of_week` | int32 | yes | `dayOfWeek` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_day_of_week_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_month_fielding -->
+### Dataset: people_stats_by_month_fielding
+
+Per-player fielding stats, type byMonth (one request per person).
+
+- **View:** `mlb_people_stats_by_month_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_by_month_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `league_id`, `season`, `month`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `month` | int32 | yes | — |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_month_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_month_hitting -->
+### Dataset: people_stats_by_month_hitting
+
+Per-player hitting stats, type byMonth (one request per person).
+
+- **View:** `mlb_people_stats_by_month_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_by_month_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `league_id`, `season`, `month`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `month` | int32 | yes | — |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_month_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_month_pitching -->
+### Dataset: people_stats_by_month_pitching
+
+Per-player pitching stats, type byMonth (one request per person).
+
+- **View:** `mlb_people_stats_by_month_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_by_month_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `league_id`, `season`, `month`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `month` | int32 | yes | — |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_month_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_advanced_hitting -->
+### Dataset: people_stats_career_advanced_hitting
+
+Per-player hitting stats, type careerAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_career_advanced_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_career_advanced_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_reached_on_error` | int32 | yes | `stat.reachedOnError` |  |
+| `stat_walk_offs` | int32 | yes | `stat.walkOffs` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_total_swings` | int32 | yes | `stat.totalSwings` |  |
+| `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` |  |
+| `stat_balls_in_play` | int32 | yes | `stat.ballsInPlay` |  |
+| `stat_pop_outs` | int32 | yes | `stat.popOuts` |  |
+| `stat_line_outs` | int32 | yes | `stat.lineOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_fly_hits` | int32 | yes | `stat.flyHits` |  |
+| `stat_pop_hits` | int32 | yes | `stat.popHits` |  |
+| `stat_line_hits` | int32 | yes | `stat.lineHits` |  |
+| `stat_ground_hits` | int32 | yes | `stat.groundHits` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_advanced_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_advanced_pitching -->
+### Dataset: people_stats_career_advanced_pitching
+
+Per-player pitching stats, type careerAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_career_advanced_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_career_advanced_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_winning_percentage` | string | yes | `stat.winningPercentage` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` |  |
+| `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_hits_per9` | string | yes | `stat.hitsPer9` |  |
+| `stat_strikesouts_to_walks` | string | yes | `stat.strikesoutsToWalks` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_bequeathed_runners` | int32 | yes | `stat.bequeathedRunners` |  |
+| `stat_bequeathed_runners_scored` | int32 | yes | `stat.bequeathedRunnersScored` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_quality_starts` | int32 | yes | `stat.qualityStarts` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_swings` | int32 | yes | `stat.totalSwings` |  |
+| `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` |  |
+| `stat_strikeouts_minus_walks_percentage` | string | yes | `stat.strikeoutsMinusWalksPercentage` |  |
+| `stat_gidp_percentage` | string | yes | `stat.gidpPercentage` |  |
+| `stat_batters_faced_per_game` | string | yes | `stat.battersFacedPerGame` |  |
+| `stat_innings_pitched_per_game` | string | yes | `stat.inningsPitchedPerGame` |  |
+| `stat_bunts_failed` | int32 | yes | `stat.buntsFailed` |  |
+| `stat_bunts_missed_tipped` | int32 | yes | `stat.buntsMissedTipped` |  |
+| `stat_whiff_percentage` | string | yes | `stat.whiffPercentage` |  |
+| `stat_fly_ball_percentage` | string | yes | `stat.flyBallPercentage` |  |
+| `stat_balls_in_play` | int32 | yes | `stat.ballsInPlay` |  |
+| `stat_run_support` | int32 | yes | `stat.runSupport` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_pop_outs` | int32 | yes | `stat.popOuts` |  |
+| `stat_line_outs` | int32 | yes | `stat.lineOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_fly_hits` | int32 | yes | `stat.flyHits` |  |
+| `stat_pop_hits` | int32 | yes | `stat.popHits` |  |
+| `stat_line_hits` | int32 | yes | `stat.lineHits` |  |
+| `stat_ground_hits` | int32 | yes | `stat.groundHits` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_advanced_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_fielding -->
+### Dataset: people_stats_career_fielding
+
+Per-player fielding stats, type career (one request per person).
+
+- **View:** `mlb_people_stats_career_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_career_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `game_type`, `position_abbreviation`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_hitting -->
+### Dataset: people_stats_career_hitting
+
+Per-player hitting stats, type career (one request per person).
+
+- **View:** `mlb_people_stats_career_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_career_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_pitching -->
+### Dataset: people_stats_career_pitching
+
+Per-player pitching stats, type career (one request per person).
+
+- **View:** `mlb_people_stats_career_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_career_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_playoffs_fielding -->
+### Dataset: people_stats_career_playoffs_fielding
+
+Per-player fielding stats, type careerPlayoffs (one request per person).
+
+- **View:** `mlb_people_stats_career_playoffs_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_career_playoffs_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `game_type`, `position_abbreviation`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_playoffs_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_playoffs_hitting -->
+### Dataset: people_stats_career_playoffs_hitting
+
+Per-player hitting stats, type careerPlayoffs (one request per person).
+
+- **View:** `mlb_people_stats_career_playoffs_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_career_playoffs_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_playoffs_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_playoffs_pitching -->
+### Dataset: people_stats_career_playoffs_pitching
+
+Per-player pitching stats, type careerPlayoffs (one request per person).
+
+- **View:** `mlb_people_stats_career_playoffs_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_career_playoffs_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_playoffs_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_regular_season_fielding -->
+### Dataset: people_stats_career_regular_season_fielding
+
+Per-player fielding stats, type careerRegularSeason (one request per person).
+
+- **View:** `mlb_people_stats_career_regular_season_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_career_regular_season_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `game_type`, `position_abbreviation`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_regular_season_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_regular_season_hitting -->
+### Dataset: people_stats_career_regular_season_hitting
+
+Per-player hitting stats, type careerRegularSeason (one request per person).
+
+- **View:** `mlb_people_stats_career_regular_season_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_career_regular_season_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_regular_season_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_regular_season_pitching -->
+### Dataset: people_stats_career_regular_season_pitching
+
+Per-player pitching stats, type careerRegularSeason (one request per person).
+
+- **View:** `mlb_people_stats_career_regular_season_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_career_regular_season_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_regular_season_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_expected_statistics_hitting -->
+### Dataset: people_stats_expected_statistics_hitting
+
+Per-player hitting stats, type expectedStatistics (one request per person).
+
+- **View:** `mlb_people_stats_expected_statistics_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_expected_statistics_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_woba` | string | yes | `stat.woba` |  |
+| `stat_woba_con` | string | yes | `stat.wobaCon` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `player_first_name` | string | yes | `player.firstName` |  |
+| `player_last_name` | string | yes | `player.lastName` |  |
+| `player_primary_position_code` | string | yes | `player.primaryPosition.code` |  |
+| `player_primary_position_name` | string | yes | `player.primaryPosition.name` |  |
+| `player_primary_position_type` | string | yes | `player.primaryPosition.type` |  |
+| `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_name` | string | yes | `sport.name` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_expected_statistics_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_expected_statistics_pitching -->
+### Dataset: people_stats_expected_statistics_pitching
+
+Per-player pitching stats, type expectedStatistics (one request per person).
+
+- **View:** `mlb_people_stats_expected_statistics_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_expected_statistics_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_woba` | string | yes | `stat.woba` |  |
+| `stat_woba_con` | string | yes | `stat.wobaCon` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `player_first_name` | string | yes | `player.firstName` |  |
+| `player_last_name` | string | yes | `player.lastName` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_name` | string | yes | `sport.name` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_expected_statistics_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_game_log_fielding -->
+### Dataset: people_stats_game_log_fielding
+
+Per-player fielding stats, type gameLog (one request per person).
+
+- **View:** `mlb_people_stats_game_log_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_game_log_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `game_type`, `date`, `opponent_id`, `game_game_pk`, `position_abbreviation`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `opponent_id` | int32 | yes | `opponent.id` |  |
+| `opponent_name` | string | yes | `opponent.name` |  |
+| `opponent_link` | string | yes | `opponent.link` |  |
+| `date` | date32[day] | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `is_win` | bool | yes | `isWin` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `game_game_pk` | int32 | yes | `game.gamePk` |  |
+| `game_link` | string | yes | `game.link` |  |
+| `game_content_link` | string | yes | `game.content.link` |  |
+| `game_game_number` | int32 | yes | `game.gameNumber` |  |
+| `game_day_night` | string | yes | `game.dayNight` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_game_log_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_game_log_hitting -->
+### Dataset: people_stats_game_log_hitting
+
+Per-player hitting stats, type gameLog (one request per person).
+
+- **View:** `mlb_people_stats_game_log_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_game_log_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `game_type`, `date`, `opponent_id`, `game_game_pk`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_summary` | string | yes | `stat.summary` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `opponent_id` | int32 | yes | `opponent.id` |  |
+| `opponent_name` | string | yes | `opponent.name` |  |
+| `opponent_link` | string | yes | `opponent.link` |  |
+| `date` | date32[day] | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `is_win` | bool | yes | `isWin` |  |
+| `positions_played` | string | yes | `positionsPlayed` |  |
+| `game_game_pk` | int32 | yes | `game.gamePk` |  |
+| `game_link` | string | yes | `game.link` |  |
+| `game_content_link` | string | yes | `game.content.link` |  |
+| `game_game_number` | int32 | yes | `game.gameNumber` |  |
+| `game_day_night` | string | yes | `game.dayNight` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_game_log_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_game_log_pitching -->
+### Dataset: people_stats_game_log_pitching
+
+Per-player pitching stats, type gameLog (one request per person).
+
+- **View:** `mlb_people_stats_game_log_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_game_log_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `game_type`, `date`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_summary` | string | yes | `stat.summary` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `opponent_id` | int32 | yes | `opponent.id` |  |
+| `opponent_name` | string | yes | `opponent.name` |  |
+| `opponent_link` | string | yes | `opponent.link` |  |
+| `date` | date32[day] | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `is_win` | bool | yes | `isWin` |  |
+| `game_game_pk` | int32 | yes | `game.gamePk` |  |
+| `game_link` | string | yes | `game.link` |  |
+| `game_content_link` | string | yes | `game.content.link` |  |
+| `game_game_number` | int32 | yes | `game.gameNumber` |  |
+| `game_day_night` | string | yes | `game.dayNight` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_game_log_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_home_and_away_fielding -->
+### Dataset: people_stats_home_and_away_fielding
+
+Per-player fielding stats, type homeAndAway (one request per person).
+
+- **View:** `mlb_people_stats_home_and_away_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_home_and_away_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `season`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_home_and_away_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_home_and_away_hitting -->
+### Dataset: people_stats_home_and_away_hitting
+
+Per-player hitting stats, type homeAndAway (one request per person).
+
+- **View:** `mlb_people_stats_home_and_away_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_home_and_away_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `season`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_home_and_away_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_home_and_away_pitching -->
+### Dataset: people_stats_home_and_away_pitching
+
+Per-player pitching stats, type homeAndAway (one request per person).
+
+- **View:** `mlb_people_stats_home_and_away_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_home_and_away_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `season`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_home_and_away_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_hot_cold_zones_hitting -->
+### Dataset: people_stats_hot_cold_zones_hitting
+
+Per-player hitting stats, type hotColdZones (one request per person).
+
+- **View:** `mlb_people_stats_hot_cold_zones_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_hot_cold_zones_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `stat_name`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_name` | string | yes | `stat.name` |  |
+| `stat_zones` | string | yes | `stat.zones` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_hot_cold_zones_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_hot_cold_zones_pitching -->
+### Dataset: people_stats_hot_cold_zones_pitching
+
+Per-player pitching stats, type hotColdZones (one request per person).
+
+- **View:** `mlb_people_stats_hot_cold_zones_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_hot_cold_zones_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `stat_name`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_name` | string | yes | `stat.name` |  |
+| `stat_zones` | string | yes | `stat.zones` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_hot_cold_zones_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_last_x_games_fielding -->
+### Dataset: people_stats_last_x_games_fielding
+
+Per-player fielding stats, type lastXGames (one request per person).
+
+- **View:** `mlb_people_stats_last_x_games_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_last_x_games_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `num_teams`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `sport_code` | string | yes | `sport.code` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_last_x_games_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_last_x_games_hitting -->
+### Dataset: people_stats_last_x_games_hitting
+
+Per-player hitting stats, type lastXGames (one request per person).
+
+- **View:** `mlb_people_stats_last_x_games_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_last_x_games_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `sport_code` | string | yes | `sport.code` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_last_x_games_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_last_x_games_pitching -->
+### Dataset: people_stats_last_x_games_pitching
+
+Per-player pitching stats, type lastXGames (one request per person).
+
+- **View:** `mlb_people_stats_last_x_games_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_last_x_games_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `sport_code` | string | yes | `sport.code` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_last_x_games_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_opponents_faced_fielding -->
+### Dataset: people_stats_opponents_faced_fielding
+
+Per-player fielding stats, type opponentsFaced (one request per person).
+
+- **View:** `mlb_people_stats_opponents_faced_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_opponents_faced_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `game_type`, `batter_id`, `pitcher_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `group` | string | yes | — |  |
+| `pitcher_id` | int32 | yes | `pitcher.id` |  |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` |  |
+| `pitcher_link` | string | yes | `pitcher.link` |  |
+| `pitcher_first_name` | string | yes | `pitcher.firstName` |  |
+| `pitcher_last_name` | string | yes | `pitcher.lastName` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `batter_first_name` | string | yes | `batter.firstName` |  |
+| `batter_last_name` | string | yes | `batter.lastName` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_opponents_faced_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_opponents_faced_hitting -->
+### Dataset: people_stats_opponents_faced_hitting
+
+Per-player hitting stats, type opponentsFaced (one request per person).
+
+- **View:** `mlb_people_stats_opponents_faced_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_opponents_faced_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `game_type`, `pitcher_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `group` | string | yes | — |  |
+| `pitcher_id` | int32 | yes | `pitcher.id` |  |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` |  |
+| `pitcher_link` | string | yes | `pitcher.link` |  |
+| `pitcher_first_name` | string | yes | `pitcher.firstName` |  |
+| `pitcher_last_name` | string | yes | `pitcher.lastName` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `batter_first_name` | string | yes | `batter.firstName` |  |
+| `batter_last_name` | string | yes | `batter.lastName` |  |
+| `fielding_team_id` | int32 | yes | `fieldingTeam.id` |  |
+| `fielding_team_name` | string | yes | `fieldingTeam.name` |  |
+| `fielding_team_link` | string | yes | `fieldingTeam.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_opponents_faced_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_opponents_faced_pitching -->
+### Dataset: people_stats_opponents_faced_pitching
+
+Per-player pitching stats, type opponentsFaced (one request per person).
+
+- **View:** `mlb_people_stats_opponents_faced_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_opponents_faced_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `game_type`, `batter_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `group` | string | yes | — |  |
+| `pitcher_id` | int32 | yes | `pitcher.id` |  |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` |  |
+| `pitcher_link` | string | yes | `pitcher.link` |  |
+| `pitcher_first_name` | string | yes | `pitcher.firstName` |  |
+| `pitcher_last_name` | string | yes | `pitcher.lastName` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `batter_first_name` | string | yes | `batter.firstName` |  |
+| `batter_last_name` | string | yes | `batter.lastName` |  |
+| `batting_team_id` | int32 | yes | `battingTeam.id` |  |
+| `batting_team_name` | string | yes | `battingTeam.name` |  |
+| `batting_team_link` | string | yes | `battingTeam.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_opponents_faced_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_opponents_faced_running -->
+### Dataset: people_stats_opponents_faced_running
+
+Per-player running stats, type opponentsFaced (one request per person).
+
+- **View:** `mlb_people_stats_opponents_faced_running`
+- **Processed path:** `processed/mlb_api/people_stats_opponents_faced_running/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `game_type`, `pitcher_id`, `batter_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `group` | string | yes | — |  |
+| `pitcher_id` | int32 | yes | `pitcher.id` |  |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` |  |
+| `pitcher_link` | string | yes | `pitcher.link` |  |
+| `pitcher_first_name` | string | yes | `pitcher.firstName` |  |
+| `pitcher_last_name` | string | yes | `pitcher.lastName` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `batter_first_name` | string | yes | `batter.firstName` |  |
+| `batter_last_name` | string | yes | `batter.lastName` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_opponents_faced_running -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_pitch_arsenal_hitting -->
+### Dataset: people_stats_pitch_arsenal_hitting
+
+Per-player hitting stats, type pitchArsenal (one request per person).
+
+- **View:** `mlb_people_stats_pitch_arsenal_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_pitch_arsenal_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `stat_average_speed`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_percentage` | double | yes | `stat.percentage` |  |
+| `stat_count` | int32 | yes | `stat.count` |  |
+| `stat_total_pitches` | int32 | yes | `stat.totalPitches` |  |
+| `stat_average_speed` | double | yes | `stat.averageSpeed` |  |
+| `stat_type_code` | string | yes | `stat.type.code` |  |
+| `stat_type_description` | string | yes | `stat.type.description` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_pitch_arsenal_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_pitch_arsenal_pitching -->
+### Dataset: people_stats_pitch_arsenal_pitching
+
+Per-player pitching stats, type pitchArsenal (one request per person).
+
+- **View:** `mlb_people_stats_pitch_arsenal_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_pitch_arsenal_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `stat_percentage`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_percentage` | double | yes | `stat.percentage` |  |
+| `stat_count` | int32 | yes | `stat.count` |  |
+| `stat_total_pitches` | int32 | yes | `stat.totalPitches` |  |
+| `stat_average_speed` | double | yes | `stat.averageSpeed` |  |
+| `stat_type_code` | string | yes | `stat.type.code` |  |
+| `stat_type_description` | string | yes | `stat.type.description` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_pitch_arsenal_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_pitch_log_hitting -->
+### Dataset: people_stats_pitch_log_hitting
+
+Per-player hitting stats, type pitchLog (one request per person).
+
+- **View:** `mlb_people_stats_pitch_log_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_pitch_log_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_play_details_call_code` | string | yes | `stat.play.details.call.code` |  |
+| `stat_play_details_call_description` | string | yes | `stat.play.details.call.description` |  |
+| `stat_play_details_event` | string | yes | `stat.play.details.event` |  |
+| `stat_play_details_event_type` | string | yes | `stat.play.details.eventType` |  |
+| `stat_play_details_is_in_play` | bool | yes | `stat.play.details.isInPlay` |  |
+| `stat_play_details_is_strike` | bool | yes | `stat.play.details.isStrike` |  |
+| `stat_play_details_is_ball` | bool | yes | `stat.play.details.isBall` |  |
+| `stat_play_details_is_base_hit` | bool | yes | `stat.play.details.isBaseHit` |  |
+| `stat_play_details_is_at_bat` | bool | yes | `stat.play.details.isAtBat` |  |
+| `stat_play_details_is_plate_appearance` | bool | yes | `stat.play.details.isPlateAppearance` |  |
+| `stat_play_details_type_code` | string | yes | `stat.play.details.type.code` |  |
+| `stat_play_details_type_description` | string | yes | `stat.play.details.type.description` |  |
+| `stat_play_details_bat_side_code` | string | yes | `stat.play.details.batSide.code` |  |
+| `stat_play_details_bat_side_description` | string | yes | `stat.play.details.batSide.description` |  |
+| `stat_play_details_pitch_hand_code` | string | yes | `stat.play.details.pitchHand.code` |  |
+| `stat_play_details_pitch_hand_description` | string | yes | `stat.play.details.pitchHand.description` |  |
+| `stat_play_count_balls` | int32 | yes | `stat.play.count.balls` |  |
+| `stat_play_count_strikes` | int32 | yes | `stat.play.count.strikes` |  |
+| `stat_play_count_outs` | int32 | yes | `stat.play.count.outs` |  |
+| `stat_play_count_inning` | int32 | yes | `stat.play.count.inning` |  |
+| `stat_play_count_is_top_inning` | bool | yes | `stat.play.count.isTopInning` |  |
+| `stat_play_count_runner_on1b` | bool | yes | `stat.play.count.runnerOn1b` |  |
+| `stat_play_count_runner_on2b` | bool | yes | `stat.play.count.runnerOn2b` |  |
+| `stat_play_count_runner_on3b` | bool | yes | `stat.play.count.runnerOn3b` |  |
+| `stat_play_play_id` | string | yes | `stat.play.playId` |  |
+| `stat_play_pitch_number` | int32 | yes | `stat.play.pitchNumber` |  |
+| `stat_play_at_bat_number` | int32 | yes | `stat.play.atBatNumber` |  |
+| `stat_play_is_pitch` | bool | yes | `stat.play.isPitch` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `opponent_id` | int32 | yes | `opponent.id` |  |
+| `opponent_name` | string | yes | `opponent.name` |  |
+| `opponent_link` | string | yes | `opponent.link` |  |
+| `date` | date32[day] | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `pitcher_id` | int32 | yes | `pitcher.id` |  |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` |  |
+| `pitcher_link` | string | yes | `pitcher.link` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `game_game_pk` | int32 | yes | `game.gamePk` |  |
+| `game_link` | string | yes | `game.link` |  |
+| `game_content_link` | string | yes | `game.content.link` |  |
+| `game_game_number` | int32 | yes | `game.gameNumber` |  |
+| `game_day_night` | string | yes | `game.dayNight` |  |
+| `stat_play_details_description` | string | yes | `stat.play.details.description` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_pitch_log_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_pitch_log_pitching -->
+### Dataset: people_stats_pitch_log_pitching
+
+Per-player pitching stats, type pitchLog (one request per person).
+
+- **View:** `mlb_people_stats_pitch_log_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_pitch_log_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_play_details_call_code` | string | yes | `stat.play.details.call.code` |  |
+| `stat_play_details_call_description` | string | yes | `stat.play.details.call.description` |  |
+| `stat_play_details_event` | string | yes | `stat.play.details.event` |  |
+| `stat_play_details_event_type` | string | yes | `stat.play.details.eventType` |  |
+| `stat_play_details_is_in_play` | bool | yes | `stat.play.details.isInPlay` |  |
+| `stat_play_details_is_strike` | bool | yes | `stat.play.details.isStrike` |  |
+| `stat_play_details_is_ball` | bool | yes | `stat.play.details.isBall` |  |
+| `stat_play_details_is_base_hit` | bool | yes | `stat.play.details.isBaseHit` |  |
+| `stat_play_details_is_at_bat` | bool | yes | `stat.play.details.isAtBat` |  |
+| `stat_play_details_is_plate_appearance` | bool | yes | `stat.play.details.isPlateAppearance` |  |
+| `stat_play_details_type_code` | string | yes | `stat.play.details.type.code` |  |
+| `stat_play_details_type_description` | string | yes | `stat.play.details.type.description` |  |
+| `stat_play_details_bat_side_code` | string | yes | `stat.play.details.batSide.code` |  |
+| `stat_play_details_bat_side_description` | string | yes | `stat.play.details.batSide.description` |  |
+| `stat_play_details_pitch_hand_code` | string | yes | `stat.play.details.pitchHand.code` |  |
+| `stat_play_details_pitch_hand_description` | string | yes | `stat.play.details.pitchHand.description` |  |
+| `stat_play_count_balls` | int32 | yes | `stat.play.count.balls` |  |
+| `stat_play_count_strikes` | int32 | yes | `stat.play.count.strikes` |  |
+| `stat_play_count_outs` | int32 | yes | `stat.play.count.outs` |  |
+| `stat_play_count_inning` | int32 | yes | `stat.play.count.inning` |  |
+| `stat_play_count_is_top_inning` | bool | yes | `stat.play.count.isTopInning` |  |
+| `stat_play_count_runner_on1b` | bool | yes | `stat.play.count.runnerOn1b` |  |
+| `stat_play_count_runner_on2b` | bool | yes | `stat.play.count.runnerOn2b` |  |
+| `stat_play_count_runner_on3b` | bool | yes | `stat.play.count.runnerOn3b` |  |
+| `stat_play_play_id` | string | yes | `stat.play.playId` |  |
+| `stat_play_pitch_number` | int32 | yes | `stat.play.pitchNumber` |  |
+| `stat_play_at_bat_number` | int32 | yes | `stat.play.atBatNumber` |  |
+| `stat_play_is_pitch` | bool | yes | `stat.play.isPitch` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `opponent_id` | int32 | yes | `opponent.id` |  |
+| `opponent_name` | string | yes | `opponent.name` |  |
+| `opponent_link` | string | yes | `opponent.link` |  |
+| `date` | date32[day] | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `pitcher_id` | int32 | yes | `pitcher.id` |  |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` |  |
+| `pitcher_link` | string | yes | `pitcher.link` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `game_game_pk` | int32 | yes | `game.gamePk` |  |
+| `game_link` | string | yes | `game.link` |  |
+| `game_content_link` | string | yes | `game.content.link` |  |
+| `game_game_number` | int32 | yes | `game.gameNumber` |  |
+| `game_day_night` | string | yes | `game.dayNight` |  |
+| `stat_play_details_description` | string | yes | `stat.play.details.description` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_pitch_log_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_play_log_hitting -->
+### Dataset: people_stats_play_log_hitting
+
+Per-player hitting stats, type playLog (one request per person).
+
+- **View:** `mlb_people_stats_play_log_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_play_log_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_play_details_call_code` | string | yes | `stat.play.details.call.code` |  |
+| `stat_play_details_call_description` | string | yes | `stat.play.details.call.description` |  |
+| `stat_play_details_description` | string | yes | `stat.play.details.description` |  |
+| `stat_play_details_event` | string | yes | `stat.play.details.event` |  |
+| `stat_play_details_event_type` | string | yes | `stat.play.details.eventType` |  |
+| `stat_play_details_is_in_play` | bool | yes | `stat.play.details.isInPlay` |  |
+| `stat_play_details_is_strike` | bool | yes | `stat.play.details.isStrike` |  |
+| `stat_play_details_is_ball` | bool | yes | `stat.play.details.isBall` |  |
+| `stat_play_details_is_base_hit` | bool | yes | `stat.play.details.isBaseHit` |  |
+| `stat_play_details_is_at_bat` | bool | yes | `stat.play.details.isAtBat` |  |
+| `stat_play_details_is_plate_appearance` | bool | yes | `stat.play.details.isPlateAppearance` |  |
+| `stat_play_details_type_code` | string | yes | `stat.play.details.type.code` |  |
+| `stat_play_details_type_description` | string | yes | `stat.play.details.type.description` |  |
+| `stat_play_details_bat_side_code` | string | yes | `stat.play.details.batSide.code` |  |
+| `stat_play_details_bat_side_description` | string | yes | `stat.play.details.batSide.description` |  |
+| `stat_play_details_pitch_hand_code` | string | yes | `stat.play.details.pitchHand.code` |  |
+| `stat_play_details_pitch_hand_description` | string | yes | `stat.play.details.pitchHand.description` |  |
+| `stat_play_count_balls` | int32 | yes | `stat.play.count.balls` |  |
+| `stat_play_count_strikes` | int32 | yes | `stat.play.count.strikes` |  |
+| `stat_play_count_outs` | int32 | yes | `stat.play.count.outs` |  |
+| `stat_play_count_inning` | int32 | yes | `stat.play.count.inning` |  |
+| `stat_play_count_is_top_inning` | bool | yes | `stat.play.count.isTopInning` |  |
+| `stat_play_count_runner_on1b` | bool | yes | `stat.play.count.runnerOn1b` |  |
+| `stat_play_count_runner_on2b` | bool | yes | `stat.play.count.runnerOn2b` |  |
+| `stat_play_count_runner_on3b` | bool | yes | `stat.play.count.runnerOn3b` |  |
+| `stat_play_play_id` | string | yes | `stat.play.playId` |  |
+| `stat_play_pitch_number` | int32 | yes | `stat.play.pitchNumber` |  |
+| `stat_play_at_bat_number` | int32 | yes | `stat.play.atBatNumber` |  |
+| `stat_play_is_pitch` | bool | yes | `stat.play.isPitch` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `opponent_id` | int32 | yes | `opponent.id` |  |
+| `opponent_name` | string | yes | `opponent.name` |  |
+| `opponent_link` | string | yes | `opponent.link` |  |
+| `date` | date32[day] | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `pitcher_id` | int32 | yes | `pitcher.id` |  |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` |  |
+| `pitcher_link` | string | yes | `pitcher.link` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `game_game_pk` | int32 | yes | `game.gamePk` |  |
+| `game_link` | string | yes | `game.link` |  |
+| `game_content_link` | string | yes | `game.content.link` |  |
+| `game_game_number` | int32 | yes | `game.gameNumber` |  |
+| `game_day_night` | string | yes | `game.dayNight` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_play_log_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_play_log_pitching -->
+### Dataset: people_stats_play_log_pitching
+
+Per-player pitching stats, type playLog (one request per person).
+
+- **View:** `mlb_people_stats_play_log_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_play_log_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_play_details_call_code` | string | yes | `stat.play.details.call.code` |  |
+| `stat_play_details_call_description` | string | yes | `stat.play.details.call.description` |  |
+| `stat_play_details_description` | string | yes | `stat.play.details.description` |  |
+| `stat_play_details_event` | string | yes | `stat.play.details.event` |  |
+| `stat_play_details_event_type` | string | yes | `stat.play.details.eventType` |  |
+| `stat_play_details_is_in_play` | bool | yes | `stat.play.details.isInPlay` |  |
+| `stat_play_details_is_strike` | bool | yes | `stat.play.details.isStrike` |  |
+| `stat_play_details_is_ball` | bool | yes | `stat.play.details.isBall` |  |
+| `stat_play_details_is_base_hit` | bool | yes | `stat.play.details.isBaseHit` |  |
+| `stat_play_details_is_at_bat` | bool | yes | `stat.play.details.isAtBat` |  |
+| `stat_play_details_is_plate_appearance` | bool | yes | `stat.play.details.isPlateAppearance` |  |
+| `stat_play_details_type_code` | string | yes | `stat.play.details.type.code` |  |
+| `stat_play_details_type_description` | string | yes | `stat.play.details.type.description` |  |
+| `stat_play_details_bat_side_code` | string | yes | `stat.play.details.batSide.code` |  |
+| `stat_play_details_bat_side_description` | string | yes | `stat.play.details.batSide.description` |  |
+| `stat_play_details_pitch_hand_code` | string | yes | `stat.play.details.pitchHand.code` |  |
+| `stat_play_details_pitch_hand_description` | string | yes | `stat.play.details.pitchHand.description` |  |
+| `stat_play_count_balls` | int32 | yes | `stat.play.count.balls` |  |
+| `stat_play_count_strikes` | int32 | yes | `stat.play.count.strikes` |  |
+| `stat_play_count_outs` | int32 | yes | `stat.play.count.outs` |  |
+| `stat_play_count_inning` | int32 | yes | `stat.play.count.inning` |  |
+| `stat_play_count_is_top_inning` | bool | yes | `stat.play.count.isTopInning` |  |
+| `stat_play_count_runner_on1b` | bool | yes | `stat.play.count.runnerOn1b` |  |
+| `stat_play_count_runner_on2b` | bool | yes | `stat.play.count.runnerOn2b` |  |
+| `stat_play_count_runner_on3b` | bool | yes | `stat.play.count.runnerOn3b` |  |
+| `stat_play_play_id` | string | yes | `stat.play.playId` |  |
+| `stat_play_pitch_number` | int32 | yes | `stat.play.pitchNumber` |  |
+| `stat_play_at_bat_number` | int32 | yes | `stat.play.atBatNumber` |  |
+| `stat_play_is_pitch` | bool | yes | `stat.play.isPitch` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `opponent_id` | int32 | yes | `opponent.id` |  |
+| `opponent_name` | string | yes | `opponent.name` |  |
+| `opponent_link` | string | yes | `opponent.link` |  |
+| `date` | date32[day] | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `pitcher_id` | int32 | yes | `pitcher.id` |  |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` |  |
+| `pitcher_link` | string | yes | `pitcher.link` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `game_game_pk` | int32 | yes | `game.gamePk` |  |
+| `game_link` | string | yes | `game.link` |  |
+| `game_content_link` | string | yes | `game.content.link` |  |
+| `game_game_number` | int32 | yes | `game.gameNumber` |  |
+| `game_day_night` | string | yes | `game.dayNight` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_play_log_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_projected_hitting -->
+### Dataset: people_stats_projected_hitting
+
+Per-player hitting stats, type projected (one request per person).
+
+- **View:** `mlb_people_stats_projected_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_projected_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `stat_woba` | double | yes | `stat.woba` |  |
+| `stat_w_raa` | double | yes | `stat.wRaa` |  |
+| `stat_w_rc` | double | yes | `stat.wRc` |  |
+| `stat_w_rc_plus` | double | yes | `stat.wRcPlus` |  |
+| `stat_rar` | double | yes | `stat.rar` |  |
+| `stat_war` | double | yes | `stat.war` |  |
+| `stat_batting` | double | yes | `stat.batting` |  |
+| `stat_fielding` | double | yes | `stat.fielding` |  |
+| `stat_base_running` | double | yes | `stat.baseRunning` |  |
+| `stat_positional` | double | yes | `stat.positional` |  |
+| `stat_replacement` | double | yes | `stat.replacement` |  |
+| `stat_spd` | double | yes | `stat.spd` |  |
+| `stat_ubr` | double | yes | `stat.ubr` |  |
+| `stat_w_sb` | double | yes | `stat.wSb` |  |
+| `stat_strikeout_percent` | double | yes | `stat.strikeoutPercent` |  |
+| `stat_walk_percent` | double | yes | `stat.walkPercent` |  |
+| `stat_ratio_bbso` | double | yes | `stat.ratioBBSO` |  |
+| `stat_iso` | double | yes | `stat.iso` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_projected_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_projected_pitching -->
+### Dataset: people_stats_projected_pitching
+
+Per-player pitching stats, type projected (one request per person).
+
+- **View:** `mlb_people_stats_projected_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_projected_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | double | yes | `stat.avg` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_fip` | double | yes | `stat.fip` |  |
+| `stat_ra9_war` | double | yes | `stat.ra9War` |  |
+| `stat_rar` | double | yes | `stat.rar` |  |
+| `stat_war` | double | yes | `stat.war` |  |
+| `stat_lob_wins` | double | yes | `stat.lobWins` |  |
+| `stat_bip_wins` | double | yes | `stat.bipWins` |  |
+| `stat_fdp_wins` | double | yes | `stat.fdpWins` |  |
+| `stat_strikeout_percent` | double | yes | `stat.strikeoutPercent` |  |
+| `stat_walk_percent` | double | yes | `stat.walkPercent` |  |
+| `stat_babip` | double | yes | `stat.babip` |  |
+| `stat_lob_percent` | double | yes | `stat.lobPercent` |  |
+| `stat_quality_starts` | int32 | yes | `stat.qualityStarts` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_projected_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_rankings_by_year_hitting -->
+### Dataset: people_stats_rankings_by_year_hitting
+
+Per-player hitting stats, type rankingsByYear (one request per person).
+
+- **View:** `mlb_people_stats_rankings_by_year_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_rankings_by_year_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `league_id`, `season`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_rankings_by_year_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_rankings_by_year_pitching -->
+### Dataset: people_stats_rankings_by_year_pitching
+
+Per-player pitching stats, type rankingsByYear (one request per person).
+
+- **View:** `mlb_people_stats_rankings_by_year_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_rankings_by_year_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `league_id`, `season`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_outs_pitched` | int32 | yes | `stat.outsPitched` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_rankings_by_year_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_rankings_hitting -->
+### Dataset: people_stats_rankings_hitting
+
+Per-player hitting stats, type rankings (one request per person).
+
+- **View:** `mlb_people_stats_rankings_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_rankings_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_rankings_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_rankings_pitching -->
+### Dataset: people_stats_rankings_pitching
+
+Per-player pitching stats, type rankings (one request per person).
+
+- **View:** `mlb_people_stats_rankings_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_rankings_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_outs_pitched` | int32 | yes | `stat.outsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_rankings_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_sabermetrics_hitting -->
+### Dataset: people_stats_sabermetrics_hitting
+
+Per-player hitting stats, type sabermetrics (one request per person).
+
+- **View:** `mlb_people_stats_sabermetrics_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_sabermetrics_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_woba` | double | yes | `stat.woba` |  |
+| `stat_w_raa` | double | yes | `stat.wRaa` |  |
+| `stat_w_rc` | double | yes | `stat.wRc` |  |
+| `stat_w_rc_plus` | double | yes | `stat.wRcPlus` |  |
+| `stat_rar` | double | yes | `stat.rar` |  |
+| `stat_war` | double | yes | `stat.war` |  |
+| `stat_batting` | double | yes | `stat.batting` |  |
+| `stat_fielding` | double | yes | `stat.fielding` |  |
+| `stat_base_running` | double | yes | `stat.baseRunning` |  |
+| `stat_positional` | double | yes | `stat.positional` |  |
+| `stat_w_league` | double | yes | `stat.wLeague` |  |
+| `stat_replacement` | double | yes | `stat.replacement` |  |
+| `stat_spd` | double | yes | `stat.spd` |  |
+| `stat_ubr` | double | yes | `stat.ubr` |  |
+| `stat_w_gdp` | double | yes | `stat.wGdp` |  |
+| `stat_w_sb` | double | yes | `stat.wSb` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_sabermetrics_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_sabermetrics_multi_team_hitting -->
+### Dataset: people_stats_sabermetrics_multi_team_hitting
+
+Per-player hitting stats, type sabermetricsMultiTeam (one request per person).
+
+- **View:** `mlb_people_stats_sabermetrics_multi_team_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_sabermetrics_multi_team_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_woba` | double | yes | `stat.woba` |  |
+| `stat_w_raa` | double | yes | `stat.wRaa` |  |
+| `stat_w_rc` | double | yes | `stat.wRc` |  |
+| `stat_w_rc_plus` | double | yes | `stat.wRcPlus` |  |
+| `stat_rar` | double | yes | `stat.rar` |  |
+| `stat_war` | double | yes | `stat.war` |  |
+| `stat_batting` | double | yes | `stat.batting` |  |
+| `stat_fielding` | double | yes | `stat.fielding` |  |
+| `stat_base_running` | double | yes | `stat.baseRunning` |  |
+| `stat_positional` | double | yes | `stat.positional` |  |
+| `stat_w_league` | double | yes | `stat.wLeague` |  |
+| `stat_replacement` | double | yes | `stat.replacement` |  |
+| `stat_spd` | double | yes | `stat.spd` |  |
+| `stat_ubr` | double | yes | `stat.ubr` |  |
+| `stat_w_gdp` | double | yes | `stat.wGdp` |  |
+| `stat_w_sb` | double | yes | `stat.wSb` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_sabermetrics_multi_team_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_sabermetrics_multi_team_pitching -->
+### Dataset: people_stats_sabermetrics_multi_team_pitching
+
+Per-player pitching stats, type sabermetricsMultiTeam (one request per person).
+
+- **View:** `mlb_people_stats_sabermetrics_multi_team_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_sabermetrics_multi_team_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_fip` | double | yes | `stat.fip` |  |
+| `stat_xfip` | double | yes | `stat.xfip` |  |
+| `stat_fip_minus` | double | yes | `stat.fipMinus` |  |
+| `stat_ra9_war` | double | yes | `stat.ra9War` |  |
+| `stat_rar` | double | yes | `stat.rar` |  |
+| `stat_war` | double | yes | `stat.war` |  |
+| `stat_sd` | double | yes | `stat.sd` |  |
+| `stat_md` | double | yes | `stat.md` |  |
+| `stat_pli` | double | yes | `stat.pli` |  |
+| `stat_inli` | double | yes | `stat.inli` |  |
+| `stat_gmli` | double | yes | `stat.gmli` |  |
+| `stat_exli` | double | yes | `stat.exli` |  |
+| `stat_era_minus` | double | yes | `stat.eraMinus` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_sabermetrics_multi_team_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_sabermetrics_pitching -->
+### Dataset: people_stats_sabermetrics_pitching
+
+Per-player pitching stats, type sabermetrics (one request per person).
+
+- **View:** `mlb_people_stats_sabermetrics_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_sabermetrics_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_fip` | double | yes | `stat.fip` |  |
+| `stat_xfip` | double | yes | `stat.xfip` |  |
+| `stat_fip_minus` | double | yes | `stat.fipMinus` |  |
+| `stat_ra9_war` | double | yes | `stat.ra9War` |  |
+| `stat_rar` | double | yes | `stat.rar` |  |
+| `stat_war` | double | yes | `stat.war` |  |
+| `stat_sd` | double | yes | `stat.sd` |  |
+| `stat_md` | double | yes | `stat.md` |  |
+| `stat_pli` | double | yes | `stat.pli` |  |
+| `stat_inli` | double | yes | `stat.inli` |  |
+| `stat_gmli` | double | yes | `stat.gmli` |  |
+| `stat_exli` | double | yes | `stat.exli` |  |
+| `stat_era_minus` | double | yes | `stat.eraMinus` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_sabermetrics_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_season_advanced_hitting -->
+### Dataset: people_stats_season_advanced_hitting
+
+Per-player hitting stats, type seasonAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_season_advanced_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_season_advanced_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_reached_on_error` | int32 | yes | `stat.reachedOnError` |  |
+| `stat_walk_offs` | int32 | yes | `stat.walkOffs` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_total_swings` | int32 | yes | `stat.totalSwings` |  |
+| `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` |  |
+| `stat_balls_in_play` | int32 | yes | `stat.ballsInPlay` |  |
+| `stat_pop_outs` | int32 | yes | `stat.popOuts` |  |
+| `stat_line_outs` | int32 | yes | `stat.lineOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_fly_hits` | int32 | yes | `stat.flyHits` |  |
+| `stat_pop_hits` | int32 | yes | `stat.popHits` |  |
+| `stat_line_hits` | int32 | yes | `stat.lineHits` |  |
+| `stat_ground_hits` | int32 | yes | `stat.groundHits` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_season_advanced_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_season_advanced_pitching -->
+### Dataset: people_stats_season_advanced_pitching
+
+Per-player pitching stats, type seasonAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_season_advanced_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_season_advanced_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_winning_percentage` | string | yes | `stat.winningPercentage` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` |  |
+| `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_hits_per9` | string | yes | `stat.hitsPer9` |  |
+| `stat_strikesouts_to_walks` | string | yes | `stat.strikesoutsToWalks` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_bequeathed_runners` | int32 | yes | `stat.bequeathedRunners` |  |
+| `stat_bequeathed_runners_scored` | int32 | yes | `stat.bequeathedRunnersScored` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_quality_starts` | int32 | yes | `stat.qualityStarts` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_swings` | int32 | yes | `stat.totalSwings` |  |
+| `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` |  |
+| `stat_strikeouts_minus_walks_percentage` | string | yes | `stat.strikeoutsMinusWalksPercentage` |  |
+| `stat_gidp_percentage` | string | yes | `stat.gidpPercentage` |  |
+| `stat_batters_faced_per_game` | string | yes | `stat.battersFacedPerGame` |  |
+| `stat_innings_pitched_per_game` | string | yes | `stat.inningsPitchedPerGame` |  |
+| `stat_bunts_failed` | int32 | yes | `stat.buntsFailed` |  |
+| `stat_bunts_missed_tipped` | int32 | yes | `stat.buntsMissedTipped` |  |
+| `stat_whiff_percentage` | string | yes | `stat.whiffPercentage` |  |
+| `stat_fly_ball_percentage` | string | yes | `stat.flyBallPercentage` |  |
+| `stat_balls_in_play` | int32 | yes | `stat.ballsInPlay` |  |
+| `stat_run_support` | int32 | yes | `stat.runSupport` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_pop_outs` | int32 | yes | `stat.popOuts` |  |
+| `stat_line_outs` | int32 | yes | `stat.lineOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_fly_hits` | int32 | yes | `stat.flyHits` |  |
+| `stat_pop_hits` | int32 | yes | `stat.popHits` |  |
+| `stat_line_hits` | int32 | yes | `stat.lineHits` |  |
+| `stat_ground_hits` | int32 | yes | `stat.groundHits` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_season_advanced_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_season_fielding -->
+### Dataset: people_stats_season_fielding
+
+Per-player fielding stats, type season (one request per person).
+
+- **View:** `mlb_people_stats_season_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_season_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `game_type`, `position_abbreviation`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_season_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_season_hitting -->
+### Dataset: people_stats_season_hitting
+
+Per-player hitting stats, type season (one request per person).
+
+- **View:** `mlb_people_stats_season_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_season_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_season_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_season_pitching -->
+### Dataset: people_stats_season_pitching
+
+Per-player pitching stats, type season (one request per person).
+
+- **View:** `mlb_people_stats_season_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_season_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_season_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_spray_chart_hitting -->
+### Dataset: people_stats_spray_chart_hitting
+
+Per-player hitting stats, type sprayChart (one request per person).
+
+- **View:** `mlb_people_stats_spray_chart_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_spray_chart_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_left_field` | double | yes | `stat.leftField` |  |
+| `stat_left_center_field` | double | yes | `stat.leftCenterField` |  |
+| `stat_center_field` | double | yes | `stat.centerField` |  |
+| `stat_right_center_field` | double | yes | `stat.rightCenterField` |  |
+| `stat_right_field` | double | yes | `stat.rightField` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_spray_chart_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_spray_chart_pitching -->
+### Dataset: people_stats_spray_chart_pitching
+
+Per-player pitching stats, type sprayChart (one request per person).
+
+- **View:** `mlb_people_stats_spray_chart_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_spray_chart_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_left_field` | double | yes | `stat.leftField` |  |
+| `stat_left_center_field` | double | yes | `stat.leftCenterField` |  |
+| `stat_center_field` | double | yes | `stat.centerField` |  |
+| `stat_right_center_field` | double | yes | `stat.rightCenterField` |  |
+| `stat_right_field` | double | yes | `stat.rightField` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_spray_chart_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_stats_single_season_advanced_hitting -->
+### Dataset: people_stats_stats_single_season_advanced_hitting
+
+Per-player hitting stats, type statsSingleSeasonAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_stats_single_season_advanced_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_stats_single_season_advanced_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_reached_on_error` | int32 | yes | `stat.reachedOnError` |  |
+| `stat_walk_offs` | int32 | yes | `stat.walkOffs` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_total_swings` | int32 | yes | `stat.totalSwings` |  |
+| `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` |  |
+| `stat_balls_in_play` | int32 | yes | `stat.ballsInPlay` |  |
+| `stat_pop_outs` | int32 | yes | `stat.popOuts` |  |
+| `stat_line_outs` | int32 | yes | `stat.lineOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_fly_hits` | int32 | yes | `stat.flyHits` |  |
+| `stat_pop_hits` | int32 | yes | `stat.popHits` |  |
+| `stat_line_hits` | int32 | yes | `stat.lineHits` |  |
+| `stat_ground_hits` | int32 | yes | `stat.groundHits` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_stats_single_season_advanced_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_stats_single_season_advanced_pitching -->
+### Dataset: people_stats_stats_single_season_advanced_pitching
+
+Per-player pitching stats, type statsSingleSeasonAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_stats_single_season_advanced_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_stats_single_season_advanced_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_winning_percentage` | string | yes | `stat.winningPercentage` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` |  |
+| `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_hits_per9` | string | yes | `stat.hitsPer9` |  |
+| `stat_strikesouts_to_walks` | string | yes | `stat.strikesoutsToWalks` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_bequeathed_runners` | int32 | yes | `stat.bequeathedRunners` |  |
+| `stat_bequeathed_runners_scored` | int32 | yes | `stat.bequeathedRunnersScored` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_quality_starts` | int32 | yes | `stat.qualityStarts` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_swings` | int32 | yes | `stat.totalSwings` |  |
+| `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` |  |
+| `stat_strikeouts_minus_walks_percentage` | string | yes | `stat.strikeoutsMinusWalksPercentage` |  |
+| `stat_gidp_percentage` | string | yes | `stat.gidpPercentage` |  |
+| `stat_batters_faced_per_game` | string | yes | `stat.battersFacedPerGame` |  |
+| `stat_innings_pitched_per_game` | string | yes | `stat.inningsPitchedPerGame` |  |
+| `stat_bunts_failed` | int32 | yes | `stat.buntsFailed` |  |
+| `stat_bunts_missed_tipped` | int32 | yes | `stat.buntsMissedTipped` |  |
+| `stat_whiff_percentage` | string | yes | `stat.whiffPercentage` |  |
+| `stat_fly_ball_percentage` | string | yes | `stat.flyBallPercentage` |  |
+| `stat_balls_in_play` | int32 | yes | `stat.ballsInPlay` |  |
+| `stat_run_support` | int32 | yes | `stat.runSupport` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_pop_outs` | int32 | yes | `stat.popOuts` |  |
+| `stat_line_outs` | int32 | yes | `stat.lineOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_fly_hits` | int32 | yes | `stat.flyHits` |  |
+| `stat_pop_hits` | int32 | yes | `stat.popHits` |  |
+| `stat_line_hits` | int32 | yes | `stat.lineHits` |  |
+| `stat_ground_hits` | int32 | yes | `stat.groundHits` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_stats_single_season_advanced_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_stats_single_season_fielding -->
+### Dataset: people_stats_stats_single_season_fielding
+
+Per-player fielding stats, type statsSingleSeason (one request per person).
+
+- **View:** `mlb_people_stats_stats_single_season_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_stats_single_season_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `game_type`, `position_abbreviation`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_stats_single_season_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_stats_single_season_hitting -->
+### Dataset: people_stats_stats_single_season_hitting
+
+Per-player hitting stats, type statsSingleSeason (one request per person).
+
+- **View:** `mlb_people_stats_stats_single_season_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_stats_single_season_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_stats_single_season_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_stats_single_season_pitching -->
+### Dataset: people_stats_stats_single_season_pitching
+
+Per-player pitching stats, type statsSingleSeason (one request per person).
+
+- **View:** `mlb_people_stats_stats_single_season_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_stats_single_season_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_stats_single_season_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_win_loss_fielding -->
+### Dataset: people_stats_win_loss_fielding
+
+Per-player fielding stats, type winLoss (one request per person).
+
+- **View:** `mlb_people_stats_win_loss_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_win_loss_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `season`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `is_win` | bool | yes | `isWin` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_win_loss_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_win_loss_hitting -->
+### Dataset: people_stats_win_loss_hitting
+
+Per-player hitting stats, type winLoss (one request per person).
+
+- **View:** `mlb_people_stats_win_loss_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_win_loss_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `season`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `is_win` | bool | yes | `isWin` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_win_loss_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_win_loss_pitching -->
+### Dataset: people_stats_win_loss_pitching
+
+Per-player pitching stats, type winLoss (one request per person).
+
+- **View:** `mlb_people_stats_win_loss_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_win_loss_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `season`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `is_win` | bool | yes | `isWin` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_win_loss_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_advanced_hitting -->
+### Dataset: people_stats_year_by_year_advanced_hitting
+
+Per-player hitting stats, type yearByYearAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_advanced_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_advanced_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `league_id`, `season`, `game_type`, `stat_plate_appearances`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_reached_on_error` | int32 | yes | `stat.reachedOnError` |  |
+| `stat_walk_offs` | int32 | yes | `stat.walkOffs` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_total_swings` | int32 | yes | `stat.totalSwings` |  |
+| `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` |  |
+| `stat_balls_in_play` | int32 | yes | `stat.ballsInPlay` |  |
+| `stat_pop_outs` | int32 | yes | `stat.popOuts` |  |
+| `stat_line_outs` | int32 | yes | `stat.lineOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_fly_hits` | int32 | yes | `stat.flyHits` |  |
+| `stat_pop_hits` | int32 | yes | `stat.popHits` |  |
+| `stat_line_hits` | int32 | yes | `stat.lineHits` |  |
+| `stat_ground_hits` | int32 | yes | `stat.groundHits` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_advanced_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_advanced_pitching -->
+### Dataset: people_stats_year_by_year_advanced_pitching
+
+Per-player pitching stats, type yearByYearAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_advanced_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_advanced_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `league_id`, `season`, `game_type`, `stat_winning_percentage`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_winning_percentage` | string | yes | `stat.winningPercentage` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` |  |
+| `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_hits_per9` | string | yes | `stat.hitsPer9` |  |
+| `stat_strikesouts_to_walks` | string | yes | `stat.strikesoutsToWalks` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_bequeathed_runners` | int32 | yes | `stat.bequeathedRunners` |  |
+| `stat_bequeathed_runners_scored` | int32 | yes | `stat.bequeathedRunnersScored` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_quality_starts` | int32 | yes | `stat.qualityStarts` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_gidp` | int32 | yes | `stat.gidp` |  |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_swings` | int32 | yes | `stat.totalSwings` |  |
+| `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` |  |
+| `stat_strikeouts_minus_walks_percentage` | string | yes | `stat.strikeoutsMinusWalksPercentage` |  |
+| `stat_gidp_percentage` | string | yes | `stat.gidpPercentage` |  |
+| `stat_batters_faced_per_game` | string | yes | `stat.battersFacedPerGame` |  |
+| `stat_innings_pitched_per_game` | string | yes | `stat.inningsPitchedPerGame` |  |
+| `stat_bunts_failed` | int32 | yes | `stat.buntsFailed` |  |
+| `stat_bunts_missed_tipped` | int32 | yes | `stat.buntsMissedTipped` |  |
+| `stat_whiff_percentage` | string | yes | `stat.whiffPercentage` |  |
+| `stat_fly_ball_percentage` | string | yes | `stat.flyBallPercentage` |  |
+| `stat_balls_in_play` | int32 | yes | `stat.ballsInPlay` |  |
+| `stat_run_support` | int32 | yes | `stat.runSupport` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `stat_fly_outs` | int32 | yes | `stat.flyOuts` |  |
+| `stat_pop_outs` | int32 | yes | `stat.popOuts` |  |
+| `stat_line_outs` | int32 | yes | `stat.lineOuts` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_fly_hits` | int32 | yes | `stat.flyHits` |  |
+| `stat_pop_hits` | int32 | yes | `stat.popHits` |  |
+| `stat_line_hits` | int32 | yes | `stat.lineHits` |  |
+| `stat_ground_hits` | int32 | yes | `stat.groundHits` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_advanced_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_fielding -->
+### Dataset: people_stats_year_by_year_fielding
+
+Per-player fielding stats, type yearByYear (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `league_id`, `season`, `game_type`, `position_abbreviation`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_hitting -->
+### Dataset: people_stats_year_by_year_hitting
+
+Per-player hitting stats, type yearByYear (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `league_id`, `season`, `game_type`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_pitching -->
+### Dataset: people_stats_year_by_year_pitching
+
+Per-player pitching stats, type yearByYear (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `league_id`, `season`, `game_type`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_playoffs_fielding -->
+### Dataset: people_stats_year_by_year_playoffs_fielding
+
+Per-player fielding stats, type yearByYearPlayoffs (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_playoffs_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_playoffs_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `league_id`, `game_type`, `position_abbreviation`, `stat_age`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_assists` | int32 | yes | `stat.assists` |  |
+| `stat_put_outs` | int32 | yes | `stat.putOuts` |  |
+| `stat_errors` | int32 | yes | `stat.errors` |  |
+| `stat_chances` | int32 | yes | `stat.chances` |  |
+| `stat_fielding` | string | yes | `stat.fielding` |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_range_factor_per_game` | string | yes | `stat.rangeFactorPerGame` |  |
+| `stat_range_factor_per9_inn` | string | yes | `stat.rangeFactorPer9Inn` |  |
+| `stat_innings` | string | yes | `stat.innings` |  |
+| `stat_games` | int32 | yes | `stat.games` |  |
+| `stat_double_plays` | int32 | yes | `stat.doublePlays` |  |
+| `stat_triple_plays` | int32 | yes | `stat.triplePlays` |  |
+| `stat_throwing_errors` | int32 | yes | `stat.throwingErrors` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_playoffs_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_playoffs_hitting -->
+### Dataset: people_stats_year_by_year_playoffs_hitting
+
+Per-player hitting stats, type yearByYearPlayoffs (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_playoffs_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_playoffs_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `league_id`, `game_type`, `stat_age`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_rbi` | int32 | yes | `stat.rbi` |  |
+| `stat_left_on_base` | int32 | yes | `stat.leftOnBase` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_playoffs_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_playoffs_pitching -->
+### Dataset: people_stats_year_by_year_playoffs_pitching
+
+Per-player pitching stats, type yearByYearPlayoffs (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_playoffs_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_playoffs_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `league_id`, `game_type`, `stat_at_bats`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` |  |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_doubles` | int32 | yes | `stat.doubles` |  |
+| `stat_triples` | int32 | yes | `stat.triples` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` |  |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` |  |
+| `stat_era` | string | yes | `stat.era` |  |
+| `stat_innings_pitched` | string | yes | `stat.inningsPitched` |  |
+| `stat_wins` | int32 | yes | `stat.wins` |  |
+| `stat_losses` | int32 | yes | `stat.losses` |  |
+| `stat_saves` | int32 | yes | `stat.saves` |  |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` |  |
+| `stat_holds` | int32 | yes | `stat.holds` |  |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_whip` | string | yes | `stat.whip` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_outs` | int32 | yes | `stat.outs` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_complete_games` | int32 | yes | `stat.completeGames` |  |
+| `stat_shutouts` | int32 | yes | `stat.shutouts` |  |
+| `stat_strikes` | int32 | yes | `stat.strikes` |  |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_balks` | int32 | yes | `stat.balks` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` |  |
+| `stat_win_percentage` | string | yes | `stat.winPercentage` |  |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` |  |
+| `stat_games_finished` | int32 | yes | `stat.gamesFinished` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` |  |
+| `stat_walks_per9_inn` | string | yes | `stat.walksPer9Inn` |  |
+| `stat_hits_per9_inn` | string | yes | `stat.hitsPer9Inn` |  |
+| `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` |  |
+| `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` |  |
+| `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` |  |
+| `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_playoffs_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.draft_picks -->
+### Dataset: draft_picks
+
+Every pick of a draft year with the person, school, scouting and signing fields.
+
+- **View:** `mlb_draft_picks`
+- **Processed path:** `processed/mlb_api/draft_picks/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `pick_number`, `pick_round`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `rounds_round` | string | yes | `rounds.round` |  |
+| `bis_player_id` | int32 | yes | `bisPlayerId` |  |
+| `pick_round` | string | yes | `pickRound` |  |
+| `pick_number` | int32 | yes | `pickNumber` |  |
+| `display_pick_number` | int32 | yes | `displayPickNumber` |  |
+| `round_pick_number` | int32 | yes | `roundPickNumber` |  |
+| `rank` | int32 | yes | — |  |
+| `pick_value` | string | yes | `pickValue` |  |
+| `signing_bonus` | string | yes | `signingBonus` |  |
+| `home_city` | string | yes | `home.city` |  |
+| `home_country` | string | yes | `home.country` |  |
+| `scouting_report` | string | yes | `scoutingReport` |  |
+| `school_name` | string | yes | `school.name` |  |
+| `school_school_class` | string | yes | `school.schoolClass` |  |
+| `school_city` | string | yes | `school.city` |  |
+| `school_country` | string | yes | `school.country` |  |
+| `school_state` | string | yes | `school.state` |  |
+| `blurb` | string | yes | — |  |
+| `headshot_link` | string | yes | `headshotLink` |  |
+| `person_id` | int32 | yes | `person.id` |  |
+| `person_full_name` | string | yes | `person.fullName` |  |
+| `person_link` | string | yes | `person.link` |  |
+| `person_first_name` | string | yes | `person.firstName` |  |
+| `person_last_name` | string | yes | `person.lastName` |  |
+| `person_primary_number` | string | yes | `person.primaryNumber` |  |
+| `person_birth_date` | date32[day] | yes | `person.birthDate` |  |
+| `person_current_age` | int32 | yes | `person.currentAge` |  |
+| `person_birth_city` | string | yes | `person.birthCity` |  |
+| `person_birth_state_province` | string | yes | `person.birthStateProvince` |  |
+| `person_birth_country` | string | yes | `person.birthCountry` |  |
+| `person_height` | string | yes | `person.height` |  |
+| `person_weight` | int32 | yes | `person.weight` |  |
+| `person_active` | bool | yes | `person.active` |  |
+| `person_primary_position_code` | string | yes | `person.primaryPosition.code` |  |
+| `person_primary_position_name` | string | yes | `person.primaryPosition.name` |  |
+| `person_primary_position_type` | string | yes | `person.primaryPosition.type` |  |
+| `person_primary_position_abbreviation` | string | yes | `person.primaryPosition.abbreviation` |  |
+| `person_use_name` | string | yes | `person.useName` |  |
+| `person_use_last_name` | string | yes | `person.useLastName` |  |
+| `person_middle_name` | string | yes | `person.middleName` |  |
+| `person_boxscore_name` | string | yes | `person.boxscoreName` |  |
+| `person_gender` | string | yes | `person.gender` |  |
+| `person_is_player` | bool | yes | `person.isPlayer` |  |
+| `person_is_verified` | bool | yes | `person.isVerified` |  |
+| `person_draft_year` | int32 | yes | `person.draftYear` |  |
+| `person_mlb_debut_date` | date32[day] | yes | `person.mlbDebutDate` |  |
+| `person_bat_side_code` | string | yes | `person.batSide.code` |  |
+| `person_bat_side_description` | string | yes | `person.batSide.description` |  |
+| `person_pitch_hand_code` | string | yes | `person.pitchHand.code` |  |
+| `person_pitch_hand_description` | string | yes | `person.pitchHand.description` |  |
+| `person_name_first_last` | string | yes | `person.nameFirstLast` |  |
+| `person_name_slug` | string | yes | `person.nameSlug` |  |
+| `person_first_last_name` | string | yes | `person.firstLastName` |  |
+| `person_last_first_name` | string | yes | `person.lastFirstName` |  |
+| `person_last_init_name` | string | yes | `person.lastInitName` |  |
+| `person_init_last_name` | string | yes | `person.initLastName` |  |
+| `person_full_fml_name` | string | yes | `person.fullFMLName` |  |
+| `person_full_lfm_name` | string | yes | `person.fullLFMName` |  |
+| `person_strike_zone_top` | double | yes | `person.strikeZoneTop` |  |
+| `person_strike_zone_bottom` | double | yes | `person.strikeZoneBottom` |  |
+| `team_spring_league_id` | int32 | yes | `team.springLeague.id` |  |
+| `team_spring_league_name` | string | yes | `team.springLeague.name` |  |
+| `team_spring_league_link` | string | yes | `team.springLeague.link` |  |
+| `team_spring_league_abbreviation` | string | yes | `team.springLeague.abbreviation` |  |
+| `team_all_star_status` | string | yes | `team.allStarStatus` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `draft_type_code` | string | yes | `draftType.code` |  |
+| `draft_type_description` | string | yes | `draftType.description` |  |
+| `is_drafted` | bool | yes | `isDrafted` |  |
+| `is_pass` | bool | yes | `isPass` |  |
+| `year` | string | yes | — |  |
+| `home_state` | string | yes | `home.state` |  |
+| `person_pronunciation` | string | yes | `person.pronunciation` |  |
+| `person_name_title` | string | yes | `person.nameTitle` |  |
+| `person_name_suffix` | string | yes | `person.nameSuffix` |  |
+| `person_name_matrilineal` | string | yes | `person.nameMatrilineal` |  |
+| `person_nick_name` | string | yes | `person.nickName` |  |
+| `person_last_played_date` | date32[day] | yes | `person.lastPlayedDate` |  |
+| `person_death_date` | date32[day] | yes | `person.deathDate` |  |
+| `person_death_city` | string | yes | `person.deathCity` |  |
+| `person_death_state_province` | string | yes | `person.deathStateProvince` |  |
+| `person_death_country` | string | yes | `person.deathCountry` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.draft_picks -->
+
+<!-- BEGIN GENERATED:mlb_api.game_boxscore_info -->
+### Dataset: game_boxscore_info
+
+Game info label/value lines (weather, attendance, venue, first pitch, ...).
+
+- **View:** `mlb_game_boxscore_info`
+- **Processed path:** `processed/mlb_api/game_boxscore_info/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `label`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `label` | string | yes | — |  |
+| `value` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.game_boxscore_info -->
+
+<!-- BEGIN GENERATED:mlb_api.game_boxscore_officials -->
+### Dataset: game_boxscore_officials
+
+Umpires of a game from the boxscore.
+
+- **View:** `mlb_game_boxscore_officials`
+- **Processed path:** `processed/mlb_api/game_boxscore_officials/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `official_type`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `official_id` | int32 | yes | `official.id` |  |
+| `official_full_name` | string | yes | `official.fullName` |  |
+| `official_link` | string | yes | `official.link` |  |
+| `official_type` | string | yes | `officialType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.game_boxscore_officials -->
+
+<!-- BEGIN GENERATED:mlb_api.game_boxscore_pitching_notes -->
+### Dataset: game_boxscore_pitching_notes
+
+Pitching notes of a game (one text line each).
+
+- **View:** `mlb_game_boxscore_pitching_notes`
+- **Processed path:** `processed/mlb_api/game_boxscore_pitching_notes/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `value`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `value` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.game_boxscore_pitching_notes -->
+
+<!-- BEGIN GENERATED:mlb_api.game_boxscore_players -->
+### Dataset: game_boxscore_players
+
+Every player line of a game boxscore (person, position, batting/pitching/fielding stats, season stats, game status) with its team context.
+
+- **View:** `mlb_game_boxscore_players`
+- **Processed path:** `processed/mlb_api/game_boxscore_players/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `teams_key`, `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `teams_key` | string | yes | `teams.key` |  |
+| `teams_team_spring_league_id` | int32 | yes | `teams.team.springLeague.id` |  |
+| `teams_team_spring_league_name` | string | yes | `teams.team.springLeague.name` |  |
+| `teams_team_spring_league_link` | string | yes | `teams.team.springLeague.link` |  |
+| `teams_team_spring_league_abbreviation` | string | yes | `teams.team.springLeague.abbreviation` |  |
+| `teams_team_all_star_status` | string | yes | `teams.team.allStarStatus` |  |
+| `teams_team_id` | int32 | yes | `teams.team.id` |  |
+| `teams_team_name` | string | yes | `teams.team.name` |  |
+| `teams_team_link` | string | yes | `teams.team.link` |  |
+| `teams_team_season` | int32 | yes | `teams.team.season` |  |
+| `teams_team_venue_id` | int32 | yes | `teams.team.venue.id` |  |
+| `teams_team_venue_name` | string | yes | `teams.team.venue.name` |  |
+| `teams_team_venue_link` | string | yes | `teams.team.venue.link` |  |
+| `teams_team_spring_venue_id` | int32 | yes | `teams.team.springVenue.id` |  |
+| `teams_team_spring_venue_link` | string | yes | `teams.team.springVenue.link` |  |
+| `teams_team_team_code` | string | yes | `teams.team.teamCode` |  |
+| `teams_team_file_code` | string | yes | `teams.team.fileCode` |  |
+| `teams_team_abbreviation` | string | yes | `teams.team.abbreviation` |  |
+| `teams_team_team_name` | string | yes | `teams.team.teamName` |  |
+| `teams_team_location_name` | string | yes | `teams.team.locationName` |  |
+| `teams_team_first_year_of_play` | string | yes | `teams.team.firstYearOfPlay` |  |
+| `teams_team_league_id` | int32 | yes | `teams.team.league.id` |  |
+| `teams_team_league_name` | string | yes | `teams.team.league.name` |  |
+| `teams_team_league_link` | string | yes | `teams.team.league.link` |  |
+| `teams_team_division_id` | int32 | yes | `teams.team.division.id` |  |
+| `teams_team_division_name` | string | yes | `teams.team.division.name` |  |
+| `teams_team_division_link` | string | yes | `teams.team.division.link` |  |
+| `teams_team_sport_id` | int32 | yes | `teams.team.sport.id` |  |
+| `teams_team_sport_link` | string | yes | `teams.team.sport.link` |  |
+| `teams_team_sport_name` | string | yes | `teams.team.sport.name` |  |
+| `teams_team_short_name` | string | yes | `teams.team.shortName` |  |
+| `teams_team_record_games_played` | int32 | yes | `teams.team.record.gamesPlayed` |  |
+| `teams_team_record_wild_card_games_back` | string | yes | `teams.team.record.wildCardGamesBack` |  |
+| `teams_team_record_league_games_back` | string | yes | `teams.team.record.leagueGamesBack` |  |
+| `teams_team_record_spring_league_games_back` | string | yes | `teams.team.record.springLeagueGamesBack` |  |
+| `teams_team_record_sport_games_back` | string | yes | `teams.team.record.sportGamesBack` |  |
+| `teams_team_record_division_games_back` | string | yes | `teams.team.record.divisionGamesBack` |  |
+| `teams_team_record_conference_games_back` | string | yes | `teams.team.record.conferenceGamesBack` |  |
+| `teams_team_record_league_record_wins` | int32 | yes | `teams.team.record.leagueRecord.wins` |  |
+| `teams_team_record_league_record_losses` | int32 | yes | `teams.team.record.leagueRecord.losses` |  |
+| `teams_team_record_league_record_ties` | int32 | yes | `teams.team.record.leagueRecord.ties` |  |
+| `teams_team_record_league_record_pct` | string | yes | `teams.team.record.leagueRecord.pct` |  |
+| `teams_team_record_division_leader` | bool | yes | `teams.team.record.divisionLeader` |  |
+| `teams_team_record_wins` | int32 | yes | `teams.team.record.wins` |  |
+| `teams_team_record_losses` | int32 | yes | `teams.team.record.losses` |  |
+| `teams_team_record_winning_percentage` | string | yes | `teams.team.record.winningPercentage` |  |
+| `teams_team_franchise_name` | string | yes | `teams.team.franchiseName` |  |
+| `teams_team_club_name` | string | yes | `teams.team.clubName` |  |
+| `teams_team_active` | bool | yes | `teams.team.active` |  |
+| `teams_team_stats_batting_fly_outs` | int32 | yes | `teams.teamStats.batting.flyOuts` |  |
+| `teams_team_stats_batting_ground_outs` | int32 | yes | `teams.teamStats.batting.groundOuts` |  |
+| `teams_team_stats_batting_air_outs` | int32 | yes | `teams.teamStats.batting.airOuts` |  |
+| `teams_team_stats_batting_runs` | int32 | yes | `teams.teamStats.batting.runs` |  |
+| `teams_team_stats_batting_doubles` | int32 | yes | `teams.teamStats.batting.doubles` |  |
+| `teams_team_stats_batting_triples` | int32 | yes | `teams.teamStats.batting.triples` |  |
+| `teams_team_stats_batting_home_runs` | int32 | yes | `teams.teamStats.batting.homeRuns` |  |
+| `teams_team_stats_batting_strike_outs` | int32 | yes | `teams.teamStats.batting.strikeOuts` |  |
+| `teams_team_stats_batting_base_on_balls` | int32 | yes | `teams.teamStats.batting.baseOnBalls` |  |
+| `teams_team_stats_batting_intentional_walks` | int32 | yes | `teams.teamStats.batting.intentionalWalks` |  |
+| `teams_team_stats_batting_hits` | int32 | yes | `teams.teamStats.batting.hits` |  |
+| `teams_team_stats_batting_hit_by_pitch` | int32 | yes | `teams.teamStats.batting.hitByPitch` |  |
+| `teams_team_stats_batting_avg` | string | yes | `teams.teamStats.batting.avg` |  |
+| `teams_team_stats_batting_at_bats` | int32 | yes | `teams.teamStats.batting.atBats` |  |
+| `teams_team_stats_batting_obp` | string | yes | `teams.teamStats.batting.obp` |  |
+| `teams_team_stats_batting_slg` | string | yes | `teams.teamStats.batting.slg` |  |
+| `teams_team_stats_batting_ops` | string | yes | `teams.teamStats.batting.ops` |  |
+| `teams_team_stats_batting_caught_stealing` | int32 | yes | `teams.teamStats.batting.caughtStealing` |  |
+| `teams_team_stats_batting_stolen_bases` | int32 | yes | `teams.teamStats.batting.stolenBases` |  |
+| `teams_team_stats_batting_stolen_base_percentage` | string | yes | `teams.teamStats.batting.stolenBasePercentage` |  |
+| `teams_team_stats_batting_ground_into_double_play` | int32 | yes | `teams.teamStats.batting.groundIntoDoublePlay` |  |
+| `teams_team_stats_batting_ground_into_triple_play` | int32 | yes | `teams.teamStats.batting.groundIntoTriplePlay` |  |
+| `teams_team_stats_batting_plate_appearances` | int32 | yes | `teams.teamStats.batting.plateAppearances` |  |
+| `teams_team_stats_batting_total_bases` | int32 | yes | `teams.teamStats.batting.totalBases` |  |
+| `teams_team_stats_batting_rbi` | int32 | yes | `teams.teamStats.batting.rbi` |  |
+| `teams_team_stats_batting_left_on_base` | int32 | yes | `teams.teamStats.batting.leftOnBase` |  |
+| `teams_team_stats_batting_sac_bunts` | int32 | yes | `teams.teamStats.batting.sacBunts` |  |
+| `teams_team_stats_batting_sac_flies` | int32 | yes | `teams.teamStats.batting.sacFlies` |  |
+| `teams_team_stats_batting_catchers_interference` | int32 | yes | `teams.teamStats.batting.catchersInterference` |  |
+| `teams_team_stats_batting_pickoffs` | int32 | yes | `teams.teamStats.batting.pickoffs` |  |
+| `teams_team_stats_batting_at_bats_per_home_run` | string | yes | `teams.teamStats.batting.atBatsPerHomeRun` |  |
+| `teams_team_stats_batting_pop_outs` | int32 | yes | `teams.teamStats.batting.popOuts` |  |
+| `teams_team_stats_batting_line_outs` | int32 | yes | `teams.teamStats.batting.lineOuts` |  |
+| `teams_team_stats_pitching_fly_outs` | int32 | yes | `teams.teamStats.pitching.flyOuts` |  |
+| `teams_team_stats_pitching_ground_outs` | int32 | yes | `teams.teamStats.pitching.groundOuts` |  |
+| `teams_team_stats_pitching_air_outs` | int32 | yes | `teams.teamStats.pitching.airOuts` |  |
+| `teams_team_stats_pitching_runs` | int32 | yes | `teams.teamStats.pitching.runs` |  |
+| `teams_team_stats_pitching_doubles` | int32 | yes | `teams.teamStats.pitching.doubles` |  |
+| `teams_team_stats_pitching_triples` | int32 | yes | `teams.teamStats.pitching.triples` |  |
+| `teams_team_stats_pitching_home_runs` | int32 | yes | `teams.teamStats.pitching.homeRuns` |  |
+| `teams_team_stats_pitching_strike_outs` | int32 | yes | `teams.teamStats.pitching.strikeOuts` |  |
+| `teams_team_stats_pitching_base_on_balls` | int32 | yes | `teams.teamStats.pitching.baseOnBalls` |  |
+| `teams_team_stats_pitching_intentional_walks` | int32 | yes | `teams.teamStats.pitching.intentionalWalks` |  |
+| `teams_team_stats_pitching_hits` | int32 | yes | `teams.teamStats.pitching.hits` |  |
+| `teams_team_stats_pitching_hit_by_pitch` | int32 | yes | `teams.teamStats.pitching.hitByPitch` |  |
+| `teams_team_stats_pitching_at_bats` | int32 | yes | `teams.teamStats.pitching.atBats` |  |
+| `teams_team_stats_pitching_obp` | string | yes | `teams.teamStats.pitching.obp` |  |
+| `teams_team_stats_pitching_caught_stealing` | int32 | yes | `teams.teamStats.pitching.caughtStealing` |  |
+| `teams_team_stats_pitching_stolen_bases` | int32 | yes | `teams.teamStats.pitching.stolenBases` |  |
+| `teams_team_stats_pitching_stolen_base_percentage` | string | yes | `teams.teamStats.pitching.stolenBasePercentage` |  |
+| `teams_team_stats_pitching_caught_stealing_percentage` | string | yes | `teams.teamStats.pitching.caughtStealingPercentage` |  |
+| `teams_team_stats_pitching_number_of_pitches` | int32 | yes | `teams.teamStats.pitching.numberOfPitches` |  |
+| `teams_team_stats_pitching_era` | string | yes | `teams.teamStats.pitching.era` |  |
+| `teams_team_stats_pitching_innings_pitched` | string | yes | `teams.teamStats.pitching.inningsPitched` |  |
+| `teams_team_stats_pitching_save_opportunities` | int32 | yes | `teams.teamStats.pitching.saveOpportunities` |  |
+| `teams_team_stats_pitching_earned_runs` | int32 | yes | `teams.teamStats.pitching.earnedRuns` |  |
+| `teams_team_stats_pitching_whip` | string | yes | `teams.teamStats.pitching.whip` |  |
+| `teams_team_stats_pitching_batters_faced` | int32 | yes | `teams.teamStats.pitching.battersFaced` |  |
+| `teams_team_stats_pitching_outs` | int32 | yes | `teams.teamStats.pitching.outs` |  |
+| `teams_team_stats_pitching_complete_games` | int32 | yes | `teams.teamStats.pitching.completeGames` |  |
+| `teams_team_stats_pitching_shutouts` | int32 | yes | `teams.teamStats.pitching.shutouts` |  |
+| `teams_team_stats_pitching_pitches_thrown` | int32 | yes | `teams.teamStats.pitching.pitchesThrown` |  |
+| `teams_team_stats_pitching_balls` | int32 | yes | `teams.teamStats.pitching.balls` |  |
+| `teams_team_stats_pitching_strikes` | int32 | yes | `teams.teamStats.pitching.strikes` |  |
+| `teams_team_stats_pitching_strike_percentage` | string | yes | `teams.teamStats.pitching.strikePercentage` |  |
+| `teams_team_stats_pitching_hit_batsmen` | int32 | yes | `teams.teamStats.pitching.hitBatsmen` |  |
+| `teams_team_stats_pitching_balks` | int32 | yes | `teams.teamStats.pitching.balks` |  |
+| `teams_team_stats_pitching_wild_pitches` | int32 | yes | `teams.teamStats.pitching.wildPitches` |  |
+| `teams_team_stats_pitching_pickoffs` | int32 | yes | `teams.teamStats.pitching.pickoffs` |  |
+| `teams_team_stats_pitching_ground_outs_to_airouts` | string | yes | `teams.teamStats.pitching.groundOutsToAirouts` |  |
+| `teams_team_stats_pitching_rbi` | int32 | yes | `teams.teamStats.pitching.rbi` |  |
+| `teams_team_stats_pitching_pitches_per_inning` | string | yes | `teams.teamStats.pitching.pitchesPerInning` |  |
+| `teams_team_stats_pitching_runs_scored_per9` | string | yes | `teams.teamStats.pitching.runsScoredPer9` |  |
+| `teams_team_stats_pitching_home_runs_per9` | string | yes | `teams.teamStats.pitching.homeRunsPer9` |  |
+| `teams_team_stats_pitching_inherited_runners` | int32 | yes | `teams.teamStats.pitching.inheritedRunners` |  |
+| `teams_team_stats_pitching_inherited_runners_scored` | int32 | yes | `teams.teamStats.pitching.inheritedRunnersScored` |  |
+| `teams_team_stats_pitching_catchers_interference` | int32 | yes | `teams.teamStats.pitching.catchersInterference` |  |
+| `teams_team_stats_pitching_sac_bunts` | int32 | yes | `teams.teamStats.pitching.sacBunts` |  |
+| `teams_team_stats_pitching_sac_flies` | int32 | yes | `teams.teamStats.pitching.sacFlies` |  |
+| `teams_team_stats_pitching_passed_ball` | int32 | yes | `teams.teamStats.pitching.passedBall` |  |
+| `teams_team_stats_pitching_pop_outs` | int32 | yes | `teams.teamStats.pitching.popOuts` |  |
+| `teams_team_stats_pitching_line_outs` | int32 | yes | `teams.teamStats.pitching.lineOuts` |  |
+| `teams_team_stats_fielding_caught_stealing` | int32 | yes | `teams.teamStats.fielding.caughtStealing` |  |
+| `teams_team_stats_fielding_stolen_bases` | int32 | yes | `teams.teamStats.fielding.stolenBases` |  |
+| `teams_team_stats_fielding_stolen_base_percentage` | string | yes | `teams.teamStats.fielding.stolenBasePercentage` |  |
+| `teams_team_stats_fielding_caught_stealing_percentage` | string | yes | `teams.teamStats.fielding.caughtStealingPercentage` |  |
+| `teams_team_stats_fielding_assists` | int32 | yes | `teams.teamStats.fielding.assists` |  |
+| `teams_team_stats_fielding_put_outs` | int32 | yes | `teams.teamStats.fielding.putOuts` |  |
+| `teams_team_stats_fielding_errors` | int32 | yes | `teams.teamStats.fielding.errors` |  |
+| `teams_team_stats_fielding_chances` | int32 | yes | `teams.teamStats.fielding.chances` |  |
+| `teams_team_stats_fielding_passed_ball` | int32 | yes | `teams.teamStats.fielding.passedBall` |  |
+| `teams_team_stats_fielding_pickoffs` | int32 | yes | `teams.teamStats.fielding.pickoffs` |  |
+| `teams_batters` | string | yes | `teams.batters` |  |
+| `teams_pitchers` | string | yes | `teams.pitchers` |  |
+| `teams_bench` | string | yes | `teams.bench` |  |
+| `teams_bullpen` | string | yes | `teams.bullpen` |  |
+| `teams_batting_order` | string | yes | `teams.battingOrder` |  |
+| `teams_info` | string | yes | `teams.info` |  |
+| `teams_note` | string | yes | `teams.note` |  |
+| `players_key` | string | yes | `players.key` |  |
+| `players_person_id` | int32 | yes | `players.person.id` |  |
+| `players_person_full_name` | string | yes | `players.person.fullName` |  |
+| `players_person_link` | string | yes | `players.person.link` |  |
+| `players_person_boxscore_name` | string | yes | `players.person.boxscoreName` |  |
+| `players_jersey_number` | string | yes | `players.jerseyNumber` |  |
+| `players_position_code` | string | yes | `players.position.code` |  |
+| `players_position_name` | string | yes | `players.position.name` |  |
+| `players_position_type` | string | yes | `players.position.type` |  |
+| `players_position_abbreviation` | string | yes | `players.position.abbreviation` |  |
+| `players_status_code` | string | yes | `players.status.code` |  |
+| `players_status_description` | string | yes | `players.status.description` |  |
+| `players_parent_team_id` | int32 | yes | `players.parentTeamId` |  |
+| `players_season_stats_batting_games_played` | int32 | yes | `players.seasonStats.batting.gamesPlayed` |  |
+| `players_season_stats_batting_fly_outs` | int32 | yes | `players.seasonStats.batting.flyOuts` |  |
+| `players_season_stats_batting_ground_outs` | int32 | yes | `players.seasonStats.batting.groundOuts` |  |
+| `players_season_stats_batting_air_outs` | int32 | yes | `players.seasonStats.batting.airOuts` |  |
+| `players_season_stats_batting_runs` | int32 | yes | `players.seasonStats.batting.runs` |  |
+| `players_season_stats_batting_doubles` | int32 | yes | `players.seasonStats.batting.doubles` |  |
+| `players_season_stats_batting_triples` | int32 | yes | `players.seasonStats.batting.triples` |  |
+| `players_season_stats_batting_home_runs` | int32 | yes | `players.seasonStats.batting.homeRuns` |  |
+| `players_season_stats_batting_strike_outs` | int32 | yes | `players.seasonStats.batting.strikeOuts` |  |
+| `players_season_stats_batting_base_on_balls` | int32 | yes | `players.seasonStats.batting.baseOnBalls` |  |
+| `players_season_stats_batting_intentional_walks` | int32 | yes | `players.seasonStats.batting.intentionalWalks` |  |
+| `players_season_stats_batting_hits` | int32 | yes | `players.seasonStats.batting.hits` |  |
+| `players_season_stats_batting_hit_by_pitch` | int32 | yes | `players.seasonStats.batting.hitByPitch` |  |
+| `players_season_stats_batting_avg` | string | yes | `players.seasonStats.batting.avg` |  |
+| `players_season_stats_batting_at_bats` | int32 | yes | `players.seasonStats.batting.atBats` |  |
+| `players_season_stats_batting_obp` | string | yes | `players.seasonStats.batting.obp` |  |
+| `players_season_stats_batting_slg` | string | yes | `players.seasonStats.batting.slg` |  |
+| `players_season_stats_batting_ops` | string | yes | `players.seasonStats.batting.ops` |  |
+| `players_season_stats_batting_caught_stealing` | int32 | yes | `players.seasonStats.batting.caughtStealing` |  |
+| `players_season_stats_batting_stolen_bases` | int32 | yes | `players.seasonStats.batting.stolenBases` |  |
+| `players_season_stats_batting_stolen_base_percentage` | string | yes | `players.seasonStats.batting.stolenBasePercentage` |  |
+| `players_season_stats_batting_caught_stealing_percentage` | string | yes | `players.seasonStats.batting.caughtStealingPercentage` |  |
+| `players_season_stats_batting_ground_into_double_play` | int32 | yes | `players.seasonStats.batting.groundIntoDoublePlay` |  |
+| `players_season_stats_batting_ground_into_triple_play` | int32 | yes | `players.seasonStats.batting.groundIntoTriplePlay` |  |
+| `players_season_stats_batting_plate_appearances` | int32 | yes | `players.seasonStats.batting.plateAppearances` |  |
+| `players_season_stats_batting_total_bases` | int32 | yes | `players.seasonStats.batting.totalBases` |  |
+| `players_season_stats_batting_rbi` | int32 | yes | `players.seasonStats.batting.rbi` |  |
+| `players_season_stats_batting_left_on_base` | int32 | yes | `players.seasonStats.batting.leftOnBase` |  |
+| `players_season_stats_batting_sac_bunts` | int32 | yes | `players.seasonStats.batting.sacBunts` |  |
+| `players_season_stats_batting_sac_flies` | int32 | yes | `players.seasonStats.batting.sacFlies` |  |
+| `players_season_stats_batting_babip` | string | yes | `players.seasonStats.batting.babip` |  |
+| `players_season_stats_batting_ground_outs_to_airouts` | string | yes | `players.seasonStats.batting.groundOutsToAirouts` |  |
+| `players_season_stats_batting_catchers_interference` | int32 | yes | `players.seasonStats.batting.catchersInterference` |  |
+| `players_season_stats_batting_pickoffs` | int32 | yes | `players.seasonStats.batting.pickoffs` |  |
+| `players_season_stats_batting_at_bats_per_home_run` | string | yes | `players.seasonStats.batting.atBatsPerHomeRun` |  |
+| `players_season_stats_batting_pop_outs` | int32 | yes | `players.seasonStats.batting.popOuts` |  |
+| `players_season_stats_batting_line_outs` | int32 | yes | `players.seasonStats.batting.lineOuts` |  |
+| `players_season_stats_pitching_games_played` | int32 | yes | `players.seasonStats.pitching.gamesPlayed` |  |
+| `players_season_stats_pitching_games_started` | int32 | yes | `players.seasonStats.pitching.gamesStarted` |  |
+| `players_season_stats_pitching_fly_outs` | int32 | yes | `players.seasonStats.pitching.flyOuts` |  |
+| `players_season_stats_pitching_ground_outs` | int32 | yes | `players.seasonStats.pitching.groundOuts` |  |
+| `players_season_stats_pitching_air_outs` | int32 | yes | `players.seasonStats.pitching.airOuts` |  |
+| `players_season_stats_pitching_runs` | int32 | yes | `players.seasonStats.pitching.runs` |  |
+| `players_season_stats_pitching_doubles` | int32 | yes | `players.seasonStats.pitching.doubles` |  |
+| `players_season_stats_pitching_triples` | int32 | yes | `players.seasonStats.pitching.triples` |  |
+| `players_season_stats_pitching_home_runs` | int32 | yes | `players.seasonStats.pitching.homeRuns` |  |
+| `players_season_stats_pitching_strike_outs` | int32 | yes | `players.seasonStats.pitching.strikeOuts` |  |
+| `players_season_stats_pitching_base_on_balls` | int32 | yes | `players.seasonStats.pitching.baseOnBalls` |  |
+| `players_season_stats_pitching_intentional_walks` | int32 | yes | `players.seasonStats.pitching.intentionalWalks` |  |
+| `players_season_stats_pitching_hits` | int32 | yes | `players.seasonStats.pitching.hits` |  |
+| `players_season_stats_pitching_hit_by_pitch` | int32 | yes | `players.seasonStats.pitching.hitByPitch` |  |
+| `players_season_stats_pitching_at_bats` | int32 | yes | `players.seasonStats.pitching.atBats` |  |
+| `players_season_stats_pitching_obp` | string | yes | `players.seasonStats.pitching.obp` |  |
+| `players_season_stats_pitching_caught_stealing` | int32 | yes | `players.seasonStats.pitching.caughtStealing` |  |
+| `players_season_stats_pitching_stolen_bases` | int32 | yes | `players.seasonStats.pitching.stolenBases` |  |
+| `players_season_stats_pitching_stolen_base_percentage` | string | yes | `players.seasonStats.pitching.stolenBasePercentage` |  |
+| `players_season_stats_pitching_caught_stealing_percentage` | string | yes | `players.seasonStats.pitching.caughtStealingPercentage` |  |
+| `players_season_stats_pitching_number_of_pitches` | int32 | yes | `players.seasonStats.pitching.numberOfPitches` |  |
+| `players_season_stats_pitching_era` | string | yes | `players.seasonStats.pitching.era` |  |
+| `players_season_stats_pitching_innings_pitched` | string | yes | `players.seasonStats.pitching.inningsPitched` |  |
+| `players_season_stats_pitching_wins` | int32 | yes | `players.seasonStats.pitching.wins` |  |
+| `players_season_stats_pitching_losses` | int32 | yes | `players.seasonStats.pitching.losses` |  |
+| `players_season_stats_pitching_saves` | int32 | yes | `players.seasonStats.pitching.saves` |  |
+| `players_season_stats_pitching_save_opportunities` | int32 | yes | `players.seasonStats.pitching.saveOpportunities` |  |
+| `players_season_stats_pitching_holds` | int32 | yes | `players.seasonStats.pitching.holds` |  |
+| `players_season_stats_pitching_blown_saves` | int32 | yes | `players.seasonStats.pitching.blownSaves` |  |
+| `players_season_stats_pitching_earned_runs` | int32 | yes | `players.seasonStats.pitching.earnedRuns` |  |
+| `players_season_stats_pitching_whip` | string | yes | `players.seasonStats.pitching.whip` |  |
+| `players_season_stats_pitching_batters_faced` | int32 | yes | `players.seasonStats.pitching.battersFaced` |  |
+| `players_season_stats_pitching_outs` | int32 | yes | `players.seasonStats.pitching.outs` |  |
+| `players_season_stats_pitching_games_pitched` | int32 | yes | `players.seasonStats.pitching.gamesPitched` |  |
+| `players_season_stats_pitching_complete_games` | int32 | yes | `players.seasonStats.pitching.completeGames` |  |
+| `players_season_stats_pitching_shutouts` | int32 | yes | `players.seasonStats.pitching.shutouts` |  |
+| `players_season_stats_pitching_pitches_thrown` | int32 | yes | `players.seasonStats.pitching.pitchesThrown` |  |
+| `players_season_stats_pitching_balls` | int32 | yes | `players.seasonStats.pitching.balls` |  |
+| `players_season_stats_pitching_strikes` | int32 | yes | `players.seasonStats.pitching.strikes` |  |
+| `players_season_stats_pitching_strike_percentage` | string | yes | `players.seasonStats.pitching.strikePercentage` |  |
+| `players_season_stats_pitching_hit_batsmen` | int32 | yes | `players.seasonStats.pitching.hitBatsmen` |  |
+| `players_season_stats_pitching_balks` | int32 | yes | `players.seasonStats.pitching.balks` |  |
+| `players_season_stats_pitching_wild_pitches` | int32 | yes | `players.seasonStats.pitching.wildPitches` |  |
+| `players_season_stats_pitching_pickoffs` | int32 | yes | `players.seasonStats.pitching.pickoffs` |  |
+| `players_season_stats_pitching_ground_outs_to_airouts` | string | yes | `players.seasonStats.pitching.groundOutsToAirouts` |  |
+| `players_season_stats_pitching_rbi` | int32 | yes | `players.seasonStats.pitching.rbi` |  |
+| `players_season_stats_pitching_win_percentage` | string | yes | `players.seasonStats.pitching.winPercentage` |  |
+| `players_season_stats_pitching_pitches_per_inning` | string | yes | `players.seasonStats.pitching.pitchesPerInning` |  |
+| `players_season_stats_pitching_games_finished` | int32 | yes | `players.seasonStats.pitching.gamesFinished` |  |
+| `players_season_stats_pitching_strikeout_walk_ratio` | string | yes | `players.seasonStats.pitching.strikeoutWalkRatio` |  |
+| `players_season_stats_pitching_strikeouts_per9_inn` | string | yes | `players.seasonStats.pitching.strikeoutsPer9Inn` |  |
+| `players_season_stats_pitching_walks_per9_inn` | string | yes | `players.seasonStats.pitching.walksPer9Inn` |  |
+| `players_season_stats_pitching_hits_per9_inn` | string | yes | `players.seasonStats.pitching.hitsPer9Inn` |  |
+| `players_season_stats_pitching_runs_scored_per9` | string | yes | `players.seasonStats.pitching.runsScoredPer9` |  |
+| `players_season_stats_pitching_home_runs_per9` | string | yes | `players.seasonStats.pitching.homeRunsPer9` |  |
+| `players_season_stats_pitching_inherited_runners` | int32 | yes | `players.seasonStats.pitching.inheritedRunners` |  |
+| `players_season_stats_pitching_inherited_runners_scored` | int32 | yes | `players.seasonStats.pitching.inheritedRunnersScored` |  |
+| `players_season_stats_pitching_catchers_interference` | int32 | yes | `players.seasonStats.pitching.catchersInterference` |  |
+| `players_season_stats_pitching_sac_bunts` | int32 | yes | `players.seasonStats.pitching.sacBunts` |  |
+| `players_season_stats_pitching_sac_flies` | int32 | yes | `players.seasonStats.pitching.sacFlies` |  |
+| `players_season_stats_pitching_passed_ball` | int32 | yes | `players.seasonStats.pitching.passedBall` |  |
+| `players_season_stats_pitching_pop_outs` | int32 | yes | `players.seasonStats.pitching.popOuts` |  |
+| `players_season_stats_pitching_line_outs` | int32 | yes | `players.seasonStats.pitching.lineOuts` |  |
+| `players_season_stats_fielding_caught_stealing` | int32 | yes | `players.seasonStats.fielding.caughtStealing` |  |
+| `players_season_stats_fielding_stolen_bases` | int32 | yes | `players.seasonStats.fielding.stolenBases` |  |
+| `players_season_stats_fielding_stolen_base_percentage` | string | yes | `players.seasonStats.fielding.stolenBasePercentage` |  |
+| `players_season_stats_fielding_caught_stealing_percentage` | string | yes | `players.seasonStats.fielding.caughtStealingPercentage` |  |
+| `players_season_stats_fielding_assists` | int32 | yes | `players.seasonStats.fielding.assists` |  |
+| `players_season_stats_fielding_put_outs` | int32 | yes | `players.seasonStats.fielding.putOuts` |  |
+| `players_season_stats_fielding_errors` | int32 | yes | `players.seasonStats.fielding.errors` |  |
+| `players_season_stats_fielding_chances` | int32 | yes | `players.seasonStats.fielding.chances` |  |
+| `players_season_stats_fielding_fielding` | string | yes | `players.seasonStats.fielding.fielding` |  |
+| `players_season_stats_fielding_passed_ball` | int32 | yes | `players.seasonStats.fielding.passedBall` |  |
+| `players_season_stats_fielding_pickoffs` | int32 | yes | `players.seasonStats.fielding.pickoffs` |  |
+| `players_game_status_is_current_batter` | bool | yes | `players.gameStatus.isCurrentBatter` |  |
+| `players_game_status_is_current_pitcher` | bool | yes | `players.gameStatus.isCurrentPitcher` |  |
+| `players_game_status_is_on_bench` | bool | yes | `players.gameStatus.isOnBench` |  |
+| `players_game_status_is_substitute` | bool | yes | `players.gameStatus.isSubstitute` |  |
+| `person_id` | int32 | yes | `person.id` |  |
+| `person_full_name` | string | yes | `person.fullName` |  |
+| `person_link` | string | yes | `person.link` |  |
+| `person_boxscore_name` | string | yes | `person.boxscoreName` |  |
+| `jersey_number` | string | yes | `jerseyNumber` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `status_code` | string | yes | `status.code` |  |
+| `status_description` | string | yes | `status.description` |  |
+| `parent_team_id` | int32 | yes | `parentTeamId` |  |
+| `season_stats_batting_games_played` | int32 | yes | `seasonStats.batting.gamesPlayed` |  |
+| `season_stats_batting_fly_outs` | int32 | yes | `seasonStats.batting.flyOuts` |  |
+| `season_stats_batting_ground_outs` | int32 | yes | `seasonStats.batting.groundOuts` |  |
+| `season_stats_batting_air_outs` | int32 | yes | `seasonStats.batting.airOuts` |  |
+| `season_stats_batting_runs` | int32 | yes | `seasonStats.batting.runs` |  |
+| `season_stats_batting_doubles` | int32 | yes | `seasonStats.batting.doubles` |  |
+| `season_stats_batting_triples` | int32 | yes | `seasonStats.batting.triples` |  |
+| `season_stats_batting_home_runs` | int32 | yes | `seasonStats.batting.homeRuns` |  |
+| `season_stats_batting_strike_outs` | int32 | yes | `seasonStats.batting.strikeOuts` |  |
+| `season_stats_batting_base_on_balls` | int32 | yes | `seasonStats.batting.baseOnBalls` |  |
+| `season_stats_batting_intentional_walks` | int32 | yes | `seasonStats.batting.intentionalWalks` |  |
+| `season_stats_batting_hits` | int32 | yes | `seasonStats.batting.hits` |  |
+| `season_stats_batting_hit_by_pitch` | int32 | yes | `seasonStats.batting.hitByPitch` |  |
+| `season_stats_batting_avg` | string | yes | `seasonStats.batting.avg` |  |
+| `season_stats_batting_at_bats` | int32 | yes | `seasonStats.batting.atBats` |  |
+| `season_stats_batting_obp` | string | yes | `seasonStats.batting.obp` |  |
+| `season_stats_batting_slg` | string | yes | `seasonStats.batting.slg` |  |
+| `season_stats_batting_ops` | string | yes | `seasonStats.batting.ops` |  |
+| `season_stats_batting_caught_stealing` | int32 | yes | `seasonStats.batting.caughtStealing` |  |
+| `season_stats_batting_stolen_bases` | int32 | yes | `seasonStats.batting.stolenBases` |  |
+| `season_stats_batting_stolen_base_percentage` | string | yes | `seasonStats.batting.stolenBasePercentage` |  |
+| `season_stats_batting_caught_stealing_percentage` | string | yes | `seasonStats.batting.caughtStealingPercentage` |  |
+| `season_stats_batting_ground_into_double_play` | int32 | yes | `seasonStats.batting.groundIntoDoublePlay` |  |
+| `season_stats_batting_ground_into_triple_play` | int32 | yes | `seasonStats.batting.groundIntoTriplePlay` |  |
+| `season_stats_batting_plate_appearances` | int32 | yes | `seasonStats.batting.plateAppearances` |  |
+| `season_stats_batting_total_bases` | int32 | yes | `seasonStats.batting.totalBases` |  |
+| `season_stats_batting_rbi` | int32 | yes | `seasonStats.batting.rbi` |  |
+| `season_stats_batting_left_on_base` | int32 | yes | `seasonStats.batting.leftOnBase` |  |
+| `season_stats_batting_sac_bunts` | int32 | yes | `seasonStats.batting.sacBunts` |  |
+| `season_stats_batting_sac_flies` | int32 | yes | `seasonStats.batting.sacFlies` |  |
+| `season_stats_batting_babip` | string | yes | `seasonStats.batting.babip` |  |
+| `season_stats_batting_ground_outs_to_airouts` | string | yes | `seasonStats.batting.groundOutsToAirouts` |  |
+| `season_stats_batting_catchers_interference` | int32 | yes | `seasonStats.batting.catchersInterference` |  |
+| `season_stats_batting_pickoffs` | int32 | yes | `seasonStats.batting.pickoffs` |  |
+| `season_stats_batting_at_bats_per_home_run` | string | yes | `seasonStats.batting.atBatsPerHomeRun` |  |
+| `season_stats_batting_pop_outs` | int32 | yes | `seasonStats.batting.popOuts` |  |
+| `season_stats_batting_line_outs` | int32 | yes | `seasonStats.batting.lineOuts` |  |
+| `season_stats_pitching_games_played` | int32 | yes | `seasonStats.pitching.gamesPlayed` |  |
+| `season_stats_pitching_games_started` | int32 | yes | `seasonStats.pitching.gamesStarted` |  |
+| `season_stats_pitching_fly_outs` | int32 | yes | `seasonStats.pitching.flyOuts` |  |
+| `season_stats_pitching_ground_outs` | int32 | yes | `seasonStats.pitching.groundOuts` |  |
+| `season_stats_pitching_air_outs` | int32 | yes | `seasonStats.pitching.airOuts` |  |
+| `season_stats_pitching_runs` | int32 | yes | `seasonStats.pitching.runs` |  |
+| `season_stats_pitching_doubles` | int32 | yes | `seasonStats.pitching.doubles` |  |
+| `season_stats_pitching_triples` | int32 | yes | `seasonStats.pitching.triples` |  |
+| `season_stats_pitching_home_runs` | int32 | yes | `seasonStats.pitching.homeRuns` |  |
+| `season_stats_pitching_strike_outs` | int32 | yes | `seasonStats.pitching.strikeOuts` |  |
+| `season_stats_pitching_base_on_balls` | int32 | yes | `seasonStats.pitching.baseOnBalls` |  |
+| `season_stats_pitching_intentional_walks` | int32 | yes | `seasonStats.pitching.intentionalWalks` |  |
+| `season_stats_pitching_hits` | int32 | yes | `seasonStats.pitching.hits` |  |
+| `season_stats_pitching_hit_by_pitch` | int32 | yes | `seasonStats.pitching.hitByPitch` |  |
+| `season_stats_pitching_at_bats` | int32 | yes | `seasonStats.pitching.atBats` |  |
+| `season_stats_pitching_obp` | string | yes | `seasonStats.pitching.obp` |  |
+| `season_stats_pitching_caught_stealing` | int32 | yes | `seasonStats.pitching.caughtStealing` |  |
+| `season_stats_pitching_stolen_bases` | int32 | yes | `seasonStats.pitching.stolenBases` |  |
+| `season_stats_pitching_stolen_base_percentage` | string | yes | `seasonStats.pitching.stolenBasePercentage` |  |
+| `season_stats_pitching_caught_stealing_percentage` | string | yes | `seasonStats.pitching.caughtStealingPercentage` |  |
+| `season_stats_pitching_number_of_pitches` | int32 | yes | `seasonStats.pitching.numberOfPitches` |  |
+| `season_stats_pitching_era` | string | yes | `seasonStats.pitching.era` |  |
+| `season_stats_pitching_innings_pitched` | string | yes | `seasonStats.pitching.inningsPitched` |  |
+| `season_stats_pitching_wins` | int32 | yes | `seasonStats.pitching.wins` |  |
+| `season_stats_pitching_losses` | int32 | yes | `seasonStats.pitching.losses` |  |
+| `season_stats_pitching_saves` | int32 | yes | `seasonStats.pitching.saves` |  |
+| `season_stats_pitching_save_opportunities` | int32 | yes | `seasonStats.pitching.saveOpportunities` |  |
+| `season_stats_pitching_holds` | int32 | yes | `seasonStats.pitching.holds` |  |
+| `season_stats_pitching_blown_saves` | int32 | yes | `seasonStats.pitching.blownSaves` |  |
+| `season_stats_pitching_earned_runs` | int32 | yes | `seasonStats.pitching.earnedRuns` |  |
+| `season_stats_pitching_whip` | string | yes | `seasonStats.pitching.whip` |  |
+| `season_stats_pitching_batters_faced` | int32 | yes | `seasonStats.pitching.battersFaced` |  |
+| `season_stats_pitching_outs` | int32 | yes | `seasonStats.pitching.outs` |  |
+| `season_stats_pitching_games_pitched` | int32 | yes | `seasonStats.pitching.gamesPitched` |  |
+| `season_stats_pitching_complete_games` | int32 | yes | `seasonStats.pitching.completeGames` |  |
+| `season_stats_pitching_shutouts` | int32 | yes | `seasonStats.pitching.shutouts` |  |
+| `season_stats_pitching_pitches_thrown` | int32 | yes | `seasonStats.pitching.pitchesThrown` |  |
+| `season_stats_pitching_balls` | int32 | yes | `seasonStats.pitching.balls` |  |
+| `season_stats_pitching_strikes` | int32 | yes | `seasonStats.pitching.strikes` |  |
+| `season_stats_pitching_strike_percentage` | string | yes | `seasonStats.pitching.strikePercentage` |  |
+| `season_stats_pitching_hit_batsmen` | int32 | yes | `seasonStats.pitching.hitBatsmen` |  |
+| `season_stats_pitching_balks` | int32 | yes | `seasonStats.pitching.balks` |  |
+| `season_stats_pitching_wild_pitches` | int32 | yes | `seasonStats.pitching.wildPitches` |  |
+| `season_stats_pitching_pickoffs` | int32 | yes | `seasonStats.pitching.pickoffs` |  |
+| `season_stats_pitching_ground_outs_to_airouts` | string | yes | `seasonStats.pitching.groundOutsToAirouts` |  |
+| `season_stats_pitching_rbi` | int32 | yes | `seasonStats.pitching.rbi` |  |
+| `season_stats_pitching_win_percentage` | string | yes | `seasonStats.pitching.winPercentage` |  |
+| `season_stats_pitching_pitches_per_inning` | string | yes | `seasonStats.pitching.pitchesPerInning` |  |
+| `season_stats_pitching_games_finished` | int32 | yes | `seasonStats.pitching.gamesFinished` |  |
+| `season_stats_pitching_strikeout_walk_ratio` | string | yes | `seasonStats.pitching.strikeoutWalkRatio` |  |
+| `season_stats_pitching_strikeouts_per9_inn` | string | yes | `seasonStats.pitching.strikeoutsPer9Inn` |  |
+| `season_stats_pitching_walks_per9_inn` | string | yes | `seasonStats.pitching.walksPer9Inn` |  |
+| `season_stats_pitching_hits_per9_inn` | string | yes | `seasonStats.pitching.hitsPer9Inn` |  |
+| `season_stats_pitching_runs_scored_per9` | string | yes | `seasonStats.pitching.runsScoredPer9` |  |
+| `season_stats_pitching_home_runs_per9` | string | yes | `seasonStats.pitching.homeRunsPer9` |  |
+| `season_stats_pitching_inherited_runners` | int32 | yes | `seasonStats.pitching.inheritedRunners` |  |
+| `season_stats_pitching_inherited_runners_scored` | int32 | yes | `seasonStats.pitching.inheritedRunnersScored` |  |
+| `season_stats_pitching_catchers_interference` | int32 | yes | `seasonStats.pitching.catchersInterference` |  |
+| `season_stats_pitching_sac_bunts` | int32 | yes | `seasonStats.pitching.sacBunts` |  |
+| `season_stats_pitching_sac_flies` | int32 | yes | `seasonStats.pitching.sacFlies` |  |
+| `season_stats_pitching_passed_ball` | int32 | yes | `seasonStats.pitching.passedBall` |  |
+| `season_stats_pitching_pop_outs` | int32 | yes | `seasonStats.pitching.popOuts` |  |
+| `season_stats_pitching_line_outs` | int32 | yes | `seasonStats.pitching.lineOuts` |  |
+| `season_stats_fielding_caught_stealing` | int32 | yes | `seasonStats.fielding.caughtStealing` |  |
+| `season_stats_fielding_stolen_bases` | int32 | yes | `seasonStats.fielding.stolenBases` |  |
+| `season_stats_fielding_stolen_base_percentage` | string | yes | `seasonStats.fielding.stolenBasePercentage` |  |
+| `season_stats_fielding_caught_stealing_percentage` | string | yes | `seasonStats.fielding.caughtStealingPercentage` |  |
+| `season_stats_fielding_assists` | int32 | yes | `seasonStats.fielding.assists` |  |
+| `season_stats_fielding_put_outs` | int32 | yes | `seasonStats.fielding.putOuts` |  |
+| `season_stats_fielding_errors` | int32 | yes | `seasonStats.fielding.errors` |  |
+| `season_stats_fielding_chances` | int32 | yes | `seasonStats.fielding.chances` |  |
+| `season_stats_fielding_fielding` | string | yes | `seasonStats.fielding.fielding` |  |
+| `season_stats_fielding_passed_ball` | int32 | yes | `seasonStats.fielding.passedBall` |  |
+| `season_stats_fielding_pickoffs` | int32 | yes | `seasonStats.fielding.pickoffs` |  |
+| `game_status_is_current_batter` | bool | yes | `gameStatus.isCurrentBatter` |  |
+| `game_status_is_current_pitcher` | bool | yes | `gameStatus.isCurrentPitcher` |  |
+| `game_status_is_on_bench` | bool | yes | `gameStatus.isOnBench` |  |
+| `game_status_is_substitute` | bool | yes | `gameStatus.isSubstitute` |  |
+| `players_stats_pitching_summary` | string | yes | `players.stats.pitching.summary` |  |
+| `players_stats_pitching_games_played` | int32 | yes | `players.stats.pitching.gamesPlayed` |  |
+| `players_stats_pitching_games_started` | int32 | yes | `players.stats.pitching.gamesStarted` |  |
+| `players_stats_pitching_fly_outs` | int32 | yes | `players.stats.pitching.flyOuts` |  |
+| `players_stats_pitching_ground_outs` | int32 | yes | `players.stats.pitching.groundOuts` |  |
+| `players_stats_pitching_air_outs` | int32 | yes | `players.stats.pitching.airOuts` |  |
+| `players_stats_pitching_runs` | int32 | yes | `players.stats.pitching.runs` |  |
+| `players_stats_pitching_doubles` | int32 | yes | `players.stats.pitching.doubles` |  |
+| `players_stats_pitching_triples` | int32 | yes | `players.stats.pitching.triples` |  |
+| `players_stats_pitching_home_runs` | int32 | yes | `players.stats.pitching.homeRuns` |  |
+| `players_stats_pitching_strike_outs` | int32 | yes | `players.stats.pitching.strikeOuts` |  |
+| `players_stats_pitching_base_on_balls` | int32 | yes | `players.stats.pitching.baseOnBalls` |  |
+| `players_stats_pitching_intentional_walks` | int32 | yes | `players.stats.pitching.intentionalWalks` |  |
+| `players_stats_pitching_hits` | int32 | yes | `players.stats.pitching.hits` |  |
+| `players_stats_pitching_hit_by_pitch` | int32 | yes | `players.stats.pitching.hitByPitch` |  |
+| `players_stats_pitching_at_bats` | int32 | yes | `players.stats.pitching.atBats` |  |
+| `players_stats_pitching_caught_stealing` | int32 | yes | `players.stats.pitching.caughtStealing` |  |
+| `players_stats_pitching_stolen_bases` | int32 | yes | `players.stats.pitching.stolenBases` |  |
+| `players_stats_pitching_stolen_base_percentage` | string | yes | `players.stats.pitching.stolenBasePercentage` |  |
+| `players_stats_pitching_number_of_pitches` | int32 | yes | `players.stats.pitching.numberOfPitches` |  |
+| `players_stats_pitching_innings_pitched` | string | yes | `players.stats.pitching.inningsPitched` |  |
+| `players_stats_pitching_wins` | int32 | yes | `players.stats.pitching.wins` |  |
+| `players_stats_pitching_losses` | int32 | yes | `players.stats.pitching.losses` |  |
+| `players_stats_pitching_saves` | int32 | yes | `players.stats.pitching.saves` |  |
+| `players_stats_pitching_save_opportunities` | int32 | yes | `players.stats.pitching.saveOpportunities` |  |
+| `players_stats_pitching_holds` | int32 | yes | `players.stats.pitching.holds` |  |
+| `players_stats_pitching_blown_saves` | int32 | yes | `players.stats.pitching.blownSaves` |  |
+| `players_stats_pitching_earned_runs` | int32 | yes | `players.stats.pitching.earnedRuns` |  |
+| `players_stats_pitching_batters_faced` | int32 | yes | `players.stats.pitching.battersFaced` |  |
+| `players_stats_pitching_outs` | int32 | yes | `players.stats.pitching.outs` |  |
+| `players_stats_pitching_games_pitched` | int32 | yes | `players.stats.pitching.gamesPitched` |  |
+| `players_stats_pitching_complete_games` | int32 | yes | `players.stats.pitching.completeGames` |  |
+| `players_stats_pitching_shutouts` | int32 | yes | `players.stats.pitching.shutouts` |  |
+| `players_stats_pitching_pitches_thrown` | int32 | yes | `players.stats.pitching.pitchesThrown` |  |
+| `players_stats_pitching_balls` | int32 | yes | `players.stats.pitching.balls` |  |
+| `players_stats_pitching_strikes` | int32 | yes | `players.stats.pitching.strikes` |  |
+| `players_stats_pitching_strike_percentage` | string | yes | `players.stats.pitching.strikePercentage` |  |
+| `players_stats_pitching_hit_batsmen` | int32 | yes | `players.stats.pitching.hitBatsmen` |  |
+| `players_stats_pitching_balks` | int32 | yes | `players.stats.pitching.balks` |  |
+| `players_stats_pitching_wild_pitches` | int32 | yes | `players.stats.pitching.wildPitches` |  |
+| `players_stats_pitching_pickoffs` | int32 | yes | `players.stats.pitching.pickoffs` |  |
+| `players_stats_pitching_rbi` | int32 | yes | `players.stats.pitching.rbi` |  |
+| `players_stats_pitching_games_finished` | int32 | yes | `players.stats.pitching.gamesFinished` |  |
+| `players_stats_pitching_runs_scored_per9` | string | yes | `players.stats.pitching.runsScoredPer9` |  |
+| `players_stats_pitching_home_runs_per9` | string | yes | `players.stats.pitching.homeRunsPer9` |  |
+| `players_stats_pitching_inherited_runners` | int32 | yes | `players.stats.pitching.inheritedRunners` |  |
+| `players_stats_pitching_inherited_runners_scored` | int32 | yes | `players.stats.pitching.inheritedRunnersScored` |  |
+| `players_stats_pitching_catchers_interference` | int32 | yes | `players.stats.pitching.catchersInterference` |  |
+| `players_stats_pitching_sac_bunts` | int32 | yes | `players.stats.pitching.sacBunts` |  |
+| `players_stats_pitching_sac_flies` | int32 | yes | `players.stats.pitching.sacFlies` |  |
+| `players_stats_pitching_passed_ball` | int32 | yes | `players.stats.pitching.passedBall` |  |
+| `players_stats_pitching_pop_outs` | int32 | yes | `players.stats.pitching.popOuts` |  |
+| `players_stats_pitching_line_outs` | int32 | yes | `players.stats.pitching.lineOuts` |  |
+| `players_stats_fielding_caught_stealing` | int32 | yes | `players.stats.fielding.caughtStealing` |  |
+| `players_stats_fielding_stolen_bases` | int32 | yes | `players.stats.fielding.stolenBases` |  |
+| `players_stats_fielding_stolen_base_percentage` | string | yes | `players.stats.fielding.stolenBasePercentage` |  |
+| `players_stats_fielding_caught_stealing_percentage` | string | yes | `players.stats.fielding.caughtStealingPercentage` |  |
+| `players_stats_fielding_assists` | int32 | yes | `players.stats.fielding.assists` |  |
+| `players_stats_fielding_put_outs` | int32 | yes | `players.stats.fielding.putOuts` |  |
+| `players_stats_fielding_errors` | int32 | yes | `players.stats.fielding.errors` |  |
+| `players_stats_fielding_chances` | int32 | yes | `players.stats.fielding.chances` |  |
+| `players_stats_fielding_fielding` | string | yes | `players.stats.fielding.fielding` |  |
+| `players_stats_fielding_passed_ball` | int32 | yes | `players.stats.fielding.passedBall` |  |
+| `players_stats_fielding_pickoffs` | int32 | yes | `players.stats.fielding.pickoffs` |  |
+| `players_all_positions` | string | yes | `players.allPositions` |  |
+| `stats_pitching_summary` | string | yes | `stats.pitching.summary` |  |
+| `stats_pitching_games_played` | int32 | yes | `stats.pitching.gamesPlayed` |  |
+| `stats_pitching_games_started` | int32 | yes | `stats.pitching.gamesStarted` |  |
+| `stats_pitching_fly_outs` | int32 | yes | `stats.pitching.flyOuts` |  |
+| `stats_pitching_ground_outs` | int32 | yes | `stats.pitching.groundOuts` |  |
+| `stats_pitching_air_outs` | int32 | yes | `stats.pitching.airOuts` |  |
+| `stats_pitching_runs` | int32 | yes | `stats.pitching.runs` |  |
+| `stats_pitching_doubles` | int32 | yes | `stats.pitching.doubles` |  |
+| `stats_pitching_triples` | int32 | yes | `stats.pitching.triples` |  |
+| `stats_pitching_home_runs` | int32 | yes | `stats.pitching.homeRuns` |  |
+| `stats_pitching_strike_outs` | int32 | yes | `stats.pitching.strikeOuts` |  |
+| `stats_pitching_base_on_balls` | int32 | yes | `stats.pitching.baseOnBalls` |  |
+| `stats_pitching_intentional_walks` | int32 | yes | `stats.pitching.intentionalWalks` |  |
+| `stats_pitching_hits` | int32 | yes | `stats.pitching.hits` |  |
+| `stats_pitching_hit_by_pitch` | int32 | yes | `stats.pitching.hitByPitch` |  |
+| `stats_pitching_at_bats` | int32 | yes | `stats.pitching.atBats` |  |
+| `stats_pitching_caught_stealing` | int32 | yes | `stats.pitching.caughtStealing` |  |
+| `stats_pitching_stolen_bases` | int32 | yes | `stats.pitching.stolenBases` |  |
+| `stats_pitching_stolen_base_percentage` | string | yes | `stats.pitching.stolenBasePercentage` |  |
+| `stats_pitching_number_of_pitches` | int32 | yes | `stats.pitching.numberOfPitches` |  |
+| `stats_pitching_innings_pitched` | string | yes | `stats.pitching.inningsPitched` |  |
+| `stats_pitching_wins` | int32 | yes | `stats.pitching.wins` |  |
+| `stats_pitching_losses` | int32 | yes | `stats.pitching.losses` |  |
+| `stats_pitching_saves` | int32 | yes | `stats.pitching.saves` |  |
+| `stats_pitching_save_opportunities` | int32 | yes | `stats.pitching.saveOpportunities` |  |
+| `stats_pitching_holds` | int32 | yes | `stats.pitching.holds` |  |
+| `stats_pitching_blown_saves` | int32 | yes | `stats.pitching.blownSaves` |  |
+| `stats_pitching_earned_runs` | int32 | yes | `stats.pitching.earnedRuns` |  |
+| `stats_pitching_batters_faced` | int32 | yes | `stats.pitching.battersFaced` |  |
+| `stats_pitching_outs` | int32 | yes | `stats.pitching.outs` |  |
+| `stats_pitching_games_pitched` | int32 | yes | `stats.pitching.gamesPitched` |  |
+| `stats_pitching_complete_games` | int32 | yes | `stats.pitching.completeGames` |  |
+| `stats_pitching_shutouts` | int32 | yes | `stats.pitching.shutouts` |  |
+| `stats_pitching_pitches_thrown` | int32 | yes | `stats.pitching.pitchesThrown` |  |
+| `stats_pitching_balls` | int32 | yes | `stats.pitching.balls` |  |
+| `stats_pitching_strikes` | int32 | yes | `stats.pitching.strikes` |  |
+| `stats_pitching_strike_percentage` | string | yes | `stats.pitching.strikePercentage` |  |
+| `stats_pitching_hit_batsmen` | int32 | yes | `stats.pitching.hitBatsmen` |  |
+| `stats_pitching_balks` | int32 | yes | `stats.pitching.balks` |  |
+| `stats_pitching_wild_pitches` | int32 | yes | `stats.pitching.wildPitches` |  |
+| `stats_pitching_pickoffs` | int32 | yes | `stats.pitching.pickoffs` |  |
+| `stats_pitching_rbi` | int32 | yes | `stats.pitching.rbi` |  |
+| `stats_pitching_games_finished` | int32 | yes | `stats.pitching.gamesFinished` |  |
+| `stats_pitching_runs_scored_per9` | string | yes | `stats.pitching.runsScoredPer9` |  |
+| `stats_pitching_home_runs_per9` | string | yes | `stats.pitching.homeRunsPer9` |  |
+| `stats_pitching_inherited_runners` | int32 | yes | `stats.pitching.inheritedRunners` |  |
+| `stats_pitching_inherited_runners_scored` | int32 | yes | `stats.pitching.inheritedRunnersScored` |  |
+| `stats_pitching_catchers_interference` | int32 | yes | `stats.pitching.catchersInterference` |  |
+| `stats_pitching_sac_bunts` | int32 | yes | `stats.pitching.sacBunts` |  |
+| `stats_pitching_sac_flies` | int32 | yes | `stats.pitching.sacFlies` |  |
+| `stats_pitching_passed_ball` | int32 | yes | `stats.pitching.passedBall` |  |
+| `stats_pitching_pop_outs` | int32 | yes | `stats.pitching.popOuts` |  |
+| `stats_pitching_line_outs` | int32 | yes | `stats.pitching.lineOuts` |  |
+| `stats_fielding_caught_stealing` | int32 | yes | `stats.fielding.caughtStealing` |  |
+| `stats_fielding_stolen_bases` | int32 | yes | `stats.fielding.stolenBases` |  |
+| `stats_fielding_stolen_base_percentage` | string | yes | `stats.fielding.stolenBasePercentage` |  |
+| `stats_fielding_caught_stealing_percentage` | string | yes | `stats.fielding.caughtStealingPercentage` |  |
+| `stats_fielding_assists` | int32 | yes | `stats.fielding.assists` |  |
+| `stats_fielding_put_outs` | int32 | yes | `stats.fielding.putOuts` |  |
+| `stats_fielding_errors` | int32 | yes | `stats.fielding.errors` |  |
+| `stats_fielding_chances` | int32 | yes | `stats.fielding.chances` |  |
+| `stats_fielding_fielding` | string | yes | `stats.fielding.fielding` |  |
+| `stats_fielding_passed_ball` | int32 | yes | `stats.fielding.passedBall` |  |
+| `stats_fielding_pickoffs` | int32 | yes | `stats.fielding.pickoffs` |  |
+| `all_positions` | string | yes | `allPositions` |  |
+| `players_batting_order` | string | yes | `players.battingOrder` |  |
+| `players_stats_batting_summary` | string | yes | `players.stats.batting.summary` |  |
+| `players_stats_batting_games_played` | int32 | yes | `players.stats.batting.gamesPlayed` |  |
+| `players_stats_batting_fly_outs` | int32 | yes | `players.stats.batting.flyOuts` |  |
+| `players_stats_batting_ground_outs` | int32 | yes | `players.stats.batting.groundOuts` |  |
+| `players_stats_batting_air_outs` | int32 | yes | `players.stats.batting.airOuts` |  |
+| `players_stats_batting_runs` | int32 | yes | `players.stats.batting.runs` |  |
+| `players_stats_batting_doubles` | int32 | yes | `players.stats.batting.doubles` |  |
+| `players_stats_batting_triples` | int32 | yes | `players.stats.batting.triples` |  |
+| `players_stats_batting_home_runs` | int32 | yes | `players.stats.batting.homeRuns` |  |
+| `players_stats_batting_strike_outs` | int32 | yes | `players.stats.batting.strikeOuts` |  |
+| `players_stats_batting_base_on_balls` | int32 | yes | `players.stats.batting.baseOnBalls` |  |
+| `players_stats_batting_intentional_walks` | int32 | yes | `players.stats.batting.intentionalWalks` |  |
+| `players_stats_batting_hits` | int32 | yes | `players.stats.batting.hits` |  |
+| `players_stats_batting_hit_by_pitch` | int32 | yes | `players.stats.batting.hitByPitch` |  |
+| `players_stats_batting_at_bats` | int32 | yes | `players.stats.batting.atBats` |  |
+| `players_stats_batting_caught_stealing` | int32 | yes | `players.stats.batting.caughtStealing` |  |
+| `players_stats_batting_stolen_bases` | int32 | yes | `players.stats.batting.stolenBases` |  |
+| `players_stats_batting_stolen_base_percentage` | string | yes | `players.stats.batting.stolenBasePercentage` |  |
+| `players_stats_batting_ground_into_double_play` | int32 | yes | `players.stats.batting.groundIntoDoublePlay` |  |
+| `players_stats_batting_ground_into_triple_play` | int32 | yes | `players.stats.batting.groundIntoTriplePlay` |  |
+| `players_stats_batting_plate_appearances` | int32 | yes | `players.stats.batting.plateAppearances` |  |
+| `players_stats_batting_total_bases` | int32 | yes | `players.stats.batting.totalBases` |  |
+| `players_stats_batting_rbi` | int32 | yes | `players.stats.batting.rbi` |  |
+| `players_stats_batting_left_on_base` | int32 | yes | `players.stats.batting.leftOnBase` |  |
+| `players_stats_batting_sac_bunts` | int32 | yes | `players.stats.batting.sacBunts` |  |
+| `players_stats_batting_sac_flies` | int32 | yes | `players.stats.batting.sacFlies` |  |
+| `players_stats_batting_catchers_interference` | int32 | yes | `players.stats.batting.catchersInterference` |  |
+| `players_stats_batting_pickoffs` | int32 | yes | `players.stats.batting.pickoffs` |  |
+| `players_stats_batting_at_bats_per_home_run` | string | yes | `players.stats.batting.atBatsPerHomeRun` |  |
+| `players_stats_batting_pop_outs` | int32 | yes | `players.stats.batting.popOuts` |  |
+| `players_stats_batting_line_outs` | int32 | yes | `players.stats.batting.lineOuts` |  |
+| `players_stats_fielding_games_started` | int32 | yes | `players.stats.fielding.gamesStarted` |  |
+| `players_season_stats_fielding_games_started` | int32 | yes | `players.seasonStats.fielding.gamesStarted` |  |
+| `batting_order` | string | yes | `battingOrder` |  |
+| `stats_batting_summary` | string | yes | `stats.batting.summary` |  |
+| `stats_batting_games_played` | int32 | yes | `stats.batting.gamesPlayed` |  |
+| `stats_batting_fly_outs` | int32 | yes | `stats.batting.flyOuts` |  |
+| `stats_batting_ground_outs` | int32 | yes | `stats.batting.groundOuts` |  |
+| `stats_batting_air_outs` | int32 | yes | `stats.batting.airOuts` |  |
+| `stats_batting_runs` | int32 | yes | `stats.batting.runs` |  |
+| `stats_batting_doubles` | int32 | yes | `stats.batting.doubles` |  |
+| `stats_batting_triples` | int32 | yes | `stats.batting.triples` |  |
+| `stats_batting_home_runs` | int32 | yes | `stats.batting.homeRuns` |  |
+| `stats_batting_strike_outs` | int32 | yes | `stats.batting.strikeOuts` |  |
+| `stats_batting_base_on_balls` | int32 | yes | `stats.batting.baseOnBalls` |  |
+| `stats_batting_intentional_walks` | int32 | yes | `stats.batting.intentionalWalks` |  |
+| `stats_batting_hits` | int32 | yes | `stats.batting.hits` |  |
+| `stats_batting_hit_by_pitch` | int32 | yes | `stats.batting.hitByPitch` |  |
+| `stats_batting_at_bats` | int32 | yes | `stats.batting.atBats` |  |
+| `stats_batting_caught_stealing` | int32 | yes | `stats.batting.caughtStealing` |  |
+| `stats_batting_stolen_bases` | int32 | yes | `stats.batting.stolenBases` |  |
+| `stats_batting_stolen_base_percentage` | string | yes | `stats.batting.stolenBasePercentage` |  |
+| `stats_batting_ground_into_double_play` | int32 | yes | `stats.batting.groundIntoDoublePlay` |  |
+| `stats_batting_ground_into_triple_play` | int32 | yes | `stats.batting.groundIntoTriplePlay` |  |
+| `stats_batting_plate_appearances` | int32 | yes | `stats.batting.plateAppearances` |  |
+| `stats_batting_total_bases` | int32 | yes | `stats.batting.totalBases` |  |
+| `stats_batting_rbi` | int32 | yes | `stats.batting.rbi` |  |
+| `stats_batting_left_on_base` | int32 | yes | `stats.batting.leftOnBase` |  |
+| `stats_batting_sac_bunts` | int32 | yes | `stats.batting.sacBunts` |  |
+| `stats_batting_sac_flies` | int32 | yes | `stats.batting.sacFlies` |  |
+| `stats_batting_catchers_interference` | int32 | yes | `stats.batting.catchersInterference` |  |
+| `stats_batting_pickoffs` | int32 | yes | `stats.batting.pickoffs` |  |
+| `stats_batting_at_bats_per_home_run` | string | yes | `stats.batting.atBatsPerHomeRun` |  |
+| `stats_batting_pop_outs` | int32 | yes | `stats.batting.popOuts` |  |
+| `stats_batting_line_outs` | int32 | yes | `stats.batting.lineOuts` |  |
+| `stats_fielding_games_started` | int32 | yes | `stats.fielding.gamesStarted` |  |
+| `season_stats_fielding_games_started` | int32 | yes | `seasonStats.fielding.gamesStarted` |  |
+| `players_stats_pitching_note` | string | yes | `players.stats.pitching.note` |  |
+| `stats_pitching_note` | string | yes | `stats.pitching.note` |  |
+| `players_stats_batting_note` | string | yes | `players.stats.batting.note` |  |
+| `stats_batting_note` | string | yes | `stats.batting.note` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.game_boxscore_players -->
+
+<!-- BEGIN GENERATED:mlb_api.game_boxscore_teams -->
+### Dataset: game_boxscore_teams
+
+Team totals of a game boxscore (team, teamStats, batters/pitchers/bench/bullpen id lists and info as JSON).
+
+- **View:** `mlb_game_boxscore_teams`
+- **Processed path:** `processed/mlb_api/game_boxscore_teams/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `teams_key`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `teams_key` | string | yes | `teams.key` |  |
+| `teams_team_spring_league_id` | int32 | yes | `teams.team.springLeague.id` |  |
+| `teams_team_spring_league_name` | string | yes | `teams.team.springLeague.name` |  |
+| `teams_team_spring_league_link` | string | yes | `teams.team.springLeague.link` |  |
+| `teams_team_spring_league_abbreviation` | string | yes | `teams.team.springLeague.abbreviation` |  |
+| `teams_team_all_star_status` | string | yes | `teams.team.allStarStatus` |  |
+| `teams_team_id` | int32 | yes | `teams.team.id` |  |
+| `teams_team_name` | string | yes | `teams.team.name` |  |
+| `teams_team_link` | string | yes | `teams.team.link` |  |
+| `teams_team_season` | int32 | yes | `teams.team.season` |  |
+| `teams_team_venue_id` | int32 | yes | `teams.team.venue.id` |  |
+| `teams_team_venue_name` | string | yes | `teams.team.venue.name` |  |
+| `teams_team_venue_link` | string | yes | `teams.team.venue.link` |  |
+| `teams_team_spring_venue_id` | int32 | yes | `teams.team.springVenue.id` |  |
+| `teams_team_spring_venue_link` | string | yes | `teams.team.springVenue.link` |  |
+| `teams_team_team_code` | string | yes | `teams.team.teamCode` |  |
+| `teams_team_file_code` | string | yes | `teams.team.fileCode` |  |
+| `teams_team_abbreviation` | string | yes | `teams.team.abbreviation` |  |
+| `teams_team_team_name` | string | yes | `teams.team.teamName` |  |
+| `teams_team_location_name` | string | yes | `teams.team.locationName` |  |
+| `teams_team_first_year_of_play` | string | yes | `teams.team.firstYearOfPlay` |  |
+| `teams_team_league_id` | int32 | yes | `teams.team.league.id` |  |
+| `teams_team_league_name` | string | yes | `teams.team.league.name` |  |
+| `teams_team_league_link` | string | yes | `teams.team.league.link` |  |
+| `teams_team_division_id` | int32 | yes | `teams.team.division.id` |  |
+| `teams_team_division_name` | string | yes | `teams.team.division.name` |  |
+| `teams_team_division_link` | string | yes | `teams.team.division.link` |  |
+| `teams_team_sport_id` | int32 | yes | `teams.team.sport.id` |  |
+| `teams_team_sport_link` | string | yes | `teams.team.sport.link` |  |
+| `teams_team_sport_name` | string | yes | `teams.team.sport.name` |  |
+| `teams_team_short_name` | string | yes | `teams.team.shortName` |  |
+| `teams_team_record_games_played` | int32 | yes | `teams.team.record.gamesPlayed` |  |
+| `teams_team_record_wild_card_games_back` | string | yes | `teams.team.record.wildCardGamesBack` |  |
+| `teams_team_record_league_games_back` | string | yes | `teams.team.record.leagueGamesBack` |  |
+| `teams_team_record_spring_league_games_back` | string | yes | `teams.team.record.springLeagueGamesBack` |  |
+| `teams_team_record_sport_games_back` | string | yes | `teams.team.record.sportGamesBack` |  |
+| `teams_team_record_division_games_back` | string | yes | `teams.team.record.divisionGamesBack` |  |
+| `teams_team_record_conference_games_back` | string | yes | `teams.team.record.conferenceGamesBack` |  |
+| `teams_team_record_league_record_wins` | int32 | yes | `teams.team.record.leagueRecord.wins` |  |
+| `teams_team_record_league_record_losses` | int32 | yes | `teams.team.record.leagueRecord.losses` |  |
+| `teams_team_record_league_record_ties` | int32 | yes | `teams.team.record.leagueRecord.ties` |  |
+| `teams_team_record_league_record_pct` | string | yes | `teams.team.record.leagueRecord.pct` |  |
+| `teams_team_record_division_leader` | bool | yes | `teams.team.record.divisionLeader` |  |
+| `teams_team_record_wins` | int32 | yes | `teams.team.record.wins` |  |
+| `teams_team_record_losses` | int32 | yes | `teams.team.record.losses` |  |
+| `teams_team_record_winning_percentage` | string | yes | `teams.team.record.winningPercentage` |  |
+| `teams_team_franchise_name` | string | yes | `teams.team.franchiseName` |  |
+| `teams_team_club_name` | string | yes | `teams.team.clubName` |  |
+| `teams_team_active` | bool | yes | `teams.team.active` |  |
+| `teams_team_stats_batting_fly_outs` | int32 | yes | `teams.teamStats.batting.flyOuts` |  |
+| `teams_team_stats_batting_ground_outs` | int32 | yes | `teams.teamStats.batting.groundOuts` |  |
+| `teams_team_stats_batting_air_outs` | int32 | yes | `teams.teamStats.batting.airOuts` |  |
+| `teams_team_stats_batting_runs` | int32 | yes | `teams.teamStats.batting.runs` |  |
+| `teams_team_stats_batting_doubles` | int32 | yes | `teams.teamStats.batting.doubles` |  |
+| `teams_team_stats_batting_triples` | int32 | yes | `teams.teamStats.batting.triples` |  |
+| `teams_team_stats_batting_home_runs` | int32 | yes | `teams.teamStats.batting.homeRuns` |  |
+| `teams_team_stats_batting_strike_outs` | int32 | yes | `teams.teamStats.batting.strikeOuts` |  |
+| `teams_team_stats_batting_base_on_balls` | int32 | yes | `teams.teamStats.batting.baseOnBalls` |  |
+| `teams_team_stats_batting_intentional_walks` | int32 | yes | `teams.teamStats.batting.intentionalWalks` |  |
+| `teams_team_stats_batting_hits` | int32 | yes | `teams.teamStats.batting.hits` |  |
+| `teams_team_stats_batting_hit_by_pitch` | int32 | yes | `teams.teamStats.batting.hitByPitch` |  |
+| `teams_team_stats_batting_avg` | string | yes | `teams.teamStats.batting.avg` |  |
+| `teams_team_stats_batting_at_bats` | int32 | yes | `teams.teamStats.batting.atBats` |  |
+| `teams_team_stats_batting_obp` | string | yes | `teams.teamStats.batting.obp` |  |
+| `teams_team_stats_batting_slg` | string | yes | `teams.teamStats.batting.slg` |  |
+| `teams_team_stats_batting_ops` | string | yes | `teams.teamStats.batting.ops` |  |
+| `teams_team_stats_batting_caught_stealing` | int32 | yes | `teams.teamStats.batting.caughtStealing` |  |
+| `teams_team_stats_batting_stolen_bases` | int32 | yes | `teams.teamStats.batting.stolenBases` |  |
+| `teams_team_stats_batting_stolen_base_percentage` | string | yes | `teams.teamStats.batting.stolenBasePercentage` |  |
+| `teams_team_stats_batting_ground_into_double_play` | int32 | yes | `teams.teamStats.batting.groundIntoDoublePlay` |  |
+| `teams_team_stats_batting_ground_into_triple_play` | int32 | yes | `teams.teamStats.batting.groundIntoTriplePlay` |  |
+| `teams_team_stats_batting_plate_appearances` | int32 | yes | `teams.teamStats.batting.plateAppearances` |  |
+| `teams_team_stats_batting_total_bases` | int32 | yes | `teams.teamStats.batting.totalBases` |  |
+| `teams_team_stats_batting_rbi` | int32 | yes | `teams.teamStats.batting.rbi` |  |
+| `teams_team_stats_batting_left_on_base` | int32 | yes | `teams.teamStats.batting.leftOnBase` |  |
+| `teams_team_stats_batting_sac_bunts` | int32 | yes | `teams.teamStats.batting.sacBunts` |  |
+| `teams_team_stats_batting_sac_flies` | int32 | yes | `teams.teamStats.batting.sacFlies` |  |
+| `teams_team_stats_batting_catchers_interference` | int32 | yes | `teams.teamStats.batting.catchersInterference` |  |
+| `teams_team_stats_batting_pickoffs` | int32 | yes | `teams.teamStats.batting.pickoffs` |  |
+| `teams_team_stats_batting_at_bats_per_home_run` | string | yes | `teams.teamStats.batting.atBatsPerHomeRun` |  |
+| `teams_team_stats_batting_pop_outs` | int32 | yes | `teams.teamStats.batting.popOuts` |  |
+| `teams_team_stats_batting_line_outs` | int32 | yes | `teams.teamStats.batting.lineOuts` |  |
+| `teams_team_stats_pitching_fly_outs` | int32 | yes | `teams.teamStats.pitching.flyOuts` |  |
+| `teams_team_stats_pitching_ground_outs` | int32 | yes | `teams.teamStats.pitching.groundOuts` |  |
+| `teams_team_stats_pitching_air_outs` | int32 | yes | `teams.teamStats.pitching.airOuts` |  |
+| `teams_team_stats_pitching_runs` | int32 | yes | `teams.teamStats.pitching.runs` |  |
+| `teams_team_stats_pitching_doubles` | int32 | yes | `teams.teamStats.pitching.doubles` |  |
+| `teams_team_stats_pitching_triples` | int32 | yes | `teams.teamStats.pitching.triples` |  |
+| `teams_team_stats_pitching_home_runs` | int32 | yes | `teams.teamStats.pitching.homeRuns` |  |
+| `teams_team_stats_pitching_strike_outs` | int32 | yes | `teams.teamStats.pitching.strikeOuts` |  |
+| `teams_team_stats_pitching_base_on_balls` | int32 | yes | `teams.teamStats.pitching.baseOnBalls` |  |
+| `teams_team_stats_pitching_intentional_walks` | int32 | yes | `teams.teamStats.pitching.intentionalWalks` |  |
+| `teams_team_stats_pitching_hits` | int32 | yes | `teams.teamStats.pitching.hits` |  |
+| `teams_team_stats_pitching_hit_by_pitch` | int32 | yes | `teams.teamStats.pitching.hitByPitch` |  |
+| `teams_team_stats_pitching_at_bats` | int32 | yes | `teams.teamStats.pitching.atBats` |  |
+| `teams_team_stats_pitching_obp` | string | yes | `teams.teamStats.pitching.obp` |  |
+| `teams_team_stats_pitching_caught_stealing` | int32 | yes | `teams.teamStats.pitching.caughtStealing` |  |
+| `teams_team_stats_pitching_stolen_bases` | int32 | yes | `teams.teamStats.pitching.stolenBases` |  |
+| `teams_team_stats_pitching_stolen_base_percentage` | string | yes | `teams.teamStats.pitching.stolenBasePercentage` |  |
+| `teams_team_stats_pitching_caught_stealing_percentage` | string | yes | `teams.teamStats.pitching.caughtStealingPercentage` |  |
+| `teams_team_stats_pitching_number_of_pitches` | int32 | yes | `teams.teamStats.pitching.numberOfPitches` |  |
+| `teams_team_stats_pitching_era` | string | yes | `teams.teamStats.pitching.era` |  |
+| `teams_team_stats_pitching_innings_pitched` | string | yes | `teams.teamStats.pitching.inningsPitched` |  |
+| `teams_team_stats_pitching_save_opportunities` | int32 | yes | `teams.teamStats.pitching.saveOpportunities` |  |
+| `teams_team_stats_pitching_earned_runs` | int32 | yes | `teams.teamStats.pitching.earnedRuns` |  |
+| `teams_team_stats_pitching_whip` | string | yes | `teams.teamStats.pitching.whip` |  |
+| `teams_team_stats_pitching_batters_faced` | int32 | yes | `teams.teamStats.pitching.battersFaced` |  |
+| `teams_team_stats_pitching_outs` | int32 | yes | `teams.teamStats.pitching.outs` |  |
+| `teams_team_stats_pitching_complete_games` | int32 | yes | `teams.teamStats.pitching.completeGames` |  |
+| `teams_team_stats_pitching_shutouts` | int32 | yes | `teams.teamStats.pitching.shutouts` |  |
+| `teams_team_stats_pitching_pitches_thrown` | int32 | yes | `teams.teamStats.pitching.pitchesThrown` |  |
+| `teams_team_stats_pitching_balls` | int32 | yes | `teams.teamStats.pitching.balls` |  |
+| `teams_team_stats_pitching_strikes` | int32 | yes | `teams.teamStats.pitching.strikes` |  |
+| `teams_team_stats_pitching_strike_percentage` | string | yes | `teams.teamStats.pitching.strikePercentage` |  |
+| `teams_team_stats_pitching_hit_batsmen` | int32 | yes | `teams.teamStats.pitching.hitBatsmen` |  |
+| `teams_team_stats_pitching_balks` | int32 | yes | `teams.teamStats.pitching.balks` |  |
+| `teams_team_stats_pitching_wild_pitches` | int32 | yes | `teams.teamStats.pitching.wildPitches` |  |
+| `teams_team_stats_pitching_pickoffs` | int32 | yes | `teams.teamStats.pitching.pickoffs` |  |
+| `teams_team_stats_pitching_ground_outs_to_airouts` | string | yes | `teams.teamStats.pitching.groundOutsToAirouts` |  |
+| `teams_team_stats_pitching_rbi` | int32 | yes | `teams.teamStats.pitching.rbi` |  |
+| `teams_team_stats_pitching_pitches_per_inning` | string | yes | `teams.teamStats.pitching.pitchesPerInning` |  |
+| `teams_team_stats_pitching_runs_scored_per9` | string | yes | `teams.teamStats.pitching.runsScoredPer9` |  |
+| `teams_team_stats_pitching_home_runs_per9` | string | yes | `teams.teamStats.pitching.homeRunsPer9` |  |
+| `teams_team_stats_pitching_inherited_runners` | int32 | yes | `teams.teamStats.pitching.inheritedRunners` |  |
+| `teams_team_stats_pitching_inherited_runners_scored` | int32 | yes | `teams.teamStats.pitching.inheritedRunnersScored` |  |
+| `teams_team_stats_pitching_catchers_interference` | int32 | yes | `teams.teamStats.pitching.catchersInterference` |  |
+| `teams_team_stats_pitching_sac_bunts` | int32 | yes | `teams.teamStats.pitching.sacBunts` |  |
+| `teams_team_stats_pitching_sac_flies` | int32 | yes | `teams.teamStats.pitching.sacFlies` |  |
+| `teams_team_stats_pitching_passed_ball` | int32 | yes | `teams.teamStats.pitching.passedBall` |  |
+| `teams_team_stats_pitching_pop_outs` | int32 | yes | `teams.teamStats.pitching.popOuts` |  |
+| `teams_team_stats_pitching_line_outs` | int32 | yes | `teams.teamStats.pitching.lineOuts` |  |
+| `teams_team_stats_fielding_caught_stealing` | int32 | yes | `teams.teamStats.fielding.caughtStealing` |  |
+| `teams_team_stats_fielding_stolen_bases` | int32 | yes | `teams.teamStats.fielding.stolenBases` |  |
+| `teams_team_stats_fielding_stolen_base_percentage` | string | yes | `teams.teamStats.fielding.stolenBasePercentage` |  |
+| `teams_team_stats_fielding_caught_stealing_percentage` | string | yes | `teams.teamStats.fielding.caughtStealingPercentage` |  |
+| `teams_team_stats_fielding_assists` | int32 | yes | `teams.teamStats.fielding.assists` |  |
+| `teams_team_stats_fielding_put_outs` | int32 | yes | `teams.teamStats.fielding.putOuts` |  |
+| `teams_team_stats_fielding_errors` | int32 | yes | `teams.teamStats.fielding.errors` |  |
+| `teams_team_stats_fielding_chances` | int32 | yes | `teams.teamStats.fielding.chances` |  |
+| `teams_team_stats_fielding_passed_ball` | int32 | yes | `teams.teamStats.fielding.passedBall` |  |
+| `teams_team_stats_fielding_pickoffs` | int32 | yes | `teams.teamStats.fielding.pickoffs` |  |
+| `teams_players` | string | yes | `teams.players` |  |
+| `teams_batters` | string | yes | `teams.batters` |  |
+| `teams_pitchers` | string | yes | `teams.pitchers` |  |
+| `teams_bench` | string | yes | `teams.bench` |  |
+| `teams_bullpen` | string | yes | `teams.bullpen` |  |
+| `teams_batting_order` | string | yes | `teams.battingOrder` |  |
+| `teams_info` | string | yes | `teams.info` |  |
+| `teams_note` | string | yes | `teams.note` |  |
+| `team_spring_league_id` | int32 | yes | `team.springLeague.id` |  |
+| `team_spring_league_name` | string | yes | `team.springLeague.name` |  |
+| `team_spring_league_link` | string | yes | `team.springLeague.link` |  |
+| `team_spring_league_abbreviation` | string | yes | `team.springLeague.abbreviation` |  |
+| `team_all_star_status` | string | yes | `team.allStarStatus` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `team_season` | int32 | yes | `team.season` |  |
+| `team_venue_id` | int32 | yes | `team.venue.id` |  |
+| `team_venue_name` | string | yes | `team.venue.name` |  |
+| `team_venue_link` | string | yes | `team.venue.link` |  |
+| `team_spring_venue_id` | int32 | yes | `team.springVenue.id` |  |
+| `team_spring_venue_link` | string | yes | `team.springVenue.link` |  |
+| `team_team_code` | string | yes | `team.teamCode` |  |
+| `team_file_code` | string | yes | `team.fileCode` |  |
+| `team_abbreviation` | string | yes | `team.abbreviation` |  |
+| `team_team_name` | string | yes | `team.teamName` |  |
+| `team_location_name` | string | yes | `team.locationName` |  |
+| `team_first_year_of_play` | string | yes | `team.firstYearOfPlay` |  |
+| `team_league_id` | int32 | yes | `team.league.id` |  |
+| `team_league_name` | string | yes | `team.league.name` |  |
+| `team_league_link` | string | yes | `team.league.link` |  |
+| `team_division_id` | int32 | yes | `team.division.id` |  |
+| `team_division_name` | string | yes | `team.division.name` |  |
+| `team_division_link` | string | yes | `team.division.link` |  |
+| `team_sport_id` | int32 | yes | `team.sport.id` |  |
+| `team_sport_link` | string | yes | `team.sport.link` |  |
+| `team_sport_name` | string | yes | `team.sport.name` |  |
+| `team_short_name` | string | yes | `team.shortName` |  |
+| `team_record_games_played` | int32 | yes | `team.record.gamesPlayed` |  |
+| `team_record_wild_card_games_back` | string | yes | `team.record.wildCardGamesBack` |  |
+| `team_record_league_games_back` | string | yes | `team.record.leagueGamesBack` |  |
+| `team_record_spring_league_games_back` | string | yes | `team.record.springLeagueGamesBack` |  |
+| `team_record_sport_games_back` | string | yes | `team.record.sportGamesBack` |  |
+| `team_record_division_games_back` | string | yes | `team.record.divisionGamesBack` |  |
+| `team_record_conference_games_back` | string | yes | `team.record.conferenceGamesBack` |  |
+| `team_record_league_record_wins` | int32 | yes | `team.record.leagueRecord.wins` |  |
+| `team_record_league_record_losses` | int32 | yes | `team.record.leagueRecord.losses` |  |
+| `team_record_league_record_ties` | int32 | yes | `team.record.leagueRecord.ties` |  |
+| `team_record_league_record_pct` | string | yes | `team.record.leagueRecord.pct` |  |
+| `team_record_division_leader` | bool | yes | `team.record.divisionLeader` |  |
+| `team_record_wins` | int32 | yes | `team.record.wins` |  |
+| `team_record_losses` | int32 | yes | `team.record.losses` |  |
+| `team_record_winning_percentage` | string | yes | `team.record.winningPercentage` |  |
+| `team_franchise_name` | string | yes | `team.franchiseName` |  |
+| `team_club_name` | string | yes | `team.clubName` |  |
+| `team_active` | bool | yes | `team.active` |  |
+| `team_stats_batting_fly_outs` | int32 | yes | `teamStats.batting.flyOuts` |  |
+| `team_stats_batting_ground_outs` | int32 | yes | `teamStats.batting.groundOuts` |  |
+| `team_stats_batting_air_outs` | int32 | yes | `teamStats.batting.airOuts` |  |
+| `team_stats_batting_runs` | int32 | yes | `teamStats.batting.runs` |  |
+| `team_stats_batting_doubles` | int32 | yes | `teamStats.batting.doubles` |  |
+| `team_stats_batting_triples` | int32 | yes | `teamStats.batting.triples` |  |
+| `team_stats_batting_home_runs` | int32 | yes | `teamStats.batting.homeRuns` |  |
+| `team_stats_batting_strike_outs` | int32 | yes | `teamStats.batting.strikeOuts` |  |
+| `team_stats_batting_base_on_balls` | int32 | yes | `teamStats.batting.baseOnBalls` |  |
+| `team_stats_batting_intentional_walks` | int32 | yes | `teamStats.batting.intentionalWalks` |  |
+| `team_stats_batting_hits` | int32 | yes | `teamStats.batting.hits` |  |
+| `team_stats_batting_hit_by_pitch` | int32 | yes | `teamStats.batting.hitByPitch` |  |
+| `team_stats_batting_avg` | string | yes | `teamStats.batting.avg` |  |
+| `team_stats_batting_at_bats` | int32 | yes | `teamStats.batting.atBats` |  |
+| `team_stats_batting_obp` | string | yes | `teamStats.batting.obp` |  |
+| `team_stats_batting_slg` | string | yes | `teamStats.batting.slg` |  |
+| `team_stats_batting_ops` | string | yes | `teamStats.batting.ops` |  |
+| `team_stats_batting_caught_stealing` | int32 | yes | `teamStats.batting.caughtStealing` |  |
+| `team_stats_batting_stolen_bases` | int32 | yes | `teamStats.batting.stolenBases` |  |
+| `team_stats_batting_stolen_base_percentage` | string | yes | `teamStats.batting.stolenBasePercentage` |  |
+| `team_stats_batting_ground_into_double_play` | int32 | yes | `teamStats.batting.groundIntoDoublePlay` |  |
+| `team_stats_batting_ground_into_triple_play` | int32 | yes | `teamStats.batting.groundIntoTriplePlay` |  |
+| `team_stats_batting_plate_appearances` | int32 | yes | `teamStats.batting.plateAppearances` |  |
+| `team_stats_batting_total_bases` | int32 | yes | `teamStats.batting.totalBases` |  |
+| `team_stats_batting_rbi` | int32 | yes | `teamStats.batting.rbi` |  |
+| `team_stats_batting_left_on_base` | int32 | yes | `teamStats.batting.leftOnBase` |  |
+| `team_stats_batting_sac_bunts` | int32 | yes | `teamStats.batting.sacBunts` |  |
+| `team_stats_batting_sac_flies` | int32 | yes | `teamStats.batting.sacFlies` |  |
+| `team_stats_batting_catchers_interference` | int32 | yes | `teamStats.batting.catchersInterference` |  |
+| `team_stats_batting_pickoffs` | int32 | yes | `teamStats.batting.pickoffs` |  |
+| `team_stats_batting_at_bats_per_home_run` | string | yes | `teamStats.batting.atBatsPerHomeRun` |  |
+| `team_stats_batting_pop_outs` | int32 | yes | `teamStats.batting.popOuts` |  |
+| `team_stats_batting_line_outs` | int32 | yes | `teamStats.batting.lineOuts` |  |
+| `team_stats_pitching_fly_outs` | int32 | yes | `teamStats.pitching.flyOuts` |  |
+| `team_stats_pitching_ground_outs` | int32 | yes | `teamStats.pitching.groundOuts` |  |
+| `team_stats_pitching_air_outs` | int32 | yes | `teamStats.pitching.airOuts` |  |
+| `team_stats_pitching_runs` | int32 | yes | `teamStats.pitching.runs` |  |
+| `team_stats_pitching_doubles` | int32 | yes | `teamStats.pitching.doubles` |  |
+| `team_stats_pitching_triples` | int32 | yes | `teamStats.pitching.triples` |  |
+| `team_stats_pitching_home_runs` | int32 | yes | `teamStats.pitching.homeRuns` |  |
+| `team_stats_pitching_strike_outs` | int32 | yes | `teamStats.pitching.strikeOuts` |  |
+| `team_stats_pitching_base_on_balls` | int32 | yes | `teamStats.pitching.baseOnBalls` |  |
+| `team_stats_pitching_intentional_walks` | int32 | yes | `teamStats.pitching.intentionalWalks` |  |
+| `team_stats_pitching_hits` | int32 | yes | `teamStats.pitching.hits` |  |
+| `team_stats_pitching_hit_by_pitch` | int32 | yes | `teamStats.pitching.hitByPitch` |  |
+| `team_stats_pitching_at_bats` | int32 | yes | `teamStats.pitching.atBats` |  |
+| `team_stats_pitching_obp` | string | yes | `teamStats.pitching.obp` |  |
+| `team_stats_pitching_caught_stealing` | int32 | yes | `teamStats.pitching.caughtStealing` |  |
+| `team_stats_pitching_stolen_bases` | int32 | yes | `teamStats.pitching.stolenBases` |  |
+| `team_stats_pitching_stolen_base_percentage` | string | yes | `teamStats.pitching.stolenBasePercentage` |  |
+| `team_stats_pitching_caught_stealing_percentage` | string | yes | `teamStats.pitching.caughtStealingPercentage` |  |
+| `team_stats_pitching_number_of_pitches` | int32 | yes | `teamStats.pitching.numberOfPitches` |  |
+| `team_stats_pitching_era` | string | yes | `teamStats.pitching.era` |  |
+| `team_stats_pitching_innings_pitched` | string | yes | `teamStats.pitching.inningsPitched` |  |
+| `team_stats_pitching_save_opportunities` | int32 | yes | `teamStats.pitching.saveOpportunities` |  |
+| `team_stats_pitching_earned_runs` | int32 | yes | `teamStats.pitching.earnedRuns` |  |
+| `team_stats_pitching_whip` | string | yes | `teamStats.pitching.whip` |  |
+| `team_stats_pitching_batters_faced` | int32 | yes | `teamStats.pitching.battersFaced` |  |
+| `team_stats_pitching_outs` | int32 | yes | `teamStats.pitching.outs` |  |
+| `team_stats_pitching_complete_games` | int32 | yes | `teamStats.pitching.completeGames` |  |
+| `team_stats_pitching_shutouts` | int32 | yes | `teamStats.pitching.shutouts` |  |
+| `team_stats_pitching_pitches_thrown` | int32 | yes | `teamStats.pitching.pitchesThrown` |  |
+| `team_stats_pitching_balls` | int32 | yes | `teamStats.pitching.balls` |  |
+| `team_stats_pitching_strikes` | int32 | yes | `teamStats.pitching.strikes` |  |
+| `team_stats_pitching_strike_percentage` | string | yes | `teamStats.pitching.strikePercentage` |  |
+| `team_stats_pitching_hit_batsmen` | int32 | yes | `teamStats.pitching.hitBatsmen` |  |
+| `team_stats_pitching_balks` | int32 | yes | `teamStats.pitching.balks` |  |
+| `team_stats_pitching_wild_pitches` | int32 | yes | `teamStats.pitching.wildPitches` |  |
+| `team_stats_pitching_pickoffs` | int32 | yes | `teamStats.pitching.pickoffs` |  |
+| `team_stats_pitching_ground_outs_to_airouts` | string | yes | `teamStats.pitching.groundOutsToAirouts` |  |
+| `team_stats_pitching_rbi` | int32 | yes | `teamStats.pitching.rbi` |  |
+| `team_stats_pitching_pitches_per_inning` | string | yes | `teamStats.pitching.pitchesPerInning` |  |
+| `team_stats_pitching_runs_scored_per9` | string | yes | `teamStats.pitching.runsScoredPer9` |  |
+| `team_stats_pitching_home_runs_per9` | string | yes | `teamStats.pitching.homeRunsPer9` |  |
+| `team_stats_pitching_inherited_runners` | int32 | yes | `teamStats.pitching.inheritedRunners` |  |
+| `team_stats_pitching_inherited_runners_scored` | int32 | yes | `teamStats.pitching.inheritedRunnersScored` |  |
+| `team_stats_pitching_catchers_interference` | int32 | yes | `teamStats.pitching.catchersInterference` |  |
+| `team_stats_pitching_sac_bunts` | int32 | yes | `teamStats.pitching.sacBunts` |  |
+| `team_stats_pitching_sac_flies` | int32 | yes | `teamStats.pitching.sacFlies` |  |
+| `team_stats_pitching_passed_ball` | int32 | yes | `teamStats.pitching.passedBall` |  |
+| `team_stats_pitching_pop_outs` | int32 | yes | `teamStats.pitching.popOuts` |  |
+| `team_stats_pitching_line_outs` | int32 | yes | `teamStats.pitching.lineOuts` |  |
+| `team_stats_fielding_caught_stealing` | int32 | yes | `teamStats.fielding.caughtStealing` |  |
+| `team_stats_fielding_stolen_bases` | int32 | yes | `teamStats.fielding.stolenBases` |  |
+| `team_stats_fielding_stolen_base_percentage` | string | yes | `teamStats.fielding.stolenBasePercentage` |  |
+| `team_stats_fielding_caught_stealing_percentage` | string | yes | `teamStats.fielding.caughtStealingPercentage` |  |
+| `team_stats_fielding_assists` | int32 | yes | `teamStats.fielding.assists` |  |
+| `team_stats_fielding_put_outs` | int32 | yes | `teamStats.fielding.putOuts` |  |
+| `team_stats_fielding_errors` | int32 | yes | `teamStats.fielding.errors` |  |
+| `team_stats_fielding_chances` | int32 | yes | `teamStats.fielding.chances` |  |
+| `team_stats_fielding_passed_ball` | int32 | yes | `teamStats.fielding.passedBall` |  |
+| `team_stats_fielding_pickoffs` | int32 | yes | `teamStats.fielding.pickoffs` |  |
+| `players` | string | yes | — |  |
+| `batters` | string | yes | — |  |
+| `pitchers` | string | yes | — |  |
+| `bench` | string | yes | — |  |
+| `bullpen` | string | yes | — |  |
+| `batting_order` | string | yes | `battingOrder` |  |
+| `info` | string | yes | — |  |
+| `note` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.game_boxscore_teams -->
+
+<!-- BEGIN GENERATED:mlb_api.game_boxscore_top_performers -->
+### Dataset: game_boxscore_top_performers
+
+Top performers of a game from the boxscore.
+
+- **View:** `mlb_game_boxscore_top_performers`
+- **Processed path:** `processed/mlb_api/game_boxscore_top_performers/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `type`, `player_person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `player_person_id` | int32 | yes | `player.person.id` |  |
+| `player_person_full_name` | string | yes | `player.person.fullName` |  |
+| `player_person_link` | string | yes | `player.person.link` |  |
+| `player_person_boxscore_name` | string | yes | `player.person.boxscoreName` |  |
+| `player_jersey_number` | string | yes | `player.jerseyNumber` |  |
+| `player_position_code` | string | yes | `player.position.code` |  |
+| `player_position_name` | string | yes | `player.position.name` |  |
+| `player_position_type` | string | yes | `player.position.type` |  |
+| `player_position_abbreviation` | string | yes | `player.position.abbreviation` |  |
+| `player_status_code` | string | yes | `player.status.code` |  |
+| `player_status_description` | string | yes | `player.status.description` |  |
+| `player_parent_team_id` | int32 | yes | `player.parentTeamId` |  |
+| `player_stats_pitching_note` | string | yes | `player.stats.pitching.note` |  |
+| `player_stats_pitching_summary` | string | yes | `player.stats.pitching.summary` |  |
+| `player_stats_pitching_games_played` | int32 | yes | `player.stats.pitching.gamesPlayed` |  |
+| `player_stats_pitching_games_started` | int32 | yes | `player.stats.pitching.gamesStarted` |  |
+| `player_stats_pitching_fly_outs` | int32 | yes | `player.stats.pitching.flyOuts` |  |
+| `player_stats_pitching_ground_outs` | int32 | yes | `player.stats.pitching.groundOuts` |  |
+| `player_stats_pitching_air_outs` | int32 | yes | `player.stats.pitching.airOuts` |  |
+| `player_stats_pitching_runs` | int32 | yes | `player.stats.pitching.runs` |  |
+| `player_stats_pitching_doubles` | int32 | yes | `player.stats.pitching.doubles` |  |
+| `player_stats_pitching_triples` | int32 | yes | `player.stats.pitching.triples` |  |
+| `player_stats_pitching_home_runs` | int32 | yes | `player.stats.pitching.homeRuns` |  |
+| `player_stats_pitching_strike_outs` | int32 | yes | `player.stats.pitching.strikeOuts` |  |
+| `player_stats_pitching_base_on_balls` | int32 | yes | `player.stats.pitching.baseOnBalls` |  |
+| `player_stats_pitching_intentional_walks` | int32 | yes | `player.stats.pitching.intentionalWalks` |  |
+| `player_stats_pitching_hits` | int32 | yes | `player.stats.pitching.hits` |  |
+| `player_stats_pitching_hit_by_pitch` | int32 | yes | `player.stats.pitching.hitByPitch` |  |
+| `player_stats_pitching_at_bats` | int32 | yes | `player.stats.pitching.atBats` |  |
+| `player_stats_pitching_caught_stealing` | int32 | yes | `player.stats.pitching.caughtStealing` |  |
+| `player_stats_pitching_stolen_bases` | int32 | yes | `player.stats.pitching.stolenBases` |  |
+| `player_stats_pitching_stolen_base_percentage` | string | yes | `player.stats.pitching.stolenBasePercentage` |  |
+| `player_stats_pitching_number_of_pitches` | int32 | yes | `player.stats.pitching.numberOfPitches` |  |
+| `player_stats_pitching_innings_pitched` | string | yes | `player.stats.pitching.inningsPitched` |  |
+| `player_stats_pitching_wins` | int32 | yes | `player.stats.pitching.wins` |  |
+| `player_stats_pitching_losses` | int32 | yes | `player.stats.pitching.losses` |  |
+| `player_stats_pitching_saves` | int32 | yes | `player.stats.pitching.saves` |  |
+| `player_stats_pitching_save_opportunities` | int32 | yes | `player.stats.pitching.saveOpportunities` |  |
+| `player_stats_pitching_holds` | int32 | yes | `player.stats.pitching.holds` |  |
+| `player_stats_pitching_blown_saves` | int32 | yes | `player.stats.pitching.blownSaves` |  |
+| `player_stats_pitching_earned_runs` | int32 | yes | `player.stats.pitching.earnedRuns` |  |
+| `player_stats_pitching_batters_faced` | int32 | yes | `player.stats.pitching.battersFaced` |  |
+| `player_stats_pitching_outs` | int32 | yes | `player.stats.pitching.outs` |  |
+| `player_stats_pitching_games_pitched` | int32 | yes | `player.stats.pitching.gamesPitched` |  |
+| `player_stats_pitching_complete_games` | int32 | yes | `player.stats.pitching.completeGames` |  |
+| `player_stats_pitching_shutouts` | int32 | yes | `player.stats.pitching.shutouts` |  |
+| `player_stats_pitching_pitches_thrown` | int32 | yes | `player.stats.pitching.pitchesThrown` |  |
+| `player_stats_pitching_balls` | int32 | yes | `player.stats.pitching.balls` |  |
+| `player_stats_pitching_strikes` | int32 | yes | `player.stats.pitching.strikes` |  |
+| `player_stats_pitching_strike_percentage` | string | yes | `player.stats.pitching.strikePercentage` |  |
+| `player_stats_pitching_hit_batsmen` | int32 | yes | `player.stats.pitching.hitBatsmen` |  |
+| `player_stats_pitching_balks` | int32 | yes | `player.stats.pitching.balks` |  |
+| `player_stats_pitching_wild_pitches` | int32 | yes | `player.stats.pitching.wildPitches` |  |
+| `player_stats_pitching_pickoffs` | int32 | yes | `player.stats.pitching.pickoffs` |  |
+| `player_stats_pitching_rbi` | int32 | yes | `player.stats.pitching.rbi` |  |
+| `player_stats_pitching_games_finished` | int32 | yes | `player.stats.pitching.gamesFinished` |  |
+| `player_stats_pitching_runs_scored_per9` | string | yes | `player.stats.pitching.runsScoredPer9` |  |
+| `player_stats_pitching_home_runs_per9` | string | yes | `player.stats.pitching.homeRunsPer9` |  |
+| `player_stats_pitching_inherited_runners` | int32 | yes | `player.stats.pitching.inheritedRunners` |  |
+| `player_stats_pitching_inherited_runners_scored` | int32 | yes | `player.stats.pitching.inheritedRunnersScored` |  |
+| `player_stats_pitching_catchers_interference` | int32 | yes | `player.stats.pitching.catchersInterference` |  |
+| `player_stats_pitching_sac_bunts` | int32 | yes | `player.stats.pitching.sacBunts` |  |
+| `player_stats_pitching_sac_flies` | int32 | yes | `player.stats.pitching.sacFlies` |  |
+| `player_stats_pitching_passed_ball` | int32 | yes | `player.stats.pitching.passedBall` |  |
+| `player_stats_pitching_pop_outs` | int32 | yes | `player.stats.pitching.popOuts` |  |
+| `player_stats_pitching_line_outs` | int32 | yes | `player.stats.pitching.lineOuts` |  |
+| `player_stats_fielding_games_started` | int32 | yes | `player.stats.fielding.gamesStarted` |  |
+| `player_stats_fielding_caught_stealing` | int32 | yes | `player.stats.fielding.caughtStealing` |  |
+| `player_stats_fielding_stolen_bases` | int32 | yes | `player.stats.fielding.stolenBases` |  |
+| `player_stats_fielding_stolen_base_percentage` | string | yes | `player.stats.fielding.stolenBasePercentage` |  |
+| `player_stats_fielding_caught_stealing_percentage` | string | yes | `player.stats.fielding.caughtStealingPercentage` |  |
+| `player_stats_fielding_assists` | int32 | yes | `player.stats.fielding.assists` |  |
+| `player_stats_fielding_put_outs` | int32 | yes | `player.stats.fielding.putOuts` |  |
+| `player_stats_fielding_errors` | int32 | yes | `player.stats.fielding.errors` |  |
+| `player_stats_fielding_chances` | int32 | yes | `player.stats.fielding.chances` |  |
+| `player_stats_fielding_fielding` | string | yes | `player.stats.fielding.fielding` |  |
+| `player_stats_fielding_passed_ball` | int32 | yes | `player.stats.fielding.passedBall` |  |
+| `player_stats_fielding_pickoffs` | int32 | yes | `player.stats.fielding.pickoffs` |  |
+| `player_season_stats_batting_games_played` | int32 | yes | `player.seasonStats.batting.gamesPlayed` |  |
+| `player_season_stats_batting_fly_outs` | int32 | yes | `player.seasonStats.batting.flyOuts` |  |
+| `player_season_stats_batting_ground_outs` | int32 | yes | `player.seasonStats.batting.groundOuts` |  |
+| `player_season_stats_batting_air_outs` | int32 | yes | `player.seasonStats.batting.airOuts` |  |
+| `player_season_stats_batting_runs` | int32 | yes | `player.seasonStats.batting.runs` |  |
+| `player_season_stats_batting_doubles` | int32 | yes | `player.seasonStats.batting.doubles` |  |
+| `player_season_stats_batting_triples` | int32 | yes | `player.seasonStats.batting.triples` |  |
+| `player_season_stats_batting_home_runs` | int32 | yes | `player.seasonStats.batting.homeRuns` |  |
+| `player_season_stats_batting_strike_outs` | int32 | yes | `player.seasonStats.batting.strikeOuts` |  |
+| `player_season_stats_batting_base_on_balls` | int32 | yes | `player.seasonStats.batting.baseOnBalls` |  |
+| `player_season_stats_batting_intentional_walks` | int32 | yes | `player.seasonStats.batting.intentionalWalks` |  |
+| `player_season_stats_batting_hits` | int32 | yes | `player.seasonStats.batting.hits` |  |
+| `player_season_stats_batting_hit_by_pitch` | int32 | yes | `player.seasonStats.batting.hitByPitch` |  |
+| `player_season_stats_batting_avg` | string | yes | `player.seasonStats.batting.avg` |  |
+| `player_season_stats_batting_at_bats` | int32 | yes | `player.seasonStats.batting.atBats` |  |
+| `player_season_stats_batting_obp` | string | yes | `player.seasonStats.batting.obp` |  |
+| `player_season_stats_batting_slg` | string | yes | `player.seasonStats.batting.slg` |  |
+| `player_season_stats_batting_ops` | string | yes | `player.seasonStats.batting.ops` |  |
+| `player_season_stats_batting_caught_stealing` | int32 | yes | `player.seasonStats.batting.caughtStealing` |  |
+| `player_season_stats_batting_stolen_bases` | int32 | yes | `player.seasonStats.batting.stolenBases` |  |
+| `player_season_stats_batting_stolen_base_percentage` | string | yes | `player.seasonStats.batting.stolenBasePercentage` |  |
+| `player_season_stats_batting_caught_stealing_percentage` | string | yes | `player.seasonStats.batting.caughtStealingPercentage` |  |
+| `player_season_stats_batting_ground_into_double_play` | int32 | yes | `player.seasonStats.batting.groundIntoDoublePlay` |  |
+| `player_season_stats_batting_ground_into_triple_play` | int32 | yes | `player.seasonStats.batting.groundIntoTriplePlay` |  |
+| `player_season_stats_batting_plate_appearances` | int32 | yes | `player.seasonStats.batting.plateAppearances` |  |
+| `player_season_stats_batting_total_bases` | int32 | yes | `player.seasonStats.batting.totalBases` |  |
+| `player_season_stats_batting_rbi` | int32 | yes | `player.seasonStats.batting.rbi` |  |
+| `player_season_stats_batting_left_on_base` | int32 | yes | `player.seasonStats.batting.leftOnBase` |  |
+| `player_season_stats_batting_sac_bunts` | int32 | yes | `player.seasonStats.batting.sacBunts` |  |
+| `player_season_stats_batting_sac_flies` | int32 | yes | `player.seasonStats.batting.sacFlies` |  |
+| `player_season_stats_batting_babip` | string | yes | `player.seasonStats.batting.babip` |  |
+| `player_season_stats_batting_ground_outs_to_airouts` | string | yes | `player.seasonStats.batting.groundOutsToAirouts` |  |
+| `player_season_stats_batting_catchers_interference` | int32 | yes | `player.seasonStats.batting.catchersInterference` |  |
+| `player_season_stats_batting_pickoffs` | int32 | yes | `player.seasonStats.batting.pickoffs` |  |
+| `player_season_stats_batting_at_bats_per_home_run` | string | yes | `player.seasonStats.batting.atBatsPerHomeRun` |  |
+| `player_season_stats_batting_pop_outs` | int32 | yes | `player.seasonStats.batting.popOuts` |  |
+| `player_season_stats_batting_line_outs` | int32 | yes | `player.seasonStats.batting.lineOuts` |  |
+| `player_season_stats_pitching_games_played` | int32 | yes | `player.seasonStats.pitching.gamesPlayed` |  |
+| `player_season_stats_pitching_games_started` | int32 | yes | `player.seasonStats.pitching.gamesStarted` |  |
+| `player_season_stats_pitching_fly_outs` | int32 | yes | `player.seasonStats.pitching.flyOuts` |  |
+| `player_season_stats_pitching_ground_outs` | int32 | yes | `player.seasonStats.pitching.groundOuts` |  |
+| `player_season_stats_pitching_air_outs` | int32 | yes | `player.seasonStats.pitching.airOuts` |  |
+| `player_season_stats_pitching_runs` | int32 | yes | `player.seasonStats.pitching.runs` |  |
+| `player_season_stats_pitching_doubles` | int32 | yes | `player.seasonStats.pitching.doubles` |  |
+| `player_season_stats_pitching_triples` | int32 | yes | `player.seasonStats.pitching.triples` |  |
+| `player_season_stats_pitching_home_runs` | int32 | yes | `player.seasonStats.pitching.homeRuns` |  |
+| `player_season_stats_pitching_strike_outs` | int32 | yes | `player.seasonStats.pitching.strikeOuts` |  |
+| `player_season_stats_pitching_base_on_balls` | int32 | yes | `player.seasonStats.pitching.baseOnBalls` |  |
+| `player_season_stats_pitching_intentional_walks` | int32 | yes | `player.seasonStats.pitching.intentionalWalks` |  |
+| `player_season_stats_pitching_hits` | int32 | yes | `player.seasonStats.pitching.hits` |  |
+| `player_season_stats_pitching_hit_by_pitch` | int32 | yes | `player.seasonStats.pitching.hitByPitch` |  |
+| `player_season_stats_pitching_at_bats` | int32 | yes | `player.seasonStats.pitching.atBats` |  |
+| `player_season_stats_pitching_obp` | string | yes | `player.seasonStats.pitching.obp` |  |
+| `player_season_stats_pitching_caught_stealing` | int32 | yes | `player.seasonStats.pitching.caughtStealing` |  |
+| `player_season_stats_pitching_stolen_bases` | int32 | yes | `player.seasonStats.pitching.stolenBases` |  |
+| `player_season_stats_pitching_stolen_base_percentage` | string | yes | `player.seasonStats.pitching.stolenBasePercentage` |  |
+| `player_season_stats_pitching_caught_stealing_percentage` | string | yes | `player.seasonStats.pitching.caughtStealingPercentage` |  |
+| `player_season_stats_pitching_number_of_pitches` | int32 | yes | `player.seasonStats.pitching.numberOfPitches` |  |
+| `player_season_stats_pitching_era` | string | yes | `player.seasonStats.pitching.era` |  |
+| `player_season_stats_pitching_innings_pitched` | string | yes | `player.seasonStats.pitching.inningsPitched` |  |
+| `player_season_stats_pitching_wins` | int32 | yes | `player.seasonStats.pitching.wins` |  |
+| `player_season_stats_pitching_losses` | int32 | yes | `player.seasonStats.pitching.losses` |  |
+| `player_season_stats_pitching_saves` | int32 | yes | `player.seasonStats.pitching.saves` |  |
+| `player_season_stats_pitching_save_opportunities` | int32 | yes | `player.seasonStats.pitching.saveOpportunities` |  |
+| `player_season_stats_pitching_holds` | int32 | yes | `player.seasonStats.pitching.holds` |  |
+| `player_season_stats_pitching_blown_saves` | int32 | yes | `player.seasonStats.pitching.blownSaves` |  |
+| `player_season_stats_pitching_earned_runs` | int32 | yes | `player.seasonStats.pitching.earnedRuns` |  |
+| `player_season_stats_pitching_whip` | string | yes | `player.seasonStats.pitching.whip` |  |
+| `player_season_stats_pitching_batters_faced` | int32 | yes | `player.seasonStats.pitching.battersFaced` |  |
+| `player_season_stats_pitching_outs` | int32 | yes | `player.seasonStats.pitching.outs` |  |
+| `player_season_stats_pitching_games_pitched` | int32 | yes | `player.seasonStats.pitching.gamesPitched` |  |
+| `player_season_stats_pitching_complete_games` | int32 | yes | `player.seasonStats.pitching.completeGames` |  |
+| `player_season_stats_pitching_shutouts` | int32 | yes | `player.seasonStats.pitching.shutouts` |  |
+| `player_season_stats_pitching_pitches_thrown` | int32 | yes | `player.seasonStats.pitching.pitchesThrown` |  |
+| `player_season_stats_pitching_balls` | int32 | yes | `player.seasonStats.pitching.balls` |  |
+| `player_season_stats_pitching_strikes` | int32 | yes | `player.seasonStats.pitching.strikes` |  |
+| `player_season_stats_pitching_strike_percentage` | string | yes | `player.seasonStats.pitching.strikePercentage` |  |
+| `player_season_stats_pitching_hit_batsmen` | int32 | yes | `player.seasonStats.pitching.hitBatsmen` |  |
+| `player_season_stats_pitching_balks` | int32 | yes | `player.seasonStats.pitching.balks` |  |
+| `player_season_stats_pitching_wild_pitches` | int32 | yes | `player.seasonStats.pitching.wildPitches` |  |
+| `player_season_stats_pitching_pickoffs` | int32 | yes | `player.seasonStats.pitching.pickoffs` |  |
+| `player_season_stats_pitching_ground_outs_to_airouts` | string | yes | `player.seasonStats.pitching.groundOutsToAirouts` |  |
+| `player_season_stats_pitching_rbi` | int32 | yes | `player.seasonStats.pitching.rbi` |  |
+| `player_season_stats_pitching_win_percentage` | string | yes | `player.seasonStats.pitching.winPercentage` |  |
+| `player_season_stats_pitching_pitches_per_inning` | string | yes | `player.seasonStats.pitching.pitchesPerInning` |  |
+| `player_season_stats_pitching_games_finished` | int32 | yes | `player.seasonStats.pitching.gamesFinished` |  |
+| `player_season_stats_pitching_strikeout_walk_ratio` | string | yes | `player.seasonStats.pitching.strikeoutWalkRatio` |  |
+| `player_season_stats_pitching_strikeouts_per9_inn` | string | yes | `player.seasonStats.pitching.strikeoutsPer9Inn` |  |
+| `player_season_stats_pitching_walks_per9_inn` | string | yes | `player.seasonStats.pitching.walksPer9Inn` |  |
+| `player_season_stats_pitching_hits_per9_inn` | string | yes | `player.seasonStats.pitching.hitsPer9Inn` |  |
+| `player_season_stats_pitching_runs_scored_per9` | string | yes | `player.seasonStats.pitching.runsScoredPer9` |  |
+| `player_season_stats_pitching_home_runs_per9` | string | yes | `player.seasonStats.pitching.homeRunsPer9` |  |
+| `player_season_stats_pitching_inherited_runners` | int32 | yes | `player.seasonStats.pitching.inheritedRunners` |  |
+| `player_season_stats_pitching_inherited_runners_scored` | int32 | yes | `player.seasonStats.pitching.inheritedRunnersScored` |  |
+| `player_season_stats_pitching_catchers_interference` | int32 | yes | `player.seasonStats.pitching.catchersInterference` |  |
+| `player_season_stats_pitching_sac_bunts` | int32 | yes | `player.seasonStats.pitching.sacBunts` |  |
+| `player_season_stats_pitching_sac_flies` | int32 | yes | `player.seasonStats.pitching.sacFlies` |  |
+| `player_season_stats_pitching_passed_ball` | int32 | yes | `player.seasonStats.pitching.passedBall` |  |
+| `player_season_stats_pitching_pop_outs` | int32 | yes | `player.seasonStats.pitching.popOuts` |  |
+| `player_season_stats_pitching_line_outs` | int32 | yes | `player.seasonStats.pitching.lineOuts` |  |
+| `player_season_stats_fielding_games_started` | int32 | yes | `player.seasonStats.fielding.gamesStarted` |  |
+| `player_season_stats_fielding_caught_stealing` | int32 | yes | `player.seasonStats.fielding.caughtStealing` |  |
+| `player_season_stats_fielding_stolen_bases` | int32 | yes | `player.seasonStats.fielding.stolenBases` |  |
+| `player_season_stats_fielding_stolen_base_percentage` | string | yes | `player.seasonStats.fielding.stolenBasePercentage` |  |
+| `player_season_stats_fielding_caught_stealing_percentage` | string | yes | `player.seasonStats.fielding.caughtStealingPercentage` |  |
+| `player_season_stats_fielding_assists` | int32 | yes | `player.seasonStats.fielding.assists` |  |
+| `player_season_stats_fielding_put_outs` | int32 | yes | `player.seasonStats.fielding.putOuts` |  |
+| `player_season_stats_fielding_errors` | int32 | yes | `player.seasonStats.fielding.errors` |  |
+| `player_season_stats_fielding_chances` | int32 | yes | `player.seasonStats.fielding.chances` |  |
+| `player_season_stats_fielding_fielding` | string | yes | `player.seasonStats.fielding.fielding` |  |
+| `player_season_stats_fielding_passed_ball` | int32 | yes | `player.seasonStats.fielding.passedBall` |  |
+| `player_season_stats_fielding_pickoffs` | int32 | yes | `player.seasonStats.fielding.pickoffs` |  |
+| `player_game_status_is_current_batter` | bool | yes | `player.gameStatus.isCurrentBatter` |  |
+| `player_game_status_is_current_pitcher` | bool | yes | `player.gameStatus.isCurrentPitcher` |  |
+| `player_game_status_is_on_bench` | bool | yes | `player.gameStatus.isOnBench` |  |
+| `player_game_status_is_substitute` | bool | yes | `player.gameStatus.isSubstitute` |  |
+| `player_all_positions` | string | yes | `player.allPositions` |  |
+| `type` | string | yes | — |  |
+| `game_score` | int32 | yes | `gameScore` |  |
+| `pitching_game_score` | int32 | yes | `pitchingGameScore` |  |
+| `player_batting_order` | string | yes | `player.battingOrder` |  |
+| `player_stats_batting_summary` | string | yes | `player.stats.batting.summary` |  |
+| `player_stats_batting_games_played` | int32 | yes | `player.stats.batting.gamesPlayed` |  |
+| `player_stats_batting_fly_outs` | int32 | yes | `player.stats.batting.flyOuts` |  |
+| `player_stats_batting_ground_outs` | int32 | yes | `player.stats.batting.groundOuts` |  |
+| `player_stats_batting_air_outs` | int32 | yes | `player.stats.batting.airOuts` |  |
+| `player_stats_batting_runs` | int32 | yes | `player.stats.batting.runs` |  |
+| `player_stats_batting_doubles` | int32 | yes | `player.stats.batting.doubles` |  |
+| `player_stats_batting_triples` | int32 | yes | `player.stats.batting.triples` |  |
+| `player_stats_batting_home_runs` | int32 | yes | `player.stats.batting.homeRuns` |  |
+| `player_stats_batting_strike_outs` | int32 | yes | `player.stats.batting.strikeOuts` |  |
+| `player_stats_batting_base_on_balls` | int32 | yes | `player.stats.batting.baseOnBalls` |  |
+| `player_stats_batting_intentional_walks` | int32 | yes | `player.stats.batting.intentionalWalks` |  |
+| `player_stats_batting_hits` | int32 | yes | `player.stats.batting.hits` |  |
+| `player_stats_batting_hit_by_pitch` | int32 | yes | `player.stats.batting.hitByPitch` |  |
+| `player_stats_batting_at_bats` | int32 | yes | `player.stats.batting.atBats` |  |
+| `player_stats_batting_caught_stealing` | int32 | yes | `player.stats.batting.caughtStealing` |  |
+| `player_stats_batting_stolen_bases` | int32 | yes | `player.stats.batting.stolenBases` |  |
+| `player_stats_batting_stolen_base_percentage` | string | yes | `player.stats.batting.stolenBasePercentage` |  |
+| `player_stats_batting_ground_into_double_play` | int32 | yes | `player.stats.batting.groundIntoDoublePlay` |  |
+| `player_stats_batting_ground_into_triple_play` | int32 | yes | `player.stats.batting.groundIntoTriplePlay` |  |
+| `player_stats_batting_plate_appearances` | int32 | yes | `player.stats.batting.plateAppearances` |  |
+| `player_stats_batting_total_bases` | int32 | yes | `player.stats.batting.totalBases` |  |
+| `player_stats_batting_rbi` | int32 | yes | `player.stats.batting.rbi` |  |
+| `player_stats_batting_left_on_base` | int32 | yes | `player.stats.batting.leftOnBase` |  |
+| `player_stats_batting_sac_bunts` | int32 | yes | `player.stats.batting.sacBunts` |  |
+| `player_stats_batting_sac_flies` | int32 | yes | `player.stats.batting.sacFlies` |  |
+| `player_stats_batting_catchers_interference` | int32 | yes | `player.stats.batting.catchersInterference` |  |
+| `player_stats_batting_pickoffs` | int32 | yes | `player.stats.batting.pickoffs` |  |
+| `player_stats_batting_at_bats_per_home_run` | string | yes | `player.stats.batting.atBatsPerHomeRun` |  |
+| `player_stats_batting_pop_outs` | int32 | yes | `player.stats.batting.popOuts` |  |
+| `player_stats_batting_line_outs` | int32 | yes | `player.stats.batting.lineOuts` |  |
+| `hitting_game_score` | int32 | yes | `hittingGameScore` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.game_boxscore_top_performers -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_available_stats_game -->
+### Dataset: people_stats_available_stats_game
+
+Per-player game stats, type availableStats (one request per person).
+
+- **View:** `mlb_people_stats_available_stats_game`
+- **Processed path:** `processed/mlb_api/people_stats_available_stats_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `type` | string | yes | — |  |
+| `group` | string | yes | — |  |
+| `groups` | string | yes | — |  |
+| `teams` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_available_stats_game -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_available_stats_streak -->
+### Dataset: people_stats_available_stats_streak
+
+Per-player streak stats, type availableStats (one request per person).
+
+- **View:** `mlb_people_stats_available_stats_streak`
+- **Processed path:** `processed/mlb_api/people_stats_available_stats_streak/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `type` | string | yes | — |  |
+| `group` | string | yes | — |  |
+| `groups` | string | yes | — |  |
+| `teams` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_available_stats_streak -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_available_stats_team -->
+### Dataset: people_stats_available_stats_team
+
+Per-player team stats, type availableStats (one request per person).
+
+- **View:** `mlb_people_stats_available_stats_team`
+- **Processed path:** `processed/mlb_api/people_stats_available_stats_team/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `type` | string | yes | — |  |
+| `group` | string | yes | — |  |
+| `groups` | string | yes | — |  |
+| `teams` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_available_stats_team -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_date_range_advanced_catching -->
+### Dataset: people_stats_by_date_range_advanced_catching
+
+Per-player catching stats, type byDateRangeAdvanced (one request per person).
+
+- **View:** `mlb_people_stats_by_date_range_advanced_catching`
+- **Processed path:** `processed/mlb_api/people_stats_by_date_range_advanced_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_babip` | string | yes | `stat.babip` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_strikesouts_to_walks` | string | yes | `stat.strikesoutsToWalks` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_strikeouts_minus_walks_percentage` | string | yes | `stat.strikeoutsMinusWalksPercentage` |  |
+| `stat_batters_faced_per_game` | string | yes | `stat.battersFacedPerGame` |  |
+| `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` |  |
+| `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` |  |
+| `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` |  |
+| `stat_walks_per_strikeout` | string | yes | `stat.walksPerStrikeout` |  |
+| `stat_iso` | string | yes | `stat.iso` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `sport_code` | string | yes | `sport.code` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_date_range_advanced_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_day_of_week_catching -->
+### Dataset: people_stats_by_day_of_week_catching
+
+Per-player catching stats, type byDayOfWeek (one request per person).
+
+- **View:** `mlb_people_stats_by_day_of_week_catching`
+- **Processed path:** `processed/mlb_api/people_stats_by_day_of_week_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `league_id`, `season`, `day_of_week`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `day_of_week` | int32 | yes | `dayOfWeek` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_day_of_week_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_by_month_catching -->
+### Dataset: people_stats_by_month_catching
+
+Per-player catching stats, type byMonth (one request per person).
+
+- **View:** `mlb_people_stats_by_month_catching`
+- **Processed path:** `processed/mlb_api/people_stats_by_month_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`, `league_id`, `season`, `month`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `month` | int32 | yes | — |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_by_month_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_catching -->
+### Dataset: people_stats_career_catching
+
+Per-player catching stats, type career (one request per person).
+
+- **View:** `mlb_people_stats_career_catching`
+- **Processed path:** `processed/mlb_api/people_stats_career_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_game -->
+### Dataset: people_stats_career_game
+
+Per-player game stats, type career (one request per person).
+
+- **View:** `mlb_people_stats_career_game`
+- **Processed path:** `processed/mlb_api/people_stats_career_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_first_date_played` | date32[day] | yes | `stat.firstDatePlayed` |  |
+| `stat_last_date_played` | date32[day] | yes | `stat.lastDatePlayed` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_game -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_playoffs_catching -->
+### Dataset: people_stats_career_playoffs_catching
+
+Per-player catching stats, type careerPlayoffs (one request per person).
+
+- **View:** `mlb_people_stats_career_playoffs_catching`
+- **Processed path:** `processed/mlb_api/people_stats_career_playoffs_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_playoffs_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_playoffs_game -->
+### Dataset: people_stats_career_playoffs_game
+
+Per-player game stats, type careerPlayoffs (one request per person).
+
+- **View:** `mlb_people_stats_career_playoffs_game`
+- **Processed path:** `processed/mlb_api/people_stats_career_playoffs_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_first_date_played` | date32[day] | yes | `stat.firstDatePlayed` |  |
+| `stat_last_date_played` | date32[day] | yes | `stat.lastDatePlayed` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_playoffs_game -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_regular_season_catching -->
+### Dataset: people_stats_career_regular_season_catching
+
+Per-player catching stats, type careerRegularSeason (one request per person).
+
+- **View:** `mlb_people_stats_career_regular_season_catching`
+- **Processed path:** `processed/mlb_api/people_stats_career_regular_season_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_regular_season_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_career_regular_season_game -->
+### Dataset: people_stats_career_regular_season_game
+
+Per-player game stats, type careerRegularSeason (one request per person).
+
+- **View:** `mlb_people_stats_career_regular_season_game`
+- **Processed path:** `processed/mlb_api/people_stats_career_regular_season_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_first_date_played` | date32[day] | yes | `stat.firstDatePlayed` |  |
+| `stat_last_date_played` | date32[day] | yes | `stat.lastDatePlayed` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_career_regular_season_game -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_game_log_catching -->
+### Dataset: people_stats_game_log_catching
+
+Per-player catching stats, type gameLog (one request per person).
+
+- **View:** `mlb_people_stats_game_log_catching`
+- **Processed path:** `processed/mlb_api/people_stats_game_log_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `game_type`, `date`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `opponent_id` | int32 | yes | `opponent.id` |  |
+| `opponent_name` | string | yes | `opponent.name` |  |
+| `opponent_link` | string | yes | `opponent.link` |  |
+| `date` | date32[day] | yes | — |  |
+| `game_type` | string | yes | `gameType` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `is_win` | bool | yes | `isWin` |  |
+| `game_game_pk` | int32 | yes | `game.gamePk` |  |
+| `game_link` | string | yes | `game.link` |  |
+| `game_content_link` | string | yes | `game.content.link` |  |
+| `game_game_number` | int32 | yes | `game.gameNumber` |  |
+| `game_day_night` | string | yes | `game.dayNight` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_game_log_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_home_and_away_catching -->
+### Dataset: people_stats_home_and_away_catching
+
+Per-player catching stats, type homeAndAway (one request per person).
+
+- **View:** `mlb_people_stats_home_and_away_catching`
+- **Processed path:** `processed/mlb_api/people_stats_home_and_away_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `season`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `is_home` | bool | yes | `isHome` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_home_and_away_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_last_x_games_catching -->
+### Dataset: people_stats_last_x_games_catching
+
+Per-player catching stats, type lastXGames (one request per person).
+
+- **View:** `mlb_people_stats_last_x_games_catching`
+- **Processed path:** `processed/mlb_api/people_stats_last_x_games_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `team_id`, `sport_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `num_leagues` | int32 | yes | `numLeagues` |  |
+| `sport_code` | string | yes | `sport.code` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_last_x_games_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_opponents_faced_catching -->
+### Dataset: people_stats_opponents_faced_catching
+
+Per-player catching stats, type opponentsFaced (one request per person).
+
+- **View:** `mlb_people_stats_opponents_faced_catching`
+- **Processed path:** `processed/mlb_api/people_stats_opponents_faced_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `game_type`, `batter_id`, `pitcher_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `group` | string | yes | — |  |
+| `pitcher_id` | int32 | yes | `pitcher.id` |  |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` |  |
+| `pitcher_link` | string | yes | `pitcher.link` |  |
+| `pitcher_first_name` | string | yes | `pitcher.firstName` |  |
+| `pitcher_last_name` | string | yes | `pitcher.lastName` |  |
+| `batter_id` | int32 | yes | `batter.id` |  |
+| `batter_full_name` | string | yes | `batter.fullName` |  |
+| `batter_link` | string | yes | `batter.link` |  |
+| `batter_first_name` | string | yes | `batter.firstName` |  |
+| `batter_last_name` | string | yes | `batter.lastName` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_opponents_faced_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_outs_above_average_catching -->
+### Dataset: people_stats_outs_above_average_catching
+
+Per-player catching stats, type outsAboveAverage (one request per person).
+
+- **View:** `mlb_people_stats_outs_above_average_catching`
+- **Processed path:** `processed/mlb_api/people_stats_outs_above_average_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_outs_above_average_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_outs_above_average_fielding -->
+### Dataset: people_stats_outs_above_average_fielding
+
+Per-player fielding stats, type outsAboveAverage (one request per person).
+
+- **View:** `mlb_people_stats_outs_above_average_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_outs_above_average_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_outs_above_average_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_outs_above_average_game -->
+### Dataset: people_stats_outs_above_average_game
+
+Per-player game stats, type outsAboveAverage (one request per person).
+
+- **View:** `mlb_people_stats_outs_above_average_game`
+- **Processed path:** `processed/mlb_api/people_stats_outs_above_average_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_outs_above_average_game -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_outs_above_average_hitting -->
+### Dataset: people_stats_outs_above_average_hitting
+
+Per-player hitting stats, type outsAboveAverage (one request per person).
+
+- **View:** `mlb_people_stats_outs_above_average_hitting`
+- **Processed path:** `processed/mlb_api/people_stats_outs_above_average_hitting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_outs_above_average_hitting -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_outs_above_average_pitching -->
+### Dataset: people_stats_outs_above_average_pitching
+
+Per-player pitching stats, type outsAboveAverage (one request per person).
+
+- **View:** `mlb_people_stats_outs_above_average_pitching`
+- **Processed path:** `processed/mlb_api/people_stats_outs_above_average_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_outs_above_average_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_outs_above_average_running -->
+### Dataset: people_stats_outs_above_average_running
+
+Per-player running stats, type outsAboveAverage (one request per person).
+
+- **View:** `mlb_people_stats_outs_above_average_running`
+- **Processed path:** `processed/mlb_api/people_stats_outs_above_average_running/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_outs_above_average_running -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_outs_above_average_streak -->
+### Dataset: people_stats_outs_above_average_streak
+
+Per-player streak stats, type outsAboveAverage (one request per person).
+
+- **View:** `mlb_people_stats_outs_above_average_streak`
+- **Processed path:** `processed/mlb_api/people_stats_outs_above_average_streak/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_outs_above_average_streak -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_outs_above_average_team -->
+### Dataset: people_stats_outs_above_average_team
+
+Per-player team stats, type outsAboveAverage (one request per person).
+
+- **View:** `mlb_people_stats_outs_above_average_team`
+- **Processed path:** `processed/mlb_api/people_stats_outs_above_average_team/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_outs_above_average_team -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_sabermetrics_fielding -->
+### Dataset: people_stats_sabermetrics_fielding
+
+Per-player fielding stats, type sabermetrics (one request per person).
+
+- **View:** `mlb_people_stats_sabermetrics_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_sabermetrics_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_uzr` | double | yes | `stat.uzr` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_sabermetrics_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_sabermetrics_multi_team_fielding -->
+### Dataset: people_stats_sabermetrics_multi_team_fielding
+
+Per-player fielding stats, type sabermetricsMultiTeam (one request per person).
+
+- **View:** `mlb_people_stats_sabermetrics_multi_team_fielding`
+- **Processed path:** `processed/mlb_api/people_stats_sabermetrics_multi_team_fielding/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `sport_id`, `league_id`, `season`, `game_type`, `position_abbreviation`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_position_code` | string | yes | `stat.position.code` |  |
+| `stat_position_name` | string | yes | `stat.position.name` |  |
+| `stat_position_type` | string | yes | `stat.position.type` |  |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` |  |
+| `stat_uzr` | double | yes | `stat.uzr` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_sabermetrics_multi_team_fielding -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_season_catching -->
+### Dataset: people_stats_season_catching
+
+Per-player catching stats, type season (one request per person).
+
+- **View:** `mlb_people_stats_season_catching`
+- **Processed path:** `processed/mlb_api/people_stats_season_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_pickoff_attempts` | int32 | yes | `stat.pickoffAttempts` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_season_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_season_game -->
+### Dataset: people_stats_season_game
+
+Per-player game stats, type season (one request per person).
+
+- **View:** `mlb_people_stats_season_game`
+- **Processed path:** `processed/mlb_api/people_stats_season_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_first_date_played` | date32[day] | yes | `stat.firstDatePlayed` |  |
+| `stat_last_date_played` | date32[day] | yes | `stat.lastDatePlayed` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_season_game -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_stats_single_season_catching -->
+### Dataset: people_stats_stats_single_season_catching
+
+Per-player catching stats, type statsSingleSeason (one request per person).
+
+- **View:** `mlb_people_stats_stats_single_season_catching`
+- **Processed path:** `processed/mlb_api/people_stats_stats_single_season_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `stat_passed_ball` | int32 | yes | `stat.passedBall` |  |
+| `stat_pickoff_attempts` | int32 | yes | `stat.pickoffAttempts` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_stats_single_season_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_stats_single_season_game -->
+### Dataset: people_stats_stats_single_season_game
+
+Per-player game stats, type statsSingleSeason (one request per person).
+
+- **View:** `mlb_people_stats_stats_single_season_game`
+- **Processed path:** `processed/mlb_api/people_stats_stats_single_season_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_first_date_played` | date32[day] | yes | `stat.firstDatePlayed` |  |
+| `stat_last_date_played` | date32[day] | yes | `stat.lastDatePlayed` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_stats_single_season_game -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_win_loss_catching -->
+### Dataset: people_stats_win_loss_catching
+
+Per-player catching stats, type winLoss (one request per person).
+
+- **View:** `mlb_people_stats_win_loss_catching`
+- **Processed path:** `processed/mlb_api/people_stats_win_loss_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `season`, `stat_games_played`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `is_win` | bool | yes | `isWin` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_win_loss_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_catching -->
+### Dataset: people_stats_year_by_year_catching
+
+Per-player catching stats, type yearByYear (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_catching`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `sport_id`, `league_id`, `season`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.people_stats_year_by_year_playoffs_catching -->
+### Dataset: people_stats_year_by_year_playoffs_catching
+
+Per-player catching stats, type yearByYearPlayoffs (one request per person).
+
+- **View:** `mlb_people_stats_year_by_year_playoffs_catching`
+- **Processed path:** `processed/mlb_api/people_stats_year_by_year_playoffs_catching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `person_id`, `player_id`, `team_id`, `sport_id`, `league_id`, `season`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `person_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `season` | string | yes | — |  |
+| `stat_age` | int32 | yes | `stat.age` |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_runs` | int32 | yes | `stat.runs` |  |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` |  |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` |  |
+| `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` |  |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` |  |
+| `stat_hits` | int32 | yes | `stat.hits` |  |
+| `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` |  |
+| `stat_avg` | string | yes | `stat.avg` |  |
+| `stat_at_bats` | int32 | yes | `stat.atBats` |  |
+| `stat_obp` | string | yes | `stat.obp` |  |
+| `stat_slg` | string | yes | `stat.slg` |  |
+| `stat_ops` | string | yes | `stat.ops` |  |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` |  |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` |  |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` |  |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` |  |
+| `stat_earned_runs` | int32 | yes | `stat.earnedRuns` |  |
+| `stat_batters_faced` | int32 | yes | `stat.battersFaced` |  |
+| `stat_games_pitched` | int32 | yes | `stat.gamesPitched` |  |
+| `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` |  |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` |  |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` |  |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` |  |
+| `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` |  |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` |  |
+| `stat_sac_bunts` | int32 | yes | `stat.sacBunts` |  |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `league_id` | int32 | yes | `league.id` |  |
+| `league_name` | string | yes | `league.name` |  |
+| `league_link` | string | yes | `league.link` |  |
+| `sport_id` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.people_stats_year_by_year_playoffs_catching -->
+
+<!-- BEGIN GENERATED:mlb_api.standings_first_half -->
+### Dataset: standings_first_half
+
+Standings, type firstHalf.
+
+- **View:** `mlb_standings_first_half`
+- **Processed path:** `processed/mlb_api/standings_first_half/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `team_id`, `records_standings_type`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `records_standings_type` | string | yes | `records.standingsType` |  |
+| `records_league_id` | int32 | yes | `records.league.id` |  |
+| `records_league_link` | string | yes | `records.league.link` |  |
+| `records_division_id` | int32 | yes | `records.division.id` |  |
+| `records_division_link` | string | yes | `records.division.link` |  |
+| `records_sport_id` | int32 | yes | `records.sport.id` |  |
+| `records_sport_link` | string | yes | `records.sport.link` |  |
+| `records_round_robin_status` | string | yes | `records.roundRobin.status` |  |
+| `records_last_updated` | timestamp[us, tz=UTC] | yes | `records.lastUpdated` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `season` | string | yes | — |  |
+| `streak_streak_code` | string | yes | `streak.streakCode` |  |
+| `streak_streak_type` | string | yes | `streak.streakType` |  |
+| `streak_streak_number` | int32 | yes | `streak.streakNumber` |  |
+| `clinch_indicator` | string | yes | `clinchIndicator` |  |
+| `division_rank` | string | yes | `divisionRank` |  |
+| `league_rank` | string | yes | `leagueRank` |  |
+| `sport_rank` | string | yes | `sportRank` |  |
+| `games_played` | int32 | yes | `gamesPlayed` |  |
+| `games_back` | string | yes | `gamesBack` |  |
+| `wild_card_games_back` | string | yes | `wildCardGamesBack` |  |
+| `league_games_back` | string | yes | `leagueGamesBack` |  |
+| `spring_league_games_back` | string | yes | `springLeagueGamesBack` |  |
+| `sport_games_back` | string | yes | `sportGamesBack` |  |
+| `division_games_back` | string | yes | `divisionGamesBack` |  |
+| `conference_games_back` | string | yes | `conferenceGamesBack` |  |
+| `league_record_wins` | int32 | yes | `leagueRecord.wins` |  |
+| `league_record_losses` | int32 | yes | `leagueRecord.losses` |  |
+| `league_record_ties` | int32 | yes | `leagueRecord.ties` |  |
+| `league_record_pct` | string | yes | `leagueRecord.pct` |  |
+| `last_updated` | timestamp[us, tz=UTC] | yes | `lastUpdated` |  |
+| `records_split_records` | string | yes | `records.splitRecords` |  |
+| `records_division_records` | string | yes | `records.divisionRecords` |  |
+| `records_overall_records` | string | yes | `records.overallRecords` |  |
+| `records_league_records` | string | yes | `records.leagueRecords` |  |
+| `records_expected_records` | string | yes | `records.expectedRecords` |  |
+| `runs_allowed` | int32 | yes | `runsAllowed` |  |
+| `runs_scored` | int32 | yes | `runsScored` |  |
+| `division_champ` | bool | yes | `divisionChamp` |  |
+| `division_leader` | bool | yes | `divisionLeader` |  |
+| `has_wildcard` | bool | yes | `hasWildcard` |  |
+| `clinched` | bool | yes | — |  |
+| `elimination_number` | string | yes | `eliminationNumber` |  |
+| `elimination_number_sport` | string | yes | `eliminationNumberSport` |  |
+| `elimination_number_league` | string | yes | `eliminationNumberLeague` |  |
+| `elimination_number_division` | string | yes | `eliminationNumberDivision` |  |
+| `elimination_number_conference` | string | yes | `eliminationNumberConference` |  |
+| `wild_card_elimination_number` | string | yes | `wildCardEliminationNumber` |  |
+| `magic_number` | string | yes | `magicNumber` |  |
+| `wins` | int32 | yes | — |  |
+| `losses` | int32 | yes | — |  |
+| `run_differential` | int32 | yes | `runDifferential` |  |
+| `winning_percentage` | string | yes | `winningPercentage` |  |
+| `wild_card_rank` | string | yes | `wildCardRank` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.standings_first_half -->
+
+<!-- BEGIN GENERATED:mlb_api.standings_second_half -->
+### Dataset: standings_second_half
+
+Standings, type secondHalf.
+
+- **View:** `mlb_standings_second_half`
+- **Processed path:** `processed/mlb_api/standings_second_half/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `team_id`, `records_standings_type`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `records_standings_type` | string | yes | `records.standingsType` |  |
+| `records_league_id` | int32 | yes | `records.league.id` |  |
+| `records_league_link` | string | yes | `records.league.link` |  |
+| `records_division_id` | int32 | yes | `records.division.id` |  |
+| `records_division_link` | string | yes | `records.division.link` |  |
+| `records_sport_id` | int32 | yes | `records.sport.id` |  |
+| `records_sport_link` | string | yes | `records.sport.link` |  |
+| `records_round_robin_status` | string | yes | `records.roundRobin.status` |  |
+| `records_last_updated` | timestamp[us, tz=UTC] | yes | `records.lastUpdated` |  |
+| `team_id` | int32 | yes | `team.id` |  |
+| `team_name` | string | yes | `team.name` |  |
+| `team_link` | string | yes | `team.link` |  |
+| `season` | string | yes | — |  |
+| `streak_streak_code` | string | yes | `streak.streakCode` |  |
+| `streak_streak_type` | string | yes | `streak.streakType` |  |
+| `streak_streak_number` | int32 | yes | `streak.streakNumber` |  |
+| `clinch_indicator` | string | yes | `clinchIndicator` |  |
+| `division_rank` | string | yes | `divisionRank` |  |
+| `league_rank` | string | yes | `leagueRank` |  |
+| `sport_rank` | string | yes | `sportRank` |  |
+| `games_played` | int32 | yes | `gamesPlayed` |  |
+| `games_back` | string | yes | `gamesBack` |  |
+| `wild_card_games_back` | string | yes | `wildCardGamesBack` |  |
+| `league_games_back` | string | yes | `leagueGamesBack` |  |
+| `spring_league_games_back` | string | yes | `springLeagueGamesBack` |  |
+| `sport_games_back` | string | yes | `sportGamesBack` |  |
+| `division_games_back` | string | yes | `divisionGamesBack` |  |
+| `conference_games_back` | string | yes | `conferenceGamesBack` |  |
+| `league_record_wins` | int32 | yes | `leagueRecord.wins` |  |
+| `league_record_losses` | int32 | yes | `leagueRecord.losses` |  |
+| `league_record_ties` | int32 | yes | `leagueRecord.ties` |  |
+| `league_record_pct` | string | yes | `leagueRecord.pct` |  |
+| `last_updated` | timestamp[us, tz=UTC] | yes | `lastUpdated` |  |
+| `records_split_records` | string | yes | `records.splitRecords` |  |
+| `records_division_records` | string | yes | `records.divisionRecords` |  |
+| `records_overall_records` | string | yes | `records.overallRecords` |  |
+| `records_league_records` | string | yes | `records.leagueRecords` |  |
+| `records_expected_records` | string | yes | `records.expectedRecords` |  |
+| `runs_allowed` | int32 | yes | `runsAllowed` |  |
+| `runs_scored` | int32 | yes | `runsScored` |  |
+| `division_champ` | bool | yes | `divisionChamp` |  |
+| `division_leader` | bool | yes | `divisionLeader` |  |
+| `has_wildcard` | bool | yes | `hasWildcard` |  |
+| `clinched` | bool | yes | — |  |
+| `elimination_number` | string | yes | `eliminationNumber` |  |
+| `elimination_number_sport` | string | yes | `eliminationNumberSport` |  |
+| `elimination_number_league` | string | yes | `eliminationNumberLeague` |  |
+| `elimination_number_division` | string | yes | `eliminationNumberDivision` |  |
+| `elimination_number_conference` | string | yes | `eliminationNumberConference` |  |
+| `wild_card_elimination_number` | string | yes | `wildCardEliminationNumber` |  |
+| `magic_number` | string | yes | `magicNumber` |  |
+| `wins` | int32 | yes | — |  |
+| `losses` | int32 | yes | — |  |
+| `run_differential` | int32 | yes | `runDifferential` |  |
+| `winning_percentage` | string | yes | `winningPercentage` |  |
+| `wild_card_rank` | string | yes | `wildCardRank` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.standings_second_half -->
+
+<!-- BEGIN GENERATED:mlb_api.stats_outs_above_average_game -->
+### Dataset: stats_outs_above_average_game
+
+League-wide game stats, type outsAboveAverage (player pool ALL).
+
+- **View:** `mlb_stats_outs_above_average_game`
+- **Processed path:** `processed/mlb_api/stats_outs_above_average_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `sport_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` |  |
+| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` |  |
+| `stats_player_pool` | string | yes | `stats.playerPool` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `player_first_name` | string | yes | `player.firstName` |  |
+| `player_last_name` | string | yes | `player.lastName` |  |
+| `player_primary_position_code` | string | yes | `player.primaryPosition.code` |  |
+| `player_primary_position_name` | string | yes | `player.primaryPosition.name` |  |
+| `player_primary_position_type` | string | yes | `player.primaryPosition.type` |  |
+| `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.stats_outs_above_average_game -->
+
+<!-- BEGIN GENERATED:mlb_api.stats_outs_above_average_streak -->
+### Dataset: stats_outs_above_average_streak
+
+League-wide streak stats, type outsAboveAverage (player pool ALL).
+
+- **View:** `mlb_stats_outs_above_average_streak`
+- **Processed path:** `processed/mlb_api/stats_outs_above_average_streak/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `sport_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` |  |
+| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` |  |
+| `stats_player_pool` | string | yes | `stats.playerPool` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `player_first_name` | string | yes | `player.firstName` |  |
+| `player_last_name` | string | yes | `player.lastName` |  |
+| `player_primary_position_code` | string | yes | `player.primaryPosition.code` |  |
+| `player_primary_position_name` | string | yes | `player.primaryPosition.name` |  |
+| `player_primary_position_type` | string | yes | `player.primaryPosition.type` |  |
+| `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.stats_outs_above_average_streak -->
+
+<!-- BEGIN GENERATED:mlb_api.stats_outs_above_average_team -->
+### Dataset: stats_outs_above_average_team
+
+League-wide team stats, type outsAboveAverage (player pool ALL).
+
+- **View:** `mlb_stats_outs_above_average_team`
+- **Processed path:** `processed/mlb_api/stats_outs_above_average_team/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `sport_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` |  |
+| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` |  |
+| `stats_player_pool` | string | yes | `stats.playerPool` |  |
+| `stat_attempts` | int32 | yes | `stat.attempts` |  |
+| `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` |  |
+| `stat_total_outs_above_average_unrounded` | double | yes | `stat.totalOutsAboveAverageUnrounded` |  |
+| `stat_total_outs_above_average_back` | int32 | yes | `stat.totalOutsAboveAverageBack` |  |
+| `stat_total_outs_above_average_back_unrounded` | double | yes | `stat.totalOutsAboveAverageBackUnrounded` |  |
+| `stat_outs_above_average_back_straight` | int32 | yes | `stat.outsAboveAverageBackStraight` |  |
+| `stat_outs_above_average_back_straight_unrounded` | double | yes | `stat.outsAboveAverageBackStraightUnrounded` |  |
+| `stat_outs_above_average_back_left` | int32 | yes | `stat.outsAboveAverageBackLeft` |  |
+| `stat_outs_above_average_back_left_unrounded` | double | yes | `stat.outsAboveAverageBackLeftUnrounded` |  |
+| `stat_outs_above_average_back_right` | int32 | yes | `stat.outsAboveAverageBackRight` |  |
+| `stat_outs_above_average_back_right_unrounded` | double | yes | `stat.outsAboveAverageBackRightUnrounded` |  |
+| `stat_total_outs_above_average_in` | int32 | yes | `stat.totalOutsAboveAverageIn` |  |
+| `stat_total_outs_above_average_in_unrounded` | double | yes | `stat.totalOutsAboveAverageInUnrounded` |  |
+| `stat_outs_above_average_in_straight` | int32 | yes | `stat.outsAboveAverageInStraight` |  |
+| `stat_outs_above_average_in_straight_unrounded` | double | yes | `stat.outsAboveAverageInStraightUnrounded` |  |
+| `stat_outs_above_average_in_left` | int32 | yes | `stat.outsAboveAverageInLeft` |  |
+| `stat_outs_above_average_in_left_unrounded` | double | yes | `stat.outsAboveAverageInLeftUnrounded` |  |
+| `stat_outs_above_average_in_right` | int32 | yes | `stat.outsAboveAverageInRight` |  |
+| `stat_outs_above_average_in_right_unrounded` | double | yes | `stat.outsAboveAverageInRightUnrounded` |  |
+| `stat_fielding_runs_prevented` | int32 | yes | `stat.fieldingRunsPrevented` |  |
+| `stat_fielding_runs_prevented_unrounded` | double | yes | `stat.fieldingRunsPreventedUnrounded` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `player_first_name` | string | yes | `player.firstName` |  |
+| `player_last_name` | string | yes | `player.lastName` |  |
+| `player_primary_position_code` | string | yes | `player.primaryPosition.code` |  |
+| `player_primary_position_name` | string | yes | `player.primaryPosition.name` |  |
+| `player_primary_position_type` | string | yes | `player.primaryPosition.type` |  |
+| `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` |  |
+| `game_type` | string | yes | `gameType` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.stats_outs_above_average_team -->
+
+<!-- BEGIN GENERATED:mlb_api.stats_season_advanced_game -->
+### Dataset: stats_season_advanced_game
+
+League-wide game stats, type seasonAdvanced (player pool ALL).
+
+- **View:** `mlb_stats_season_advanced_game`
+- **Processed path:** `processed/mlb_api/stats_season_advanced_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `sport_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` |  |
+| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` |  |
+| `stats_player_pool` | string | yes | `stats.playerPool` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_first_date_played` | date32[day] | yes | `stat.firstDatePlayed` |  |
+| `stat_last_date_played` | date32[day] | yes | `stat.lastDatePlayed` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `player_first_name` | string | yes | `player.firstName` |  |
+| `player_last_name` | string | yes | `player.lastName` |  |
+| `sport_id_2` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `rank` | int32 | yes | — |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.stats_season_advanced_game -->
+
+<!-- BEGIN GENERATED:mlb_api.stats_season_game -->
+### Dataset: stats_season_game
+
+League-wide game stats, type season (player pool ALL).
+
+- **View:** `mlb_stats_season_game`
+- **Processed path:** `processed/mlb_api/stats_season_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `sport_id` | int32 | yes | — |  |
+| `stats_type_display_name` | string | yes | `stats.type.displayName` |  |
+| `stats_group_display_name` | string | yes | `stats.group.displayName` |  |
+| `stats_total_splits` | int32 | yes | `stats.totalSplits` |  |
+| `stats_exemptions` | string | yes | `stats.exemptions` |  |
+| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` |  |
+| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` |  |
+| `stats_player_pool` | string | yes | `stats.playerPool` |  |
+| `season` | string | yes | — |  |
+| `stat_games_played` | int32 | yes | `stat.gamesPlayed` |  |
+| `stat_games_started` | int32 | yes | `stat.gamesStarted` |  |
+| `stat_first_date_played` | date32[day] | yes | `stat.firstDatePlayed` |  |
+| `stat_last_date_played` | date32[day] | yes | `stat.lastDatePlayed` |  |
+| `player_id` | int32 | yes | `player.id` |  |
+| `player_full_name` | string | yes | `player.fullName` |  |
+| `player_link` | string | yes | `player.link` |  |
+| `player_first_name` | string | yes | `player.firstName` |  |
+| `player_last_name` | string | yes | `player.lastName` |  |
+| `sport_id_2` | int32 | yes | `sport.id` |  |
+| `sport_link` | string | yes | `sport.link` |  |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` |  |
+| `num_teams` | int32 | yes | `numTeams` |  |
+| `rank` | int32 | yes | — |  |
+| `position_code` | string | yes | `position.code` |  |
+| `position_name` | string | yes | `position.name` |  |
+| `position_type` | string | yes | `position.type` |  |
+| `position_abbreviation` | string | yes | `position.abbreviation` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.stats_season_game -->
+
+<!-- BEGIN GENERATED:mlb_api.transactions_season -->
+### Dataset: transactions_season
+
+Every transaction of a calendar year (trades, signings, DFAs, IL moves, ...), all fields.
+
+- **View:** `mlb_transactions_season`
+- **Processed path:** `processed/mlb_api/transactions_season/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — |  |
+| `person_id` | int32 | yes | `person.id` |  |
+| `person_full_name` | string | yes | `person.fullName` |  |
+| `person_link` | string | yes | `person.link` |  |
+| `to_team_id` | int32 | yes | `toTeam.id` |  |
+| `to_team_name` | string | yes | `toTeam.name` |  |
+| `to_team_link` | string | yes | `toTeam.link` |  |
+| `date` | date32[day] | yes | — |  |
+| `effective_date` | date32[day] | yes | `effectiveDate` |  |
+| `resolution_date` | date32[day] | yes | `resolutionDate` |  |
+| `type_code` | string | yes | `typeCode` |  |
+| `type_desc` | string | yes | `typeDesc` |  |
+| `description` | string | yes | — |  |
+| `from_team_id` | int32 | yes | `fromTeam.id` |  |
+| `from_team_name` | string | yes | `fromTeam.name` |  |
+| `from_team_link` | string | yes | `fromTeam.link` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.transactions_season -->
+
+<!-- BEGIN GENERATED:mlb_api.venues_hydrated -->
+### Dataset: venues_hydrated
+
+Every venue with location, field info, time zone and external ids hydrated.
+
+- **View:** `mlb_venues_hydrated`
+- **Processed path:** `processed/mlb_api/venues_hydrated/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — |  |
+| `name` | string | yes | — |  |
+| `link` | string | yes | — |  |
+| `location_address1` | string | yes | `location.address1` |  |
+| `location_city` | string | yes | `location.city` |  |
+| `location_state` | string | yes | `location.state` |  |
+| `location_state_abbrev` | string | yes | `location.stateAbbrev` |  |
+| `location_postal_code` | string | yes | `location.postalCode` |  |
+| `location_default_coordinates_latitude` | double | yes | `location.defaultCoordinates.latitude` |  |
+| `location_default_coordinates_longitude` | double | yes | `location.defaultCoordinates.longitude` |  |
+| `location_country` | string | yes | `location.country` |  |
+| `time_zone_tz` | string | yes | `timeZone.tz` |  |
+| `time_zone_id` | string | yes | `timeZone.id` |  |
+| `time_zone_offset` | int32 | yes | `timeZone.offset` |  |
+| `time_zone_offset_at_game_time` | int32 | yes | `timeZone.offsetAtGameTime` |  |
+| `field_info_capacity` | int32 | yes | `fieldInfo.capacity` |  |
+| `field_info_turf_type` | string | yes | `fieldInfo.turfType` |  |
+| `field_info_roof_type` | string | yes | `fieldInfo.roofType` |  |
+| `field_info_left_line` | int32 | yes | `fieldInfo.leftLine` |  |
+| `field_info_center` | int32 | yes | `fieldInfo.center` |  |
+| `field_info_right_line` | int32 | yes | `fieldInfo.rightLine` |  |
+| `xref_ids` | string | yes | `xrefIds` |  |
+| `active` | bool | yes | — |  |
+| `season` | string | yes | — |  |
+| `field_info_left_center` | int32 | yes | `fieldInfo.leftCenter` |  |
+| `field_info_right_center` | int32 | yes | `fieldInfo.rightCenter` |  |
+| `location_azimuth_angle` | double | yes | `location.azimuthAngle` |  |
+| `location_elevation` | int32 | yes | `location.elevation` |  |
+| `location_phone` | string | yes | `location.phone` |  |
+| `location_address2` | string | yes | `location.address2` |  |
+| `field_info_left` | int32 | yes | `fieldInfo.left` |  |
+| `field_info_right` | int32 | yes | `fieldInfo.right` |  |
+| `location_address3` | string | yes | `location.address3` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.venues_hydrated -->

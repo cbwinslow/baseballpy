@@ -164,6 +164,10 @@ def test_requests_for_each_scope() -> None:
         team_ids=(147, 119),
         game_pks=(7, 8),
         leader_categories=("homeRuns", "era"),
+        person_ids=(660271, 543037),
+        award_ids=("ALMVP", "NLCY"),
+        updated_since="2024-06-24T00:00:00Z",
+        query="Judge",
     )
     flat = list(requests_for(BY_NAME["ref_game_types"], ctx))
     assert [r.ident for r in flat] == ["ref_game_types"] and flat[0].season is None
@@ -186,6 +190,16 @@ def test_requests_for_each_scope() -> None:
     assert leaders.params["leaderCategories"] == "homeRuns,era"
     affiliates = next(requests_for(BY_NAME["team_affiliates"], ctx))
     assert affiliates.params["teamIds"] == "147,119"
+    people = list(requests_for(BY_NAME["award_recipients"], ctx))
+    assert [r.path for r in people] == ["v1/awards/ALMVP/recipients", "v1/awards/NLCY/recipients"]
+    assert people[0].extra == {"request_award_id": "ALMVP"} and people[0].params["season"] == "2024"
+    since = next(requests_for(BY_NAME["people_changes"], ctx))
+    assert since.params["updatedSince"] == "2024-06-24T00:00:00Z" and since.season is None
+    assert next(requests_for(BY_NAME["people_search"], ctx)).params == {"names": "Judge"}
+    person = next(e for e in SUPPORTED if e.scope == "person_season")
+    reqs = list(requests_for(person, ctx))
+    assert [r.extra for r in reqs] == [{"person_id": 660271}, {"person_id": 543037}]
+    assert reqs[0].path == "v1/people/660271/stats"
     idents = [r.ident for e in SUPPORTED for r in requests_for(e, ctx)]
     assert len(idents) == len(set(idents)), "request chunk ids must be unique across endpoints"
 
@@ -202,7 +216,7 @@ def test_season_scope_needs_a_season() -> None:
 def test_fixture_normalizes_completely(name: str, tmp_path: Path) -> None:
     ep = BY_NAME[name]
     quarantine = Quarantine(QuarantineConfig(base_dir=tmp_path / "q"))
-    extra = {"game_pk": 1, "team_id": 2, "sport_id": 1}
+    extra = {"game_pk": 1, "team_id": 2, "sport_id": 1, "person_id": 3, "request_award_id": "X"}
     upstream = {
         (f.metadata or {}).get(b"upstream", f.name.encode()).decode() for f in MLB_SCHEMAS[name]
     }
@@ -381,8 +395,51 @@ def test_paginated_request_announcing_a_huge_result_is_refused(tmp_path: Path) -
     assert route.call_count == 1, "refused after the first page, not after 192 pages"
 
 
-def test_endpoint_without_generated_schema_is_reported_not_crashed(tmp_path: Path) -> None:
-    empty = next(e for e in SUPPORTED if e.name not in MLB_SCHEMAS)
-    extractor = MlbEndpointExtractor(cache_config=LakeConfig(home=tmp_path))
-    report = extractor.ingest(empty, Context(season=2024, game_pks=(1,)))
-    assert report.requests == 0 and "no schema" in (report.unsupported or "")
+@respx.mock
+def test_endpoint_without_generated_schema_keeps_the_raw_json(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    empty = BY_NAME["standings_first_half"]
+    monkeypatch.delitem(generic.MLB_SCHEMAS, empty.name, raising=False)
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    route = respx.get(url__regex=rf"{MLB_BASE_URL}/.*").mock(
+        return_value=httpx.Response(200, json={"records": []})
+    )
+    first = extractor.ingest(empty, Context(season=2024))
+    assert first.rows == 0 and first.raw_only >= 1 and route.call_count == first.requests
+    raw = lake.raw_dir("mlb_api", empty.name, 2024)
+    assert [p for p in raw.glob("*.json") if p.name != "manifest.json"]
+    again = extractor.ingest(empty, Context(season=2024))
+    assert again.cached == again.requests and route.call_count == first.requests
+
+
+def test_since_and_query_scopes_need_their_value_and_are_unpartitioned() -> None:
+    for name in ("people_changes", "game_changes", "people_search"):
+        assert not BY_NAME[name].partitioned
+        with pytest.raises(ValueError, match="needs ctx"):
+            list(requests_for(BY_NAME[name], Context()))
+
+
+@respx.mock
+def test_award_without_a_recipients_list_is_counted_and_not_refetched(tmp_path: Path) -> None:
+    from baseballpy.core.http import HttpStatusError
+
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    ok = _fixture("award_recipients")
+    respx.get(f"{MLB_BASE_URL}/v1/awards/ALMVP/recipients").mock(
+        return_value=httpx.Response(200, json=ok)
+    )
+    gone = respx.get(f"{MLB_BASE_URL}/v1/awards/AFLHOF/recipients").mock(
+        return_value=httpx.Response(404)
+    )
+    ctx = Context(season=2024, award_ids=("ALMVP", "AFLHOF"))
+    first = extractor.ingest("award_recipients", ctx)
+    assert (first.requests, first.missing) == (2, 1) and first.rows >= 1
+    again = extractor.ingest("award_recipients", ctx)
+    assert (again.cached, again.missing, gone.call_count) == (2, 0, 1)
+    # endpoints that do not opt in still fail loudly on a 404
+    respx.get(f"{MLB_BASE_URL}/v1/teams").mock(return_value=httpx.Response(404))
+    with pytest.raises(HttpStatusError):
+        extractor.ingest("teams_season", Context(season=2024))

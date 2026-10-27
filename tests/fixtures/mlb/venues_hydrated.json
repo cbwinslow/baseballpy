@@ -1,0 +1,111 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "venues": [
+  {
+   "id": 2857,
+   "name": "Veterans Memorial Stadium",
+   "link": "/api/v1/venues/2857",
+   "location": {
+    "address1": "950 Rockford Road S.W.",
+    "city": "Cedar Rapids",
+    "state": "Iowa",
+    "stateAbbrev": "IA",
+    "postalCode": "52404",
+    "defaultCoordinates": {
+     "latitude": 41.96785,
+     "longitude": -91.68662
+    },
+    "country": "USA"
+   },
+   "timeZone": {
+    "tz": "CDT",
+    "id": "America/Chicago",
+    "offset": -5,
+    "offsetAtGameTime": -5
+   },
+   "fieldInfo": {
+    "capacity": 6000,
+    "turfType": "Grass",
+    "roofType": "Open",
+    "leftLine": 315,
+    "center": 400,
+    "rightLine": 325
+   },
+   "xrefIds": [
+    {
+     "xrefId": "USIA0138",
+     "xrefType": "weather_channel_loc"
+    },
+    {
+     "xrefId": "ced.afa",
+     "xrefType": "ballpark_code"
+    }
+   ],
+   "active": true,
+   "season": "2026"
+  },
+  {
+   "id": 7253,
+   "name": "ONT Field",
+   "link": "/api/v1/venues/7253",
+   "location": {
+    "address1": "9375 East Riverside Dr.",
+    "city": "Ontario",
+    "state": "California",
+    "stateAbbrev": "CA",
+    "postalCode": "91761",
+    "defaultCoordinates": {
+     "latitude": 34.0184639834586,
+     "longitude": -117.60331808557788
+    },
+    "country": "USA"
+   },
+   "timeZone": {
+    "tz": "PDT",
+    "id": "America/Los_Angeles",
+    "offset": -7,
+    "offsetAtGameTime": -7
+   },
+   "fieldInfo": {
+    "capacity": 5000,
+    "turfType": "Grass",
+    "roofType": "Open",
+    "leftLine": 328,
+    "leftCenter": 383,
+    "center": 401,
+    "rightCenter": 368,
+    "rightLine": 326
+   },
+   "xrefIds": [
+    {
+     "xrefId": "ont.afx",
+     "xrefType": "ballpark_code"
+    }
+   ],
+   "active": true,
+   "season": "2026"
+  },
+  {
+   "id": 7258,
+   "name": "Sun Marine Stadium",
+   "link": "/api/v1/venues/7258",
+   "location": {
+    "city": "Miyazaki",
+    "country": "Japan"
+   },
+   "timeZone": {
+    "tz": "JST",
+    "id": "Asia/Tokyo",
+    "offset": 9,
+    "offsetAtGameTime": 9
+   },
+   "fieldInfo": {
+    "capacity": 30000,
+    "turfType": "Grass",
+    "roofType": "Open"
+   },
+   "active": true,
+   "season": "2026"
+  }
+ ]
+}

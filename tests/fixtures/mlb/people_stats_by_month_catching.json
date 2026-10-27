@@ -1,0 +1,169 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "byMonth"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 11,
+      "runs": 37,
+      "homeRuns": 7,
+      "strikeOuts": 99,
+      "baseOnBalls": 38,
+      "intentionalWalks": 0,
+      "hits": 75,
+      "hitByPitch": 1,
+      "avg": ".218",
+      "atBats": 344,
+      "obp": ".297",
+      "slg": ".337",
+      "ops": ".634",
+      "caughtStealing": 0,
+      "stolenBases": 7,
+      "stolenBasePercentage": "1.000",
+      "caughtStealingPercentage": ".000",
+      "earnedRuns": 35,
+      "battersFaced": 384,
+      "gamesPitched": 11,
+      "hitBatsmen": 1,
+      "wildPitches": 6,
+      "pickoffs": 0,
+      "totalBases": 116,
+      "strikeoutWalkRatio": "2.61",
+      "catchersInterference": 0,
+      "sacBunts": 0,
+      "sacFlies": 1
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "month": 9,
+     "numTeams": 1,
+     "numLeagues": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 14,
+      "runs": 41,
+      "homeRuns": 14,
+      "strikeOuts": 104,
+      "baseOnBalls": 34,
+      "intentionalWalks": 2,
+      "hits": 95,
+      "hitByPitch": 6,
+      "avg": ".215",
+      "atBats": 442,
+      "obp": ".280",
+      "slg": ".369",
+      "ops": ".649",
+      "caughtStealing": 3,
+      "stolenBases": 9,
+      "stolenBasePercentage": ".750",
+      "caughtStealingPercentage": ".250",
+      "earnedRuns": 39,
+      "battersFaced": 485,
+      "gamesPitched": 14,
+      "hitBatsmen": 6,
+      "wildPitches": 7,
+      "pickoffs": 0,
+      "totalBases": 163,
+      "strikeoutWalkRatio": "3.06",
+      "catchersInterference": 0,
+      "sacBunts": 2,
+      "sacFlies": 1
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "month": 7,
+     "numTeams": 1,
+     "numLeagues": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 17,
+      "runs": 82,
+      "homeRuns": 14,
+      "strikeOuts": 129,
+      "baseOnBalls": 46,
+      "intentionalWalks": 6,
+      "hits": 143,
+      "hitByPitch": 4,
+      "avg": ".260",
+      "atBats": 550,
+      "obp": ".320",
+      "slg": ".424",
+      "ops": ".744",
+      "caughtStealing": 1,
+      "stolenBases": 4,
+      "stolenBasePercentage": ".800",
+      "caughtStealingPercentage": ".200",
+      "earnedRuns": 75,
+      "battersFaced": 604,
+      "gamesPitched": 17,
+      "hitBatsmen": 4,
+      "wildPitches": 6,
+      "pickoffs": 0,
+      "totalBases": 233,
+      "strikeoutWalkRatio": "2.80",
+      "catchersInterference": 0,
+      "sacBunts": 0,
+      "sacFlies": 4
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "month": 8,
+     "numTeams": 1,
+     "numLeagues": 1
+    }
+   ]
+  }
+ ]
+}

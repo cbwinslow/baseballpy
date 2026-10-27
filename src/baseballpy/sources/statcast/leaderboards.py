@@ -84,7 +84,7 @@ class StatcastLeaderboardNormalizer:
         """Typed table for ``slug``; without a slug the types are inferred (ad hoc results only)."""
         defn = BY_SLUG[slug] if slug is not None else None
         payload = (
-            html_json_to_csv(raw_bytes)
+            html_json_to_csv(raw_bytes, defn.html_var)
             if defn is not None and defn.fmt == "html_json"
             else raw_bytes
         )

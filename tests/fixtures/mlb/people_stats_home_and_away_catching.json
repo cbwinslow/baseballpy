@@ -1,0 +1,84 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "homeAndAway"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 48,
+      "runs": 205,
+      "homeRuns": 41,
+      "strikeOuts": 398,
+      "baseOnBalls": 142,
+      "intentionalWalks": 8,
+      "hits": 402,
+      "hitByPitch": 20,
+      "avg": ".247",
+      "atBats": 1629,
+      "obp": ".313",
+      "slg": ".392",
+      "ops": ".705",
+      "caughtStealing": 8,
+      "stolenBases": 19,
+      "stolenBasePercentage": ".704",
+      "caughtStealingPercentage": ".296",
+      "earnedRuns": 196,
+      "battersFaced": 1803,
+      "gamesPitched": 48,
+      "hitBatsmen": 20,
+      "wildPitches": 18,
+      "pickoffs": 1,
+      "totalBases": 638,
+      "strikeoutWalkRatio": "2.80",
+      "catchersInterference": 0,
+      "sacBunts": 2,
+      "sacFlies": 10
+     },
+     "isHome": true
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 43,
+      "runs": 162,
+      "homeRuns": 37,
+      "strikeOuts": 318,
+      "baseOnBalls": 123,
+      "intentionalWalks": 3,
+      "hits": 301,
+      "hitByPitch": 10,
+      "avg": ".233",
+      "atBats": 1294,
+      "obp": ".303",
+      "slg": ".372",
+      "ops": ".675",
+      "caughtStealing": 3,
+      "stolenBases": 18,
+      "stolenBasePercentage": ".857",
+      "caughtStealingPercentage": ".143",
+      "earnedRuns": 148,
+      "battersFaced": 1436,
+      "gamesPitched": 43,
+      "hitBatsmen": 10,
+      "wildPitches": 12,
+      "pickoffs": 0,
+      "totalBases": 481,
+      "strikeoutWalkRatio": "2.59",
+      "catchersInterference": 0,
+      "sacBunts": 3,
+      "sacFlies": 6
+     },
+     "isHome": false
+    }
+   ]
+  }
+ ]
+}

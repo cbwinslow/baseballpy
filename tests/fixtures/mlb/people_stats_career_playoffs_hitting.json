@@ -1,0 +1,66 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "career"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 1172,
+      "groundOuts": 917,
+      "airOuts": 911,
+      "runs": 797,
+      "doubles": 218,
+      "triples": 49,
+      "homeRuns": 310,
+      "strikeOuts": 1256,
+      "baseOnBalls": 622,
+      "intentionalWalks": 104,
+      "hits": 1194,
+      "hitByPitch": 32,
+      "avg": ".281",
+      "atBats": 4253,
+      "obp": ".375",
+      "slg": ".574",
+      "ops": ".949",
+      "caughtStealing": 46,
+      "stolenBases": 176,
+      "stolenBasePercentage": ".793",
+      "caughtStealingPercentage": ".207",
+      "groundIntoDoublePlay": 58,
+      "numberOfPitches": 19397,
+      "plateAppearances": 4947,
+      "totalBases": 2440,
+      "rbi": 750,
+      "leftOnBase": 1594,
+      "sacBunts": 0,
+      "sacFlies": 25,
+      "babip": ".326",
+      "groundOutsToAirouts": "1.01",
+      "catchersInterference": 15,
+      "atBatsPerHomeRun": "13.72"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "numTeams": 2,
+     "numLeagues": 2
+    }
+   ]
+  }
+ ]
+}

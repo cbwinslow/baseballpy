@@ -1,33 +1,26 @@
 # Real-Time Gameday Streaming Specification
 
 ## 1. Overview
-The Real-Time Gameday Streaming Engine polls active game feeds from `https://statsapi.mlb.com/api/v1.1/game/{game_pk}/feed/live` and emits discrete, immutable play and pitch events for live analytics, dashboard consumption, and real-time model inference.
+The streaming engine (`sources/mlb_api/stream.py`, `GamedayLiveStreamer`) follows an active game through `https://statsapi.mlb.com/api/v1.1/game/{game_pk}/feed/live` and emits discrete, immutable `LiveEvent`s for dashboards and live model inference. It implements `StreamExtractorProtocol` (`stream_events(game_pk, ...)`); the constructor does not own a game. `stream_live_events(game_pk)` yields `LiveEvent`s, `stream_events(game_pk)` yields the same as dicts. See ADR 29.
 
 ---
 
-## 2. Monotonic State Diffing
-- Maintains an in-memory watermark `(atBatIndex, eventIndex)`.
-- Re-evaluates live feeds on each poll interval, bypassing all already-emitted play events.
-- Never emits duplicate pitch or play records.
-- Automatically breaks streaming loop when `gameData.status.abstractGameState == "Final"`.
+## 2. Polling
+- Baseline: one full `feed/live` fetch.
+- Afterwards: `feed/live/timestamps` (change codes); when the newest code differs from the local copy's `metaData.timeStamp`, `feed/live/diffPatch?startTimecode=<last>&endTimecode=<newest>` is applied to a local copy as an RFC 6902 patch (`add/remove/replace/move/copy/test`). For wide windows the server returns the complete feed document, which replaces the local copy.
+- The full feed (ETag / `metaData.timeStamp` comparison, HTTP 304 skips parsing) is the fallback when `timestamps`/`diffPatch` are unavailable, the patch cannot be applied, or the patched copy does not reach the announced timestamp.
+- JSON is decoded with `msgspec`; undecodable payloads are quarantined and polling continues; network failures are retried by the shared `HttpClient` and then raised (audit status `FAILURE`).
 
 ---
 
-## 3. Bandwidth Optimization & Conditional HTTP Headers
-- Evaluates `metaData.timeStamp` and HTTP `ETag` (`If-None-Match`).
-- When upstream returns `HTTP 304 Not Modified`, skips JSON deserialization and waits for the next poll cycle.
-- Deserializes JSON via `msgspec.json.decode()` for single-pass C-speed parsing.
+## 3. Events and Watermark
+- Key `(game_pk, at_bat_index, event_index)`; `event_kind` is `pitch`, `pickoff`, `stolen_base`, `substitution`, `action`, `play_result` (once per completed plate appearance, `event_index = -1`), `half_inning_end` (once, on the third out, `event_index = -2`) or `game_status` (`at_bat_index = -1`, `event_index` = status sequence).
+- Typed fields: pitch (type, speeds, strike zone, plate location, zone, spin, breaks, plate time, extension), hit (launch speed/angle, distance, trajectory, hardness, location), count, batter/pitcher ids, result text, `ts_utc` and `received_utc` as microseconds since the epoch (UTC); the raw play/event payloads ride along for `to_arrow`.
+- `to_arrow(events)` maps events onto the strict `game_feed_play_events` schema through the same flattener as historical ingestion, so live and historical rows share one table and can be upserted.
+- A monotonic watermark `{at_bat, event, results_through, status, status_seq, timestamp}` is persisted to `cache/stream/<game_pk>.json` after each change; a later stream of the same game emits only newer events (`resume=False` replays).
 
 ---
 
-## 4. Downstream Event Format
-Emits discrete event dictionaries and Arrow record batches containing:
-- `game_pk`: Numeric Game ID
-- `at_bat_index`, `event_index`: Monotonic sequencing keys
-- `is_pitch`: Boolean flag
-- `pitch_type`, `start_speed`, `end_speed`: Pitch dynamics
-- `sz_top`, `sz_bottom`, `px`, `pz`: Strike zone and trajectory coordinates
-- `x`, `y`: Video-space coordinates
-- `description`, `call_code`, `event`, `event_type`: Outcome semantics
-- `batter_id`, `pitcher_id`, `inning`, `is_top_inning`, `outs`, `balls`, `strikes`: Game state context
-- `timestamp`: UTC microsecond timestamp
+## 4. Lifecycle
+- Waiting states (`Preview`, `Warmup`, ...) poll until `max_inactivity_minutes`; `Delayed` backs off to 30 s.
+- `Suspended`, `Postponed`, `Cancelled`, `Final` and `Game Over` emit a `game_status` event and end the stream; a resumed suspended game continues from the watermark.

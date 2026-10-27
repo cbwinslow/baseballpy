@@ -1,7 +1,7 @@
 # Endpoint & Dataset Catalog (target coverage)
 
 This is the authoritative list of what `baseballpy` must be able to download, normalize, store and document
-(see `openspec/changes/complete-source-coverage`). It is a **target**, written from knowledge of the upstream
+(see `openspec/changes/archive/2026-10-27-complete-source-coverage`). It is a **target**, written from knowledge of the upstream
 services as of 2026-10; every row must be **probed live** by `scripts/probe_endpoints.py`, and the
 `Status` / `Verified on` columns updated from `docs/endpoint_probe.json`. Rows that do not respond are kept
 and marked `unsupported` with the evidence (HTTP status + date) — never silently deleted.

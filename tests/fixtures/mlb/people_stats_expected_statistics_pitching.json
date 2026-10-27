@@ -1,0 +1,39 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "expectedStatistics"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".226",
+      "slg": ".376",
+      "woba": ".296",
+      "wobaCon": ".357"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

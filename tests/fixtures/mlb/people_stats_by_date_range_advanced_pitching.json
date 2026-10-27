@@ -1,0 +1,96 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "byDateRangeAdvanced"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "winningPercentage": ".615",
+      "battersFaced": 390,
+      "babip": ".273",
+      "obp": ".290",
+      "slg": ".358",
+      "ops": ".648",
+      "strikesoutsToWalks": "3.41",
+      "stolenBases": 15,
+      "caughtStealing": 2,
+      "gamesFinished": 0,
+      "gidp": 7,
+      "wildPitches": 0,
+      "balks": 0,
+      "pickoffs": 0,
+      "strikeoutsMinusWalksPercentage": ".179",
+      "battersFacedPerGame": "22.94",
+      "inningsPitchedPerGame": "5.59",
+      "pitchesPerPlateAppearance": "3.933",
+      "walksPerPlateAppearance": ".074",
+      "strikeoutsPerPlateAppearance": ".254",
+      "homeRunsPerPlateAppearance": ".028",
+      "walksPerStrikeout": ".293",
+      "iso": ".138",
+      "groundOuts": 72
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "numLeagues": 17
+    },
+    {
+     "stat": {
+      "winningPercentage": ".615",
+      "battersFaced": 390,
+      "babip": ".273",
+      "obp": ".290",
+      "slg": ".358",
+      "ops": ".648",
+      "strikesoutsToWalks": "3.41",
+      "stolenBases": 15,
+      "caughtStealing": 2,
+      "gamesFinished": 0,
+      "gidp": 7,
+      "wildPitches": 0,
+      "balks": 0,
+      "pickoffs": 0,
+      "strikeoutsMinusWalksPercentage": ".179",
+      "battersFacedPerGame": "22.94",
+      "inningsPitchedPerGame": "5.59",
+      "pitchesPerPlateAppearance": "3.933",
+      "walksPerPlateAppearance": ".074",
+      "strikeoutsPerPlateAppearance": ".254",
+      "homeRunsPerPlateAppearance": ".028",
+      "walksPerStrikeout": ".293",
+      "iso": ".138",
+      "groundOuts": 72
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "sport": {
+      "id": 0,
+      "code": "All",
+      "link": "/api/v1/sports/0"
+     },
+     "numTeams": 1,
+     "numLeagues": 17
+    }
+   ]
+  }
+ ]
+}

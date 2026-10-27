@@ -1,0 +1,216 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "hotColdZones"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "name": "battingAverage",
+      "zones": [
+       {
+        "zone": "01",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".242"
+       },
+       {
+        "zone": "02",
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".219"
+       },
+       {
+        "zone": "03",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".167"
+       },
+       {
+        "zone": "04",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".229"
+       },
+       {
+        "zone": "05",
+        "color": "rgba(234, 147, 153, .55)",
+        "temp": "warm",
+        "value": ".265"
+       },
+       {
+        "zone": "06",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".385"
+       },
+       {
+        "zone": "07",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".583"
+       },
+       {
+        "zone": "08",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".333"
+       },
+       {
+        "zone": "09",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".094"
+       },
+       {
+        "zone": "11",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".148"
+       },
+       {
+        "zone": "12",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".050"
+       },
+       {
+        "zone": "13",
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".200"
+       },
+       {
+        "zone": "14",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".038"
+       }
+      ]
+     }
+    },
+    {
+     "stat": {
+      "name": "earnedRunAverage",
+      "zones": [
+       {
+        "zone": "01",
+        "value": "-"
+       },
+       {
+        "zone": "02",
+        "value": "-"
+       },
+       {
+        "zone": "03",
+        "value": "-"
+       },
+       {
+        "zone": "04",
+        "value": "-"
+       },
+       {
+        "zone": "05",
+        "value": "-"
+       },
+       {
+        "zone": "06",
+        "value": "-"
+       },
+       {
+        "zone": "07",
+        "value": "-"
+       },
+       {
+        "zone": "08",
+        "value": "-"
+       },
+       {
+        "zone": "09",
+        "value": "-"
+       },
+       {
+        "zone": "11",
+        "value": "-"
+       },
+       {
+        "zone": "12",
+        "value": "-"
+       },
+       {
+        "zone": "13",
+        "value": "-"
+       },
+       {
+        "zone": "14",
+        "value": "-"
+       }
+      ]
+     }
+    },
+    {
+     "stat": {
+      "name": "numberOfStrikes",
+      "zones": [
+       {
+        "zone": "01",
+        "value": "77.00"
+       },
+       {
+        "zone": "02",
+        "value": "67.00"
+       },
+       {
+        "zone": "03",
+        "value": "34.00"
+       },
+       {
+        "zone": "04",
+        "value": "70.00"
+       },
+       {
+        "zone": "05",
+        "value": "80.00"
+       },
+       {
+        "zone": "06",
+        "value": "59.00"
+       },
+       {
+        "zone": "07",
+        "value": "31.00"
+       },
+       {
+        "zone": "08",
+        "value": "65.00"
+       },
+       {
+        "zone": "09",
+        "value": "66.00"
+       },
+       {
+        "zone": "11",
+        "value": "61.00"
+       },
+       {
+        "zone": "12",
+        "value": "38.00"
+       },
+       {
+        "zone": "13",
+        "value": "22.00"
+       },
+       {
+        "zone": "14",
+        "value": "72.00"
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

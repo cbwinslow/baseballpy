@@ -1,0 +1,56 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "homeAndAway"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 81,
+      "gamesStarted": 81,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 81,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "isHome": true
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 78,
+      "gamesStarted": 78,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 78,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "isHome": false
+    }
+   ]
+  }
+ ]
+}

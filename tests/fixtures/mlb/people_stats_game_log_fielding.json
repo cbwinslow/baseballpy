@@ -1,0 +1,223 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "gameLog"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "position": {
+       "code": "10",
+       "name": "Designated Hitter",
+       "type": "Hitter",
+       "abbreviation": "DH"
+      },
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "opponent": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-03-20",
+     "gameType": "R",
+     "isHome": false,
+     "isWin": true,
+     "position": {
+      "code": "10",
+      "name": "Designated Hitter",
+      "type": "Hitter",
+      "abbreviation": "DH"
+     },
+     "game": {
+      "gamePk": 745444,
+      "link": "/api/v1.1/game/745444/feed/live",
+      "content": {
+       "link": "/api/v1/game/745444/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "position": {
+       "code": "10",
+       "name": "Designated Hitter",
+       "type": "Hitter",
+       "abbreviation": "DH"
+      },
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "opponent": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-03-21",
+     "gameType": "R",
+     "isHome": true,
+     "isWin": false,
+     "position": {
+      "code": "10",
+      "name": "Designated Hitter",
+      "type": "Hitter",
+      "abbreviation": "DH"
+     },
+     "game": {
+      "gamePk": 746175,
+      "link": "/api/v1.1/game/746175/feed/live",
+      "content": {
+       "link": "/api/v1/game/746175/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "position": {
+       "code": "10",
+       "name": "Designated Hitter",
+       "type": "Hitter",
+       "abbreviation": "DH"
+      },
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "opponent": {
+      "id": 138,
+      "name": "St. Louis Cardinals",
+      "link": "/api/v1/teams/138"
+     },
+     "date": "2024-03-28",
+     "gameType": "R",
+     "isHome": true,
+     "isWin": true,
+     "position": {
+      "code": "10",
+      "name": "Designated Hitter",
+      "type": "Hitter",
+      "abbreviation": "DH"
+     },
+     "game": {
+      "gamePk": 746165,
+      "link": "/api/v1.1/game/746165/feed/live",
+      "content": {
+       "link": "/api/v1/game/746165/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    }
+   ]
+  }
+ ]
+}

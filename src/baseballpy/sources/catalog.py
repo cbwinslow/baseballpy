@@ -63,6 +63,8 @@ def register_all() -> dict[str, DatasetSpec]:
     )
 
     for board in SAVANT_LEADERBOARDS:
+        if board.slug not in LEADERBOARD_SCHEMAS:
+            continue  # variant added but its schema not generated yet (a test catches this)
         _add(
             "statcast",
             board.dataset,

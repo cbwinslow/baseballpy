@@ -1,0 +1,80 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "byDateRangeAdvanced"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "plateAppearances": 731,
+      "totalBases": 411,
+      "sacBunts": 0,
+      "sacFlies": 5,
+      "babip": ".336",
+      "extraBaseHits": 99,
+      "hitByPitch": 6,
+      "gidp": 7,
+      "numberOfPitches": 2838,
+      "pitchesPerPlateAppearance": "3.882",
+      "walksPerPlateAppearance": ".111",
+      "strikeoutsPerPlateAppearance": ".222",
+      "homeRunsPerPlateAppearance": ".074",
+      "walksPerStrikeout": ".500",
+      "iso": ".336",
+      "groundOuts": 124
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "numLeagues": 159
+    },
+    {
+     "stat": {
+      "plateAppearances": 731,
+      "totalBases": 411,
+      "sacBunts": 0,
+      "sacFlies": 5,
+      "babip": ".336",
+      "extraBaseHits": 99,
+      "hitByPitch": 6,
+      "gidp": 7,
+      "numberOfPitches": 2838,
+      "pitchesPerPlateAppearance": "3.882",
+      "walksPerPlateAppearance": ".111",
+      "strikeoutsPerPlateAppearance": ".222",
+      "homeRunsPerPlateAppearance": ".074",
+      "walksPerStrikeout": ".500",
+      "iso": ".336",
+      "groundOuts": 124
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "sport": {
+      "id": 0,
+      "code": "All",
+      "link": "/api/v1/sports/0"
+     },
+     "numTeams": 1,
+     "numLeagues": 159
+    }
+   ]
+  }
+ ]
+}

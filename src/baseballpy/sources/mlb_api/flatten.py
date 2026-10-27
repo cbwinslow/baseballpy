@@ -15,12 +15,22 @@ from typing import Any
 Scalar = str | int | float | bool | None
 
 
+_ID_KEY = re.compile(r"(ID)?[0-9]+")
+
+
+def _is_id_map(value: dict[str, Any]) -> bool:
+    """``{"ID660271": {...}, ...}`` style maps: their keys are data, not column names."""
+    return bool(value) and all(_ID_KEY.fullmatch(str(k)) for k in value)
+
+
 def _flatten(obj: dict[str, Any], prefix: str, out: dict[str, Scalar], skip: str | None) -> None:
     for key, value in obj.items():
         if skip is not None and key == skip and not prefix:
             continue
         name = f"{prefix}{key}"
-        if isinstance(value, dict):
+        if isinstance(value, dict) and _is_id_map(value):
+            out[name] = json.dumps(value, separators=(",", ":"), ensure_ascii=False)
+        elif isinstance(value, dict):
             _flatten(value, f"{name}.", out, None)
         elif isinstance(value, list):
             out[name] = (
@@ -38,7 +48,7 @@ def flatten_record(obj: dict[str, Any]) -> dict[str, Scalar]:
 
 
 def iter_records(payload: Any, path: tuple[str, ...]) -> Iterator[dict[str, Scalar]]:
-    """Yield flattened records found at ``path`` (``"*"`` fans out over list elements).
+    """Yield flattened records found at ``path`` (``"*"`` fans out over list elements, ``"@"`` over dict values with the key carried as ``<label>.key``).
 
     A path that does not exist in the payload yields nothing; a payload whose shape contradicts the
     path (a scalar where a list/dict was expected) raises ``ValueError`` so a changed API fails
@@ -58,6 +68,18 @@ def _walk(
             yield from _emit(node, carry)
         return
     head, rest = path[0], path[1:]
+    if head == "@":
+        if not isinstance(node, dict):
+            raise ValueError(f"expected an object at {label or 'root'}, got {type(node).__name__}")
+        for key, element in node.items():
+            ctx: dict[str, Scalar] = {f"{label}.key" if label else "key": key}
+            if isinstance(element, dict):
+                nxt = rest[0] if rest and rest[0] not in ("*", "@") else None
+                grp: dict[str, Scalar] = {}
+                _flatten(element, "", grp, nxt)
+                ctx.update({f"{label}.{k}" if label else k: v for k, v in grp.items()})
+            yield from _walk(element, rest, {**carry, **ctx}, label)
+        return
     if head == "*":
         if not isinstance(node, list):
             raise ValueError(f"expected a list at {label or 'root'}, got {type(node).__name__}")
@@ -95,6 +117,10 @@ def trim_payload(payload: Any, path: tuple[str, ...], keep: int) -> Any:
     if not path:
         return payload[:keep] if isinstance(payload, list) else payload
     head, rest = path[0], path[1:]
+    if head == "@":
+        if not isinstance(payload, dict):
+            return payload
+        return {k: trim_payload(v, rest, keep) for k, v in list(payload.items())[: max(keep, 1)]}
     if head == "*":
         if not isinstance(payload, list):
             return payload

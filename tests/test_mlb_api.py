@@ -114,7 +114,7 @@ def test_normalize_boxscore() -> None:
 
 
 @pytest.mark.asyncio
-async def test_gameday_live_streamer_diffing() -> None:
+async def test_gameday_live_streamer_diffing(tmp_path: Path) -> None:
     fake_live_payload = {
         "gamePk": 745789,
         "gameData": {"status": {"abstractGameState": "Final"}},
@@ -187,8 +187,17 @@ async def test_gameday_live_streamer_diffing() -> None:
                 )
             )
 
-            streamer = GamedayLiveStreamer(game_pk=745789, poll_interval=0.01, http=client)
-            events = [ev async for ev in streamer.stream_events()]
+            streamer = GamedayLiveStreamer(
+                poll_interval=0.01,
+                http=client,
+                lake=LakeConfig(home=tmp_path),
+                use_diff_patch=False,
+            )
+            events = [
+                ev
+                for ev in [e async for e in streamer.stream_events(745789)]
+                if ev["event_kind"] != "game_status"
+            ]
 
             assert len(events) == 2
             assert events[0]["pitch_type"] == "FF"

@@ -71,17 +71,38 @@ class MlbApiSource:
         season: int | None = None,
         sport_ids: tuple[int, ...] = (1,),
         game_pks: tuple[int, ...] = (),
+        person_ids: tuple[int, ...] = (),
+        updated_since: str | None = None,
+        query: str | None = None,
         refresh: bool = False,
     ) -> pa.Table:
-        """Ingest a declarative endpoint (see ``endpoints.ENDPOINTS``) and return its rows."""
-        ctx = self._context(season, sport_ids, game_pks)
+        """Ingest a declarative endpoint (see ``endpoints.ENDPOINTS``) and return its rows.
+
+        ``person_ids`` fan out per-player stats, ``updated_since`` drives the incremental
+        ``people_changes``/``game_changes`` logs and ``query`` the on-demand ``people_search``.
+        """
+        ctx = self._context(season, sport_ids, game_pks, person_ids, updated_since, query)
         self.endpoints.ingest(name, ctx, refresh=refresh)
         return read_endpoint(name, season, self.cache_config)
 
+    def _ids(self, endpoint: str, season: int | None, column: str) -> list[Any]:
+        """Distinct values of ``column`` of an already ingested dataset (empty if not ingested)."""
+        try:
+            rows = read_endpoint(endpoint, season, self.cache_config)
+            return sorted({v for v in rows.column(column).to_pylist() if v is not None})
+        except (KeyError, FileNotFoundError, OSError):
+            return []
+
     def _context(
-        self, season: int | None, sport_ids: tuple[int, ...], game_pks: tuple[int, ...] = ()
+        self,
+        season: int | None,
+        sport_ids: tuple[int, ...],
+        game_pks: tuple[int, ...] = (),
+        person_ids: tuple[int, ...] = (),
+        updated_since: str | None = None,
+        query: str | None = None,
     ) -> Context:
-        """Fan-out values from what is already in the lake (teams, leader categories)."""
+        """Fan-out values from what is already in the lake (teams, leader categories, awards)."""
         teams: list[int] = []
         if season is not None:
             try:
@@ -100,13 +121,17 @@ class MlbApiSource:
             team_ids=teams,
             game_pks=game_pks,
             leader_categories=categories,
+            person_ids=person_ids,
+            award_ids=[str(a) for a in self._ids("ref_awards", None, "id")],
+            updated_since=updated_since,
+            query=query,
         )
 
     def ingest_reference(self, refresh: bool = False) -> list[EndpointReport]:
         """Ingest every flat (season-independent) endpoint: reference lists, jobs, history."""
         ctx = Context()
         return [
-            self.endpoints.ingest(e, ctx, refresh=refresh) for e in SUPPORTED if not e.partitioned
+            self.endpoints.ingest(e, ctx, refresh=refresh) for e in SUPPORTED if e.scope == "flat"
         ]
 
     def final_game_pks(self, season: int) -> tuple[int, ...]:
@@ -126,10 +151,13 @@ class MlbApiSource:
     def ingest_season(
         self,
         season: int,
-        sport_ids: tuple[int, ...] = (1,),
+        sport_ids: tuple[int, ...] | None = None,
         include_games: bool = False,
         max_games: int | None = None,
         include_history: bool = False,
+        include_awards: bool = True,
+        include_people_stats: bool = False,
+        max_people: int | None = None,
         refresh: bool = False,
     ) -> list[EndpointReport]:
         """Ingest every season-scoped endpoint (and, optionally, per-game endpoints) of a season.
@@ -141,26 +169,35 @@ class MlbApiSource:
         run only with ``include_history=True``.
         """
         reports = self.ingest_reference(refresh)
+        sports = sport_ids if sport_ids is not None else self.all_sport_ids()
         reports.append(
-            self.endpoints.ingest("teams_season", self._context(season, sport_ids), refresh=refresh)
+            self.endpoints.ingest("teams_season", self._context(season, sports), refresh=refresh)
         )
-        ctx = self._context(season, sport_ids)
+        ctx = self._context(season, sports)
         season_eps = [
             e
             for e in SUPPORTED
             if e.partitioned
             and e.scope != "game"
             and e.name != "teams_season"
+            and e.scope not in ("person_season",)
+            and (include_awards or e.scope != "award_season")
             and (include_history or not e.heavy)
         ]
         reports.extend(
             self.endpoints.ingest(e, ctx, refresh=refresh, allow_heavy=include_history)
             for e in season_eps
         )
+        if include_people_stats:
+            reports.extend(
+                self.ingest_people_stats(
+                    season, max_people=max_people, sport_ids=sports, refresh=refresh
+                )
+            )
         if include_games:
             pks = self.final_game_pks(season)
             pks = pks[:max_games] if max_games is not None else pks
-            game_ctx = self._context(season, sport_ids, pks)
+            game_ctx = self._context(season, sports, pks)
             reports.extend(
                 self.endpoints.ingest(e, game_ctx, refresh=refresh)
                 for e in SUPPORTED
@@ -168,12 +205,57 @@ class MlbApiSource:
             )
         return reports
 
+    def all_sport_ids(self) -> tuple[int, ...]:
+        """Every sport/level the provider lists (``ref_sports``: MLB, the minors, winter, ...)."""
+        ids = self._ids("ref_sports", None, "id")
+        return tuple(int(i) for i in ids) or (1,)
+
+    def ingest_history(self, season: int, refresh: bool = False) -> list[EndpointReport]:
+        """Ingest the all-time stat pools (``career*``, ``yearByYear*``, ``statsSingleSeason*``).
+
+        These ignore the season and return every player in history, so they are stored once as a
+        snapshot under ``season`` (the season of the run) instead of once per season; expect minutes
+        per request and up to ~190k rows for the largest.
+        """
+        ctx = self._context(season, self.all_sport_ids())
+        return [
+            self.endpoints.ingest(e, ctx, refresh=refresh, allow_heavy=True)
+            for e in SUPPORTED
+            if e.heavy and e.scope != "person_season"
+        ]
+
+    def ingest_people_stats(
+        self,
+        season: int,
+        person_ids: tuple[int, ...] | None = None,
+        max_people: int | None = None,
+        sport_ids: tuple[int, ...] = (1,),
+        refresh: bool = False,
+    ) -> list[EndpointReport]:
+        """Ingest every ``people_stats_*`` endpoint for ``person_ids`` (default: ``players_season``).
+
+        One request per person and stat combination (81 combinations), so this is opt-in and
+        ``max_people`` bounds it.
+        """
+        ids = (
+            tuple(person_ids)
+            if person_ids is not None
+            else tuple(self._ids("players_season", season, "id"))
+        )
+        ids = ids[:max_people] if max_people is not None else ids
+        ctx = self._context(season, sport_ids, person_ids=ids)
+        return [
+            self.endpoints.ingest(e, ctx, refresh=refresh)
+            for e in SUPPORTED
+            if e.scope == "person_season"
+        ]
+
     def stream_game(
         self, game_pk: int, poll_interval: float = 2.0
     ) -> AsyncIterator[dict[str, Any]]:
         """Stream discrete live events for an ongoing game contest."""
-        streamer = GamedayLiveStreamer(game_pk=game_pk, poll_interval=poll_interval)
-        return streamer.stream_events()
+        streamer = GamedayLiveStreamer(poll_interval=poll_interval, lake=self.cache_config)
+        return streamer.stream_events(game_pk)
 
 
 # Module-level convenience functions

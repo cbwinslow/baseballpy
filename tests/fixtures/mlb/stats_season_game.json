@@ -1,0 +1,311 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "season"
+   },
+   "group": {
+    "displayName": "game"
+   },
+   "totalSplits": 1454,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 160,
+      "firstDatePlayed": "2024-03-29",
+      "lastDatePlayed": "2024-09-30"
+     },
+     "player": {
+      "id": 624413,
+      "fullName": "Pete Alonso",
+      "link": "/api/v1/people/624413",
+      "firstName": "Pete",
+      "lastName": "Alonso"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "3",
+      "name": "First Base",
+      "type": "Infielder",
+      "abbreviation": "1B"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "firstDatePlayed": "2024-03-29",
+      "lastDatePlayed": "2024-09-29"
+     },
+     "player": {
+      "id": 592206,
+      "fullName": "Nick Castellanos",
+      "link": "/api/v1/people/592206",
+      "firstName": "Nick",
+      "lastName": "Castellanos"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "firstDatePlayed": "2024-03-29",
+      "lastDatePlayed": "2024-09-30"
+     },
+     "player": {
+      "id": 621566,
+      "fullName": "Matt Olson",
+      "link": "/api/v1/people/621566",
+      "firstName": "Matt",
+      "lastName": "Olson"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "3",
+      "name": "First Base",
+      "type": "Infielder",
+      "abbreviation": "1B"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 152,
+      "gamesStarted": 135,
+      "firstDatePlayed": "2024-03-28",
+      "lastDatePlayed": "2024-09-29"
+     },
+     "player": {
+      "id": 683737,
+      "fullName": "Michael Busch",
+      "link": "/api/v1/people/683737",
+      "firstName": "Michael",
+      "lastName": "Busch"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 49,
+     "position": {
+      "code": "3",
+      "name": "First Base",
+      "type": "Infielder",
+      "abbreviation": "1B"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 152,
+      "gamesStarted": 151,
+      "firstDatePlayed": "2024-03-28",
+      "lastDatePlayed": "2024-09-28"
+     },
+     "player": {
+      "id": 665926,
+      "fullName": "Andrés Giménez",
+      "link": "/api/v1/people/665926",
+      "firstName": "Andrés",
+      "lastName": "Giménez"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 49,
+     "position": {
+      "code": "6",
+      "name": "Shortstop",
+      "type": "Infielder",
+      "abbreviation": "SS"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 152,
+      "gamesStarted": 151,
+      "firstDatePlayed": "2024-03-29",
+      "lastDatePlayed": "2024-09-30"
+     },
+     "player": {
+      "id": 596019,
+      "fullName": "Francisco Lindor",
+      "link": "/api/v1/people/596019",
+      "firstName": "Francisco",
+      "lastName": "Lindor"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 49,
+     "position": {
+      "code": "6",
+      "name": "Shortstop",
+      "type": "Infielder",
+      "abbreviation": "SS"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 152,
+      "gamesStarted": 151,
+      "firstDatePlayed": "2024-03-20",
+      "lastDatePlayed": "2024-09-28"
+     },
+     "player": {
+      "id": 592518,
+      "fullName": "Manny Machado",
+      "link": "/api/v1/people/592518",
+      "firstName": "Manny",
+      "lastName": "Machado"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 49,
+     "position": {
+      "code": "5",
+      "name": "Third Base",
+      "type": "Infielder",
+      "abbreviation": "3B"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 152,
+      "gamesStarted": 146,
+      "firstDatePlayed": "2024-03-28",
+      "lastDatePlayed": "2024-09-29"
+     },
+     "player": {
+      "id": 666624,
+      "fullName": "Christopher Morel",
+      "link": "/api/v1/people/666624",
+      "firstName": "Christopher",
+      "lastName": "Morel"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 2,
+     "rank": 49,
+     "position": {
+      "code": "3",
+      "name": "First Base",
+      "type": "Infielder",
+      "abbreviation": "1B"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 152,
+      "gamesStarted": 151,
+      "firstDatePlayed": "2024-03-28",
+      "lastDatePlayed": "2024-09-28"
+     },
+     "player": {
+      "id": 647304,
+      "fullName": "Josh Naylor",
+      "link": "/api/v1/people/647304",
+      "firstName": "Josh",
+      "lastName": "Naylor"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 49,
+     "position": {
+      "code": "3",
+      "name": "First Base",
+      "type": "Infielder",
+      "abbreviation": "1B"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 152,
+      "gamesStarted": 147,
+      "firstDatePlayed": "2024-03-28",
+      "lastDatePlayed": "2024-09-29"
+     },
+     "player": {
+      "id": 678882,
+      "fullName": "Ceddanne Rafaela",
+      "link": "/api/v1/people/678882",
+      "firstName": "Ceddanne",
+      "lastName": "Rafaela"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 49,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    }
+   ],
+   "playerPool": "ALL"
+  }
+ ]
+}

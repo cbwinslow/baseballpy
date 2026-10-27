@@ -1,0 +1,181 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "yearByYearPlayoffs"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2011",
+     "stat": {
+      "age": 21,
+      "gamesPlayed": 39,
+      "runs": 165,
+      "homeRuns": 34,
+      "strikeOuts": 281,
+      "baseOnBalls": 134,
+      "intentionalWalks": 8,
+      "hits": 323,
+      "hitByPitch": 12,
+      "avg": ".251",
+      "atBats": 1287,
+      "obp": ".324",
+      "slg": ".399",
+      "ops": ".723",
+      "caughtStealing": 7,
+      "stolenBases": 26,
+      "stolenBasePercentage": ".788",
+      "caughtStealingPercentage": ".212",
+      "earnedRuns": 159,
+      "battersFaced": 1461,
+      "gamesPitched": 39,
+      "hitBatsmen": 12,
+      "wildPitches": 18,
+      "pickoffs": 3,
+      "totalBases": 513,
+      "strikeoutWalkRatio": "2.10",
+      "catchersInterference": 0,
+      "sacBunts": 12,
+      "sacFlies": 16
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 521692,
+      "fullName": "Salvador Perez",
+      "link": "/api/v1/people/521692"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    },
+    {
+     "season": "2012",
+     "stat": {
+      "age": 22,
+      "gamesPlayed": 74,
+      "runs": 347,
+      "homeRuns": 80,
+      "strikeOuts": 519,
+      "baseOnBalls": 230,
+      "intentionalWalks": 21,
+      "hits": 690,
+      "hitByPitch": 29,
+      "avg": ".275",
+      "atBats": 2511,
+      "obp": ".340",
+      "slg": ".439",
+      "ops": ".779",
+      "caughtStealing": 18,
+      "stolenBases": 25,
+      "stolenBasePercentage": ".581",
+      "caughtStealingPercentage": ".419",
+      "earnedRuns": 316,
+      "battersFaced": 2808,
+      "gamesPitched": 74,
+      "hitBatsmen": 29,
+      "wildPitches": 29,
+      "pickoffs": 5,
+      "totalBases": 1102,
+      "strikeoutWalkRatio": "2.26",
+      "catchersInterference": 0,
+      "sacBunts": 17,
+      "sacFlies": 21
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 521692,
+      "fullName": "Salvador Perez",
+      "link": "/api/v1/people/521692"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    },
+    {
+     "season": "2013",
+     "stat": {
+      "age": 23,
+      "gamesPlayed": 137,
+      "runs": 454,
+      "homeRuns": 116,
+      "strikeOuts": 933,
+      "baseOnBalls": 366,
+      "intentionalWalks": 15,
+      "hits": 1053,
+      "hitByPitch": 28,
+      "avg": ".250",
+      "atBats": 4211,
+      "obp": ".312",
+      "slg": ".388",
+      "ops": ".700",
+      "caughtStealing": 25,
+      "stolenBases": 46,
+      "stolenBasePercentage": ".648",
+      "caughtStealingPercentage": ".352",
+      "earnedRuns": 418,
+      "battersFaced": 4664,
+      "gamesPitched": 137,
+      "hitBatsmen": 28,
+      "wildPitches": 49,
+      "pickoffs": 1,
+      "totalBases": 1634,
+      "strikeoutWalkRatio": "2.55",
+      "catchersInterference": 0,
+      "sacBunts": 20,
+      "sacFlies": 39
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 521692,
+      "fullName": "Salvador Perez",
+      "link": "/api/v1/people/521692"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,70 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "career"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 1427,
+      "runs": 5879,
+      "homeRuns": 1424,
+      "strikeOuts": 10314,
+      "baseOnBalls": 4341,
+      "intentionalWalks": 156,
+      "hits": 11668,
+      "hitByPitch": 423,
+      "avg": ".255",
+      "atBats": 45715,
+      "obp": ".323",
+      "slg": ".407",
+      "ops": ".730",
+      "caughtStealing": 263,
+      "stolenBases": 522,
+      "stolenBasePercentage": ".665",
+      "caughtStealingPercentage": ".335",
+      "earnedRuns": 5504,
+      "battersFaced": 51029,
+      "gamesPitched": 1427,
+      "hitBatsmen": 423,
+      "wildPitches": 537,
+      "pickoffs": 32,
+      "totalBases": 18605,
+      "strikeoutWalkRatio": "2.38",
+      "catchersInterference": 0,
+      "sacBunts": 184,
+      "sacFlies": 366,
+      "passedBall": 39
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 521692,
+      "fullName": "Salvador Perez",
+      "link": "/api/v1/people/521692"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

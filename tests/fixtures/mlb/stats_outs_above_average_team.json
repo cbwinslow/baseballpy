@@ -1,0 +1,134 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "outsAboveAverage"
+   },
+   "totalSplits": 211,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "attempts": 81,
+      "totalOutsAboveAverage": 3,
+      "totalOutsAboveAverageUnrounded": 3.0365,
+      "totalOutsAboveAverageBack": 2,
+      "totalOutsAboveAverageBackUnrounded": 1.6322,
+      "outsAboveAverageBackStraight": 1,
+      "outsAboveAverageBackStraightUnrounded": 1.0302,
+      "outsAboveAverageBackLeft": 1,
+      "outsAboveAverageBackLeftUnrounded": 1.3555,
+      "outsAboveAverageBackRight": 0,
+      "outsAboveAverageBackRightUnrounded": 0.2767,
+      "totalOutsAboveAverageIn": 1,
+      "totalOutsAboveAverageInUnrounded": 1.3992,
+      "outsAboveAverageInStraight": 0,
+      "outsAboveAverageInStraightUnrounded": 0.0306,
+      "outsAboveAverageInLeft": 1,
+      "outsAboveAverageInLeftUnrounded": 0.9015,
+      "outsAboveAverageInRight": 0,
+      "outsAboveAverageInRightUnrounded": 0.4671,
+      "fieldingRunsPrevented": 3,
+      "fieldingRunsPreventedUnrounded": 2.7329
+     },
+     "player": {
+      "id": 681481,
+      "fullName": "Kerry Carpenter",
+      "link": "/api/v1/people/681481",
+      "firstName": "Kerry",
+      "lastName": "Carpenter",
+      "primaryPosition": {
+       "code": "9",
+       "name": "Outfielder",
+       "type": "Outfielder",
+       "abbreviation": "RF"
+      }
+     },
+     "gameType": "R"
+    },
+    {
+     "stat": {
+      "attempts": 207,
+      "totalOutsAboveAverage": 9,
+      "totalOutsAboveAverageUnrounded": 9.2878,
+      "totalOutsAboveAverageBack": 3,
+      "totalOutsAboveAverageBackUnrounded": 3.4943,
+      "outsAboveAverageBackStraight": 1,
+      "outsAboveAverageBackStraightUnrounded": 1.1995,
+      "outsAboveAverageBackLeft": 2,
+      "outsAboveAverageBackLeftUnrounded": 1.6409,
+      "outsAboveAverageBackRight": 2,
+      "outsAboveAverageBackRightUnrounded": 1.8534,
+      "totalOutsAboveAverageIn": 6,
+      "totalOutsAboveAverageInUnrounded": 5.7731,
+      "outsAboveAverageInStraight": 1,
+      "outsAboveAverageInStraightUnrounded": 1.0466,
+      "outsAboveAverageInLeft": 1,
+      "outsAboveAverageInLeftUnrounded": 0.7786,
+      "outsAboveAverageInRight": 4,
+      "outsAboveAverageInRightUnrounded": 3.9478,
+      "fieldingRunsPrevented": 8,
+      "fieldingRunsPreventedUnrounded": 8.359
+     },
+     "player": {
+      "id": 676356,
+      "fullName": "Jonny DeLuca",
+      "link": "/api/v1/people/676356",
+      "firstName": "Jonathan",
+      "lastName": "DeLuca",
+      "primaryPosition": {
+       "code": "9",
+       "name": "Outfielder",
+       "type": "Outfielder",
+       "abbreviation": "RF"
+      }
+     },
+     "gameType": "R"
+    },
+    {
+     "stat": {
+      "attempts": 3,
+      "totalOutsAboveAverage": 0,
+      "totalOutsAboveAverageUnrounded": 0.0172,
+      "totalOutsAboveAverageBack": 0,
+      "totalOutsAboveAverageBackUnrounded": 0.0121,
+      "outsAboveAverageBackStraight": 0,
+      "outsAboveAverageBackStraightUnrounded": 0.007,
+      "outsAboveAverageBackLeft": 0,
+      "outsAboveAverageBackLeftUnrounded": 0.0,
+      "outsAboveAverageBackRight": 0,
+      "outsAboveAverageBackRightUnrounded": 0.0121,
+      "totalOutsAboveAverageIn": 0,
+      "totalOutsAboveAverageInUnrounded": 0.0051,
+      "outsAboveAverageInStraight": 0,
+      "outsAboveAverageInStraightUnrounded": 0.0,
+      "outsAboveAverageInLeft": 0,
+      "outsAboveAverageInLeftUnrounded": 0.0,
+      "outsAboveAverageInRight": 0,
+      "outsAboveAverageInRightUnrounded": 0.0051,
+      "fieldingRunsPrevented": 0,
+      "fieldingRunsPreventedUnrounded": 0.0155
+     },
+     "player": {
+      "id": 669701,
+      "fullName": "Josh Smith",
+      "link": "/api/v1/people/669701",
+      "firstName": "Josh",
+      "lastName": "Smith",
+      "primaryPosition": {
+       "code": "4",
+       "name": "Second Base",
+       "type": "Infielder",
+       "abbreviation": "2B"
+      }
+     },
+     "gameType": "R"
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [],
+   "playerPool": "ALL"
+  }
+ ]
+}

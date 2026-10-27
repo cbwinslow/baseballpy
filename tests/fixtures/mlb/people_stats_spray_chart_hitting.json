@@ -1,0 +1,28 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "sprayChart"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "leftField": 2.0,
+      "leftCenterField": 10.0,
+      "centerField": 15.0,
+      "rightCenterField": 45.0,
+      "rightField": 28.0
+     },
+     "gameType": "R",
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     }
+    }
+   ]
+  }
+ ]
+}

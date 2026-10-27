@@ -1,0 +1,62 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "transactions": [
+  {
+   "id": 736105,
+   "person": {
+    "id": 814188,
+    "fullName": "Jayson Bass",
+    "link": "/api/v1/people/814188"
+   },
+   "toTeam": {
+    "id": 675,
+    "name": "Caneros de los Mochis",
+    "link": "/api/v1/teams/675"
+   },
+   "date": "2024-01-01",
+   "effectiveDate": "2024-01-01",
+   "resolutionDate": "2024-01-01",
+   "typeCode": "SC",
+   "typeDesc": "Status Change",
+   "description": "Caneros de los Mochis placed OF Jayson Bass on the reserve list."
+  },
+  {
+   "id": 736109,
+   "person": {
+    "id": 672629,
+    "fullName": "Gerardo Carrillo",
+    "link": "/api/v1/people/672629"
+   },
+   "toTeam": {
+    "id": 674,
+    "name": "Charros de Jalisco",
+    "link": "/api/v1/teams/674"
+   },
+   "date": "2024-01-01",
+   "effectiveDate": "2024-01-01",
+   "resolutionDate": "2024-01-01",
+   "typeCode": "SC",
+   "typeDesc": "Status Change",
+   "description": "Charros de Jalisco placed RHP Gerardo Carrillo on the reserve list."
+  },
+  {
+   "id": 736148,
+   "person": {
+    "id": 652999,
+    "fullName": "Jesus Fabela",
+    "link": "/api/v1/people/652999"
+   },
+   "toTeam": {
+    "id": 678,
+    "name": "Tomateros de Culiacan",
+    "link": "/api/v1/teams/678"
+   },
+   "date": "2024-01-01",
+   "effectiveDate": "2024-01-01",
+   "resolutionDate": "2024-01-01",
+   "typeCode": "SC",
+   "typeDesc": "Status Change",
+   "description": "Tomateros de Culiacan activated RF Jesus Fabela from the reserve list."
+  }
+ ]
+}

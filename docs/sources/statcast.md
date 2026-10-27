@@ -1379,3 +1379,87 @@ Swing/take run value by zone region per batter-season.
 | `_extras` | string | yes | — |  |
 
 <!-- END GENERATED:statcast.leaderboard_swing_take -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_fielding_run_value -->
+### Dataset: leaderboard_fielding_run_value
+
+Fielding run value by fielder (embedded JSON rows of the page, no qualifier).
+
+- **View:** `statcast_leaderboard_fielding_run_value`
+- **Processed path:** `processed/statcast/leaderboard_fielding_run_value/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `id`, `team_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `total_runs` | string | yes | — |  |
+| `inf_of_runs` | string | yes | — |  |
+| `range_runs` | string | yes | — |  |
+| `arm_runs` | string | yes | — |  |
+| `dp_runs` | string | yes | — |  |
+| `fielding_runs_prevented_on_rec1b` | string | yes | — |  |
+| `catching_runs` | string | yes | — |  |
+| `framing_runs` | string | yes | — |  |
+| `throwing_runs` | string | yes | — |  |
+| `blocking_runs` | string | yes | — |  |
+| `abs_runs` | string | yes | — |  |
+| `outs_total` | int16 | yes | — |  |
+| `tot_pa` | double | yes | — |  |
+| `max_pos` | int16 | yes | — |  |
+| `outs_2` | int16 | yes | — |  |
+| `outs_3` | int16 | yes | — |  |
+| `outs_4` | int16 | yes | — |  |
+| `outs_5` | int16 | yes | — |  |
+| `outs_6` | int16 | yes | — |  |
+| `outs_7` | int16 | yes | — |  |
+| `outs_8` | int16 | yes | — |  |
+| `outs_9` | int16 | yes | — |  |
+| `id` | int32 | yes | — |  |
+| `name` | string | yes | — |  |
+| `team_id` | int16 | yes | — |  |
+| `n_teams` | int16 | yes | — |  |
+| `team_name` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:statcast.leaderboard_fielding_run_value -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_rolling -->
+### Dataset: leaderboard_rolling
+
+Rolling last-N-batted-ball xwOBA windows (50/100/250) per batter and pitcher: a snapshot of the current season (the page ignores the season parameter).
+
+- **View:** `statcast_leaderboard_rolling`
+- **Processed path:** `processed/statcast/leaderboard_rolling/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `player_id`, `cat`, `cat_bin`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `player_name` | string | yes | — |  |
+| `player_id` | int32 | yes | — |  |
+| `player_team_id` | int16 | yes | — |  |
+| `cat` | string | yes | — |  |
+| `cat_bin` | int16 | yes | — |  |
+| `last_x_xwoba` | double | yes | — |  |
+| `penultimate_x_xwoba` | double | yes | — |  |
+| `xwoba_delta` | double | yes | — |  |
+| `last_x_woba` | double | yes | — |  |
+| `penultimate_x_woba` | double | yes | — |  |
+| `woba_delta` | double | yes | — |  |
+| `last_x_xba` | double | yes | — |  |
+| `penultimate_x_xba` | double | yes | — |  |
+| `xba_delta` | double | yes | — |  |
+| `last_x_ba` | double | yes | — |  |
+| `penultimate_x_ba` | double | yes | — |  |
+| `ba_delta` | double | yes | — |  |
+| `last_x_xslg` | double | yes | — |  |
+| `penultimate_x_xslg` | double | yes | — |  |
+| `xslg_delta` | double | yes | — |  |
+| `last_x_slg` | double | yes | — |  |
+| `penultimate_x_slg` | double | yes | — |  |
+| `slg_delta` | double | yes | — |  |
+| `type_cat_bin` | string | yes | — |  |
+| `slug` | string | yes | — |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:statcast.leaderboard_rolling -->

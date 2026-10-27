@@ -1,0 +1,271 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "playLog"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "play": {
+       "details": {
+        "call": {
+         "code": "D",
+         "description": "Hit Into Play - No Out(s)"
+        },
+        "description": "Gunnar Henderson doubles (13) on a ground ball to right fielder Juan Soto, deflected by second baseman Gleyber Torres.  ",
+        "event": "double",
+        "eventType": "double",
+        "isInPlay": true,
+        "isStrike": false,
+        "isBall": false,
+        "isBaseHit": true,
+        "isAtBat": true,
+        "isPlateAppearance": true,
+        "type": {
+         "code": "FC",
+         "description": "Cutter"
+        },
+        "batSide": {
+         "code": "L",
+         "description": "Left"
+        },
+        "pitchHand": {
+         "code": "R",
+         "description": "Right"
+        }
+       },
+       "count": {
+        "balls": 2,
+        "strikes": 0,
+        "outs": 0,
+        "inning": 1,
+        "isTopInning": true,
+        "runnerOn1b": false,
+        "runnerOn2b": false,
+        "runnerOn3b": false
+       },
+       "playId": "26321062-da9f-4377-b4d4-faeda50ba1d6",
+       "pitchNumber": 3,
+       "atBatNumber": 1,
+       "isPitch": true
+      }
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037"
+     },
+     "opponent": {
+      "id": 110,
+      "name": "Baltimore Orioles",
+      "link": "/api/v1/teams/110"
+     },
+     "date": "2024-06-19",
+     "gameType": "R",
+     "isHome": true,
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037"
+     },
+     "batter": {
+      "id": 683002,
+      "fullName": "Gunnar Henderson",
+      "link": "/api/v1/people/683002"
+     },
+     "game": {
+      "gamePk": 745732,
+      "link": "/api/v1.1/game/745732/feed/live",
+      "content": {
+       "link": "/api/v1/game/745732/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "play": {
+       "details": {
+        "call": {
+         "code": "X",
+         "description": "Hit Into Play - Out(s)"
+        },
+        "description": "Adley Rutschman flies out to shortstop Anthony Volpe.  ",
+        "event": "field_out",
+        "eventType": "field_out",
+        "isInPlay": true,
+        "isStrike": false,
+        "isBall": false,
+        "isBaseHit": false,
+        "isAtBat": true,
+        "isPlateAppearance": true,
+        "type": {
+         "code": "FF",
+         "description": "Four-seam FB"
+        },
+        "batSide": {
+         "code": "L",
+         "description": "Left"
+        },
+        "pitchHand": {
+         "code": "R",
+         "description": "Right"
+        }
+       },
+       "count": {
+        "balls": 1,
+        "strikes": 2,
+        "outs": 0,
+        "inning": 1,
+        "isTopInning": true,
+        "runnerOn1b": false,
+        "runnerOn2b": true,
+        "runnerOn3b": false
+       },
+       "playId": "d989e7b7-c998-4294-999a-03f1db629c68",
+       "pitchNumber": 4,
+       "atBatNumber": 2,
+       "isPitch": true
+      }
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037"
+     },
+     "opponent": {
+      "id": 110,
+      "name": "Baltimore Orioles",
+      "link": "/api/v1/teams/110"
+     },
+     "date": "2024-06-19",
+     "gameType": "R",
+     "isHome": true,
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037"
+     },
+     "batter": {
+      "id": 668939,
+      "fullName": "Adley Rutschman",
+      "link": "/api/v1/people/668939"
+     },
+     "game": {
+      "gamePk": 745732,
+      "link": "/api/v1.1/game/745732/feed/live",
+      "content": {
+       "link": "/api/v1/game/745732/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "play": {
+       "details": {
+        "call": {
+         "code": "X",
+         "description": "Hit Into Play - Out(s)"
+        },
+        "description": "Ryan Mountcastle grounds out, second baseman Gleyber Torres to first baseman Ben Rice.   Gunnar Henderson to 3rd.  ",
+        "event": "field_out",
+        "eventType": "field_out",
+        "isInPlay": true,
+        "isStrike": false,
+        "isBall": false,
+        "isBaseHit": false,
+        "isAtBat": true,
+        "isPlateAppearance": true,
+        "type": {
+         "code": "KC",
+         "description": "Knuckle Curve"
+        },
+        "batSide": {
+         "code": "R",
+         "description": "Right"
+        },
+        "pitchHand": {
+         "code": "R",
+         "description": "Right"
+        }
+       },
+       "count": {
+        "balls": 0,
+        "strikes": 1,
+        "outs": 1,
+        "inning": 1,
+        "isTopInning": true,
+        "runnerOn1b": false,
+        "runnerOn2b": true,
+        "runnerOn3b": false
+       },
+       "playId": "b8d2839d-f263-40f9-86aa-1624170b0d7b",
+       "pitchNumber": 2,
+       "atBatNumber": 3,
+       "isPitch": true
+      }
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037"
+     },
+     "opponent": {
+      "id": 110,
+      "name": "Baltimore Orioles",
+      "link": "/api/v1/teams/110"
+     },
+     "date": "2024-06-19",
+     "gameType": "R",
+     "isHome": true,
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037"
+     },
+     "batter": {
+      "id": 663624,
+      "fullName": "Ryan Mountcastle",
+      "link": "/api/v1/people/663624"
+     },
+     "game": {
+      "gamePk": 745732,
+      "link": "/api/v1.1/game/745732/feed/live",
+      "content": {
+       "link": "/api/v1/game/745732/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    }
+   ]
+  }
+ ]
+}

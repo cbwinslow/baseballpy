@@ -30,6 +30,8 @@ class LeaderboardDef:
     min_param: str | None = None
     #: ``csv`` = ``csv=true`` download, ``html_json`` = JSON array embedded in the HTML page
     fmt: str = "csv"
+    #: name of the JS variable holding the rows when ``fmt == "html_json"``
+    html_var: str = "data"
     unsupported: str | None = None
 
     @property
@@ -53,6 +55,8 @@ _YEAR_STYLES = {
     "pitch_tempo": "season_snake",
     "pitch_clock": "season",
     "abs_challenges": "none",
+    "fielding_run_value": "season_range",
+    "rolling": "none",
 }
 
 
@@ -344,6 +348,24 @@ LEADERBOARDS: tuple[LeaderboardDef, ...] = (
         ("entity_id", "year"),
     ),
     _lb(
+        "fielding_run_value",
+        "fielding-run-value",
+        "Fielding run value by fielder (embedded JSON rows of the page, no qualifier).",
+        "player-season",
+        ("id", "team_id"),
+        params={"gameType": "Regular", "type": "fielder"},
+        fmt="html_json",
+    ),
+    _lb(
+        "rolling",
+        "rolling",
+        "Rolling last-N-batted-ball xwOBA windows (50/100/250) per batter and pitcher: a snapshot of the current season (the page ignores the season parameter).",
+        "player-window",
+        ("player_id", "cat", "cat_bin"),
+        html_var="rolling",
+        fmt="html_json",
+    ),
+    _lb(
         "park_factors",
         "statcast-park-factors",
         "Statcast park factor indices per venue and 3-year span (embedded JSON on the page).",
@@ -376,14 +398,6 @@ LEADERBOARDS: tuple[LeaderboardDef, ...] = (
         unsupported="route answers 404 (probed 2026-10-27); directions are columns of outs_above_average",
     ),
     LeaderboardDef(
-        "fielding_run_value",
-        "fielding-run-value",
-        "Fielding run value.",
-        "player-season",
-        (),
-        unsupported="page answers 200 HTML and offers no CSV download or embedded data array",
-    ),
-    LeaderboardDef(
         "catcher_throwing",
         "catcher_throwing",
         "Catcher throwing.",
@@ -406,14 +420,6 @@ LEADERBOARDS: tuple[LeaderboardDef, ...] = (
         "player-season",
         (),
         unsupported="route answers 404 (comparison tool, derivable from other leaderboards)",
-    ),
-    LeaderboardDef(
-        "rolling",
-        "rolling",
-        "Rolling windows.",
-        "game",
-        (),
-        unsupported="page is an interactive chart (1.3 MB HTML) with no CSV export",
     ),
     LeaderboardDef(
         "bat_speed",

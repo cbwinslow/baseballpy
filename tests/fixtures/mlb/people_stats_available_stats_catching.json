@@ -1,0 +1,153 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "firstYearStats"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2018",
+     "gameType": "R",
+     "type": "gameLog",
+     "group": "fielding"
+    },
+    {
+     "season": "2018",
+     "gameType": "R",
+     "type": "gameLog",
+     "group": "hitting"
+    },
+    {
+     "season": "2018",
+     "gameType": "R",
+     "type": "gameLog",
+     "group": "pitching"
+    }
+   ]
+  },
+  {
+   "type": {
+    "displayName": "lastYearStats"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2026",
+     "gameType": "R",
+     "type": "gameLog",
+     "group": "fielding"
+    },
+    {
+     "season": "2026",
+     "gameType": "R",
+     "type": "gameLog",
+     "group": "hitting"
+    },
+    {
+     "season": "2026",
+     "gameType": "R",
+     "type": "gameLog",
+     "group": "pitching"
+    }
+   ]
+  },
+  {
+   "type": {
+    "displayName": "gameTypeStats"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2018",
+     "gameType": "S",
+     "type": "season",
+     "groups": [
+      "hitting",
+      "pitching",
+      "fielding"
+     ],
+     "teams": [
+      {
+       "id": 108,
+       "name": "Los Angeles Angels",
+       "link": "/api/v1/teams/108",
+       "league": {
+        "id": 103,
+        "link": "/api/v1/league/103"
+       },
+       "sport": {
+        "id": 1,
+        "link": "/api/v1/sports/1"
+       },
+       "groups": [
+        "hitting",
+        "pitching",
+        "fielding"
+       ]
+      }
+     ]
+    },
+    {
+     "season": "2018",
+     "gameType": "R",
+     "type": "season",
+     "groups": [
+      "hitting",
+      "pitching",
+      "fielding"
+     ],
+     "teams": [
+      {
+       "id": 108,
+       "name": "Los Angeles Angels",
+       "link": "/api/v1/teams/108",
+       "league": {
+        "id": 103,
+        "link": "/api/v1/league/103"
+       },
+       "sport": {
+        "id": 1,
+        "link": "/api/v1/sports/1"
+       },
+       "groups": [
+        "hitting",
+        "pitching",
+        "fielding"
+       ]
+      }
+     ]
+    },
+    {
+     "season": "2019",
+     "gameType": "R",
+     "type": "season",
+     "groups": [
+      "hitting",
+      "fielding"
+     ],
+     "teams": [
+      {
+       "id": 108,
+       "name": "Los Angeles Angels",
+       "link": "/api/v1/teams/108",
+       "league": {
+        "id": 103,
+        "link": "/api/v1/league/103"
+       },
+       "sport": {
+        "id": 1,
+        "link": "/api/v1/sports/1"
+       },
+       "groups": [
+        "hitting",
+        "fielding"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

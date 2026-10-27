@@ -1,0 +1,82 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "byDateRangeAdvanced"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "battersFaced": 3239,
+      "babip": ".291",
+      "obp": ".309",
+      "slg": ".383",
+      "ops": ".692",
+      "strikesoutsToWalks": "2.70",
+      "stolenBases": 37,
+      "caughtStealing": 11,
+      "wildPitches": 30,
+      "pickoffs": 1,
+      "strikeoutsMinusWalksPercentage": ".139",
+      "battersFacedPerGame": "35.59",
+      "walksPerPlateAppearance": ".082",
+      "strikeoutsPerPlateAppearance": ".221",
+      "homeRunsPerPlateAppearance": ".024",
+      "walksPerStrikeout": ".370",
+      "iso": ".142"
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "numLeagues": 91
+    },
+    {
+     "stat": {
+      "battersFaced": 3239,
+      "babip": ".291",
+      "obp": ".309",
+      "slg": ".383",
+      "ops": ".692",
+      "strikesoutsToWalks": "2.70",
+      "stolenBases": 37,
+      "caughtStealing": 11,
+      "wildPitches": 30,
+      "pickoffs": 1,
+      "strikeoutsMinusWalksPercentage": ".139",
+      "battersFacedPerGame": "35.59",
+      "walksPerPlateAppearance": ".082",
+      "strikeoutsPerPlateAppearance": ".221",
+      "homeRunsPerPlateAppearance": ".024",
+      "walksPerStrikeout": ".370",
+      "iso": ".142"
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "sport": {
+      "id": 0,
+      "code": "All",
+      "link": "/api/v1/sports/0"
+     },
+     "numTeams": 1,
+     "numLeagues": 91
+    }
+   ]
+  }
+ ]
+}

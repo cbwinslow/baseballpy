@@ -1,0 +1,88 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "byDateRangeAdvanced"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 159,
+      "gamesStarted": 159,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "position": {
+       "code": "10",
+       "name": "Designated Hitter",
+       "type": "Hitter",
+       "abbreviation": "DH"
+      },
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 159,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "numLeagues": 159
+    },
+    {
+     "stat": {
+      "gamesPlayed": 159,
+      "gamesStarted": 159,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "position": {
+       "code": "10",
+       "name": "Designated Hitter",
+       "type": "Hitter",
+       "abbreviation": "DH"
+      },
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "-.--",
+      "innings": "0.0",
+      "games": 159,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "sport": {
+      "id": 0,
+      "code": "All",
+      "link": "/api/v1/sports/0"
+     },
+     "numTeams": 1,
+     "numLeagues": 159
+    }
+   ]
+  }
+ ]
+}

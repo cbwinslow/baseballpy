@@ -1,0 +1,94 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "career"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 114,
+      "gamesStarted": 114,
+      "groundOuts": 520,
+      "airOuts": 511,
+      "runs": 205,
+      "doubles": 86,
+      "triples": 2,
+      "homeRuns": 60,
+      "strikeOuts": 765,
+      "baseOnBalls": 208,
+      "intentionalWalks": 2,
+      "hits": 443,
+      "hitByPitch": 30,
+      "avg": ".199",
+      "atBats": 2222,
+      "obp": ".275",
+      "slg": ".321",
+      "ops": ".596",
+      "caughtStealing": 7,
+      "stolenBases": 16,
+      "stolenBasePercentage": ".696",
+      "caughtStealingPercentage": ".304",
+      "groundIntoDoublePlay": 42,
+      "numberOfPitches": 9771,
+      "era": "2.83",
+      "inningsPitched": "614.1",
+      "wins": 47,
+      "losses": 22,
+      "saves": 0,
+      "saveOpportunities": 0,
+      "holds": 0,
+      "blownSaves": 0,
+      "earnedRuns": 193,
+      "whip": "1.06",
+      "battersFaced": 2479,
+      "outs": 1843,
+      "gamesPitched": 114,
+      "completeGames": 1,
+      "shutouts": 1,
+      "strikes": 6279,
+      "strikePercentage": ".640",
+      "hitBatsmen": 30,
+      "balks": 3,
+      "wildPitches": 52,
+      "pickoffs": 0,
+      "totalBases": 713,
+      "groundOutsToAirouts": "1.02",
+      "winPercentage": ".681",
+      "pitchesPerInning": "15.91",
+      "gamesFinished": 0,
+      "strikeoutWalkRatio": "3.68",
+      "strikeoutsPer9Inn": "11.21",
+      "walksPer9Inn": "3.05",
+      "hitsPer9Inn": "6.49",
+      "runsScoredPer9": "3.00",
+      "homeRunsPer9": "0.88",
+      "inheritedRunners": 0,
+      "inheritedRunnersScored": 0,
+      "catchersInterference": 2,
+      "sacBunts": 3,
+      "sacFlies": 14
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "numTeams": 2,
+     "numLeagues": 2
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,276 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "totalItems": 43960,
+ "totalEvents": 0,
+ "totalGames": 43960,
+ "totalGamesInProgress": 0,
+ "dates": [
+  {
+   "date": "2014-07-01",
+   "totalItems": 1,
+   "totalEvents": 0,
+   "totalGames": 1,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 392433,
+     "gameGuid": "8e52450a-1940-4d2a-9a27-f5412fff5084",
+     "link": "/api/v1.1/game/392433/feed/live",
+     "gameType": "R",
+     "season": "2014",
+     "gameDate": "2014-07-01T23:05:00Z",
+     "officialDate": "2014-07-01",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 571,
+        "name": "Connecticut Tigers",
+        "link": "/api/v1/teams/571"
+       },
+       "leagueRecord": {
+        "wins": 8,
+        "losses": 10,
+        "ties": 0,
+        "pct": ".444"
+       },
+       "score": 5,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 8
+      },
+      "home": {
+       "team": {
+        "id": 558,
+        "name": "Lowell Spinners",
+        "link": "/api/v1/teams/558"
+       },
+       "leagueRecord": {
+        "wins": 10,
+        "losses": 8,
+        "ties": 0,
+        "pct": ".556"
+       },
+       "score": 11,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 8
+      }
+     },
+     "venue": {
+      "id": 2760,
+      "name": "Edward A. LeLacheur Park",
+      "link": "/api/v1/venues/2760"
+     },
+     "content": {
+      "link": "/api/v1/game/392433/content"
+     },
+     "isTie": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "N",
+     "tiebreaker": "N",
+     "calendarEventID": "44-392433-2014-07-01",
+     "seasonDisplay": "2014",
+     "dayNight": "night",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 1,
+     "seriesDescription": "Regular Season",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  },
+  {
+   "date": "2014-07-02",
+   "totalItems": 1,
+   "totalEvents": 0,
+   "totalGames": 1,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 392439,
+     "gameGuid": "9868dc2a-a796-4cfa-b533-530740d0660d",
+     "link": "/api/v1.1/game/392439/feed/live",
+     "gameType": "R",
+     "season": "2014",
+     "gameDate": "2014-07-02T23:05:00Z",
+     "officialDate": "2014-07-02",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 571,
+        "name": "Connecticut Tigers",
+        "link": "/api/v1/teams/571"
+       },
+       "leagueRecord": {
+        "wins": 9,
+        "losses": 10,
+        "ties": 0,
+        "pct": ".474"
+       },
+       "score": 9,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 8
+      },
+      "home": {
+       "team": {
+        "id": 558,
+        "name": "Lowell Spinners",
+        "link": "/api/v1/teams/558"
+       },
+       "leagueRecord": {
+        "wins": 10,
+        "losses": 9,
+        "ties": 0,
+        "pct": ".526"
+       },
+       "score": 4,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 8
+      }
+     },
+     "venue": {
+      "id": 2760,
+      "name": "Edward A. LeLacheur Park",
+      "link": "/api/v1/venues/2760"
+     },
+     "content": {
+      "link": "/api/v1/game/392439/content"
+     },
+     "isTie": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "N",
+     "tiebreaker": "N",
+     "calendarEventID": "44-392439-2014-07-02",
+     "seasonDisplay": "2014",
+     "dayNight": "night",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 2,
+     "seriesDescription": "Regular Season",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  },
+  {
+   "date": "2014-07-11",
+   "totalItems": 1,
+   "totalEvents": 0,
+   "totalGames": 1,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 390040,
+     "gameGuid": "ff26acae-5a53-452d-9243-add2b8c415c3",
+     "link": "/api/v1.1/game/390040/feed/live",
+     "gameType": "R",
+     "season": "2014",
+     "gameDate": "2014-07-11T23:05:00Z",
+     "officialDate": "2014-07-11",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 402,
+        "name": "Akron RubberDucks",
+        "link": "/api/v1/teams/402"
+       },
+       "leagueRecord": {
+        "wins": 54,
+        "losses": 40,
+        "ties": 0,
+        "pct": ".574"
+       },
+       "score": 5,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 29
+      },
+      "home": {
+       "team": {
+        "id": 567,
+        "name": "Trenton Thunder",
+        "link": "/api/v1/teams/567"
+       },
+       "leagueRecord": {
+        "wins": 43,
+        "losses": 51,
+        "ties": 0,
+        "pct": ".457"
+       },
+       "score": 4,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 29
+      }
+     },
+     "venue": {
+      "id": 2842,
+      "name": "ARM & HAMMER Park",
+      "link": "/api/v1/venues/2842"
+     },
+     "content": {
+      "link": "/api/v1/game/390040/content"
+     },
+     "isTie": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "Y",
+     "tiebreaker": "N",
+     "calendarEventID": "44-390040-2014-07-11",
+     "seasonDisplay": "2014",
+     "dayNight": "night",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 4,
+     "seriesGameNumber": 1,
+     "seriesDescription": "Regular Season",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  }
+ ]
+}

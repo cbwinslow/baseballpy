@@ -20,7 +20,7 @@ Can start immediately for items 1-3 and 5 (independent of other changes); items 
   - [x] 3.4 `uv lock`; `uv sync --all-extras`; confirm install of core-only works (`uv sync` with no extras) and CLI starts
 - [ ] 4. Lint/type/test policy (G-5, G-9) <!-- id: 4 -->
   - [ ] 4.1 Extend ruff config (`D1`, `S`, `PLR0912`, `PLR0915`) and fix findings or add justified per-file ignores
-  - [ ] 4.2 `tests/test_architecture.py` (import boundaries, AST scan for bare/swallowing excepts, `safe=False`, `assert` in src)
+  - [x] 4.2 `tests/test_architecture.py` (import boundaries, AST scan for bare/swallowing excepts, `safe=False`, `assert` in src) <!-- tests/test_architecture.py exists (import boundaries, no bare excepts, no assert in src) -->
   - [ ] 4.3 `tests/test_properties.py` (Hypothesis), `tests/test_cli.py`, `tests/test_concurrency.py`
   - [ ] 4.4 Register markers `live`, `smoke_live`, `slow`; split smoke tests into mocked (CI) and `tests/live/` (manual)
   - [ ] 4.5 Coverage gate 85% (`--cov-fail-under=85`); raise if already higher
@@ -29,11 +29,15 @@ Can start immediately for items 1-3 and 5 (independent of other changes); items 
   - [ ] 5.2 `py.typed`, hatch include, `CHANGELOG.md`, version `0.2.0`, classifiers
   - [ ] 5.3 `mkdocs.yml`, `docs/index.md`, `docs/ARCHITECTURE.md`, `docs/RELEASING.md`; `uv run mkdocs build --strict` passes
 - [ ] 6. Documentation sync (G-2, G-3) <!-- id: 6 -->
-  - [ ] 6.1 Rewrite `AGENTS.md` (renumber, new mandates) and `CLAUDE.md`
-  - [ ] 6.2 Update README, QUICKSTART, ROADMAP to actual state (layout v2, CLI, coverage, counts generated not hand-typed)
+  - [x] 6.1 Rewrite `AGENTS.md` (renumber, new mandates) and `CLAUDE.md` <!-- AGENTS.md: duplicate section 3 renamed 3A (references like section 5 / 9.4 kept stable), sections 11-12 added; CLAUDE.md rewritten with the init skill -->
+  - [x] 6.2 Update README, QUICKSTART, ROADMAP to actual state (layout v2, CLI, coverage, counts generated not hand-typed) <!-- README/QUICKSTART/ROADMAP/ADR 20 stale numbers fixed; layout v2 described -->
   - [ ] 6.3 Verify and update every `openspec/specs/*/spec.md` against code after other changes land; remove claims the code does not satisfy
   - [ ] 6.4 Merge all change spec deltas into `openspec/specs/`, then move changes to `openspec/changes/archive/<date>-<name>/` with tasks checked
 - [ ] 7. Verification <!-- id: 7 -->
   - [ ] 7.1 `uv run pytest -m "not live"`, `uvx ruff check .`, `uvx ruff format --check .`, `uvx mypy --strict src`, `uv run mkdocs build --strict`, `uv build`
   - [ ] 7.2 Manual: fresh clone -> `uv sync` -> `baseballpy doctor` -> `baseballpy ingest lahman --seasons all` works on a clean machine/home
-  - [ ] 7.3 Manual: grep docs for stale numbers ("94", "11 leaderboards", "27 tables strongly typed") — all must be generated or removed
+  - [x] 7.3 Manual: grep docs for stale numbers ("94", "11 leaderboards", "27 tables strongly typed") — all must be generated or removed <!-- stale numbers (94, 11 leaderboards) removed or replaced with generated references -->
+
+## Status (2026-10-27)
+- Open: 4.1 (ruff `S`, `PLR*` rules), 4.3 (`tests/test_concurrency.py` only; property and CLI tests exist), 4.4 (markers are registered; the smoke split into `tests/live/` is not done), 4.5 (coverage gate), all of 5 (CI, packaging, mkdocs), 6.3 (per-spec verification: specs touched by goals 1-4 were verified and corrected; audit-and-benchmarking, concurrency-and-rate-limiting, core-protocols and multi-target-sinks were merged in goal 1 and not re-audited since), 6.4 (archive after the above), 7.1-7.2.
+

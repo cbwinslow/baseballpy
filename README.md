@@ -8,7 +8,7 @@ Unified extraction, normalization, and ingestion for **Statcast (Baseball Savant
 
 ## Key Features
 
-- **Strictly Typed Columnar Storage:** Never dumps all-VARCHAR untyped text. Normalizes all 94+ Statcast attributes, MLB Gameday feeds, Retrosheet event files, and Lahman tables directly into physical PyArrow types (`date32`, `timestamp[us]`, `float32`, `int16`, `dictionary`).
+- **Strictly Typed Columnar Storage:** Never dumps all-VARCHAR untyped text. Normalizes every Statcast pitch column (119 today, plus `_extras` for new ones), MLB Gameday feeds, Retrosheet event files, and Lahman tables directly into physical PyArrow types (`date32`, `timestamp[us]`, `float32`, `int16`, `dictionary`).
 - **Decoupled Architecture:** Network extractors, schema normalizers, and storage sinks are separated via strict Python `typing.Protocol` interfaces (`ExtractorProtocol`, `NormalizerProtocol`, `SinkProtocol`, `StreamExtractorProtocol`).
 - **Adaptive Multi-Target Sinks:** Stream into embedded **DuckDB**, write partitioned **Parquet** datasets, yield zero-copy **Polars** DataFrames/LazyFrames, or use **`dlt`** to sync directly into cloud data warehouses (PostgreSQL, Snowflake, BigQuery, MotherDuck).
 - **Two-Phase Atomic Ingestion & Manifest Checkpointing:** Downloads write to `.part` files and rename atomically via `os.replace()` upon validation. Pause and resume partitioned downloads seamlessly without data duplication or silent truncation.
@@ -54,7 +54,7 @@ print(judge["name_first"], judge["name_last"], judge["key_fangraphs"])
 ```
 
 ### 2. Statcast Pitches & Analytical Leaderboards
-Fetch granular pitch data or any of Baseball Savant's 11 analytical leaderboards:
+Fetch granular pitch data or any of the 34 Baseball Savant leaderboard variants (see `docs/sources/statcast.md`):
 
 ```python
 import baseballpy as bb

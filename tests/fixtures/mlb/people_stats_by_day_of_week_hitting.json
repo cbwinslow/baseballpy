@@ -1,0 +1,190 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "byDayOfWeek"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 16,
+      "flyOuts": 5,
+      "groundOuts": 14,
+      "airOuts": 11,
+      "runs": 18,
+      "doubles": 6,
+      "triples": 0,
+      "homeRuns": 4,
+      "strikeOuts": 14,
+      "baseOnBalls": 12,
+      "intentionalWalks": 0,
+      "hits": 22,
+      "hitByPitch": 0,
+      "avg": ".373",
+      "atBats": 59,
+      "obp": ".466",
+      "slg": ".678",
+      "ops": "1.144",
+      "caughtStealing": 1,
+      "stolenBases": 11,
+      "stolenBasePercentage": ".917",
+      "caughtStealingPercentage": ".083",
+      "groundIntoDoublePlay": 1,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 301,
+      "plateAppearances": 74,
+      "totalBases": 40,
+      "rbi": 14,
+      "leftOnBase": 17,
+      "sacBunts": 0,
+      "sacFlies": 2,
+      "babip": ".419",
+      "groundOutsToAirouts": "1.27",
+      "catchersInterference": 1,
+      "atBatsPerHomeRun": "14.75"
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "dayOfWeek": 1,
+     "numTeams": 1,
+     "numLeagues": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 25,
+      "flyOuts": 14,
+      "groundOuts": 19,
+      "airOuts": 22,
+      "runs": 21,
+      "doubles": 6,
+      "triples": 2,
+      "homeRuns": 8,
+      "strikeOuts": 32,
+      "baseOnBalls": 11,
+      "intentionalWalks": 1,
+      "hits": 30,
+      "hitByPitch": 1,
+      "avg": ".291",
+      "atBats": 103,
+      "obp": ".365",
+      "slg": ".621",
+      "ops": ".986",
+      "caughtStealing": 0,
+      "stolenBases": 7,
+      "stolenBasePercentage": "1.000",
+      "caughtStealingPercentage": ".000",
+      "groundIntoDoublePlay": 2,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 435,
+      "plateAppearances": 115,
+      "totalBases": 64,
+      "rbi": 19,
+      "leftOnBase": 50,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".349",
+      "groundOutsToAirouts": "0.86",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "12.88"
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "dayOfWeek": 2,
+     "numTeams": 1,
+     "numLeagues": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 25,
+      "flyOuts": 16,
+      "groundOuts": 17,
+      "airOuts": 30,
+      "runs": 19,
+      "doubles": 5,
+      "triples": 0,
+      "homeRuns": 7,
+      "strikeOuts": 23,
+      "baseOnBalls": 9,
+      "intentionalWalks": 0,
+      "hits": 33,
+      "hitByPitch": 0,
+      "avg": ".320",
+      "atBats": 103,
+      "obp": ".375",
+      "slg": ".573",
+      "ops": ".948",
+      "caughtStealing": 0,
+      "stolenBases": 11,
+      "stolenBasePercentage": "1.000",
+      "caughtStealingPercentage": ".000",
+      "groundIntoDoublePlay": 1,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 417,
+      "plateAppearances": 112,
+      "totalBases": 59,
+      "rbi": 21,
+      "leftOnBase": 37,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".356",
+      "groundOutsToAirouts": "0.57",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "14.71"
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "dayOfWeek": 3,
+     "numTeams": 1,
+     "numLeagues": 1
+    }
+   ]
+  }
+ ]
+}

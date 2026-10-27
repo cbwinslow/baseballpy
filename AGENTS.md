@@ -65,7 +65,7 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 
 ---
 
-## 3. Domain Mastery & Baseball Invariants
+## 3A. Domain Mastery & Baseball Invariants
 
 1. **Unique Identifiers & Keys:**
    - **`game_pk` (MLBAM Game ID):** Primary numeric key across MLB Stats API and Statcast. Uniquely identifies a single game contest, including games of a doubleheader. Never assume `(date, home_team, away_team)` is unique without `game_type` and game number.
@@ -163,3 +163,18 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
    - All paths, timeouts, and rate limits MUST be overridable via environment variables prefixed with `BASEBALLPY_` (e.g. `BASEBALLPY_HOME`, `BASEBALLPY_CACHE_DIR`, `BASEBALLPY_RATE_MAX_CONCURRENCY`).
 2. **Production Smoke Testing:**
    - Maintain end-to-end multi-season smoke tests (`tests/test_smoke.py`) verifying chunking, manifest checkpointing, zero-loss idempotency, atomic rollbacks on network interruptions, and cross-source sink pipelines.
+
+---
+
+## 11. Coverage Sweep, Generated Schemas & Bounded Downloads
+
+1. **Enumerate, never hand-pick:** when a provider lists its own options (stat types and groups, sports/levels, standings and roster types, files in a git tree), ingest every one. Anything that cannot be ingested stays registered `unsupported` with probe evidence (`docs/*_probe.json`), or its raw bytes are kept; it is never silently skipped. Hand-written datasets that select fields get a complete-field twin.
+2. **Generated schema modules are never edited by hand** (`tables.py`, `lb_tables.py`, `mlb_tables.py`, `stat_combos.py`): change the generator in `scripts/` or the catalog and regenerate; commit the fixtures and probe JSON it writes. Types come from data, never from column names.
+3. **Bounded downloads:** requests that announce huge results (all-time pools, > 20,000 rows) are refused unless explicitly allowed; a per-request 404 is tolerated only for endpoints that opt in and is recorded and counted.
+
+## 12. OpenSpec Hygiene
+
+1. Tick `tasks.md` as work lands; when a change is finished merge its spec deltas into `openspec/specs/*` and move it to `openspec/changes/archive/<date>-<name>/`.
+2. Every deviation from a change's design is written into that change's `proposal.md`/`design.md` ("As built") and, if it is a decision, an ADR in `docs/DECISIONS.md`.
+3. Hand-typed counts and numbers do not belong in docs: use generated dictionaries and the probe JSON.
+

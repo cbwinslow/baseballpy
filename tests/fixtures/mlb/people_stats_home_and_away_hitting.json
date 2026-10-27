@@ -1,0 +1,98 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "homeAndAway"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 81,
+      "flyOuts": 47,
+      "groundOuts": 52,
+      "airOuts": 85,
+      "runs": 68,
+      "doubles": 16,
+      "triples": 3,
+      "homeRuns": 28,
+      "strikeOuts": 71,
+      "baseOnBalls": 43,
+      "intentionalWalks": 4,
+      "hits": 100,
+      "hitByPitch": 5,
+      "avg": ".328",
+      "atBats": 305,
+      "obp": ".416",
+      "slg": ".675",
+      "ops": "1.091",
+      "caughtStealing": 3,
+      "stolenBases": 31,
+      "stolenBasePercentage": ".912",
+      "caughtStealingPercentage": ".088",
+      "groundIntoDoublePlay": 3,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1407,
+      "plateAppearances": 359,
+      "totalBases": 206,
+      "rbi": 59,
+      "leftOnBase": 112,
+      "sacBunts": 0,
+      "sacFlies": 3,
+      "babip": ".344",
+      "groundOutsToAirouts": "0.61",
+      "catchersInterference": 3,
+      "atBatsPerHomeRun": "10.89"
+     },
+     "isHome": true
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 78,
+      "flyOuts": 41,
+      "groundOuts": 72,
+      "airOuts": 73,
+      "runs": 66,
+      "doubles": 22,
+      "triples": 4,
+      "homeRuns": 26,
+      "strikeOuts": 91,
+      "baseOnBalls": 38,
+      "intentionalWalks": 6,
+      "hits": 97,
+      "hitByPitch": 1,
+      "avg": ".293",
+      "atBats": 331,
+      "obp": ".366",
+      "slg": ".619",
+      "ops": ".985",
+      "caughtStealing": 1,
+      "stolenBases": 28,
+      "stolenBasePercentage": ".966",
+      "caughtStealingPercentage": ".034",
+      "groundIntoDoublePlay": 4,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1431,
+      "plateAppearances": 372,
+      "totalBases": 205,
+      "rbi": 71,
+      "leftOnBase": 124,
+      "sacBunts": 0,
+      "sacFlies": 2,
+      "babip": ".329",
+      "groundOutsToAirouts": "0.99",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "12.73"
+     },
+     "isHome": false
+    }
+   ]
+  }
+ ]
+}

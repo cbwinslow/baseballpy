@@ -312,7 +312,7 @@ def _live(ts: str, state: str, events: list[dict[str, object]]) -> dict[str, obj
 
 @respx.mock
 @pytest.mark.asyncio
-async def test_streamer_skips_unchanged_timestamp_and_stops_on_final() -> None:
+async def test_streamer_skips_unchanged_timestamp_and_stops_on_final(tmp_path: Path) -> None:
     ev0 = {"index": 0, "isPitch": True}
     ev1 = {"index": 1, "isPitch": True}
     url = "https://statsapi.mlb.com/api/v1.1/game/7/feed/live"
@@ -325,24 +325,30 @@ async def test_streamer_skips_unchanged_timestamp_and_stops_on_final() -> None:
     )
     http = HttpClient(fast_rates("statsapi.mlb.com"), http2=False)
     try:
-        streamer = GamedayLiveStreamer(7, poll_interval=0.001, http=http)
-        events = [e async for e in streamer.stream_events()]
+        streamer = GamedayLiveStreamer(
+            poll_interval=0.001, http=http, lake=LakeConfig(home=tmp_path), use_diff_patch=False
+        )
+        events = [e async for e in streamer.stream_events(7)]
     finally:
         http.close()
-    assert [e["event_index"] for e in events] == [0, 1]
+    pitches = [e for e in events if e["event_kind"] == "pitch"]
+    assert [e["event_index"] for e in pitches] == [0, 1]
+    assert [e["event"] for e in events if e["event_kind"] == "game_status"] == ["Live", "Final"]
 
 
 @respx.mock
 @pytest.mark.asyncio
-async def test_streamer_propagates_network_failure_instead_of_swallowing() -> None:
+async def test_streamer_propagates_network_failure_instead_of_swallowing(tmp_path: Path) -> None:
     respx.get("https://statsapi.mlb.com/api/v1.1/game/8/feed/live").mock(
         return_value=httpx.Response(503)
     )
     http = HttpClient(fast_rates("statsapi.mlb.com", max_retries=2), http2=False)
     try:
-        streamer = GamedayLiveStreamer(8, poll_interval=0.001, http=http)
+        streamer = GamedayLiveStreamer(
+            poll_interval=0.001, http=http, lake=LakeConfig(home=tmp_path), use_diff_patch=False
+        )
         with pytest.raises(Exception, match="503"):
-            async for _ in streamer.stream_events():
+            async for _ in streamer.stream_events(8):
                 pass
     finally:
         http.close()
@@ -362,26 +368,37 @@ async def test_streamer_quarantines_malformed_payload(tmp_path: Path) -> None:
     http = HttpClient(fast_rates("statsapi.mlb.com"), http2=False)
     q = Quarantine(QuarantineConfig(base_dir=tmp_path))
     try:
-        streamer = GamedayLiveStreamer(9, poll_interval=0.001, http=http, quarantine=q)
-        events = [e async for e in streamer.stream_events()]
+        streamer = GamedayLiveStreamer(
+            poll_interval=0.001,
+            http=http,
+            quarantine=q,
+            lake=LakeConfig(home=tmp_path),
+            use_diff_patch=False,
+        )
+        events = [e async for e in streamer.stream_events(9)]
     finally:
         http.close()
-    assert len(events) == 1
+    assert len([e for e in events if e["event_kind"] != "game_status"]) == 1
     assert list((tmp_path / "quarantine" / "mlb_api").rglob("*.jsonl"))
 
 
 @respx.mock
 @pytest.mark.asyncio
-async def test_streamer_stops_after_inactivity_limit() -> None:
+async def test_streamer_stops_after_inactivity_limit(tmp_path: Path) -> None:
     respx.get("https://statsapi.mlb.com/api/v1.1/game/10/feed/live").mock(
         return_value=httpx.Response(200, json=_live("t1", "Preview", []))
     )
     http = HttpClient(fast_rates("statsapi.mlb.com"), http2=False)
     try:
         streamer = GamedayLiveStreamer(
-            10, poll_interval=0.001, http=http, config=StreamingConfig(max_inactivity_minutes=0)
+            poll_interval=0.001,
+            http=http,
+            config=StreamingConfig(max_inactivity_minutes=0),
+            lake=LakeConfig(home=tmp_path),
+            use_diff_patch=False,
         )
-        assert [e async for e in streamer.stream_events()] == []
+        events = [e async for e in streamer.stream_events(10)]
+        assert [e["event_kind"] for e in events] == ["game_status"]  # Preview, then idle
     finally:
         http.close()
 

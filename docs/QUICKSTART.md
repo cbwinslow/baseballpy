@@ -49,7 +49,7 @@ config = PipelineConfig(
 
 | Provider | Dataset | Target Function | Returned Type | Notes |
 | :--- | :--- | :--- | :--- | :--- |
-| **Statcast** | Pitch-by-pitch search | `statcast_search(start_date, end_date)` | `pa.Table` | 94 columns, automatic 5-day chunking |
+| **Statcast** | Pitch-by-pitch search | `statcast_search(start_date, end_date)` | `pa.Table` | 119 columns (+`_extras`), automatic 5-day chunking and row-cap bisection |
 | **Statcast** | Bat Tracking Leaderboard | `get_leaderboard("bat_tracking", 2024)` | `pa.Table` | Bat speed, fast swing %, blast rate |
 | **Statcast** | Exit Velocity & Barrels | `get_leaderboard("exit_velocity", 2024)` | `pa.Table` | Hard-hit %, avg EV, max EV, launch angle |
 | **Statcast** | Expected Statistics | `get_leaderboard("expected_statistics", 2024)` | `pa.Table` | xBA, xSLG, xwOBA, xOBP |

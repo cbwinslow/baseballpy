@@ -34,3 +34,6 @@ datasets appear as their coverage sections land; this change builds the framewor
 - [ ] 6. Docs <!-- id: 6 -->
   - [ ] 6.1 ADR 25; README CLI section; QUICKSTART rewritten around `ingest`/`catalog`/`db`; `docs/CLI.md` generated from click help (`docs generate`)
   - [ ] 6.2 Merge spec delta into `openspec/specs/core-protocols/spec.md`
+
+## Status (2026-10-27)
+Not started. Prerequisites are met: the dataset registry, per-source extractors and `ingest_season`/`ingest_all`/`ingest_reference`/`ingest_history`/`ingest_people_stats` entry points exist for all five sources (`complete-source-coverage`), so the `Pipeline`/`Job` layer and the `ingest`, `catalog status`, `stream` and `doctor` commands can wrap them. `catalog status` should report `raw_only` and `unsupported` endpoints from the probes.

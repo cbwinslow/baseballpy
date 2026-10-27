@@ -7,6 +7,7 @@ and no typed table is derived from it (the pitch-level fields are already in ``s
 """
 
 import json
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
@@ -16,7 +17,20 @@ from baseballpy.core.lazy import lazy_singleton
 from baseballpy.core.stores import RawStore
 
 GAME_FEED_URL = "https://baseballsavant.mlb.com/gf"
+MLB_SCHEDULE_URL = "https://statsapi.mlb.com/api/v1/schedule"
+#: game types of the schedule request: every type Savant serves pitch data for
+SCHEDULE_GAME_TYPES = "S,R,F,D,L,W,A"
 REQUIRED_KEYS = ("game_status_code", "scoreboard", "game_date")
+
+
+@dataclass(frozen=True)
+class GameFeedReport:
+    """Outcome of a season game-feed ingest."""
+
+    season: int
+    games: int
+    fetched: int
+    cached: int
 
 
 class GameFeedError(RuntimeError):
@@ -73,6 +87,38 @@ class StatcastGameFeed:
                 etag=result.etag or "",
             )
         return payload
+
+    def season_game_pks(self, season: int) -> list[int]:
+        """``game_pk`` of every final game of ``season`` (MLB schedule, all Savant game types)."""
+        result = self.http.get_sync(
+            MLB_SCHEDULE_URL,
+            params={"sportId": 1, "season": season, "gameType": SCHEDULE_GAME_TYPES},
+        )
+        pks: set[int] = set()
+        for day in json.loads(result.content).get("dates", []):
+            for game in day.get("games", []):
+                if game.get("status", {}).get("abstractGameState") == "Final":
+                    pks.add(int(game["gamePk"]))
+        return sorted(pks)
+
+    def ingest_season(
+        self, season: int, max_games: int | None = None, refresh: bool = False
+    ) -> "GameFeedReport":
+        """Fetch and store the feed of every final game of a season (about 2-3 MB per game).
+
+        Resumable: a final game already in ``raw/`` is not fetched again. This is opt-in because a
+        full season is several GB; ``max_games`` bounds it.
+        """
+        pks = self.season_game_pks(season)
+        pks = pks[:max_games] if max_games is not None else pks
+        fetched = cached = 0
+        for pk in pks:
+            if not refresh and self._find_cached(pk) is not None:
+                cached += 1
+                continue
+            self.get(pk, refresh=refresh)
+            fetched += 1
+        return GameFeedReport(season=season, games=len(pks), fetched=fetched, cached=cached)
 
     def _find_cached(self, game_pk: int) -> bytes | None:
         root = self.cache_config.raw_dir("statcast", "game_feed", None)

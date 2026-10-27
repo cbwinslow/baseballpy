@@ -119,7 +119,7 @@ def test_adhoc_normalizer_infers_types_and_survives_garbage() -> None:
 
 
 def test_html_json_requires_the_embedded_array() -> None:
-    with pytest.raises(ValueError, match="no `var data"):
+    with pytest.raises(ValueError, match="no `data"):
         html_json_to_csv(b"<html>nothing</html>")
     csv_bytes = html_json_to_csv(
         b'<script>var data = [{"a": 1, "b": null}, {"a": 2, "c": "x"}];</script>'
@@ -280,3 +280,28 @@ def test_statcast_doc_lists_every_variant_and_unsupported_route() -> None:
         assert f"`{defn.slug}`" in doc or f"`leaderboard_{defn.slug}`" in doc, defn.slug
         if defn.unsupported:
             assert defn.unsupported in doc
+
+
+@respx.mock
+def test_game_feed_season_ingest_is_resumable(tmp_path: Path) -> None:
+    from baseballpy.sources.statcast.game_feed import (
+        GAME_FEED_URL,
+        MLB_SCHEDULE_URL,
+        StatcastGameFeed,
+    )
+
+    feed = StatcastGameFeed(cache_config=LakeConfig(home=tmp_path))
+    games = [
+        {"gamePk": pk, "status": {"abstractGameState": state}}
+        for pk, state in ((11, "Final"), (12, "Final"), (13, "Live"))
+    ]
+    respx.get(MLB_SCHEDULE_URL).mock(
+        return_value=httpx.Response(200, json={"dates": [{"games": games}]})
+    )
+    body = {"game_status_code": "F", "scoreboard": {}, "game_date": "6/23/2024"}
+    route = respx.get(GAME_FEED_URL).mock(return_value=httpx.Response(200, json=body))
+    first = feed.ingest_season(2024)
+    assert (first.games, first.fetched, first.cached, route.call_count) == (2, 2, 0, 2)
+    again = feed.ingest_season(2024)
+    assert (again.fetched, again.cached, route.call_count) == (0, 2, 2)
+    assert feed.ingest_season(2024, max_games=1, refresh=True).fetched == 1

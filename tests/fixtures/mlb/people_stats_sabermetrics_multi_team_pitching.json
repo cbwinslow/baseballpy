@@ -1,0 +1,56 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "sabermetricsMultiTeam"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "fip": 3.6928,
+      "xfip": 3.98603,
+      "fipMinus": 88.0444,
+      "ra9War": 1.99876,
+      "rar": 17.0175,
+      "war": 1.79825,
+      "sd": 0.0,
+      "md": 0.0,
+      "pli": 1.00034,
+      "inli": 0.943535,
+      "gmli": 0.875506,
+      "exli": 0.679588,
+      "eraMinus": 84.8177
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "numTeams": 1
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,71 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "opponentsFaced"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 111,
+   "exemptions": [],
+   "splits": [
+    {
+     "gameType": "R",
+     "group": "fielding",
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 673962,
+      "fullName": "Josh Jung",
+      "link": "/api/v1/people/673962",
+      "firstName": "Joshua",
+      "lastName": "Jung"
+     }
+    },
+    {
+     "gameType": "R",
+     "group": "fielding",
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 643446,
+      "fullName": "Jeff McNeil",
+      "link": "/api/v1/people/643446",
+      "firstName": "Jeffrey",
+      "lastName": "McNeil"
+     }
+    },
+    {
+     "gameType": "R",
+     "group": "fielding",
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 805779,
+      "fullName": "Jacob Wilson",
+      "link": "/api/v1/people/805779",
+      "firstName": "Jacob",
+      "lastName": "Wilson"
+     }
+    }
+   ]
+  }
+ ]
+}

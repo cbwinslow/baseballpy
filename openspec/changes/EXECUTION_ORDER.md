@@ -21,3 +21,8 @@ Rules for the run (token-saving, per owner request):
 - `baseballpy ingest all --seasons 2023` into an empty `BASEBALLPY_HOME` completes; `baseballpy catalog status` shows no `MISSING` (except rows marked `unsupported` with probe evidence); `baseballpy db sync` builds a view for every ingested dataset; `baseballpy doctor` is clean.
 - `docs/sources/*.md` contain generated column dictionaries for every dataset; `baseballpy docs check` passes.
 - CI workflow files exist; coverage ≥ 85%; architecture-boundary tests pass.
+
+## Status (updated 2026-10-27)
+- Done and archived (`archive/2026-10-27-*`): `harden-ingestion-core`, `restructure-data-lake`, `complete-source-coverage`.
+- `repo-hygiene-and-docs-sync`: tasks 1-3 done (license, coerce helpers, dependencies); 4-7 (lint policy, CI, docs rewrite, spec merge and archive) open.
+- `unified-pipeline-and-cli`: not started (`baseballpy ingest`, `catalog status`, `doctor`).

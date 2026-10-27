@@ -6,6 +6,7 @@ The MLB Stats API Ingestion Engine extracts, parses, caches, and normalizes offi
 ---
 
 ## 2. Endpoints Covered
+The nine hand-written datasets below keep their selected-field schemas; every other endpoint is in the declarative registry (see "Declarative Coverage" at the end), including complete-field twins of these nine.
 1. **Schedule & Calendar (`/v1/schedule`):**
    - Game Pk primary numeric keys, scheduled dates, doubleheaders, game type classifications (`R`, `P`, `S`), lifecycle statuses (`S`, `I`, `F`, `D`), home/away teams, and venues.
 2. **Official Boxscores (`/v1/game/{game_pk}/boxscore`):**
@@ -31,8 +32,7 @@ The MLB Stats API Ingestion Engine extracts, parses, caches, and normalizes offi
 ---
 
 ## 4. Two-Phase Atomic Caching
-- All Parquet datasets write through `atomic_write_parquet()` under `~/.baseballpy/cache/mlb_api/`.
-- Manifest tracks partition status via `manifest.json`.
+- Raw JSON (with sha256) is stored under `raw/mlb_api/<dataset>/[season=YYYY/]` and typed Parquet under `processed/mlb_api/<dataset>/[season=YYYY/]` (lake layout v2); each part is written atomically and recorded in the dataset manifest, which drives resume.
 
 ---
 
@@ -55,5 +55,23 @@ Paginated stat requests MUST use `limit`/`offset` pages; a request announcing mo
 ### Requirement: Standings Sentinels
 `-` in `gamesBack`/`wildCardGamesBack` is 0 games; `eliminationNumber` `E` is 0 and `-` is NULL; none of these may be quarantined.
 
-### Open
-The live streamer rewrite (diffPatch/timestamps, suspended-game watermark), `/v1/people/{id}/stats`, award recipients, people search/changes and game boxscore players (a dict keyed by player id, not a list) are not implemented.
+### Requirement: Live Streaming (implemented)
+The streamer MUST implement `StreamExtractorProtocol` (`stream_events(game_pk, ...)`; the constructor does not own a game), poll `feed/live/timestamps` and apply `feed/live/diffPatch` (RFC 6902) to a local copy of the feed, fall back to the full feed when a patch is unavailable or does not reach the announced timestamp, and accept a full feed document where the server answers a wide window with one. It MUST emit `LiveEvent`s keyed `(game_pk, at_bat_index, event_index)` with microsecond UTC timestamps, emit `game_status` events and end cleanly on `Suspended`, `Postponed`, `Cancelled` and `Final`, back off on `Delayed`, persist a watermark so a later stream of the same game emits only new events, retry network failures through `HttpClient` and then raise (never swallow), quarantine undecodable payloads, and map events onto the `game_feed_play_events` schema (`to_arrow`).
+
+#### Scenario: Suspended game
+- **WHEN** the game status becomes `Suspended`
+- **THEN** a `game_status` event is emitted and the stream ends
+- **AND** a later stream for the same `game_pk` emits only events beyond the stored watermark.
+
+### Requirement: People, Awards and Incremental Endpoints
+Per-person stats (`people_stats_<type>_<group>`), award recipients (a 404 for one award MUST be recorded as an empty part and counted, never retried forever and never hidden), `people_changes`/`game_changes` (append-only `updatedSince` logs) and `people_search` MUST be ingestible through the declarative registry.
+
+### Requirement: Completeness
+Every stat group listed by `/v1/statGroups`, every sport/level listed by `/v1/sports` (the default of `ingest_season`), every standings type, roster type and game-level resource MUST be ingestible; hand-written datasets that select fields MUST have complete-field twins (`transactions_season`, `draft_picks`, `venues_hydrated`, `game_boxscore_*`). Boxscore players (a dict keyed by player id) MUST be ingested one row per player with their team context. Endpoints for which the generation probe found no records MUST still keep every response as raw JSON, and a later schema generation types them.
+
+### Requirement: All-Time Stat Pools
+All-time stat types ignore the season: `ingest_season` MUST skip them, `ingest_history` MUST fetch them once (stored under the run's season), and any paginated request announcing more than 20,000 rows MUST be refused unless explicitly allowed.
+
+### Requirement: Half-Inning Ends
+The streamer MUST emit a `half_inning_end` event (once) when a completed plate appearance records the third out (AGENTS.md section 5).
+

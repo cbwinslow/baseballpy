@@ -1,0 +1,118 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "lastXGames"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 159,
+      "flyOuts": 88,
+      "groundOuts": 124,
+      "airOuts": 158,
+      "runs": 134,
+      "doubles": 38,
+      "triples": 7,
+      "homeRuns": 54,
+      "strikeOuts": 162,
+      "baseOnBalls": 81,
+      "intentionalWalks": 10,
+      "hits": 197,
+      "hitByPitch": 6,
+      "avg": ".310",
+      "atBats": 636,
+      "obp": ".390",
+      "slg": ".646",
+      "ops": "1.036",
+      "caughtStealing": 4,
+      "stolenBases": 59,
+      "stolenBasePercentage": ".937",
+      "caughtStealingPercentage": ".063",
+      "groundIntoDoublePlay": 7,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2838,
+      "plateAppearances": 731,
+      "totalBases": 411,
+      "rbi": 130,
+      "leftOnBase": 236,
+      "sacBunts": 0,
+      "sacFlies": 5,
+      "babip": ".336",
+      "groundOutsToAirouts": "0.78",
+      "catchersInterference": 3,
+      "atBatsPerHomeRun": "11.78"
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "numLeagues": 159
+    },
+    {
+     "stat": {
+      "gamesPlayed": 159,
+      "flyOuts": 88,
+      "groundOuts": 124,
+      "airOuts": 158,
+      "runs": 134,
+      "doubles": 38,
+      "triples": 7,
+      "homeRuns": 54,
+      "strikeOuts": 162,
+      "baseOnBalls": 81,
+      "intentionalWalks": 10,
+      "hits": 197,
+      "hitByPitch": 6,
+      "avg": ".310",
+      "atBats": 636,
+      "obp": ".390",
+      "slg": ".646",
+      "ops": "1.036",
+      "caughtStealing": 4,
+      "stolenBases": 59,
+      "stolenBasePercentage": ".937",
+      "caughtStealingPercentage": ".063",
+      "groundIntoDoublePlay": 7,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2838,
+      "plateAppearances": 731,
+      "totalBases": 411,
+      "rbi": 130,
+      "leftOnBase": 236,
+      "sacBunts": 0,
+      "sacFlies": 5,
+      "babip": ".336",
+      "groundOutsToAirouts": "0.78",
+      "catchersInterference": 3,
+      "atBatsPerHomeRun": "11.78"
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "sport": {
+      "id": 0,
+      "code": "All",
+      "link": "/api/v1/sports/0"
+     },
+     "numTeams": 1,
+     "numLeagues": 159
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,196 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "yearByYearPlayoffs"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2018",
+     "stat": {
+      "age": 23,
+      "gamesPlayed": 114,
+      "groundOuts": 71,
+      "airOuts": 61,
+      "runs": 59,
+      "doubles": 21,
+      "triples": 2,
+      "homeRuns": 22,
+      "strikeOuts": 102,
+      "baseOnBalls": 37,
+      "intentionalWalks": 2,
+      "hits": 93,
+      "hitByPitch": 2,
+      "avg": ".285",
+      "atBats": 326,
+      "obp": ".361",
+      "slg": ".564",
+      "ops": ".925",
+      "caughtStealing": 4,
+      "stolenBases": 10,
+      "stolenBasePercentage": ".714",
+      "caughtStealingPercentage": ".286",
+      "groundIntoDoublePlay": 2,
+      "numberOfPitches": 1455,
+      "plateAppearances": 367,
+      "totalBases": 184,
+      "rbi": 61,
+      "leftOnBase": 128,
+      "sacBunts": 0,
+      "sacFlies": 1,
+      "babip": ".350",
+      "groundOutsToAirouts": "1.16",
+      "catchersInterference": 1,
+      "atBatsPerHomeRun": "14.82"
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    },
+    {
+     "season": "2019",
+     "stat": {
+      "age": 24,
+      "gamesPlayed": 106,
+      "groundOuts": 101,
+      "airOuts": 67,
+      "runs": 51,
+      "doubles": 20,
+      "triples": 5,
+      "homeRuns": 18,
+      "strikeOuts": 110,
+      "baseOnBalls": 33,
+      "intentionalWalks": 1,
+      "hits": 110,
+      "hitByPitch": 2,
+      "avg": ".286",
+      "atBats": 384,
+      "obp": ".343",
+      "slg": ".505",
+      "ops": ".848",
+      "caughtStealing": 3,
+      "stolenBases": 12,
+      "stolenBasePercentage": ".800",
+      "caughtStealingPercentage": ".200",
+      "groundIntoDoublePlay": 6,
+      "numberOfPitches": 1683,
+      "plateAppearances": 425,
+      "totalBases": 194,
+      "rbi": 62,
+      "leftOnBase": 192,
+      "sacBunts": 0,
+      "sacFlies": 4,
+      "babip": ".354",
+      "groundOutsToAirouts": "1.51",
+      "catchersInterference": 2,
+      "atBatsPerHomeRun": "21.33"
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    },
+    {
+     "season": "2020",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 46,
+      "groundOuts": 44,
+      "airOuts": 30,
+      "runs": 23,
+      "doubles": 6,
+      "triples": 0,
+      "homeRuns": 7,
+      "strikeOuts": 50,
+      "baseOnBalls": 22,
+      "intentionalWalks": 0,
+      "hits": 29,
+      "hitByPitch": 0,
+      "avg": ".190",
+      "atBats": 153,
+      "obp": ".291",
+      "slg": ".366",
+      "ops": ".657",
+      "caughtStealing": 1,
+      "stolenBases": 7,
+      "stolenBasePercentage": ".875",
+      "caughtStealingPercentage": ".125",
+      "groundIntoDoublePlay": 3,
+      "numberOfPitches": 739,
+      "plateAppearances": 175,
+      "totalBases": 56,
+      "rbi": 24,
+      "leftOnBase": 99,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".229",
+      "groundOutsToAirouts": "1.47",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "21.86"
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

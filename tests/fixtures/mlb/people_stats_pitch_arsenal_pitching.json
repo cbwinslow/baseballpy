@@ -1,0 +1,49 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "pitchArsenal"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "percentage": 0.45436767,
+      "count": 697,
+      "totalPitches": 1534,
+      "averageSpeed": 95.91807679770454,
+      "type": {
+       "code": "FF",
+       "description": "Four-seam FB"
+      }
+     }
+    },
+    {
+     "stat": {
+      "percentage": 0.04041721,
+      "count": 62,
+      "totalPitches": 1534,
+      "averageSpeed": 88.24614958064517,
+      "type": {
+       "code": "CH",
+       "description": "Changeup"
+      }
+     }
+    },
+    {
+     "stat": {
+      "percentage": 0.009126467,
+      "count": 14,
+      "totalPitches": 1534,
+      "averageSpeed": 95.255806,
+      "type": {
+       "code": "SI",
+       "description": "Sinker"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

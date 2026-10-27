@@ -1,0 +1,71 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "opponentsFaced"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "totalSplits": 1000,
+   "exemptions": [],
+   "splits": [
+    {
+     "gameType": "R",
+     "group": "catching",
+     "pitcher": {
+      "id": 656186,
+      "fullName": "Dan Altavilla",
+      "link": "/api/v1/people/656186",
+      "firstName": "Daniel",
+      "lastName": "Altavilla"
+     },
+     "batter": {
+      "id": 519317,
+      "fullName": "Giancarlo Stanton",
+      "link": "/api/v1/people/519317",
+      "firstName": "Giancarlo",
+      "lastName": "Stanton"
+     }
+    },
+    {
+     "gameType": "R",
+     "group": "catching",
+     "pitcher": {
+      "id": 656186,
+      "fullName": "Dan Altavilla",
+      "link": "/api/v1/people/656186",
+      "firstName": "Daniel",
+      "lastName": "Altavilla"
+     },
+     "batter": {
+      "id": 671732,
+      "fullName": "Lawrence Butler",
+      "link": "/api/v1/people/671732",
+      "firstName": "Lawrence",
+      "lastName": "Butler"
+     }
+    },
+    {
+     "gameType": "R",
+     "group": "catching",
+     "pitcher": {
+      "id": 656186,
+      "fullName": "Dan Altavilla",
+      "link": "/api/v1/people/656186",
+      "firstName": "Daniel",
+      "lastName": "Altavilla"
+     },
+     "batter": {
+      "id": 680474,
+      "fullName": "Max Schuemann",
+      "link": "/api/v1/people/680474",
+      "firstName": "Maxwell",
+      "lastName": "Schuemann"
+     }
+    }
+   ]
+  }
+ ]
+}

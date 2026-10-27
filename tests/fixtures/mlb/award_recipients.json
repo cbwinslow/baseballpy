@@ -1,0 +1,68 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "awards": [
+  {
+   "id": "MLBHOF",
+   "name": "Hall Of Fame",
+   "date": "2024-01-23",
+   "season": "2024",
+   "team": {
+    "id": 140,
+    "link": "/api/v1/teams/140"
+   },
+   "player": {
+    "id": 134181,
+    "link": "/api/v1/people/134181",
+    "primaryPosition": {
+     "code": "5",
+     "name": "Third Base",
+     "type": "Infielder",
+     "abbreviation": "3B"
+    },
+    "nameFirstLast": "Adrian Beltré"
+   }
+  },
+  {
+   "id": "MLBHOF",
+   "name": "Hall Of Fame",
+   "date": "2024-01-23",
+   "season": "2024",
+   "team": {
+    "id": 142,
+    "link": "/api/v1/teams/142"
+   },
+   "player": {
+    "id": 408045,
+    "link": "/api/v1/people/408045",
+    "primaryPosition": {
+     "code": "2",
+     "name": "Catcher",
+     "type": "Catcher",
+     "abbreviation": "C"
+    },
+    "nameFirstLast": "Joe Mauer"
+   }
+  },
+  {
+   "id": "MLBHOF",
+   "name": "Hall Of Fame",
+   "date": "2024-01-23",
+   "season": "2024",
+   "team": {
+    "id": 115,
+    "link": "/api/v1/teams/115"
+   },
+   "player": {
+    "id": 115732,
+    "link": "/api/v1/people/115732",
+    "primaryPosition": {
+     "code": "3",
+     "name": "First Base",
+     "type": "Infielder",
+     "abbreviation": "1B"
+    },
+    "nameFirstLast": "Todd Helton"
+   }
+  }
+ ]
+}

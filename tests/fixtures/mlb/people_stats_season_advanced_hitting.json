@@ -1,0 +1,73 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "seasonAdvanced"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "age": 29,
+      "plateAppearances": 731,
+      "totalBases": 411,
+      "leftOnBase": 236,
+      "sacBunts": 0,
+      "sacFlies": 5,
+      "babip": ".336",
+      "extraBaseHits": 99,
+      "hitByPitch": 6,
+      "gidp": 7,
+      "gidpOpp": 92,
+      "numberOfPitches": 2838,
+      "pitchesPerPlateAppearance": "3.882",
+      "walksPerPlateAppearance": ".111",
+      "strikeoutsPerPlateAppearance": ".222",
+      "homeRunsPerPlateAppearance": ".074",
+      "walksPerStrikeout": ".500",
+      "iso": ".336",
+      "reachedOnError": 6,
+      "walkOffs": 2,
+      "flyOuts": 88,
+      "totalSwings": 1343,
+      "swingAndMisses": 397,
+      "ballsInPlay": 479,
+      "popOuts": 26,
+      "lineOuts": 44,
+      "groundOuts": 124,
+      "flyHits": 62,
+      "popHits": 0,
+      "lineHits": 85,
+      "groundHits": 50
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

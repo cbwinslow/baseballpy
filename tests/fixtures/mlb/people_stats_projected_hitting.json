@@ -1,0 +1,76 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "projected"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 150,
+      "runs": 114,
+      "doubles": 28,
+      "triples": 5,
+      "homeRuns": 40,
+      "strikeOuts": 169,
+      "baseOnBalls": 93,
+      "intentionalWalks": 18,
+      "hits": 155,
+      "hitByPitch": 5,
+      "avg": ".272",
+      "atBats": 569,
+      "obp": ".376",
+      "slg": ".550",
+      "ops": ".926",
+      "caughtStealing": 7,
+      "stolenBases": 20,
+      "stolenBasePercentage": ".741",
+      "caughtStealingPercentage": ".259",
+      "plateAppearances": 676,
+      "totalBases": 313,
+      "rbi": 106,
+      "sacBunts": 4,
+      "sacFlies": 5,
+      "babip": ".315",
+      "atBatsPerHomeRun": "14.22",
+      "woba": 0.383639,
+      "wRaa": 36.6285,
+      "wRc": 118.968,
+      "wRcPlus": 144.697,
+      "rar": 42.7614,
+      "war": 4.26406,
+      "batting": 37.4199,
+      "fielding": 0.0,
+      "baseRunning": -0.174705,
+      "positional": -17.5,
+      "replacement": 20.9818,
+      "spd": 6.05624,
+      "ubr": 0.257,
+      "wSb": -0.431705,
+      "strikeoutPercent": 0.250361,
+      "walkPercent": 0.1369,
+      "ratioBBSO": 0.546811,
+      "iso": 0.277224
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

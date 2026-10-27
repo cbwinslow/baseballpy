@@ -1,0 +1,28 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "sprayChart"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "leftField": 14.0,
+      "leftCenterField": 29.0,
+      "centerField": 12.0,
+      "rightCenterField": 21.0,
+      "rightField": 24.0
+     },
+     "gameType": "R",
+     "batter": {
+      "id": 458015,
+      "fullName": "Joey Votto",
+      "link": "/api/v1/people/458015"
+     }
+    }
+   ]
+  }
+ ]
+}

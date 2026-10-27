@@ -1,0 +1,268 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "pitchLog"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "play": {
+       "details": {
+        "call": {
+         "code": "B",
+         "description": "Ball - Called"
+        },
+        "event": "ball",
+        "eventType": "ball",
+        "isInPlay": false,
+        "isStrike": false,
+        "isBall": true,
+        "isBaseHit": false,
+        "isAtBat": false,
+        "isPlateAppearance": false,
+        "type": {
+         "code": "FF",
+         "description": "Four-seam FB"
+        },
+        "batSide": {
+         "code": "L",
+         "description": "Left"
+        },
+        "pitchHand": {
+         "code": "R",
+         "description": "Right"
+        }
+       },
+       "count": {
+        "balls": 0,
+        "strikes": 0,
+        "outs": 0,
+        "inning": 1,
+        "isTopInning": true,
+        "runnerOn1b": true,
+        "runnerOn2b": false,
+        "runnerOn3b": false
+       },
+       "playId": "9a70605d-6dfb-48fb-b522-4316ce82479d",
+       "pitchNumber": 1,
+       "atBatNumber": 2,
+       "isPitch": true
+      }
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "opponent": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-03-20",
+     "gameType": "R",
+     "isHome": false,
+     "pitcher": {
+      "id": 506433,
+      "fullName": "Yu Darvish",
+      "link": "/api/v1/people/506433"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "game": {
+      "gamePk": 745444,
+      "link": "/api/v1.1/game/745444/feed/live",
+      "content": {
+       "link": "/api/v1/game/745444/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "play": {
+       "details": {
+        "call": {
+         "code": "F",
+         "description": "Strike - Foul"
+        },
+        "event": "foul",
+        "eventType": "foul",
+        "isInPlay": false,
+        "isStrike": true,
+        "isBall": false,
+        "isBaseHit": false,
+        "isAtBat": false,
+        "isPlateAppearance": false,
+        "type": {
+         "code": "FC",
+         "description": "Cutter"
+        },
+        "batSide": {
+         "code": "L",
+         "description": "Left"
+        },
+        "pitchHand": {
+         "code": "R",
+         "description": "Right"
+        }
+       },
+       "count": {
+        "balls": 1,
+        "strikes": 0,
+        "outs": 0,
+        "inning": 1,
+        "isTopInning": true,
+        "runnerOn1b": true,
+        "runnerOn2b": false,
+        "runnerOn3b": false
+       },
+       "playId": "dc929f90-e3f1-4e83-ab58-dc81ed773f9a",
+       "pitchNumber": 2,
+       "atBatNumber": 2,
+       "isPitch": true
+      }
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "opponent": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-03-20",
+     "gameType": "R",
+     "isHome": false,
+     "pitcher": {
+      "id": 506433,
+      "fullName": "Yu Darvish",
+      "link": "/api/v1/people/506433"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "game": {
+      "gamePk": 745444,
+      "link": "/api/v1.1/game/745444/feed/live",
+      "content": {
+       "link": "/api/v1/game/745444/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "play": {
+       "details": {
+        "call": {
+         "code": "B",
+         "description": "Ball - Called"
+        },
+        "event": "ball",
+        "eventType": "ball",
+        "isInPlay": false,
+        "isStrike": false,
+        "isBall": true,
+        "isBaseHit": false,
+        "isAtBat": false,
+        "isPlateAppearance": false,
+        "type": {
+         "code": "FS",
+         "description": "Splitter"
+        },
+        "batSide": {
+         "code": "L",
+         "description": "Left"
+        },
+        "pitchHand": {
+         "code": "R",
+         "description": "Right"
+        }
+       },
+       "count": {
+        "balls": 1,
+        "strikes": 1,
+        "outs": 0,
+        "inning": 1,
+        "isTopInning": true,
+        "runnerOn1b": true,
+        "runnerOn2b": false,
+        "runnerOn3b": false
+       },
+       "playId": "0ff891b2-5497-4643-8421-bede8aadcba6",
+       "pitchNumber": 3,
+       "atBatNumber": 2,
+       "isPitch": true
+      }
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "opponent": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-03-20",
+     "gameType": "R",
+     "isHome": false,
+     "pitcher": {
+      "id": 506433,
+      "fullName": "Yu Darvish",
+      "link": "/api/v1/people/506433"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "game": {
+      "gamePk": 745444,
+      "link": "/api/v1.1/game/745444/feed/live",
+      "content": {
+       "link": "/api/v1/game/745444/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    }
+   ]
+  }
+ ]
+}

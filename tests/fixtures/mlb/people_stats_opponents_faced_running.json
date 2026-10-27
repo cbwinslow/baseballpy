@@ -1,0 +1,71 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "opponentsFaced"
+   },
+   "group": {
+    "displayName": "running"
+   },
+   "totalSplits": 705,
+   "exemptions": [],
+   "splits": [
+    {
+     "gameType": "R",
+     "group": "running",
+     "pitcher": {
+      "id": 592094,
+      "fullName": "Jason Adam",
+      "link": "/api/v1/people/592094",
+      "firstName": "Jason",
+      "lastName": "Adam"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     }
+    },
+    {
+     "gameType": "R",
+     "group": "running",
+     "pitcher": {
+      "id": 613534,
+      "fullName": "Austin Adams",
+      "link": "/api/v1/people/613534",
+      "firstName": "Austin",
+      "lastName": "Adams"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     }
+    },
+    {
+     "gameType": "R",
+     "group": "running",
+     "pitcher": {
+      "id": 641302,
+      "fullName": "Tyler Alexander",
+      "link": "/api/v1/people/641302",
+      "firstName": "Tyler",
+      "lastName": "Alexander"
+     },
+     "batter": {
+      "id": 518692,
+      "fullName": "Freddie Freeman",
+      "link": "/api/v1/people/518692",
+      "firstName": "Frederick",
+      "lastName": "Freeman"
+     }
+    }
+   ]
+  }
+ ]
+}

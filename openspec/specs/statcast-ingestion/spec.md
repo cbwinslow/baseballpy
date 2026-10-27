@@ -1,26 +1,16 @@
 # Statcast Ingestion Specification
 
 ## 1. Overview
-The Statcast Ingestion Engine extracts, chunks, normalizes, and caches pitch-by-pitch tracking datasets and 11 analytical leaderboards from Baseball Savant (`https://baseballsavant.mlb.com`).
+The Statcast Ingestion Engine extracts, chunks, normalizes, and caches pitch-by-pitch tracking datasets, the registered Savant leaderboard variants (see section 5 and `docs/sources/statcast.md`) and, on demand, the per-game `/gf` feed from Baseball Savant (`https://baseballsavant.mlb.com`).
 
 ---
 
 ## 2. Ingestion Modes
 1. **Granular Pitch Tracking (`/statcast_search/csv`):**
-   - Ingests all 94 available fields per pitch, including exit velocity, launch angle, trajectory coordinates, spin rates, and 2024+ bat tracking metrics (`bat_speed`, `swing_length`).
-   - Automatically splits date intervals into consecutive windows of at most 5 days (`split_date_range`).
-2. **Analytical Leaderboards (`/leaderboard/*`):**
-   - `expected_statistics` (xBA, xSLG, xwOBA, xOBP)
-   - `statcast` (Exit Velocity & Barrels)
-   - `sprint_speed` (Sprint Speed & 90-ft splits)
-   - `bat-tracking` (Bat Speed, Swing Length, Squared Up %, Blasts)
-   - `outs_above_average` (OAA & Defensive Runs Prevented)
-   - `arm-strength` (Max and average throwing velocity)
-   - `poptime` (Catcher Pop Time & Exchange Time)
-   - `catcher-framing` (Runs Extra Strikes & Shadow Zone Strike Rate)
-   - `pitch-arsenals` (Pitch mix & average velocities)
-   - `pitch-movement` (Horizontal and vertical break)
-   - `abs-challenges` (Automated ball-strike challenge results)
+   - Ingests every column Savant exports (119 in every era from 2008; era-specific columns are empty before they existed) plus `_extras` for columns that appear later.
+   - Splits date intervals into windows of at most 5 days (`split_date_range`) and bisects any window that reaches the 25,000-row cap.
+2. **Analytical Leaderboards (`/leaderboard/*`):** one registered dataset per variant (34 supported variants, e.g. `expected_statistics_batter`, `exit_velocity_batter_team`, `bat_tracking`, `outs_above_average`, `fielding_run_value`, `rolling`, `park_factors`); the authoritative list, routes, parameters, first seasons and unsupported routes are in `docs/sources/statcast.md` and `statcast/lb_catalog.py`.
+3. **Game feed (`/gf?game_pk=`):** raw JSON per game, on demand or per season (`StatcastGameFeed.ingest_season`).
 
 ---
 
@@ -58,3 +48,10 @@ Every supported leaderboard *variant* MUST be a registered dataset with a schema
 
 ### Requirement: Game Feed
 The per-game `/gf` JSON MAY be fetched on demand and stored raw (sha256); it MUST NOT be bulk-ingested and no typed table is derived from it.
+
+### Requirement: Embedded-Page Leaderboards and Snapshots
+Leaderboards without a CSV download MUST be ingested from the JSON value embedded in the page (`var/const/let <name>`, a list of rows or a dict of such lists) and a page without that value MUST raise. Pages that ignore the season parameter (`abs_challenges`, `rolling`) MUST be flat, unpartitioned snapshots of the current data.
+
+### Requirement: Season Game Feeds
+`StatcastGameFeed.ingest_season(season, max_games)` MUST fetch the feed of every final game of the season (MLB schedule), skip games already stored, and keep the immutable raw response with its sha256.
+

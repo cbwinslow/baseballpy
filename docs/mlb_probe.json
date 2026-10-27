@@ -49,6 +49,14 @@
    "columns": 69,
    "key_unique_per_request": true
   },
+  "stats_season_game": {
+   "status": "ok",
+   "requests_ok": 2,
+   "requests_failed": 0,
+   "sample_rows": 100,
+   "columns": 27,
+   "key_unique_per_request": true
+  },
   "stats_career_hitting": {
    "status": "ok",
    "requests_ok": 2,
@@ -145,6 +153,14 @@
    "columns": 69,
    "key_unique_per_request": true
   },
+  "stats_season_advanced_game": {
+   "status": "ok",
+   "requests_ok": 2,
+   "requests_failed": 0,
+   "sample_rows": 100,
+   "columns": 27,
+   "key_unique_per_request": true
+  },
   "stats_outs_above_average_hitting": {
    "status": "ok",
    "requests_ok": 2,
@@ -178,6 +194,30 @@
    "key_unique_per_request": true
   },
   "stats_outs_above_average_running": {
+   "status": "ok",
+   "requests_ok": 2,
+   "requests_failed": 0,
+   "sample_rows": 100,
+   "columns": 38,
+   "key_unique_per_request": true
+  },
+  "stats_outs_above_average_game": {
+   "status": "ok",
+   "requests_ok": 2,
+   "requests_failed": 0,
+   "sample_rows": 100,
+   "columns": 38,
+   "key_unique_per_request": true
+  },
+  "stats_outs_above_average_team": {
+   "status": "ok",
+   "requests_ok": 2,
+   "requests_failed": 0,
+   "sample_rows": 100,
+   "columns": 38,
+   "key_unique_per_request": true
+  },
+  "stats_outs_above_average_streak": {
    "status": "ok",
    "requests_ok": 2,
    "requests_failed": 0,
@@ -311,6 +351,918 @@
    "requests_failed": 0,
    "sample_rows": 100,
    "columns": 66,
+   "key_unique_per_request": true
+  },
+  "people_stats_projected_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 7,
+   "columns": 56,
+   "key_unique_per_request": true
+  },
+  "people_stats_projected_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 4,
+   "columns": 55,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 242,
+   "columns": 53,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 100,
+   "columns": 81,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 468,
+   "columns": 51,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 30,
+   "columns": 47,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_advanced_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 242,
+   "columns": 50,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_advanced_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 100,
+   "columns": 75,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_playoffs_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 242,
+   "columns": 53,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_playoffs_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 100,
+   "columns": 81,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_playoffs_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 468,
+   "columns": 51,
+   "key_unique_per_request": true
+  },
+  "people_stats_year_by_year_playoffs_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 30,
+   "columns": 47,
+   "key_unique_per_request": true
+  },
+  "people_stats_season_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 52,
+   "key_unique_per_request": true
+  },
+  "people_stats_season_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 80,
+   "key_unique_per_request": true
+  },
+  "people_stats_season_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 32,
+   "columns": 50,
+   "key_unique_per_request": true
+  },
+  "people_stats_season_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 2,
+   "columns": 49,
+   "key_unique_per_request": true
+  },
+  "people_stats_season_game": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 16,
+   "columns": 22,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 20,
+   "columns": 52,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 8,
+   "columns": 80,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 58,
+   "columns": 50,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 2,
+   "columns": 46,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_game": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 20,
+   "columns": 23,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_regular_season_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 20,
+   "columns": 52,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_regular_season_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 8,
+   "columns": 80,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_regular_season_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 58,
+   "columns": 50,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_regular_season_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 2,
+   "columns": 46,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_regular_season_game": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 20,
+   "columns": 23,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_advanced_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 20,
+   "columns": 49,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_advanced_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 8,
+   "columns": 74,
+   "key_unique_per_request": true
+  },
+  "people_stats_season_advanced_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 49,
+   "key_unique_per_request": true
+  },
+  "people_stats_season_advanced_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 74,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_playoffs_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 20,
+   "columns": 52,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_playoffs_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 8,
+   "columns": 80,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_playoffs_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 58,
+   "columns": 50,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_playoffs_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 2,
+   "columns": 46,
+   "key_unique_per_request": true
+  },
+  "people_stats_career_playoffs_game": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 20,
+   "columns": 23,
+   "key_unique_per_request": true
+  },
+  "people_stats_game_log_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1552,
+   "columns": 66,
+   "key_unique_per_request": true
+  },
+  "people_stats_game_log_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 160,
+   "columns": 92,
+   "key_unique_per_request": true
+  },
+  "people_stats_game_log_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1664,
+   "columns": 60,
+   "key_unique_per_request": true
+  },
+  "people_stats_game_log_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 230,
+   "columns": 57,
+   "key_unique_per_request": true
+  },
+  "people_stats_play_log_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6609,
+   "columns": 57,
+   "key_unique_per_request": null
+  },
+  "people_stats_play_log_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 2528,
+   "columns": 57,
+   "key_unique_per_request": null
+  },
+  "people_stats_pitch_log_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 26217,
+   "columns": 57,
+   "key_unique_per_request": null
+  },
+  "people_stats_pitch_log_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 9853,
+   "columns": 57,
+   "key_unique_per_request": null
+  },
+  "people_stats_pitch_arsenal_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 134,
+   "columns": 9,
+   "key_unique_per_request": true
+  },
+  "people_stats_pitch_arsenal_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 26,
+   "columns": 9,
+   "key_unique_per_request": true
+  },
+  "people_stats_outs_above_average_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 28,
+   "key_unique_per_request": true
+  },
+  "people_stats_outs_above_average_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 28,
+   "key_unique_per_request": true
+  },
+  "people_stats_outs_above_average_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 28,
+   "key_unique_per_request": true
+  },
+  "people_stats_outs_above_average_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 28,
+   "key_unique_per_request": true
+  },
+  "people_stats_outs_above_average_running": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 28,
+   "key_unique_per_request": true
+  },
+  "people_stats_outs_above_average_game": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 28,
+   "key_unique_per_request": true
+  },
+  "people_stats_outs_above_average_team": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 28,
+   "key_unique_per_request": true
+  },
+  "people_stats_outs_above_average_streak": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 28,
+   "key_unique_per_request": true
+  },
+  "people_stats_expected_statistics_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 13,
+   "columns": 23,
+   "key_unique_per_request": true
+  },
+  "people_stats_expected_statistics_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 19,
+   "key_unique_per_request": true
+  },
+  "people_stats_sabermetrics_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 34,
+   "key_unique_per_request": true
+  },
+  "people_stats_sabermetrics_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 31,
+   "key_unique_per_request": true
+  },
+  "people_stats_sabermetrics_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 19,
+   "columns": 27,
+   "key_unique_per_request": null
+  },
+  "people_stats_spray_chart_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 13,
+   "columns": 12,
+   "key_unique_per_request": true
+  },
+  "people_stats_spray_chart_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 12,
+   "key_unique_per_request": true
+  },
+  "people_stats_last_x_games_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 28,
+   "columns": 48,
+   "key_unique_per_request": true
+  },
+  "people_stats_last_x_games_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 10,
+   "columns": 75,
+   "key_unique_per_request": true
+  },
+  "people_stats_last_x_games_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 64,
+   "columns": 43,
+   "key_unique_per_request": true
+  },
+  "people_stats_last_x_games_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 4,
+   "columns": 41,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_date_range_advanced_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 28,
+   "columns": 29,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_date_range_advanced_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 10,
+   "columns": 37,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_date_range_advanced_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 64,
+   "columns": 43,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_date_range_advanced_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 4,
+   "columns": 30,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_month_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 87,
+   "columns": 52,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_month_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 26,
+   "columns": 79,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_month_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 97,
+   "columns": 40,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_month_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 45,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_day_of_week_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 93,
+   "columns": 52,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_day_of_week_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 35,
+   "columns": 79,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_day_of_week_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 112,
+   "columns": 40,
+   "key_unique_per_request": true
+  },
+  "people_stats_by_day_of_week_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 45,
+   "key_unique_per_request": true
+  },
+  "people_stats_home_and_away_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 28,
+   "columns": 41,
+   "key_unique_per_request": true
+  },
+  "people_stats_home_and_away_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 10,
+   "columns": 68,
+   "key_unique_per_request": true
+  },
+  "people_stats_home_and_away_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 32,
+   "columns": 29,
+   "key_unique_per_request": true
+  },
+  "people_stats_home_and_away_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 4,
+   "columns": 34,
+   "key_unique_per_request": true
+  },
+  "people_stats_win_loss_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 28,
+   "columns": 41,
+   "key_unique_per_request": true
+  },
+  "people_stats_win_loss_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 10,
+   "columns": 68,
+   "key_unique_per_request": true
+  },
+  "people_stats_win_loss_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 32,
+   "columns": 29,
+   "key_unique_per_request": true
+  },
+  "people_stats_win_loss_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 4,
+   "columns": 34,
+   "key_unique_per_request": true
+  },
+  "people_stats_rankings_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 43,
+   "key_unique_per_request": true
+  },
+  "people_stats_rankings_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 44,
+   "key_unique_per_request": true
+  },
+  "people_stats_rankings_by_year_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 238,
+   "columns": 43,
+   "key_unique_per_request": true
+  },
+  "people_stats_rankings_by_year_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 96,
+   "columns": 55,
+   "key_unique_per_request": true
+  },
+  "people_stats_stats_single_season_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 52,
+   "key_unique_per_request": true
+  },
+  "people_stats_stats_single_season_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 80,
+   "key_unique_per_request": true
+  },
+  "people_stats_stats_single_season_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 32,
+   "columns": 50,
+   "key_unique_per_request": true
+  },
+  "people_stats_stats_single_season_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 2,
+   "columns": 49,
+   "key_unique_per_request": true
+  },
+  "people_stats_stats_single_season_game": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 16,
+   "columns": 22,
+   "key_unique_per_request": true
+  },
+  "people_stats_stats_single_season_advanced_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 49,
+   "key_unique_per_request": true
+  },
+  "people_stats_stats_single_season_advanced_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 74,
+   "key_unique_per_request": true
+  },
+  "people_stats_hot_cold_zones_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 65,
+   "columns": 5,
+   "key_unique_per_request": true
+  },
+  "people_stats_hot_cold_zones_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 35,
+   "columns": 5,
+   "key_unique_per_request": true
+  },
+  "people_stats_available_stats_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1260,
+   "columns": 9,
+   "key_unique_per_request": null
+  },
+  "people_stats_available_stats_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1260,
+   "columns": 9,
+   "key_unique_per_request": null
+  },
+  "people_stats_available_stats_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1260,
+   "columns": 9,
+   "key_unique_per_request": null
+  },
+  "people_stats_available_stats_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1260,
+   "columns": 9,
+   "key_unique_per_request": null
+  },
+  "people_stats_available_stats_running": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1260,
+   "columns": 9,
+   "key_unique_per_request": null
+  },
+  "people_stats_available_stats_game": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1260,
+   "columns": 9,
+   "key_unique_per_request": null
+  },
+  "people_stats_available_stats_team": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1260,
+   "columns": 9,
+   "key_unique_per_request": null
+  },
+  "people_stats_available_stats_streak": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 1260,
+   "columns": 9,
+   "key_unique_per_request": null
+  },
+  "people_stats_opponents_faced_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 2604,
+   "columns": 20,
+   "key_unique_per_request": true
+  },
+  "people_stats_opponents_faced_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 792,
+   "columns": 20,
+   "key_unique_per_request": true
+  },
+  "people_stats_opponents_faced_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 10251,
+   "columns": 17,
+   "key_unique_per_request": true
+  },
+  "people_stats_opponents_faced_catching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 2000,
+   "columns": 17,
+   "key_unique_per_request": true
+  },
+  "people_stats_opponents_faced_running": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 6046,
+   "columns": 17,
+   "key_unique_per_request": true
+  },
+  "people_stats_sabermetrics_multi_team_hitting": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 35,
+   "key_unique_per_request": true
+  },
+  "people_stats_sabermetrics_multi_team_pitching": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 32,
+   "key_unique_per_request": true
+  },
+  "people_stats_sabermetrics_multi_team_fielding": {
+   "status": "ok",
+   "requests_ok": 20,
+   "requests_failed": 0,
+   "sample_rows": 15,
+   "columns": 25,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_hitting": {
@@ -615,7 +1567,7 @@
    "requests_failed": 0,
    "sample_rows": 100,
    "columns": 81,
-   "key_unique_per_request": true
+   "key_unique_per_request": false
   },
   "team_stats_game_log_fielding": {
    "status": "ok",
@@ -623,7 +1575,7 @@
    "requests_failed": 0,
    "sample_rows": 100,
    "columns": 36,
-   "key_unique_per_request": true
+   "key_unique_per_request": false
   },
   "team_stats_game_log_catching": {
    "status": "ok",
@@ -719,7 +1671,7 @@
    "requests_failed": 0,
    "sample_rows": 100,
    "columns": 81,
-   "key_unique_per_request": true
+   "key_unique_per_request": false
   },
   "team_stats_at_game_start_fielding": {
    "status": "ok",
@@ -727,7 +1679,7 @@
    "requests_failed": 0,
    "sample_rows": 100,
    "columns": 36,
-   "key_unique_per_request": true
+   "key_unique_per_request": false
   },
   "team_stats_at_game_start_catching": {
    "status": "ok",
@@ -1113,6 +2065,62 @@
    "columns": 17,
    "key_unique_per_request": true
   },
+  "transactions_season": {
+   "status": "ok",
+   "requests_ok": 2,
+   "requests_failed": 0,
+   "sample_rows": 100640,
+   "columns": 16,
+   "key_unique_per_request": false
+  },
+  "draft_picks": {
+   "status": "ok",
+   "requests_ok": 2,
+   "requests_failed": 0,
+   "sample_rows": 1829,
+   "columns": 84,
+   "key_unique_per_request": true
+  },
+  "venues_hydrated": {
+   "status": "ok",
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 1671,
+   "columns": 33,
+   "key_unique_per_request": true
+  },
+  "award_recipients": {
+   "status": "ok",
+   "requests_ok": 12,
+   "requests_failed": 2,
+   "sample_rows": 34,
+   "columns": 15,
+   "key_unique_per_request": false
+  },
+  "people_changes": {
+   "status": "ok",
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 1000,
+   "columns": 51,
+   "key_unique_per_request": true
+  },
+  "game_changes": {
+   "status": "ok",
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 1000,
+   "columns": 69,
+   "key_unique_per_request": true
+  },
+  "people_search": {
+   "status": "ok",
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 47,
+   "key_unique_per_request": true
+  },
   "jobs_umpires": {
    "status": "ok",
    "requests_ok": 1,
@@ -1127,7 +2135,7 @@
    "requests_failed": 0,
    "sample_rows": 215,
    "columns": 7,
-   "key_unique_per_request": null
+   "key_unique_per_request": false
   },
   "jobs_official_scorers": {
    "status": "ok",
@@ -1135,7 +2143,7 @@
    "requests_failed": 0,
    "sample_rows": 235,
    "columns": 7,
-   "key_unique_per_request": null
+   "key_unique_per_request": false
   },
   "draft_prospects": {
    "status": "ok",
@@ -1167,7 +2175,7 @@
    "requests_failed": 0,
    "sample_rows": 23117,
    "columns": 25,
-   "key_unique_per_request": null
+   "key_unique_per_request": false
   },
   "schedule_hydrated": {
    "status": "ok",
@@ -1210,20 +2218,20 @@
    "key_unique_per_request": true
   },
   "standings_first_half": {
-   "status": "empty",
-   "requests_ok": 2,
+   "status": "ok",
+   "requests_ok": 5,
    "requests_failed": 0,
-   "sample_rows": 0,
-   "columns": 0,
-   "key_unique_per_request": null
+   "sample_rows": 26,
+   "columns": 56,
+   "key_unique_per_request": true
   },
   "standings_second_half": {
-   "status": "empty",
-   "requests_ok": 2,
+   "status": "ok",
+   "requests_ok": 5,
    "requests_failed": 0,
-   "sample_rows": 0,
-   "columns": 0,
-   "key_unique_per_request": null
+   "sample_rows": 26,
+   "columns": 56,
+   "key_unique_per_request": true
   },
   "standings_spring_training": {
    "status": "ok",
@@ -1235,7 +2243,7 @@
   },
   "standings_postseason": {
    "status": "empty",
-   "requests_ok": 2,
+   "requests_ok": 5,
    "requests_failed": 0,
    "sample_rows": 0,
    "columns": 0,
@@ -1269,8 +2277,88 @@
    "status": "ok",
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 431,
+   "sample_rows": 434,
    "columns": 77,
+   "key_unique_per_request": true
+  },
+  "game_feed_plays": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 215,
+   "columns": 58,
+   "key_unique_per_request": true
+  },
+  "game_feed_play_events": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 919,
+   "columns": 147,
+   "key_unique_per_request": true
+  },
+  "game_feed_linescore_innings": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 27,
+   "columns": 11,
+   "key_unique_per_request": true
+  },
+  "game_feed_officials": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 5,
+   "key_unique_per_request": true
+  },
+  "game_boxscore_players": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 153,
+   "columns": 606,
+   "key_unique_per_request": true
+  },
+  "game_boxscore_teams": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 298,
+   "key_unique_per_request": true
+  },
+  "game_boxscore_officials": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 14,
+   "columns": 5,
+   "key_unique_per_request": true
+  },
+  "game_boxscore_info": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 42,
+   "columns": 3,
+   "key_unique_per_request": true
+  },
+  "game_boxscore_pitching_notes": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 1,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "game_boxscore_top_performers": {
+   "status": "ok",
+   "requests_ok": 3,
+   "requests_failed": 0,
+   "sample_rows": 9,
+   "columns": 232,
    "key_unique_per_request": true
   },
   "game_linescore": {
@@ -1312,38 +2400,6 @@
   "ref_sky_conditions": {
    "status": "unsupported",
    "reason": "route answers 404 (probed 2026-10-27)"
-  },
-  "game_feed_plays": {
-   "status": "ok",
-   "requests_ok": 3,
-   "requests_failed": 0,
-   "sample_rows": 215,
-   "columns": 58,
-   "key_unique_per_request": true
-  },
-  "game_feed_play_events": {
-   "status": "ok",
-   "requests_ok": 3,
-   "requests_failed": 0,
-   "sample_rows": 919,
-   "columns": 147,
-   "key_unique_per_request": true
-  },
-  "game_feed_linescore_innings": {
-   "status": "ok",
-   "requests_ok": 3,
-   "requests_failed": 0,
-   "sample_rows": 27,
-   "columns": 11,
-   "key_unique_per_request": true
-  },
-  "game_feed_officials": {
-   "status": "ok",
-   "requests_ok": 3,
-   "requests_failed": 0,
-   "sample_rows": 14,
-   "columns": 5,
-   "key_unique_per_request": true
   }
  }
 }

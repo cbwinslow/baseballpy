@@ -1,0 +1,161 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "career"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 114,
+      "gamesStarted": 114,
+      "assists": 37,
+      "putOuts": 47,
+      "errors": 3,
+      "chances": 87,
+      "fielding": ".966",
+      "position": {
+       "code": "1",
+       "name": "Pitcher",
+       "type": "Pitcher",
+       "abbreviation": "P"
+      },
+      "rangeFactorPerGame": "0.74",
+      "rangeFactorPer9Inn": "1.23",
+      "innings": "614.1",
+      "games": 114,
+      "doublePlays": 2,
+      "triplePlays": 0,
+      "throwingErrors": 3
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "numTeams": 2,
+     "numLeagues": 2,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 0,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "position": {
+       "code": "7",
+       "name": "Outfielder",
+       "type": "Outfielder",
+       "abbreviation": "LF"
+      },
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "0.00",
+      "innings": "1.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 6,
+      "gamesStarted": 0,
+      "assists": 0,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 0,
+      "fielding": ".000",
+      "position": {
+       "code": "9",
+       "name": "Outfielder",
+       "type": "Outfielder",
+       "abbreviation": "RF"
+      },
+      "rangeFactorPerGame": "0.00",
+      "rangeFactorPer9Inn": "0.00",
+      "innings": "7.1",
+      "games": 6,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    }
+   ]
+  }
+ ]
+}

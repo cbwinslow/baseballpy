@@ -1,0 +1,140 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "people": [
+  {
+   "id": 813051,
+   "fullName": "Sebastian Shorter",
+   "link": "/api/v1/people/813051",
+   "firstName": "Sebastian",
+   "lastName": "Shorter",
+   "birthDate": "2008-06-21",
+   "currentAge": 18,
+   "birthCity": "Detroit",
+   "birthStateProvince": "MI",
+   "birthCountry": "USA",
+   "height": "6' 2\"",
+   "weight": 209,
+   "active": true,
+   "primaryPosition": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "useName": "Sebastian",
+   "useLastName": "Shorter",
+   "boxscoreName": "Shorter",
+   "gender": "M",
+   "isPlayer": true,
+   "isVerified": true,
+   "batSide": {
+    "code": "R",
+    "description": "Right"
+   },
+   "pitchHand": {
+    "code": "R",
+    "description": "Right"
+   },
+   "nameFirstLast": "Sebastian Shorter",
+   "nameSlug": "sebastian-shorter-813051",
+   "firstLastName": "Sebastian Shorter",
+   "lastFirstName": "Shorter, Sebastian",
+   "lastInitName": "Shorter, S",
+   "initLastName": "S Shorter",
+   "fullFMLName": "Sebastian Shorter",
+   "fullLFMName": "Shorter, Sebastian ",
+   "strikeZoneTop": 3.299,
+   "strikeZoneBottom": 1.665
+  },
+  {
+   "id": 845084,
+   "fullName": "Henry Moak",
+   "link": "/api/v1/people/845084",
+   "firstName": "Henry",
+   "lastName": "Moak",
+   "birthDate": "2007-06-28",
+   "currentAge": 19,
+   "birthCity": "Memphis",
+   "birthStateProvince": "TN",
+   "birthCountry": "USA",
+   "height": "6' 7\"",
+   "weight": 205,
+   "active": false,
+   "primaryPosition": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "useName": "Henry",
+   "useLastName": "Moak",
+   "boxscoreName": "Moak",
+   "gender": "M",
+   "isPlayer": true,
+   "isVerified": false,
+   "batSide": {
+    "code": "R",
+    "description": "Right"
+   },
+   "pitchHand": {
+    "code": "L",
+    "description": "Left"
+   },
+   "nameFirstLast": "Henry Moak",
+   "nameSlug": "henry-moak-845084",
+   "firstLastName": "Henry Moak",
+   "lastFirstName": "Moak, Henry",
+   "lastInitName": "Moak, H",
+   "initLastName": "H Moak",
+   "fullFMLName": "Henry Moak",
+   "fullLFMName": "Moak, Henry ",
+   "strikeZoneTop": 3.522,
+   "strikeZoneBottom": 1.778
+  },
+  {
+   "id": 845083,
+   "fullName": "Logan Wermuth",
+   "link": "/api/v1/people/845083",
+   "firstName": "Logan",
+   "lastName": "Wermuth",
+   "birthDate": "2007-10-27",
+   "currentAge": 19,
+   "birthCity": "Crestview Hills",
+   "birthStateProvince": "KY",
+   "birthCountry": "USA",
+   "height": "6' 1\"",
+   "weight": 184,
+   "active": false,
+   "primaryPosition": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "useName": "Logan",
+   "useLastName": "Wermuth",
+   "boxscoreName": "Wermuth",
+   "gender": "M",
+   "isPlayer": true,
+   "isVerified": false,
+   "batSide": {
+    "code": "R",
+    "description": "Right"
+   },
+   "pitchHand": {
+    "code": "R",
+    "description": "Right"
+   },
+   "nameFirstLast": "Logan Wermuth",
+   "nameSlug": "logan-wermuth-845083",
+   "firstLastName": "Logan Wermuth",
+   "lastFirstName": "Wermuth, Logan",
+   "lastInitName": "Wermuth, L",
+   "initLastName": "L Wermuth",
+   "fullFMLName": "Logan Wermuth",
+   "fullLFMName": "Wermuth, Logan ",
+   "strikeZoneTop": 3.255,
+   "strikeZoneBottom": 1.643
+  }
+ ]
+}

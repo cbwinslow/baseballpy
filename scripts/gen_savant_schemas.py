@@ -51,7 +51,7 @@ def fetch(http: HttpClient, defn: LeaderboardDef, year: int, min_value: str | No
         return None
     if defn.fmt == "html_json":
         try:
-            return html_json_to_csv(res.content)
+            return html_json_to_csv(res.content, defn.html_var)
         except ValueError:
             return None
     head = res.content[:200].lstrip()
@@ -179,6 +179,27 @@ def main() -> int:
             flush=True,
         )
         results.append(result)
+    if args.only and not args.check:  # merge into the existing generated module
+        from baseballpy.sources.statcast.lb_tables import LEADERBOARD_COLUMNS, LEADERBOARD_META
+
+        fresh = {r["slug"]: r for r in results}
+        merged = []
+        for slug, cols in LEADERBOARD_COLUMNS.items():
+            if slug in fresh:
+                merged.append(fresh.pop(slug))
+                continue
+            meta = LEADERBOARD_META[slug]
+            merged.append(
+                {
+                    "slug": slug,
+                    "columns": list(cols),
+                    "min_year": meta["min_year"],
+                    "max_year": meta["max_year_probed"],
+                    "min": meta["min"],
+                }
+            )
+        merged.extend(fresh.values())
+        Path(args.out).write_text(render(merged), encoding="utf-8")
     if not args.only and not args.check:
         Path(args.out).write_text(render(results), encoding="utf-8")
         probe = {

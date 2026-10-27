@@ -10,12 +10,30 @@ from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 
 from baseballpy.core.schema_tools import snake
-from baseballpy.sources.mlb_api.stat_combos import PLAYER_STAT_COMBOS, TEAM_STAT_COMBOS
+from baseballpy.sources.mlb_api.stat_combos import (
+    PEOPLE_STAT_COMBOS,
+    PLAYER_STAT_COMBOS,
+    TEAM_STAT_COMBOS,
+)
 
 MLB_BASE_URL = "https://statsapi.mlb.com/api"
 
 #: scope -> what one request is made for
-SCOPES = ("flat", "season", "team_season", "teams_season", "game", "stat_combo")
+SCOPES = (
+    "flat",
+    "season",
+    "team_season",
+    "teams_season",
+    "game",
+    "person_season",
+    "award_season",
+    "since",
+    "query",
+)
+#: scopes whose chunks are stored under ``season=YYYY``
+PARTITIONED_SCOPES = frozenset(
+    {"season", "team_season", "teams_season", "game", "person_season", "award_season"}
+)
 
 
 @dataclass(frozen=True)
@@ -34,6 +52,8 @@ class MlbEndpoint:
     unsupported: str | None = None
     #: fetched in ``limit``/``offset`` pages (the total is ``stats[0].totalSplits``)
     paginated: bool = False
+    #: a 404 for one request means "nothing there" (recorded as an empty part, counted in the report)
+    tolerate_missing: bool = False
 
     @property
     def heavy(self) -> bool:
@@ -50,8 +70,8 @@ class MlbEndpoint:
 
     @property
     def partitioned(self) -> bool:
-        """Season-partitioned datasets are every scope except ``flat``."""
-        return self.scope != "flat"
+        """Season-partitioned scopes; ``flat``, ``since`` and ``query`` datasets are unpartitioned."""
+        return self.scope in PARTITIONED_SCOPES
 
 
 @dataclass(frozen=True)
@@ -63,6 +83,10 @@ class Context:
     team_ids: Sequence[int] = ()
     game_pks: Sequence[int] = ()
     leader_categories: Sequence[str] = ()
+    person_ids: Sequence[int] = ()
+    award_ids: Sequence[str] = ()
+    updated_since: str | None = None
+    query: str | None = None
 
 
 @dataclass(frozen=True)
@@ -87,13 +111,29 @@ def _fill(template: str, values: Mapping[str, str | int]) -> str:
 def requests_for(endpoint: MlbEndpoint, ctx: Context) -> Iterator[Request]:
     """The requests an endpoint needs for ``ctx`` (a fan-out per scope)."""
     base: dict[str, str | int] = {}
+    values: dict[str, str | int]
     if ctx.season is not None:
         base["season"] = ctx.season
         base["year"] = ctx.season
     if endpoint.scope == "flat":
         yield Request(endpoint.name, endpoint.path, dict(endpoint.params), None)
         return
-    if ctx.season is None and endpoint.scope != "game":
+    if endpoint.scope in ("since", "query"):
+        value = ctx.updated_since if endpoint.scope == "since" else ctx.query
+        if value is None:
+            raise ValueError(
+                f"{endpoint.name} needs ctx.{'updated_since' if endpoint.scope == 'since' else 'query'}"
+            )
+        values = {"value": value}
+        safe = "".join(c if c.isalnum() else "-" for c in value)
+        yield Request(
+            f"{endpoint.name}_{safe}",
+            endpoint.path,
+            {k: _fill(str(v), values) for k, v in endpoint.params.items()},
+            None,
+        )
+        return
+    if ctx.season is None and endpoint.scope not in ("game",):
         raise ValueError(f"{endpoint.name} is season-scoped; ctx.season is required")
     if endpoint.scope == "season":
         for sport in ctx.sport_ids:
@@ -141,6 +181,26 @@ def requests_for(endpoint: MlbEndpoint, ctx: Context) -> Iterator[Request]:
                 {k: _fill(str(v), values) for k, v in endpoint.params.items()},
                 ctx.season,
                 {"game_pk": pk},
+            )
+    elif endpoint.scope == "person_season":
+        for person in ctx.person_ids:
+            values = {**base, "person_id": person}
+            yield Request(
+                f"{endpoint.name}_{ctx.season}_{person}",
+                _fill(endpoint.path, values),
+                {k: _fill(str(v), values) for k, v in endpoint.params.items()},
+                ctx.season,
+                {"person_id": person},
+            )
+    elif endpoint.scope == "award_season":
+        for award in ctx.award_ids:
+            values = {**base, "award_id": award}
+            yield Request(
+                f"{endpoint.name}_{ctx.season}_{award}",
+                _fill(endpoint.path, values),
+                {k: _fill(str(v), values) for k, v in endpoint.params.items()},
+                ctx.season,
+                {"request_award_id": award},
             )
     else:
         raise ValueError(f"unknown scope {endpoint.scope!r} for {endpoint.name}")
@@ -231,9 +291,12 @@ def _ep(
     description: str,
     keys: tuple[str, ...],
     scope: str = "flat",
+    tolerate_missing: bool = False,
     **params: str | int,
 ) -> MlbEndpoint:
-    return MlbEndpoint(name, path, records, description, keys, scope, params)
+    return MlbEndpoint(
+        name, path, records, description, keys, scope, params, tolerate_missing=tolerate_missing
+    )
 
 
 _STANDINGS = [
@@ -300,8 +363,23 @@ _TEAM_STATS = [
     for stat, group, keys in TEAM_STAT_COMBOS
 ]
 
+_PEOPLE_STATS = [
+    MlbEndpoint(
+        f"people_stats_{snake(stat)}_{group}",
+        "v1/people/{person_id}/stats",
+        ("stats", "*", "splits"),
+        f"Per-player {group} stats, type {stat} (one request per person).",
+        keys,
+        "person_season",
+        {"stats": stat, "group": group, "season": "{season}"},
+        "stats",
+    )
+    for stat, group, keys in PEOPLE_STAT_COMBOS
+]
+
 ENDPOINTS: tuple[MlbEndpoint, ...] = (
     *_STATS,
+    *_PEOPLE_STATS,
     *_TEAM_STATS,
     *_reference_endpoints(),
     _ep(
@@ -407,6 +485,69 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "season",
         season="{season}",
     ),
+    _ep(
+        "transactions_season",
+        "v1/transactions",
+        ("transactions",),
+        "Every transaction of a calendar year (trades, signings, DFAs, IL moves, ...), all fields.",
+        ("id",),
+        "season",
+        startDate="{season}-01-01",
+        endDate="{season}-12-31",
+    ),
+    _ep(
+        "draft_picks",
+        "v1/draft/{year}",
+        ("drafts", "rounds", "*", "picks"),
+        "Every pick of a draft year with the person, school, scouting and signing fields.",
+        ("pickNumber", "pickRound"),
+        "season",
+    ),
+    _ep(
+        "venues_hydrated",
+        "v1/venues",
+        ("venues",),
+        "Every venue with location, field info, time zone and external ids hydrated.",
+        ("id",),
+        hydrate="location,fieldInfo,timezone,xrefId,social",
+    ),
+    _ep(
+        "award_recipients",
+        "v1/awards/{award_id}/recipients",
+        ("awards",),
+        "Recipients of every award for a season (one request per award id; several rows per award-season are normal).",
+        ("id", "season"),
+        "award_season",
+        tolerate_missing=True,
+        season="{season}",
+    ),
+    _ep(
+        "people_changes",
+        "v1/people/changes",
+        ("people",),
+        "People changed since a timestamp (incremental sync log; append-only).",
+        ("id",),
+        "since",
+        updatedSince="{value}",
+    ),
+    _ep(
+        "game_changes",
+        "v1/game/changes",
+        ("dates", "*", "games"),
+        "Games changed since a timestamp (incremental sync log; append-only).",
+        ("gamePk",),
+        "since",
+        updatedSince="{value}",
+    ),
+    _ep(
+        "people_search",
+        "v1/people/search",
+        ("people",),
+        "People matching a name query (on demand).",
+        ("id",),
+        "query",
+        names="{value}",
+    ),
     _ep("jobs_umpires", "v1/jobs/umpires", ("roster",), "Current umpire roster.", ("person.id",)),
     _ep(
         "jobs_datacasters",
@@ -502,6 +643,54 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         ("liveData", "boxscore", "officials"),
         "Umpires of a final game from the live feed.",
         ("game_pk", "officialType"),
+        "game",
+    ),
+    _ep(
+        "game_boxscore_players",
+        "v1/game/{game_pk}/boxscore",
+        ("teams", "@", "players", "@"),
+        "Every player line of a game boxscore (person, position, batting/pitching/fielding stats, season stats, game status) with its team context.",
+        ("game_pk", "teams.key", "person.id"),
+        "game",
+    ),
+    _ep(
+        "game_boxscore_teams",
+        "v1/game/{game_pk}/boxscore",
+        ("teams", "@"),
+        "Team totals of a game boxscore (team, teamStats, batters/pitchers/bench/bullpen id lists and info as JSON).",
+        ("game_pk", "teams.key"),
+        "game",
+    ),
+    _ep(
+        "game_boxscore_officials",
+        "v1/game/{game_pk}/boxscore",
+        ("officials",),
+        "Umpires of a game from the boxscore.",
+        ("game_pk", "officialType"),
+        "game",
+    ),
+    _ep(
+        "game_boxscore_info",
+        "v1/game/{game_pk}/boxscore",
+        ("info",),
+        "Game info label/value lines (weather, attendance, venue, first pitch, ...).",
+        ("game_pk", "label"),
+        "game",
+    ),
+    _ep(
+        "game_boxscore_pitching_notes",
+        "v1/game/{game_pk}/boxscore",
+        ("pitchingNotes",),
+        "Pitching notes of a game (one text line each).",
+        ("game_pk", "value"),
+        "game",
+    ),
+    _ep(
+        "game_boxscore_top_performers",
+        "v1/game/{game_pk}/boxscore",
+        ("topPerformers",),
+        "Top performers of a game from the boxscore.",
+        ("game_pk", "type", "player.person.id"),
         "game",
     ),
     _ep(
