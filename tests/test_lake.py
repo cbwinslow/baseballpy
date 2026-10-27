@@ -86,7 +86,7 @@ def test_raw_store_records_sha_and_detects_tampering(tmp_path: Path) -> None:
     raw = RawStore(cfg)
     path = raw.put("statcast", "pitches", "a.csv", b"x,y\n1,2\n", season=2024, source_ref="abc")
     assert path == tmp_path / "raw" / "statcast" / "pitches" / "season=2024" / "a.csv"
-    entry = cfg.dataset_manifest("statcast", "pitches", "raw").get_chunk("season=2024/a.csv")
+    entry = cfg.dataset_manifest("statcast", "pitches", "raw", 2024).get_chunk("a.csv")
     assert entry is not None
     assert entry["bytes"] == 8 and entry["source_ref"] == "abc" and len(entry["sha256"]) == 64
     assert raw.verify("statcast", "pitches", "a.csv", 2024)
@@ -150,3 +150,55 @@ def test_reprocess_rebuilds_processed_from_raw_without_network(tmp_path: Path) -
     assert ProcessedStore(cfg).read(spec, 2023)["date"].to_pylist() == ["a", "b"]
     with pytest.raises(FileNotFoundError, match="no raw data"):
         reprocess(spec, 1999, parse, config=cfg)
+
+
+def test_put_stream_writes_row_groups_atomically_and_skips_empty_streams(tmp_path: Path) -> None:
+    catalog.register_all()
+    cfg = LakeConfig(home=tmp_path)
+    store = ProcessedStore(cfg)
+    spec = get_dataset("retrosheet", "reference_relatives")
+    batch = pa.table(
+        {
+            "person_id_1": ["a", "b"],
+            "relation": ["Brother", "Father"],
+            "person_id_2": ["c", "d"],
+            "_extras": pa.array([None, None], pa.string()),
+        }
+    )
+    assert store.put_stream(spec, iter([batch, batch.slice(0, 1)])) == 3
+    part = store.part_path(spec, "data")
+    meta = pq.ParquetFile(part).metadata
+    assert meta.num_rows == 3 and meta.num_row_groups == 2
+    entry = cfg.dataset_manifest("retrosheet", "reference_relatives").get_chunk("data")
+    assert entry is not None and entry["records_count"] == 3
+    assert list(tmp_path.rglob("*.part")) == []
+
+    empty = get_dataset("retrosheet", "reference_teams")
+    assert store.put_stream(empty, iter([])) == 0
+    assert not store.part_path(empty, "data").exists()
+    assert list(tmp_path.rglob("*.part")) == []
+
+
+def test_put_stream_failure_leaves_no_part_or_final_file(tmp_path: Path) -> None:
+    catalog.register_all()
+    store = ProcessedStore(LakeConfig(home=tmp_path))
+    spec = get_dataset("retrosheet", "reference_relatives")
+
+    def boom() -> "pa.Table":
+        raise RuntimeError("parser crashed")
+
+    def gen():  # type: ignore[no-untyped-def]
+        yield pa.table(
+            {
+                "person_id_1": ["a"],
+                "relation": ["x"],
+                "person_id_2": ["b"],
+                "_extras": pa.array([None], pa.string()),
+            }
+        )
+        yield boom()
+
+    with pytest.raises(RuntimeError, match="parser crashed"):
+        store.put_stream(spec, gen())
+    assert not store.part_path(spec, "data").exists()
+    assert list(tmp_path.rglob("*.part")) == []

@@ -13,6 +13,7 @@ from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_S
 from baseballpy.sources.lahman.schema import LAHMAN_PRIMARY_KEYS, LAHMAN_SCHEMAS
 from baseballpy.sources.mlb_api import schemas as mlb
 from baseballpy.sources.retrosheet import schema as retro
+from baseballpy.sources.retrosheet.schema import RETROSHEET_FLAT_KEYS, RETROSHEET_FLAT_SCHEMAS
 from baseballpy.sources.statcast.schema import STATCAST_SCHEMA
 
 Partition = Literal["season", "none"]
@@ -192,6 +193,14 @@ def register_all() -> dict[str, DatasetSpec]:
             "Postseason and all-star play-by-play events.",
         ),
         (
+            "events_deduced",
+            retro.RETROSHEET_EVENT_SCHEMA,
+            ("GAME_ID",),
+            "season",
+            "1-play-by-play-event-data-eva-evn-eve-eb",
+            "Play-by-play events deduced from box scores (.ED* files).",
+        ),
+        (
             "boxscores_batting",
             retro.RETROSHEET_BOX_BATTING_SCHEMA,
             ("game_id", "team_id", "player_id", "slot"),
@@ -259,52 +268,29 @@ def register_all() -> dict[str, DatasetSpec]:
             r_part,
         )
 
-    for ref_name, ref_schema, ref_keys, ref_anchor in (
-        (
-            "ballparks",
-            retro.RETROSHEET_BALLPARKS_SCHEMA,
-            ("park_id",),
-            "a-ballparks-referenceballparkscsv",
-        ),
-        (
-            "teams",
-            retro.RETROSHEET_TEAMS_SCHEMA,
-            ("team_id", "first_year"),
-            "b-teams-referenceteamscsv",
-        ),
-        (
-            "ejections",
-            retro.RETROSHEET_EJECTIONS_SCHEMA,
-            ("game_id", "ejectee_id"),
-            "c-ejections-referenceejectionscsv",
-        ),
-        (
-            "coaches",
-            retro.RETROSHEET_COACHES_SCHEMA,
-            ("coach_id", "year", "team_id", "role"),
-            "d-coaching-staffs-referencecoachescsv",
-        ),
-        (
-            "relatives",
-            retro.RETROSHEET_RELATIVES_SCHEMA,
-            ("id1", "relation", "id2"),
-            "e-relatives-referencerelativescsv",
-        ),
-        (
-            "biofile",
-            retro.RETROSHEET_BIOFILE_SCHEMA,
-            ("player_id",),
-            "f-biographical-file-referencebiofilecsv",
-        ),
-    ):
+    flat_descriptions = {
+        "reference_ballparks": "Ballparks (reference/ballparks.csv).",
+        "reference_teams": "Franchise/team codes (reference/teams.csv).",
+        "reference_ejections": "Ejections (reference/ejections.csv).",
+        "reference_coaches": "Coaching staffs (reference/coaches.csv).",
+        "reference_relatives": "Relatives among players/managers (reference/relatives.csv).",
+        "reference_biofile": "Biographical file (reference/biofile.csv).",
+        "reference_biofile0": "Biographical file, ISO-date edition (reference/biofile0.csv).",
+        "schedule": "Season schedules (seasons/<year>/<year>schedule.csv).",
+        "umpires": "Umpires working each season (seasons/<year>/UMPIRES<year>.txt).",
+        "discrepancies": "Known data discrepancies (seasons/<year>/*discs.csv).",
+    }
+    seasonal = {"schedule", "umpires", "discrepancies"}
+    for flat_name, flat_schema in RETROSHEET_FLAT_SCHEMAS.items():
         _add(
             "retrosheet",
-            f"reference_{ref_name}",
-            f"retrosheet_reference_{ref_name}",
-            ref_schema,
-            ref_keys,
-            f"Retrosheet reference table: {ref_name}.",
-            f"{retro_doc}#{ref_anchor}",
+            flat_name,
+            f"retrosheet_{flat_name}",
+            flat_schema,
+            RETROSHEET_FLAT_KEYS[flat_name],
+            flat_descriptions[flat_name],
+            f"{retro_doc}#dataset-{flat_name}",
+            "season" if flat_name in seasonal else "none",
         )
 
     return DATASETS

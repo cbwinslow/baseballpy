@@ -29,3 +29,48 @@ def _isolated_baseballpy_home(
     get_audit_logger.reset()
     get_quarantine.reset()
     reset_config()
+
+
+class RetroRepo:
+    """A fake ``chadwickbureau/retrosheet`` repo: serves the git tree and raw files via respx."""
+
+    def __init__(self) -> None:
+        self.files: dict[str, bytes] = {}
+
+    def add(self, path: str, content: bytes | str = b"x\n") -> "RetroRepo":
+        """Register one file of the fake repository."""
+        self.files[path] = content.encode("utf-8") if isinstance(content, str) else content
+        return self
+
+    def mount(self, ref: str | None = None, *, tree_status: int = 200, serve: bool = True) -> None:
+        """Mock the tree endpoint (and, unless ``serve`` is False, every file) for ``ref``."""
+        import httpx
+        import respx
+
+        from baseballpy.core.sources_lock import get_source_ref
+
+        pin = ref or get_source_ref("retrosheet").ref
+        repo = get_source_ref("retrosheet").repo
+        respx.get(f"https://api.github.com/repos/{repo}/git/trees/{pin}?recursive=1").mock(
+            return_value=httpx.Response(
+                tree_status,
+                json={
+                    "truncated": False,
+                    "tree": [
+                        {"path": p, "type": "blob", "size": len(c), "sha": "x"}
+                        for p, c in self.files.items()
+                    ],
+                },
+            )
+        )
+        if serve:
+            for path, content in self.files.items():
+                respx.get(f"https://raw.githubusercontent.com/{repo}/{pin}/{path}").mock(
+                    return_value=httpx.Response(200, content=content)
+                )
+
+
+@pytest.fixture
+def retro_repo() -> RetroRepo:
+    """Empty fake Retrosheet repo; ``add`` files then ``mount()`` inside a ``@respx.mock`` test."""
+    return RetroRepo()

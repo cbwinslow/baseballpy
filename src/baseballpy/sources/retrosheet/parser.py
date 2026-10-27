@@ -3,34 +3,28 @@
 import csv
 import io
 import logging
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 import pyarrow as pa
-from chadwickpy.box import box_create
-from chadwickpy.roster import League
-from chadwickpy.tools import daily, sub
-from chadwickpy.tools.events import event_rows
-from chadwickpy.tools.tools import iterate_games
 
 from baseballpy.core.coerce import NULL_TOKENS, CoercionError, to_bool, to_int
-from baseballpy.core.quarantine import collect_bad_values, record_bad_value, safe_array
+from baseballpy.core.quarantine import Quarantine, collect_bad_values, record_bad_value, safe_array
+from baseballpy.core.schema_tools import normalize_csv
+from baseballpy.sources.retrosheet import _chadwick_adapter as cw
 from baseballpy.sources.retrosheet.schema import (
-    RETROSHEET_BALLPARKS_SCHEMA,
-    RETROSHEET_BIOFILE_SCHEMA,
     RETROSHEET_BOX_BATTING_SCHEMA,
     RETROSHEET_BOX_PITCHING_SCHEMA,
-    RETROSHEET_COACHES_SCHEMA,
     RETROSHEET_DAILY_SPLITS_SCHEMA,
-    RETROSHEET_EJECTIONS_SCHEMA,
     RETROSHEET_EVENT_SCHEMA,
+    RETROSHEET_FLAT_SCHEMAS,
     RETROSHEET_GAMELOG_SCHEMA,
-    RETROSHEET_RELATIVES_SCHEMA,
     RETROSHEET_ROSTER_SCHEMA,
     RETROSHEET_SUBSTITUTIONS_SCHEMA,
-    RETROSHEET_TEAMS_SCHEMA,
 )
+from baseballpy.sources.retrosheet.tables import RETROSHEET_DEFAULT_HEADERS
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +51,7 @@ def _safe_bool(val: Any) -> bool | None:
         return None
 
 
-def _load_league(paths: list[Path], year: int | None = None) -> League | None:
+def _load_league(paths: list[Path], year: int | None = None) -> cw.League | None:
     """Load the season TEAM file for name resolution; failures are logged, not hidden."""
     if not paths:
         return None
@@ -65,7 +59,7 @@ def _load_league(paths: list[Path], year: int | None = None) -> League | None:
     team_file = parent / f"TEAM{year}" if year else None
     if team_file and team_file.exists():
         try:
-            league = League()
+            league = cw.League()
             league.read(team_file.read_bytes())
             return league
         except (ValueError, KeyError, IndexError, UnicodeDecodeError, OSError):
@@ -80,7 +74,7 @@ def _load_league(paths: list[Path], year: int | None = None) -> League | None:
 class RetrosheetEventParser:
     """Parses Retrosheet .EVA / .EVN / .EVE event files using pure-Python chadwickpy."""
 
-    def __init__(self, league: League | None = None) -> None:
+    def __init__(self, league: cw.League | None = None) -> None:
         self.league = league
 
     @collect_bad_values("retrosheet", "events")
@@ -94,7 +88,7 @@ class RetrosheetEventParser:
         records: list[dict[str, Any]] = []
         for path in paths:
             data = path.read_bytes()
-            for raw_row in event_rows(data, league=league):
+            for raw_row in cw.event_rows(data, league=league):
                 casted_row: dict[str, Any] = {}
                 for field in RETROSHEET_EVENT_SCHEMA:
                     col_name = field.name
@@ -125,7 +119,7 @@ class RetrosheetEventParser:
 class RetrosheetBoxScoreParser:
     """Parses game boxscores into Batting and Pitching PyArrow Tables via cwbox."""
 
-    def __init__(self, league: League | None = None) -> None:
+    def __init__(self, league: cw.League | None = None) -> None:
         self.league = league
 
     @collect_bad_values("retrosheet", "boxscores")
@@ -144,11 +138,11 @@ class RetrosheetBoxScoreParser:
 
         for path in paths:
             data = path.read_bytes()
-            for game, _, _ in iterate_games(data, league=league):
+            for game, _, _ in cw.iterate_games(data, league=league):
                 game_id = game.game_id or ""
                 vis_team = game.info_lookup("visteam") or ""
                 home_team = game.info_lookup("hometeam") or ""
-                box = box_create(game)
+                box = cw.box_create(game)
 
                 # 1. Batting lines from slots
                 for team_idx, team_code in enumerate((vis_team, home_team)):
@@ -245,7 +239,7 @@ class RetrosheetBoxScoreParser:
 class RetrosheetDailySplitsParser:
     """Parses daily player appearance records via chadwickpy daily."""
 
-    def __init__(self, league: League | None = None) -> None:
+    def __init__(self, league: cw.League | None = None) -> None:
         self.league = league
 
     @collect_bad_values("retrosheet", "daily_splits")
@@ -259,7 +253,7 @@ class RetrosheetDailySplitsParser:
 
         for path in paths:
             data = path.read_bytes()
-            for line in daily.daily_lines(data, league=league):
+            for line in cw.daily.daily_lines(data, league=league):
                 row = next(csv.reader([line]))
                 rec: dict[str, Any] = {}
                 for idx, field in enumerate(RETROSHEET_DAILY_SPLITS_SCHEMA):
@@ -289,7 +283,7 @@ class RetrosheetDailySplitsParser:
 class RetrosheetSubstitutionsParser:
     """Parses in-game player substitutions via chadwickpy sub."""
 
-    def __init__(self, league: League | None = None) -> None:
+    def __init__(self, league: cw.League | None = None) -> None:
         self.league = league
 
     @collect_bad_values("retrosheet", "substitutions")
@@ -303,7 +297,7 @@ class RetrosheetSubstitutionsParser:
 
         for path in paths:
             data = path.read_bytes()
-            for line in sub.sub_lines(data, league=league):
+            for line in cw.sub.sub_lines(data, league=league):
                 row = next(csv.reader([line]))
                 rec: dict[str, Any] = {}
                 for idx, field in enumerate(RETROSHEET_SUBSTITUTIONS_SCHEMA):
@@ -422,75 +416,62 @@ class RetrosheetRosterParser:
         return pa.Table.from_arrays(arrays, schema=RETROSHEET_ROSTER_SCHEMA)
 
 
-class RetrosheetReferenceParser:
-    """Parses reference CSV tables (ballparks, teams, ejections, coaches, relatives, biofile)."""
+class RetrosheetFlatParser:
+    """Header-based parser for flat Retrosheet files: ``reference/*.csv``, schedules, umpires and
+    discrepancy files.
 
-    SCHEMAS = {
-        "ballparks": RETROSHEET_BALLPARKS_SCHEMA,
-        "teams": RETROSHEET_TEAMS_SCHEMA,
-        "ejections": RETROSHEET_EJECTIONS_SCHEMA,
-        "coaches": RETROSHEET_COACHES_SCHEMA,
-        "relatives": RETROSHEET_RELATIVES_SCHEMA,
-        "biofile": RETROSHEET_BIOFILE_SCHEMA,
-    }
+    Columns are matched by upstream header name against the generated strict schema (so column
+    order and added columns never corrupt data), dates are parsed with the format observed in the
+    real files, unknown columns are kept in ``_extras`` and files that ship without a header row
+    (a few old schedules) get the documented default header.
+    """
 
-    @collect_bad_values("retrosheet", "reference")
-    def parse_file(self, table_name: str, path: Path) -> pa.Table:
-        """Parse a reference CSV into PyArrow Table."""
-        schema = self.SCHEMAS.get(table_name.lower())
-        if not schema:
+    def __init__(self, quarantine: Quarantine | None = None) -> None:
+        self._quarantine = quarantine
+
+    def parse_bytes(self, dataset: str, raw: bytes | str) -> pa.Table:
+        """Parse one file's bytes for a flat dataset (e.g. ``schedule``, ``reference_teams``)."""
+        try:
+            schema = RETROSHEET_FLAT_SCHEMAS[dataset]
+        except KeyError:
             raise ValueError(
-                f"Unknown reference schema '{table_name}'. Valid schemas: {list(self.SCHEMAS.keys())}"
+                f"Unknown flat Retrosheet dataset '{dataset}'. Valid: {sorted(RETROSHEET_FLAT_SCHEMAS)}"
+            ) from None
+        data = raw.encode("utf-8") if isinstance(raw, str) else raw
+        header: list[str] | None = None
+        default = RETROSHEET_DEFAULT_HEADERS.get(dataset)
+        if default is not None:
+            first = data.split(b"\n", 1)[0].decode("utf-8-sig", errors="replace")
+            if re.match(r'^"?\d{8}"?,', first.strip()):
+                logger.info(
+                    "%s file has no header row; using the documented default header", dataset
+                )
+                header = default.split(",")
+        return normalize_csv(
+            data,
+            schema,
+            source="retrosheet",
+            dataset=dataset,
+            quarantine=self._quarantine,
+            header=header,
+        )
+
+    def parse_path(self, dataset: str, path: Path) -> pa.Table:
+        """Parse a flat file from disk."""
+        return self.parse_bytes(dataset, path.read_bytes())
+
+
+class RetrosheetReferenceParser(RetrosheetFlatParser):
+    """Parses ``reference/*.csv`` tables (ballparks, teams, ejections, coaches, relatives, biofile)."""
+
+    def parse_file(self, table_name: str, path: Path) -> pa.Table:
+        """Parse a reference CSV into a PyArrow Table by header name."""
+        dataset = f"reference_{table_name.lower()}"
+        if dataset not in RETROSHEET_FLAT_SCHEMAS:
+            known = sorted(
+                k.removeprefix("reference_")
+                for k in RETROSHEET_FLAT_SCHEMAS
+                if k.startswith("reference_")
             )
-
-        if not path.exists():
-            return pa.Table.from_batches([], schema=schema)
-
-        text = path.read_text(encoding="utf-8", errors="replace")
-        reader = csv.reader(io.StringIO(text, newline=""))
-        header = next(reader, None)
-        if not header:
-            return pa.Table.from_batches([], schema=schema)
-
-        # Schema-drift handling: the canonical schema is positional, so a header that is wider
-        # than the schema must not lose data, and a narrower one must be reported.
-        width = len(schema)
-        if len(header) != width:
-            logger.warning(
-                "retrosheet reference %s: header has %d column(s) but schema expects %d; "
-                "extra columns are preserved as strings, missing ones are NULL (header=%s)",
-                table_name,
-                len(header),
-                width,
-                header,
-            )
-        used = set(schema.names)
-        extra_fields: list[pa.Field] = []
-        for offset, raw_name in enumerate(header[width:]):
-            clean = "_".join(raw_name.strip().lower().split()) or f"extra_{offset}"
-            while clean in used:
-                clean = f"{clean}_extra"
-            used.add(clean)
-            extra_fields.append(pa.field(clean, pa.string()))
-        full_schema = pa.schema(list(schema) + extra_fields)
-
-        records: list[dict[str, Any]] = []
-        for row in reader:
-            if not row:
-                continue
-            rec: dict[str, Any] = {}
-            for i, field in enumerate(full_schema):
-                val = row[i] if i < len(row) else None
-                name = field.name
-
-                if pa.types.is_integer(field.type):
-                    rec[name] = _safe_int(val)
-                else:
-                    rec[name] = val if val else None
-            records.append(rec)
-
-        if not records:
-            return pa.Table.from_batches([], schema=full_schema)
-
-        arrays = [_arr([r.get(field.name) for r in records], field) for field in full_schema]
-        return pa.Table.from_arrays(arrays, schema=full_schema)
+            raise ValueError(f"Unknown reference schema '{table_name}'. Valid schemas: {known}")
+        return self.parse_path(dataset, path)

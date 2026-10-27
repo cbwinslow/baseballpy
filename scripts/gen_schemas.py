@@ -11,12 +11,13 @@ For ``lahman`` the candidate primary keys are checked for uniqueness and reporte
 """
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
 import pyarrow.compute as pc
 
-from baseballpy.core.schema_tools import infer_type_name, read_csv_strings
+from baseballpy.core.schema_tools import infer_type_name, read_csv_strings, snake
 
 #: Candidate primary keys from docs/ENDPOINT_CATALOG.md section 3 (verified below on real data).
 LAHMAN_CANDIDATE_KEYS: dict[str, tuple[str, ...]] = {
@@ -167,6 +168,202 @@ def render_chadwick(directory: Path) -> str:
     return "\n".join(out) + "\n"
 
 
+#: Retrosheet flat files: dataset -> (file glob below the sample dir, upstream->column renames,
+#: candidate key, headerless-file default header or ``None``).
+RETRO_SPECS: dict[str, dict[str, object]] = {
+    "reference_ballparks": {
+        "glob": "reference/*ballparks.csv",
+        "renames": {"PARKID": "park_id", "AKA": "aka", "START": "start_date", "END": "end_date"},
+        "key": ("park_id",),
+    },
+    "reference_biofile": {
+        "glob": "reference/*__biofile.csv",
+        "renames": {"PLAYERID": "player_id", "FIRST": "first_name", "LAST": "last_name"},
+        "key": ("player_id",),
+    },
+    "reference_biofile0": {
+        "glob": "reference/*biofile0.csv",
+        "renames": {
+            "id": "player_id",
+            "lastname": "last_name",
+            "usename": "use_name",
+            "fullname": "full_name",
+            "birthname": "birth_name",
+            "altname": "alt_name",
+        },
+        "key": ("player_id",),
+    },
+    "reference_coaches": {
+        "glob": "reference/*coaches.csv",
+        "renames": {"id": "person_id", "team": "team_id", "start": "start_date", "end": "end_date"},
+        "key": ("person_id", "year", "team_id", "role", "start_date"),
+    },
+    "reference_ejections": {
+        "glob": "reference/*ejections.csv",
+        "renames": {
+            "GAMEID": "game_id",
+            "DATE": "ejection_date",
+            "EJECTEE": "ejectee_id",
+            "EJECTEENAME": "ejectee_name",
+            "TEAM": "team_id",
+            "UMPIRE": "umpire_id",
+            "UMPIRENAME": "umpire_name",
+        },
+        "key": ("game_id", "ejectee_id", "inning", "reason"),
+    },
+    "reference_relatives": {
+        "glob": "reference/*relatives.csv",
+        "renames": {"id1": "person_id_1", "id2": "person_id_2"},
+        "key": ("person_id_1", "relation", "person_id_2"),
+    },
+    "reference_teams": {
+        "glob": "reference/*teams.csv",
+        "renames": {"TEAM": "team_id", "FIRST": "first_year", "LAST": "last_year"},
+        "key": ("team_id", "first_year"),
+    },
+    "schedule": {
+        "glob": "schedule/*",
+        "renames": {
+            "Date": "game_date",
+            "Num": "game_number",
+            "Day": "day_of_week",
+            "Visitor": "visitor_team",
+            "League": "visitor_league",
+            "Game": "visitor_game_number",
+            "Home": "home_team",
+            "League__2": "home_league",
+            "Game__2": "home_game_number",
+            "Day/Night": "day_night",
+            "Location": "park_id",
+            "Postponed": "postponed",
+            "Makeup": "makeup_date",
+        },
+        "key": ("game_date", "game_number", "visitor_team", "visitor_game_number", "home_team"),
+        "default_header": "Date,Num,Day,Visitor,League,Game,Home,League,Game,Day/Night,Postponed,Makeup",
+    },
+    "umpires": {
+        "glob": "umpires/*",
+        "renames": {"ID": "umpire_id", "last": "last_name", "first": "first_name"},
+        "key": ("umpire_id",),
+    },
+    "discrepancies": {
+        "glob": "discs/*",
+        "renames": {
+            "ID": "disc_id",
+            "Player": "player_id",
+            "Year": "year",
+            "Team": "team_id",
+            "Type": "type",
+            "Pos": "position",
+            "Cat": "category",
+            "Game": "game_id",
+            "Retro": "retro_value",
+            "Official": "official_value",
+            "Cross": "cross_id",
+            "Code": "code",
+            "col_13": "flag",
+            "X": "flag",
+            "Notes": "notes",
+            "Accepted": "accepted",
+        },
+        "key": ("disc_id",),
+    },
+}
+_DATE_HINT = re.compile(r"date|debut|last|start|end|makeup", re.I)
+
+
+def infer_retro_type(header: str, values: list[str | None]) -> str:
+    """``infer_type_name`` plus the Retrosheet date formats (M/D/YYYY and hinted YYYYMMDD)."""
+    present = [v for v in values if v not in (None, "")]
+    if present and all(re.fullmatch(r"\d{1,2}/\d{1,2}/\d{4}", str(v)) for v in present):
+        return "date32:%m/%d/%Y"
+    if (
+        present
+        and _DATE_HINT.search(header)
+        and all(re.fullmatch(r"\d{8}", str(v)) for v in present)
+    ):
+        valid = all(
+            re.fullmatch(r"(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])", str(v))
+            for v in present
+        )
+        # 8-digit dates with 00 month/day are partial dates upstream: keep them as text
+        return "date32:%Y%m%d" if valid else "string"
+    return infer_type_name(values)
+
+
+def render_retrosheet(directory: Path) -> str:
+    """Python source for ``sources/retrosheet/tables.py`` (files of one dataset are concatenated)."""
+    import pyarrow as pa
+
+    out = [
+        '"""GENERATED by scripts/gen_schemas.py from the real Retrosheet CSV/TXT headers. Do not edit.',
+        "",
+        "``RETROSHEET_COLUMNS`` maps dataset -> ((column, type_name, upstream_header), ...); a",
+        "``date32:<fmt>`` type carries the strptime format. ``RETROSHEET_KEYS`` documents each key and",
+        '``RETROSHEET_DEFAULT_HEADERS`` the header for files that ship without one."""',
+        "",
+        "RETROSHEET_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {",
+    ]
+    keys: dict[str, tuple[str, ...]] = {}
+    defaults: dict[str, str] = {}
+    for dataset, spec in RETRO_SPECS.items():
+        files = sorted(directory.glob(str(spec["glob"])))
+        default_header = spec.get("default_header")
+        tables = []
+        for f in files:
+            raw = f.read_bytes()
+            first = (
+                raw.split(b"\n", 1)[0].decode("utf-8-sig", errors="replace").strip().strip(chr(34))
+            )
+            headerless = default_header is not None and re.match(
+                r"^\d{8}$", first.split(",")[0].strip(chr(34))
+            )
+            tables.append(
+                read_csv_strings(raw, header=str(default_header).split(",") if headerless else None)
+            )
+        table = pa.concat_tables(tables, promote_options="default")
+        renames: dict[str, str] = dict(spec["renames"])  # type: ignore[arg-type]
+        out.append(f'    "{dataset}": (  # {table.num_rows:,} rows from {len(files)} file(s)')
+        merged: dict[str, tuple[list[str], list[str | None]]] = {}
+        for header in table.column_names:
+            if re.fullmatch(r"col_\d+", header) and header not in renames:
+                continue  # surplus cells of ragged rows: preserved in _extras at runtime
+            name = renames.get(header, snake(header) or header)
+            headers, values = merged.setdefault(name, ([], []))
+            headers.append(header)
+            values.extend(table.column(header).to_pylist())
+        for name, (headers, values) in merged.items():
+            type_name = infer_retro_type(headers[0], values)
+            out.append(f'        ("{name}", "{type_name}", "{"|".join(headers)}"),')
+        out.append("    ),")
+        key = tuple(spec["key"])  # type: ignore[arg-type]
+        names = {name: headers[0] for name, (headers, _) in merged.items()}
+        if all(k in names for k in key):
+            cols = [names[k] for k in key]
+            grouped = table.group_by(cols).aggregate([([cols[0]], "count")])
+            dupes = int(
+                pc.sum(pc.subtract(grouped.column(grouped.num_columns - 1), 1)).as_py() or 0
+            )
+        else:
+            dupes = -1
+        keys[dataset] = key
+        if default_header:
+            defaults[dataset] = str(default_header)
+        print(
+            f"{dataset:22s} rows={table.num_rows:>7,} key={key} duplicates={dupes}", file=sys.stderr
+        )
+    out.append("}")
+    out.append("")
+    out.append("RETROSHEET_KEYS: dict[str, tuple[str, ...]] = {")
+    out.extend(f'    "{name}": {key!r},' for name, key in keys.items())
+    out.append("}")
+    out.append("")
+    out.append("RETROSHEET_DEFAULT_HEADERS: dict[str, str] = {")
+    out.extend(f'    "{name}": "{header}",' for name, header in defaults.items())
+    out.append("}")
+    return "\n".join(out) + "\n"
+
+
 def main() -> None:
     """CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -179,11 +376,19 @@ def main() -> None:
     chad = sub.add_parser("chadwick")
     chad.add_argument("directory", type=Path)
     chad.add_argument("--out", type=Path, default=None)
+    retro = sub.add_parser("retrosheet")
+    retro.add_argument("directory", type=Path)
+    retro.add_argument("--out", type=Path, default=None)
     csv_cmd = sub.add_parser("csv")
     csv_cmd.add_argument("files", type=Path, nargs="+")
     args = parser.parse_args()
-    if args.mode in {"lahman", "chadwick"}:
-        text = (render_lahman if args.mode == "lahman" else render_chadwick)(args.directory)
+    if args.mode in {"lahman", "chadwick", "retrosheet"}:
+        renderers = {
+            "lahman": render_lahman,
+            "chadwick": render_chadwick,
+            "retrosheet": render_retrosheet,
+        }
+        text = renderers[args.mode](args.directory)
         if args.out:
             args.out.write_text(text, encoding="utf-8")
         else:

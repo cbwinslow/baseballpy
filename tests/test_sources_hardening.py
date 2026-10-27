@@ -21,7 +21,6 @@ from baseballpy.sources.chadwick.extractor import (
 from baseballpy.sources.lahman.normalizer import LahmanNormalizer
 from baseballpy.sources.mlb_api.extractor import MLB_BASE_URL, MlbApiExtractor
 from baseballpy.sources.mlb_api.stream import GamedayLiveStreamer
-from baseballpy.sources.retrosheet.downloader import GITHUB_RETROSHEET_BASE, RetrosheetDownloader
 from baseballpy.sources.retrosheet.parser import RetrosheetReferenceParser
 from baseballpy.sources.statcast import extractor as statcast_mod
 from baseballpy.sources.statcast.extractor import (
@@ -390,104 +389,6 @@ async def test_streamer_stops_after_inactivity_limit() -> None:
 # ----------------------------------------------------------------------------- retrosheet
 
 
-def _retro(tmp_path: Path) -> tuple[RetrosheetDownloader, HttpClient]:
-    rates = fast_rates("raw.githubusercontent.com")
-    http = HttpClient(rates, http2=False)
-    cache = LakeConfig(home=tmp_path / "cache")
-    return RetrosheetDownloader(cache_config=cache, rate_limit_config=rates, http=http), http
-
-
-@respx.mock
-def test_retrosheet_missing_event_file_is_absent_not_completed(tmp_path: Path) -> None:
-    base = f"{GITHUB_RETROSHEET_BASE}/seasons/2001"
-    respx.get(f"{base}/TEAM2001").mock(
-        return_value=httpx.Response(200, text="BOS,A,Boston,Red Sox\nNYN,N,New York,Mets\n")
-    )
-    respx.get(f"{base}/2001BOS.EVA").mock(return_value=httpx.Response(200, content=b"id,x\n"))
-    respx.get(f"{base}/BOS2001.ROS").mock(return_value=httpx.Response(200, content=b"r\n"))
-    respx.get(f"{base}/NYN2001.ROS").mock(return_value=httpx.Response(200, content=b"r\n"))
-    respx.get(f"{base}/2001NYN.EVN").mock(return_value=httpx.Response(404))
-    dl, http = _retro(tmp_path)
-    try:
-        files = dl.download_season(2001)
-    finally:
-        http.close()
-    assert [f.name for f in files] == ["2001BOS.EVA"]
-    chunk = dl.manifest.get_chunk("season_2001")
-    assert chunk is not None and chunk["status"] == "ABSENT"
-    assert "2001NYN.EVN" in chunk["reason"]
-    assert not dl.manifest.is_completed("season_2001")
-
-
-@respx.mock
-def test_retrosheet_complete_season_is_recorded_and_resumes(tmp_path: Path) -> None:
-    base = f"{GITHUB_RETROSHEET_BASE}/seasons/2002"
-    respx.get(f"{base}/TEAM2002").mock(
-        return_value=httpx.Response(200, text="BOS,A,Boston,Red Sox\n")
-    )
-    ev = respx.get(f"{base}/2002BOS.EVA").mock(return_value=httpx.Response(200, content=b"id,x\n"))
-    respx.get(f"{base}/BOS2002.ROS").mock(return_value=httpx.Response(200, content=b"r\n"))
-    dl, http = _retro(tmp_path)
-    try:
-        dl.download_season(2002)
-        assert dl.manifest.is_completed("season_2002")
-        again = dl.download_season(2002)
-    finally:
-        http.close()
-    assert ev.call_count == 1
-    assert [f.name for f in again] == ["2002BOS.EVA"]
-    assert [e.cache_hit for e in get_audit_logger().read_events()][-1] is True
-
-
-@respx.mock
-def test_retrosheet_missing_team_file_is_absent(tmp_path: Path) -> None:
-    respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/1800/TEAM1800").mock(
-        return_value=httpx.Response(404)
-    )
-    dl, http = _retro(tmp_path)
-    try:
-        assert dl.download_season(1800) == []
-    finally:
-        http.close()
-    chunk = dl.manifest.get_chunk("season_1800")
-    assert chunk is not None and chunk["status"] == "ABSENT"
-
-
-@respx.mock
-def test_retrosheet_missing_gamelog_raises_not_silently_empty(tmp_path: Path) -> None:
-    for cand in (
-        "seasons/1800/GL1800.TXT",
-        "seasons/1800/gl1800.txt",
-        "gamelog/gl1800.txt",
-        "gamelog/GL1800.TXT",
-    ):
-        respx.get(f"{GITHUB_RETROSHEET_BASE}/{cand}").mock(return_value=httpx.Response(404))
-    dl, http = _retro(tmp_path)
-    try:
-        with pytest.raises(FileNotFoundError):
-            dl.download_gamelog(1800)
-    finally:
-        http.close()
-    assert not dl.manifest.is_completed("gamelog_1800")
-
-
-def test_retrosheet_reference_header_drift_preserves_extra_columns(
-    tmp_path: Path, caplog: pytest.LogCaptureFixture
-) -> None:
-    csv = tmp_path / "ballparks.csv"
-    csv.write_text(
-        "PARKID,NAME,AKA,CITY,STATE,START,END,LEAGUE,NOTES,CAPACITY\n"
-        "BOS07,Fenway,,Boston,MA,1912,,AL,,37755\n",
-        encoding="utf-8",
-    )
-    with caplog.at_level("WARNING"):
-        table = RetrosheetReferenceParser().parse_file("ballparks", csv)
-    assert "capacity" in table.column_names
-    assert table["capacity"].to_pylist() == ["37755"]
-    assert table["park_id"].to_pylist() == ["BOS07"]
-    assert any("header has 10" in r.message for r in caplog.records)
-
-
 def test_retrosheet_parser_quarantines_uncoercible_ints(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -661,27 +562,6 @@ def test_chadwick_sha_failure_is_logged_and_cache_served(
         http.close()
     assert "people-0.csv" in files
     assert any("Chadwick" in r.message for r in caplog.records)
-
-
-@respx.mock
-def test_retrosheet_allstar_pseudo_teams_may_be_absent(tmp_path: Path) -> None:
-    base = f"{GITHUB_RETROSHEET_BASE}/seasons/2003"
-    respx.get(f"{base}/TEAM2003").mock(
-        return_value=httpx.Response(
-            200, text="BOS,A,Boston,Red Sox\nALS,A,All-Star,AL\nNLS,N,All-Star,NL\n"
-        )
-    )
-    respx.get(f"{base}/2003BOS.EVA").mock(return_value=httpx.Response(200, content=b"id,x\n"))
-    respx.get(f"{base}/BOS2003.ROS").mock(return_value=httpx.Response(200, content=b"r\n"))
-    for name in ("2003ALS.EVA", "ALS2003.ROS", "2003NLS.EVN", "NLS2003.ROS"):
-        respx.get(f"{base}/{name}").mock(return_value=httpx.Response(404))
-    dl, http = _retro(tmp_path)
-    try:
-        files = dl.download_season(2003)
-    finally:
-        http.close()
-    assert [f.name for f in files] == ["2003BOS.EVA"]
-    assert dl.manifest.is_completed("season_2003")
 
 
 @respx.mock

@@ -3,8 +3,13 @@
 from enum import IntEnum, StrEnum
 
 import pyarrow as pa
-from chadwickpy.tools.daily import COLUMNS as DAILY_COLUMNS
-from chadwickpy.tools.sub import COLUMNS as SUB_COLUMNS
+
+from baseballpy.core.schema_tools import schema_from_columns
+from baseballpy.sources.retrosheet import _chadwick_adapter as cw
+from baseballpy.sources.retrosheet.tables import RETROSHEET_COLUMNS, RETROSHEET_KEYS
+
+DAILY_COLUMNS = cw.DAILY_COLUMNS
+SUB_COLUMNS = cw.SUB_COLUMNS
 
 
 class RetrosheetReferenceTable(StrEnum):
@@ -16,6 +21,7 @@ class RetrosheetReferenceTable(StrEnum):
     COACHES = "coaches"
     RELATIVES = "relatives"
     BIOFILE = "biofile"
+    BIOFILE0 = "biofile0"
 
 
 class GameLogType(StrEnum):
@@ -444,101 +450,20 @@ for col in SUB_COLUMNS:
 
 RETROSHEET_SUBSTITUTIONS_SCHEMA = pa.schema(RETROSHEET_SUBSTITUTIONS_FIELDS)
 
-# 8. Reference Tables Schemas
-RETROSHEET_BALLPARKS_SCHEMA = pa.schema(
-    [
-        ("park_id", pa.string()),
-        ("name", pa.string()),
-        ("aka", pa.string()),
-        ("city", pa.string()),
-        ("state", pa.string()),
-        ("start_date", pa.string()),
-        ("end_date", pa.string()),
-        ("league", pa.string()),
-        ("notes", pa.string()),
-    ]
-)
+# 8. Flat-file datasets (reference/*.csv, schedules, umpires, discrepancies): generated from the
+# real upstream headers by scripts/gen_schemas.py (see tables.py)
+RETROSHEET_FLAT_SCHEMAS: dict[str, pa.Schema] = {
+    dataset: schema_from_columns(columns) for dataset, columns in RETROSHEET_COLUMNS.items()
+}
+RETROSHEET_FLAT_KEYS = RETROSHEET_KEYS
 
-RETROSHEET_TEAMS_SCHEMA = pa.schema(
-    [
-        ("team_id", pa.string()),
-        ("league", pa.string()),
-        ("city", pa.string()),
-        ("nickname", pa.string()),
-        ("first_year", pa.int16()),
-        ("last_year", pa.int16()),
-    ]
-)
-
-RETROSHEET_EJECTIONS_SCHEMA = pa.schema(
-    [
-        ("game_id", pa.string()),
-        ("date", pa.string()),
-        ("dh", pa.int8()),
-        ("ejectee_id", pa.string()),
-        ("ejectee_name", pa.string()),
-        ("team_id", pa.string()),
-        ("job", pa.string()),
-        ("umpire_id", pa.string()),
-        ("umpire_name", pa.string()),
-        ("inning", pa.int8()),
-        ("reason", pa.string()),
-    ]
-)
-
-RETROSHEET_COACHES_SCHEMA = pa.schema(
-    [
-        ("coach_id", pa.string()),
-        ("year", pa.int16()),
-        ("team_id", pa.string()),
-        ("role", pa.string()),
-        ("start_date", pa.string()),
-        ("end_date", pa.string()),
-    ]
-)
-
-RETROSHEET_RELATIVES_SCHEMA = pa.schema(
-    [
-        ("id1", pa.string()),
-        ("relation", pa.string()),
-        ("id2", pa.string()),
-    ]
-)
-
-RETROSHEET_BIOFILE_SCHEMA = pa.schema(
-    [
-        ("player_id", pa.string()),
-        ("name_last", pa.string()),
-        ("name_first", pa.string()),
-        ("nickname", pa.string()),
-        ("birth_date", pa.string()),
-        ("birth_city", pa.string()),
-        ("birth_state", pa.string()),
-        ("birth_country", pa.string()),
-        ("play_debut", pa.string()),
-        ("play_lastgame", pa.string()),
-        ("mgr_debut", pa.string()),
-        ("mgr_lastgame", pa.string()),
-        ("coach_debut", pa.string()),
-        ("coach_lastgame", pa.string()),
-        ("ump_debut", pa.string()),
-        ("ump_lastgame", pa.string()),
-        ("death_date", pa.string()),
-        ("death_city", pa.string()),
-        ("death_state", pa.string()),
-        ("death_country", pa.string()),
-        ("bats", pa.string()),
-        ("throws", pa.string()),
-        ("height", pa.string()),
-        ("weight", pa.string()),
-        ("cemetery", pa.string()),
-        ("ceme_city", pa.string()),
-        ("ceme_state", pa.string()),
-        ("ceme_country", pa.string()),
-        ("ceme_note", pa.string()),
-        ("birth_name", pa.string()),
-        ("name_chg", pa.string()),
-        ("bat_chg", pa.string()),
-        ("hof", pa.string()),
-    ]
-)
+RETROSHEET_BALLPARKS_SCHEMA = RETROSHEET_FLAT_SCHEMAS["reference_ballparks"]
+RETROSHEET_TEAMS_SCHEMA = RETROSHEET_FLAT_SCHEMAS["reference_teams"]
+RETROSHEET_EJECTIONS_SCHEMA = RETROSHEET_FLAT_SCHEMAS["reference_ejections"]
+RETROSHEET_COACHES_SCHEMA = RETROSHEET_FLAT_SCHEMAS["reference_coaches"]
+RETROSHEET_RELATIVES_SCHEMA = RETROSHEET_FLAT_SCHEMAS["reference_relatives"]
+RETROSHEET_BIOFILE_SCHEMA = RETROSHEET_FLAT_SCHEMAS["reference_biofile"]
+RETROSHEET_BIOFILE0_SCHEMA = RETROSHEET_FLAT_SCHEMAS["reference_biofile0"]
+RETROSHEET_SCHEDULE_SCHEMA = RETROSHEET_FLAT_SCHEMAS["schedule"]
+RETROSHEET_UMPIRES_SCHEMA = RETROSHEET_FLAT_SCHEMAS["umpires"]
+RETROSHEET_DISCREPANCIES_SCHEMA = RETROSHEET_FLAT_SCHEMAS["discrepancies"]

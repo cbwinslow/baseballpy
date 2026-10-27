@@ -34,6 +34,7 @@ Kind = Literal["copy", "events_postseason"]
 _YEAR_FILE = re.compile(r"(\d{4})")
 _LEADERBOARD_STEM = re.compile(r"^(?P<name>[a-z0-9_]+?)_(?P<year>\d{4})(?:_(?P<params>.*))?$")
 _SEASON_DIR = re.compile(r"^season=(\d{4})$")
+_GAMELOG_FILE = re.compile(r"^gl(\d{4})\.txt$", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -232,7 +233,12 @@ class _Planner:
                         "retrosheet", "event_files", "raw", raw_manifest, key, key
                     )
         for f in _files(raw / "gamelogs"):
-            self._add(f, "raw", "retrosheet", "gamelogs", f.name)
+            match = _GAMELOG_FILE.match(f.name)
+            if match:  # season game log: raw/retrosheet/gamelogs/season=YYYY/GLYYYY.TXT
+                year = int(match.group(1))
+                self._add(f, "raw", "retrosheet", "gamelogs", f"GL{year}.TXT", year)
+            else:  # postseason / all-star logs (GLWS.TXT, ...)
+                self._add(f, "raw", "retrosheet", "gamelogs_postseason", f.name.upper())
         for f in _files(raw / "reference"):
             self._add(
                 f,
@@ -635,6 +641,27 @@ def _migrate_events_postseason(step: Step, report: MigrationReport) -> None:
     report.copied.append(step)
 
 
+def _record_raw_file(step: Step, config: LakeConfig) -> None:
+    """Give a migrated raw file its per-file manifest entry (bytes + sha256) so the v2
+    downloader recognises it as already fetched instead of downloading it again."""
+    if step.tier != "raw" or step.dst.name == "manifest.json":
+        return
+    match = _SEASON_DIR.match(step.dst.parent.name)
+    season = int(match.group(1)) if match else None
+    tracker = config.dataset_manifest(step.source, step.dataset, "raw", season)
+    if tracker.get_chunk(step.dst.name) is None:
+        tracker.set_completed(
+            step.dst.name,
+            metadata={
+                "bytes": step.dst.stat().st_size,
+                "sha256": _sha256(step.dst),
+                "season": season,
+                "source_ref": None,
+                "migrated_from": "v1",
+            },
+        )
+
+
 def _carry_manifests(step: Step, config: LakeConfig) -> int:
     carried = 0
     for move in step.manifests:
@@ -696,6 +723,7 @@ def migrate_layout(
                 _copy_verified(step, report)
                 report.copied.append(step)
             report.manifest_entries += _carry_manifests(step, cfg)
+            _record_raw_file(step, cfg)
 
         if delete_old:
             for step in report.copied + report.skipped:

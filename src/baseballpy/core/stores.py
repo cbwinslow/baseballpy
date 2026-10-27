@@ -2,7 +2,7 @@
 
 import hashlib
 import logging
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import Any
 
@@ -24,6 +24,10 @@ def _safe_chunk_id(chunk_id: str) -> str:
     if not chunk_id or any(sep in chunk_id for sep in ("/", "\\", "..")):
         raise ValueError(f"invalid chunk id {chunk_id!r}")
     return chunk_id
+
+
+class _EmptyStreamError(Exception):  # noqa: N818 - internal control flow
+    """Raised inside ``put_stream`` when no rows arrived (the part file is discarded)."""
 
 
 def manifest_key(name: str, season: int | None) -> str:
@@ -59,8 +63,8 @@ class RawStore:
         path = directory / _safe_chunk_id(name)
         with atomic_write(path) as part:
             part.write_bytes(data)
-        self.config.dataset_manifest(source, dataset, "raw").set_completed(
-            manifest_key(name, season),
+        self.config.dataset_manifest(source, dataset, "raw", season).set_completed(
+            name,
             etag=etag,
             metadata={
                 "bytes": len(data),
@@ -80,8 +84,8 @@ class RawStore:
         path = self.path_for(source, dataset, name, season)
         if not path.exists():
             return False
-        manifest = self.config.dataset_manifest(source, dataset, "raw")
-        entry = manifest.get_chunk(manifest_key(name, season))
+        manifest = self.config.dataset_manifest(source, dataset, "raw", season)
+        entry = manifest.get_chunk(name)
         if not entry or "sha256" not in entry:
             return False
         return bool(hashlib.sha256(path.read_bytes()).hexdigest() == entry["sha256"])
@@ -132,20 +136,83 @@ class ProcessedStore:
         )
         return path
 
+    def put_stream(
+        self,
+        spec: DatasetSpec,
+        batches: Iterable[pa.Table],
+        *,
+        chunk_id: str = "data",
+        season: int | None = None,
+        source_ref: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> int:
+        """Stream tables into one atomic Parquet part (one row group per batch); returns rows.
+
+        Nothing is written when the stream is empty. The footer row count is validated before
+        the atomic rename, exactly like :meth:`put`.
+        """
+        path = self.part_path(spec, chunk_id, season)
+        ensure_version_file(self.config)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        total = 0
+        try:
+            with atomic_write(path) as part:
+                writer: pq.ParquetWriter | None = None
+                try:
+                    for batch in batches:
+                        if batch.num_rows == 0:
+                            continue
+                        if writer is None:
+                            writer = pq.ParquetWriter(
+                                part, spec.schema, compression=PARQUET_COMPRESSION
+                            )
+                        writer.write_table(
+                            batch if batch.schema.equals(spec.schema) else batch.cast(spec.schema)
+                        )
+                        total += batch.num_rows
+                finally:
+                    if writer is not None:
+                        writer.close()
+                if writer is None:
+                    raise _EmptyStreamError
+                footer_rows = pq.ParquetFile(part).metadata.num_rows
+                if footer_rows != total:
+                    raise ValueError(f"parquet footer row count {footer_rows} != {total} written")
+        except _EmptyStreamError:
+            # remember that this chunk legitimately has no rows so it is not re-parsed every run
+            self.config.dataset_manifest(spec.source, spec.name, "processed").set_completed(
+                manifest_key(chunk_id, season),
+                records_count=0,
+                metadata={"season": season, "source_ref": source_ref, **(metadata or {})},
+            )
+            return 0
+        self.config.dataset_manifest(spec.source, spec.name, "processed").set_completed(
+            manifest_key(chunk_id, season),
+            records_count=total,
+            metadata={"season": season, "source_ref": source_ref, **(metadata or {})},
+        )
+        return total
+
     def is_cached(
         self, spec: DatasetSpec, chunk_id: str = "data", season: int | None = None
     ) -> bool:
-        """True when the part exists on disk and the manifest recorded it COMPLETED."""
-        if not self.part_path(spec, chunk_id, season).exists():
-            return False
+        """True when the manifest recorded the chunk COMPLETED and its part (if any rows) exists."""
         manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
-        return bool(manifest.is_completed(manifest_key(chunk_id, season)))
+        entry = manifest.get_chunk(manifest_key(chunk_id, season))
+        if entry is None or entry.get("status") != "COMPLETED":
+            return False
+        if self.part_path(spec, chunk_id, season).exists():
+            return True
+        return entry.get("records_count") == 0
 
     def read_part(
         self, spec: DatasetSpec, chunk_id: str = "data", season: int | None = None
     ) -> pa.Table:
-        """Read one stored part back."""
-        return pq.read_table(self.part_path(spec, chunk_id, season))
+        """Read one stored part back (an empty table for a chunk recorded with zero rows)."""
+        path = self.part_path(spec, chunk_id, season)
+        if not path.exists():
+            return spec.schema.empty_table()
+        return pq.read_table(path)
 
     def files(self, spec: DatasetSpec) -> list[Path]:
         """Every parquet part currently stored for ``spec``."""

@@ -217,3 +217,115 @@ All leaderboards export CSV when passed `&csv=true`.
 - Raw Savant CSV responses: `raw/statcast/pitches/season=YYYY/<start>_<end>[_filters].csv` (a window that hit the 25,000-row cap is bisected and only the complete sub-windows are stored).
 - Typed pitches: `processed/statcast/pitches/season=YYYY/part-<start>_<end>[_filters].parquet` (DuckDB view `statcast_pitches`).
 - Leaderboards: `raw/statcast/leaderboard_<name>/season=YYYY/<chunk>.csv` and `processed/statcast/leaderboard_<name>/season=YYYY/part-<chunk>.parquet` (view `statcast_leaderboard_<name>`); they never share a directory with pitches.
+
+## Dataset reference (generated)
+
+<!-- BEGIN GENERATED:statcast.pitches -->
+### Dataset: pitches
+
+Pitch-level Statcast search results.
+
+- **View:** `statcast_pitches`
+- **Processed path:** `processed/statcast/pitches/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `at_bat_number`, `pitch_number`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `game_date` | date32[day] | yes | — |  |
+| `game_year` | int16 | yes | — |  |
+| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `at_bat_number` | int16 | yes | — |  |
+| `pitch_number` | int16 | yes | — |  |
+| `pitcher` | int32 | yes | — |  |
+| `batter` | int32 | yes | — |  |
+| `player_name` | string | yes | — |  |
+| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `inning` | int8 | yes | — |  |
+| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `balls` | int8 | yes | — |  |
+| `strikes` | int8 | yes | — |  |
+| `outs_when_up` | int8 | yes | — |  |
+| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `release_speed` | float | yes | — |  |
+| `effective_speed` | float | yes | — |  |
+| `release_spin_rate` | float | yes | — |  |
+| `release_extension` | float | yes | — |  |
+| `spin_axis` | float | yes | — |  |
+| `release_pos_x` | float | yes | — |  |
+| `release_pos_y` | float | yes | — |  |
+| `release_pos_z` | float | yes | — |  |
+| `arm_angle` | float | yes | — |  |
+| `zone` | int8 | yes | — |  |
+| `plate_x` | float | yes | — |  |
+| `plate_z` | float | yes | — |  |
+| `sz_top` | float | yes | — |  |
+| `sz_bot` | float | yes | — |  |
+| `pfx_x` | float | yes | — |  |
+| `pfx_z` | float | yes | — |  |
+| `vx0` | float | yes | — |  |
+| `vy0` | float | yes | — |  |
+| `vz0` | float | yes | — |  |
+| `ax` | float | yes | — |  |
+| `ay` | float | yes | — |  |
+| `az` | float | yes | — |  |
+| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `des` | string | yes | — |  |
+| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `hit_location` | int8 | yes | — |  |
+| `launch_speed` | float | yes | — |  |
+| `launch_angle` | float | yes | — |  |
+| `launch_speed_angle` | int8 | yes | — |  |
+| `hit_distance_sc` | float | yes | — |  |
+| `hc_x` | float | yes | — |  |
+| `hc_y` | float | yes | — |  |
+| `bat_speed` | float | yes | — |  |
+| `swing_length` | float | yes | — |  |
+| `estimated_ba_using_speedangle` | float | yes | — |  |
+| `estimated_woba_using_speedangle` | float | yes | — |  |
+| `woba_value` | float | yes | — |  |
+| `woba_denom` | float | yes | — |  |
+| `babip_value` | float | yes | — |  |
+| `iso_value` | float | yes | — |  |
+| `delta_home_win_exp` | float | yes | — |  |
+| `delta_run_exp` | float | yes | — |  |
+| `on_1b` | int32 | yes | — |  |
+| `on_2b` | int32 | yes | — |  |
+| `on_3b` | int32 | yes | — |  |
+| `home_score` | int16 | yes | — |  |
+| `away_score` | int16 | yes | — |  |
+| `bat_score` | int16 | yes | — |  |
+| `fld_score` | int16 | yes | — |  |
+| `post_home_score` | int16 | yes | — |  |
+| `post_away_score` | int16 | yes | — |  |
+| `post_bat_score` | int16 | yes | — |  |
+| `post_fld_score` | int16 | yes | — |  |
+| `fielder_2` | int32 | yes | — |  |
+| `fielder_3` | int32 | yes | — |  |
+| `fielder_4` | int32 | yes | — |  |
+| `fielder_5` | int32 | yes | — |  |
+| `fielder_6` | int32 | yes | — |  |
+| `fielder_7` | int32 | yes | — |  |
+| `fielder_8` | int32 | yes | — |  |
+| `fielder_9` | int32 | yes | — |  |
+| `pitcher_1` | int32 | yes | — |  |
+| `fielder_2_1` | int32 | yes | — |  |
+| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
+| `spin_dir` | string | yes | — |  |
+| `spin_rate_deprecated` | string | yes | — |  |
+| `break_angle_deprecated` | string | yes | — |  |
+| `break_length_deprecated` | string | yes | — |  |
+| `tfs_deprecated` | string | yes | — |  |
+| `tfs_zulu_deprecated` | string | yes | — |  |
+| `umpire` | string | yes | — |  |
+| `sv_id` | string | yes | — |  |
+
+<!-- END GENERATED:statcast.pitches -->

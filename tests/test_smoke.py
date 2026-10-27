@@ -11,6 +11,7 @@ import httpx
 import polars as pl
 import pytest
 import respx
+from conftest import RetroRepo
 
 from baseballpy.core.atomic import atomic_write
 from baseballpy.core.config import LakeConfig
@@ -33,14 +34,15 @@ def _spec(name: str) -> DatasetSpec:
 
 
 @respx.mock
-def test_smoke_retrosheet_multi_season_and_idempotency(tmp_path: Path) -> None:
+def test_smoke_retrosheet_multi_season_and_idempotency(
+    tmp_path: Path, retro_repo: RetroRepo
+) -> None:
     """Stress test multi-season Retrosheet download, Chadwick parsing, and zero-loss cache hits."""
     cache_config = LakeConfig(home=tmp_path)
     source = RetrosheetSource(cache_config=cache_config)
 
     # 1. Setup mock files for seasons 2022 and 2023
     for year in (2022, 2023):
-        team_manifest = b"BOS,A\n"
         fake_eva = (
             f"id,BOS{year}04010\n"
             f"info,date,{year}/04/01\n"
@@ -51,17 +53,10 @@ def test_smoke_retrosheet_multi_season_and_idempotency(tmp_path: Path) -> None:
             f"play,1,0,play01,00,,S\n"
             f"data,er,pitch01,0\n"
         ).encode()
-        fake_ros = b"play01,One,Batter,R,R,BOS,OF\n"
-
-        respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/{year}/TEAM{year}").mock(
-            return_value=httpx.Response(200, content=team_manifest)
-        )
-        respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/{year}/{year}BOS.EVA").mock(
-            return_value=httpx.Response(200, content=fake_eva)
-        )
-        respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/{year}/BOS{year}.ROS").mock(
-            return_value=httpx.Response(200, content=fake_ros)
-        )
+        retro_repo.add(f"seasons/{year}/TEAM{year}", b"BOS,A\n")
+        retro_repo.add(f"seasons/{year}/{year}BOS.EVA", fake_eva)
+        retro_repo.add(f"seasons/{year}/BOS{year}.ROS", b"play01,One,Batter,R,R,BOS,OF\n")
+    retro_repo.mount()
 
     # 2. Extract events across both seasons
     events_2022 = source.events(2022)
@@ -96,12 +91,10 @@ def test_smoke_retrosheet_multi_season_and_idempotency(tmp_path: Path) -> None:
     assert source.store.is_cached(_spec("boxscores_pitching"), "pitching", 2023)
 
     # 6. Idempotency test: Invalidate network endpoints to fail with HTTP 500
-    respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2022/TEAM2022").mock(
-        return_value=httpx.Response(500)
-    )
-    respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2023/TEAM2023").mock(
-        return_value=httpx.Response(500)
-    )
+    for year in (2022, 2023):
+        respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/{year}/{year}BOS.EVA").mock(
+            return_value=httpx.Response(500)
+        )
 
     # Must cleanly load directly from Parquet cache without raising errors
     cached_22 = source.events(2022, refresh=False)

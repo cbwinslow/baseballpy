@@ -151,7 +151,7 @@ def test_full_migration_maps_every_dataset_and_verifies_rows(v1: LakeConfig) -> 
     assert (raw / "retrosheet/event_files/season=2023/2023BOS.EVA").exists()
     assert (raw / "retrosheet/event_files/season=2023/TEAM2023").exists()
     assert (raw / "retrosheet/rosters/season=2023/BOS2023.ROS").exists()
-    assert (raw / "retrosheet/gamelogs/gl2023.txt").exists()
+    assert (raw / "retrosheet/gamelogs/season=2023/GL2023.TXT").exists()
     assert (raw / "retrosheet/reference_teams/teams.csv").exists()
     assert (proc / "retrosheet/events/season=2023/part-events.parquet").exists()
     assert (proc / "retrosheet/boxscores_batting/season=2023/part-batting.parquet").exists()
@@ -281,3 +281,14 @@ def test_fresh_lake_is_stamped_v2_on_first_write(tmp_path: Path) -> None:
 def test_public_api_exposes_migrate_layout(v1: LakeConfig) -> None:
     report = public_migrate_layout(v1, dry_run=True)
     assert report.dry_run
+
+
+def test_migrated_raw_files_get_manifest_entries_so_the_downloader_skips_them(
+    v1: LakeConfig,
+) -> None:
+    migrate.migrate_layout(v1)
+    entry = v1.dataset_manifest("retrosheet", "event_files", "raw", 2023).get_chunk("2023BOS.EVA")
+    assert entry is not None and entry["bytes"] == 8 and len(entry["sha256"]) == 64
+    assert entry["source_ref"] is None and entry["migrated_from"] == "v1"
+    gl = v1.dataset_manifest("retrosheet", "gamelogs", "raw", 2023).get_chunk("GL2023.TXT")
+    assert gl is not None and gl["season"] == 2023

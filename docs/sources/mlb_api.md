@@ -194,3 +194,242 @@ Franchise directory and roster movements.
 - Raw JSON payloads: `raw/mlb_api/<dataset>/[season=YYYY/]<ident>.json`.
 - Typed Parquet: `processed/mlb_api/<dataset>/[season=YYYY/]part-<ident>.parquet` for `schedule`, `box_batting`, `box_pitching`, `standings`, `teams`, `rosters`, `transactions`, `draft`, `venues` (views `mlb_<dataset>`).
 - Boxscores are immutable only once the game is final; the `final` flag lives in the `box_batting` manifest (`box_<game_pk>`).
+
+## Dataset reference (generated)
+
+<!-- BEGIN GENERATED:mlb_api.box_batting -->
+### Dataset: box_batting
+
+Official batting boxscore lines.
+
+- **View:** `mlb_box_batting`
+- **Processed path:** `processed/mlb_api/box_batting/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `team_id`, `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `team_id` | int32 | yes | — |  |
+| `player_id` | int32 | yes | — |  |
+| `player_name` | string | yes | — |  |
+| `position` | string | yes | — |  |
+| `batting_order` | int16 | yes | — |  |
+| `ab` | int16 | yes | — |  |
+| `r` | int16 | yes | — |  |
+| `h` | int16 | yes | — |  |
+| `d` | int16 | yes | — |  |
+| `t` | int16 | yes | — |  |
+| `hr` | int16 | yes | — |  |
+| `rbi` | int16 | yes | — |  |
+| `bb` | int16 | yes | — |  |
+| `so` | int16 | yes | — |  |
+| `sb` | int16 | yes | — |  |
+| `cs` | int16 | yes | — |  |
+
+<!-- END GENERATED:mlb_api.box_batting -->
+
+<!-- BEGIN GENERATED:mlb_api.box_pitching -->
+### Dataset: box_pitching
+
+Official pitching boxscore lines.
+
+- **View:** `mlb_box_pitching`
+- **Processed path:** `processed/mlb_api/box_pitching/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `team_id`, `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `team_id` | int32 | yes | — |  |
+| `player_id` | int32 | yes | — |  |
+| `player_name` | string | yes | — |  |
+| `ip` | float | yes | — |  |
+| `h` | int16 | yes | — |  |
+| `r` | int16 | yes | — |  |
+| `er` | int16 | yes | — |  |
+| `bb` | int16 | yes | — |  |
+| `so` | int16 | yes | — |  |
+| `hr` | int16 | yes | — |  |
+| `pitches` | int16 | yes | — |  |
+| `strikes` | int16 | yes | — |  |
+
+<!-- END GENERATED:mlb_api.box_pitching -->
+
+<!-- BEGIN GENERATED:mlb_api.draft -->
+### Dataset: draft
+
+First-year player draft picks.
+
+- **View:** `mlb_draft`
+- **Processed path:** `processed/mlb_api/draft/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `year`, `pick_overall`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `year` | int16 | yes | — |  |
+| `round` | string | yes | — |  |
+| `pick_round` | int16 | yes | — |  |
+| `pick_overall` | int16 | yes | — |  |
+| `team_id` | int32 | yes | — |  |
+| `player_id` | int32 | yes | — |  |
+| `player_name` | string | yes | — |  |
+| `school_name` | string | yes | — |  |
+| `signing_bonus` | int64 | yes | — |  |
+
+<!-- END GENERATED:mlb_api.draft -->
+
+<!-- BEGIN GENERATED:mlb_api.rosters -->
+### Dataset: rosters
+
+Active team rosters.
+
+- **View:** `mlb_rosters`
+- **Processed path:** `processed/mlb_api/rosters/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `team_id`, `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `team_id` | int32 | yes | — |  |
+| `player_id` | int32 | yes | — |  |
+| `player_name` | string | yes | — |  |
+| `jersey_number` | string | yes | — |  |
+| `position_code` | string | yes | — |  |
+| `position_name` | string | yes | — |  |
+| `status` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.rosters -->
+
+<!-- BEGIN GENERATED:mlb_api.schedule -->
+### Dataset: schedule
+
+Game schedule.
+
+- **View:** `mlb_schedule`
+- **Processed path:** `processed/mlb_api/schedule/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — |  |
+| `game_date` | date32[day] | yes | — |  |
+| `game_type` | string | yes | — |  |
+| `season` | int16 | yes | — |  |
+| `status_code` | string | yes | — |  |
+| `status_detailed` | string | yes | — |  |
+| `away_team_id` | int32 | yes | — |  |
+| `away_team_name` | string | yes | — |  |
+| `away_score` | int16 | yes | — |  |
+| `home_team_id` | int32 | yes | — |  |
+| `home_team_name` | string | yes | — |  |
+| `home_score` | int16 | yes | — |  |
+| `doubleheader` | string | yes | — |  |
+| `game_num` | int8 | yes | — |  |
+| `venue_id` | int32 | yes | — |  |
+| `venue_name` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.schedule -->
+
+<!-- BEGIN GENERATED:mlb_api.standings -->
+### Dataset: standings
+
+League and division standings.
+
+- **View:** `mlb_standings`
+- **Processed path:** `processed/mlb_api/standings/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `season`, `team_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `season` | int16 | yes | — |  |
+| `division_id` | int32 | yes | — |  |
+| `division_name` | string | yes | — |  |
+| `team_id` | int32 | yes | — |  |
+| `team_name` | string | yes | — |  |
+| `wins` | int16 | yes | — |  |
+| `losses` | int16 | yes | — |  |
+| `win_pct` | float | yes | — |  |
+| `games_back` | float | yes | — |  |
+| `wild_card_gb` | float | yes | — |  |
+| `run_differential` | int16 | yes | — |  |
+| `streak` | string | yes | — |  |
+| `elim_num` | int16 | yes | — |  |
+
+<!-- END GENERATED:mlb_api.standings -->
+
+<!-- BEGIN GENERATED:mlb_api.teams -->
+### Dataset: teams
+
+MLB franchises.
+
+- **View:** `mlb_teams`
+- **Processed path:** `processed/mlb_api/teams/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `team_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `team_id` | int32 | yes | — |  |
+| `team_name` | string | yes | — |  |
+| `abbreviation` | string | yes | — |  |
+| `league_id` | int32 | yes | — |  |
+| `league_name` | string | yes | — |  |
+| `division_id` | int32 | yes | — |  |
+| `division_name` | string | yes | — |  |
+| `venue_id` | int32 | yes | — |  |
+| `venue_name` | string | yes | — |  |
+| `active` | bool | yes | — |  |
+
+<!-- END GENERATED:mlb_api.teams -->
+
+<!-- BEGIN GENERATED:mlb_api.transactions -->
+### Dataset: transactions
+
+Roster transactions.
+
+- **View:** `mlb_transactions`
+- **Processed path:** `processed/mlb_api/transactions/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `transaction_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `transaction_id` | int32 | yes | — |  |
+| `date` | string | yes | — |  |
+| `player_id` | int32 | yes | — |  |
+| `player_name` | string | yes | — |  |
+| `from_team_id` | int32 | yes | — |  |
+| `to_team_id` | int32 | yes | — |  |
+| `type_code` | string | yes | — |  |
+| `type_desc` | string | yes | — |  |
+| `description` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.transactions -->
+
+<!-- BEGIN GENERATED:mlb_api.venues -->
+### Dataset: venues
+
+Official ballparks.
+
+- **View:** `mlb_venues`
+- **Processed path:** `processed/mlb_api/venues/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `venue_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `venue_id` | int32 | yes | — |  |
+| `venue_name` | string | yes | — |  |
+| `city` | string | yes | — |  |
+| `state` | string | yes | — |  |
+| `country` | string | yes | — |  |
+| `capacity` | int32 | yes | — |  |
+| `turf_type` | string | yes | — |  |
+| `roof_type` | string | yes | — |  |
+
+<!-- END GENERATED:mlb_api.venues -->

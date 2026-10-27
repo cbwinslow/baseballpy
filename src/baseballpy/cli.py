@@ -1,5 +1,7 @@
 """Command-line interface for baseballpy."""
 
+from pathlib import Path
+
 import click
 from rich.console import Console
 from rich.table import Table
@@ -9,6 +11,7 @@ from baseballpy.core.config import LakeConfig
 from baseballpy.core.migrate import migrate_layout
 from baseballpy.core.sources_lock import ENV_OVERRIDES, get_source_ref, load_lock, update_lock
 from baseballpy.database import BaseballDatabase
+from baseballpy.docsgen import generate_docs
 from baseballpy.sinks.duckdb import DuckDBSink
 from baseballpy.sinks.parquet import ParquetSink
 from baseballpy.sources.statcast.extractor import StatcastExtractor
@@ -139,6 +142,29 @@ def db_sync() -> None:
     console.print(
         f"Registered [bold green]{count}[/bold green] views in [yellow]{database.db_path}[/yellow]."
     )
+
+
+@main.group()
+def docs() -> None:
+    """Generate the per-dataset column dictionaries in docs/sources/*.md."""
+    pass
+
+
+@docs.command("generate")
+@click.option("--docs-dir", type=click.Path(file_okay=False, path_type=Path), default=Path("docs"))
+@click.option(
+    "--check", is_flag=True, help="Fail (exit 1) if any page is stale instead of writing."
+)
+def docs_generate(docs_dir: Path, check: bool) -> None:
+    """Render a column dictionary for every registered dataset between GENERATED markers."""
+    changed = generate_docs(docs_dir, write=not check)
+    stale = [name for name, was in changed.items() if was]
+    for name in stale:
+        console.print(("[yellow]stale:[/yellow] " if check else "[green]updated:[/green] ") + name)
+    if check and stale:
+        raise SystemExit(1)
+    if not stale:
+        console.print("[green]docs are up to date[/green]")
 
 
 @main.group()

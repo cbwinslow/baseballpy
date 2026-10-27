@@ -5,6 +5,7 @@ from pathlib import Path
 import httpx
 import pyarrow as pa
 import respx
+from conftest import RetroRepo
 
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
@@ -183,12 +184,10 @@ def test_parse_rosters(tmp_path: Path) -> None:
 
 
 @respx.mock
-def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
+def test_retrosheet_source_orchestrator(tmp_path: Path, retro_repo: RetroRepo) -> None:
     cache_config = LakeConfig(home=tmp_path)
     source = RetrosheetSource(cache_config=cache_config)
 
-    # Mock TEAM manifest and event files
-    team_manifest = b"BOS,A\n"
     fake_eva = (
         b"id,BOS202404010\n"
         b"info,date,2024/04/01\n"
@@ -199,17 +198,14 @@ def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
         b"play,1,0,play01,00,,S\n"
         b"data,er,pitch01,0\n"
     )
-    fake_ros = b"play01,One,Batter,R,R,BOS,OF\n"
-
-    respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2024/TEAM2024").mock(
-        return_value=httpx.Response(200, content=team_manifest)
+    retro_repo.add("seasons/2024/TEAM2024", b"BOS,A\n")
+    retro_repo.add("seasons/2024/2024BOS.EVA", fake_eva)
+    retro_repo.add("seasons/2024/BOS2024.ROS", b"play01,One,Batter,R,R,BOS,OF\n")
+    retro_repo.add(
+        "reference/teams.csv",
+        b"TEAM,LEAGUE,CITY,NICKNAME,FIRST,LAST\nBOS,AL,Boston,Red Sox,1901,2024\n",
     )
-    respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2024/2024BOS.EVA").mock(
-        return_value=httpx.Response(200, content=fake_eva)
-    )
-    respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2024/BOS2024.ROS").mock(
-        return_value=httpx.Response(200, content=fake_ros)
-    )
+    retro_repo.mount()
 
     # 1. First run parses and caches
     events_table = source.events(2024)
@@ -229,6 +225,9 @@ def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
     respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2024/TEAM2024").mock(
         return_value=httpx.Response(500)
     )
+    respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2024/2024BOS.EVA").mock(
+        return_value=httpx.Response(500)
+    )
     cached_table = source.events(2024, refresh=False)
     assert len(cached_table) == 1
 
@@ -240,29 +239,23 @@ def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
     assert source.store.is_cached(_spec("boxscores_pitching"), "pitching", 2024)
 
     # 4. Reference tables
-    respx.get(f"{GITHUB_RETROSHEET_BASE}/reference/teams.csv").mock(
-        return_value=httpx.Response(
-            200, content=b"TEAM,LEAGUE,CITY,NICKNAME,FIRST,LAST\nBOS,AL,Boston,Red Sox,1901,2024\n"
-        )
-    )
     teams_table = source.reference("teams")
     assert len(teams_table) == 1
     assert teams_table["team_id"].to_pylist() == ["BOS"]
 
 
 @respx.mock
-def test_retrosheet_downloader_2025_casing(tmp_path: Path) -> None:
-    """Verify download_gamelog resolves uppercase GL2025.TXT used by 2025 Retrosheet."""
+def test_retrosheet_downloader_2025_casing(tmp_path: Path, retro_repo: RetroRepo) -> None:
+    """Verify download_gamelog resolves the uppercase GL2025.TXT listed by the tree."""
     cache_config = LakeConfig(home=tmp_path)
     source = RetrosheetSource(cache_config=cache_config)
-
-    # Mock 2025 with uppercase GL2025.TXT
-    respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2025/GL2025.TXT").mock(
-        return_value=httpx.Response(
-            200, content=b"20250327,0,Thu,BAL,AL,1,BOS,AL,1,5,3,54,D,0,0,0,BOS07,37000,180\n"
-        )
+    retro_repo.add(
+        "seasons/2025/GL2025.TXT",
+        b"20250327,0,Thu,BAL,AL,1,BOS,AL,1,5,3,54,D,0,0,0,BOS07,37000,180\n",
     )
+    retro_repo.mount()
 
     gl_path = source.downloader.download_gamelog(2025)
     assert gl_path.exists()
+    assert gl_path.parent == cache_config.raw_dir("retrosheet", "gamelogs", 2025)
     assert b"20250327" in gl_path.read_bytes()

@@ -64,6 +64,11 @@ class LakeConfig(BaseSettings):
     today: date | None = Field(
         default=None, description="Override for 'today' (deterministic tests); None = real date"
     )
+    parse_workers: int = Field(
+        default=0,
+        ge=0,
+        description="Worker processes for CPU-bound parsing (0 = parse in-process)",
+    )
     raw_root_override: Path | None = Field(default=None, description="Override for raw/")
     processed_root_override: Path | None = Field(
         default=None, description="Override for processed/"
@@ -157,13 +162,21 @@ class LakeConfig(BaseSettings):
         return self._dir(self.processed_root, source, dataset, season, create)
 
     def dataset_manifest(
-        self, source: str, dataset: str, tier: Literal["raw", "processed"] = "processed"
+        self,
+        source: str,
+        dataset: str,
+        tier: Literal["raw", "processed"] = "processed",
+        season: int | None = None,
     ) -> "ManifestTracker":
-        """Manifest tracker stored at ``<tier>/<source>/<dataset>/manifest.json``."""
+        """Manifest tracker at ``<tier>/<source>/<dataset>/[season=YYYY/]manifest.json``.
+
+        Raw files are tracked per season directory (one manifest rewrite per file would otherwise
+        grow quadratically with the number of seasons); processed chunks per dataset.
+        """
         from baseballpy.core.atomic import ManifestTracker
 
         root = self.raw_dir if tier == "raw" else self.processed_dir
-        return ManifestTracker(root(source, dataset) / "manifest.json")
+        return ManifestTracker(root(source, dataset, season) / "manifest.json")
 
     def today_or_now(self) -> date:
         """The configured ``today`` or the real current date."""

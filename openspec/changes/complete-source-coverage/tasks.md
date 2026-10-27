@@ -6,7 +6,7 @@ each source section is independently committable. Every section ends with: fixtu
 - [ ] 0. Shared machinery (C-2, C-9) <!-- id: 0 -->
   - [x] 0.1 `core/schema_tools.py`: `snake()`, `flatten()`, `map_by_header()`, `normalize_records()` with `_extras` + drift log
   - [ ] 0.2 `scripts/gen_schemas.py` (fetch/flatten/propose types) and `scripts/probe_endpoints.py` (probe every catalog row; write `docs/endpoint_probe.json`)
-  - [ ] 0.3 `docs generate` command + `docs/columns/<source>.yaml` description files + stale-docs test
+  - [x] 0.3 `docs generate` command + `docs/columns/<source>.yaml` description files + stale-docs test
   - [ ] 0.4 Registry completeness test (catalog row <-> DatasetSpec <-> docs section <-> fixture)
 - [ ] 1. MLB Stats API (C-1, C-2) <!-- id: 1 -->
   - [ ] 1.1 `MlbEndpoint` framework, fan-out strategies, hydrate support, raw JSON store
@@ -35,14 +35,14 @@ each source section is independently committable. Every section ends with: fixtu
   - [x] 3.3 Data-quality checks (PK uniqueness, FK sanity) as warnings
   - [x] 3.4 Atomic raw writes in `import_archive`; zip safety (size limit, no path traversal)
   - [x] 3.5 Tests with a trimmed fixture per table (27 fixtures), drift test (extra column preserved)
-- [ ] 4. Retrosheet (C-7) <!-- id: 4 -->
-  - [ ] 4.1 Tree discovery + cache; dataset-to-pattern registry
-  - [ ] 4.2 Bounded-concurrency downloader with `ABSENT` status and sha256; season completeness rule
-  - [ ] 4.3 Datasets: event_files, events, events_postseason, boxscores, daily_splits, substitutions, rosters, gamelogs, gamelogs_postseason, schedule, box files (parse if supported), all `reference/*` CSVs (generic reference parser by header)
-  - [ ] 4.4 Streamed Parquet writing + process-pool parsing; remove list-of-dict accumulation
-  - [ ] 4.5 `_chadwick_adapter.py` isolating GPL imports; helpful ImportError
-  - [ ] 4.6 `ingest_all(start, end)` with resume
-  - [ ] 4.7 Tests: fixtures for each file kind, 404-absent handling, resume after interruption, header drift in reference CSV
+- [x] 4. Retrosheet (C-7) <!-- id: 4 -->
+  - [x] 4.1 Tree discovery + cache; dataset-to-pattern registry
+  - [x] 4.2 Bounded-concurrency downloader with `ABSENT` status and sha256; season completeness rule
+  - [x] 4.3 Datasets: event_files, events, events_postseason, boxscores, daily_splits, substitutions, rosters, gamelogs, gamelogs_postseason, schedule, box files (parse if supported), all `reference/*` CSVs (generic reference parser by header)
+  - [x] 4.4 Streamed Parquet writing + process-pool parsing; remove list-of-dict accumulation
+  - [x] 4.5 `_chadwick_adapter.py` isolating GPL imports; helpful ImportError
+  - [x] 4.6 `ingest_all(start, end)` with resume
+  - [x] 4.7 Tests: fixtures for each file kind, 404-absent handling, resume after interruption, header drift in reference CSV
   - [ ] 4.8 Live probe: one old season (e.g. 1950), one modern (2023), 2025
 - [x] 5. Chadwick Register (C-8) <!-- id: 5 -->
   - [x] 5.1 Tree discovery of shards/aux files; SHA revalidation every 24 h

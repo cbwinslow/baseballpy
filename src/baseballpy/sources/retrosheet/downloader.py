@@ -1,57 +1,36 @@
-"""Downloader for Retrosheet data from the GitHub mirror with atomic, honest caching."""
+"""Tree-driven downloader for Retrosheet data from the pinned GitHub mirror.
+
+The git tree at the pinned commit decides which seasons and files exist. Files are fetched with
+bounded concurrency through the shared HttpClient, stored atomically with a recorded sha256, a 404
+for a file the tree lists is recorded ``ABSENT`` (never success), and a season is COMPLETED only
+when every file the tree lists for it is present.
+"""
 
 import concurrent.futures
 import logging
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass, field
 from enum import StrEnum
 from pathlib import Path
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write, cleanup_stale_parts
+from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
+from baseballpy.core.github_tree import fetch_tree
 from baseballpy.core.http import HttpClient, get_http_client
-from baseballpy.core.sources_lock import get_source_ref
+from baseballpy.core.sources_lock import SourceRef, get_source_ref
+from baseballpy.core.stores import RawStore
+from baseballpy.sources.retrosheet.tree import (
+    POSTSEASON_GAMELOG_KINDS,
+    RetroFile,
+    RetroTree,
+    classify,
+)
 
 logger = logging.getLogger(__name__)
 
 #: Default (pinned) base URL; instances derive theirs from the lock / env override.
 GITHUB_RETROSHEET_BASE = get_source_ref("retrosheet").raw_base()
-
-POSTSEASON_GAMELOGS = {
-    "wild_card": "GLWC.TXT",
-    "division_series": "GLDV.TXT",
-    "lcs": "GLLC.TXT",
-    "world_series": "GLWS.TXT",
-    "all_star": "GLAS.TXT",
-}
-
-REFERENCE_TABLES = {
-    "ballparks": "reference/ballparks.csv",
-    "teams": "reference/teams.csv",
-    "ejections": "reference/ejections.csv",
-    "coaches": "reference/coaches.csv",
-    "relatives": "reference/relatives.csv",
-    "biofile": "reference/biofile.csv",
-}
-
-#: TEAM-file pseudo-teams (All-Star squads) whose games live in the all-star/postseason ``.EVE``
-#: files, so a missing ``{year}ALS.EVA``/``{year}NLS.EVN`` upstream is expected, not an error.
-OPTIONAL_TEAM_CODES = frozenset({"ALS", "NLS"})
-
-POSTSEASON_SUFFIXES = (
-    "AS.EVE",
-    "ALW1.EVE",
-    "ALW2.EVE",
-    "NLW1.EVE",
-    "NLW2.EVE",
-    "ALD1.EVE",
-    "ALD2.EVE",
-    "NLD1.EVE",
-    "NLD2.EVE",
-    "ALCS.EVE",
-    "NLCS.EVE",
-    "WS.EVE",
-)
 
 
 class FetchOutcome(StrEnum):
@@ -59,38 +38,83 @@ class FetchOutcome(StrEnum):
 
     DOWNLOADED = "downloaded"
     CACHED = "cached"
-    ABSENT = "absent"  # upstream answered 404: the file does not exist
+    ABSENT = "absent"  # the tree lists it but upstream answered 404
 
 
-def _count_lines(path: Path) -> int:
-    """Count newline characters without loading the file into memory."""
-    total = 0
-    with open(path, "rb") as handle:
-        for block in iter(lambda: handle.read(1 << 20), b""):
-            total += block.count(b"\n")
-    return total
+@dataclass
+class SeasonDownload:
+    """Result of :meth:`RetrosheetDownloader.download_season`."""
+
+    year: int
+    files: list[RetroFile] = field(default_factory=list)
+    outcomes: dict[str, FetchOutcome] = field(default_factory=dict)
+    complete: bool = False
+    cache_hit: bool = False
+
+    @property
+    def absent(self) -> list[str]:
+        """Names of tree-listed files that upstream does not serve."""
+        return sorted(n for n, o in self.outcomes.items() if o is FetchOutcome.ABSENT)
 
 
 class RetrosheetDownloader:
-    """Downloads raw Retrosheet event files, rosters, and game logs with atomic writes."""
+    """Downloads raw Retrosheet files for any season the pinned tree lists."""
 
     def __init__(
         self,
         cache_config: LakeConfig | None = None,
         rate_limit_config: RateLimitConfig | None = None,
         http: HttpClient | None = None,
+        ref: str | None = None,
     ) -> None:
         self.cache_config = cache_config or LakeConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
         self.http = http or (
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
-        self.source_ref = get_source_ref("retrosheet", self.cache_config.home)
+        locked = get_source_ref("retrosheet", self.cache_config.home)
+        self.source_ref = SourceRef(locked.key, locked.repo, ref) if ref else locked
         self.base_url = self.source_ref.raw_base()
+        self.raw = RawStore(self.cache_config)
+        #: season completeness chunks (``season_<year>``) live in the event_files manifest
         self.manifest = self.cache_config.dataset_manifest("retrosheet", "event_files", "raw")
+        self._tree: RetroTree | None = None
         # discard orphaned .part files from killed runs
         cleanup_stale_parts(self.cache_config.raw_root / "retrosheet")
 
+    # ------------------------------------------------------------------ discovery
+    def tree(self, refresh: bool = False) -> RetroTree:
+        """The classified repository tree (cached in memory and under ``cache/http``)."""
+        if self._tree is None or refresh:
+            entries = fetch_tree(self.source_ref, self.cache_config, self.http, refresh=refresh)
+            self._tree = classify(entries)
+            if self._tree.uncovered:
+                logger.warning(
+                    "Retrosheet tree has %d file(s) no dataset covers yet (first: %s)",
+                    len(self._tree.uncovered),
+                    self._tree.uncovered[0],
+                )
+        return self._tree
+
+    def seasons(self) -> list[int]:
+        """Seasons available upstream at the pinned ref."""
+        return self.tree().seasons()
+
+    # ------------------------------------------------------------------ paths
+    def raw_path(self, file: RetroFile) -> Path:
+        """Where ``file`` is (or will be) stored under ``raw/retrosheet``."""
+        return self.raw.path_for("retrosheet", file.raw_dataset, file.name, file.season)
+
+    def local_paths(self, year: int, *kinds: str) -> list[Path]:
+        """Existing local raw paths for the season's files of the given kinds, sorted by name."""
+        files = self.tree().season_files(year, kinds or None)
+        return sorted(p for f in files if (p := self.raw_path(f)).exists())
+
+    def roster_dir(self, year: int) -> Path:
+        """``raw/retrosheet/rosters/season=YYYY`` (the ``*.ROS`` files)."""
+        return self.cache_config.raw_dir("retrosheet", "rosters", year)
+
+    # ------------------------------------------------------------------ files
     def _chunk_current(self, manifest: ManifestTracker, chunk_id: str) -> bool:
         """COMPLETED and not recorded at a different upstream ref (legacy entries are trusted)."""
         entry = manifest.get_chunk(chunk_id)
@@ -98,217 +122,140 @@ class RetrosheetDownloader:
             return False
         return entry.get("source_ref") in (None, self.source_ref.ref)
 
-    def _get_season_dir(self, year: int) -> Path:
-        """``raw/retrosheet/event_files/season=YYYY`` (TEAM, event and postseason files)."""
-        return self.cache_config.raw_dir("retrosheet", "event_files", year, create=True)
+    def _is_cached(self, file: RetroFile) -> bool:
+        path = self.raw_path(file)
+        if not path.exists() or path.stat().st_size == 0:
+            return False
+        entry = self.cache_config.dataset_manifest(
+            "retrosheet", file.raw_dataset, "raw", file.season
+        ).get_chunk(file.name)
+        if entry is None:
+            return False  # not recorded: could be a partial leftover from an old layout
+        return bool(
+            entry.get("status") == "COMPLETED"
+            and entry.get("source_ref") in (None, self.source_ref.ref)
+            and entry.get("bytes") == path.stat().st_size
+        )
 
-    def roster_dir(self, year: int) -> Path:
-        """``raw/retrosheet/rosters/season=YYYY`` (the ``*.ROS`` files)."""
-        return self.cache_config.raw_dir("retrosheet", "rosters", year)
-
-    def download_file(
-        self, relative_url: str, target_path: Path, refresh: bool = False
-    ) -> FetchOutcome:
-        """Atomically download one file; reports whether it was fetched, cached, or absent."""
-        if not refresh and target_path.exists() and target_path.stat().st_size > 0:
+    def download_file(self, file: RetroFile, refresh: bool = False) -> FetchOutcome:
+        """Atomically fetch one tree-listed file; 404 is recorded ``ABSENT``."""
+        if not refresh and self._is_cached(file):
             return FetchOutcome.CACHED
-
-        full_url = f"{self.base_url}/{relative_url.lstrip('/')}"
-        result = self.http.get_sync(full_url, allow=(200, 404))
+        result = self.http.get_sync(f"{self.base_url}/{file.path}", allow=(200, 404))
         if result.status == 404:
+            self.cache_config.dataset_manifest(
+                "retrosheet", file.raw_dataset, "raw", file.season
+            ).set_absent(file.name, "listed in the git tree but not served")
             return FetchOutcome.ABSENT
-        with atomic_write(target_path) as part_file:
-            part_file.write_bytes(result.content)
+        self.raw.put(
+            "retrosheet",
+            file.raw_dataset,
+            file.name,
+            result.content,
+            season=file.season,
+            source_ref=self.source_ref.ref,
+            etag=result.etag or "",
+        )
         return FetchOutcome.DOWNLOADED
 
-    def _download_many(
-        self, items: Sequence[tuple[str, Path]], refresh: bool
-    ) -> dict[Path, FetchOutcome]:
+    def download_files(
+        self, files: Sequence[RetroFile], refresh: bool = False
+    ) -> dict[str, FetchOutcome]:
         """Download files with bounded concurrency; errors other than 404 propagate."""
         workers = max(1, self.rate_limit_config.max_concurrency)
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
-            futures = {
-                path: pool.submit(self.download_file, rel, path, refresh) for rel, path in items
-            }
+            futures = {f.path: pool.submit(self.download_file, f, refresh) for f in files}
             return {path: future.result() for path, future in futures.items()}
 
+    # ------------------------------------------------------------------ seasons
     def download_season(
-        self, year: int, include_postseason: bool = False, refresh: bool = False
-    ) -> list[Path]:
-        """Download season manifest TEAM{year}, event files (.EVA/.EVN/.EVE), and rosters.
+        self,
+        year: int,
+        kinds: Iterable[str] | None = None,
+        refresh: bool = False,
+    ) -> SeasonDownload:
+        """Download the season's files (all kinds, or just ``kinds``).
 
-        The season is recorded COMPLETED only when TEAM{year} and every listed event and
-        roster file are present. Otherwise it is recorded ABSENT with the missing files so a
-        later run retries instead of trusting an incomplete season.
+        The ``season_<year>`` chunk is recorded COMPLETED only for an all-kinds download in which
+        every tree-listed file is present; otherwise missing files are recorded ``ABSENT`` and a
+        later run retries. A season the tree does not list yields an empty, incomplete result.
         """
-        chunk_id = f"season_{year}_postseason" if include_postseason else f"season_{year}"
-        season_dir = self._get_season_dir(year)
-
+        chunk_id = f"season_{year}"
+        all_files = self.tree().season_files(year)
+        wanted = self.tree().season_files(year, kinds)
+        result = SeasonDownload(year=year, files=wanted)
         with default_audit_logger.track(
             operation="retrosheet_download_season",
             source="retrosheet",
             endpoint=f"{self.base_url}/seasons/{year}/",
-            destination=str(season_dir),
+            destination=str(self.cache_config.raw_dir("retrosheet", "event_files", year)),
         ) as tracker:
-            if not refresh and self._chunk_current(self.manifest, chunk_id):
-                tracker.set_cache_hit(True)
-                event_files = sorted(season_dir.glob("*.EV*"))
-                tracker.set_records(len(event_files))
-                return event_files
-
-            team_file = season_dir / f"TEAM{year}"
-            team_outcome = self.download_file(
-                f"seasons/{year}/TEAM{year}", team_file, refresh=refresh
-            )
-            if team_outcome is FetchOutcome.ABSENT:
-                self.manifest.set_absent(chunk_id, f"TEAM{year} not found upstream")
+            if not all_files:
+                self.manifest.set_absent(chunk_id, f"season {year} is not in the upstream tree")
                 tracker.set_records(0)
-                return []
+                return result
 
-            roster_dir = self.cache_config.raw_dir("retrosheet", "rosters", year, create=True)
-            wanted: list[tuple[str, Path]] = []
-            event_paths: list[Path] = []
-            roster_paths: list[Path] = []
-            optional: set[Path] = set()
-            for line in team_file.read_text(encoding="utf-8", errors="replace").splitlines():
-                parts = [p.strip() for p in line.strip().split(",")]
-                if not parts or not parts[0]:
-                    continue
-                team_code = parts[0]
-                league = parts[1] if len(parts) > 1 else "A"
-                ext = "EVA" if league.upper() == "A" else "EVN"
-                event_name = f"{year}{team_code}.{ext}"
-                roster_name = f"{team_code}{year}.ROS"
-                event_paths.append(season_dir / event_name)
-                roster_paths.append(roster_dir / roster_name)
-                if team_code.upper() in OPTIONAL_TEAM_CODES:
-                    optional.update({season_dir / event_name, roster_dir / roster_name})
-                wanted.append((f"seasons/{year}/{event_name}", season_dir / event_name))
-                wanted.append((f"seasons/{year}/{roster_name}", roster_dir / roster_name))
-
-            outcomes = self._download_many(wanted, refresh)
-            missing = sorted(
-                p.name
-                for p in event_paths + roster_paths
-                if outcomes[p] is FetchOutcome.ABSENT and p not in optional
-            )
-
-            downloaded_files = [p for p in event_paths if outcomes[p] is not FetchOutcome.ABSENT]
-
-            if include_postseason:
-                post_items = [
-                    (f"seasons/{year}/{year}{suffix}", season_dir / f"{year}{suffix}")
-                    for suffix in POSTSEASON_SUFFIXES
-                ]
-                post_outcomes = self._download_many(post_items, refresh)
-                # Postseason files are optional by nature (series differ by year).
-                downloaded_files.extend(
-                    p for p, outcome in post_outcomes.items() if outcome is not FetchOutcome.ABSENT
-                )
-
-            if missing:
-                logger.warning(
-                    "retrosheet season %s incomplete: %d file(s) absent upstream: %s",
-                    year,
-                    len(missing),
-                    ", ".join(missing[:10]),
-                )
-                self.manifest.set_absent(chunk_id, f"missing files: {', '.join(missing)}")
-            else:
-                self.manifest.set_completed(
-                    chunk_id,
-                    records_count=len(downloaded_files),
-                    metadata={"source_ref": self.source_ref.ref},
-                )
-            tracker.set_cache_hit(False)
-            tracker.set_records(len(downloaded_files))
-            return downloaded_files
-
-    def _download_single(
-        self,
-        manifest: ManifestTracker,
-        chunk_id: str,
-        candidates: Sequence[str],
-        target_path: Path,
-        operation: str,
-        refresh: bool,
-    ) -> Path:
-        """Fetch the first existing candidate; raise FileNotFoundError if none exists."""
-        with default_audit_logger.track(
-            operation=operation,
-            source="retrosheet",
-            endpoint=f"{self.base_url}/{candidates[0]}",
-            destination=str(target_path),
-        ) as tracker:
-            if not refresh and self._chunk_current(manifest, chunk_id) and target_path.exists():
+            if (
+                kinds is None
+                and not refresh
+                and self._chunk_current(self.manifest, chunk_id)
+                and all(self.raw_path(f).exists() for f in wanted)
+            ):
+                result.outcomes = {f.name: FetchOutcome.CACHED for f in wanted}
+                result.complete = result.cache_hit = True
                 tracker.set_cache_hit(True)
-                tracker.set_records(_count_lines(target_path))
-                return target_path
+                tracker.set_records(len(wanted))
+                return result
 
-            for candidate in candidates:
-                outcome = self.download_file(candidate, target_path, refresh=refresh)
-                if outcome is not FetchOutcome.ABSENT:
-                    lines = _count_lines(target_path)
-                    manifest.set_completed(
-                        chunk_id, records_count=lines, metadata={"source_ref": self.source_ref.ref}
+            outcomes = self.download_files(wanted, refresh)
+            result.outcomes = {f.name: outcomes[f.path] for f in wanted}
+            missing = result.absent
+            result.complete = not missing and len(wanted) == len(all_files)
+            if kinds is None:
+                if missing:
+                    logger.warning(
+                        "retrosheet season %s incomplete: %d file(s) absent upstream: %s",
+                        year,
+                        len(missing),
+                        ", ".join(missing[:10]),
                     )
-                    tracker.set_cache_hit(False)
-                    tracker.set_records(lines)
-                    return target_path
+                    self.manifest.set_absent(chunk_id, f"missing files: {', '.join(missing)}")
+                else:
+                    total = sum(self.raw_path(f).stat().st_size for f in wanted)
+                    self.manifest.set_completed(
+                        chunk_id,
+                        records_count=len(wanted),
+                        metadata={"source_ref": self.source_ref.ref, "bytes": total},
+                    )
+            tracker.set_cache_hit(False)
+            tracker.set_records(len(wanted))
+            return result
 
-            manifest.set_absent(chunk_id, f"none of {list(candidates)} exist upstream")
-            raise FileNotFoundError(
-                f"Retrosheet file not found upstream (tried {', '.join(candidates)})"
-            )
+    # ------------------------------------------------------------------ single files
+    def _single(self, file: RetroFile | None, what: str, refresh: bool) -> Path:
+        if file is None:
+            raise FileNotFoundError(f"Retrosheet {what} is not in the upstream tree")
+        outcome = self.download_file(file, refresh)
+        if outcome is FetchOutcome.ABSENT:
+            raise FileNotFoundError(f"Retrosheet {what} ({file.path}) is listed but not served")
+        return self.raw_path(file)
 
     def download_gamelog(self, year: int, refresh: bool = False) -> Path:
-        """Download historical season Game Log GL{year}.TXT (case variants are tried)."""
-        gamelog_dir = self.cache_config.raw_dir("retrosheet", "gamelogs", create=True)
-        return self._download_single(
-            manifest=self.cache_config.dataset_manifest("retrosheet", "gamelogs", "raw"),
-            chunk_id=f"gamelog_{year}",
-            candidates=[
-                f"seasons/{year}/GL{year}.TXT",
-                f"seasons/{year}/gl{year}.txt",
-                f"gamelog/gl{year}.txt",
-                f"gamelog/GL{year}.TXT",
-            ],
-            target_path=gamelog_dir / f"gl{year}.txt",
-            operation="retrosheet_download_gamelog",
-            refresh=refresh,
-        )
+        """Download the season's game log ``GL<year>.TXT``."""
+        file = next(iter(self.tree().season_files(year, ["gamelog"])), None)
+        return self._single(file, f"game log for {year}", refresh)
 
     def download_postseason_gamelog(self, kind: str, refresh: bool = False) -> Path:
-        """Download postseason or exhibition game log (wild_card, division_series, lcs, ...)."""
-        filename = POSTSEASON_GAMELOGS.get(kind.lower())
-        if not filename:
-            raise ValueError(
-                f"Unknown postseason gamelog kind '{kind}'. Valid kinds: {list(POSTSEASON_GAMELOGS.keys())}"
-            )
-        gamelog_dir = self.cache_config.raw_dir("retrosheet", "gamelogs", create=True)
-        return self._download_single(
-            manifest=self.cache_config.dataset_manifest("retrosheet", "gamelogs", "raw"),
-            chunk_id=f"gamelog_postseason_{kind.lower()}",
-            candidates=[f"gamelog/{filename}"],
-            target_path=gamelog_dir / filename,
-            operation="retrosheet_download_postseason_gamelog",
-            refresh=refresh,
-        )
+        """Download a postseason/all-star game log (wild_card, division_series, lcs, ...)."""
+        if kind.lower() not in POSTSEASON_GAMELOG_KINDS:
+            valid = list(POSTSEASON_GAMELOG_KINDS)
+            raise ValueError(f"Unknown postseason gamelog kind '{kind}'. Valid kinds: {valid}")
+        return self._single(self.tree().postseason_gamelog(kind), f"{kind} game log", refresh)
 
     def download_reference_table(self, table_name: str, refresh: bool = False) -> Path:
-        """Download a reference CSV (ballparks, teams, ejections, coaches, relatives, biofile)."""
-        rel_path = REFERENCE_TABLES.get(table_name.lower())
-        if not rel_path:
-            raise ValueError(
-                f"Unknown reference table '{table_name}'. Valid tables: {list(REFERENCE_TABLES.keys())}"
-            )
-        dataset = f"reference_{table_name.lower()}"
-        ref_dir = self.cache_config.raw_dir("retrosheet", dataset, create=True)
-        return self._download_single(
-            manifest=self.cache_config.dataset_manifest("retrosheet", dataset, "raw"),
-            chunk_id=dataset,
-            candidates=[rel_path],
-            target_path=ref_dir / f"{table_name.lower()}.csv",
-            operation="retrosheet_download_reference",
-            refresh=refresh,
-        )
+        """Download ``reference/<table_name>.csv``."""
+        file = self.tree().reference_file(table_name)
+        if file is None:
+            known = sorted(f.name.removesuffix(".csv") for f in self.tree().reference)
+            raise ValueError(f"Unknown reference table '{table_name}'. Valid tables: {known}")
+        return self._single(file, f"reference table {table_name}", refresh)

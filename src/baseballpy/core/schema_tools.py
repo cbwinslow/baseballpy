@@ -14,9 +14,10 @@ import threading
 from collections.abc import Iterable, Sequence
 
 import pyarrow as pa
+import pyarrow.compute as pc
 import pyarrow.csv as pacsv
 
-from baseballpy.core.quarantine import Quarantine, checked_cast
+from baseballpy.core.quarantine import Quarantine, checked_cast, get_quarantine
 
 logger = logging.getLogger(__name__)
 
@@ -51,19 +52,49 @@ def snake(name: str) -> str:
     return re.sub(r"_+", "_", text).strip("_").lower()
 
 
+def split_type_name(name: str) -> tuple[str, str | None]:
+    """``"date32:%m/%d/%Y"`` -> ``("date32", "%m/%d/%Y")``; plain names have no format."""
+    base, _, fmt = name.partition(":")
+    return base, (fmt or None)
+
+
 def pa_type(name: str) -> pa.DataType:
-    """Arrow type for a type name used in generated schema modules."""
+    """Arrow type for a type name used in generated schema modules (formats are ignored)."""
+    base, _ = split_type_name(name)
     try:
-        return _TYPES[name]
+        return _TYPES[base]
     except KeyError:
         raise ValueError(
             f"unknown column type {name!r}; expected one of {sorted(_TYPES)}"
         ) from None
 
 
-def schema_from_columns(columns: Iterable[tuple[str, str]], *, extras: bool = True) -> pa.Schema:
-    """Build a schema from ``(name, type_name)`` pairs, appending ``_extras`` when requested."""
-    fields = [pa.field(name, pa_type(type_name)) for name, type_name in columns]
+#: field-metadata keys: upstream header(s) a column is read from (``|``-separated aliases) and the
+#: ``strptime`` format used to parse a ``date32`` column from text
+UPSTREAM_KEY = b"upstream"
+FORMAT_KEY = b"format"
+
+ColumnDef = tuple[str, str] | tuple[str, str, str]
+
+
+def schema_from_columns(columns: Iterable[ColumnDef], *, extras: bool = True) -> pa.Schema:
+    """Build a schema from ``(name, type_name[, upstream_header])`` tuples.
+
+    ``type_name`` may carry a date format (``date32:%Y%m%d``); a differing ``upstream_header``
+    (aliases separated by ``|``) is kept in field metadata so mapping stays header-based while the
+    column gets a clean name. ``_extras`` is appended when requested.
+    """
+    fields = []
+    for column in columns:
+        name, type_name = column[0], column[1]
+        upstream = column[2] if len(column) > 2 else name
+        _, fmt = split_type_name(type_name)
+        meta: dict[bytes, bytes] = {}
+        if upstream != name:
+            meta[UPSTREAM_KEY] = upstream.encode("utf-8")
+        if fmt:
+            meta[FORMAT_KEY] = fmt.encode("utf-8")
+        fields.append(pa.field(name, pa_type(type_name), metadata=meta or None))
     if extras:
         fields.append(pa.field(EXTRAS, pa.string()))
     return pa.schema(fields)
@@ -117,25 +148,99 @@ def _clean_header(name: str) -> str:
     return name.lstrip(BOM).strip()
 
 
-def read_csv_strings(raw: bytes | str, *, delimiter: str = ",") -> pa.Table:
-    """Read a header-bearing CSV with every column as a nullable string (BOM-safe)."""
+def dedupe_headers(names: Sequence[str]) -> list[str]:
+    """Unique, non-empty header names: ``''`` -> ``col_<n>``; repeats get ``__2``, ``__3``..."""
+    seen: dict[str, int] = {}
+    out: list[str] = []
+    for index, raw in enumerate(names):
+        name = _clean_header(raw) or f"col_{index + 1}"
+        seen[name] = seen.get(name, 0) + 1
+        out.append(name if seen[name] == 1 else f"{name}__{seen[name]}")
+    return out
+
+
+def read_csv_strings(
+    raw: bytes | str, *, delimiter: str = ",", header: Sequence[str] | None = None
+) -> pa.Table:
+    """Read a CSV with every column as a nullable string (BOM-safe, duplicate-header-safe).
+
+    ``header`` supplies the column names for files that have no header row (the first row is then
+    data); otherwise the first row is the header.
+    """
     data = raw.encode("utf-8") if isinstance(raw, str) else raw
     if not data.strip():
         return pa.table({})
-    first_line = data.split(b"\n", 1)[0].decode("utf-8-sig", errors="replace").rstrip("\r")
-    names = next(csv.reader([first_line], delimiter=delimiter))
-    cleaned = [_clean_header(n) for n in names]
-    table = pacsv.read_csv(
-        io.BytesIO(data),
-        read_options=pacsv.ReadOptions(column_names=cleaned, skip_rows=1),
-        parse_options=pacsv.ParseOptions(delimiter=delimiter),
-        convert_options=pacsv.ConvertOptions(
-            column_types=dict.fromkeys(cleaned, pa.string()),
-            strings_can_be_null=True,
-            null_values=list(NULL_TOKENS),
-        ),
-    )
-    return table
+    if header is None:
+        first_line = data.split(b"\n", 1)[0].decode("utf-8-sig", errors="replace").rstrip("\r")
+        names = next(csv.reader([first_line], delimiter=delimiter))
+        skip = 1
+    else:
+        names, skip = list(header), 0
+    cleaned = dedupe_headers(names)
+    try:
+        return pacsv.read_csv(
+            io.BytesIO(data),
+            read_options=pacsv.ReadOptions(column_names=cleaned, skip_rows=skip),
+            parse_options=pacsv.ParseOptions(delimiter=delimiter),
+            convert_options=pacsv.ConvertOptions(
+                column_types=dict.fromkeys(cleaned, pa.string()),
+                strings_can_be_null=True,
+                null_values=list(NULL_TOKENS),
+            ),
+        )
+    except pa.ArrowInvalid:
+        return _read_ragged(data, cleaned, skip, delimiter)
+
+
+def _read_ragged(data: bytes, names: list[str], skip: int, delimiter: str) -> pa.Table:
+    """Slow path for files with rows of unexpected width (seen in Retrosheet discrepancy files).
+
+    Short rows are padded with NULLs; rows *longer* than the header keep their surplus cells in
+    extra ``col_<n>`` columns, so no cell is ever dropped. The number of ragged rows is logged.
+    """
+    text = data.decode("utf-8-sig", errors="replace")
+    rows = list(csv.reader(io.StringIO(text, newline=""), delimiter=delimiter))[skip:]
+    width = max([len(names), *(len(r) for r in rows)]) if rows else len(names)
+    all_names = [*names, *(f"col_{i + 1}" for i in range(len(names), width))]
+    short = sum(1 for r in rows if len(r) < len(names))
+    surplus = sum(1 for r in rows if len(r) > len(names))
+    if surplus:
+        logger.warning(
+            "%d CSV row(s) are wider than the %d-column header; surplus cells kept in extra columns",
+            surplus,
+            len(names),
+        )
+    if short:
+        logger.info("%d CSV row(s) are shorter than the header; padded with NULLs", short)
+    columns = [
+        pa.array([(r[i] if i < len(r) and r[i] != "" else None) for r in rows], pa.string())
+        for i in range(width)
+    ]
+    return pa.Table.from_arrays(columns, names=all_names)
+
+
+def parse_dates(
+    column: pa.ChunkedArray,
+    fmt: str,
+    *,
+    source: str,
+    dataset: str,
+    name: str,
+    quarantine: Quarantine | None = None,
+) -> pa.ChunkedArray:
+    """Parse text dates with ``fmt``; values that do not parse become NULL and are quarantined."""
+    parsed = pc.strptime(column, format=fmt, unit="s", error_is_null=True)
+    result = parsed.cast(pa.date32())
+    lost = pc.and_(pc.is_valid(column), pc.is_null(result))
+    if pc.any(lost).as_py():
+        values = column.filter(lost).to_pylist()
+        (quarantine or get_quarantine()).write(
+            source,
+            dataset,
+            [{"column": name, "value": v} for v in values],
+            f"dates in column {name!r} not matching {fmt}",
+        )
+    return result
 
 
 def _warn_once(source: str, dataset: str, fields: Sequence[str]) -> list[str]:
@@ -163,6 +268,21 @@ def reset_drift_warnings() -> None:
         _warned.clear()
 
 
+def _find_source(field: pa.Field, table: pa.Table, by_lower: dict[str, str]) -> str | None:
+    """The table column a schema field reads from (upstream aliases, then its own name)."""
+    meta = field.metadata or {}
+    upstream: bytes = meta.get(UPSTREAM_KEY, b"")
+    candidates: list[str] = [c for c in upstream.decode("utf-8").split("|") if c]
+    candidates.append(field.name)
+    for candidate in candidates:
+        if candidate in table.column_names:
+            return candidate
+    for candidate in candidates:
+        if (hit := by_lower.get(candidate.lower())) is not None:
+            return hit
+    return None
+
+
 def normalize_csv(
     raw: bytes | str,
     schema: pa.Schema,
@@ -171,14 +291,16 @@ def normalize_csv(
     dataset: str,
     quarantine: Quarantine | None = None,
     delimiter: str = ",",
+    header: Sequence[str] | None = None,
 ) -> pa.Table:
-    """Map a header-bearing CSV onto ``schema``; unknown columns go to ``_extras`` as JSON.
+    """Map a CSV onto ``schema`` by header name; unknown columns go to ``_extras`` as JSON.
 
-    Columns are matched by exact header, then case-insensitively. Missing columns become NULL,
-    uncastable cells are quarantined by :func:`checked_cast`, and columns absent from the schema
-    are serialised per row into ``_extras`` (only when the schema declares that column).
+    Columns are matched through the field's ``upstream`` alias(es), then its own name, exact then
+    case-insensitively. Missing columns become NULL, uncastable cells (and dates that do not match
+    the column's declared format) are quarantined, and columns absent from the schema are
+    serialised per row into ``_extras`` (only when the schema declares that column).
     """
-    table = read_csv_strings(raw, delimiter=delimiter)
+    table = read_csv_strings(raw, delimiter=delimiter, header=header)
     wants_extras = EXTRAS in schema.names
     known = [f for f in schema if f.name != EXTRAS]
     by_lower = {name.lower(): name for name in table.column_names}
@@ -186,16 +308,26 @@ def normalize_csv(
     columns: list[pa.ChunkedArray | pa.Array] = []
     num_rows = table.num_rows
     for field in known:
-        source_name = (
-            field.name if field.name in table.column_names else by_lower.get(field.name.lower())
-        )
+        source_name = _find_source(field, table, by_lower)
         if source_name is None or source_name in used:
             columns.append(pa.nulls(num_rows, type=field.type))
             continue
         used.add(source_name)
         column = table.column(source_name)
+        fmt = (field.metadata or {}).get(FORMAT_KEY)
         if field.type == pa.string():
             columns.append(column)
+        elif fmt is not None and pa.types.is_date32(field.type):
+            columns.append(
+                parse_dates(
+                    column,
+                    fmt.decode("utf-8"),
+                    source=source,
+                    dataset=dataset,
+                    name=field.name,
+                    quarantine=quarantine,
+                )
+            )
         else:
             columns.append(
                 checked_cast(
@@ -208,7 +340,7 @@ def normalize_csv(
                 )
             )
     extra_names = [n for n in table.column_names if n not in used]
-    fields = list(known)
+    fields = [pa.field(f.name, f.type) for f in known]
     if wants_extras:
         if extra_names:
             _warn_once(source, dataset, extra_names)
