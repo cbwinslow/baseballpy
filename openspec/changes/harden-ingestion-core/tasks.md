@@ -1,43 +1,43 @@
 # Tasks: Harden Ingestion Core
 
-- [ ] 1. HTTP layer (H-2, H-9) <!-- id: 1 -->
-  - [ ] 1.1 Implement `core/http.py` (`HttpClient`, `HttpResult`, sync facade)
-  - [ ] 1.2 Migrate Statcast extractor + leaderboards
-  - [ ] 1.3 Migrate MLB API extractor + streamer
-  - [ ] 1.4 Migrate Retrosheet downloader, Lahman extractor, Chadwick extractor
-  - [ ] 1.5 Tests: limiter spacing, semaphore bound, 429 + Retry-After, 404 not retried, ConnectError retried, 304
-- [ ] 2. Freshness policy (H-1) <!-- id: 2 -->
-  - [ ] 2.1 `core/freshness.py` + TTL config
-  - [ ] 2.2 Record `fetched_at`/`season` in manifest entries
-  - [ ] 2.3 Apply in every cache-hit check
-  - [ ] 2.4 Boxscore immutable only when final
-  - [ ] 2.5 Tests with injected `today`
-- [ ] 3. Quarantine + silent-failure removal (H-3, H-4, H-10, H-11) <!-- id: 3 -->
-  - [ ] 3.1 `core/quarantine.py` + `checked_cast`
-  - [ ] 3.2 Remove every `except Exception: pass/return None`
-  - [ ] 3.3 Retrosheet downloader: distinguish absent-upstream vs cached; never mark COMPLETED with required files missing
-  - [ ] 3.4 Remove `safe=False`
-  - [ ] 3.5 Tests: bad rows quarantined, warnings logged
-- [ ] 4. Manifest and atomic writes (H-6) <!-- id: 4 -->
-  - [ ] 4.1 Lockfile + merge-on-save + corrupt preservation
-  - [ ] 4.2 Unique `.part`, fsync, stale cleanup
-  - [ ] 4.3 Concurrency tests
-- [ ] 5. Audit (H-5, H-8) <!-- id: 5 -->
-  - [ ] 5.1 Shared core, `CANCELLED`
-  - [ ] 5.2 Lazy logger + proxy
-  - [ ] 5.3 Plumb `cache_hit` everywhere
-  - [ ] 5.4 Tests
-- [ ] 6. Sinks (H-7) <!-- id: 6 -->
-  - [ ] 6.1 DuckDB: quote_ident, BY NAME, drift, upsert, empty replace, single-connection stream
-  - [ ] 6.2 Parquet: atomic + partition_by
-  - [ ] 6.3 Polars + dlt protocol conformance
-  - [ ] 6.4 Tests incl. injection attempt and signature contract tests
-- [ ] 7. Lazy singletons (H-8) <!-- id: 7 -->
-  - [ ] 7.1 `get_default_*()` factories; honor `BASEBALLPY_HOME` after import
-  - [ ] 7.2 Wire `StreamingConfig`/`QuarantineConfig`/`PipelineConfig`; remove dead `models.py`
-- [ ] 8. Property tests (H-12) <!-- id: 8 -->
-- [ ] 9. Verification <!-- id: 9 -->
-  - [ ] 9.1 `uv run pytest`, `uvx ruff check .`, `uvx ruff format --check .`, `uvx mypy --strict src`
-  - [ ] 9.2 Manual: run each source against live endpoints for a small window; inspect `audit.jsonl`, `quarantine/`, manifests; kill mid-download, re-run, confirm resume
-- [ ] 10. Docs <!-- id: 10 -->
-  - [ ] 10.1 ADR 22; merge spec deltas into `openspec/specs/*`; update README/CLAUDE.md
+- [x] 1. HTTP layer (H-2, H-9) <!-- id: 1 -->
+  - [x] 1.1 Implement `core/http.py` (`HttpClient`, `HttpResult`, sync facade)
+  - [x] 1.2 Migrate Statcast extractor + leaderboards
+  - [x] 1.3 Migrate MLB API extractor + streamer
+  - [x] 1.4 Migrate Retrosheet downloader, Lahman extractor, Chadwick extractor
+  - [x] 1.5 Tests: limiter spacing, semaphore bound, 429 + Retry-After, 404 not retried, ConnectError retried, 304
+- [x] 2. Freshness policy (H-1) <!-- id: 2 -->
+  - [x] 2.1 `core/freshness.py` + TTL config
+  - [x] 2.2 Record `fetched_at`/`season` in manifest entries
+  - [x] 2.3 Apply in every cache-hit check
+  - [x] 2.4 Boxscore immutable only when final
+  - [x] 2.5 Tests with injected `today`
+- [x] 3. Quarantine + silent-failure removal (H-3, H-4, H-10, H-11) <!-- id: 3 -->
+  - [x] 3.1 `core/quarantine.py` + `checked_cast`
+  - [x] 3.2 Remove every `except Exception: pass/return None`
+  - [x] 3.3 Retrosheet downloader: distinguish absent-upstream vs cached; never mark COMPLETED with required files missing
+  - [x] 3.4 Remove `safe=False`
+  - [x] 3.5 Tests: bad rows quarantined, warnings logged
+- [x] 4. Manifest and atomic writes (H-6) <!-- id: 4 -->
+  - [x] 4.1 Lockfile + merge-on-save + corrupt preservation
+  - [x] 4.2 Unique `.part`, fsync, stale cleanup
+  - [x] 4.3 Concurrency tests
+- [x] 5. Audit (H-5, H-8) <!-- id: 5 -->
+  - [x] 5.1 Shared core, `CANCELLED`
+  - [x] 5.2 Lazy logger + proxy
+  - [x] 5.3 Plumb `cache_hit` everywhere
+  - [x] 5.4 Tests
+- [x] 6. Sinks (H-7) <!-- id: 6 -->
+  - [x] 6.1 DuckDB: quote_ident, BY NAME, drift, upsert, empty replace, single-connection stream
+  - [x] 6.2 Parquet: atomic + partition_by
+  - [x] 6.3 Polars + dlt protocol conformance
+  - [x] 6.4 Tests incl. injection attempt and signature contract tests
+- [x] 7. Lazy singletons (H-8) <!-- id: 7 -->
+  - [x] 7.1 `get_default_*()` factories; honor `BASEBALLPY_HOME` after import
+  - [x] 7.2 Wire `StreamingConfig`/`QuarantineConfig`/`PipelineConfig`; remove dead `models.py`
+- [x] 8. Property tests (H-12) <!-- id: 8 -->
+- [x] 9. Verification <!-- id: 9 -->
+  - [x] 9.1 `uv run pytest`, `uvx ruff check .`, `uvx ruff format --check .`, `uvx mypy --strict src`
+  - [x] 9.2 Manual: run each source against live endpoints for a small window; inspect `audit.jsonl`, `quarantine/`, manifests; kill mid-download, re-run, confirm resume
+- [x] 10. Docs <!-- id: 10 -->
+  - [x] 10.1 ADR 22; merge spec deltas into `openspec/specs/*`; update README/CLAUDE.md

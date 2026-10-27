@@ -35,3 +35,12 @@ The system MUST provide a CLI tool under `baseballpy audit` allowing users to in
 - **GIVEN** an `audit.jsonl` containing historical operations
 - **WHEN** user executes `baseballpy audit summary --limit 10`
 - **THEN** a colorized `rich` table prints the last 10 operations with clear visual status flags.
+
+### Requirement: Cancellation Is Not Success
+`track`/`async_track` MUST record `CANCELLED` for `CancelledError`/`KeyboardInterrupt` and `FAILURE` for other exceptions, then re-raise.
+
+### Requirement: Cache Hit Accuracy
+Every source MUST set `cache_hit` true when no network request was made.
+
+### Requirement: Lazy Logger
+The default audit logger MUST be created on first use so `BASEBALLPY_HOME` set after import is honored.

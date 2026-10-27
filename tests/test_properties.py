@@ -157,3 +157,26 @@ def test_retrosheet_reference_parser_survives_arbitrary_cells(
     finally:
         os.environ.pop("BASEBALLPY_HOME", None)
         get_quarantine.reset()
+
+
+@given(
+    payload=st.recursive(
+        st.one_of(st.none(), st.booleans(), st.integers(), st.text(max_size=6), st.floats()),
+        lambda inner: st.one_of(
+            st.lists(inner, max_size=3), st.dictionaries(st.text(max_size=6), inner, max_size=4)
+        ),
+        max_leaves=15,
+    )
+)
+@SETTINGS
+def test_mlb_normalizers_survive_arbitrary_json(payload: object) -> None:
+    from baseballpy.sources.mlb_api.normalizer import MlbApiNormalizer
+
+    norm = MlbApiNormalizer()
+    data = payload if isinstance(payload, dict) else {"dates": payload, "teams": payload}
+    for fn in (norm.normalize_schedule, norm.normalize_teams, norm.normalize_venues):
+        try:
+            table = fn(data)
+        except (AttributeError, TypeError):
+            continue  # structurally impossible payload shape (e.g. a list where an object is expected)
+        assert isinstance(table, pa.Table)

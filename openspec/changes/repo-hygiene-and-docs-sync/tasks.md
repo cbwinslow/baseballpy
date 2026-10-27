@@ -2,22 +2,22 @@
 
 Can start immediately for items 1-3 and 5 (independent of other changes); items 4, 6, 7 finish last.
 
-- [ ] 1. License alignment (G-1) <!-- id: 1 -->
-  - [ ] 1.1 Update `CLAUDE.md`, `openspec/project.md`, README, `CITATION.cff` to GPL-3.0-or-later; add baseballpy + Retrosheet notices to `NOTICE`
-  - [ ] 1.2 Write `docs/DATA_LICENSES.md` quoting each upstream's terms with links (read from upstream repos/pages; do not paraphrase legal text); add `--licenses` flag to `--version`
-  - [ ] 1.3 (Only if owner chooses Apache-2.0) run the fallback list in design §1
-  - [ ] 1.4 ADR 26
-- [ ] 2. Shared helpers and cleanup (G-4, G-5) <!-- id: 2 -->
-  - [ ] 2.1 `core/coerce.py` (`CoercionError`, `to_int/to_float/to_bool/to_date`); replace the four `_safe_*` copies; callers quarantine on `CoercionError`
-  - [ ] 2.2 `core/lazy.py` `lazy_singleton`
-  - [ ] 2.3 Remove `assert` from `PolarsSink`; hoist inline imports; add codes+reasons to every `# type: ignore`
-  - [ ] 2.4 Docstrings on every public class/function/module (ruff `D1` clean)
-  - [ ] 2.5 Collapse sync/async twins in Lahman/Chadwick extractors onto `HttpClient`
-- [ ] 3. Dependencies (G-7) <!-- id: 3 -->
-  - [ ] 3.1 Apply the decision table: remove `fsspec`, `websockets` from defaults; split `dlt` extras (`dlt-postgres`, `dlt-snowflake`, `dlt-bigquery`, `dlt-motherduck`); verify `retrosheetpy`/`chadwickpy` extras match actual imports
-  - [ ] 3.2 Add dev deps `pytest-socket`, `pytest-timeout`; configure `--disable-socket` default with `live` marker opt-out
-  - [ ] 3.3 Use `narwhals` for `to_dataframe(backend=...)`; add `baseballpy.scan(dataset)` Polars `scan_parquet` helper; use `pq.ParquetWriter`/`write_to_dataset` in stores
-  - [ ] 3.4 `uv lock`; `uv sync --all-extras`; confirm install of core-only works (`uv sync` with no extras) and CLI starts
+- [x] 1. License alignment (G-1) <!-- id: 1 -->
+  - [x] 1.1 Update `CLAUDE.md`, `openspec/project.md`, README, `CITATION.cff` to GPL-3.0-or-later; add baseballpy + Retrosheet notices to `NOTICE`
+  - [x] 1.2 Write `docs/DATA_LICENSES.md` quoting each upstream's terms with links (read from upstream repos/pages; do not paraphrase legal text); add `--licenses` flag to `--version`
+  - [x] 1.3 (n/a: GPL-3.0-or-later retained, no Apache fallback needed)
+  - [x] 1.4 ADR 26
+- [x] 2. Shared helpers and cleanup (G-4, G-5) <!-- id: 2 -->
+  - [x] 2.1 `core/coerce.py` (`CoercionError`, `to_int/to_float/to_bool/to_date`); replace the four `_safe_*` copies; callers quarantine on `CoercionError`
+  - [x] 2.2 `core/lazy.py` `lazy_singleton`
+  - [x] 2.3 Remove `assert` from `PolarsSink`; hoist inline imports; add codes+reasons to every `# type: ignore`
+  - [x] 2.4 Docstrings on every public class/function/module (ruff `D1` clean)
+  - [x] 2.5 Collapse sync/async twins in Lahman/Chadwick extractors onto `HttpClient`
+- [x] 3. Dependencies (G-7) <!-- id: 3 -->
+  - [x] 3.1 Apply the decision table: remove `fsspec`, `websockets` from defaults; split `dlt` extras (`dlt-postgres`, `dlt-snowflake`, `dlt-bigquery`, `dlt-motherduck`); verify `retrosheetpy`/`chadwickpy` extras match actual imports
+  - [x] 3.2 Add dev deps `pytest-socket`, `pytest-timeout`; configure `--disable-socket` default with `live` marker opt-out
+  - [x] 3.3 Use `narwhals` for `to_dataframe(backend=...)`; add `baseballpy.scan(dataset)` Polars `scan_parquet` helper; use `pq.ParquetWriter`/`write_to_dataset` in stores
+  - [x] 3.4 `uv lock`; `uv sync --all-extras`; confirm install of core-only works (`uv sync` with no extras) and CLI starts
 - [ ] 4. Lint/type/test policy (G-5, G-9) <!-- id: 4 -->
   - [ ] 4.1 Extend ruff config (`D1`, `S`, `PLR0912`, `PLR0915`) and fix findings or add justified per-file ignores
   - [ ] 4.2 `tests/test_architecture.py` (import boundaries, AST scan for bare/swallowing excepts, `safe=False`, `assert` in src)

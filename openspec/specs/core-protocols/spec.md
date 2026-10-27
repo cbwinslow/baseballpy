@@ -6,7 +6,7 @@ Defines the decoupled `typing.Protocol` interfaces governing data extraction, sc
 ## Requirements
 
 ### Requirement: Decoupled Protocol Hierarchy
-The system MUST decouple network extraction, schema normalization, and storage ingestion via strict Python `typing.Protocol` classes, preventing direct dependencies between network I/O and storage engines.
+Extractors, normalizers and sinks MUST structurally satisfy their protocols including method signatures; a contract test MUST verify signatures (not only `isinstance`) for every registered source.
 
 #### Scenario: Custom Extractor with Standard Sink
 - **GIVEN** an extractor implementing `ExtractorProtocol` and a sink implementing `SinkProtocol`

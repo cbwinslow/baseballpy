@@ -416,7 +416,7 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 ---
 
 ## ADR 22: Hardened Ingestion Core (HttpClient, Freshness, Quarantine, Manifest Locking)
-- **Status:** Proposed (OpenSpec change `harden-ingestion-core`).
+- **Status:** Accepted — implemented (OpenSpec change `harden-ingestion-core`).
 - **Context:** Review found unused rate limiters, a never-read TTL, silent failures, a non-thread-safe manifest, and non-conformant sinks.
 - **Decision:** All network I/O goes through `core/http.HttpClient`; cache freshness is a first-class `CachePolicy` (historical seasons immutable, current data TTL); unparseable rows go to a dead-letter quarantine; manifests use lockfile + merge-on-save; audit records `CANCELLED`; sinks gain keyed upsert and identifier validation.
 - **Consequences:** One place to tune networking; stale-data bugs removed; slight latency cost for lock acquisition; `default_audit_logger` becomes lazy.
@@ -443,7 +443,7 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Consequences:** One code path for resume/audit/quarantine; `ingest all` possible; `*Source` classes become facades.
 
 ## ADR 26: License Position, Dependency Review, CI and Docs Policy
-- **Status:** Proposed (OpenSpec change `repo-hygiene-and-docs-sync`).
+- **Status:** Accepted — license, helpers and dependency decisions implemented; CI/docs/test-policy parts pending (OpenSpec change `repo-hygiene-and-docs-sync`).
 - **Context:** `CLAUDE.md` (Apache-2.0) contradicted `LICENSE`/`pyproject` (GPL-3.0-or-later); `chadwickpy` is GPL; several dependencies were unused or under-used; no CI.
 - **Decision:** Default to GPL-3.0-or-later consistently (owner may override; fallback tasks documented); isolate GPL imports in one adapter regardless; apply the dependency decision table (remove `fsspec`/`websockets` defaults, split `dlt` extras, adopt `narwhals`/`polars` helpers); add CI with coverage gate, socket guard, live-test separation; generate docs and fail CI on drift.
 - **Consequences:** Smaller default install; enforced architecture boundaries by tests; license clarity for downstream users.
