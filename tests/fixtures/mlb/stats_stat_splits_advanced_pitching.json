@@ -1,0 +1,213 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "statSplitsAdvanced"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "totalSplits": 97694,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "winningPercentage": ".---",
+      "runsScoredPer9": "0.00",
+      "battersFaced": 18,
+      "babip": ".333",
+      "obp": ".353",
+      "slg": ".333",
+      "ops": ".686",
+      "homeRunsPer9": "0.00",
+      "inheritedRunners": 1,
+      "inheritedRunnersScored": 0,
+      "bequeathedRunners": 0,
+      "bequeathedRunnersScored": 0,
+      "stolenBases": 0,
+      "caughtStealing": 0,
+      "qualityStarts": 0,
+      "gamesFinished": 1,
+      "doubles": 1,
+      "triples": 0,
+      "gidp": 1,
+      "wildPitches": 0,
+      "balks": 0,
+      "swingAndMisses": 5,
+      "strikeoutsMinusWalksPercentage": ".056",
+      "whiffPercentage": ".139",
+      "strikePercentage": ".620",
+      "pitchesPerInning": "15.69",
+      "pitchesPerPlateAppearance": "3.778",
+      "walksPerPlateAppearance": ".111",
+      "strikeoutsPerPlateAppearance": ".167",
+      "homeRunsPerPlateAppearance": ".000",
+      "walksPerStrikeout": ".667",
+      "iso": ".067"
+     },
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 663562,
+      "fullName": "Noah Davis",
+      "link": "/api/v1/people/663562",
+      "firstName": "Noah",
+      "lastName": "Davis"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "rank": 1,
+     "split": {
+      "code": "dtu",
+      "description": "On Tuesdays",
+      "sortOrder": 52
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "battersFaced": 16,
+      "babip": ".400",
+      "obp": ".313",
+      "slg": ".625",
+      "ops": ".938",
+      "homeRunsPer9": "2.25",
+      "doubles": 2,
+      "triples": 0,
+      "gidp": 1,
+      "wildPitches": 0,
+      "balks": 0,
+      "swingAndMisses": 5,
+      "strikeoutsMinusWalksPercentage": ".313",
+      "whiffPercentage": ".250",
+      "strikePercentage": ".770",
+      "pitchesPerInning": "6.50",
+      "pitchesPerPlateAppearance": "1.625",
+      "walksPerPlateAppearance": ".000",
+      "strikeoutsPerPlateAppearance": ".313",
+      "homeRunsPerPlateAppearance": ".063",
+      "walksPerStrikeout": ".---",
+      "iso": ".313"
+     },
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 663562,
+      "fullName": "Noah Davis",
+      "link": "/api/v1/people/663562",
+      "firstName": "Noah",
+      "lastName": "Davis"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "rank": 2,
+     "split": {
+      "code": "c22",
+      "description": "2-2 Count",
+      "sortOrder": 236
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "battersFaced": 12,
+      "babip": ".400",
+      "obp": ".455",
+      "slg": ".818",
+      "ops": "1.273",
+      "homeRunsPer9": "3.86",
+      "doubles": 1,
+      "triples": 0,
+      "gidp": 0,
+      "wildPitches": 0,
+      "balks": 0,
+      "swingAndMisses": 8,
+      "strikeoutsMinusWalksPercentage": ".000",
+      "whiffPercentage": ".205",
+      "strikePercentage": ".670",
+      "pitchesPerInning": "42.43",
+      "pitchesPerPlateAppearance": "8.250",
+      "walksPerPlateAppearance": ".000",
+      "strikeoutsPerPlateAppearance": ".000",
+      "homeRunsPerPlateAppearance": ".083",
+      "walksPerStrikeout": ".---",
+      "iso": ".364"
+     },
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 663562,
+      "fullName": "Noah Davis",
+      "link": "/api/v1/people/663562",
+      "firstName": "Noah",
+      "lastName": "Davis"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "rank": 3,
+     "split": {
+      "code": "fp",
+      "description": "First Pitch",
+      "sortOrder": 221
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [],
+   "playerPool": "ALL"
+  }
+ ]
+}

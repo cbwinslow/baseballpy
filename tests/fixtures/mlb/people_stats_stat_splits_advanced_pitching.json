@@ -1,0 +1,232 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "statSplitsAdvanced"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "winningPercentage": ".600",
+      "runsScoredPer9": "4.31",
+      "battersFaced": 204,
+      "babip": ".300",
+      "obp": ".319",
+      "slg": ".372",
+      "ops": ".691",
+      "homeRunsPer9": "0.94",
+      "inheritedRunners": 0,
+      "inheritedRunnersScored": 0,
+      "bequeathedRunners": 5,
+      "bequeathedRunnersScored": 1,
+      "stolenBases": 10,
+      "caughtStealing": 1,
+      "qualityStarts": 3,
+      "gamesFinished": 0,
+      "doubles": 9,
+      "triples": 0,
+      "gidp": 4,
+      "wildPitches": 0,
+      "balks": 0,
+      "swingAndMisses": 93,
+      "strikeoutsMinusWalksPercentage": ".152",
+      "whiffPercentage": ".242",
+      "strikePercentage": ".640",
+      "pitchesPerInning": "16.67",
+      "pitchesPerPlateAppearance": "3.922",
+      "walksPerPlateAppearance": ".083",
+      "strikeoutsPerPlateAppearance": ".235",
+      "homeRunsPerPlateAppearance": ".025",
+      "walksPerStrikeout": ".354",
+      "iso": ".131"
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "split": {
+      "code": "h",
+      "description": "Home Games",
+      "sortOrder": 1
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "winningPercentage": ".625",
+      "runsScoredPer9": "2.87",
+      "battersFaced": 186,
+      "babip": ".243",
+      "obp": ".258",
+      "slg": ".343",
+      "ops": ".601",
+      "homeRunsPer9": "1.15",
+      "inheritedRunners": 0,
+      "inheritedRunnersScored": 0,
+      "bequeathedRunners": 0,
+      "bequeathedRunnersScored": 0,
+      "stolenBases": 5,
+      "caughtStealing": 1,
+      "qualityStarts": 5,
+      "gamesFinished": 0,
+      "doubles": 5,
+      "triples": 1,
+      "gidp": 3,
+      "wildPitches": 0,
+      "balks": 0,
+      "swingAndMisses": 91,
+      "strikeoutsMinusWalksPercentage": ".210",
+      "whiffPercentage": ".255",
+      "strikePercentage": ".660",
+      "pitchesPerInning": "15.62",
+      "pitchesPerPlateAppearance": "3.946",
+      "walksPerPlateAppearance": ".065",
+      "strikeoutsPerPlateAppearance": ".274",
+      "homeRunsPerPlateAppearance": ".032",
+      "walksPerStrikeout": ".235",
+      "iso": ".145"
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "split": {
+      "code": "a",
+      "description": "Away Games",
+      "sortOrder": 2
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "winningPercentage": ".500",
+      "runsScoredPer9": "4.17",
+      "battersFaced": 156,
+      "babip": ".313",
+      "obp": ".327",
+      "slg": ".294",
+      "ops": ".621",
+      "homeRunsPer9": "0.25",
+      "inheritedRunners": 0,
+      "inheritedRunnersScored": 0,
+      "bequeathedRunners": 2,
+      "bequeathedRunnersScored": 0,
+      "stolenBases": 8,
+      "caughtStealing": 1,
+      "qualityStarts": 2,
+      "gamesFinished": 0,
+      "doubles": 6,
+      "triples": 0,
+      "gidp": 5,
+      "wildPitches": 0,
+      "balks": 0,
+      "swingAndMisses": 79,
+      "strikeoutsMinusWalksPercentage": ".160",
+      "whiffPercentage": ".264",
+      "strikePercentage": ".640",
+      "pitchesPerInning": "16.99",
+      "pitchesPerPlateAppearance": "3.994",
+      "walksPerPlateAppearance": ".090",
+      "strikeoutsPerPlateAppearance": ".250",
+      "homeRunsPerPlateAppearance": ".006",
+      "walksPerStrikeout": ".359",
+      "iso": ".066"
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "split": {
+      "code": "d",
+      "description": "Day Games",
+      "sortOrder": 3
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    }
+   ]
+  }
+ ]
+}

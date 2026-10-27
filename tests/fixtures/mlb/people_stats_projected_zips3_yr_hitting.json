@@ -1,0 +1,80 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "projected_Zips3YR"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2026",
+     "stat": {
+      "gamesPlayed": 144,
+      "runs": 122,
+      "doubles": 27,
+      "triples": 4,
+      "homeRuns": 44,
+      "strikeOuts": 159,
+      "baseOnBalls": 88,
+      "intentionalWalks": 6,
+      "hits": 154,
+      "hitByPitch": 4,
+      "avg": ".274",
+      "atBats": 562,
+      "obp": ".374",
+      "slg": ".571",
+      "ops": ".945",
+      "caughtStealing": 3,
+      "stolenBases": 21,
+      "stolenBasePercentage": ".875",
+      "caughtStealingPercentage": ".125",
+      "groundIntoDoublePlay": 14,
+      "plateAppearances": 658,
+      "totalBases": 321,
+      "rbi": 119,
+      "sacBunts": 0,
+      "sacFlies": 4,
+      "babip": ".303",
+      "atBatsPerHomeRun": "12.77",
+      "woba": 0.397372177316367,
+      "wRaa": 45.0450023900176,
+      "wRc": 122.792773697844,
+      "wRcPlus": 158.307027504505,
+      "rar": 52.3218037211952,
+      "war": 5.35317531793673,
+      "batting": 45.4716801087762,
+      "fielding": 0.0,
+      "baseRunning": 1.88217181898654,
+      "positional": -16.9238683127572,
+      "wLeague": 1.85176413459703,
+      "replacement": 20.0400559715927,
+      "spd": 0.0,
+      "ubr": 0.0,
+      "wSb": 0.0,
+      "strikeoutPercent": 0.241641,
+      "walkPercent": 0.133739,
+      "ratioBBSO": 0.553459,
+      "iso": 0.297153,
+      "dollars": 42.8254025434939,
+      "wbsr": 1.88217181898654
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

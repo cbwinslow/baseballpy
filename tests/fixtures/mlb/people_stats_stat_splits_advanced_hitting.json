@@ -1,0 +1,193 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "statSplitsAdvanced"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "plateAppearances": 359,
+      "totalBases": 206,
+      "leftOnBase": 112,
+      "sacBunts": 0,
+      "sacFlies": 3,
+      "babip": ".344",
+      "extraBaseHits": 47,
+      "hitByPitch": 5,
+      "gidp": 3,
+      "gidpOpp": 42,
+      "numberOfPitches": 1407,
+      "pitchesPerPlateAppearance": "3.919",
+      "walksPerPlateAppearance": ".120",
+      "strikeoutsPerPlateAppearance": ".198",
+      "homeRunsPerPlateAppearance": ".078",
+      "walksPerStrikeout": ".606",
+      "iso": ".348",
+      "reachedOnError": 4,
+      "walkOffs": 2
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "split": {
+      "code": "h",
+      "description": "Home Games",
+      "sortOrder": 1
+     },
+     "position": {
+      "code": "Y",
+      "name": "Two-Way Player",
+      "type": "Two-Way Player",
+      "abbreviation": "TWP"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "plateAppearances": 372,
+      "totalBases": 205,
+      "leftOnBase": 124,
+      "sacBunts": 0,
+      "sacFlies": 2,
+      "babip": ".329",
+      "extraBaseHits": 52,
+      "hitByPitch": 1,
+      "gidp": 4,
+      "gidpOpp": 50,
+      "numberOfPitches": 1431,
+      "pitchesPerPlateAppearance": "3.847",
+      "walksPerPlateAppearance": ".102",
+      "strikeoutsPerPlateAppearance": ".245",
+      "homeRunsPerPlateAppearance": ".070",
+      "walksPerStrikeout": ".418",
+      "iso": ".326",
+      "reachedOnError": 2,
+      "walkOffs": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "split": {
+      "code": "a",
+      "description": "Away Games",
+      "sortOrder": 2
+     },
+     "position": {
+      "code": "Y",
+      "name": "Two-Way Player",
+      "type": "Two-Way Player",
+      "abbreviation": "TWP"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "plateAppearances": 196,
+      "totalBases": 134,
+      "leftOnBase": 54,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".387",
+      "extraBaseHits": 32,
+      "hitByPitch": 3,
+      "gidp": 1,
+      "gidpOpp": 19,
+      "numberOfPitches": 779,
+      "pitchesPerPlateAppearance": "3.974",
+      "walksPerPlateAppearance": ".122",
+      "strikeoutsPerPlateAppearance": ".219",
+      "homeRunsPerPlateAppearance": ".097",
+      "walksPerStrikeout": ".558",
+      "iso": ".440",
+      "reachedOnError": 2,
+      "walkOffs": 1
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "split": {
+      "code": "d",
+      "description": "Day Games",
+      "sortOrder": 3
+     },
+     "position": {
+      "code": "Y",
+      "name": "Two-Way Player",
+      "type": "Two-Way Player",
+      "abbreviation": "TWP"
+     }
+    }
+   ]
+  }
+ ]
+}

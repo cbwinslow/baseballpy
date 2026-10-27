@@ -1,0 +1,64 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "vsPlayerTotal"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 1,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 96,
+      "groundOuts": 25,
+      "airOuts": 31,
+      "doubles": 8,
+      "triples": 2,
+      "homeRuns": 9,
+      "strikeOuts": 40,
+      "baseOnBalls": 17,
+      "intentionalWalks": 3,
+      "hits": 34,
+      "hitByPitch": 0,
+      "avg": ".262",
+      "atBats": 130,
+      "obp": ".347",
+      "slg": ".562",
+      "ops": ".909",
+      "groundIntoDoublePlay": 2,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 565,
+      "plateAppearances": 147,
+      "totalBases": 73,
+      "rbi": 22,
+      "leftOnBase": 61,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".309",
+      "groundOutsToAirouts": "0.81",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "14.44"
+     },
+     "opponent": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "gameType": "R",
+     "numTeams": 43,
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     }
+    }
+   ]
+  }
+ ]
+}

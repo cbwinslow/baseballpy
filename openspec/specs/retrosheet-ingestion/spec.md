@@ -51,3 +51,6 @@ Parsing MUST stream into Parquet row-group batches (one per source file) without
 
 ### Requirement: GPL Boundary
 `chadwickpy` MUST be imported only from `sources/retrosheet/_chadwick_adapter.py`, which raises an `ImportError` naming the `retrosheet` extra when the package is missing.
+
+### Requirement: Box-Score Game Accounts (interim)
+Every `.EB*` file MUST be parsed: `id`/`version`/`info` into `box_games` (typed, `unknown` as NULL, unknown keys in `_extras`), `start` into `box_starters`, `stat,bline` into `box_batting_lines`, and every other record (including unknown kinds) losslessly into `box_records` with its raw line; an unexpected field count for a typed kind MUST raise. Typed datasets for the remaining kinds follow once the official layout document is available.

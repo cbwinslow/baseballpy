@@ -199,6 +199,35 @@ def docs() -> None:
     pass
 
 
+@docs.command("coverage")
+@click.option("--docs-dir", type=click.Path(file_okay=False, path_type=Path), default=Path("docs"))
+@click.option(
+    "--write-baseline",
+    is_flag=True,
+    help="Raise docs/columns/coverage_baseline.json to the current counts (never lowers it).",
+)
+def docs_coverage(docs_dir: Path, write_baseline: bool) -> None:
+    """Show how many columns of each source have a cited description."""
+    import json as _json
+
+    from baseballpy.docsgen import description_coverage
+
+    coverage = description_coverage(docs_dir)
+    table = Table(title="Column description coverage")
+    for column in ("source", "described", "total", "percent"):
+        table.add_column(column, justify="right" if column != "source" else "left")
+    for source, (described, total) in sorted(coverage.items()):
+        table.add_row(source, str(described), str(total), f"{100 * described / max(total, 1):.1f}%")
+    console.print(table)
+    if write_baseline:
+        path = docs_dir / "columns" / "coverage_baseline.json"
+        old: dict[str, int] = _json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+        new = {s: max(old.get(s, 0), d) for s, (d, _) in coverage.items()}
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(_json.dumps(new, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        console.print(f"Baseline written to [yellow]{path}[/yellow].")
+
+
 @docs.command("generate")
 @click.option("--docs-dir", type=click.Path(file_okay=False, path_type=Path), default=Path("docs"))
 @click.option(

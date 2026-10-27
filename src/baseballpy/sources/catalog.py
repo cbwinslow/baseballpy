@@ -16,6 +16,7 @@ from baseballpy.sources.mlb_api import schemas as mlb
 from baseballpy.sources.mlb_api.endpoints import SUPPORTED as MLB_ENDPOINTS
 from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
 from baseballpy.sources.retrosheet import schema as retro
+from baseballpy.sources.retrosheet.box_parser import SCHEMAS as BOX_SCHEMAS
 from baseballpy.sources.retrosheet.schema import RETROSHEET_FLAT_KEYS, RETROSHEET_FLAT_SCHEMAS
 from baseballpy.sources.statcast.lb_catalog import SUPPORTED as SAVANT_LEADERBOARDS
 from baseballpy.sources.statcast.lb_schema import LEADERBOARD_SCHEMAS
@@ -336,6 +337,37 @@ def register_all() -> dict[str, DatasetSpec]:
             flat_descriptions[flat_name],
             f"{retro_doc}#dataset-{flat_name}",
             "season" if flat_name in seasonal else "none",
+        )
+
+    box_doc = f"{retro_doc}#3b-box-score-game-accounts-eba-ebn-ebe-ebr-ebf"
+    for box_name, box_keys, box_desc in (
+        ("box_games", ("game_id",), "Games of the box-score accounts (id, version, info lines)."),
+        (
+            "box_starters",
+            ("game_id", "player_id", "side"),
+            "Starting lineups of the box-score accounts (start lines).",
+        ),
+        (
+            "box_batting_lines",
+            ("game_id", "player_id", "side", "seq"),
+            "Batting and base-running lines of the box-score accounts (stat,bline).",
+        ),
+        (
+            "box_records",
+            ("game_id", "line_no"),
+            "Every other box-account record (pinch hitters/runners, fielding, pitching, team totals, "
+            "line scores, events, comments, unknown kinds) as parsed fields plus the raw line.",
+        ),
+    ):
+        _add(
+            "retrosheet",
+            box_name,
+            f"retrosheet_{box_name}",
+            BOX_SCHEMAS[box_name],
+            box_keys,
+            box_desc,
+            box_doc,
+            "season",
         )
 
     return DATASETS

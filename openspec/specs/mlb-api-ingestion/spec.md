@@ -77,3 +77,10 @@ The streamer MUST emit a `half_inning_end` event (once) when a completed plate a
 
 ### Requirement: Provider Lists Are the Registry
 Every standings type, roster type and game type listed by the provider MUST be present in the registry (and the `GameType` enum MUST equal `/v1/gameTypes`); `baseballpy catalog audit` MUST report any difference as MISSING or STALE.
+
+### Requirement: Parameterized Stat Types
+Every stat type listed by `/v1/statTypes` MUST either have registered stat combinations (including those that need `sitCodes`, `metrics` or an opposing id) or an `unsupported` entry recording the parameters tried and the verification date; `baseballpy catalog audit` MUST report any other stat type. A request the provider answers with HTTP 500 for every subject MUST be listed with its evidence in `PROVIDER_ERRORS` rather than swallowed.
+
+#### Scenario: metric fan-out skips a known provider error
+- **WHEN** requests are built for `people_stats_metric_averages_pitching` with metrics `barreledBall` and `launchSpeed`
+- **THEN** only `launchSpeed` is requested

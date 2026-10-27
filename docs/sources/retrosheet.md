@@ -25,7 +25,7 @@
 | `<year>*.EVE`, `.EVR`, `.EVF` (postseason, all-star, special games) | `event_files/` | `events_postseason` |
 | `<year>.EDA`, `.EDN`, `.EDF` (play-by-play deduced from box scores) | `event_files/` | `events_deduced` |
 | `TEAM<year>` | `event_files/` | (used to resolve team names while parsing) |
-| `<year>.EBA`, `.EBN`, `.EBE`, `.EBR`, `.EBF` (box-score game accounts) | `box_files/` | **raw only** — see below |
+| `<year>.EBA`, `.EBN`, `.EBE`, `.EBR`, `.EBF` (box-score game accounts) | `box_files/` | `box_games`, `box_starters`, `box_batting_lines`, `box_records` — see the box-account section |
 | `<TEAM><year>.ROS` | `rosters/` | `rosters` |
 | `GL<year>.TXT` | `gamelogs/` | `gamelogs` |
 | `<year>schedule.csv` (`2026SCHEDULE.CSV`) | `schedule/` | `schedule` |
@@ -35,7 +35,7 @@
 | `gamelog/GL{WC,DV,LC,WS,AS}.TXT` | `gamelogs_postseason/` | `gamelogs_postseason` |
 | `reference/<name>.csv` | `reference_<name>/` | `reference_<name>` |
 
-**Box-score game accounts (`.EB*`) are stored raw only.** They use Retrosheet's box-score record format (`stat,bline`, `stat,pline`, `stat,dline`, `line`, `event` records) rather than play-by-play, so the event parser yields no rows for them. The meaning of every field is specified on retrosheet.org (not reachable for automated fetches), so baseballpy does not guess a column mapping; `boxscores_batting` and `boxscores_pitching` are instead *derived* from the play-by-play files, which cover every game that has play-by-play. Parsing the box accounts is a documented follow-up.
+**Box-score game accounts (`.EB*`)** are stored raw (`raw/retrosheet/box_files/`) and parsed into four datasets (section below); `boxscores_batting` and `boxscores_pitching` stay *derived* from the play-by-play files.
 
 ## Datasets Covered
 
@@ -59,6 +59,18 @@ One row per player appearance (dataset `boxscores_batting`).
 
 #### B. Pitching Box Score Table (`retrosheet_box_pitching`)
 One row per pitcher appearance (dataset `boxscores_pitching`).
+
+### 3b. Box-Score Game Accounts (`.EBA`, `.EBN`, `.EBE`, `.EBR`, `.EBF`)
+428 files (1871-2025) holding games that have no (or no complete) play-by-play, e.g. most of 1871-1920. One game per `id,<GAME_ID>` record; record kinds profiled on the real 1950, 2023 and 2025 files (6,194 games for the first two, all 10 local files parse; 2023 `.EBA` has 1,215 games = half of 2,430, matching the game logs):
+
+| Record | Fields (verified on the data) | Dataset |
+|---|---|---|
+| `id`, `version` (always `3`), `info,<key>,<value>` | game id, version, 30 known info keys (visteam, hometeam, date `YYYY/MM/DD`, number, starttime, daynight, usedh, umps, site, attendance, temp, wind, field, precip, sky, timeofgame, innings, tiebreaker, gametype, wp, lp, save, gwrbi, oscorer); `unknown` is NULL; other keys go to `_extras` | `box_games` |
+| `start,<id>,"<name>",<side>,<order>,<pos>` | 6 fields | `box_starters` |
+| `stat,bline,<id>,<side>,<pos>,<seq>,<17 counting stats>` | `ab r h 2b 3b hr rbi sh sf hbp bb ibb k sb cs gidp int` (columns `double`, `triple`, `interference` for the three non-identifier names) | `box_batting_lines` |
+| `stat,phline`, `stat,prline`, `stat,dline`, `stat,pline`, `stat,tline`, `line`, `event,<kind>` (`hrline dpline tpline sbline csline hpline`), `com`, any unknown kind | parsed fields plus the raw line | `box_records` |
+
+**Interim, honest status.** The official layout document (`https://www.retrosheet.org/boxfile.txt`) was not reachable from the build environment, so only the kinds whose layout is confirmed by both the data and independent descriptions are typed; every other record is kept losslessly in `box_records` (nothing is dropped) until the OpenSpec change `retrosheet-box-accounts` task 1.1 supplies the document and the remaining kinds get typed datasets. Field counts are strict: an unexpected count raises `BoxParseError` rather than guessing. Files are UTF-8 (Latin-1 fallback); innings played/pitched are stored as outs in the raw lines (as published).
 
 ### 4. Daily Player Splits (`daily`)
 Derived with `chadwickpy.tools.daily.daily_lines` (154 columns) — dataset `daily_splits`.
@@ -84,6 +96,13 @@ Retrosheet data is immutable at a pinned commit: raw files and processed chunks 
 
 ## Dataset reference (generated)
 
+<!-- BEGIN GENERATED:retrosheet.description_sources -->
+### Description sources
+
+No column descriptions have been written for this source yet.
+
+<!-- END GENERATED:retrosheet.description_sources -->
+
 <!-- BEGIN GENERATED:retrosheet.boxscores_batting -->
 ### Dataset: boxscores_batting
 
@@ -96,29 +115,29 @@ Batting box score lines.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `game_id` | string | yes | — |  |
-| `team_id` | string | yes | — |  |
-| `player_id` | string | yes | — |  |
-| `player_name` | string | yes | — |  |
-| `slot` | int8 | yes | — |  |
-| `pos` | int8 | yes | — |  |
-| `ab` | int16 | yes | — |  |
-| `r` | int16 | yes | — |  |
-| `h` | int16 | yes | — |  |
-| `d` | int16 | yes | — |  |
-| `t` | int16 | yes | — |  |
-| `hr` | int16 | yes | — |  |
-| `rbi` | int16 | yes | — |  |
-| `bb` | int16 | yes | — |  |
-| `ibb` | int16 | yes | — |  |
-| `so` | int16 | yes | — |  |
-| `hbp` | int16 | yes | — |  |
-| `sh` | int16 | yes | — |  |
-| `sf` | int16 | yes | — |  |
-| `sb` | int16 | yes | — |  |
-| `cs` | int16 | yes | — |  |
-| `gidp` | int16 | yes | — |  |
-| `pa` | int16 | yes | — |  |
+| `game_id` | string | yes | — | TODO |
+| `team_id` | string | yes | — | TODO |
+| `player_id` | string | yes | — | TODO |
+| `player_name` | string | yes | — | TODO |
+| `slot` | int8 | yes | — | TODO |
+| `pos` | int8 | yes | — | TODO |
+| `ab` | int16 | yes | — | TODO |
+| `r` | int16 | yes | — | TODO |
+| `h` | int16 | yes | — | TODO |
+| `d` | int16 | yes | — | TODO |
+| `t` | int16 | yes | — | TODO |
+| `hr` | int16 | yes | — | TODO |
+| `rbi` | int16 | yes | — | TODO |
+| `bb` | int16 | yes | — | TODO |
+| `ibb` | int16 | yes | — | TODO |
+| `so` | int16 | yes | — | TODO |
+| `hbp` | int16 | yes | — | TODO |
+| `sh` | int16 | yes | — | TODO |
+| `sf` | int16 | yes | — | TODO |
+| `sb` | int16 | yes | — | TODO |
+| `cs` | int16 | yes | — | TODO |
+| `gidp` | int16 | yes | — | TODO |
+| `pa` | int16 | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.boxscores_batting -->
 
@@ -134,32 +153,32 @@ Pitching box score lines.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `game_id` | string | yes | — |  |
-| `team_id` | string | yes | — |  |
-| `pitcher_id` | string | yes | — |  |
-| `pitcher_name` | string | yes | — |  |
-| `starter_fl` | bool | yes | — |  |
-| `seq` | int8 | yes | — |  |
-| `outs_recorded` | int16 | yes | — |  |
-| `bf` | int16 | yes | — |  |
-| `h` | int16 | yes | — |  |
-| `r` | int16 | yes | — |  |
-| `er` | int16 | yes | — |  |
-| `bb` | int16 | yes | — |  |
-| `ibb` | int16 | yes | — |  |
-| `so` | int16 | yes | — |  |
-| `hr` | int16 | yes | — |  |
-| `hbp` | int16 | yes | — |  |
-| `wp` | int16 | yes | — |  |
-| `bk` | int16 | yes | — |  |
-| `pitches` | int16 | yes | — |  |
-| `strikes` | int16 | yes | — |  |
-| `w` | bool | yes | — |  |
-| `l` | bool | yes | — |  |
-| `sv` | bool | yes | — |  |
-| `cg` | bool | yes | — |  |
-| `sho` | bool | yes | — |  |
-| `gf` | bool | yes | — |  |
+| `game_id` | string | yes | — | TODO |
+| `team_id` | string | yes | — | TODO |
+| `pitcher_id` | string | yes | — | TODO |
+| `pitcher_name` | string | yes | — | TODO |
+| `starter_fl` | bool | yes | — | TODO |
+| `seq` | int8 | yes | — | TODO |
+| `outs_recorded` | int16 | yes | — | TODO |
+| `bf` | int16 | yes | — | TODO |
+| `h` | int16 | yes | — | TODO |
+| `r` | int16 | yes | — | TODO |
+| `er` | int16 | yes | — | TODO |
+| `bb` | int16 | yes | — | TODO |
+| `ibb` | int16 | yes | — | TODO |
+| `so` | int16 | yes | — | TODO |
+| `hr` | int16 | yes | — | TODO |
+| `hbp` | int16 | yes | — | TODO |
+| `wp` | int16 | yes | — | TODO |
+| `bk` | int16 | yes | — | TODO |
+| `pitches` | int16 | yes | — | TODO |
+| `strikes` | int16 | yes | — | TODO |
+| `w` | bool | yes | — | TODO |
+| `l` | bool | yes | — | TODO |
+| `sv` | bool | yes | — | TODO |
+| `cg` | bool | yes | — | TODO |
+| `sho` | bool | yes | — | TODO |
+| `gf` | bool | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.boxscores_pitching -->
 
@@ -175,160 +194,160 @@ Daily player appearance lines.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `GAME_ID` | string | yes | — |  |
-| `GAME_DT` | string | yes | — |  |
-| `GAME_CT` | int16 | yes | — |  |
-| `APPEAR_DT` | string | yes | — |  |
-| `TEAM_ID` | string | yes | — |  |
-| `PLAYER_ID` | string | yes | — |  |
-| `SLOT_CT` | int16 | yes | — |  |
-| `SEQ_CT` | int16 | yes | — |  |
-| `HOME_FL` | int8 | yes | — |  |
-| `OPPONENT_ID` | string | yes | — |  |
-| `PARK_ID` | string | yes | — |  |
-| `B_G` | int16 | yes | — |  |
-| `B_PA` | int16 | yes | — |  |
-| `B_AB` | int16 | yes | — |  |
-| `B_R` | int16 | yes | — |  |
-| `B_H` | int16 | yes | — |  |
-| `B_TB` | int16 | yes | — |  |
-| `B_2B` | int16 | yes | — |  |
-| `B_3B` | int16 | yes | — |  |
-| `B_HR` | int16 | yes | — |  |
-| `B_HR4` | int16 | yes | — |  |
-| `B_RBI` | int16 | yes | — |  |
-| `B_GW` | int16 | yes | — |  |
-| `B_BB` | int16 | yes | — |  |
-| `B_IBB` | int16 | yes | — |  |
-| `B_SO` | int16 | yes | — |  |
-| `B_GDP` | int16 | yes | — |  |
-| `B_HP` | int16 | yes | — |  |
-| `B_SH` | int16 | yes | — |  |
-| `B_SF` | int16 | yes | — |  |
-| `B_SB` | int16 | yes | — |  |
-| `B_CS` | int16 | yes | — |  |
-| `B_XI` | int16 | yes | — |  |
-| `B_G_DH` | int8 | yes | — |  |
-| `B_G_PH` | int8 | yes | — |  |
-| `B_G_PR` | int8 | yes | — |  |
-| `P_G` | int16 | yes | — |  |
-| `P_GS` | int16 | yes | — |  |
-| `P_CG` | int16 | yes | — |  |
-| `P_SHO` | int16 | yes | — |  |
-| `P_GF` | int16 | yes | — |  |
-| `P_W` | int16 | yes | — |  |
-| `P_L` | int16 | yes | — |  |
-| `P_SV` | int16 | yes | — |  |
-| `P_OUT` | int16 | yes | — |  |
-| `P_TBF` | int16 | yes | — |  |
-| `P_AB` | int16 | yes | — |  |
-| `P_R` | int16 | yes | — |  |
-| `P_ER` | int16 | yes | — |  |
-| `P_H` | int16 | yes | — |  |
-| `P_TB` | int16 | yes | — |  |
-| `P_2B` | int16 | yes | — |  |
-| `P_3B` | int16 | yes | — |  |
-| `P_HR` | int16 | yes | — |  |
-| `P_HR4` | int16 | yes | — |  |
-| `P_BB` | int16 | yes | — |  |
-| `P_IBB` | int16 | yes | — |  |
-| `P_SO` | int16 | yes | — |  |
-| `P_GDP` | int16 | yes | — |  |
-| `P_HP` | int16 | yes | — |  |
-| `P_SH` | int16 | yes | — |  |
-| `P_SF` | int16 | yes | — |  |
-| `P_XI` | int16 | yes | — |  |
-| `P_WP` | int16 | yes | — |  |
-| `P_BK` | int16 | yes | — |  |
-| `P_IR` | int16 | yes | — |  |
-| `P_IRS` | int16 | yes | — |  |
-| `P_GO` | int16 | yes | — |  |
-| `P_AO` | int16 | yes | — |  |
-| `P_PITCH` | int16 | yes | — |  |
-| `P_STRIKE` | int16 | yes | — |  |
-| `F_P_G` | int16 | yes | — |  |
-| `F_P_GS` | int16 | yes | — |  |
-| `F_P_OUT` | int16 | yes | — |  |
-| `F_P_TC` | int16 | yes | — |  |
-| `F_P_PO` | int16 | yes | — |  |
-| `F_P_A` | int16 | yes | — |  |
-| `F_P_E` | int16 | yes | — |  |
-| `F_P_DP` | int16 | yes | — |  |
-| `F_P_TP` | int16 | yes | — |  |
-| `F_C_G` | int16 | yes | — |  |
-| `F_C_GS` | int16 | yes | — |  |
-| `F_C_OUT` | int16 | yes | — |  |
-| `F_C_TC` | int16 | yes | — |  |
-| `F_C_PO` | int16 | yes | — |  |
-| `F_C_A` | int16 | yes | — |  |
-| `F_C_E` | int16 | yes | — |  |
-| `F_C_DP` | int16 | yes | — |  |
-| `F_C_TP` | int16 | yes | — |  |
-| `F_C_PB` | int16 | yes | — |  |
-| `F_C_XI` | int16 | yes | — |  |
-| `F_1B_G` | int16 | yes | — |  |
-| `F_1B_GS` | int16 | yes | — |  |
-| `F_1B_OUT` | int16 | yes | — |  |
-| `F_1B_TC` | int16 | yes | — |  |
-| `F_1B_PO` | int16 | yes | — |  |
-| `F_1B_A` | int16 | yes | — |  |
-| `F_1B_E` | int16 | yes | — |  |
-| `F_1B_DP` | int16 | yes | — |  |
-| `F_1B_TP` | int16 | yes | — |  |
-| `F_2B_G` | int16 | yes | — |  |
-| `F_2B_GS` | int16 | yes | — |  |
-| `F_2B_OUT` | int16 | yes | — |  |
-| `F_2B_TC` | int16 | yes | — |  |
-| `F_2B_PO` | int16 | yes | — |  |
-| `F_2B_A` | int16 | yes | — |  |
-| `F_2B_E` | int16 | yes | — |  |
-| `F_2B_DP` | int16 | yes | — |  |
-| `F_2B_TP` | int16 | yes | — |  |
-| `F_3B_G` | int16 | yes | — |  |
-| `F_3B_GS` | int16 | yes | — |  |
-| `F_3B_OUT` | int16 | yes | — |  |
-| `F_3B_TC` | int16 | yes | — |  |
-| `F_3B_PO` | int16 | yes | — |  |
-| `F_3B_A` | int16 | yes | — |  |
-| `F_3B_E` | int16 | yes | — |  |
-| `F_3B_DP` | int16 | yes | — |  |
-| `F_3B_TP` | int16 | yes | — |  |
-| `F_SS_G` | int16 | yes | — |  |
-| `F_SS_GS` | int16 | yes | — |  |
-| `F_SS_OUT` | int16 | yes | — |  |
-| `F_SS_TC` | int16 | yes | — |  |
-| `F_SS_PO` | int16 | yes | — |  |
-| `F_SS_A` | int16 | yes | — |  |
-| `F_SS_E` | int16 | yes | — |  |
-| `F_SS_DP` | int16 | yes | — |  |
-| `F_SS_TP` | int16 | yes | — |  |
-| `F_LF_G` | int16 | yes | — |  |
-| `F_LF_GS` | int16 | yes | — |  |
-| `F_LF_OUT` | int16 | yes | — |  |
-| `F_LF_TC` | int16 | yes | — |  |
-| `F_LF_PO` | int16 | yes | — |  |
-| `F_LF_A` | int16 | yes | — |  |
-| `F_LF_E` | int16 | yes | — |  |
-| `F_LF_DP` | int16 | yes | — |  |
-| `F_LF_TP` | int16 | yes | — |  |
-| `F_CF_G` | int16 | yes | — |  |
-| `F_CF_GS` | int16 | yes | — |  |
-| `F_CF_OUT` | int16 | yes | — |  |
-| `F_CF_TC` | int16 | yes | — |  |
-| `F_CF_PO` | int16 | yes | — |  |
-| `F_CF_A` | int16 | yes | — |  |
-| `F_CF_E` | int16 | yes | — |  |
-| `F_CF_DP` | int16 | yes | — |  |
-| `F_CF_TP` | int16 | yes | — |  |
-| `F_RF_G` | int16 | yes | — |  |
-| `F_RF_GS` | int16 | yes | — |  |
-| `F_RF_OUT` | int16 | yes | — |  |
-| `F_RF_TC` | int16 | yes | — |  |
-| `F_RF_PO` | int16 | yes | — |  |
-| `F_RF_A` | int16 | yes | — |  |
-| `F_RF_E` | int16 | yes | — |  |
-| `F_RF_DP` | int16 | yes | — |  |
-| `F_RF_TP` | int16 | yes | — |  |
+| `GAME_ID` | string | yes | — | TODO |
+| `GAME_DT` | string | yes | — | TODO |
+| `GAME_CT` | int16 | yes | — | TODO |
+| `APPEAR_DT` | string | yes | — | TODO |
+| `TEAM_ID` | string | yes | — | TODO |
+| `PLAYER_ID` | string | yes | — | TODO |
+| `SLOT_CT` | int16 | yes | — | TODO |
+| `SEQ_CT` | int16 | yes | — | TODO |
+| `HOME_FL` | int8 | yes | — | TODO |
+| `OPPONENT_ID` | string | yes | — | TODO |
+| `PARK_ID` | string | yes | — | TODO |
+| `B_G` | int16 | yes | — | TODO |
+| `B_PA` | int16 | yes | — | TODO |
+| `B_AB` | int16 | yes | — | TODO |
+| `B_R` | int16 | yes | — | TODO |
+| `B_H` | int16 | yes | — | TODO |
+| `B_TB` | int16 | yes | — | TODO |
+| `B_2B` | int16 | yes | — | TODO |
+| `B_3B` | int16 | yes | — | TODO |
+| `B_HR` | int16 | yes | — | TODO |
+| `B_HR4` | int16 | yes | — | TODO |
+| `B_RBI` | int16 | yes | — | TODO |
+| `B_GW` | int16 | yes | — | TODO |
+| `B_BB` | int16 | yes | — | TODO |
+| `B_IBB` | int16 | yes | — | TODO |
+| `B_SO` | int16 | yes | — | TODO |
+| `B_GDP` | int16 | yes | — | TODO |
+| `B_HP` | int16 | yes | — | TODO |
+| `B_SH` | int16 | yes | — | TODO |
+| `B_SF` | int16 | yes | — | TODO |
+| `B_SB` | int16 | yes | — | TODO |
+| `B_CS` | int16 | yes | — | TODO |
+| `B_XI` | int16 | yes | — | TODO |
+| `B_G_DH` | int8 | yes | — | TODO |
+| `B_G_PH` | int8 | yes | — | TODO |
+| `B_G_PR` | int8 | yes | — | TODO |
+| `P_G` | int16 | yes | — | TODO |
+| `P_GS` | int16 | yes | — | TODO |
+| `P_CG` | int16 | yes | — | TODO |
+| `P_SHO` | int16 | yes | — | TODO |
+| `P_GF` | int16 | yes | — | TODO |
+| `P_W` | int16 | yes | — | TODO |
+| `P_L` | int16 | yes | — | TODO |
+| `P_SV` | int16 | yes | — | TODO |
+| `P_OUT` | int16 | yes | — | TODO |
+| `P_TBF` | int16 | yes | — | TODO |
+| `P_AB` | int16 | yes | — | TODO |
+| `P_R` | int16 | yes | — | TODO |
+| `P_ER` | int16 | yes | — | TODO |
+| `P_H` | int16 | yes | — | TODO |
+| `P_TB` | int16 | yes | — | TODO |
+| `P_2B` | int16 | yes | — | TODO |
+| `P_3B` | int16 | yes | — | TODO |
+| `P_HR` | int16 | yes | — | TODO |
+| `P_HR4` | int16 | yes | — | TODO |
+| `P_BB` | int16 | yes | — | TODO |
+| `P_IBB` | int16 | yes | — | TODO |
+| `P_SO` | int16 | yes | — | TODO |
+| `P_GDP` | int16 | yes | — | TODO |
+| `P_HP` | int16 | yes | — | TODO |
+| `P_SH` | int16 | yes | — | TODO |
+| `P_SF` | int16 | yes | — | TODO |
+| `P_XI` | int16 | yes | — | TODO |
+| `P_WP` | int16 | yes | — | TODO |
+| `P_BK` | int16 | yes | — | TODO |
+| `P_IR` | int16 | yes | — | TODO |
+| `P_IRS` | int16 | yes | — | TODO |
+| `P_GO` | int16 | yes | — | TODO |
+| `P_AO` | int16 | yes | — | TODO |
+| `P_PITCH` | int16 | yes | — | TODO |
+| `P_STRIKE` | int16 | yes | — | TODO |
+| `F_P_G` | int16 | yes | — | TODO |
+| `F_P_GS` | int16 | yes | — | TODO |
+| `F_P_OUT` | int16 | yes | — | TODO |
+| `F_P_TC` | int16 | yes | — | TODO |
+| `F_P_PO` | int16 | yes | — | TODO |
+| `F_P_A` | int16 | yes | — | TODO |
+| `F_P_E` | int16 | yes | — | TODO |
+| `F_P_DP` | int16 | yes | — | TODO |
+| `F_P_TP` | int16 | yes | — | TODO |
+| `F_C_G` | int16 | yes | — | TODO |
+| `F_C_GS` | int16 | yes | — | TODO |
+| `F_C_OUT` | int16 | yes | — | TODO |
+| `F_C_TC` | int16 | yes | — | TODO |
+| `F_C_PO` | int16 | yes | — | TODO |
+| `F_C_A` | int16 | yes | — | TODO |
+| `F_C_E` | int16 | yes | — | TODO |
+| `F_C_DP` | int16 | yes | — | TODO |
+| `F_C_TP` | int16 | yes | — | TODO |
+| `F_C_PB` | int16 | yes | — | TODO |
+| `F_C_XI` | int16 | yes | — | TODO |
+| `F_1B_G` | int16 | yes | — | TODO |
+| `F_1B_GS` | int16 | yes | — | TODO |
+| `F_1B_OUT` | int16 | yes | — | TODO |
+| `F_1B_TC` | int16 | yes | — | TODO |
+| `F_1B_PO` | int16 | yes | — | TODO |
+| `F_1B_A` | int16 | yes | — | TODO |
+| `F_1B_E` | int16 | yes | — | TODO |
+| `F_1B_DP` | int16 | yes | — | TODO |
+| `F_1B_TP` | int16 | yes | — | TODO |
+| `F_2B_G` | int16 | yes | — | TODO |
+| `F_2B_GS` | int16 | yes | — | TODO |
+| `F_2B_OUT` | int16 | yes | — | TODO |
+| `F_2B_TC` | int16 | yes | — | TODO |
+| `F_2B_PO` | int16 | yes | — | TODO |
+| `F_2B_A` | int16 | yes | — | TODO |
+| `F_2B_E` | int16 | yes | — | TODO |
+| `F_2B_DP` | int16 | yes | — | TODO |
+| `F_2B_TP` | int16 | yes | — | TODO |
+| `F_3B_G` | int16 | yes | — | TODO |
+| `F_3B_GS` | int16 | yes | — | TODO |
+| `F_3B_OUT` | int16 | yes | — | TODO |
+| `F_3B_TC` | int16 | yes | — | TODO |
+| `F_3B_PO` | int16 | yes | — | TODO |
+| `F_3B_A` | int16 | yes | — | TODO |
+| `F_3B_E` | int16 | yes | — | TODO |
+| `F_3B_DP` | int16 | yes | — | TODO |
+| `F_3B_TP` | int16 | yes | — | TODO |
+| `F_SS_G` | int16 | yes | — | TODO |
+| `F_SS_GS` | int16 | yes | — | TODO |
+| `F_SS_OUT` | int16 | yes | — | TODO |
+| `F_SS_TC` | int16 | yes | — | TODO |
+| `F_SS_PO` | int16 | yes | — | TODO |
+| `F_SS_A` | int16 | yes | — | TODO |
+| `F_SS_E` | int16 | yes | — | TODO |
+| `F_SS_DP` | int16 | yes | — | TODO |
+| `F_SS_TP` | int16 | yes | — | TODO |
+| `F_LF_G` | int16 | yes | — | TODO |
+| `F_LF_GS` | int16 | yes | — | TODO |
+| `F_LF_OUT` | int16 | yes | — | TODO |
+| `F_LF_TC` | int16 | yes | — | TODO |
+| `F_LF_PO` | int16 | yes | — | TODO |
+| `F_LF_A` | int16 | yes | — | TODO |
+| `F_LF_E` | int16 | yes | — | TODO |
+| `F_LF_DP` | int16 | yes | — | TODO |
+| `F_LF_TP` | int16 | yes | — | TODO |
+| `F_CF_G` | int16 | yes | — | TODO |
+| `F_CF_GS` | int16 | yes | — | TODO |
+| `F_CF_OUT` | int16 | yes | — | TODO |
+| `F_CF_TC` | int16 | yes | — | TODO |
+| `F_CF_PO` | int16 | yes | — | TODO |
+| `F_CF_A` | int16 | yes | — | TODO |
+| `F_CF_E` | int16 | yes | — | TODO |
+| `F_CF_DP` | int16 | yes | — | TODO |
+| `F_CF_TP` | int16 | yes | — | TODO |
+| `F_RF_G` | int16 | yes | — | TODO |
+| `F_RF_GS` | int16 | yes | — | TODO |
+| `F_RF_OUT` | int16 | yes | — | TODO |
+| `F_RF_TC` | int16 | yes | — | TODO |
+| `F_RF_PO` | int16 | yes | — | TODO |
+| `F_RF_A` | int16 | yes | — | TODO |
+| `F_RF_E` | int16 | yes | — | TODO |
+| `F_RF_DP` | int16 | yes | — | TODO |
+| `F_RF_TP` | int16 | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.daily_splits -->
 
@@ -344,22 +363,22 @@ Known data discrepancies (seasons/<year>/*discs.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `disc_id` | string | yes | `ID` |  |
-| `player_id` | string | yes | `Player` |  |
-| `year` | int16 | yes | `Year` |  |
-| `team_id` | string | yes | `Team` |  |
-| `type` | string | yes | `Type` |  |
-| `position` | string | yes | `Pos` |  |
-| `category` | string | yes | `Cat` |  |
-| `game_id` | string | yes | `Game` |  |
-| `retro_value` | double | yes | `Retro` |  |
-| `official_value` | double | yes | `Official` |  |
-| `cross_id` | string | yes | `Cross` |  |
-| `code` | string | yes | `Code` |  |
-| `flag` | string | yes | `X|col_13` |  |
-| `notes` | string | yes | `Notes` |  |
-| `accepted` | string | yes | `Accepted` |  |
-| `_extras` | string | yes | — |  |
+| `disc_id` | string | yes | `ID` | TODO |
+| `player_id` | string | yes | `Player` | TODO |
+| `year` | int16 | yes | `Year` | TODO |
+| `team_id` | string | yes | `Team` | TODO |
+| `type` | string | yes | `Type` | TODO |
+| `position` | string | yes | `Pos` | TODO |
+| `category` | string | yes | `Cat` | TODO |
+| `game_id` | string | yes | `Game` | TODO |
+| `retro_value` | double | yes | `Retro` | TODO |
+| `official_value` | double | yes | `Official` | TODO |
+| `cross_id` | string | yes | `Cross` | TODO |
+| `code` | string | yes | `Code` | TODO |
+| `flag` | string | yes | `X|col_13` | TODO |
+| `notes` | string | yes | `Notes` | TODO |
+| `accepted` | string | yes | `Accepted` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.discrepancies -->
 
@@ -375,104 +394,104 @@ Regular-season play-by-play events.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `GAME_ID` | string | yes | — |  |
-| `AWAY_TEAM_ID` | string | yes | — |  |
-| `INN_CT` | int16 | yes | — |  |
-| `BAT_HOME_ID` | int8 | yes | — |  |
-| `OUTS_CT` | int8 | yes | — |  |
-| `BALLS_CT` | int8 | yes | — |  |
-| `STRIKES_CT` | int8 | yes | — |  |
-| `PITCH_SEQ_TX` | string | yes | — |  |
-| `AWAY_SCORE_CT` | int16 | yes | — |  |
-| `HOME_SCORE_CT` | int16 | yes | — |  |
-| `BAT_ID` | string | yes | — |  |
-| `BAT_HAND_CD` | string | yes | — |  |
-| `RESP_BAT_ID` | string | yes | — |  |
-| `RESP_BAT_HAND_CD` | string | yes | — |  |
-| `PIT_ID` | string | yes | — |  |
-| `PIT_HAND_CD` | string | yes | — |  |
-| `RESP_PIT_ID` | string | yes | — |  |
-| `RESP_PIT_HAND_CD` | string | yes | — |  |
-| `POS2_FLD_ID` | string | yes | — |  |
-| `POS3_FLD_ID` | string | yes | — |  |
-| `POS4_FLD_ID` | string | yes | — |  |
-| `POS5_FLD_ID` | string | yes | — |  |
-| `POS6_FLD_ID` | string | yes | — |  |
-| `POS7_FLD_ID` | string | yes | — |  |
-| `POS8_FLD_ID` | string | yes | — |  |
-| `POS9_FLD_ID` | string | yes | — |  |
-| `BASE1_RUN_ID` | string | yes | — |  |
-| `BASE2_RUN_ID` | string | yes | — |  |
-| `BASE3_RUN_ID` | string | yes | — |  |
-| `EVENT_TX` | string | yes | — |  |
-| `LEADOFF_FL` | bool | yes | — |  |
-| `PH_FL` | bool | yes | — |  |
-| `BAT_FLD_CD` | int8 | yes | — |  |
-| `BAT_LINEUP_ID` | int8 | yes | — |  |
-| `EVENT_CD` | int16 | yes | — |  |
-| `BAT_EVENT_FL` | bool | yes | — |  |
-| `AB_FL` | bool | yes | — |  |
-| `H_CD` | int8 | yes | — |  |
-| `SH_FL` | bool | yes | — |  |
-| `SF_FL` | bool | yes | — |  |
-| `EVENT_OUTS_CT` | int8 | yes | — |  |
-| `DP_FL` | bool | yes | — |  |
-| `TP_FL` | bool | yes | — |  |
-| `RBI_CT` | int8 | yes | — |  |
-| `WP_FL` | bool | yes | — |  |
-| `PB_FL` | bool | yes | — |  |
-| `FLD_CD` | int8 | yes | — |  |
-| `BATTEDBALL_CD` | string | yes | — |  |
-| `BUNT_FL` | bool | yes | — |  |
-| `FOUL_FL` | bool | yes | — |  |
-| `BATTEDBALL_LOC_TX` | string | yes | — |  |
-| `ERR_CT` | int8 | yes | — |  |
-| `ERR1_FLD_CD` | int8 | yes | — |  |
-| `ERR1_CD` | string | yes | — |  |
-| `ERR2_FLD_CD` | int8 | yes | — |  |
-| `ERR2_CD` | string | yes | — |  |
-| `ERR3_FLD_CD` | int8 | yes | — |  |
-| `ERR3_CD` | string | yes | — |  |
-| `BAT_DEST_ID` | int8 | yes | — |  |
-| `RUN1_DEST_ID` | int8 | yes | — |  |
-| `RUN2_DEST_ID` | int8 | yes | — |  |
-| `RUN3_DEST_ID` | int8 | yes | — |  |
-| `BAT_PLAY_TX` | string | yes | — |  |
-| `RUN1_PLAY_TX` | string | yes | — |  |
-| `RUN2_PLAY_TX` | string | yes | — |  |
-| `RUN3_PLAY_TX` | string | yes | — |  |
-| `RUN1_SB_FL` | bool | yes | — |  |
-| `RUN2_SB_FL` | bool | yes | — |  |
-| `RUN3_SB_FL` | bool | yes | — |  |
-| `RUN1_CS_FL` | bool | yes | — |  |
-| `RUN2_CS_FL` | bool | yes | — |  |
-| `RUN3_CS_FL` | bool | yes | — |  |
-| `RUN1_PK_FL` | bool | yes | — |  |
-| `RUN2_PK_FL` | bool | yes | — |  |
-| `RUN3_PK_FL` | bool | yes | — |  |
-| `RUN1_RESP_PIT_ID` | string | yes | — |  |
-| `RUN2_RESP_PIT_ID` | string | yes | — |  |
-| `RUN3_RESP_PIT_ID` | string | yes | — |  |
-| `GAME_NEW_FL` | bool | yes | — |  |
-| `GAME_END_FL` | bool | yes | — |  |
-| `PR_RUN1_FL` | bool | yes | — |  |
-| `PR_RUN2_FL` | bool | yes | — |  |
-| `PR_RUN3_FL` | bool | yes | — |  |
-| `REMOVED_FOR_PR_RUN1_ID` | string | yes | — |  |
-| `REMOVED_FOR_PR_RUN2_ID` | string | yes | — |  |
-| `REMOVED_FOR_PR_RUN3_ID` | string | yes | — |  |
-| `REMOVED_FOR_PH_BAT_ID` | string | yes | — |  |
-| `REMOVED_FOR_PH_BAT_FLD_CD` | int8 | yes | — |  |
-| `PO1_FLD_CD` | int8 | yes | — |  |
-| `PO2_FLD_CD` | int8 | yes | — |  |
-| `PO3_FLD_CD` | int8 | yes | — |  |
-| `ASS1_FLD_CD` | int8 | yes | — |  |
-| `ASS2_FLD_CD` | int8 | yes | — |  |
-| `ASS3_FLD_CD` | int8 | yes | — |  |
-| `ERR1_FLD_CD_NEW` | int8 | yes | — |  |
-| `ERR2_FLD_CD_NEW` | int8 | yes | — |  |
-| `ERR3_FLD_CD_NEW` | int8 | yes | — |  |
-| `BAT_LAST_ID` | int8 | yes | — |  |
+| `GAME_ID` | string | yes | — | TODO |
+| `AWAY_TEAM_ID` | string | yes | — | TODO |
+| `INN_CT` | int16 | yes | — | TODO |
+| `BAT_HOME_ID` | int8 | yes | — | TODO |
+| `OUTS_CT` | int8 | yes | — | TODO |
+| `BALLS_CT` | int8 | yes | — | TODO |
+| `STRIKES_CT` | int8 | yes | — | TODO |
+| `PITCH_SEQ_TX` | string | yes | — | TODO |
+| `AWAY_SCORE_CT` | int16 | yes | — | TODO |
+| `HOME_SCORE_CT` | int16 | yes | — | TODO |
+| `BAT_ID` | string | yes | — | TODO |
+| `BAT_HAND_CD` | string | yes | — | TODO |
+| `RESP_BAT_ID` | string | yes | — | TODO |
+| `RESP_BAT_HAND_CD` | string | yes | — | TODO |
+| `PIT_ID` | string | yes | — | TODO |
+| `PIT_HAND_CD` | string | yes | — | TODO |
+| `RESP_PIT_ID` | string | yes | — | TODO |
+| `RESP_PIT_HAND_CD` | string | yes | — | TODO |
+| `POS2_FLD_ID` | string | yes | — | TODO |
+| `POS3_FLD_ID` | string | yes | — | TODO |
+| `POS4_FLD_ID` | string | yes | — | TODO |
+| `POS5_FLD_ID` | string | yes | — | TODO |
+| `POS6_FLD_ID` | string | yes | — | TODO |
+| `POS7_FLD_ID` | string | yes | — | TODO |
+| `POS8_FLD_ID` | string | yes | — | TODO |
+| `POS9_FLD_ID` | string | yes | — | TODO |
+| `BASE1_RUN_ID` | string | yes | — | TODO |
+| `BASE2_RUN_ID` | string | yes | — | TODO |
+| `BASE3_RUN_ID` | string | yes | — | TODO |
+| `EVENT_TX` | string | yes | — | TODO |
+| `LEADOFF_FL` | bool | yes | — | TODO |
+| `PH_FL` | bool | yes | — | TODO |
+| `BAT_FLD_CD` | int8 | yes | — | TODO |
+| `BAT_LINEUP_ID` | int8 | yes | — | TODO |
+| `EVENT_CD` | int16 | yes | — | TODO |
+| `BAT_EVENT_FL` | bool | yes | — | TODO |
+| `AB_FL` | bool | yes | — | TODO |
+| `H_CD` | int8 | yes | — | TODO |
+| `SH_FL` | bool | yes | — | TODO |
+| `SF_FL` | bool | yes | — | TODO |
+| `EVENT_OUTS_CT` | int8 | yes | — | TODO |
+| `DP_FL` | bool | yes | — | TODO |
+| `TP_FL` | bool | yes | — | TODO |
+| `RBI_CT` | int8 | yes | — | TODO |
+| `WP_FL` | bool | yes | — | TODO |
+| `PB_FL` | bool | yes | — | TODO |
+| `FLD_CD` | int8 | yes | — | TODO |
+| `BATTEDBALL_CD` | string | yes | — | TODO |
+| `BUNT_FL` | bool | yes | — | TODO |
+| `FOUL_FL` | bool | yes | — | TODO |
+| `BATTEDBALL_LOC_TX` | string | yes | — | TODO |
+| `ERR_CT` | int8 | yes | — | TODO |
+| `ERR1_FLD_CD` | int8 | yes | — | TODO |
+| `ERR1_CD` | string | yes | — | TODO |
+| `ERR2_FLD_CD` | int8 | yes | — | TODO |
+| `ERR2_CD` | string | yes | — | TODO |
+| `ERR3_FLD_CD` | int8 | yes | — | TODO |
+| `ERR3_CD` | string | yes | — | TODO |
+| `BAT_DEST_ID` | int8 | yes | — | TODO |
+| `RUN1_DEST_ID` | int8 | yes | — | TODO |
+| `RUN2_DEST_ID` | int8 | yes | — | TODO |
+| `RUN3_DEST_ID` | int8 | yes | — | TODO |
+| `BAT_PLAY_TX` | string | yes | — | TODO |
+| `RUN1_PLAY_TX` | string | yes | — | TODO |
+| `RUN2_PLAY_TX` | string | yes | — | TODO |
+| `RUN3_PLAY_TX` | string | yes | — | TODO |
+| `RUN1_SB_FL` | bool | yes | — | TODO |
+| `RUN2_SB_FL` | bool | yes | — | TODO |
+| `RUN3_SB_FL` | bool | yes | — | TODO |
+| `RUN1_CS_FL` | bool | yes | — | TODO |
+| `RUN2_CS_FL` | bool | yes | — | TODO |
+| `RUN3_CS_FL` | bool | yes | — | TODO |
+| `RUN1_PK_FL` | bool | yes | — | TODO |
+| `RUN2_PK_FL` | bool | yes | — | TODO |
+| `RUN3_PK_FL` | bool | yes | — | TODO |
+| `RUN1_RESP_PIT_ID` | string | yes | — | TODO |
+| `RUN2_RESP_PIT_ID` | string | yes | — | TODO |
+| `RUN3_RESP_PIT_ID` | string | yes | — | TODO |
+| `GAME_NEW_FL` | bool | yes | — | TODO |
+| `GAME_END_FL` | bool | yes | — | TODO |
+| `PR_RUN1_FL` | bool | yes | — | TODO |
+| `PR_RUN2_FL` | bool | yes | — | TODO |
+| `PR_RUN3_FL` | bool | yes | — | TODO |
+| `REMOVED_FOR_PR_RUN1_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PR_RUN2_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PR_RUN3_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PH_BAT_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PH_BAT_FLD_CD` | int8 | yes | — | TODO |
+| `PO1_FLD_CD` | int8 | yes | — | TODO |
+| `PO2_FLD_CD` | int8 | yes | — | TODO |
+| `PO3_FLD_CD` | int8 | yes | — | TODO |
+| `ASS1_FLD_CD` | int8 | yes | — | TODO |
+| `ASS2_FLD_CD` | int8 | yes | — | TODO |
+| `ASS3_FLD_CD` | int8 | yes | — | TODO |
+| `ERR1_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `ERR2_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `ERR3_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `BAT_LAST_ID` | int8 | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.events -->
 
@@ -488,104 +507,104 @@ Play-by-play events deduced from box scores (.ED* files).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `GAME_ID` | string | yes | — |  |
-| `AWAY_TEAM_ID` | string | yes | — |  |
-| `INN_CT` | int16 | yes | — |  |
-| `BAT_HOME_ID` | int8 | yes | — |  |
-| `OUTS_CT` | int8 | yes | — |  |
-| `BALLS_CT` | int8 | yes | — |  |
-| `STRIKES_CT` | int8 | yes | — |  |
-| `PITCH_SEQ_TX` | string | yes | — |  |
-| `AWAY_SCORE_CT` | int16 | yes | — |  |
-| `HOME_SCORE_CT` | int16 | yes | — |  |
-| `BAT_ID` | string | yes | — |  |
-| `BAT_HAND_CD` | string | yes | — |  |
-| `RESP_BAT_ID` | string | yes | — |  |
-| `RESP_BAT_HAND_CD` | string | yes | — |  |
-| `PIT_ID` | string | yes | — |  |
-| `PIT_HAND_CD` | string | yes | — |  |
-| `RESP_PIT_ID` | string | yes | — |  |
-| `RESP_PIT_HAND_CD` | string | yes | — |  |
-| `POS2_FLD_ID` | string | yes | — |  |
-| `POS3_FLD_ID` | string | yes | — |  |
-| `POS4_FLD_ID` | string | yes | — |  |
-| `POS5_FLD_ID` | string | yes | — |  |
-| `POS6_FLD_ID` | string | yes | — |  |
-| `POS7_FLD_ID` | string | yes | — |  |
-| `POS8_FLD_ID` | string | yes | — |  |
-| `POS9_FLD_ID` | string | yes | — |  |
-| `BASE1_RUN_ID` | string | yes | — |  |
-| `BASE2_RUN_ID` | string | yes | — |  |
-| `BASE3_RUN_ID` | string | yes | — |  |
-| `EVENT_TX` | string | yes | — |  |
-| `LEADOFF_FL` | bool | yes | — |  |
-| `PH_FL` | bool | yes | — |  |
-| `BAT_FLD_CD` | int8 | yes | — |  |
-| `BAT_LINEUP_ID` | int8 | yes | — |  |
-| `EVENT_CD` | int16 | yes | — |  |
-| `BAT_EVENT_FL` | bool | yes | — |  |
-| `AB_FL` | bool | yes | — |  |
-| `H_CD` | int8 | yes | — |  |
-| `SH_FL` | bool | yes | — |  |
-| `SF_FL` | bool | yes | — |  |
-| `EVENT_OUTS_CT` | int8 | yes | — |  |
-| `DP_FL` | bool | yes | — |  |
-| `TP_FL` | bool | yes | — |  |
-| `RBI_CT` | int8 | yes | — |  |
-| `WP_FL` | bool | yes | — |  |
-| `PB_FL` | bool | yes | — |  |
-| `FLD_CD` | int8 | yes | — |  |
-| `BATTEDBALL_CD` | string | yes | — |  |
-| `BUNT_FL` | bool | yes | — |  |
-| `FOUL_FL` | bool | yes | — |  |
-| `BATTEDBALL_LOC_TX` | string | yes | — |  |
-| `ERR_CT` | int8 | yes | — |  |
-| `ERR1_FLD_CD` | int8 | yes | — |  |
-| `ERR1_CD` | string | yes | — |  |
-| `ERR2_FLD_CD` | int8 | yes | — |  |
-| `ERR2_CD` | string | yes | — |  |
-| `ERR3_FLD_CD` | int8 | yes | — |  |
-| `ERR3_CD` | string | yes | — |  |
-| `BAT_DEST_ID` | int8 | yes | — |  |
-| `RUN1_DEST_ID` | int8 | yes | — |  |
-| `RUN2_DEST_ID` | int8 | yes | — |  |
-| `RUN3_DEST_ID` | int8 | yes | — |  |
-| `BAT_PLAY_TX` | string | yes | — |  |
-| `RUN1_PLAY_TX` | string | yes | — |  |
-| `RUN2_PLAY_TX` | string | yes | — |  |
-| `RUN3_PLAY_TX` | string | yes | — |  |
-| `RUN1_SB_FL` | bool | yes | — |  |
-| `RUN2_SB_FL` | bool | yes | — |  |
-| `RUN3_SB_FL` | bool | yes | — |  |
-| `RUN1_CS_FL` | bool | yes | — |  |
-| `RUN2_CS_FL` | bool | yes | — |  |
-| `RUN3_CS_FL` | bool | yes | — |  |
-| `RUN1_PK_FL` | bool | yes | — |  |
-| `RUN2_PK_FL` | bool | yes | — |  |
-| `RUN3_PK_FL` | bool | yes | — |  |
-| `RUN1_RESP_PIT_ID` | string | yes | — |  |
-| `RUN2_RESP_PIT_ID` | string | yes | — |  |
-| `RUN3_RESP_PIT_ID` | string | yes | — |  |
-| `GAME_NEW_FL` | bool | yes | — |  |
-| `GAME_END_FL` | bool | yes | — |  |
-| `PR_RUN1_FL` | bool | yes | — |  |
-| `PR_RUN2_FL` | bool | yes | — |  |
-| `PR_RUN3_FL` | bool | yes | — |  |
-| `REMOVED_FOR_PR_RUN1_ID` | string | yes | — |  |
-| `REMOVED_FOR_PR_RUN2_ID` | string | yes | — |  |
-| `REMOVED_FOR_PR_RUN3_ID` | string | yes | — |  |
-| `REMOVED_FOR_PH_BAT_ID` | string | yes | — |  |
-| `REMOVED_FOR_PH_BAT_FLD_CD` | int8 | yes | — |  |
-| `PO1_FLD_CD` | int8 | yes | — |  |
-| `PO2_FLD_CD` | int8 | yes | — |  |
-| `PO3_FLD_CD` | int8 | yes | — |  |
-| `ASS1_FLD_CD` | int8 | yes | — |  |
-| `ASS2_FLD_CD` | int8 | yes | — |  |
-| `ASS3_FLD_CD` | int8 | yes | — |  |
-| `ERR1_FLD_CD_NEW` | int8 | yes | — |  |
-| `ERR2_FLD_CD_NEW` | int8 | yes | — |  |
-| `ERR3_FLD_CD_NEW` | int8 | yes | — |  |
-| `BAT_LAST_ID` | int8 | yes | — |  |
+| `GAME_ID` | string | yes | — | TODO |
+| `AWAY_TEAM_ID` | string | yes | — | TODO |
+| `INN_CT` | int16 | yes | — | TODO |
+| `BAT_HOME_ID` | int8 | yes | — | TODO |
+| `OUTS_CT` | int8 | yes | — | TODO |
+| `BALLS_CT` | int8 | yes | — | TODO |
+| `STRIKES_CT` | int8 | yes | — | TODO |
+| `PITCH_SEQ_TX` | string | yes | — | TODO |
+| `AWAY_SCORE_CT` | int16 | yes | — | TODO |
+| `HOME_SCORE_CT` | int16 | yes | — | TODO |
+| `BAT_ID` | string | yes | — | TODO |
+| `BAT_HAND_CD` | string | yes | — | TODO |
+| `RESP_BAT_ID` | string | yes | — | TODO |
+| `RESP_BAT_HAND_CD` | string | yes | — | TODO |
+| `PIT_ID` | string | yes | — | TODO |
+| `PIT_HAND_CD` | string | yes | — | TODO |
+| `RESP_PIT_ID` | string | yes | — | TODO |
+| `RESP_PIT_HAND_CD` | string | yes | — | TODO |
+| `POS2_FLD_ID` | string | yes | — | TODO |
+| `POS3_FLD_ID` | string | yes | — | TODO |
+| `POS4_FLD_ID` | string | yes | — | TODO |
+| `POS5_FLD_ID` | string | yes | — | TODO |
+| `POS6_FLD_ID` | string | yes | — | TODO |
+| `POS7_FLD_ID` | string | yes | — | TODO |
+| `POS8_FLD_ID` | string | yes | — | TODO |
+| `POS9_FLD_ID` | string | yes | — | TODO |
+| `BASE1_RUN_ID` | string | yes | — | TODO |
+| `BASE2_RUN_ID` | string | yes | — | TODO |
+| `BASE3_RUN_ID` | string | yes | — | TODO |
+| `EVENT_TX` | string | yes | — | TODO |
+| `LEADOFF_FL` | bool | yes | — | TODO |
+| `PH_FL` | bool | yes | — | TODO |
+| `BAT_FLD_CD` | int8 | yes | — | TODO |
+| `BAT_LINEUP_ID` | int8 | yes | — | TODO |
+| `EVENT_CD` | int16 | yes | — | TODO |
+| `BAT_EVENT_FL` | bool | yes | — | TODO |
+| `AB_FL` | bool | yes | — | TODO |
+| `H_CD` | int8 | yes | — | TODO |
+| `SH_FL` | bool | yes | — | TODO |
+| `SF_FL` | bool | yes | — | TODO |
+| `EVENT_OUTS_CT` | int8 | yes | — | TODO |
+| `DP_FL` | bool | yes | — | TODO |
+| `TP_FL` | bool | yes | — | TODO |
+| `RBI_CT` | int8 | yes | — | TODO |
+| `WP_FL` | bool | yes | — | TODO |
+| `PB_FL` | bool | yes | — | TODO |
+| `FLD_CD` | int8 | yes | — | TODO |
+| `BATTEDBALL_CD` | string | yes | — | TODO |
+| `BUNT_FL` | bool | yes | — | TODO |
+| `FOUL_FL` | bool | yes | — | TODO |
+| `BATTEDBALL_LOC_TX` | string | yes | — | TODO |
+| `ERR_CT` | int8 | yes | — | TODO |
+| `ERR1_FLD_CD` | int8 | yes | — | TODO |
+| `ERR1_CD` | string | yes | — | TODO |
+| `ERR2_FLD_CD` | int8 | yes | — | TODO |
+| `ERR2_CD` | string | yes | — | TODO |
+| `ERR3_FLD_CD` | int8 | yes | — | TODO |
+| `ERR3_CD` | string | yes | — | TODO |
+| `BAT_DEST_ID` | int8 | yes | — | TODO |
+| `RUN1_DEST_ID` | int8 | yes | — | TODO |
+| `RUN2_DEST_ID` | int8 | yes | — | TODO |
+| `RUN3_DEST_ID` | int8 | yes | — | TODO |
+| `BAT_PLAY_TX` | string | yes | — | TODO |
+| `RUN1_PLAY_TX` | string | yes | — | TODO |
+| `RUN2_PLAY_TX` | string | yes | — | TODO |
+| `RUN3_PLAY_TX` | string | yes | — | TODO |
+| `RUN1_SB_FL` | bool | yes | — | TODO |
+| `RUN2_SB_FL` | bool | yes | — | TODO |
+| `RUN3_SB_FL` | bool | yes | — | TODO |
+| `RUN1_CS_FL` | bool | yes | — | TODO |
+| `RUN2_CS_FL` | bool | yes | — | TODO |
+| `RUN3_CS_FL` | bool | yes | — | TODO |
+| `RUN1_PK_FL` | bool | yes | — | TODO |
+| `RUN2_PK_FL` | bool | yes | — | TODO |
+| `RUN3_PK_FL` | bool | yes | — | TODO |
+| `RUN1_RESP_PIT_ID` | string | yes | — | TODO |
+| `RUN2_RESP_PIT_ID` | string | yes | — | TODO |
+| `RUN3_RESP_PIT_ID` | string | yes | — | TODO |
+| `GAME_NEW_FL` | bool | yes | — | TODO |
+| `GAME_END_FL` | bool | yes | — | TODO |
+| `PR_RUN1_FL` | bool | yes | — | TODO |
+| `PR_RUN2_FL` | bool | yes | — | TODO |
+| `PR_RUN3_FL` | bool | yes | — | TODO |
+| `REMOVED_FOR_PR_RUN1_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PR_RUN2_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PR_RUN3_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PH_BAT_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PH_BAT_FLD_CD` | int8 | yes | — | TODO |
+| `PO1_FLD_CD` | int8 | yes | — | TODO |
+| `PO2_FLD_CD` | int8 | yes | — | TODO |
+| `PO3_FLD_CD` | int8 | yes | — | TODO |
+| `ASS1_FLD_CD` | int8 | yes | — | TODO |
+| `ASS2_FLD_CD` | int8 | yes | — | TODO |
+| `ASS3_FLD_CD` | int8 | yes | — | TODO |
+| `ERR1_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `ERR2_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `ERR3_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `BAT_LAST_ID` | int8 | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.events_deduced -->
 
@@ -601,104 +620,104 @@ Postseason and all-star play-by-play events.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `GAME_ID` | string | yes | — |  |
-| `AWAY_TEAM_ID` | string | yes | — |  |
-| `INN_CT` | int16 | yes | — |  |
-| `BAT_HOME_ID` | int8 | yes | — |  |
-| `OUTS_CT` | int8 | yes | — |  |
-| `BALLS_CT` | int8 | yes | — |  |
-| `STRIKES_CT` | int8 | yes | — |  |
-| `PITCH_SEQ_TX` | string | yes | — |  |
-| `AWAY_SCORE_CT` | int16 | yes | — |  |
-| `HOME_SCORE_CT` | int16 | yes | — |  |
-| `BAT_ID` | string | yes | — |  |
-| `BAT_HAND_CD` | string | yes | — |  |
-| `RESP_BAT_ID` | string | yes | — |  |
-| `RESP_BAT_HAND_CD` | string | yes | — |  |
-| `PIT_ID` | string | yes | — |  |
-| `PIT_HAND_CD` | string | yes | — |  |
-| `RESP_PIT_ID` | string | yes | — |  |
-| `RESP_PIT_HAND_CD` | string | yes | — |  |
-| `POS2_FLD_ID` | string | yes | — |  |
-| `POS3_FLD_ID` | string | yes | — |  |
-| `POS4_FLD_ID` | string | yes | — |  |
-| `POS5_FLD_ID` | string | yes | — |  |
-| `POS6_FLD_ID` | string | yes | — |  |
-| `POS7_FLD_ID` | string | yes | — |  |
-| `POS8_FLD_ID` | string | yes | — |  |
-| `POS9_FLD_ID` | string | yes | — |  |
-| `BASE1_RUN_ID` | string | yes | — |  |
-| `BASE2_RUN_ID` | string | yes | — |  |
-| `BASE3_RUN_ID` | string | yes | — |  |
-| `EVENT_TX` | string | yes | — |  |
-| `LEADOFF_FL` | bool | yes | — |  |
-| `PH_FL` | bool | yes | — |  |
-| `BAT_FLD_CD` | int8 | yes | — |  |
-| `BAT_LINEUP_ID` | int8 | yes | — |  |
-| `EVENT_CD` | int16 | yes | — |  |
-| `BAT_EVENT_FL` | bool | yes | — |  |
-| `AB_FL` | bool | yes | — |  |
-| `H_CD` | int8 | yes | — |  |
-| `SH_FL` | bool | yes | — |  |
-| `SF_FL` | bool | yes | — |  |
-| `EVENT_OUTS_CT` | int8 | yes | — |  |
-| `DP_FL` | bool | yes | — |  |
-| `TP_FL` | bool | yes | — |  |
-| `RBI_CT` | int8 | yes | — |  |
-| `WP_FL` | bool | yes | — |  |
-| `PB_FL` | bool | yes | — |  |
-| `FLD_CD` | int8 | yes | — |  |
-| `BATTEDBALL_CD` | string | yes | — |  |
-| `BUNT_FL` | bool | yes | — |  |
-| `FOUL_FL` | bool | yes | — |  |
-| `BATTEDBALL_LOC_TX` | string | yes | — |  |
-| `ERR_CT` | int8 | yes | — |  |
-| `ERR1_FLD_CD` | int8 | yes | — |  |
-| `ERR1_CD` | string | yes | — |  |
-| `ERR2_FLD_CD` | int8 | yes | — |  |
-| `ERR2_CD` | string | yes | — |  |
-| `ERR3_FLD_CD` | int8 | yes | — |  |
-| `ERR3_CD` | string | yes | — |  |
-| `BAT_DEST_ID` | int8 | yes | — |  |
-| `RUN1_DEST_ID` | int8 | yes | — |  |
-| `RUN2_DEST_ID` | int8 | yes | — |  |
-| `RUN3_DEST_ID` | int8 | yes | — |  |
-| `BAT_PLAY_TX` | string | yes | — |  |
-| `RUN1_PLAY_TX` | string | yes | — |  |
-| `RUN2_PLAY_TX` | string | yes | — |  |
-| `RUN3_PLAY_TX` | string | yes | — |  |
-| `RUN1_SB_FL` | bool | yes | — |  |
-| `RUN2_SB_FL` | bool | yes | — |  |
-| `RUN3_SB_FL` | bool | yes | — |  |
-| `RUN1_CS_FL` | bool | yes | — |  |
-| `RUN2_CS_FL` | bool | yes | — |  |
-| `RUN3_CS_FL` | bool | yes | — |  |
-| `RUN1_PK_FL` | bool | yes | — |  |
-| `RUN2_PK_FL` | bool | yes | — |  |
-| `RUN3_PK_FL` | bool | yes | — |  |
-| `RUN1_RESP_PIT_ID` | string | yes | — |  |
-| `RUN2_RESP_PIT_ID` | string | yes | — |  |
-| `RUN3_RESP_PIT_ID` | string | yes | — |  |
-| `GAME_NEW_FL` | bool | yes | — |  |
-| `GAME_END_FL` | bool | yes | — |  |
-| `PR_RUN1_FL` | bool | yes | — |  |
-| `PR_RUN2_FL` | bool | yes | — |  |
-| `PR_RUN3_FL` | bool | yes | — |  |
-| `REMOVED_FOR_PR_RUN1_ID` | string | yes | — |  |
-| `REMOVED_FOR_PR_RUN2_ID` | string | yes | — |  |
-| `REMOVED_FOR_PR_RUN3_ID` | string | yes | — |  |
-| `REMOVED_FOR_PH_BAT_ID` | string | yes | — |  |
-| `REMOVED_FOR_PH_BAT_FLD_CD` | int8 | yes | — |  |
-| `PO1_FLD_CD` | int8 | yes | — |  |
-| `PO2_FLD_CD` | int8 | yes | — |  |
-| `PO3_FLD_CD` | int8 | yes | — |  |
-| `ASS1_FLD_CD` | int8 | yes | — |  |
-| `ASS2_FLD_CD` | int8 | yes | — |  |
-| `ASS3_FLD_CD` | int8 | yes | — |  |
-| `ERR1_FLD_CD_NEW` | int8 | yes | — |  |
-| `ERR2_FLD_CD_NEW` | int8 | yes | — |  |
-| `ERR3_FLD_CD_NEW` | int8 | yes | — |  |
-| `BAT_LAST_ID` | int8 | yes | — |  |
+| `GAME_ID` | string | yes | — | TODO |
+| `AWAY_TEAM_ID` | string | yes | — | TODO |
+| `INN_CT` | int16 | yes | — | TODO |
+| `BAT_HOME_ID` | int8 | yes | — | TODO |
+| `OUTS_CT` | int8 | yes | — | TODO |
+| `BALLS_CT` | int8 | yes | — | TODO |
+| `STRIKES_CT` | int8 | yes | — | TODO |
+| `PITCH_SEQ_TX` | string | yes | — | TODO |
+| `AWAY_SCORE_CT` | int16 | yes | — | TODO |
+| `HOME_SCORE_CT` | int16 | yes | — | TODO |
+| `BAT_ID` | string | yes | — | TODO |
+| `BAT_HAND_CD` | string | yes | — | TODO |
+| `RESP_BAT_ID` | string | yes | — | TODO |
+| `RESP_BAT_HAND_CD` | string | yes | — | TODO |
+| `PIT_ID` | string | yes | — | TODO |
+| `PIT_HAND_CD` | string | yes | — | TODO |
+| `RESP_PIT_ID` | string | yes | — | TODO |
+| `RESP_PIT_HAND_CD` | string | yes | — | TODO |
+| `POS2_FLD_ID` | string | yes | — | TODO |
+| `POS3_FLD_ID` | string | yes | — | TODO |
+| `POS4_FLD_ID` | string | yes | — | TODO |
+| `POS5_FLD_ID` | string | yes | — | TODO |
+| `POS6_FLD_ID` | string | yes | — | TODO |
+| `POS7_FLD_ID` | string | yes | — | TODO |
+| `POS8_FLD_ID` | string | yes | — | TODO |
+| `POS9_FLD_ID` | string | yes | — | TODO |
+| `BASE1_RUN_ID` | string | yes | — | TODO |
+| `BASE2_RUN_ID` | string | yes | — | TODO |
+| `BASE3_RUN_ID` | string | yes | — | TODO |
+| `EVENT_TX` | string | yes | — | TODO |
+| `LEADOFF_FL` | bool | yes | — | TODO |
+| `PH_FL` | bool | yes | — | TODO |
+| `BAT_FLD_CD` | int8 | yes | — | TODO |
+| `BAT_LINEUP_ID` | int8 | yes | — | TODO |
+| `EVENT_CD` | int16 | yes | — | TODO |
+| `BAT_EVENT_FL` | bool | yes | — | TODO |
+| `AB_FL` | bool | yes | — | TODO |
+| `H_CD` | int8 | yes | — | TODO |
+| `SH_FL` | bool | yes | — | TODO |
+| `SF_FL` | bool | yes | — | TODO |
+| `EVENT_OUTS_CT` | int8 | yes | — | TODO |
+| `DP_FL` | bool | yes | — | TODO |
+| `TP_FL` | bool | yes | — | TODO |
+| `RBI_CT` | int8 | yes | — | TODO |
+| `WP_FL` | bool | yes | — | TODO |
+| `PB_FL` | bool | yes | — | TODO |
+| `FLD_CD` | int8 | yes | — | TODO |
+| `BATTEDBALL_CD` | string | yes | — | TODO |
+| `BUNT_FL` | bool | yes | — | TODO |
+| `FOUL_FL` | bool | yes | — | TODO |
+| `BATTEDBALL_LOC_TX` | string | yes | — | TODO |
+| `ERR_CT` | int8 | yes | — | TODO |
+| `ERR1_FLD_CD` | int8 | yes | — | TODO |
+| `ERR1_CD` | string | yes | — | TODO |
+| `ERR2_FLD_CD` | int8 | yes | — | TODO |
+| `ERR2_CD` | string | yes | — | TODO |
+| `ERR3_FLD_CD` | int8 | yes | — | TODO |
+| `ERR3_CD` | string | yes | — | TODO |
+| `BAT_DEST_ID` | int8 | yes | — | TODO |
+| `RUN1_DEST_ID` | int8 | yes | — | TODO |
+| `RUN2_DEST_ID` | int8 | yes | — | TODO |
+| `RUN3_DEST_ID` | int8 | yes | — | TODO |
+| `BAT_PLAY_TX` | string | yes | — | TODO |
+| `RUN1_PLAY_TX` | string | yes | — | TODO |
+| `RUN2_PLAY_TX` | string | yes | — | TODO |
+| `RUN3_PLAY_TX` | string | yes | — | TODO |
+| `RUN1_SB_FL` | bool | yes | — | TODO |
+| `RUN2_SB_FL` | bool | yes | — | TODO |
+| `RUN3_SB_FL` | bool | yes | — | TODO |
+| `RUN1_CS_FL` | bool | yes | — | TODO |
+| `RUN2_CS_FL` | bool | yes | — | TODO |
+| `RUN3_CS_FL` | bool | yes | — | TODO |
+| `RUN1_PK_FL` | bool | yes | — | TODO |
+| `RUN2_PK_FL` | bool | yes | — | TODO |
+| `RUN3_PK_FL` | bool | yes | — | TODO |
+| `RUN1_RESP_PIT_ID` | string | yes | — | TODO |
+| `RUN2_RESP_PIT_ID` | string | yes | — | TODO |
+| `RUN3_RESP_PIT_ID` | string | yes | — | TODO |
+| `GAME_NEW_FL` | bool | yes | — | TODO |
+| `GAME_END_FL` | bool | yes | — | TODO |
+| `PR_RUN1_FL` | bool | yes | — | TODO |
+| `PR_RUN2_FL` | bool | yes | — | TODO |
+| `PR_RUN3_FL` | bool | yes | — | TODO |
+| `REMOVED_FOR_PR_RUN1_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PR_RUN2_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PR_RUN3_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PH_BAT_ID` | string | yes | — | TODO |
+| `REMOVED_FOR_PH_BAT_FLD_CD` | int8 | yes | — | TODO |
+| `PO1_FLD_CD` | int8 | yes | — | TODO |
+| `PO2_FLD_CD` | int8 | yes | — | TODO |
+| `PO3_FLD_CD` | int8 | yes | — | TODO |
+| `ASS1_FLD_CD` | int8 | yes | — | TODO |
+| `ASS2_FLD_CD` | int8 | yes | — | TODO |
+| `ASS3_FLD_CD` | int8 | yes | — | TODO |
+| `ERR1_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `ERR2_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `ERR3_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `BAT_LAST_ID` | int8 | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.events_postseason -->
 
@@ -714,167 +733,167 @@ Regular-season game logs.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `date` | date32[day] | yes | — |  |
-| `game_num` | int8 | yes | — |  |
-| `day_of_week` | string | yes | — |  |
-| `visiting_team` | string | yes | — |  |
-| `visiting_league` | string | yes | — |  |
-| `visiting_game_num` | int16 | yes | — |  |
-| `home_team` | string | yes | — |  |
-| `home_league` | string | yes | — |  |
-| `home_game_num` | int16 | yes | — |  |
-| `visiting_score` | int16 | yes | — |  |
-| `home_score` | int16 | yes | — |  |
-| `outs_total` | int16 | yes | — |  |
-| `day_night` | string | yes | — |  |
-| `completion` | string | yes | — |  |
-| `forfeit` | string | yes | — |  |
-| `protest` | string | yes | — |  |
-| `park_id` | string | yes | — |  |
-| `attendance` | int32 | yes | — |  |
-| `time_of_game` | int16 | yes | — |  |
-| `visiting_line_score` | string | yes | — |  |
-| `home_line_score` | string | yes | — |  |
-| `v_ab` | int16 | yes | — |  |
-| `v_h` | int16 | yes | — |  |
-| `v_2b` | int16 | yes | — |  |
-| `v_3b` | int16 | yes | — |  |
-| `v_hr` | int16 | yes | — |  |
-| `v_rbi` | int16 | yes | — |  |
-| `v_sh` | int16 | yes | — |  |
-| `v_sf` | int16 | yes | — |  |
-| `v_hbp` | int16 | yes | — |  |
-| `v_bb` | int16 | yes | — |  |
-| `v_ibb` | int16 | yes | — |  |
-| `v_so` | int16 | yes | — |  |
-| `v_sb` | int16 | yes | — |  |
-| `v_cs` | int16 | yes | — |  |
-| `v_gidp` | int16 | yes | — |  |
-| `v_ci` | int16 | yes | — |  |
-| `v_lob` | int16 | yes | — |  |
-| `v_pitchers_used` | int16 | yes | — |  |
-| `v_ind_er` | int16 | yes | — |  |
-| `v_team_er` | int16 | yes | — |  |
-| `v_wp` | int16 | yes | — |  |
-| `v_balks` | int16 | yes | — |  |
-| `v_putouts` | int16 | yes | — |  |
-| `v_assists` | int16 | yes | — |  |
-| `v_errors` | int16 | yes | — |  |
-| `v_passed_balls` | int16 | yes | — |  |
-| `v_double_plays` | int16 | yes | — |  |
-| `v_triple_plays` | int16 | yes | — |  |
-| `h_ab` | int16 | yes | — |  |
-| `h_h` | int16 | yes | — |  |
-| `h_2b` | int16 | yes | — |  |
-| `h_3b` | int16 | yes | — |  |
-| `h_hr` | int16 | yes | — |  |
-| `h_rbi` | int16 | yes | — |  |
-| `h_sh` | int16 | yes | — |  |
-| `h_sf` | int16 | yes | — |  |
-| `h_hbp` | int16 | yes | — |  |
-| `h_bb` | int16 | yes | — |  |
-| `h_ibb` | int16 | yes | — |  |
-| `h_so` | int16 | yes | — |  |
-| `h_sb` | int16 | yes | — |  |
-| `h_cs` | int16 | yes | — |  |
-| `h_gidp` | int16 | yes | — |  |
-| `h_ci` | int16 | yes | — |  |
-| `h_lob` | int16 | yes | — |  |
-| `h_pitchers_used` | int16 | yes | — |  |
-| `h_ind_er` | int16 | yes | — |  |
-| `h_team_er` | int16 | yes | — |  |
-| `h_wp` | int16 | yes | — |  |
-| `h_balks` | int16 | yes | — |  |
-| `h_putouts` | int16 | yes | — |  |
-| `h_assists` | int16 | yes | — |  |
-| `h_errors` | int16 | yes | — |  |
-| `h_passed_balls` | int16 | yes | — |  |
-| `h_double_plays` | int16 | yes | — |  |
-| `h_triple_plays` | int16 | yes | — |  |
-| `hp_ump_id` | string | yes | — |  |
-| `hp_ump_name` | string | yes | — |  |
-| `1b_ump_id` | string | yes | — |  |
-| `1b_ump_name` | string | yes | — |  |
-| `2b_ump_id` | string | yes | — |  |
-| `2b_ump_name` | string | yes | — |  |
-| `3b_ump_id` | string | yes | — |  |
-| `3b_ump_name` | string | yes | — |  |
-| `lf_ump_id` | string | yes | — |  |
-| `lf_ump_name` | string | yes | — |  |
-| `rf_ump_id` | string | yes | — |  |
-| `rf_ump_name` | string | yes | — |  |
-| `v_manager_id` | string | yes | — |  |
-| `v_manager_name` | string | yes | — |  |
-| `h_manager_id` | string | yes | — |  |
-| `h_manager_name` | string | yes | — |  |
-| `win_pitcher_id` | string | yes | — |  |
-| `win_pitcher_name` | string | yes | — |  |
-| `lose_pitcher_id` | string | yes | — |  |
-| `lose_pitcher_name` | string | yes | — |  |
-| `save_pitcher_id` | string | yes | — |  |
-| `save_pitcher_name` | string | yes | — |  |
-| `gwrbi_id` | string | yes | — |  |
-| `gwrbi_name` | string | yes | — |  |
-| `v_start_pitcher_id` | string | yes | — |  |
-| `v_start_pitcher_name` | string | yes | — |  |
-| `h_start_pitcher_id` | string | yes | — |  |
-| `h_start_pitcher_name` | string | yes | — |  |
-| `v_b1_id` | string | yes | — |  |
-| `v_b1_name` | string | yes | — |  |
-| `v_b1_pos` | int8 | yes | — |  |
-| `v_b2_id` | string | yes | — |  |
-| `v_b2_name` | string | yes | — |  |
-| `v_b2_pos` | int8 | yes | — |  |
-| `v_b3_id` | string | yes | — |  |
-| `v_b3_name` | string | yes | — |  |
-| `v_b3_pos` | int8 | yes | — |  |
-| `v_b4_id` | string | yes | — |  |
-| `v_b4_name` | string | yes | — |  |
-| `v_b4_pos` | int8 | yes | — |  |
-| `v_b5_id` | string | yes | — |  |
-| `v_b5_name` | string | yes | — |  |
-| `v_b5_pos` | int8 | yes | — |  |
-| `v_b6_id` | string | yes | — |  |
-| `v_b6_name` | string | yes | — |  |
-| `v_b6_pos` | int8 | yes | — |  |
-| `v_b7_id` | string | yes | — |  |
-| `v_b7_name` | string | yes | — |  |
-| `v_b7_pos` | int8 | yes | — |  |
-| `v_b8_id` | string | yes | — |  |
-| `v_b8_name` | string | yes | — |  |
-| `v_b8_pos` | int8 | yes | — |  |
-| `v_b9_id` | string | yes | — |  |
-| `v_b9_name` | string | yes | — |  |
-| `v_b9_pos` | int8 | yes | — |  |
-| `h_b1_id` | string | yes | — |  |
-| `h_b1_name` | string | yes | — |  |
-| `h_b1_pos` | int8 | yes | — |  |
-| `h_b2_id` | string | yes | — |  |
-| `h_b2_name` | string | yes | — |  |
-| `h_b2_pos` | int8 | yes | — |  |
-| `h_b3_id` | string | yes | — |  |
-| `h_b3_name` | string | yes | — |  |
-| `h_b3_pos` | int8 | yes | — |  |
-| `h_b4_id` | string | yes | — |  |
-| `h_b4_name` | string | yes | — |  |
-| `h_b4_pos` | int8 | yes | — |  |
-| `h_b5_id` | string | yes | — |  |
-| `h_b5_name` | string | yes | — |  |
-| `h_b5_pos` | int8 | yes | — |  |
-| `h_b6_id` | string | yes | — |  |
-| `h_b6_name` | string | yes | — |  |
-| `h_b6_pos` | int8 | yes | — |  |
-| `h_b7_id` | string | yes | — |  |
-| `h_b7_name` | string | yes | — |  |
-| `h_b7_pos` | int8 | yes | — |  |
-| `h_b8_id` | string | yes | — |  |
-| `h_b8_name` | string | yes | — |  |
-| `h_b8_pos` | int8 | yes | — |  |
-| `h_b9_id` | string | yes | — |  |
-| `h_b9_name` | string | yes | — |  |
-| `h_b9_pos` | int8 | yes | — |  |
-| `additional_info` | string | yes | — |  |
-| `acquisition_info` | string | yes | — |  |
+| `date` | date32[day] | yes | — | TODO |
+| `game_num` | int8 | yes | — | TODO |
+| `day_of_week` | string | yes | — | TODO |
+| `visiting_team` | string | yes | — | TODO |
+| `visiting_league` | string | yes | — | TODO |
+| `visiting_game_num` | int16 | yes | — | TODO |
+| `home_team` | string | yes | — | TODO |
+| `home_league` | string | yes | — | TODO |
+| `home_game_num` | int16 | yes | — | TODO |
+| `visiting_score` | int16 | yes | — | TODO |
+| `home_score` | int16 | yes | — | TODO |
+| `outs_total` | int16 | yes | — | TODO |
+| `day_night` | string | yes | — | TODO |
+| `completion` | string | yes | — | TODO |
+| `forfeit` | string | yes | — | TODO |
+| `protest` | string | yes | — | TODO |
+| `park_id` | string | yes | — | TODO |
+| `attendance` | int32 | yes | — | TODO |
+| `time_of_game` | int16 | yes | — | TODO |
+| `visiting_line_score` | string | yes | — | TODO |
+| `home_line_score` | string | yes | — | TODO |
+| `v_ab` | int16 | yes | — | TODO |
+| `v_h` | int16 | yes | — | TODO |
+| `v_2b` | int16 | yes | — | TODO |
+| `v_3b` | int16 | yes | — | TODO |
+| `v_hr` | int16 | yes | — | TODO |
+| `v_rbi` | int16 | yes | — | TODO |
+| `v_sh` | int16 | yes | — | TODO |
+| `v_sf` | int16 | yes | — | TODO |
+| `v_hbp` | int16 | yes | — | TODO |
+| `v_bb` | int16 | yes | — | TODO |
+| `v_ibb` | int16 | yes | — | TODO |
+| `v_so` | int16 | yes | — | TODO |
+| `v_sb` | int16 | yes | — | TODO |
+| `v_cs` | int16 | yes | — | TODO |
+| `v_gidp` | int16 | yes | — | TODO |
+| `v_ci` | int16 | yes | — | TODO |
+| `v_lob` | int16 | yes | — | TODO |
+| `v_pitchers_used` | int16 | yes | — | TODO |
+| `v_ind_er` | int16 | yes | — | TODO |
+| `v_team_er` | int16 | yes | — | TODO |
+| `v_wp` | int16 | yes | — | TODO |
+| `v_balks` | int16 | yes | — | TODO |
+| `v_putouts` | int16 | yes | — | TODO |
+| `v_assists` | int16 | yes | — | TODO |
+| `v_errors` | int16 | yes | — | TODO |
+| `v_passed_balls` | int16 | yes | — | TODO |
+| `v_double_plays` | int16 | yes | — | TODO |
+| `v_triple_plays` | int16 | yes | — | TODO |
+| `h_ab` | int16 | yes | — | TODO |
+| `h_h` | int16 | yes | — | TODO |
+| `h_2b` | int16 | yes | — | TODO |
+| `h_3b` | int16 | yes | — | TODO |
+| `h_hr` | int16 | yes | — | TODO |
+| `h_rbi` | int16 | yes | — | TODO |
+| `h_sh` | int16 | yes | — | TODO |
+| `h_sf` | int16 | yes | — | TODO |
+| `h_hbp` | int16 | yes | — | TODO |
+| `h_bb` | int16 | yes | — | TODO |
+| `h_ibb` | int16 | yes | — | TODO |
+| `h_so` | int16 | yes | — | TODO |
+| `h_sb` | int16 | yes | — | TODO |
+| `h_cs` | int16 | yes | — | TODO |
+| `h_gidp` | int16 | yes | — | TODO |
+| `h_ci` | int16 | yes | — | TODO |
+| `h_lob` | int16 | yes | — | TODO |
+| `h_pitchers_used` | int16 | yes | — | TODO |
+| `h_ind_er` | int16 | yes | — | TODO |
+| `h_team_er` | int16 | yes | — | TODO |
+| `h_wp` | int16 | yes | — | TODO |
+| `h_balks` | int16 | yes | — | TODO |
+| `h_putouts` | int16 | yes | — | TODO |
+| `h_assists` | int16 | yes | — | TODO |
+| `h_errors` | int16 | yes | — | TODO |
+| `h_passed_balls` | int16 | yes | — | TODO |
+| `h_double_plays` | int16 | yes | — | TODO |
+| `h_triple_plays` | int16 | yes | — | TODO |
+| `hp_ump_id` | string | yes | — | TODO |
+| `hp_ump_name` | string | yes | — | TODO |
+| `1b_ump_id` | string | yes | — | TODO |
+| `1b_ump_name` | string | yes | — | TODO |
+| `2b_ump_id` | string | yes | — | TODO |
+| `2b_ump_name` | string | yes | — | TODO |
+| `3b_ump_id` | string | yes | — | TODO |
+| `3b_ump_name` | string | yes | — | TODO |
+| `lf_ump_id` | string | yes | — | TODO |
+| `lf_ump_name` | string | yes | — | TODO |
+| `rf_ump_id` | string | yes | — | TODO |
+| `rf_ump_name` | string | yes | — | TODO |
+| `v_manager_id` | string | yes | — | TODO |
+| `v_manager_name` | string | yes | — | TODO |
+| `h_manager_id` | string | yes | — | TODO |
+| `h_manager_name` | string | yes | — | TODO |
+| `win_pitcher_id` | string | yes | — | TODO |
+| `win_pitcher_name` | string | yes | — | TODO |
+| `lose_pitcher_id` | string | yes | — | TODO |
+| `lose_pitcher_name` | string | yes | — | TODO |
+| `save_pitcher_id` | string | yes | — | TODO |
+| `save_pitcher_name` | string | yes | — | TODO |
+| `gwrbi_id` | string | yes | — | TODO |
+| `gwrbi_name` | string | yes | — | TODO |
+| `v_start_pitcher_id` | string | yes | — | TODO |
+| `v_start_pitcher_name` | string | yes | — | TODO |
+| `h_start_pitcher_id` | string | yes | — | TODO |
+| `h_start_pitcher_name` | string | yes | — | TODO |
+| `v_b1_id` | string | yes | — | TODO |
+| `v_b1_name` | string | yes | — | TODO |
+| `v_b1_pos` | int8 | yes | — | TODO |
+| `v_b2_id` | string | yes | — | TODO |
+| `v_b2_name` | string | yes | — | TODO |
+| `v_b2_pos` | int8 | yes | — | TODO |
+| `v_b3_id` | string | yes | — | TODO |
+| `v_b3_name` | string | yes | — | TODO |
+| `v_b3_pos` | int8 | yes | — | TODO |
+| `v_b4_id` | string | yes | — | TODO |
+| `v_b4_name` | string | yes | — | TODO |
+| `v_b4_pos` | int8 | yes | — | TODO |
+| `v_b5_id` | string | yes | — | TODO |
+| `v_b5_name` | string | yes | — | TODO |
+| `v_b5_pos` | int8 | yes | — | TODO |
+| `v_b6_id` | string | yes | — | TODO |
+| `v_b6_name` | string | yes | — | TODO |
+| `v_b6_pos` | int8 | yes | — | TODO |
+| `v_b7_id` | string | yes | — | TODO |
+| `v_b7_name` | string | yes | — | TODO |
+| `v_b7_pos` | int8 | yes | — | TODO |
+| `v_b8_id` | string | yes | — | TODO |
+| `v_b8_name` | string | yes | — | TODO |
+| `v_b8_pos` | int8 | yes | — | TODO |
+| `v_b9_id` | string | yes | — | TODO |
+| `v_b9_name` | string | yes | — | TODO |
+| `v_b9_pos` | int8 | yes | — | TODO |
+| `h_b1_id` | string | yes | — | TODO |
+| `h_b1_name` | string | yes | — | TODO |
+| `h_b1_pos` | int8 | yes | — | TODO |
+| `h_b2_id` | string | yes | — | TODO |
+| `h_b2_name` | string | yes | — | TODO |
+| `h_b2_pos` | int8 | yes | — | TODO |
+| `h_b3_id` | string | yes | — | TODO |
+| `h_b3_name` | string | yes | — | TODO |
+| `h_b3_pos` | int8 | yes | — | TODO |
+| `h_b4_id` | string | yes | — | TODO |
+| `h_b4_name` | string | yes | — | TODO |
+| `h_b4_pos` | int8 | yes | — | TODO |
+| `h_b5_id` | string | yes | — | TODO |
+| `h_b5_name` | string | yes | — | TODO |
+| `h_b5_pos` | int8 | yes | — | TODO |
+| `h_b6_id` | string | yes | — | TODO |
+| `h_b6_name` | string | yes | — | TODO |
+| `h_b6_pos` | int8 | yes | — | TODO |
+| `h_b7_id` | string | yes | — | TODO |
+| `h_b7_name` | string | yes | — | TODO |
+| `h_b7_pos` | int8 | yes | — | TODO |
+| `h_b8_id` | string | yes | — | TODO |
+| `h_b8_name` | string | yes | — | TODO |
+| `h_b8_pos` | int8 | yes | — | TODO |
+| `h_b9_id` | string | yes | — | TODO |
+| `h_b9_name` | string | yes | — | TODO |
+| `h_b9_pos` | int8 | yes | — | TODO |
+| `additional_info` | string | yes | — | TODO |
+| `acquisition_info` | string | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.gamelogs -->
 
@@ -890,167 +909,167 @@ Postseason and all-star game logs.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `date` | date32[day] | yes | — |  |
-| `game_num` | int8 | yes | — |  |
-| `day_of_week` | string | yes | — |  |
-| `visiting_team` | string | yes | — |  |
-| `visiting_league` | string | yes | — |  |
-| `visiting_game_num` | int16 | yes | — |  |
-| `home_team` | string | yes | — |  |
-| `home_league` | string | yes | — |  |
-| `home_game_num` | int16 | yes | — |  |
-| `visiting_score` | int16 | yes | — |  |
-| `home_score` | int16 | yes | — |  |
-| `outs_total` | int16 | yes | — |  |
-| `day_night` | string | yes | — |  |
-| `completion` | string | yes | — |  |
-| `forfeit` | string | yes | — |  |
-| `protest` | string | yes | — |  |
-| `park_id` | string | yes | — |  |
-| `attendance` | int32 | yes | — |  |
-| `time_of_game` | int16 | yes | — |  |
-| `visiting_line_score` | string | yes | — |  |
-| `home_line_score` | string | yes | — |  |
-| `v_ab` | int16 | yes | — |  |
-| `v_h` | int16 | yes | — |  |
-| `v_2b` | int16 | yes | — |  |
-| `v_3b` | int16 | yes | — |  |
-| `v_hr` | int16 | yes | — |  |
-| `v_rbi` | int16 | yes | — |  |
-| `v_sh` | int16 | yes | — |  |
-| `v_sf` | int16 | yes | — |  |
-| `v_hbp` | int16 | yes | — |  |
-| `v_bb` | int16 | yes | — |  |
-| `v_ibb` | int16 | yes | — |  |
-| `v_so` | int16 | yes | — |  |
-| `v_sb` | int16 | yes | — |  |
-| `v_cs` | int16 | yes | — |  |
-| `v_gidp` | int16 | yes | — |  |
-| `v_ci` | int16 | yes | — |  |
-| `v_lob` | int16 | yes | — |  |
-| `v_pitchers_used` | int16 | yes | — |  |
-| `v_ind_er` | int16 | yes | — |  |
-| `v_team_er` | int16 | yes | — |  |
-| `v_wp` | int16 | yes | — |  |
-| `v_balks` | int16 | yes | — |  |
-| `v_putouts` | int16 | yes | — |  |
-| `v_assists` | int16 | yes | — |  |
-| `v_errors` | int16 | yes | — |  |
-| `v_passed_balls` | int16 | yes | — |  |
-| `v_double_plays` | int16 | yes | — |  |
-| `v_triple_plays` | int16 | yes | — |  |
-| `h_ab` | int16 | yes | — |  |
-| `h_h` | int16 | yes | — |  |
-| `h_2b` | int16 | yes | — |  |
-| `h_3b` | int16 | yes | — |  |
-| `h_hr` | int16 | yes | — |  |
-| `h_rbi` | int16 | yes | — |  |
-| `h_sh` | int16 | yes | — |  |
-| `h_sf` | int16 | yes | — |  |
-| `h_hbp` | int16 | yes | — |  |
-| `h_bb` | int16 | yes | — |  |
-| `h_ibb` | int16 | yes | — |  |
-| `h_so` | int16 | yes | — |  |
-| `h_sb` | int16 | yes | — |  |
-| `h_cs` | int16 | yes | — |  |
-| `h_gidp` | int16 | yes | — |  |
-| `h_ci` | int16 | yes | — |  |
-| `h_lob` | int16 | yes | — |  |
-| `h_pitchers_used` | int16 | yes | — |  |
-| `h_ind_er` | int16 | yes | — |  |
-| `h_team_er` | int16 | yes | — |  |
-| `h_wp` | int16 | yes | — |  |
-| `h_balks` | int16 | yes | — |  |
-| `h_putouts` | int16 | yes | — |  |
-| `h_assists` | int16 | yes | — |  |
-| `h_errors` | int16 | yes | — |  |
-| `h_passed_balls` | int16 | yes | — |  |
-| `h_double_plays` | int16 | yes | — |  |
-| `h_triple_plays` | int16 | yes | — |  |
-| `hp_ump_id` | string | yes | — |  |
-| `hp_ump_name` | string | yes | — |  |
-| `1b_ump_id` | string | yes | — |  |
-| `1b_ump_name` | string | yes | — |  |
-| `2b_ump_id` | string | yes | — |  |
-| `2b_ump_name` | string | yes | — |  |
-| `3b_ump_id` | string | yes | — |  |
-| `3b_ump_name` | string | yes | — |  |
-| `lf_ump_id` | string | yes | — |  |
-| `lf_ump_name` | string | yes | — |  |
-| `rf_ump_id` | string | yes | — |  |
-| `rf_ump_name` | string | yes | — |  |
-| `v_manager_id` | string | yes | — |  |
-| `v_manager_name` | string | yes | — |  |
-| `h_manager_id` | string | yes | — |  |
-| `h_manager_name` | string | yes | — |  |
-| `win_pitcher_id` | string | yes | — |  |
-| `win_pitcher_name` | string | yes | — |  |
-| `lose_pitcher_id` | string | yes | — |  |
-| `lose_pitcher_name` | string | yes | — |  |
-| `save_pitcher_id` | string | yes | — |  |
-| `save_pitcher_name` | string | yes | — |  |
-| `gwrbi_id` | string | yes | — |  |
-| `gwrbi_name` | string | yes | — |  |
-| `v_start_pitcher_id` | string | yes | — |  |
-| `v_start_pitcher_name` | string | yes | — |  |
-| `h_start_pitcher_id` | string | yes | — |  |
-| `h_start_pitcher_name` | string | yes | — |  |
-| `v_b1_id` | string | yes | — |  |
-| `v_b1_name` | string | yes | — |  |
-| `v_b1_pos` | int8 | yes | — |  |
-| `v_b2_id` | string | yes | — |  |
-| `v_b2_name` | string | yes | — |  |
-| `v_b2_pos` | int8 | yes | — |  |
-| `v_b3_id` | string | yes | — |  |
-| `v_b3_name` | string | yes | — |  |
-| `v_b3_pos` | int8 | yes | — |  |
-| `v_b4_id` | string | yes | — |  |
-| `v_b4_name` | string | yes | — |  |
-| `v_b4_pos` | int8 | yes | — |  |
-| `v_b5_id` | string | yes | — |  |
-| `v_b5_name` | string | yes | — |  |
-| `v_b5_pos` | int8 | yes | — |  |
-| `v_b6_id` | string | yes | — |  |
-| `v_b6_name` | string | yes | — |  |
-| `v_b6_pos` | int8 | yes | — |  |
-| `v_b7_id` | string | yes | — |  |
-| `v_b7_name` | string | yes | — |  |
-| `v_b7_pos` | int8 | yes | — |  |
-| `v_b8_id` | string | yes | — |  |
-| `v_b8_name` | string | yes | — |  |
-| `v_b8_pos` | int8 | yes | — |  |
-| `v_b9_id` | string | yes | — |  |
-| `v_b9_name` | string | yes | — |  |
-| `v_b9_pos` | int8 | yes | — |  |
-| `h_b1_id` | string | yes | — |  |
-| `h_b1_name` | string | yes | — |  |
-| `h_b1_pos` | int8 | yes | — |  |
-| `h_b2_id` | string | yes | — |  |
-| `h_b2_name` | string | yes | — |  |
-| `h_b2_pos` | int8 | yes | — |  |
-| `h_b3_id` | string | yes | — |  |
-| `h_b3_name` | string | yes | — |  |
-| `h_b3_pos` | int8 | yes | — |  |
-| `h_b4_id` | string | yes | — |  |
-| `h_b4_name` | string | yes | — |  |
-| `h_b4_pos` | int8 | yes | — |  |
-| `h_b5_id` | string | yes | — |  |
-| `h_b5_name` | string | yes | — |  |
-| `h_b5_pos` | int8 | yes | — |  |
-| `h_b6_id` | string | yes | — |  |
-| `h_b6_name` | string | yes | — |  |
-| `h_b6_pos` | int8 | yes | — |  |
-| `h_b7_id` | string | yes | — |  |
-| `h_b7_name` | string | yes | — |  |
-| `h_b7_pos` | int8 | yes | — |  |
-| `h_b8_id` | string | yes | — |  |
-| `h_b8_name` | string | yes | — |  |
-| `h_b8_pos` | int8 | yes | — |  |
-| `h_b9_id` | string | yes | — |  |
-| `h_b9_name` | string | yes | — |  |
-| `h_b9_pos` | int8 | yes | — |  |
-| `additional_info` | string | yes | — |  |
-| `acquisition_info` | string | yes | — |  |
+| `date` | date32[day] | yes | — | TODO |
+| `game_num` | int8 | yes | — | TODO |
+| `day_of_week` | string | yes | — | TODO |
+| `visiting_team` | string | yes | — | TODO |
+| `visiting_league` | string | yes | — | TODO |
+| `visiting_game_num` | int16 | yes | — | TODO |
+| `home_team` | string | yes | — | TODO |
+| `home_league` | string | yes | — | TODO |
+| `home_game_num` | int16 | yes | — | TODO |
+| `visiting_score` | int16 | yes | — | TODO |
+| `home_score` | int16 | yes | — | TODO |
+| `outs_total` | int16 | yes | — | TODO |
+| `day_night` | string | yes | — | TODO |
+| `completion` | string | yes | — | TODO |
+| `forfeit` | string | yes | — | TODO |
+| `protest` | string | yes | — | TODO |
+| `park_id` | string | yes | — | TODO |
+| `attendance` | int32 | yes | — | TODO |
+| `time_of_game` | int16 | yes | — | TODO |
+| `visiting_line_score` | string | yes | — | TODO |
+| `home_line_score` | string | yes | — | TODO |
+| `v_ab` | int16 | yes | — | TODO |
+| `v_h` | int16 | yes | — | TODO |
+| `v_2b` | int16 | yes | — | TODO |
+| `v_3b` | int16 | yes | — | TODO |
+| `v_hr` | int16 | yes | — | TODO |
+| `v_rbi` | int16 | yes | — | TODO |
+| `v_sh` | int16 | yes | — | TODO |
+| `v_sf` | int16 | yes | — | TODO |
+| `v_hbp` | int16 | yes | — | TODO |
+| `v_bb` | int16 | yes | — | TODO |
+| `v_ibb` | int16 | yes | — | TODO |
+| `v_so` | int16 | yes | — | TODO |
+| `v_sb` | int16 | yes | — | TODO |
+| `v_cs` | int16 | yes | — | TODO |
+| `v_gidp` | int16 | yes | — | TODO |
+| `v_ci` | int16 | yes | — | TODO |
+| `v_lob` | int16 | yes | — | TODO |
+| `v_pitchers_used` | int16 | yes | — | TODO |
+| `v_ind_er` | int16 | yes | — | TODO |
+| `v_team_er` | int16 | yes | — | TODO |
+| `v_wp` | int16 | yes | — | TODO |
+| `v_balks` | int16 | yes | — | TODO |
+| `v_putouts` | int16 | yes | — | TODO |
+| `v_assists` | int16 | yes | — | TODO |
+| `v_errors` | int16 | yes | — | TODO |
+| `v_passed_balls` | int16 | yes | — | TODO |
+| `v_double_plays` | int16 | yes | — | TODO |
+| `v_triple_plays` | int16 | yes | — | TODO |
+| `h_ab` | int16 | yes | — | TODO |
+| `h_h` | int16 | yes | — | TODO |
+| `h_2b` | int16 | yes | — | TODO |
+| `h_3b` | int16 | yes | — | TODO |
+| `h_hr` | int16 | yes | — | TODO |
+| `h_rbi` | int16 | yes | — | TODO |
+| `h_sh` | int16 | yes | — | TODO |
+| `h_sf` | int16 | yes | — | TODO |
+| `h_hbp` | int16 | yes | — | TODO |
+| `h_bb` | int16 | yes | — | TODO |
+| `h_ibb` | int16 | yes | — | TODO |
+| `h_so` | int16 | yes | — | TODO |
+| `h_sb` | int16 | yes | — | TODO |
+| `h_cs` | int16 | yes | — | TODO |
+| `h_gidp` | int16 | yes | — | TODO |
+| `h_ci` | int16 | yes | — | TODO |
+| `h_lob` | int16 | yes | — | TODO |
+| `h_pitchers_used` | int16 | yes | — | TODO |
+| `h_ind_er` | int16 | yes | — | TODO |
+| `h_team_er` | int16 | yes | — | TODO |
+| `h_wp` | int16 | yes | — | TODO |
+| `h_balks` | int16 | yes | — | TODO |
+| `h_putouts` | int16 | yes | — | TODO |
+| `h_assists` | int16 | yes | — | TODO |
+| `h_errors` | int16 | yes | — | TODO |
+| `h_passed_balls` | int16 | yes | — | TODO |
+| `h_double_plays` | int16 | yes | — | TODO |
+| `h_triple_plays` | int16 | yes | — | TODO |
+| `hp_ump_id` | string | yes | — | TODO |
+| `hp_ump_name` | string | yes | — | TODO |
+| `1b_ump_id` | string | yes | — | TODO |
+| `1b_ump_name` | string | yes | — | TODO |
+| `2b_ump_id` | string | yes | — | TODO |
+| `2b_ump_name` | string | yes | — | TODO |
+| `3b_ump_id` | string | yes | — | TODO |
+| `3b_ump_name` | string | yes | — | TODO |
+| `lf_ump_id` | string | yes | — | TODO |
+| `lf_ump_name` | string | yes | — | TODO |
+| `rf_ump_id` | string | yes | — | TODO |
+| `rf_ump_name` | string | yes | — | TODO |
+| `v_manager_id` | string | yes | — | TODO |
+| `v_manager_name` | string | yes | — | TODO |
+| `h_manager_id` | string | yes | — | TODO |
+| `h_manager_name` | string | yes | — | TODO |
+| `win_pitcher_id` | string | yes | — | TODO |
+| `win_pitcher_name` | string | yes | — | TODO |
+| `lose_pitcher_id` | string | yes | — | TODO |
+| `lose_pitcher_name` | string | yes | — | TODO |
+| `save_pitcher_id` | string | yes | — | TODO |
+| `save_pitcher_name` | string | yes | — | TODO |
+| `gwrbi_id` | string | yes | — | TODO |
+| `gwrbi_name` | string | yes | — | TODO |
+| `v_start_pitcher_id` | string | yes | — | TODO |
+| `v_start_pitcher_name` | string | yes | — | TODO |
+| `h_start_pitcher_id` | string | yes | — | TODO |
+| `h_start_pitcher_name` | string | yes | — | TODO |
+| `v_b1_id` | string | yes | — | TODO |
+| `v_b1_name` | string | yes | — | TODO |
+| `v_b1_pos` | int8 | yes | — | TODO |
+| `v_b2_id` | string | yes | — | TODO |
+| `v_b2_name` | string | yes | — | TODO |
+| `v_b2_pos` | int8 | yes | — | TODO |
+| `v_b3_id` | string | yes | — | TODO |
+| `v_b3_name` | string | yes | — | TODO |
+| `v_b3_pos` | int8 | yes | — | TODO |
+| `v_b4_id` | string | yes | — | TODO |
+| `v_b4_name` | string | yes | — | TODO |
+| `v_b4_pos` | int8 | yes | — | TODO |
+| `v_b5_id` | string | yes | — | TODO |
+| `v_b5_name` | string | yes | — | TODO |
+| `v_b5_pos` | int8 | yes | — | TODO |
+| `v_b6_id` | string | yes | — | TODO |
+| `v_b6_name` | string | yes | — | TODO |
+| `v_b6_pos` | int8 | yes | — | TODO |
+| `v_b7_id` | string | yes | — | TODO |
+| `v_b7_name` | string | yes | — | TODO |
+| `v_b7_pos` | int8 | yes | — | TODO |
+| `v_b8_id` | string | yes | — | TODO |
+| `v_b8_name` | string | yes | — | TODO |
+| `v_b8_pos` | int8 | yes | — | TODO |
+| `v_b9_id` | string | yes | — | TODO |
+| `v_b9_name` | string | yes | — | TODO |
+| `v_b9_pos` | int8 | yes | — | TODO |
+| `h_b1_id` | string | yes | — | TODO |
+| `h_b1_name` | string | yes | — | TODO |
+| `h_b1_pos` | int8 | yes | — | TODO |
+| `h_b2_id` | string | yes | — | TODO |
+| `h_b2_name` | string | yes | — | TODO |
+| `h_b2_pos` | int8 | yes | — | TODO |
+| `h_b3_id` | string | yes | — | TODO |
+| `h_b3_name` | string | yes | — | TODO |
+| `h_b3_pos` | int8 | yes | — | TODO |
+| `h_b4_id` | string | yes | — | TODO |
+| `h_b4_name` | string | yes | — | TODO |
+| `h_b4_pos` | int8 | yes | — | TODO |
+| `h_b5_id` | string | yes | — | TODO |
+| `h_b5_name` | string | yes | — | TODO |
+| `h_b5_pos` | int8 | yes | — | TODO |
+| `h_b6_id` | string | yes | — | TODO |
+| `h_b6_name` | string | yes | — | TODO |
+| `h_b6_pos` | int8 | yes | — | TODO |
+| `h_b7_id` | string | yes | — | TODO |
+| `h_b7_name` | string | yes | — | TODO |
+| `h_b7_pos` | int8 | yes | — | TODO |
+| `h_b8_id` | string | yes | — | TODO |
+| `h_b8_name` | string | yes | — | TODO |
+| `h_b8_pos` | int8 | yes | — | TODO |
+| `h_b9_id` | string | yes | — | TODO |
+| `h_b9_name` | string | yes | — | TODO |
+| `h_b9_pos` | int8 | yes | — | TODO |
+| `additional_info` | string | yes | — | TODO |
+| `acquisition_info` | string | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.gamelogs_postseason -->
 
@@ -1066,16 +1085,16 @@ Ballparks (reference/ballparks.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `park_id` | string | yes | `PARKID` |  |
-| `name` | string | yes | `NAME` |  |
-| `aka` | string | yes | `AKA` |  |
-| `city` | string | yes | `CITY` |  |
-| `state` | string | yes | `STATE` |  |
-| `start_date` | date32[day] (`%m/%d/%Y`) | yes | `START` |  |
-| `end_date` | date32[day] (`%m/%d/%Y`) | yes | `END` |  |
-| `league` | string | yes | `LEAGUE` |  |
-| `notes` | string | yes | `NOTES` |  |
-| `_extras` | string | yes | — |  |
+| `park_id` | string | yes | `PARKID` | TODO |
+| `name` | string | yes | `NAME` | TODO |
+| `aka` | string | yes | `AKA` | TODO |
+| `city` | string | yes | `CITY` | TODO |
+| `state` | string | yes | `STATE` | TODO |
+| `start_date` | date32[day] (`%m/%d/%Y`) | yes | `START` | TODO |
+| `end_date` | date32[day] (`%m/%d/%Y`) | yes | `END` | TODO |
+| `league` | string | yes | `LEAGUE` | TODO |
+| `notes` | string | yes | `NOTES` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.reference_ballparks -->
 
@@ -1091,40 +1110,40 @@ Biographical file (reference/biofile.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player_id` | string | yes | `PLAYERID` |  |
-| `last_name` | string | yes | `LAST` |  |
-| `first_name` | string | yes | `FIRST` |  |
-| `nickname` | string | yes | `NICKNAME` |  |
-| `birthdate` | string | yes | `BIRTHDATE` |  |
-| `birth_city` | string | yes | `BIRTH.CITY` |  |
-| `birth_state` | string | yes | `BIRTH.STATE` |  |
-| `birth_country` | string | yes | `BIRTH.COUNTRY` |  |
-| `play_debut` | date32[day] (`%m/%d/%Y`) | yes | `PLAY.DEBUT` |  |
-| `play_lastgame` | date32[day] (`%m/%d/%Y`) | yes | `PLAY.LASTGAME` |  |
-| `mgr_debut` | date32[day] (`%m/%d/%Y`) | yes | `MGR.DEBUT` |  |
-| `mgr_lastgame` | date32[day] (`%m/%d/%Y`) | yes | `MGR.LASTGAME` |  |
-| `coach_debut` | date32[day] (`%m/%d/%Y`) | yes | `COACH.DEBUT` |  |
-| `coach_lastgame` | date32[day] (`%m/%d/%Y`) | yes | `COACH.LASTGAME` |  |
-| `ump_debut` | date32[day] (`%m/%d/%Y`) | yes | `UMP.DEBUT` |  |
-| `ump_lastgame` | date32[day] (`%m/%d/%Y`) | yes | `UMP.LASTGAME` |  |
-| `deathdate` | string | yes | `DEATHDATE` |  |
-| `death_city` | string | yes | `DEATH.CITY` |  |
-| `death_state` | string | yes | `DEATH.STATE` |  |
-| `death_country` | string | yes | `DEATH.COUNTRY` |  |
-| `bats` | string | yes | `BATS` |  |
-| `throws` | string | yes | `THROWS` |  |
-| `height` | string | yes | `HEIGHT` |  |
-| `weight` | double | yes | `WEIGHT` |  |
-| `cemetery` | string | yes | `CEMETERY` |  |
-| `ceme_city` | string | yes | `CEME.CITY` |  |
-| `ceme_state` | string | yes | `CEME.STATE` |  |
-| `ceme_country` | string | yes | `CEME.COUNTRY` |  |
-| `ceme_note` | string | yes | `CEME.NOTE` |  |
-| `birth_name` | string | yes | `BIRTH.NAME` |  |
-| `name_chg` | string | yes | `NAME.CHG` |  |
-| `bat_chg` | string | yes | `BAT.CHG` |  |
-| `hof` | string | yes | `HOF` |  |
-| `_extras` | string | yes | — |  |
+| `player_id` | string | yes | `PLAYERID` | TODO |
+| `last_name` | string | yes | `LAST` | TODO |
+| `first_name` | string | yes | `FIRST` | TODO |
+| `nickname` | string | yes | `NICKNAME` | TODO |
+| `birthdate` | string | yes | `BIRTHDATE` | TODO |
+| `birth_city` | string | yes | `BIRTH.CITY` | TODO |
+| `birth_state` | string | yes | `BIRTH.STATE` | TODO |
+| `birth_country` | string | yes | `BIRTH.COUNTRY` | TODO |
+| `play_debut` | date32[day] (`%m/%d/%Y`) | yes | `PLAY.DEBUT` | TODO |
+| `play_lastgame` | date32[day] (`%m/%d/%Y`) | yes | `PLAY.LASTGAME` | TODO |
+| `mgr_debut` | date32[day] (`%m/%d/%Y`) | yes | `MGR.DEBUT` | TODO |
+| `mgr_lastgame` | date32[day] (`%m/%d/%Y`) | yes | `MGR.LASTGAME` | TODO |
+| `coach_debut` | date32[day] (`%m/%d/%Y`) | yes | `COACH.DEBUT` | TODO |
+| `coach_lastgame` | date32[day] (`%m/%d/%Y`) | yes | `COACH.LASTGAME` | TODO |
+| `ump_debut` | date32[day] (`%m/%d/%Y`) | yes | `UMP.DEBUT` | TODO |
+| `ump_lastgame` | date32[day] (`%m/%d/%Y`) | yes | `UMP.LASTGAME` | TODO |
+| `deathdate` | string | yes | `DEATHDATE` | TODO |
+| `death_city` | string | yes | `DEATH.CITY` | TODO |
+| `death_state` | string | yes | `DEATH.STATE` | TODO |
+| `death_country` | string | yes | `DEATH.COUNTRY` | TODO |
+| `bats` | string | yes | `BATS` | TODO |
+| `throws` | string | yes | `THROWS` | TODO |
+| `height` | string | yes | `HEIGHT` | TODO |
+| `weight` | double | yes | `WEIGHT` | TODO |
+| `cemetery` | string | yes | `CEMETERY` | TODO |
+| `ceme_city` | string | yes | `CEME.CITY` | TODO |
+| `ceme_state` | string | yes | `CEME.STATE` | TODO |
+| `ceme_country` | string | yes | `CEME.COUNTRY` | TODO |
+| `ceme_note` | string | yes | `CEME.NOTE` | TODO |
+| `birth_name` | string | yes | `BIRTH.NAME` | TODO |
+| `name_chg` | string | yes | `NAME.CHG` | TODO |
+| `bat_chg` | string | yes | `BAT.CHG` | TODO |
+| `hof` | string | yes | `HOF` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.reference_biofile -->
 
@@ -1140,39 +1159,39 @@ Biographical file, ISO-date edition (reference/biofile0.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player_id` | string | yes | `id` |  |
-| `last_name` | string | yes | `lastname` |  |
-| `use_name` | string | yes | `usename` |  |
-| `full_name` | string | yes | `fullname` |  |
-| `birthdate` | string | yes | — |  |
-| `birthcity` | string | yes | — |  |
-| `birthstate` | string | yes | — |  |
-| `birthcountry` | string | yes | — |  |
-| `deathdate` | string | yes | — |  |
-| `deathcity` | string | yes | — |  |
-| `deathstate` | string | yes | — |  |
-| `deathcountry` | string | yes | — |  |
-| `cemetery` | string | yes | — |  |
-| `cem_city` | string | yes | — |  |
-| `cem_state` | string | yes | — |  |
-| `cem_ctry` | string | yes | — |  |
-| `cem_note` | string | yes | — |  |
-| `birth_name` | string | yes | `birthname` |  |
-| `alt_name` | string | yes | `altname` |  |
-| `debut_p` | date32[day] (`%Y%m%d`) | yes | — |  |
-| `last_p` | date32[day] (`%Y%m%d`) | yes | — |  |
-| `debut_c` | date32[day] (`%Y%m%d`) | yes | — |  |
-| `last_c` | date32[day] (`%Y%m%d`) | yes | — |  |
-| `debut_m` | date32[day] (`%Y%m%d`) | yes | — |  |
-| `last_m` | date32[day] (`%Y%m%d`) | yes | — |  |
-| `debut_u` | date32[day] (`%Y%m%d`) | yes | — |  |
-| `last_u` | date32[day] (`%Y%m%d`) | yes | — |  |
-| `bats` | string | yes | — |  |
-| `throws` | string | yes | — |  |
-| `height` | double | yes | — |  |
-| `weight` | double | yes | — |  |
-| `hof` | string | yes | `HOF` |  |
-| `_extras` | string | yes | — |  |
+| `player_id` | string | yes | `id` | TODO |
+| `last_name` | string | yes | `lastname` | TODO |
+| `use_name` | string | yes | `usename` | TODO |
+| `full_name` | string | yes | `fullname` | TODO |
+| `birthdate` | string | yes | — | TODO |
+| `birthcity` | string | yes | — | TODO |
+| `birthstate` | string | yes | — | TODO |
+| `birthcountry` | string | yes | — | TODO |
+| `deathdate` | string | yes | — | TODO |
+| `deathcity` | string | yes | — | TODO |
+| `deathstate` | string | yes | — | TODO |
+| `deathcountry` | string | yes | — | TODO |
+| `cemetery` | string | yes | — | TODO |
+| `cem_city` | string | yes | — | TODO |
+| `cem_state` | string | yes | — | TODO |
+| `cem_ctry` | string | yes | — | TODO |
+| `cem_note` | string | yes | — | TODO |
+| `birth_name` | string | yes | `birthname` | TODO |
+| `alt_name` | string | yes | `altname` | TODO |
+| `debut_p` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_p` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `debut_c` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_c` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `debut_m` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_m` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `debut_u` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_u` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `bats` | string | yes | — | TODO |
+| `throws` | string | yes | — | TODO |
+| `height` | double | yes | — | TODO |
+| `weight` | double | yes | — | TODO |
+| `hof` | string | yes | `HOF` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.reference_biofile0 -->
 
@@ -1188,13 +1207,13 @@ Coaching staffs (reference/coaches.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `person_id` | string | yes | `id` |  |
-| `year` | int16 | yes | — |  |
-| `team_id` | string | yes | `team` |  |
-| `role` | string | yes | — |  |
-| `start_date` | date32[day] (`%m/%d/%Y`) | yes | `start` |  |
-| `end_date` | date32[day] (`%m/%d/%Y`) | yes | `end` |  |
-| `_extras` | string | yes | — |  |
+| `person_id` | string | yes | `id` | TODO |
+| `year` | int16 | yes | — | TODO |
+| `team_id` | string | yes | `team` | TODO |
+| `role` | string | yes | — | TODO |
+| `start_date` | date32[day] (`%m/%d/%Y`) | yes | `start` | TODO |
+| `end_date` | date32[day] (`%m/%d/%Y`) | yes | `end` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.reference_coaches -->
 
@@ -1210,18 +1229,18 @@ Ejections (reference/ejections.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `game_id` | string | yes | `GAMEID` |  |
-| `ejection_date` | date32[day] (`%m/%d/%Y`) | yes | `DATE` |  |
-| `dh` | int16 | yes | `DH` |  |
-| `ejectee_id` | string | yes | `EJECTEE` |  |
-| `ejectee_name` | string | yes | `EJECTEENAME` |  |
-| `team_id` | string | yes | `TEAM` |  |
-| `job` | string | yes | `JOB` |  |
-| `umpire_id` | string | yes | `UMPIRE` |  |
-| `umpire_name` | string | yes | `UMPIRENAME` |  |
-| `inning` | int16 | yes | `INNING` |  |
-| `reason` | string | yes | `REASON` |  |
-| `_extras` | string | yes | — |  |
+| `game_id` | string | yes | `GAMEID` | TODO |
+| `ejection_date` | date32[day] (`%m/%d/%Y`) | yes | `DATE` | TODO |
+| `dh` | int16 | yes | `DH` | TODO |
+| `ejectee_id` | string | yes | `EJECTEE` | TODO |
+| `ejectee_name` | string | yes | `EJECTEENAME` | TODO |
+| `team_id` | string | yes | `TEAM` | TODO |
+| `job` | string | yes | `JOB` | TODO |
+| `umpire_id` | string | yes | `UMPIRE` | TODO |
+| `umpire_name` | string | yes | `UMPIRENAME` | TODO |
+| `inning` | int16 | yes | `INNING` | TODO |
+| `reason` | string | yes | `REASON` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.reference_ejections -->
 
@@ -1237,10 +1256,10 @@ Relatives among players/managers (reference/relatives.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `person_id_1` | string | yes | `id1` |  |
-| `relation` | string | yes | — |  |
-| `person_id_2` | string | yes | `id2` |  |
-| `_extras` | string | yes | — |  |
+| `person_id_1` | string | yes | `id1` | TODO |
+| `relation` | string | yes | — | TODO |
+| `person_id_2` | string | yes | `id2` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.reference_relatives -->
 
@@ -1256,13 +1275,13 @@ Franchise/team codes (reference/teams.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `team_id` | string | yes | `TEAM` |  |
-| `league` | string | yes | `LEAGUE` |  |
-| `city` | string | yes | `CITY` |  |
-| `nickname` | string | yes | `NICKNAME` |  |
-| `first_year` | int16 | yes | `FIRST` |  |
-| `last_year` | int16 | yes | `LAST` |  |
-| `_extras` | string | yes | — |  |
+| `team_id` | string | yes | `TEAM` | TODO |
+| `league` | string | yes | `LEAGUE` | TODO |
+| `city` | string | yes | `CITY` | TODO |
+| `nickname` | string | yes | `NICKNAME` | TODO |
+| `first_year` | int16 | yes | `FIRST` | TODO |
+| `last_year` | int16 | yes | `LAST` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.reference_teams -->
 
@@ -1278,14 +1297,14 @@ Team rosters per season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player_id` | string | yes | — |  |
-| `last_name` | string | yes | — |  |
-| `first_name` | string | yes | — |  |
-| `bats` | string | yes | — |  |
-| `throws` | string | yes | — |  |
-| `team` | string | yes | — |  |
-| `position` | string | yes | — |  |
-| `year` | int16 | yes | — |  |
+| `player_id` | string | yes | — | TODO |
+| `last_name` | string | yes | — | TODO |
+| `first_name` | string | yes | — | TODO |
+| `bats` | string | yes | — | TODO |
+| `throws` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `position` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.rosters -->
 
@@ -1301,20 +1320,20 @@ Season schedules (seasons/<year>/<year>schedule.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `game_date` | date32[day] (`%Y%m%d`) | yes | `Date` |  |
-| `game_number` | int16 | yes | `Num` |  |
-| `day_of_week` | string | yes | `Day` |  |
-| `visitor_team` | string | yes | `Visitor` |  |
-| `visitor_league` | string | yes | `League` |  |
-| `visitor_game_number` | int16 | yes | `Game` |  |
-| `home_team` | string | yes | `Home` |  |
-| `home_league` | string | yes | `League__2` |  |
-| `home_game_number` | int16 | yes | `Game__2` |  |
-| `day_night` | string | yes | `Day/Night` |  |
-| `postponed` | string | yes | `Postponed` |  |
-| `makeup_date` | string | yes | `Makeup` |  |
-| `park_id` | string | yes | `Location` |  |
-| `_extras` | string | yes | — |  |
+| `game_date` | date32[day] (`%Y%m%d`) | yes | `Date` | TODO |
+| `game_number` | int16 | yes | `Num` | TODO |
+| `day_of_week` | string | yes | `Day` | TODO |
+| `visitor_team` | string | yes | `Visitor` | TODO |
+| `visitor_league` | string | yes | `League` | TODO |
+| `visitor_game_number` | int16 | yes | `Game` | TODO |
+| `home_team` | string | yes | `Home` | TODO |
+| `home_league` | string | yes | `League__2` | TODO |
+| `home_game_number` | int16 | yes | `Game__2` | TODO |
+| `day_night` | string | yes | `Day/Night` | TODO |
+| `postponed` | string | yes | `Postponed` | TODO |
+| `makeup_date` | string | yes | `Makeup` | TODO |
+| `park_id` | string | yes | `Location` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.schedule -->
 
@@ -1330,32 +1349,32 @@ In-game substitutions.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `GAME_ID` | string | yes | — |  |
-| `INN_CT` | int16 | yes | — |  |
-| `BAT_HOME_ID` | int16 | yes | — |  |
-| `SUB_ID` | string | yes | — |  |
-| `SUB_HOME_ID` | int16 | yes | — |  |
-| `SUB_LINEUP_ID` | int16 | yes | — |  |
-| `SUB_FLD_CD` | int16 | yes | — |  |
-| `REMOVED_ID` | string | yes | — |  |
-| `REMOVED_FLD_CD` | int16 | yes | — |  |
-| `EVENT_ID` | int16 | yes | — |  |
-| `BALLS_CT` | int16 | yes | — |  |
-| `STRIKES_CT` | int16 | yes | — |  |
-| `PITCH_SEQ_TX` | string | yes | — |  |
-| `PA_BALL_CT` | int16 | yes | — |  |
-| `PA_CALLED_BALL_CT` | int16 | yes | — |  |
-| `PA_INTENT_BALL_CT` | int16 | yes | — |  |
-| `PA_PITCHOUT_BALL_CT` | int16 | yes | — |  |
-| `PA_HITBATTER_BALL_CT` | int16 | yes | — |  |
-| `PA_OTHER_BALL_CT` | int16 | yes | — |  |
-| `PA_STRIKE_CT` | int16 | yes | — |  |
-| `PA_CALLED_STRIKE_CT` | int16 | yes | — |  |
-| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — |  |
-| `PA_FOUL_STRIKE_CT` | int16 | yes | — |  |
-| `PA_INPLAY_STRIKE_CT` | int16 | yes | — |  |
-| `PA_OTHER_STRIKE_CT` | int16 | yes | — |  |
-| `COUNT_TX` | string | yes | — |  |
+| `GAME_ID` | string | yes | — | TODO |
+| `INN_CT` | int16 | yes | — | TODO |
+| `BAT_HOME_ID` | int16 | yes | — | TODO |
+| `SUB_ID` | string | yes | — | TODO |
+| `SUB_HOME_ID` | int16 | yes | — | TODO |
+| `SUB_LINEUP_ID` | int16 | yes | — | TODO |
+| `SUB_FLD_CD` | int16 | yes | — | TODO |
+| `REMOVED_ID` | string | yes | — | TODO |
+| `REMOVED_FLD_CD` | int16 | yes | — | TODO |
+| `EVENT_ID` | int16 | yes | — | TODO |
+| `BALLS_CT` | int16 | yes | — | TODO |
+| `STRIKES_CT` | int16 | yes | — | TODO |
+| `PITCH_SEQ_TX` | string | yes | — | TODO |
+| `PA_BALL_CT` | int16 | yes | — | TODO |
+| `PA_CALLED_BALL_CT` | int16 | yes | — | TODO |
+| `PA_INTENT_BALL_CT` | int16 | yes | — | TODO |
+| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | TODO |
+| `PA_HITBATTER_BALL_CT` | int16 | yes | — | TODO |
+| `PA_OTHER_BALL_CT` | int16 | yes | — | TODO |
+| `PA_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_CALLED_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_FOUL_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_OTHER_STRIKE_CT` | int16 | yes | — | TODO |
+| `COUNT_TX` | string | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.substitutions -->
 
@@ -1371,10 +1390,10 @@ Umpires working each season (seasons/<year>/UMPIRES<year>.txt).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `umpire_id` | string | yes | `ID` |  |
-| `last_name` | string | yes | `last` |  |
-| `first_name` | string | yes | `first` |  |
-| `_extras` | string | yes | — |  |
+| `umpire_id` | string | yes | `ID` | TODO |
+| `last_name` | string | yes | `last` | TODO |
+| `first_name` | string | yes | `first` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.umpires -->
 
@@ -1390,18 +1409,145 @@ Original pre-disruption schedules (seasons/<year>/<year>sched-orig.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `game_date` | date32[day] (`%Y%m%d`) | yes | `Date` |  |
-| `game_number` | int16 | yes | `Num` |  |
-| `day_of_week` | string | yes | `Day` |  |
-| `visitor_team` | string | yes | `Visitor` |  |
-| `visitor_league` | string | yes | `League` |  |
-| `visitor_game_number` | int16 | yes | `Game` |  |
-| `home_team` | string | yes | `Home` |  |
-| `home_league` | string | yes | `League__2` |  |
-| `home_game_number` | int16 | yes | `Game__2` |  |
-| `day_night` | string | yes | `Day/Night` |  |
-| `postponed` | string | yes | `Postponed` |  |
-| `makeup_date` | string | yes | `Makeup` |  |
-| `_extras` | string | yes | — |  |
+| `game_date` | date32[day] (`%Y%m%d`) | yes | `Date` | TODO |
+| `game_number` | int16 | yes | `Num` | TODO |
+| `day_of_week` | string | yes | `Day` | TODO |
+| `visitor_team` | string | yes | `Visitor` | TODO |
+| `visitor_league` | string | yes | `League` | TODO |
+| `visitor_game_number` | int16 | yes | `Game` | TODO |
+| `home_team` | string | yes | `Home` | TODO |
+| `home_league` | string | yes | `League__2` | TODO |
+| `home_game_number` | int16 | yes | `Game__2` | TODO |
+| `day_night` | string | yes | `Day/Night` | TODO |
+| `postponed` | string | yes | `Postponed` | TODO |
+| `makeup_date` | string | yes | `Makeup` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.schedule_original -->
+
+<!-- BEGIN GENERATED:retrosheet.box_batting_lines -->
+### Dataset: box_batting_lines
+
+Batting and base-running lines of the box-score accounts (stat,bline).
+
+- **View:** `retrosheet_box_batting_lines`
+- **Processed path:** `processed/retrosheet/box_batting_lines/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_id`, `player_id`, `side`, `seq`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_id` | string | yes | — | TODO |
+| `player_id` | string | yes | — | TODO |
+| `side` | int8 | yes | — | TODO |
+| `position` | int8 | yes | — | TODO |
+| `seq` | int8 | yes | — | TODO |
+| `ab` | int16 | yes | — | TODO |
+| `r` | int16 | yes | — | TODO |
+| `h` | int16 | yes | — | TODO |
+| `double` | int16 | yes | — | TODO |
+| `triple` | int16 | yes | — | TODO |
+| `hr` | int16 | yes | — | TODO |
+| `rbi` | int16 | yes | — | TODO |
+| `sh` | int16 | yes | — | TODO |
+| `sf` | int16 | yes | — | TODO |
+| `hbp` | int16 | yes | — | TODO |
+| `bb` | int16 | yes | — | TODO |
+| `ibb` | int16 | yes | — | TODO |
+| `k` | int16 | yes | — | TODO |
+| `sb` | int16 | yes | — | TODO |
+| `cs` | int16 | yes | — | TODO |
+| `gidp` | int16 | yes | — | TODO |
+| `interference` | int16 | yes | — | TODO |
+
+<!-- END GENERATED:retrosheet.box_batting_lines -->
+
+<!-- BEGIN GENERATED:retrosheet.box_games -->
+### Dataset: box_games
+
+Games of the box-score accounts (id, version, info lines).
+
+- **View:** `retrosheet_box_games`
+- **Processed path:** `processed/retrosheet/box_games/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_id` | string | yes | — | TODO |
+| `version` | int16 | yes | — | TODO |
+| `visteam` | string | yes | — | TODO |
+| `hometeam` | string | yes | — | TODO |
+| `date` | date32[day] (`%Y/%m/%d`) | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `starttime` | string | yes | — | TODO |
+| `daynight` | string | yes | — | TODO |
+| `usedh` | bool | yes | — | TODO |
+| `umphome` | string | yes | — | TODO |
+| `ump1b` | string | yes | — | TODO |
+| `ump2b` | string | yes | — | TODO |
+| `ump3b` | string | yes | — | TODO |
+| `umplf` | string | yes | — | TODO |
+| `umprf` | string | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `attendance` | int32 | yes | — | TODO |
+| `temp` | int16 | yes | — | TODO |
+| `winddir` | string | yes | — | TODO |
+| `windspeed` | int16 | yes | — | TODO |
+| `fieldcond` | string | yes | — | TODO |
+| `precip` | string | yes | — | TODO |
+| `sky` | string | yes | — | TODO |
+| `timeofgame` | int16 | yes | — | TODO |
+| `innings` | int16 | yes | — | TODO |
+| `tiebreaker` | string | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `wp` | string | yes | — | TODO |
+| `lp` | string | yes | — | TODO |
+| `save` | string | yes | — | TODO |
+| `gwrbi` | string | yes | — | TODO |
+| `oscorer` | string | yes | — | TODO |
+| `source_file` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.box_games -->
+
+<!-- BEGIN GENERATED:retrosheet.box_records -->
+### Dataset: box_records
+
+Every other box-account record (pinch hitters/runners, fielding, pitching, team totals, line scores, events, comments, unknown kinds) as parsed fields plus the raw line.
+
+- **View:** `retrosheet_box_records`
+- **Processed path:** `processed/retrosheet/box_records/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_id`, `line_no`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_id` | string | yes | — | TODO |
+| `line_no` | int32 | yes | — | TODO |
+| `kind` | string | yes | — | TODO |
+| `fields` | list<item: string> | yes | — | TODO |
+| `raw` | string | yes | — | TODO |
+
+<!-- END GENERATED:retrosheet.box_records -->
+
+<!-- BEGIN GENERATED:retrosheet.box_starters -->
+### Dataset: box_starters
+
+Starting lineups of the box-score accounts (start lines).
+
+- **View:** `retrosheet_box_starters`
+- **Processed path:** `processed/retrosheet/box_starters/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_id`, `player_id`, `side`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_id` | string | yes | — | TODO |
+| `player_id` | string | yes | — | TODO |
+| `player_name` | string | yes | — | TODO |
+| `side` | int8 | yes | — | TODO |
+| `batting_order` | int8 | yes | — | TODO |
+| `position` | int8 | yes | — | TODO |
+
+<!-- END GENERATED:retrosheet.box_starters -->

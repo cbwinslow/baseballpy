@@ -1,0 +1,79 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "projected_Zips2YR"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2026",
+     "stat": {
+      "gamesPlayed": 19,
+      "gamesStarted": 19,
+      "runs": 43,
+      "homeRuns": 13,
+      "strikeOuts": 114,
+      "baseOnBalls": 37,
+      "intentionalWalks": 1,
+      "hits": 73,
+      "hitByPitch": 7,
+      "avg": 0.203911,
+      "era": "3.71",
+      "inningsPitched": "97.0",
+      "wins": 6,
+      "losses": 4,
+      "saves": 0,
+      "holds": 0,
+      "earnedRuns": 40,
+      "whip": "1.13",
+      "battersFaced": 395,
+      "outs": 291,
+      "gamesPitched": 19,
+      "completeGames": 0,
+      "shutouts": 0,
+      "hitBatsmen": 7,
+      "balks": 0,
+      "wildPitches": 10,
+      "winPercentage": ".600",
+      "strikeoutWalkRatio": "3.08",
+      "strikeoutsPer9Inn": "10.58",
+      "walksPer9Inn": "3.43",
+      "hitsPer9Inn": "6.77",
+      "runsScoredPer9": "3.99",
+      "homeRunsPer9": "1.21",
+      "fip": 3.88771363779442,
+      "ra9War": 0.0,
+      "rar": 15.6466778972385,
+      "war": 1.6277239438033,
+      "lobWins": 0.0,
+      "bipWins": 0.0,
+      "fdpWins": 0.0,
+      "strikeoutPercent": 0.288608,
+      "walkPercent": 0.093671,
+      "babip": 0.267857142857143,
+      "lobPercent": 0.729847494553377,
+      "qualityStarts": 0,
+      "ra9wins": 1.79954991171857,
+      "ifFip": 3.93586414769753
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

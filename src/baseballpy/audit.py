@@ -19,9 +19,11 @@ from baseballpy.sources.mlb_api.endpoints import (
 )
 from baseballpy.sources.mlb_api.schemas import GameType
 from baseballpy.sources.mlb_api.stat_combos import (
+    PARAM_STAT_COMBOS,
     PEOPLE_STAT_COMBOS,
     PLAYER_STAT_COMBOS,
     TEAM_STAT_COMBOS,
+    UNSUPPORTED_STAT_TYPES,
 )
 from baseballpy.sources.statcast.lb_catalog import (
     LEADERBOARDS,
@@ -112,8 +114,10 @@ def audit_mlb(http: HttpClient) -> list[AuditFinding]:
         findings += _diff(
             source, "game type", game_types, {member.value for member in GameType}, "/v1/gameTypes"
         )
-    used_types = {s for s, _, _ in (*PLAYER_STAT_COMBOS, *TEAM_STAT_COMBOS, *PEOPLE_STAT_COMBOS)}
-    used_groups = {g for _, g, _ in (*PLAYER_STAT_COMBOS, *TEAM_STAT_COMBOS, *PEOPLE_STAT_COMBOS)}
+    plain = (*PLAYER_STAT_COMBOS, *TEAM_STAT_COMBOS, *PEOPLE_STAT_COMBOS)
+    used_types = {s for s, _, _ in plain} | {c[1] for c in PARAM_STAT_COMBOS}
+    used_types |= {name for name, _, _ in UNSUPPORTED_STAT_TYPES}  # accounted for, with evidence
+    used_groups = {g for _, g, _ in plain} | {c[2] for c in PARAM_STAT_COMBOS}
     if (stat_types := provider("statTypes", "displayName")) is not None:
         findings += [
             AuditFinding(

@@ -7,7 +7,7 @@ import pyarrow as pa
 
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.lazy import lazy_singleton
-from baseballpy.sources.mlb_api.endpoints import SUPPORTED, Context
+from baseballpy.sources.mlb_api.endpoints import SUPPORTED, Context, MlbEndpoint
 from baseballpy.sources.mlb_api.extractor import MlbApiExtractor
 from baseballpy.sources.mlb_api.generic import (
     EndpointReport,
@@ -101,6 +101,8 @@ class MlbApiSource:
         person_ids: tuple[int, ...] = (),
         updated_since: str | None = None,
         query: str | None = None,
+        opposing_team_ids: tuple[int, ...] = (),
+        opposing_player_ids: tuple[int, ...] = (),
     ) -> Context:
         """Fan-out values from what is already in the lake (teams, leader categories, awards)."""
         teams: list[int] = []
@@ -125,6 +127,10 @@ class MlbApiSource:
             award_ids=[str(a) for a in self._ids("ref_awards", None, "id")],
             updated_since=updated_since,
             query=query,
+            sit_codes=[str(c) for c in self._ids("ref_situation_codes", None, "code")],
+            metrics=[str(m) for m in self._ids("ref_metrics", None, "name") if m],
+            opposing_team_ids=opposing_team_ids,
+            opposing_player_ids=opposing_player_ids,
         )
 
     def ingest_reference(self, refresh: bool = False) -> list[EndpointReport]:
@@ -230,24 +236,51 @@ class MlbApiSource:
         person_ids: tuple[int, ...] | None = None,
         max_people: int | None = None,
         sport_ids: tuple[int, ...] = (1,),
+        families: tuple[str, ...] = (),
+        opposing_team_ids: tuple[int, ...] = (),
+        opposing_player_ids: tuple[int, ...] = (),
         refresh: bool = False,
     ) -> list[EndpointReport]:
         """Ingest every ``people_stats_*`` endpoint for ``person_ids`` (default: ``players_season``).
 
-        One request per person and stat combination (81 combinations), so this is opt-in and
-        ``max_people`` bounds it.
+        One request per person and stat combination, so this is opt-in and ``max_people`` bounds it.
+        Two families are additionally opt-in because their cross product is huge: ``"metrics"``
+        (every tracking metric per person: ``metricAverages``/``metricLog``) and ``"matchups"``
+        (``vsPlayer*``/``vsTeam*`` need the opposing ids passed here).
         """
+        unknown = set(families) - {"metrics", "matchups"}
+        if unknown:
+            raise ValueError(f"unknown people-stats families {sorted(unknown)}")
         ids = (
             tuple(person_ids)
             if person_ids is not None
             else tuple(self._ids("players_season", season, "id"))
         )
         ids = ids[:max_people] if max_people is not None else ids
-        ctx = self._context(season, sport_ids, person_ids=ids)
+        ctx = self._context(
+            season,
+            sport_ids,
+            person_ids=ids,
+            opposing_team_ids=opposing_team_ids,
+            opposing_player_ids=opposing_player_ids,
+        )
+        needed = {"opposing_team_id": opposing_team_ids, "opposing_player_id": opposing_player_ids}
+
+        def wanted(endpoint: MlbEndpoint) -> bool:
+            for dim in endpoint.fan_out:
+                family = "metrics" if dim == "metric" else "matchups"
+                if family not in families:
+                    return False
+                if dim in needed and not needed[dim]:
+                    raise ValueError(
+                        f"{endpoint.name} needs {dim}s: pass opposing_team_ids/opposing_player_ids"
+                    )
+            return True
+
         return [
             self.endpoints.ingest(e, ctx, refresh=refresh)
             for e in SUPPORTED
-            if e.scope == "person_season"
+            if e.scope == "person_season" and wanted(e)
         ]
 
     def stream_game(

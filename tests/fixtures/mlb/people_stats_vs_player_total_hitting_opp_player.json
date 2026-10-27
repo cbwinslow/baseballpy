@@ -1,0 +1,66 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "vsPlayerTotal"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 1,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 8,
+      "groundOuts": 2,
+      "airOuts": 10,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 1,
+      "strikeOuts": 7,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 4,
+      "hitByPitch": 0,
+      "avg": ".174",
+      "atBats": 23,
+      "obp": ".208",
+      "slg": ".348",
+      "ops": ".556",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 107,
+      "plateAppearances": 24,
+      "totalBases": 8,
+      "rbi": 3,
+      "leftOnBase": 6,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".200",
+      "groundOutsToAirouts": "0.20",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "23.00"
+     },
+     "gameType": "R",
+     "numTeams": 3,
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     }
+    }
+   ]
+  }
+ ]
+}

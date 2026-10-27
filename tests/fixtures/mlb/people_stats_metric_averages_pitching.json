@@ -1,0 +1,130 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "metricAverages"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "metric": {
+       "group": "pitching",
+       "name": "releaseSpinRate",
+       "averageValue": 2749.0,
+       "minValue": 2290.0,
+       "maxValue": 2975.0,
+       "unit": "RPM",
+       "metricId": 1000
+      },
+      "event": {
+       "details": {
+        "type": {
+         "code": "KC",
+         "description": "Knuckle Curve"
+        }
+       },
+       "count": {}
+      }
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole",
+      "primaryPosition": {
+       "code": "1",
+       "name": "Pitcher",
+       "type": "Pitcher",
+       "abbreviation": "P"
+      }
+     },
+     "gameType": "R",
+     "numOccurrences": 287
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "metric": {
+       "group": "pitching",
+       "name": "releaseSpinRate",
+       "averageValue": 2547.0,
+       "minValue": 2238.0,
+       "maxValue": 2727.0,
+       "unit": "RPM",
+       "metricId": 1000
+      },
+      "event": {
+       "details": {
+        "type": {
+         "code": "SL",
+         "description": "Slider"
+        }
+       },
+       "count": {}
+      }
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole",
+      "primaryPosition": {
+       "code": "1",
+       "name": "Pitcher",
+       "type": "Pitcher",
+       "abbreviation": "P"
+      }
+     },
+     "gameType": "R",
+     "numOccurrences": 232
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "metric": {
+       "group": "pitching",
+       "name": "releaseSpinRate",
+       "averageValue": 2486.0,
+       "minValue": 2177.0,
+       "maxValue": 2721.0,
+       "unit": "RPM",
+       "metricId": 1000
+      },
+      "event": {
+       "details": {
+        "type": {
+         "code": "FC",
+         "description": "Cutter"
+        }
+       },
+       "count": {}
+      }
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole",
+      "primaryPosition": {
+       "code": "1",
+       "name": "Pitcher",
+       "type": "Pitcher",
+       "abbreviation": "P"
+      }
+     },
+     "gameType": "R",
+     "numOccurrences": 242
+    }
+   ]
+  }
+ ]
+}

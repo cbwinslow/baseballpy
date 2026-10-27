@@ -217,6 +217,7 @@ def test_fixture_normalizes_completely(name: str, tmp_path: Path) -> None:
     ep = BY_NAME[name]
     quarantine = Quarantine(QuarantineConfig(base_dir=tmp_path / "q"))
     extra = {"game_pk": 1, "team_id": 2, "sport_id": 1, "person_id": 3, "request_award_id": "X"}
+    extra |= {"metric": "launchSpeed", "opposing_team_id": 4, "opposing_player_id": 5}
     upstream = {
         (f.metadata or {}).get(b"upstream", f.name.encode()).decode() for f in MLB_SCHEMAS[name]
     }

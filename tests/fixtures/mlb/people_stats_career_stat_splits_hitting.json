@@ -1,0 +1,205 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "careerStatSplits"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 577,
+      "groundOuts": 407,
+      "airOuts": 466,
+      "runs": 429,
+      "doubles": 96,
+      "triples": 21,
+      "homeRuns": 172,
+      "strikeOuts": 634,
+      "baseOnBalls": 314,
+      "intentionalWalks": 53,
+      "hits": 599,
+      "hitByPitch": 19,
+      "avg": ".286",
+      "atBats": 2093,
+      "obp": ".382",
+      "slg": ".599",
+      "ops": ".981",
+      "caughtStealing": 18,
+      "stolenBases": 99,
+      "stolenBasePercentage": ".846",
+      "caughtStealingPercentage": ".154",
+      "groundIntoDoublePlay": 28,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 9610,
+      "plateAppearances": 2445,
+      "totalBases": 1253,
+      "rbi": 381,
+      "leftOnBase": 767,
+      "sacBunts": 0,
+      "sacFlies": 13,
+      "babip": ".328",
+      "groundOutsToAirouts": "0.87",
+      "catchersInterference": 6,
+      "atBatsPerHomeRun": "12.17"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "split": {
+      "code": "h",
+      "description": "Home Games",
+      "sortOrder": 1
+     },
+     "position": {
+      "code": "Y",
+      "name": "Two-Way Player",
+      "type": "Two-Way Player",
+      "abbreviation": "TWP"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 576,
+      "groundOuts": 510,
+      "airOuts": 445,
+      "runs": 368,
+      "doubles": 122,
+      "triples": 28,
+      "homeRuns": 138,
+      "strikeOuts": 622,
+      "baseOnBalls": 308,
+      "intentionalWalks": 51,
+      "hits": 595,
+      "hitByPitch": 13,
+      "avg": ".275",
+      "atBats": 2160,
+      "obp": ".367",
+      "slg": ".550",
+      "ops": ".917",
+      "caughtStealing": 28,
+      "stolenBases": 77,
+      "stolenBasePercentage": ".733",
+      "caughtStealingPercentage": ".267",
+      "groundIntoDoublePlay": 30,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 9787,
+      "plateAppearances": 2502,
+      "totalBases": 1187,
+      "rbi": 369,
+      "leftOnBase": 827,
+      "sacBunts": 0,
+      "sacFlies": 12,
+      "babip": ".324",
+      "groundOutsToAirouts": "1.15",
+      "catchersInterference": 9,
+      "atBatsPerHomeRun": "15.65"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "split": {
+      "code": "a",
+      "description": "Away Games",
+      "sortOrder": 2
+     },
+     "position": {
+      "code": "Y",
+      "name": "Two-Way Player",
+      "type": "Two-Way Player",
+      "abbreviation": "TWP"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 325,
+      "groundOuts": 240,
+      "airOuts": 234,
+      "runs": 228,
+      "doubles": 52,
+      "triples": 16,
+      "homeRuns": 88,
+      "strikeOuts": 361,
+      "baseOnBalls": 197,
+      "intentionalWalks": 36,
+      "hits": 350,
+      "hitByPitch": 12,
+      "avg": ".297",
+      "atBats": 1177,
+      "obp": ".401",
+      "slg": ".593",
+      "ops": ".994",
+      "caughtStealing": 17,
+      "stolenBases": 40,
+      "stolenBasePercentage": ".702",
+      "caughtStealingPercentage": ".298",
+      "groundIntoDoublePlay": 11,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 5508,
+      "plateAppearances": 1398,
+      "totalBases": 698,
+      "rbi": 204,
+      "leftOnBase": 443,
+      "sacBunts": 0,
+      "sacFlies": 8,
+      "babip": ".356",
+      "groundOutsToAirouts": "1.03",
+      "catchersInterference": 4,
+      "atBatsPerHomeRun": "13.38"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "split": {
+      "code": "d",
+      "description": "Day Games",
+      "sortOrder": 3
+     },
+     "position": {
+      "code": "Y",
+      "name": "Two-Way Player",
+      "type": "Two-Way Player",
+      "abbreviation": "TWP"
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,256 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "vsPlayer"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 71,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2018",
+     "stat": {
+      "gamesPlayed": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 2,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 0,
+      "hitByPitch": 0,
+      "avg": ".000",
+      "atBats": 2,
+      "obp": ".333",
+      "slg": ".000",
+      "ops": ".333",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 15,
+      "plateAppearances": 3,
+      "totalBases": 0,
+      "rbi": 0,
+      "leftOnBase": 1,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".---",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "opponent": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "gameType": "R",
+     "numTeams": 1,
+     "pitcher": {
+      "id": 547888,
+      "fullName": "Masahiro Tanaka",
+      "link": "/api/v1/people/547888",
+      "firstName": "Masahiro",
+      "lastName": "Tanaka"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     }
+    },
+    {
+     "season": "2018",
+     "stat": {
+      "gamesPlayed": 2,
+      "groundOuts": 2,
+      "airOuts": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 1,
+      "strikeOuts": 1,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": ".250",
+      "atBats": 4,
+      "obp": ".400",
+      "slg": "1.000",
+      "ops": "1.400",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 21,
+      "plateAppearances": 5,
+      "totalBases": 4,
+      "rbi": 1,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".000",
+      "groundOutsToAirouts": "2.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "4.00"
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "opponent": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "gameType": "R",
+     "numTeams": 1,
+     "pitcher": {
+      "id": 622663,
+      "fullName": "Luis Severino",
+      "link": "/api/v1/people/622663",
+      "firstName": "Luis",
+      "lastName": "Severino"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     }
+    },
+    {
+     "season": "2018",
+     "stat": {
+      "gamesPlayed": 2,
+      "groundOuts": 1,
+      "airOuts": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 0,
+      "hitByPitch": 0,
+      "avg": ".000",
+      "atBats": 1,
+      "obp": ".500",
+      "slg": ".000",
+      "ops": ".500",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 11,
+      "plateAppearances": 2,
+      "totalBases": 0,
+      "rbi": 0,
+      "leftOnBase": 1,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".000",
+      "groundOutsToAirouts": "1.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "opponent": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "gameType": "R",
+     "numTeams": 1,
+     "pitcher": {
+      "id": 547973,
+      "fullName": "Aroldis Chapman",
+      "link": "/api/v1/people/547973",
+      "firstName": "Albertin",
+      "lastName": "Chapman"
+     },
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     }
+    }
+   ]
+  },
+  {
+   "type": {
+    "displayName": "vsPlayerTotal"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 1,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 81,
+      "groundOuts": 21,
+      "airOuts": 26,
+      "doubles": 6,
+      "triples": 2,
+      "homeRuns": 9,
+      "strikeOuts": 35,
+      "baseOnBalls": 17,
+      "intentionalWalks": 3,
+      "hits": 31,
+      "hitByPitch": 0,
+      "avg": ".274",
+      "atBats": 113,
+      "obp": ".369",
+      "slg": ".602",
+      "ops": ".971",
+      "groundIntoDoublePlay": 2,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 502,
+      "plateAppearances": 130,
+      "totalBases": 68,
+      "rbi": 21,
+      "leftOnBase": 51,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".319",
+      "groundOutsToAirouts": "0.81",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "12.56"
+     },
+     "opponent": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "gameType": "R",
+     "numTeams": 36,
+     "batter": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     }
+    }
+   ]
+  }
+ ]
+}

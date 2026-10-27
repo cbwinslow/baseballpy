@@ -1,0 +1,126 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "statSplits"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "totalSplits": 13315,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "team": {
+      "id": 113,
+      "name": "Cincinnati Reds",
+      "link": "/api/v1/teams/113"
+     },
+     "player": {
+      "id": 571912,
+      "fullName": "Luke Maile",
+      "link": "/api/v1/people/571912",
+      "firstName": "Luke",
+      "lastName": "Maile"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "split": {
+      "code": "preas",
+      "description": "Pre All-Star",
+      "sortOrder": 44
+     },
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "season": "2024",
+     "team": {
+      "id": 113,
+      "name": "Cincinnati Reds",
+      "link": "/api/v1/teams/113"
+     },
+     "player": {
+      "id": 571912,
+      "fullName": "Luke Maile",
+      "link": "/api/v1/people/571912",
+      "firstName": "Luke",
+      "lastName": "Maile"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "split": {
+      "code": "sti",
+      "description": "Score is tied",
+      "sortOrder": 94
+     },
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "season": "2024",
+     "team": {
+      "id": 113,
+      "name": "Cincinnati Reds",
+      "link": "/api/v1/teams/113"
+     },
+     "player": {
+      "id": 571912,
+      "fullName": "Luke Maile",
+      "link": "/api/v1/people/571912",
+      "firstName": "Luke",
+      "lastName": "Maile"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "split": {
+      "code": "pH",
+      "description": "Pinch Hitter",
+      "sortOrder": 134
+     },
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    }
+   ],
+   "playerPool": "ALL"
+  }
+ ]
+}

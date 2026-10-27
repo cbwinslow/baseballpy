@@ -114,6 +114,13 @@ The `StatcastLeaderboard` enum has one member per supported slug (a test compare
 
 ## Dataset reference (generated)
 
+<!-- BEGIN GENERATED:statcast.description_sources -->
+### Description sources
+
+No column descriptions have been written for this source yet.
+
+<!-- END GENERATED:statcast.description_sources -->
+
 <!-- BEGIN GENERATED:statcast.pitches -->
 ### Dataset: pitches
 
@@ -126,126 +133,126 @@ Pitch-level Statcast search results.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `game_pk` | int32 | yes | — |  |
-| `game_date` | date32[day] | yes | — |  |
-| `game_year` | int16 | yes | — |  |
-| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `at_bat_number` | int16 | yes | — |  |
-| `pitch_number` | int16 | yes | — |  |
-| `pitcher` | int32 | yes | — |  |
-| `batter` | int32 | yes | — |  |
-| `player_name` | string | yes | — |  |
-| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `inning` | int8 | yes | — |  |
-| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `balls` | int8 | yes | — |  |
-| `strikes` | int8 | yes | — |  |
-| `outs_when_up` | int8 | yes | — |  |
-| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `release_speed` | float | yes | — |  |
-| `effective_speed` | float | yes | — |  |
-| `release_spin_rate` | float | yes | — |  |
-| `release_extension` | float | yes | — |  |
-| `spin_axis` | float | yes | — |  |
-| `release_pos_x` | float | yes | — |  |
-| `release_pos_y` | float | yes | — |  |
-| `release_pos_z` | float | yes | — |  |
-| `arm_angle` | float | yes | — |  |
-| `zone` | int8 | yes | — |  |
-| `plate_x` | float | yes | — |  |
-| `plate_z` | float | yes | — |  |
-| `sz_top` | float | yes | — |  |
-| `sz_bot` | float | yes | — |  |
-| `pfx_x` | float | yes | — |  |
-| `pfx_z` | float | yes | — |  |
-| `vx0` | float | yes | — |  |
-| `vy0` | float | yes | — |  |
-| `vz0` | float | yes | — |  |
-| `ax` | float | yes | — |  |
-| `ay` | float | yes | — |  |
-| `az` | float | yes | — |  |
-| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `des` | string | yes | — |  |
-| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `hit_location` | int8 | yes | — |  |
-| `launch_speed` | float | yes | — |  |
-| `launch_angle` | float | yes | — |  |
-| `launch_speed_angle` | int8 | yes | — |  |
-| `hit_distance_sc` | float | yes | — |  |
-| `hc_x` | float | yes | — |  |
-| `hc_y` | float | yes | — |  |
-| `bat_speed` | float | yes | — |  |
-| `swing_length` | float | yes | — |  |
-| `estimated_ba_using_speedangle` | float | yes | — |  |
-| `estimated_woba_using_speedangle` | float | yes | — |  |
-| `woba_value` | float | yes | — |  |
-| `woba_denom` | float | yes | — |  |
-| `babip_value` | float | yes | — |  |
-| `iso_value` | float | yes | — |  |
-| `delta_home_win_exp` | float | yes | — |  |
-| `delta_run_exp` | float | yes | — |  |
-| `on_1b` | int32 | yes | — |  |
-| `on_2b` | int32 | yes | — |  |
-| `on_3b` | int32 | yes | — |  |
-| `home_score` | int16 | yes | — |  |
-| `away_score` | int16 | yes | — |  |
-| `bat_score` | int16 | yes | — |  |
-| `fld_score` | int16 | yes | — |  |
-| `post_home_score` | int16 | yes | — |  |
-| `post_away_score` | int16 | yes | — |  |
-| `post_bat_score` | int16 | yes | — |  |
-| `post_fld_score` | int16 | yes | — |  |
-| `fielder_2` | int32 | yes | — |  |
-| `fielder_3` | int32 | yes | — |  |
-| `fielder_4` | int32 | yes | — |  |
-| `fielder_5` | int32 | yes | — |  |
-| `fielder_6` | int32 | yes | — |  |
-| `fielder_7` | int32 | yes | — |  |
-| `fielder_8` | int32 | yes | — |  |
-| `fielder_9` | int32 | yes | — |  |
-| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `spin_dir` | string | yes | — |  |
-| `spin_rate_deprecated` | string | yes | — |  |
-| `break_angle_deprecated` | string | yes | — |  |
-| `break_length_deprecated` | string | yes | — |  |
-| `tfs_deprecated` | string | yes | — |  |
-| `tfs_zulu_deprecated` | string | yes | — |  |
-| `umpire` | string | yes | — |  |
-| `sv_id` | string | yes | — |  |
-| `miss_distance` | float | yes | — |  |
-| `estimated_slg_using_speedangle` | float | yes | — |  |
-| `delta_pitcher_run_exp` | float | yes | — |  |
-| `hyper_speed` | float | yes | — |  |
-| `home_score_diff` | int16 | yes | — |  |
-| `bat_score_diff` | int16 | yes | — |  |
-| `home_win_exp` | float | yes | — |  |
-| `bat_win_exp` | float | yes | — |  |
-| `age_pit_legacy` | int16 | yes | — |  |
-| `age_bat_legacy` | int16 | yes | — |  |
-| `age_pit` | int16 | yes | — |  |
-| `age_bat` | int16 | yes | — |  |
-| `n_thruorder_pitcher` | int16 | yes | — |  |
-| `n_priorpa_thisgame_player_at_bat` | int16 | yes | — |  |
-| `pitcher_days_since_prev_game` | int16 | yes | — |  |
-| `batter_days_since_prev_game` | int16 | yes | — |  |
-| `pitcher_days_until_next_game` | int16 | yes | — |  |
-| `batter_days_until_next_game` | int16 | yes | — |  |
-| `api_break_z_with_gravity` | float | yes | — |  |
-| `api_break_x_arm` | float | yes | — |  |
-| `api_break_x_batter_in` | float | yes | — |  |
-| `attack_angle` | float | yes | — |  |
-| `attack_direction` | float | yes | — |  |
-| `swing_path_tilt` | float | yes | — |  |
-| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — |  |
-| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `game_pk` | int32 | yes | — | TODO |
+| `game_date` | date32[day] | yes | — | TODO |
+| `game_year` | int16 | yes | — | TODO |
+| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `at_bat_number` | int16 | yes | — | TODO |
+| `pitch_number` | int16 | yes | — | TODO |
+| `pitcher` | int32 | yes | — | TODO |
+| `batter` | int32 | yes | — | TODO |
+| `player_name` | string | yes | — | TODO |
+| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `inning` | int8 | yes | — | TODO |
+| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `balls` | int8 | yes | — | TODO |
+| `strikes` | int8 | yes | — | TODO |
+| `outs_when_up` | int8 | yes | — | TODO |
+| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `release_speed` | float | yes | — | TODO |
+| `effective_speed` | float | yes | — | TODO |
+| `release_spin_rate` | float | yes | — | TODO |
+| `release_extension` | float | yes | — | TODO |
+| `spin_axis` | float | yes | — | TODO |
+| `release_pos_x` | float | yes | — | TODO |
+| `release_pos_y` | float | yes | — | TODO |
+| `release_pos_z` | float | yes | — | TODO |
+| `arm_angle` | float | yes | — | TODO |
+| `zone` | int8 | yes | — | TODO |
+| `plate_x` | float | yes | — | TODO |
+| `plate_z` | float | yes | — | TODO |
+| `sz_top` | float | yes | — | TODO |
+| `sz_bot` | float | yes | — | TODO |
+| `pfx_x` | float | yes | — | TODO |
+| `pfx_z` | float | yes | — | TODO |
+| `vx0` | float | yes | — | TODO |
+| `vy0` | float | yes | — | TODO |
+| `vz0` | float | yes | — | TODO |
+| `ax` | float | yes | — | TODO |
+| `ay` | float | yes | — | TODO |
+| `az` | float | yes | — | TODO |
+| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `des` | string | yes | — | TODO |
+| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `hit_location` | int8 | yes | — | TODO |
+| `launch_speed` | float | yes | — | TODO |
+| `launch_angle` | float | yes | — | TODO |
+| `launch_speed_angle` | int8 | yes | — | TODO |
+| `hit_distance_sc` | float | yes | — | TODO |
+| `hc_x` | float | yes | — | TODO |
+| `hc_y` | float | yes | — | TODO |
+| `bat_speed` | float | yes | — | TODO |
+| `swing_length` | float | yes | — | TODO |
+| `estimated_ba_using_speedangle` | float | yes | — | TODO |
+| `estimated_woba_using_speedangle` | float | yes | — | TODO |
+| `woba_value` | float | yes | — | TODO |
+| `woba_denom` | float | yes | — | TODO |
+| `babip_value` | float | yes | — | TODO |
+| `iso_value` | float | yes | — | TODO |
+| `delta_home_win_exp` | float | yes | — | TODO |
+| `delta_run_exp` | float | yes | — | TODO |
+| `on_1b` | int32 | yes | — | TODO |
+| `on_2b` | int32 | yes | — | TODO |
+| `on_3b` | int32 | yes | — | TODO |
+| `home_score` | int16 | yes | — | TODO |
+| `away_score` | int16 | yes | — | TODO |
+| `bat_score` | int16 | yes | — | TODO |
+| `fld_score` | int16 | yes | — | TODO |
+| `post_home_score` | int16 | yes | — | TODO |
+| `post_away_score` | int16 | yes | — | TODO |
+| `post_bat_score` | int16 | yes | — | TODO |
+| `post_fld_score` | int16 | yes | — | TODO |
+| `fielder_2` | int32 | yes | — | TODO |
+| `fielder_3` | int32 | yes | — | TODO |
+| `fielder_4` | int32 | yes | — | TODO |
+| `fielder_5` | int32 | yes | — | TODO |
+| `fielder_6` | int32 | yes | — | TODO |
+| `fielder_7` | int32 | yes | — | TODO |
+| `fielder_8` | int32 | yes | — | TODO |
+| `fielder_9` | int32 | yes | — | TODO |
+| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `spin_dir` | string | yes | — | TODO |
+| `spin_rate_deprecated` | string | yes | — | TODO |
+| `break_angle_deprecated` | string | yes | — | TODO |
+| `break_length_deprecated` | string | yes | — | TODO |
+| `tfs_deprecated` | string | yes | — | TODO |
+| `tfs_zulu_deprecated` | string | yes | — | TODO |
+| `umpire` | string | yes | — | TODO |
+| `sv_id` | string | yes | — | TODO |
+| `miss_distance` | float | yes | — | TODO |
+| `estimated_slg_using_speedangle` | float | yes | — | TODO |
+| `delta_pitcher_run_exp` | float | yes | — | TODO |
+| `hyper_speed` | float | yes | — | TODO |
+| `home_score_diff` | int16 | yes | — | TODO |
+| `bat_score_diff` | int16 | yes | — | TODO |
+| `home_win_exp` | float | yes | — | TODO |
+| `bat_win_exp` | float | yes | — | TODO |
+| `age_pit_legacy` | int16 | yes | — | TODO |
+| `age_bat_legacy` | int16 | yes | — | TODO |
+| `age_pit` | int16 | yes | — | TODO |
+| `age_bat` | int16 | yes | — | TODO |
+| `n_thruorder_pitcher` | int16 | yes | — | TODO |
+| `n_priorpa_thisgame_player_at_bat` | int16 | yes | — | TODO |
+| `pitcher_days_since_prev_game` | int16 | yes | — | TODO |
+| `batter_days_since_prev_game` | int16 | yes | — | TODO |
+| `pitcher_days_until_next_game` | int16 | yes | — | TODO |
+| `batter_days_until_next_game` | int16 | yes | — | TODO |
+| `api_break_z_with_gravity` | float | yes | — | TODO |
+| `api_break_x_arm` | float | yes | — | TODO |
+| `api_break_x_batter_in` | float | yes | — | TODO |
+| `attack_angle` | float | yes | — | TODO |
+| `attack_direction` | float | yes | — | TODO |
+| `swing_path_tilt` | float | yes | — | TODO |
+| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — | TODO |
+| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.pitches -->
 
@@ -261,62 +268,62 @@ Automated ball-strike challenge system results per player (2025+; empty before).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `entity_name` | string | yes | — |  |
-| `team_abbr` | string | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `level` | string | yes | — |  |
-| `parent_org` | string | yes | — |  |
-| `runs_above_average` | double | yes | — |  |
-| `runs_gained` | double | yes | — |  |
-| `runs_cost` | double | yes | — |  |
-| `xruns_gained` | double | yes | — |  |
-| `xruns_cost` | double | yes | — |  |
-| `runs_gained_vs_exp` | double | yes | — |  |
-| `runs_cost_vs_exp` | double | yes | — |  |
-| `poss_runs` | double | yes | — |  |
-| `runs_taken_percent` | double | yes | — |  |
-| `runs_not_taken` | double | yes | — |  |
-| `n_challenges` | int16 | yes | — |  |
-| `n_overturns` | int16 | yes | — |  |
-| `n_confirms` | int16 | yes | — |  |
-| `rate_overturns` | double | yes | — |  |
-| `exp_chal` | double | yes | — |  |
-| `exp_chal_gained` | double | yes | — |  |
-| `exp_chal_lost` | double | yes | — |  |
-| `exp_rate_overturns` | double | yes | — |  |
-| `net_chal_gained` | double | yes | — |  |
-| `net_chal_lost` | double | yes | — |  |
-| `poss_overturns` | int16 | yes | — |  |
-| `overturns_taken_percent` | double | yes | — |  |
-| `overturns_not_taken` | int16 | yes | — |  |
-| `n_strikeouts_flip` | int16 | yes | — |  |
-| `n_walks_flip` | int16 | yes | — |  |
-| `runs_above_average_against` | double | yes | — |  |
-| `runs_gained_against` | double | yes | — |  |
-| `runs_cost_against` | double | yes | — |  |
-| `xruns_gained_against` | double | yes | — |  |
-| `xruns_cost_against` | double | yes | — |  |
-| `runs_gained_vs_exp_against` | double | yes | — |  |
-| `runs_cost_vs_exp_against` | double | yes | — |  |
-| `poss_runs_against` | double | yes | — |  |
-| `runs_taken_percent_against` | double | yes | — |  |
-| `runs_not_taken_against` | double | yes | — |  |
-| `n_challenges_against` | int16 | yes | — |  |
-| `n_overturns_against` | int16 | yes | — |  |
-| `n_confirms_against` | int16 | yes | — |  |
-| `rate_overturns_against` | double | yes | — |  |
-| `exp_chal_against` | double | yes | — |  |
-| `exp_chal_gained_against` | double | yes | — |  |
-| `exp_chal_lost_against` | double | yes | — |  |
-| `exp_rate_overturns_against` | double | yes | — |  |
-| `net_chal_gained_against` | double | yes | — |  |
-| `net_chal_lost_against` | double | yes | — |  |
-| `poss_overturns_against` | int16 | yes | — |  |
-| `overturns_taken_percent_against` | double | yes | — |  |
-| `overturns_not_taken_against` | int16 | yes | — |  |
-| `n_strikeouts_flip_against` | int16 | yes | — |  |
-| `n_walks_flip_against` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `entity_name` | string | yes | — | TODO |
+| `team_abbr` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `level` | string | yes | — | TODO |
+| `parent_org` | string | yes | — | TODO |
+| `runs_above_average` | double | yes | — | TODO |
+| `runs_gained` | double | yes | — | TODO |
+| `runs_cost` | double | yes | — | TODO |
+| `xruns_gained` | double | yes | — | TODO |
+| `xruns_cost` | double | yes | — | TODO |
+| `runs_gained_vs_exp` | double | yes | — | TODO |
+| `runs_cost_vs_exp` | double | yes | — | TODO |
+| `poss_runs` | double | yes | — | TODO |
+| `runs_taken_percent` | double | yes | — | TODO |
+| `runs_not_taken` | double | yes | — | TODO |
+| `n_challenges` | int16 | yes | — | TODO |
+| `n_overturns` | int16 | yes | — | TODO |
+| `n_confirms` | int16 | yes | — | TODO |
+| `rate_overturns` | double | yes | — | TODO |
+| `exp_chal` | double | yes | — | TODO |
+| `exp_chal_gained` | double | yes | — | TODO |
+| `exp_chal_lost` | double | yes | — | TODO |
+| `exp_rate_overturns` | double | yes | — | TODO |
+| `net_chal_gained` | double | yes | — | TODO |
+| `net_chal_lost` | double | yes | — | TODO |
+| `poss_overturns` | int16 | yes | — | TODO |
+| `overturns_taken_percent` | double | yes | — | TODO |
+| `overturns_not_taken` | int16 | yes | — | TODO |
+| `n_strikeouts_flip` | int16 | yes | — | TODO |
+| `n_walks_flip` | int16 | yes | — | TODO |
+| `runs_above_average_against` | double | yes | — | TODO |
+| `runs_gained_against` | double | yes | — | TODO |
+| `runs_cost_against` | double | yes | — | TODO |
+| `xruns_gained_against` | double | yes | — | TODO |
+| `xruns_cost_against` | double | yes | — | TODO |
+| `runs_gained_vs_exp_against` | double | yes | — | TODO |
+| `runs_cost_vs_exp_against` | double | yes | — | TODO |
+| `poss_runs_against` | double | yes | — | TODO |
+| `runs_taken_percent_against` | double | yes | — | TODO |
+| `runs_not_taken_against` | double | yes | — | TODO |
+| `n_challenges_against` | int16 | yes | — | TODO |
+| `n_overturns_against` | int16 | yes | — | TODO |
+| `n_confirms_against` | int16 | yes | — | TODO |
+| `rate_overturns_against` | double | yes | — | TODO |
+| `exp_chal_against` | double | yes | — | TODO |
+| `exp_chal_gained_against` | double | yes | — | TODO |
+| `exp_chal_lost_against` | double | yes | — | TODO |
+| `exp_rate_overturns_against` | double | yes | — | TODO |
+| `net_chal_gained_against` | double | yes | — | TODO |
+| `net_chal_lost_against` | double | yes | — | TODO |
+| `poss_overturns_against` | int16 | yes | — | TODO |
+| `overturns_taken_percent_against` | double | yes | — | TODO |
+| `overturns_not_taken_against` | int16 | yes | — | TODO |
+| `n_strikeouts_flip_against` | int16 | yes | — | TODO |
+| `n_walks_flip_against` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_abs_challenges -->
 
@@ -332,33 +339,33 @@ Fielder arm strength (max and per-base average) per player-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `fielder_name` | string | yes | — |  |
-| `player_id` | int32 | yes | — |  |
-| `team_name` | string | yes | — |  |
-| `primary_position` | int16 | yes | — |  |
-| `primary_position_name` | string | yes | — |  |
-| `total_throws` | int16 | yes | — |  |
-| `total_throws_1b` | int16 | yes | — |  |
-| `total_throws_2b` | int16 | yes | — |  |
-| `total_throws_3b` | int16 | yes | — |  |
-| `total_throws_ss` | int16 | yes | — |  |
-| `total_throws_lf` | int16 | yes | — |  |
-| `total_throws_cf` | int16 | yes | — |  |
-| `total_throws_rf` | int16 | yes | — |  |
-| `total_throws_inf` | int16 | yes | — |  |
-| `total_throws_of` | int16 | yes | — |  |
-| `max_arm_strength` | double | yes | — |  |
-| `arm_1b` | double | yes | — |  |
-| `arm_2b` | double | yes | — |  |
-| `arm_3b` | double | yes | — |  |
-| `arm_ss` | double | yes | — |  |
-| `arm_lf` | double | yes | — |  |
-| `arm_cf` | double | yes | — |  |
-| `arm_rf` | double | yes | — |  |
-| `arm_inf` | double | yes | — |  |
-| `arm_of` | double | yes | — |  |
-| `arm_overall` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `fielder_name` | string | yes | — | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `primary_position` | int16 | yes | — | TODO |
+| `primary_position_name` | string | yes | — | TODO |
+| `total_throws` | int16 | yes | — | TODO |
+| `total_throws_1b` | int16 | yes | — | TODO |
+| `total_throws_2b` | int16 | yes | — | TODO |
+| `total_throws_3b` | int16 | yes | — | TODO |
+| `total_throws_ss` | int16 | yes | — | TODO |
+| `total_throws_lf` | int16 | yes | — | TODO |
+| `total_throws_cf` | int16 | yes | — | TODO |
+| `total_throws_rf` | int16 | yes | — | TODO |
+| `total_throws_inf` | int16 | yes | — | TODO |
+| `total_throws_of` | int16 | yes | — | TODO |
+| `max_arm_strength` | double | yes | — | TODO |
+| `arm_1b` | double | yes | — | TODO |
+| `arm_2b` | double | yes | — | TODO |
+| `arm_3b` | double | yes | — | TODO |
+| `arm_ss` | double | yes | — | TODO |
+| `arm_lf` | double | yes | — | TODO |
+| `arm_cf` | double | yes | — | TODO |
+| `arm_rf` | double | yes | — | TODO |
+| `arm_inf` | double | yes | — | TODO |
+| `arm_of` | double | yes | — | TODO |
+| `arm_overall` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_arm_strength -->
 
@@ -374,28 +381,28 @@ Extra-base-taken baserunning run value per runner-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `entity_name` | string | yes | — |  |
-| `entity_id` | int32 | yes | — |  |
-| `team_name` | string | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `runner_runs` | double | yes | — |  |
-| `fielder_runs` | double | yes | — |  |
-| `runner_runs_advances` | double | yes | — |  |
-| `runner_runs_thrown_out` | double | yes | — |  |
-| `runner_runs_hold` | double | yes | — |  |
-| `fielder_runs_advances` | double | yes | — |  |
-| `fielder_runs_thrown_out` | double | yes | — |  |
-| `fielder_runs_hold` | double | yes | — |  |
-| `n_opp_xb` | int16 | yes | — |  |
-| `n_att_xb` | int16 | yes | — |  |
-| `rate_att_xb` | double | yes | — |  |
-| `est_rate_att_generic_runner` | double | yes | — |  |
-| `est_rate_att_generic_fielder` | double | yes | — |  |
-| `n_out` | int16 | yes | — |  |
-| `n_safe` | int16 | yes | — |  |
-| `rate_safe` | double | yes | — |  |
-| `rate_safe_per_attempt` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `entity_name` | string | yes | — | TODO |
+| `entity_id` | int32 | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `runner_runs` | double | yes | — | TODO |
+| `fielder_runs` | double | yes | — | TODO |
+| `runner_runs_advances` | double | yes | — | TODO |
+| `runner_runs_thrown_out` | double | yes | — | TODO |
+| `runner_runs_hold` | double | yes | — | TODO |
+| `fielder_runs_advances` | double | yes | — | TODO |
+| `fielder_runs_thrown_out` | double | yes | — | TODO |
+| `fielder_runs_hold` | double | yes | — | TODO |
+| `n_opp_xb` | int16 | yes | — | TODO |
+| `n_att_xb` | int16 | yes | — | TODO |
+| `rate_att_xb` | double | yes | — | TODO |
+| `est_rate_att_generic_runner` | double | yes | — | TODO |
+| `est_rate_att_generic_fielder` | double | yes | — | TODO |
+| `n_out` | int16 | yes | — | TODO |
+| `n_safe` | int16 | yes | — | TODO |
+| `rate_safe` | double | yes | — | TODO |
+| `rate_safe_per_attempt` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_baserunning -->
 
@@ -411,25 +418,25 @@ Baserunning run value breakdown (extra bases, steal-of-base, swipe/snipe/freeze)
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player_id` | int32 | yes | — |  |
-| `entity_name` | string | yes | — |  |
-| `team_name` | string | yes | — |  |
-| `start_year` | int16 | yes | — |  |
-| `end_year` | int16 | yes | — |  |
-| `runner_runs_tot` | double | yes | — |  |
-| `runner_runs_xb` | double | yes | `runner_runs_XB` |  |
-| `runner_runs_sbx` | double | yes | `runner_runs_SBX` |  |
-| `n_runner_moved` | int16 | yes | `N_runner_moved` |  |
-| `runner_runs_xb_swipe` | double | yes | `runner_runs_XB_swipe` |  |
-| `runner_runs_xb_snipe` | double | yes | `runner_runs_XB_snipe` |  |
-| `runner_runs_xb_freeze` | double | yes | `runner_runs_XB_freeze` |  |
-| `n_runner_moved_xb` | int16 | yes | `N_runner_moved_XB` |  |
-| `runner_runs_sb2` | double | yes | `runner_runs_SB2` |  |
-| `runner_runs_sb3` | double | yes | `runner_runs_SB3` |  |
-| `simple_stolen_on_running_act_sb2` | double | yes | `simple_stolen_on_running_act_SB2` |  |
-| `simple_stolen_on_running_act_sb3` | double | yes | `simple_stolen_on_running_act_SB3` |  |
-| `n_runner_moved_sbx` | int16 | yes | `N_runner_moved_SBX` |  |
-| `_extras` | string | yes | — |  |
+| `player_id` | int32 | yes | — | TODO |
+| `entity_name` | string | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `start_year` | int16 | yes | — | TODO |
+| `end_year` | int16 | yes | — | TODO |
+| `runner_runs_tot` | double | yes | — | TODO |
+| `runner_runs_xb` | double | yes | `runner_runs_XB` | TODO |
+| `runner_runs_sbx` | double | yes | `runner_runs_SBX` | TODO |
+| `n_runner_moved` | int16 | yes | `N_runner_moved` | TODO |
+| `runner_runs_xb_swipe` | double | yes | `runner_runs_XB_swipe` | TODO |
+| `runner_runs_xb_snipe` | double | yes | `runner_runs_XB_snipe` | TODO |
+| `runner_runs_xb_freeze` | double | yes | `runner_runs_XB_freeze` | TODO |
+| `n_runner_moved_xb` | int16 | yes | `N_runner_moved_XB` | TODO |
+| `runner_runs_sb2` | double | yes | `runner_runs_SB2` | TODO |
+| `runner_runs_sb3` | double | yes | `runner_runs_SB3` | TODO |
+| `simple_stolen_on_running_act_sb2` | double | yes | `simple_stolen_on_running_act_SB2` | TODO |
+| `simple_stolen_on_running_act_sb3` | double | yes | `simple_stolen_on_running_act_SB3` | TODO |
+| `n_runner_moved_sbx` | int16 | yes | `N_runner_moved_SBX` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_baserunning_run_value -->
 
@@ -445,31 +452,31 @@ Base-stealing run value and lead metrics by target base.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player_id` | int32 | yes | — |  |
-| `player_name` | string | yes | — |  |
-| `team_name` | string | yes | — |  |
-| `start_year` | int16 | yes | — |  |
-| `end_year` | int16 | yes | — |  |
-| `key_target_base` | string | yes | — |  |
-| `runs_stolen_on_running_act` | double | yes | — |  |
-| `n_init` | int16 | yes | — |  |
-| `rate_sbx` | double | yes | — |  |
-| `n_sb` | int16 | yes | — |  |
-| `n_cs` | int16 | yes | — |  |
-| `n_pk` | int16 | yes | — |  |
-| `n_bk` | int16 | yes | — |  |
-| `n_fb` | int16 | yes | — |  |
-| `n_plus` | int16 | yes | — |  |
-| `n_minus` | int16 | yes | — |  |
-| `net_act_plus` | double | yes | — |  |
-| `net_act_minus` | double | yes | — |  |
-| `r_primary_lead` | double | yes | — |  |
-| `r_secondary_lead` | double | yes | — |  |
-| `r_sec_minus_prim_lead` | double | yes | — |  |
-| `r_primary_lead_sbx` | double | yes | — |  |
-| `r_secondary_lead_sbx` | double | yes | — |  |
-| `r_sec_minus_prim_lead_sbx` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `player_id` | int32 | yes | — | TODO |
+| `player_name` | string | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `start_year` | int16 | yes | — | TODO |
+| `end_year` | int16 | yes | — | TODO |
+| `key_target_base` | string | yes | — | TODO |
+| `runs_stolen_on_running_act` | double | yes | — | TODO |
+| `n_init` | int16 | yes | — | TODO |
+| `rate_sbx` | double | yes | — | TODO |
+| `n_sb` | int16 | yes | — | TODO |
+| `n_cs` | int16 | yes | — | TODO |
+| `n_pk` | int16 | yes | — | TODO |
+| `n_bk` | int16 | yes | — | TODO |
+| `n_fb` | int16 | yes | — | TODO |
+| `n_plus` | int16 | yes | — | TODO |
+| `n_minus` | int16 | yes | — | TODO |
+| `net_act_plus` | double | yes | — | TODO |
+| `net_act_minus` | double | yes | — | TODO |
+| `r_primary_lead` | double | yes | — | TODO |
+| `r_secondary_lead` | double | yes | — | TODO |
+| `r_sec_minus_prim_lead` | double | yes | — | TODO |
+| `r_primary_lead_sbx` | double | yes | — | TODO |
+| `r_secondary_lead_sbx` | double | yes | — | TODO |
+| `r_sec_minus_prim_lead_sbx` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_basestealing_run_value -->
 
@@ -485,25 +492,25 @@ Bat speed, swing length, squared-up and blast rates per batter-season (2023+).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `id` | int32 | yes | — |  |
-| `name` | string | yes | — |  |
-| `swings_competitive` | int16 | yes | — |  |
-| `percent_swings_competitive` | double | yes | — |  |
-| `contact` | int16 | yes | — |  |
-| `avg_bat_speed` | double | yes | — |  |
-| `hard_swing_rate` | double | yes | — |  |
-| `squared_up_per_bat_contact` | double | yes | — |  |
-| `squared_up_per_swing` | double | yes | — |  |
-| `blast_per_bat_contact` | double | yes | — |  |
-| `blast_per_swing` | double | yes | — |  |
-| `swing_length` | double | yes | — |  |
-| `swords` | int16 | yes | — |  |
-| `batter_run_value` | double | yes | — |  |
-| `whiffs` | int16 | yes | — |  |
-| `whiff_per_swing` | double | yes | — |  |
-| `batted_ball_events` | int16 | yes | — |  |
-| `batted_ball_event_per_swing` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `swings_competitive` | int16 | yes | — | TODO |
+| `percent_swings_competitive` | double | yes | — | TODO |
+| `contact` | int16 | yes | — | TODO |
+| `avg_bat_speed` | double | yes | — | TODO |
+| `hard_swing_rate` | double | yes | — | TODO |
+| `squared_up_per_bat_contact` | double | yes | — | TODO |
+| `squared_up_per_swing` | double | yes | — | TODO |
+| `blast_per_bat_contact` | double | yes | — | TODO |
+| `blast_per_swing` | double | yes | — | TODO |
+| `swing_length` | double | yes | — | TODO |
+| `swords` | int16 | yes | — | TODO |
+| `batter_run_value` | double | yes | — | TODO |
+| `whiffs` | int16 | yes | — | TODO |
+| `whiff_per_swing` | double | yes | — | TODO |
+| `batted_ball_events` | int16 | yes | — | TODO |
+| `batted_ball_event_per_swing` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_bat_tracking -->
 
@@ -519,25 +526,25 @@ Batted-ball profile (pull/straight/oppo, ground/line/fly rates) per batter-seaso
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `id` | int32 | yes | — |  |
-| `name` | string | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `bbe` | int16 | yes | — |  |
-| `gb_rate` | double | yes | — |  |
-| `air_rate` | double | yes | — |  |
-| `fb_rate` | double | yes | — |  |
-| `ld_rate` | double | yes | — |  |
-| `pu_rate` | double | yes | — |  |
-| `pull_rate` | double | yes | — |  |
-| `straight_rate` | double | yes | — |  |
-| `oppo_rate` | double | yes | — |  |
-| `pull_gb_rate` | double | yes | — |  |
-| `straight_gb_rate` | double | yes | — |  |
-| `oppo_gb_rate` | double | yes | — |  |
-| `pull_air_rate` | double | yes | — |  |
-| `straight_air_rate` | double | yes | — |  |
-| `oppo_air_rate` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `bbe` | int16 | yes | — | TODO |
+| `gb_rate` | double | yes | — | TODO |
+| `air_rate` | double | yes | — | TODO |
+| `fb_rate` | double | yes | — | TODO |
+| `ld_rate` | double | yes | — | TODO |
+| `pu_rate` | double | yes | — | TODO |
+| `pull_rate` | double | yes | — | TODO |
+| `straight_rate` | double | yes | — | TODO |
+| `oppo_rate` | double | yes | — | TODO |
+| `pull_gb_rate` | double | yes | — | TODO |
+| `straight_gb_rate` | double | yes | — | TODO |
+| `oppo_gb_rate` | double | yes | — | TODO |
+| `pull_air_rate` | double | yes | — | TODO |
+| `straight_air_rate` | double | yes | — | TODO |
+| `oppo_air_rate` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_batted_ball -->
 
@@ -553,24 +560,24 @@ Catcher blocking runs and blocks above average per catcher-span.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player_id` | int32 | yes | — |  |
-| `player_name` | string | yes | — |  |
-| `team_name` | string | yes | — |  |
-| `start_year` | int16 | yes | — |  |
-| `end_year` | string | yes | — |  |
-| `pitches` | int16 | yes | — |  |
-| `catcher_blocking_runs` | int16 | yes | — |  |
-| `blocks_above_average` | int16 | yes | — |  |
-| `n_pbwp` | int16 | yes | — |  |
-| `x_pbwp` | double | yes | — |  |
-| `blocks_above_average_per_game` | double | yes | — |  |
-| `freq_pbwp_easy` | double | yes | — |  |
-| `freq_pbwp_medium` | double | yes | — |  |
-| `freq_pbwp_tough` | double | yes | — |  |
-| `diff_pbwp_easy` | double | yes | — |  |
-| `diff_pbwp_medium` | double | yes | — |  |
-| `diff_pbwp_tough` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `player_id` | int32 | yes | — | TODO |
+| `player_name` | string | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `start_year` | int16 | yes | — | TODO |
+| `end_year` | string | yes | — | TODO |
+| `pitches` | int16 | yes | — | TODO |
+| `catcher_blocking_runs` | int16 | yes | — | TODO |
+| `blocks_above_average` | int16 | yes | — | TODO |
+| `n_pbwp` | int16 | yes | — | TODO |
+| `x_pbwp` | double | yes | — | TODO |
+| `blocks_above_average_per_game` | double | yes | — | TODO |
+| `freq_pbwp_easy` | double | yes | — | TODO |
+| `freq_pbwp_medium` | double | yes | — | TODO |
+| `freq_pbwp_tough` | double | yes | — | TODO |
+| `diff_pbwp_easy` | double | yes | — | TODO |
+| `diff_pbwp_medium` | double | yes | — | TODO |
+| `diff_pbwp_tough` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_catcher_blocking -->
 
@@ -586,28 +593,28 @@ Catcher framing runs by zone per catcher-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `id` | int32 | yes | — |  |
-| `name` | string | yes | — |  |
-| `pitches` | int16 | yes | — |  |
-| `rv_tot` | string | yes | — |  |
-| `pct_tot` | double | yes | — |  |
-| `rv_11` | int16 | yes | — |  |
-| `pct_11` | double | yes | — |  |
-| `rv_12` | int16 | yes | — |  |
-| `pct_12` | double | yes | — |  |
-| `rv_13` | int16 | yes | — |  |
-| `pct_13` | double | yes | — |  |
-| `rv_14` | int16 | yes | — |  |
-| `pct_14` | double | yes | — |  |
-| `rv_16` | int16 | yes | — |  |
-| `pct_16` | double | yes | — |  |
-| `rv_17` | int16 | yes | — |  |
-| `pct_17` | double | yes | — |  |
-| `rv_18` | int16 | yes | — |  |
-| `pct_18` | double | yes | — |  |
-| `rv_19` | int16 | yes | — |  |
-| `pct_19` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `pitches` | int16 | yes | — | TODO |
+| `rv_tot` | string | yes | — | TODO |
+| `pct_tot` | double | yes | — | TODO |
+| `rv_11` | int16 | yes | — | TODO |
+| `pct_11` | double | yes | — | TODO |
+| `rv_12` | int16 | yes | — | TODO |
+| `pct_12` | double | yes | — | TODO |
+| `rv_13` | int16 | yes | — | TODO |
+| `pct_13` | double | yes | — | TODO |
+| `rv_14` | int16 | yes | — | TODO |
+| `pct_14` | double | yes | — | TODO |
+| `rv_16` | int16 | yes | — | TODO |
+| `pct_16` | double | yes | — | TODO |
+| `rv_17` | int16 | yes | — | TODO |
+| `pct_17` | double | yes | — | TODO |
+| `rv_18` | int16 | yes | — | TODO |
+| `pct_18` | double | yes | — | TODO |
+| `rv_19` | int16 | yes | — | TODO |
+| `pct_19` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_catcher_framing -->
 
@@ -623,25 +630,25 @@ Exit velocity, launch angle and barrels per batter-season (batted-ball events).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `attempts` | int16 | yes | — |  |
-| `avg_hit_angle` | double | yes | — |  |
-| `anglesweetspotpercent` | double | yes | — |  |
-| `max_hit_speed` | double | yes | — |  |
-| `avg_hit_speed` | double | yes | — |  |
-| `ev50` | double | yes | — |  |
-| `fbld` | double | yes | — |  |
-| `gb` | double | yes | — |  |
-| `max_distance` | int16 | yes | — |  |
-| `avg_distance` | int16 | yes | — |  |
-| `avg_hr_distance` | int16 | yes | — |  |
-| `ev95plus` | int16 | yes | — |  |
-| `ev95percent` | double | yes | — |  |
-| `barrels` | int16 | yes | — |  |
-| `brl_percent` | double | yes | — |  |
-| `brl_pa` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `attempts` | int16 | yes | — | TODO |
+| `avg_hit_angle` | double | yes | — | TODO |
+| `anglesweetspotpercent` | double | yes | — | TODO |
+| `max_hit_speed` | double | yes | — | TODO |
+| `avg_hit_speed` | double | yes | — | TODO |
+| `ev50` | double | yes | — | TODO |
+| `fbld` | double | yes | — | TODO |
+| `gb` | double | yes | — | TODO |
+| `max_distance` | int16 | yes | — | TODO |
+| `avg_distance` | int16 | yes | — | TODO |
+| `avg_hr_distance` | int16 | yes | — | TODO |
+| `ev95plus` | int16 | yes | — | TODO |
+| `ev95percent` | double | yes | — | TODO |
+| `barrels` | int16 | yes | — | TODO |
+| `brl_percent` | double | yes | — | TODO |
+| `brl_pa` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_exit_velocity_batter -->
 
@@ -657,25 +664,25 @@ Exit velocity and barrels per batting team-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `team` | string | yes | — |  |
-| `team_id` | string | yes | — |  |
-| `attempts` | int16 | yes | — |  |
-| `avg_hit_angle` | double | yes | — |  |
-| `anglesweetspotpercent` | double | yes | — |  |
-| `max_hit_speed` | double | yes | — |  |
-| `avg_hit_speed` | double | yes | — |  |
-| `ev50` | double | yes | — |  |
-| `fbld` | double | yes | — |  |
-| `gb` | double | yes | — |  |
-| `max_distance` | int16 | yes | — |  |
-| `avg_distance` | int16 | yes | — |  |
-| `avg_hr_distance` | int16 | yes | — |  |
-| `ev95plus` | int16 | yes | — |  |
-| `ev95percent` | double | yes | — |  |
-| `barrels` | int16 | yes | — |  |
-| `brl_percent` | double | yes | — |  |
-| `brl_pa` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `team` | string | yes | — | TODO |
+| `team_id` | string | yes | — | TODO |
+| `attempts` | int16 | yes | — | TODO |
+| `avg_hit_angle` | double | yes | — | TODO |
+| `anglesweetspotpercent` | double | yes | — | TODO |
+| `max_hit_speed` | double | yes | — | TODO |
+| `avg_hit_speed` | double | yes | — | TODO |
+| `ev50` | double | yes | — | TODO |
+| `fbld` | double | yes | — | TODO |
+| `gb` | double | yes | — | TODO |
+| `max_distance` | int16 | yes | — | TODO |
+| `avg_distance` | int16 | yes | — | TODO |
+| `avg_hr_distance` | int16 | yes | — | TODO |
+| `ev95plus` | int16 | yes | — | TODO |
+| `ev95percent` | double | yes | — | TODO |
+| `barrels` | int16 | yes | — | TODO |
+| `brl_percent` | double | yes | — | TODO |
+| `brl_pa` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_exit_velocity_batter_team -->
 
@@ -691,25 +698,25 @@ Exit velocity, launch angle and barrels allowed per pitcher-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `attempts` | int16 | yes | — |  |
-| `avg_hit_angle` | double | yes | — |  |
-| `anglesweetspotpercent` | double | yes | — |  |
-| `max_hit_speed` | double | yes | — |  |
-| `avg_hit_speed` | double | yes | — |  |
-| `ev50` | double | yes | — |  |
-| `fbld` | double | yes | — |  |
-| `gb` | double | yes | — |  |
-| `max_distance` | int16 | yes | — |  |
-| `avg_distance` | int16 | yes | — |  |
-| `avg_hr_distance` | int16 | yes | — |  |
-| `ev95plus` | int16 | yes | — |  |
-| `ev95percent` | double | yes | — |  |
-| `barrels` | int16 | yes | — |  |
-| `brl_percent` | double | yes | — |  |
-| `brl_pa` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `attempts` | int16 | yes | — | TODO |
+| `avg_hit_angle` | double | yes | — | TODO |
+| `anglesweetspotpercent` | double | yes | — | TODO |
+| `max_hit_speed` | double | yes | — | TODO |
+| `avg_hit_speed` | double | yes | — | TODO |
+| `ev50` | double | yes | — | TODO |
+| `fbld` | double | yes | — | TODO |
+| `gb` | double | yes | — | TODO |
+| `max_distance` | int16 | yes | — | TODO |
+| `avg_distance` | int16 | yes | — | TODO |
+| `avg_hr_distance` | int16 | yes | — | TODO |
+| `ev95plus` | int16 | yes | — | TODO |
+| `ev95percent` | double | yes | — | TODO |
+| `barrels` | int16 | yes | — | TODO |
+| `brl_percent` | double | yes | — | TODO |
+| `brl_pa` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_exit_velocity_pitcher -->
 
@@ -725,25 +732,25 @@ Exit velocity and barrels allowed per pitching team-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `team` | string | yes | — |  |
-| `team_id` | string | yes | — |  |
-| `attempts` | int16 | yes | — |  |
-| `avg_hit_angle` | double | yes | — |  |
-| `anglesweetspotpercent` | double | yes | — |  |
-| `max_hit_speed` | double | yes | — |  |
-| `avg_hit_speed` | double | yes | — |  |
-| `ev50` | double | yes | — |  |
-| `fbld` | double | yes | — |  |
-| `gb` | double | yes | — |  |
-| `max_distance` | int16 | yes | — |  |
-| `avg_distance` | int16 | yes | — |  |
-| `avg_hr_distance` | int16 | yes | — |  |
-| `ev95plus` | int16 | yes | — |  |
-| `ev95percent` | double | yes | — |  |
-| `barrels` | int16 | yes | — |  |
-| `brl_percent` | double | yes | — |  |
-| `brl_pa` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `team` | string | yes | — | TODO |
+| `team_id` | string | yes | — | TODO |
+| `attempts` | int16 | yes | — | TODO |
+| `avg_hit_angle` | double | yes | — | TODO |
+| `anglesweetspotpercent` | double | yes | — | TODO |
+| `max_hit_speed` | double | yes | — | TODO |
+| `avg_hit_speed` | double | yes | — | TODO |
+| `ev50` | double | yes | — | TODO |
+| `fbld` | double | yes | — | TODO |
+| `gb` | double | yes | — | TODO |
+| `max_distance` | int16 | yes | — | TODO |
+| `avg_distance` | int16 | yes | — | TODO |
+| `avg_hr_distance` | int16 | yes | — | TODO |
+| `ev95plus` | int16 | yes | — | TODO |
+| `ev95percent` | double | yes | — | TODO |
+| `barrels` | int16 | yes | — | TODO |
+| `brl_percent` | double | yes | — | TODO |
+| `brl_pa` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_exit_velocity_pitcher_team -->
 
@@ -759,21 +766,21 @@ Expected stats (xBA, xSLG, xwOBA) per batter-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `pa` | int16 | yes | — |  |
-| `bip` | int16 | yes | — |  |
-| `ba` | double | yes | — |  |
-| `est_ba` | double | yes | — |  |
-| `est_ba_minus_ba_diff` | double | yes | — |  |
-| `slg` | double | yes | — |  |
-| `est_slg` | double | yes | — |  |
-| `est_slg_minus_slg_diff` | double | yes | — |  |
-| `woba` | double | yes | — |  |
-| `est_woba` | double | yes | — |  |
-| `est_woba_minus_woba_diff` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `pa` | int16 | yes | — | TODO |
+| `bip` | int16 | yes | — | TODO |
+| `ba` | double | yes | — | TODO |
+| `est_ba` | double | yes | — | TODO |
+| `est_ba_minus_ba_diff` | double | yes | — | TODO |
+| `slg` | double | yes | — | TODO |
+| `est_slg` | double | yes | — | TODO |
+| `est_slg_minus_slg_diff` | double | yes | — | TODO |
+| `woba` | double | yes | — | TODO |
+| `est_woba` | double | yes | — | TODO |
+| `est_woba_minus_woba_diff` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_expected_statistics_batter -->
 
@@ -789,24 +796,24 @@ Expected stats (xBA, xSLG, xwOBA, xERA) per pitcher-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `pa` | int16 | yes | — |  |
-| `bip` | int16 | yes | — |  |
-| `ba` | double | yes | — |  |
-| `est_ba` | double | yes | — |  |
-| `est_ba_minus_ba_diff` | double | yes | — |  |
-| `slg` | double | yes | — |  |
-| `est_slg` | double | yes | — |  |
-| `est_slg_minus_slg_diff` | double | yes | — |  |
-| `woba` | double | yes | — |  |
-| `est_woba` | double | yes | — |  |
-| `est_woba_minus_woba_diff` | double | yes | — |  |
-| `era` | double | yes | — |  |
-| `xera` | double | yes | — |  |
-| `era_minus_xera_diff` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `pa` | int16 | yes | — | TODO |
+| `bip` | int16 | yes | — | TODO |
+| `ba` | double | yes | — | TODO |
+| `est_ba` | double | yes | — | TODO |
+| `est_ba_minus_ba_diff` | double | yes | — | TODO |
+| `slg` | double | yes | — | TODO |
+| `est_slg` | double | yes | — | TODO |
+| `est_slg_minus_slg_diff` | double | yes | — | TODO |
+| `woba` | double | yes | — | TODO |
+| `est_woba` | double | yes | — | TODO |
+| `est_woba_minus_woba_diff` | double | yes | — | TODO |
+| `era` | double | yes | — | TODO |
+| `xera` | double | yes | — | TODO |
+| `era_minus_xera_diff` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_expected_statistics_pitcher -->
 
@@ -822,20 +829,20 @@ Home run tracking (no-doubters, expected home runs) per player-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player` | string | yes | — |  |
-| `player_id` | int32 | yes | — |  |
-| `team_abbrev` | string | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `type` | string | yes | — |  |
-| `avg_hr_trot` | double | yes | — |  |
-| `doubters` | int16 | yes | — |  |
-| `mostly_gone` | int16 | yes | — |  |
-| `no_doubters` | int16 | yes | — |  |
-| `no_doubter_per` | double | yes | — |  |
-| `hr_total` | int16 | yes | — |  |
-| `xhr` | double | yes | — |  |
-| `xhr_diff` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `player` | string | yes | — | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `team_abbrev` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `type` | string | yes | — | TODO |
+| `avg_hr_trot` | double | yes | — | TODO |
+| `doubters` | int16 | yes | — | TODO |
+| `mostly_gone` | int16 | yes | — | TODO |
+| `no_doubters` | int16 | yes | — | TODO |
+| `no_doubter_per` | double | yes | — | TODO |
+| `hr_total` | int16 | yes | — | TODO |
+| `xhr` | double | yes | — | TODO |
+| `xhr_diff` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_home_runs -->
 
@@ -851,19 +858,19 @@ Outfielder jump (reaction, burst and routing distance) per fielder-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `resp_fielder_id` | int32 | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `outs_above_average` | int16 | yes | — |  |
-| `outs_per_play` | double | yes | — |  |
-| `rel_league_burst_distance` | double | yes | — |  |
-| `rel_league_reaction_distance` | double | yes | — |  |
-| `rel_league_routing_distance` | double | yes | — |  |
-| `rel_league_bootup_distance` | double | yes | — |  |
-| `f_bootup_distance` | double | yes | — |  |
-| `n` | int16 | yes | — |  |
-| `n_outs` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `resp_fielder_id` | int32 | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `outs_above_average` | int16 | yes | — | TODO |
+| `outs_per_play` | double | yes | — | TODO |
+| `rel_league_burst_distance` | double | yes | — | TODO |
+| `rel_league_reaction_distance` | double | yes | — | TODO |
+| `rel_league_routing_distance` | double | yes | — | TODO |
+| `rel_league_bootup_distance` | double | yes | — | TODO |
+| `f_bootup_distance` | double | yes | — | TODO |
+| `n` | int16 | yes | — | TODO |
+| `n_outs` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_outfield_jump -->
 
@@ -879,23 +886,23 @@ Outs Above Average (OAA) and fielding runs prevented per fielder-position-season
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `display_team_name` | string | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `primary_pos_formatted` | string | yes | — |  |
-| `fielding_runs_prevented` | int16 | yes | — |  |
-| `outs_above_average` | int16 | yes | — |  |
-| `outs_above_average_infront` | int16 | yes | — |  |
-| `outs_above_average_lateral_toward3bline` | int16 | yes | — |  |
-| `outs_above_average_lateral_toward1bline` | int16 | yes | — |  |
-| `outs_above_average_behind` | int16 | yes | — |  |
-| `outs_above_average_rhh` | int16 | yes | — |  |
-| `outs_above_average_lhh` | int16 | yes | — |  |
-| `actual_success_rate_formatted` | string | yes | — |  |
-| `adj_estimated_success_rate_formatted` | string | yes | — |  |
-| `diff_success_rate_formatted` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `display_team_name` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `primary_pos_formatted` | string | yes | — | TODO |
+| `fielding_runs_prevented` | int16 | yes | — | TODO |
+| `outs_above_average` | int16 | yes | — | TODO |
+| `outs_above_average_infront` | int16 | yes | — | TODO |
+| `outs_above_average_lateral_toward3bline` | int16 | yes | — | TODO |
+| `outs_above_average_lateral_toward1bline` | int16 | yes | — | TODO |
+| `outs_above_average_behind` | int16 | yes | — | TODO |
+| `outs_above_average_rhh` | int16 | yes | — | TODO |
+| `outs_above_average_lhh` | int16 | yes | — | TODO |
+| `actual_success_rate_formatted` | string | yes | — | TODO |
+| `adj_estimated_success_rate_formatted` | string | yes | — | TODO |
+| `diff_success_rate_formatted` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_outs_above_average -->
 
@@ -911,37 +918,37 @@ Statcast park factor indices per venue and 3-year span (embedded JSON on the pag
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `grouping_venue_conditions` | string | yes | — |  |
-| `key_is_year_rolling` | int16 | yes | — |  |
-| `key_num_years_rolling` | int16 | yes | — |  |
-| `key_year` | int16 | yes | — |  |
-| `is_sport_mlb` | int16 | yes | — |  |
-| `is_sport_milb` | int16 | yes | — |  |
-| `sport_id` | int16 | yes | — |  |
-| `key_bat_side` | string | yes | — |  |
-| `venue_id` | int16 | yes | — |  |
-| `venue_name` | string | yes | — |  |
-| `main_team_id` | int16 | yes | — |  |
-| `name_display_club` | string | yes | — |  |
-| `n_pa` | int32 | yes | — |  |
-| `index_runs` | int16 | yes | — |  |
-| `index_hardhit` | string | yes | — |  |
-| `index_woba` | int16 | yes | — |  |
-| `index_wobatto` | int16 | yes | — |  |
-| `index_wobacon` | int16 | yes | — |  |
-| `index_xwobacon` | string | yes | — |  |
-| `index_xbacon` | string | yes | — |  |
-| `index_obp` | int16 | yes | — |  |
-| `index_so` | int16 | yes | — |  |
-| `index_bb` | int16 | yes | — |  |
-| `index_bacon` | int16 | yes | — |  |
-| `index_hits` | int16 | yes | — |  |
-| `index_1b` | int16 | yes | — |  |
-| `index_2b` | int16 | yes | — |  |
-| `index_3b` | int16 | yes | — |  |
-| `index_hr` | int16 | yes | — |  |
-| `year_range` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `grouping_venue_conditions` | string | yes | — | TODO |
+| `key_is_year_rolling` | int16 | yes | — | TODO |
+| `key_num_years_rolling` | int16 | yes | — | TODO |
+| `key_year` | int16 | yes | — | TODO |
+| `is_sport_mlb` | int16 | yes | — | TODO |
+| `is_sport_milb` | int16 | yes | — | TODO |
+| `sport_id` | int16 | yes | — | TODO |
+| `key_bat_side` | string | yes | — | TODO |
+| `venue_id` | int16 | yes | — | TODO |
+| `venue_name` | string | yes | — | TODO |
+| `main_team_id` | int16 | yes | — | TODO |
+| `name_display_club` | string | yes | — | TODO |
+| `n_pa` | int32 | yes | — | TODO |
+| `index_runs` | int16 | yes | — | TODO |
+| `index_hardhit` | string | yes | — | TODO |
+| `index_woba` | int16 | yes | — | TODO |
+| `index_wobatto` | int16 | yes | — | TODO |
+| `index_wobacon` | int16 | yes | — | TODO |
+| `index_xwobacon` | string | yes | — | TODO |
+| `index_xbacon` | string | yes | — | TODO |
+| `index_obp` | int16 | yes | — | TODO |
+| `index_so` | int16 | yes | — | TODO |
+| `index_bb` | int16 | yes | — | TODO |
+| `index_bacon` | int16 | yes | — | TODO |
+| `index_hits` | int16 | yes | — | TODO |
+| `index_1b` | int16 | yes | — | TODO |
+| `index_2b` | int16 | yes | — | TODO |
+| `index_3b` | int16 | yes | — | TODO |
+| `index_hr` | int16 | yes | — | TODO |
+| `year_range` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_park_factors -->
 
@@ -957,30 +964,30 @@ Statcast percentile inputs per batter-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player_name` | string | yes | — |  |
-| `player_id` | int32 | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `xwoba` | int16 | yes | — |  |
-| `xba` | int16 | yes | — |  |
-| `xslg` | int16 | yes | — |  |
-| `xiso` | int16 | yes | — |  |
-| `xobp` | int16 | yes | — |  |
-| `brl` | int16 | yes | — |  |
-| `brl_percent` | int16 | yes | — |  |
-| `exit_velocity` | int16 | yes | — |  |
-| `max_ev` | int16 | yes | — |  |
-| `hard_hit_percent` | int16 | yes | — |  |
-| `k_percent` | int16 | yes | — |  |
-| `bb_percent` | int16 | yes | — |  |
-| `whiff_percent` | int16 | yes | — |  |
-| `chase_percent` | int16 | yes | — |  |
-| `arm_strength` | string | yes | — |  |
-| `sprint_speed` | int16 | yes | — |  |
-| `oaa` | string | yes | — |  |
-| `bat_speed` | string | yes | — |  |
-| `squared_up_rate` | string | yes | — |  |
-| `swing_length` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `player_name` | string | yes | — | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `xwoba` | int16 | yes | — | TODO |
+| `xba` | int16 | yes | — | TODO |
+| `xslg` | int16 | yes | — | TODO |
+| `xiso` | int16 | yes | — | TODO |
+| `xobp` | int16 | yes | — | TODO |
+| `brl` | int16 | yes | — | TODO |
+| `brl_percent` | int16 | yes | — | TODO |
+| `exit_velocity` | int16 | yes | — | TODO |
+| `max_ev` | int16 | yes | — | TODO |
+| `hard_hit_percent` | int16 | yes | — | TODO |
+| `k_percent` | int16 | yes | — | TODO |
+| `bb_percent` | int16 | yes | — | TODO |
+| `whiff_percent` | int16 | yes | — | TODO |
+| `chase_percent` | int16 | yes | — | TODO |
+| `arm_strength` | string | yes | — | TODO |
+| `sprint_speed` | int16 | yes | — | TODO |
+| `oaa` | string | yes | — | TODO |
+| `bat_speed` | string | yes | — | TODO |
+| `squared_up_rate` | string | yes | — | TODO |
+| `swing_length` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_percentile_rankings_batter -->
 
@@ -996,29 +1003,29 @@ Statcast percentile inputs per pitcher-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player_name` | string | yes | — |  |
-| `player_id` | int32 | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `xwoba` | int16 | yes | — |  |
-| `xba` | int16 | yes | — |  |
-| `xslg` | int16 | yes | — |  |
-| `xiso` | int16 | yes | — |  |
-| `xobp` | int16 | yes | — |  |
-| `brl` | int16 | yes | — |  |
-| `brl_percent` | int16 | yes | — |  |
-| `exit_velocity` | int16 | yes | — |  |
-| `max_ev` | int16 | yes | — |  |
-| `hard_hit_percent` | int16 | yes | — |  |
-| `k_percent` | int16 | yes | — |  |
-| `bb_percent` | int16 | yes | — |  |
-| `whiff_percent` | int16 | yes | — |  |
-| `chase_percent` | int16 | yes | — |  |
-| `arm_strength` | string | yes | — |  |
-| `xera` | int16 | yes | — |  |
-| `fb_velocity` | int16 | yes | — |  |
-| `fb_spin` | int16 | yes | — |  |
-| `curve_spin` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `player_name` | string | yes | — | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `xwoba` | int16 | yes | — | TODO |
+| `xba` | int16 | yes | — | TODO |
+| `xslg` | int16 | yes | — | TODO |
+| `xiso` | int16 | yes | — | TODO |
+| `xobp` | int16 | yes | — | TODO |
+| `brl` | int16 | yes | — | TODO |
+| `brl_percent` | int16 | yes | — | TODO |
+| `exit_velocity` | int16 | yes | — | TODO |
+| `max_ev` | int16 | yes | — | TODO |
+| `hard_hit_percent` | int16 | yes | — | TODO |
+| `k_percent` | int16 | yes | — | TODO |
+| `bb_percent` | int16 | yes | — | TODO |
+| `whiff_percent` | int16 | yes | — | TODO |
+| `chase_percent` | int16 | yes | — | TODO |
+| `arm_strength` | string | yes | — | TODO |
+| `xera` | int16 | yes | — | TODO |
+| `fb_velocity` | int16 | yes | — | TODO |
+| `fb_spin` | int16 | yes | — | TODO |
+| `curve_spin` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_percentile_rankings_pitcher -->
 
@@ -1034,27 +1041,27 @@ Results (run value, BA, SLG, wOBA, whiff%) per pitcher and pitch type.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `team_name_alt` | string | yes | — |  |
-| `pitch_type` | string | yes | — |  |
-| `pitch_name` | string | yes | — |  |
-| `run_value_per_100` | double | yes | — |  |
-| `run_value` | int16 | yes | — |  |
-| `pitches` | int16 | yes | — |  |
-| `pitch_usage` | double | yes | — |  |
-| `pa` | int16 | yes | — |  |
-| `ba` | double | yes | — |  |
-| `slg` | double | yes | — |  |
-| `woba` | double | yes | — |  |
-| `whiff_percent` | double | yes | — |  |
-| `k_percent` | double | yes | — |  |
-| `put_away` | double | yes | — |  |
-| `est_ba` | double | yes | — |  |
-| `est_slg` | double | yes | — |  |
-| `est_woba` | double | yes | — |  |
-| `hard_hit_percent` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `team_name_alt` | string | yes | — | TODO |
+| `pitch_type` | string | yes | — | TODO |
+| `pitch_name` | string | yes | — | TODO |
+| `run_value_per_100` | double | yes | — | TODO |
+| `run_value` | int16 | yes | — | TODO |
+| `pitches` | int16 | yes | — | TODO |
+| `pitch_usage` | double | yes | — | TODO |
+| `pa` | int16 | yes | — | TODO |
+| `ba` | double | yes | — | TODO |
+| `slg` | double | yes | — | TODO |
+| `woba` | double | yes | — | TODO |
+| `whiff_percent` | double | yes | — | TODO |
+| `k_percent` | double | yes | — | TODO |
+| `put_away` | double | yes | — | TODO |
+| `est_ba` | double | yes | — | TODO |
+| `est_slg` | double | yes | — | TODO |
+| `est_woba` | double | yes | — | TODO |
+| `hard_hit_percent` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_pitch_arsenal_stats -->
 
@@ -1070,19 +1077,19 @@ Average velocity per pitch type per pitcher-season (switch pitchers have one row
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `pitcher` | int32 | yes | — |  |
-| `ff_avg_speed` | double | yes | — |  |
-| `si_avg_speed` | double | yes | — |  |
-| `fc_avg_speed` | double | yes | — |  |
-| `sl_avg_speed` | double | yes | — |  |
-| `ch_avg_speed` | double | yes | — |  |
-| `cu_avg_speed` | double | yes | — |  |
-| `fs_avg_speed` | double | yes | — |  |
-| `kn_avg_speed` | double | yes | — |  |
-| `st_avg_speed` | string | yes | — |  |
-| `sv_avg_speed` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `pitcher` | int32 | yes | — | TODO |
+| `ff_avg_speed` | double | yes | — | TODO |
+| `si_avg_speed` | double | yes | — | TODO |
+| `fc_avg_speed` | double | yes | — | TODO |
+| `sl_avg_speed` | double | yes | — | TODO |
+| `ch_avg_speed` | double | yes | — | TODO |
+| `cu_avg_speed` | double | yes | — | TODO |
+| `fs_avg_speed` | double | yes | — | TODO |
+| `kn_avg_speed` | double | yes | — | TODO |
+| `st_avg_speed` | string | yes | — | TODO |
+| `sv_avg_speed` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_pitch_arsenals -->
 
@@ -1098,17 +1105,17 @@ Pitch-timer violations by kind per player-season (2023+).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `entity_id` | int16 | yes | — |  |
-| `entity_name` | string | yes | — |  |
-| `year` | int16 | yes | — |  |
-| `pitches` | int32 | yes | — |  |
-| `all_violations` | int16 | yes | — |  |
-| `pitcher_timer` | int16 | yes | — |  |
-| `batter_timer` | int16 | yes | — |  |
-| `batter_timeout` | int16 | yes | — |  |
-| `catcher_timer` | int16 | yes | — |  |
-| `defensive_shift` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `entity_id` | int16 | yes | — | TODO |
+| `entity_name` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `pitches` | int32 | yes | — | TODO |
+| `all_violations` | int16 | yes | — | TODO |
+| `pitcher_timer` | int16 | yes | — | TODO |
+| `batter_timer` | int16 | yes | — | TODO |
+| `batter_timeout` | int16 | yes | — | TODO |
+| `catcher_timer` | int16 | yes | — | TODO |
+| `defensive_shift` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_pitch_clock -->
 
@@ -1124,31 +1131,31 @@ Pitch movement (induced vertical and horizontal break) per pitcher and pitch typ
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `year` | int16 | yes | — |  |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `pitcher_id` | int32 | yes | — |  |
-| `team_name` | string | yes | — |  |
-| `team_name_abbrev` | string | yes | — |  |
-| `pitch_hand` | string | yes | — |  |
-| `avg_speed` | double | yes | — |  |
-| `pitches_thrown` | int16 | yes | — |  |
-| `total_pitches` | int16 | yes | — |  |
-| `pitches_per_game` | double | yes | — |  |
-| `pitch_per` | double | yes | — |  |
-| `pitch_type` | string | yes | — |  |
-| `pitch_type_name` | string | yes | — |  |
-| `pitcher_break_z` | double | yes | — |  |
-| `league_break_z` | double | yes | — |  |
-| `diff_z` | double | yes | — |  |
-| `rise` | int16 | yes | — |  |
-| `pitcher_break_z_induced` | double | yes | — |  |
-| `pitcher_break_x` | double | yes | — |  |
-| `league_break_x` | double | yes | — |  |
-| `diff_x` | double | yes | — |  |
-| `tail` | int32 | yes | — |  |
-| `percent_rank_diff_z` | double | yes | — |  |
-| `percent_rank_diff_x` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `year` | int16 | yes | — | TODO |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `pitcher_id` | int32 | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `team_name_abbrev` | string | yes | — | TODO |
+| `pitch_hand` | string | yes | — | TODO |
+| `avg_speed` | double | yes | — | TODO |
+| `pitches_thrown` | int16 | yes | — | TODO |
+| `total_pitches` | int16 | yes | — | TODO |
+| `pitches_per_game` | double | yes | — | TODO |
+| `pitch_per` | double | yes | — | TODO |
+| `pitch_type` | string | yes | — | TODO |
+| `pitch_type_name` | string | yes | — | TODO |
+| `pitcher_break_z` | double | yes | — | TODO |
+| `league_break_z` | double | yes | — | TODO |
+| `diff_z` | double | yes | — | TODO |
+| `rise` | int16 | yes | — | TODO |
+| `pitcher_break_z_induced` | double | yes | — | TODO |
+| `pitcher_break_x` | double | yes | — | TODO |
+| `league_break_x` | double | yes | — | TODO |
+| `diff_x` | double | yes | — | TODO |
+| `tail` | int32 | yes | — | TODO |
+| `percent_rank_diff_z` | double | yes | — | TODO |
+| `percent_rank_diff_x` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_pitch_movement -->
 
@@ -1164,20 +1171,20 @@ Time between pitches (median seconds by situation) per pitcher-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `entity_id` | int32 | yes | — |  |
-| `entity_name` | string | yes | — |  |
-| `entity_code` | string | yes | — |  |
-| `team_id` | int16 | yes | — |  |
-| `total_pitches` | int16 | yes | — |  |
-| `total_pitches_2` | int16 | yes | `total_pitches__2` |  |
-| `total_pitches_empty` | int16 | yes | — |  |
-| `median_seconds_empty` | double | yes | — |  |
-| `total_pitches_onbase` | int16 | yes | — |  |
-| `median_seconds_empty_2` | double | yes | `median_seconds_empty__2` |  |
-| `freq_hot` | double | yes | — |  |
-| `freq_warm` | double | yes | — |  |
-| `freq_cold` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `entity_id` | int32 | yes | — | TODO |
+| `entity_name` | string | yes | — | TODO |
+| `entity_code` | string | yes | — | TODO |
+| `team_id` | int16 | yes | — | TODO |
+| `total_pitches` | int16 | yes | — | TODO |
+| `total_pitches_2` | int16 | yes | `total_pitches__2` | TODO |
+| `total_pitches_empty` | int16 | yes | — | TODO |
+| `median_seconds_empty` | double | yes | — | TODO |
+| `total_pitches_onbase` | int16 | yes | — | TODO |
+| `median_seconds_empty_2` | double | yes | `median_seconds_empty__2` | TODO |
+| `freq_hot` | double | yes | — | TODO |
+| `freq_warm` | double | yes | — | TODO |
+| `freq_cold` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_pitch_tempo -->
 
@@ -1193,21 +1200,21 @@ Catcher pop time and arm strength on steal attempts per catcher-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `entity_name` | string | yes | — |  |
-| `entity_id` | int32 | yes | — |  |
-| `team_id` | int16 | yes | — |  |
-| `age` | int16 | yes | — |  |
-| `maxeff_arm_2b_3b_sba` | double | yes | — |  |
-| `exchange_2b_3b_sba` | double | yes | — |  |
-| `pop_2b_sba_count` | int16 | yes | — |  |
-| `pop_2b_sba` | double | yes | — |  |
-| `pop_2b_cs` | double | yes | — |  |
-| `pop_2b_sb` | double | yes | — |  |
-| `pop_3b_sba_count` | int16 | yes | — |  |
-| `pop_3b_sba` | double | yes | — |  |
-| `pop_3b_cs` | double | yes | — |  |
-| `pop_3b_sb` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `entity_name` | string | yes | — | TODO |
+| `entity_id` | int32 | yes | — | TODO |
+| `team_id` | int16 | yes | — | TODO |
+| `age` | int16 | yes | — | TODO |
+| `maxeff_arm_2b_3b_sba` | double | yes | — | TODO |
+| `exchange_2b_3b_sba` | double | yes | — | TODO |
+| `pop_2b_sba_count` | int16 | yes | — | TODO |
+| `pop_2b_sba` | double | yes | — | TODO |
+| `pop_2b_cs` | double | yes | — | TODO |
+| `pop_2b_sb` | double | yes | — | TODO |
+| `pop_3b_sba_count` | int16 | yes | — | TODO |
+| `pop_3b_sba` | double | yes | — | TODO |
+| `pop_3b_cs` | double | yes | — | TODO |
+| `pop_3b_sb` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_poptime -->
 
@@ -1223,33 +1230,33 @@ Catcher pop time and arm strength on steal attempts per catcher-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `name_abbrev` | string | yes | — |  |
-| `team_id` | int16 | yes | — |  |
-| `position_name` | string | yes | — |  |
-| `age` | int16 | yes | — |  |
-| `bat_side` | string | yes | — |  |
-| `seconds_since_hit_000` | double | yes | — |  |
-| `seconds_since_hit_005` | double | yes | — |  |
-| `seconds_since_hit_010` | double | yes | — |  |
-| `seconds_since_hit_015` | double | yes | — |  |
-| `seconds_since_hit_020` | double | yes | — |  |
-| `seconds_since_hit_025` | double | yes | — |  |
-| `seconds_since_hit_030` | double | yes | — |  |
-| `seconds_since_hit_035` | double | yes | — |  |
-| `seconds_since_hit_040` | double | yes | — |  |
-| `seconds_since_hit_045` | double | yes | — |  |
-| `seconds_since_hit_050` | double | yes | — |  |
-| `seconds_since_hit_055` | double | yes | — |  |
-| `seconds_since_hit_060` | double | yes | — |  |
-| `seconds_since_hit_065` | double | yes | — |  |
-| `seconds_since_hit_070` | double | yes | — |  |
-| `seconds_since_hit_075` | double | yes | — |  |
-| `seconds_since_hit_080` | double | yes | — |  |
-| `seconds_since_hit_085` | double | yes | — |  |
-| `seconds_since_hit_090` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `name_abbrev` | string | yes | — | TODO |
+| `team_id` | int16 | yes | — | TODO |
+| `position_name` | string | yes | — | TODO |
+| `age` | int16 | yes | — | TODO |
+| `bat_side` | string | yes | — | TODO |
+| `seconds_since_hit_000` | double | yes | — | TODO |
+| `seconds_since_hit_005` | double | yes | — | TODO |
+| `seconds_since_hit_010` | double | yes | — | TODO |
+| `seconds_since_hit_015` | double | yes | — | TODO |
+| `seconds_since_hit_020` | double | yes | — | TODO |
+| `seconds_since_hit_025` | double | yes | — | TODO |
+| `seconds_since_hit_030` | double | yes | — | TODO |
+| `seconds_since_hit_035` | double | yes | — | TODO |
+| `seconds_since_hit_040` | double | yes | — | TODO |
+| `seconds_since_hit_045` | double | yes | — | TODO |
+| `seconds_since_hit_050` | double | yes | — | TODO |
+| `seconds_since_hit_055` | double | yes | — | TODO |
+| `seconds_since_hit_060` | double | yes | — | TODO |
+| `seconds_since_hit_065` | double | yes | — | TODO |
+| `seconds_since_hit_070` | double | yes | — | TODO |
+| `seconds_since_hit_075` | double | yes | — | TODO |
+| `seconds_since_hit_080` | double | yes | — | TODO |
+| `seconds_since_hit_085` | double | yes | — | TODO |
+| `seconds_since_hit_090` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_running_splits -->
 
@@ -1265,36 +1272,36 @@ Measured vs inferred spin direction and active spin per pitcher and pitch type.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `year` | int16 | yes | — |  |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `pitch_hand` | string | yes | — |  |
-| `api_pitch_type` | string | yes | — |  |
-| `n_pitches` | int16 | yes | — |  |
-| `release_speed` | double | yes | — |  |
-| `spin_rate` | int16 | yes | — |  |
-| `movement_inches` | double | yes | — |  |
-| `alan_active_spin_pct` | double | yes | — |  |
-| `active_spin` | double | yes | — |  |
-| `hawkeye_measured` | double | yes | — |  |
-| `movement_inferred` | double | yes | — |  |
-| `api_pitch_name` | string | yes | — |  |
-| `active_spin_formatted` | int16 | yes | — |  |
-| `hawkeye_measured_clock_minutes` | int16 | yes | — |  |
-| `movement_inferred_clock_minutes` | int16 | yes | — |  |
-| `diff_measured_inferred` | double | yes | — |  |
-| `diff2` | double | yes | — |  |
-| `diff_measured_inferred_minutes` | int16 | yes | — |  |
-| `hawkeye_measured_clock_hh` | int16 | yes | — |  |
-| `hawkeye_measured_clock_mm` | int16 | yes | — |  |
-| `movement_inferred_clock_hh` | int16 | yes | — |  |
-| `movement_inferred_clock_mm` | int16 | yes | — |  |
-| `diff_clock_hh` | int16 | yes | — |  |
-| `diff_clock_mm` | int16 | yes | — |  |
-| `hawkeye_measured_clock_label` | string | yes | — |  |
-| `movement_inferred_clock_label` | string | yes | — |  |
-| `diff_clock_label` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `year` | int16 | yes | — | TODO |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `pitch_hand` | string | yes | — | TODO |
+| `api_pitch_type` | string | yes | — | TODO |
+| `n_pitches` | int16 | yes | — | TODO |
+| `release_speed` | double | yes | — | TODO |
+| `spin_rate` | int16 | yes | — | TODO |
+| `movement_inches` | double | yes | — | TODO |
+| `alan_active_spin_pct` | double | yes | — | TODO |
+| `active_spin` | double | yes | — | TODO |
+| `hawkeye_measured` | double | yes | — | TODO |
+| `movement_inferred` | double | yes | — | TODO |
+| `api_pitch_name` | string | yes | — | TODO |
+| `active_spin_formatted` | int16 | yes | — | TODO |
+| `hawkeye_measured_clock_minutes` | int16 | yes | — | TODO |
+| `movement_inferred_clock_minutes` | int16 | yes | — | TODO |
+| `diff_measured_inferred` | double | yes | — | TODO |
+| `diff2` | double | yes | — | TODO |
+| `diff_measured_inferred_minutes` | int16 | yes | — | TODO |
+| `hawkeye_measured_clock_hh` | int16 | yes | — | TODO |
+| `hawkeye_measured_clock_mm` | int16 | yes | — | TODO |
+| `movement_inferred_clock_hh` | int16 | yes | — | TODO |
+| `movement_inferred_clock_mm` | int16 | yes | — | TODO |
+| `diff_clock_hh` | int16 | yes | — | TODO |
+| `diff_clock_mm` | int16 | yes | — | TODO |
+| `hawkeye_measured_clock_label` | string | yes | — | TODO |
+| `movement_inferred_clock_label` | string | yes | — | TODO |
+| `diff_clock_label` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_spin_direction_pitches -->
 
@@ -1310,17 +1317,17 @@ Sprint speed (ft/s on competitive runs) per player-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `team_id` | int16 | yes | — |  |
-| `team` | string | yes | — |  |
-| `position` | string | yes | — |  |
-| `age` | int16 | yes | — |  |
-| `competitive_runs` | int16 | yes | — |  |
-| `bolts` | int16 | yes | — |  |
-| `hp_to_1b` | double | yes | — |  |
-| `sprint_speed` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `team_id` | int16 | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `position` | string | yes | — | TODO |
+| `age` | int16 | yes | — | TODO |
+| `competitive_runs` | int16 | yes | — | TODO |
+| `bolts` | int16 | yes | — | TODO |
+| `hp_to_1b` | double | yes | — | TODO |
+| `sprint_speed` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_sprint_speed -->
 
@@ -1336,20 +1343,20 @@ Swing path: attack angle, attack direction and swing tilt per batter-season (202
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `id` | int32 | yes | — |  |
-| `name` | string | yes | — |  |
-| `side` | string | yes | — |  |
-| `avg_bat_speed` | double | yes | — |  |
-| `swing_tilt` | double | yes | — |  |
-| `attack_angle` | double | yes | — |  |
-| `attack_direction` | double | yes | — |  |
-| `ideal_attack_angle_rate` | double | yes | — |  |
-| `avg_intercept_y_vs_plate` | double | yes | — |  |
-| `avg_intercept_y_vs_batter` | double | yes | — |  |
-| `avg_batter_y_position` | double | yes | — |  |
-| `avg_batter_x_position` | double | yes | — |  |
-| `competitive_swings` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `side` | string | yes | — | TODO |
+| `avg_bat_speed` | double | yes | — | TODO |
+| `swing_tilt` | double | yes | — | TODO |
+| `attack_angle` | double | yes | — | TODO |
+| `attack_direction` | double | yes | — | TODO |
+| `ideal_attack_angle_rate` | double | yes | — | TODO |
+| `avg_intercept_y_vs_plate` | double | yes | — | TODO |
+| `avg_intercept_y_vs_batter` | double | yes | — | TODO |
+| `avg_batter_y_position` | double | yes | — | TODO |
+| `avg_batter_x_position` | double | yes | — | TODO |
+| `competitive_swings` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_swing_path_attack_angle -->
 
@@ -1365,18 +1372,18 @@ Swing/take run value by zone region per batter-season.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `year` | int16 | yes | — |  |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `team_id` | int16 | yes | — |  |
-| `pa` | int16 | yes | — |  |
-| `pitches` | int16 | yes | — |  |
-| `runs_all` | double | yes | — |  |
-| `runs_heart` | double | yes | — |  |
-| `runs_shadow` | double | yes | — |  |
-| `runs_chase` | double | yes | — |  |
-| `runs_waste` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `year` | int16 | yes | — | TODO |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `team_id` | int16 | yes | — | TODO |
+| `pa` | int16 | yes | — | TODO |
+| `pitches` | int16 | yes | — | TODO |
+| `runs_all` | double | yes | — | TODO |
+| `runs_heart` | double | yes | — | TODO |
+| `runs_shadow` | double | yes | — | TODO |
+| `runs_chase` | double | yes | — | TODO |
+| `runs_waste` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_swing_take -->
 
@@ -1392,34 +1399,34 @@ Fielding run value by fielder (embedded JSON rows of the page, no qualifier).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `total_runs` | string | yes | — |  |
-| `inf_of_runs` | string | yes | — |  |
-| `range_runs` | string | yes | — |  |
-| `arm_runs` | string | yes | — |  |
-| `dp_runs` | string | yes | — |  |
-| `fielding_runs_prevented_on_rec1b` | string | yes | — |  |
-| `catching_runs` | string | yes | — |  |
-| `framing_runs` | string | yes | — |  |
-| `throwing_runs` | string | yes | — |  |
-| `blocking_runs` | string | yes | — |  |
-| `abs_runs` | string | yes | — |  |
-| `outs_total` | int16 | yes | — |  |
-| `tot_pa` | double | yes | — |  |
-| `max_pos` | int16 | yes | — |  |
-| `outs_2` | int16 | yes | — |  |
-| `outs_3` | int16 | yes | — |  |
-| `outs_4` | int16 | yes | — |  |
-| `outs_5` | int16 | yes | — |  |
-| `outs_6` | int16 | yes | — |  |
-| `outs_7` | int16 | yes | — |  |
-| `outs_8` | int16 | yes | — |  |
-| `outs_9` | int16 | yes | — |  |
-| `id` | int32 | yes | — |  |
-| `name` | string | yes | — |  |
-| `team_id` | int16 | yes | — |  |
-| `n_teams` | int16 | yes | — |  |
-| `team_name` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `total_runs` | string | yes | — | TODO |
+| `inf_of_runs` | string | yes | — | TODO |
+| `range_runs` | string | yes | — | TODO |
+| `arm_runs` | string | yes | — | TODO |
+| `dp_runs` | string | yes | — | TODO |
+| `fielding_runs_prevented_on_rec1b` | string | yes | — | TODO |
+| `catching_runs` | string | yes | — | TODO |
+| `framing_runs` | string | yes | — | TODO |
+| `throwing_runs` | string | yes | — | TODO |
+| `blocking_runs` | string | yes | — | TODO |
+| `abs_runs` | string | yes | — | TODO |
+| `outs_total` | int16 | yes | — | TODO |
+| `tot_pa` | double | yes | — | TODO |
+| `max_pos` | int16 | yes | — | TODO |
+| `outs_2` | int16 | yes | — | TODO |
+| `outs_3` | int16 | yes | — | TODO |
+| `outs_4` | int16 | yes | — | TODO |
+| `outs_5` | int16 | yes | — | TODO |
+| `outs_6` | int16 | yes | — | TODO |
+| `outs_7` | int16 | yes | — | TODO |
+| `outs_8` | int16 | yes | — | TODO |
+| `outs_9` | int16 | yes | — | TODO |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `team_id` | int16 | yes | — | TODO |
+| `n_teams` | int16 | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_fielding_run_value -->
 
@@ -1435,32 +1442,32 @@ Rolling last-N-batted-ball xwOBA windows (50/100/250) per batter and pitcher: a 
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `player_name` | string | yes | — |  |
-| `player_id` | int32 | yes | — |  |
-| `player_team_id` | int16 | yes | — |  |
-| `cat` | string | yes | — |  |
-| `cat_bin` | int16 | yes | — |  |
-| `last_x_xwoba` | double | yes | — |  |
-| `penultimate_x_xwoba` | double | yes | — |  |
-| `xwoba_delta` | double | yes | — |  |
-| `last_x_woba` | double | yes | — |  |
-| `penultimate_x_woba` | double | yes | — |  |
-| `woba_delta` | double | yes | — |  |
-| `last_x_xba` | double | yes | — |  |
-| `penultimate_x_xba` | double | yes | — |  |
-| `xba_delta` | double | yes | — |  |
-| `last_x_ba` | double | yes | — |  |
-| `penultimate_x_ba` | double | yes | — |  |
-| `ba_delta` | double | yes | — |  |
-| `last_x_xslg` | double | yes | — |  |
-| `penultimate_x_xslg` | double | yes | — |  |
-| `xslg_delta` | double | yes | — |  |
-| `last_x_slg` | double | yes | — |  |
-| `penultimate_x_slg` | double | yes | — |  |
-| `slg_delta` | double | yes | — |  |
-| `type_cat_bin` | string | yes | — |  |
-| `slug` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `player_name` | string | yes | — | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `player_team_id` | int16 | yes | — | TODO |
+| `cat` | string | yes | — | TODO |
+| `cat_bin` | int16 | yes | — | TODO |
+| `last_x_xwoba` | double | yes | — | TODO |
+| `penultimate_x_xwoba` | double | yes | — | TODO |
+| `xwoba_delta` | double | yes | — | TODO |
+| `last_x_woba` | double | yes | — | TODO |
+| `penultimate_x_woba` | double | yes | — | TODO |
+| `woba_delta` | double | yes | — | TODO |
+| `last_x_xba` | double | yes | — | TODO |
+| `penultimate_x_xba` | double | yes | — | TODO |
+| `xba_delta` | double | yes | — | TODO |
+| `last_x_ba` | double | yes | — | TODO |
+| `penultimate_x_ba` | double | yes | — | TODO |
+| `ba_delta` | double | yes | — | TODO |
+| `last_x_xslg` | double | yes | — | TODO |
+| `penultimate_x_xslg` | double | yes | — | TODO |
+| `xslg_delta` | double | yes | — | TODO |
+| `last_x_slg` | double | yes | — | TODO |
+| `penultimate_x_slg` | double | yes | — | TODO |
+| `slg_delta` | double | yes | — | TODO |
+| `type_cat_bin` | string | yes | — | TODO |
+| `slug` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_rolling -->
 
@@ -1476,126 +1483,126 @@ Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `game_pk` | int32 | yes | — |  |
-| `game_date` | date32[day] | yes | — |  |
-| `game_year` | int16 | yes | — |  |
-| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `at_bat_number` | int16 | yes | — |  |
-| `pitch_number` | int16 | yes | — |  |
-| `pitcher` | int32 | yes | — |  |
-| `batter` | int32 | yes | — |  |
-| `player_name` | string | yes | — |  |
-| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `inning` | int8 | yes | — |  |
-| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `balls` | int8 | yes | — |  |
-| `strikes` | int8 | yes | — |  |
-| `outs_when_up` | int8 | yes | — |  |
-| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `release_speed` | float | yes | — |  |
-| `effective_speed` | float | yes | — |  |
-| `release_spin_rate` | float | yes | — |  |
-| `release_extension` | float | yes | — |  |
-| `spin_axis` | float | yes | — |  |
-| `release_pos_x` | float | yes | — |  |
-| `release_pos_y` | float | yes | — |  |
-| `release_pos_z` | float | yes | — |  |
-| `arm_angle` | float | yes | — |  |
-| `zone` | int8 | yes | — |  |
-| `plate_x` | float | yes | — |  |
-| `plate_z` | float | yes | — |  |
-| `sz_top` | float | yes | — |  |
-| `sz_bot` | float | yes | — |  |
-| `pfx_x` | float | yes | — |  |
-| `pfx_z` | float | yes | — |  |
-| `vx0` | float | yes | — |  |
-| `vy0` | float | yes | — |  |
-| `vz0` | float | yes | — |  |
-| `ax` | float | yes | — |  |
-| `ay` | float | yes | — |  |
-| `az` | float | yes | — |  |
-| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `des` | string | yes | — |  |
-| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `hit_location` | int8 | yes | — |  |
-| `launch_speed` | float | yes | — |  |
-| `launch_angle` | float | yes | — |  |
-| `launch_speed_angle` | int8 | yes | — |  |
-| `hit_distance_sc` | float | yes | — |  |
-| `hc_x` | float | yes | — |  |
-| `hc_y` | float | yes | — |  |
-| `bat_speed` | float | yes | — |  |
-| `swing_length` | float | yes | — |  |
-| `estimated_ba_using_speedangle` | float | yes | — |  |
-| `estimated_woba_using_speedangle` | float | yes | — |  |
-| `woba_value` | float | yes | — |  |
-| `woba_denom` | float | yes | — |  |
-| `babip_value` | float | yes | — |  |
-| `iso_value` | float | yes | — |  |
-| `delta_home_win_exp` | float | yes | — |  |
-| `delta_run_exp` | float | yes | — |  |
-| `on_1b` | int32 | yes | — |  |
-| `on_2b` | int32 | yes | — |  |
-| `on_3b` | int32 | yes | — |  |
-| `home_score` | int16 | yes | — |  |
-| `away_score` | int16 | yes | — |  |
-| `bat_score` | int16 | yes | — |  |
-| `fld_score` | int16 | yes | — |  |
-| `post_home_score` | int16 | yes | — |  |
-| `post_away_score` | int16 | yes | — |  |
-| `post_bat_score` | int16 | yes | — |  |
-| `post_fld_score` | int16 | yes | — |  |
-| `fielder_2` | int32 | yes | — |  |
-| `fielder_3` | int32 | yes | — |  |
-| `fielder_4` | int32 | yes | — |  |
-| `fielder_5` | int32 | yes | — |  |
-| `fielder_6` | int32 | yes | — |  |
-| `fielder_7` | int32 | yes | — |  |
-| `fielder_8` | int32 | yes | — |  |
-| `fielder_9` | int32 | yes | — |  |
-| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — |  |
-| `spin_dir` | string | yes | — |  |
-| `spin_rate_deprecated` | string | yes | — |  |
-| `break_angle_deprecated` | string | yes | — |  |
-| `break_length_deprecated` | string | yes | — |  |
-| `tfs_deprecated` | string | yes | — |  |
-| `tfs_zulu_deprecated` | string | yes | — |  |
-| `umpire` | string | yes | — |  |
-| `sv_id` | string | yes | — |  |
-| `miss_distance` | float | yes | — |  |
-| `estimated_slg_using_speedangle` | float | yes | — |  |
-| `delta_pitcher_run_exp` | float | yes | — |  |
-| `hyper_speed` | float | yes | — |  |
-| `home_score_diff` | int16 | yes | — |  |
-| `bat_score_diff` | int16 | yes | — |  |
-| `home_win_exp` | float | yes | — |  |
-| `bat_win_exp` | float | yes | — |  |
-| `age_pit_legacy` | int16 | yes | — |  |
-| `age_bat_legacy` | int16 | yes | — |  |
-| `age_pit` | int16 | yes | — |  |
-| `age_bat` | int16 | yes | — |  |
-| `n_thruorder_pitcher` | int16 | yes | — |  |
-| `n_priorpa_thisgame_player_at_bat` | int16 | yes | — |  |
-| `pitcher_days_since_prev_game` | int16 | yes | — |  |
-| `batter_days_since_prev_game` | int16 | yes | — |  |
-| `pitcher_days_until_next_game` | int16 | yes | — |  |
-| `batter_days_until_next_game` | int16 | yes | — |  |
-| `api_break_z_with_gravity` | float | yes | — |  |
-| `api_break_x_arm` | float | yes | — |  |
-| `api_break_x_batter_in` | float | yes | — |  |
-| `attack_angle` | float | yes | — |  |
-| `attack_direction` | float | yes | — |  |
-| `swing_path_tilt` | float | yes | — |  |
-| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — |  |
-| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `game_pk` | int32 | yes | — | TODO |
+| `game_date` | date32[day] | yes | — | TODO |
+| `game_year` | int16 | yes | — | TODO |
+| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `at_bat_number` | int16 | yes | — | TODO |
+| `pitch_number` | int16 | yes | — | TODO |
+| `pitcher` | int32 | yes | — | TODO |
+| `batter` | int32 | yes | — | TODO |
+| `player_name` | string | yes | — | TODO |
+| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `inning` | int8 | yes | — | TODO |
+| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `balls` | int8 | yes | — | TODO |
+| `strikes` | int8 | yes | — | TODO |
+| `outs_when_up` | int8 | yes | — | TODO |
+| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `release_speed` | float | yes | — | TODO |
+| `effective_speed` | float | yes | — | TODO |
+| `release_spin_rate` | float | yes | — | TODO |
+| `release_extension` | float | yes | — | TODO |
+| `spin_axis` | float | yes | — | TODO |
+| `release_pos_x` | float | yes | — | TODO |
+| `release_pos_y` | float | yes | — | TODO |
+| `release_pos_z` | float | yes | — | TODO |
+| `arm_angle` | float | yes | — | TODO |
+| `zone` | int8 | yes | — | TODO |
+| `plate_x` | float | yes | — | TODO |
+| `plate_z` | float | yes | — | TODO |
+| `sz_top` | float | yes | — | TODO |
+| `sz_bot` | float | yes | — | TODO |
+| `pfx_x` | float | yes | — | TODO |
+| `pfx_z` | float | yes | — | TODO |
+| `vx0` | float | yes | — | TODO |
+| `vy0` | float | yes | — | TODO |
+| `vz0` | float | yes | — | TODO |
+| `ax` | float | yes | — | TODO |
+| `ay` | float | yes | — | TODO |
+| `az` | float | yes | — | TODO |
+| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `des` | string | yes | — | TODO |
+| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `hit_location` | int8 | yes | — | TODO |
+| `launch_speed` | float | yes | — | TODO |
+| `launch_angle` | float | yes | — | TODO |
+| `launch_speed_angle` | int8 | yes | — | TODO |
+| `hit_distance_sc` | float | yes | — | TODO |
+| `hc_x` | float | yes | — | TODO |
+| `hc_y` | float | yes | — | TODO |
+| `bat_speed` | float | yes | — | TODO |
+| `swing_length` | float | yes | — | TODO |
+| `estimated_ba_using_speedangle` | float | yes | — | TODO |
+| `estimated_woba_using_speedangle` | float | yes | — | TODO |
+| `woba_value` | float | yes | — | TODO |
+| `woba_denom` | float | yes | — | TODO |
+| `babip_value` | float | yes | — | TODO |
+| `iso_value` | float | yes | — | TODO |
+| `delta_home_win_exp` | float | yes | — | TODO |
+| `delta_run_exp` | float | yes | — | TODO |
+| `on_1b` | int32 | yes | — | TODO |
+| `on_2b` | int32 | yes | — | TODO |
+| `on_3b` | int32 | yes | — | TODO |
+| `home_score` | int16 | yes | — | TODO |
+| `away_score` | int16 | yes | — | TODO |
+| `bat_score` | int16 | yes | — | TODO |
+| `fld_score` | int16 | yes | — | TODO |
+| `post_home_score` | int16 | yes | — | TODO |
+| `post_away_score` | int16 | yes | — | TODO |
+| `post_bat_score` | int16 | yes | — | TODO |
+| `post_fld_score` | int16 | yes | — | TODO |
+| `fielder_2` | int32 | yes | — | TODO |
+| `fielder_3` | int32 | yes | — | TODO |
+| `fielder_4` | int32 | yes | — | TODO |
+| `fielder_5` | int32 | yes | — | TODO |
+| `fielder_6` | int32 | yes | — | TODO |
+| `fielder_7` | int32 | yes | — | TODO |
+| `fielder_8` | int32 | yes | — | TODO |
+| `fielder_9` | int32 | yes | — | TODO |
+| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
+| `spin_dir` | string | yes | — | TODO |
+| `spin_rate_deprecated` | string | yes | — | TODO |
+| `break_angle_deprecated` | string | yes | — | TODO |
+| `break_length_deprecated` | string | yes | — | TODO |
+| `tfs_deprecated` | string | yes | — | TODO |
+| `tfs_zulu_deprecated` | string | yes | — | TODO |
+| `umpire` | string | yes | — | TODO |
+| `sv_id` | string | yes | — | TODO |
+| `miss_distance` | float | yes | — | TODO |
+| `estimated_slg_using_speedangle` | float | yes | — | TODO |
+| `delta_pitcher_run_exp` | float | yes | — | TODO |
+| `hyper_speed` | float | yes | — | TODO |
+| `home_score_diff` | int16 | yes | — | TODO |
+| `bat_score_diff` | int16 | yes | — | TODO |
+| `home_win_exp` | float | yes | — | TODO |
+| `bat_win_exp` | float | yes | — | TODO |
+| `age_pit_legacy` | int16 | yes | — | TODO |
+| `age_bat_legacy` | int16 | yes | — | TODO |
+| `age_pit` | int16 | yes | — | TODO |
+| `age_bat` | int16 | yes | — | TODO |
+| `n_thruorder_pitcher` | int16 | yes | — | TODO |
+| `n_priorpa_thisgame_player_at_bat` | int16 | yes | — | TODO |
+| `pitcher_days_since_prev_game` | int16 | yes | — | TODO |
+| `batter_days_since_prev_game` | int16 | yes | — | TODO |
+| `pitcher_days_until_next_game` | int16 | yes | — | TODO |
+| `batter_days_until_next_game` | int16 | yes | — | TODO |
+| `api_break_z_with_gravity` | float | yes | — | TODO |
+| `api_break_x_arm` | float | yes | — | TODO |
+| `api_break_x_batter_in` | float | yes | — | TODO |
+| `attack_angle` | float | yes | — | TODO |
+| `attack_direction` | float | yes | — | TODO |
+| `swing_path_tilt` | float | yes | — | TODO |
+| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — | TODO |
+| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.pitches_minors -->
 
@@ -1611,19 +1618,19 @@ Active spin (measured vs inferred) per pitcher and pitch type; the `min` qualifi
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `entity_name` | string | yes | — |  |
-| `entity_id` | int32 | yes | — |  |
-| `pitch_hand` | string | yes | — |  |
-| `active_spin_fourseam` | double | yes | — |  |
-| `active_spin_sinker` | double | yes | — |  |
-| `active_spin_cutter` | double | yes | — |  |
-| `active_spin_changeup` | double | yes | — |  |
-| `active_spin_splitter` | double | yes | — |  |
-| `active_spin_curve` | double | yes | — |  |
-| `active_spin_slider` | double | yes | — |  |
-| `active_spin_sweeper` | double | yes | — |  |
-| `active_spin_slurve` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `entity_name` | string | yes | — | TODO |
+| `entity_id` | int32 | yes | — | TODO |
+| `pitch_hand` | string | yes | — | TODO |
+| `active_spin_fourseam` | double | yes | — | TODO |
+| `active_spin_sinker` | double | yes | — | TODO |
+| `active_spin_cutter` | double | yes | — | TODO |
+| `active_spin_changeup` | double | yes | — | TODO |
+| `active_spin_splitter` | double | yes | — | TODO |
+| `active_spin_curve` | double | yes | — | TODO |
+| `active_spin_slider` | double | yes | — | TODO |
+| `active_spin_sweeper` | double | yes | — | TODO |
+| `active_spin_slurve` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_active_spin -->
 
@@ -1639,24 +1646,24 @@ Fielder catch probability by star bucket (2016 onwards). The `type` parameter em
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `last_name_first_name` | string | yes | `last_name, first_name` |  |
-| `player_id` | int32 | yes | — |  |
-| `oaa` | int16 | yes | — |  |
-| `n_fieldout_5stars` | int16 | yes | — |  |
-| `n_opp_5stars` | int16 | yes | — |  |
-| `n_5star_percent` | double | yes | — |  |
-| `n_fieldout_4stars` | int16 | yes | — |  |
-| `n_opp_4stars` | int16 | yes | — |  |
-| `n_4star_percent` | double | yes | — |  |
-| `n_fieldout_3stars` | int16 | yes | — |  |
-| `n_opp_3stars` | int16 | yes | — |  |
-| `n_3star_percent` | double | yes | — |  |
-| `n_fieldout_2stars` | int16 | yes | — |  |
-| `n_opp_2stars` | int16 | yes | — |  |
-| `n_2star_percent` | double | yes | — |  |
-| `n_fieldout_1stars` | int16 | yes | — |  |
-| `n_opp_1stars` | int16 | yes | — |  |
-| `n_1star_percent` | double | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `oaa` | int16 | yes | — | TODO |
+| `n_fieldout_5stars` | int16 | yes | — | TODO |
+| `n_opp_5stars` | int16 | yes | — | TODO |
+| `n_5star_percent` | double | yes | — | TODO |
+| `n_fieldout_4stars` | int16 | yes | — | TODO |
+| `n_opp_4stars` | int16 | yes | — | TODO |
+| `n_4star_percent` | double | yes | — | TODO |
+| `n_fieldout_3stars` | int16 | yes | — | TODO |
+| `n_opp_3stars` | int16 | yes | — | TODO |
+| `n_3star_percent` | double | yes | — | TODO |
+| `n_fieldout_2stars` | int16 | yes | — | TODO |
+| `n_opp_2stars` | int16 | yes | — | TODO |
+| `n_2star_percent` | double | yes | — | TODO |
+| `n_fieldout_1stars` | int16 | yes | — | TODO |
+| `n_opp_1stars` | int16 | yes | — | TODO |
+| `n_1star_percent` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_catch_probability -->

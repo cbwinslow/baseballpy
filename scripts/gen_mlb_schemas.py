@@ -39,6 +39,9 @@ def stat_groups(http: HttpClient) -> list[str]:
 
 KEY_CANDIDATES = (
     "person_id",
+    "metric",
+    "opposing_team_id",
+    "opposing_player_id",
     "player.id",
     "team.id",
     "sport.id",
@@ -183,7 +186,111 @@ def probe_people_combos(http: HttpClient, groups: list[str]) -> list[Any]:
     return out
 
 
-def write_combos(players: list[Any], teams: list[Any], people: list[Any]) -> None:
+def probe_param_combos(
+    http: HttpClient, groups: list[str], productive: set[str]
+) -> tuple[list[Any], list[Any]]:
+    """Probe the stat types that returned nothing with their documented parameters.
+
+    Protocol (ADR 37): the bare request already failed; try, one at a time, ``sitCodes`` (every
+    situation code in one request), the season-less form, an opposing player/team and, for
+    metric/tracking types, ``metrics``. Returns (combinations, unsupported with evidence).
+    """
+    stat_types = [t["displayName"] for t in get_json(http, "v1/statTypes", {}) or []]
+    codes = [c["code"] for c in get_json(http, "v1/situationCodes", {}) or []]
+    metrics = [m["name"] for m in get_json(http, "v1/metrics", {}) or [] if m.get("name")]
+    people = [p for p, _ in SAMPLE_PEOPLE[:4]]
+    found: list[Any] = []
+    unsupported: list[Any] = []
+    for stat in stat_types:
+        if stat in productive:
+            continue
+        variants: list[tuple[str, tuple[tuple[str, str], ...], list[dict[str, Any]]]] = [
+            (
+                "sit",
+                (("season", "{season}"), ("sitCodes", "{sit_codes}")),
+                [{"season": 2024, "sitCodes": ",".join(codes)}],
+            ),
+            ("no_season", (), [{}]),
+            (
+                "opposing_player",
+                (("season", "{season}"), ("opposingPlayerId", "{opposing_player_id}")),
+                [
+                    {
+                        "season": 2024,
+                        "opposingPlayerId": 543037,
+                        "_dim": ("opposing_player_id", 543037),
+                    }
+                ],
+            ),
+            (
+                "opposing_team",
+                (("season", "{season}"), ("opposingTeamId", "{opposing_team_id}")),
+                [{"season": 2024, "opposingTeamId": 147, "_dim": ("opposing_team_id", 147)}],
+            ),
+        ]
+        if "metric" in stat.lower() or "tracking" in stat.lower():
+            variants.append(
+                (
+                    "metric",
+                    (("season", "{season}"), ("metrics", "{metric}")),
+                    [{"season": 2024, "metrics": m, "_dim": ("metric", m)} for m in metrics],
+                )
+            )
+        tried: list[str] = [f"bare request returned no splits for {len(groups)} groups"]
+        hit = False
+        for group in groups:
+            for name, template, samples in variants:
+                for scope in ("person", "league"):
+                    if scope == "league" and name not in ("sit", "no_season"):
+                        continue
+                    records: list[dict[str, Scalar]] = []
+                    for sample in samples:
+                        params = {k: v for k, v in sample.items() if k != "_dim"}
+                        extra = {sample["_dim"][0]: sample["_dim"][1]} if "_dim" in sample else {}
+                        targets = people if scope == "person" else [None]
+                        for pid in targets:
+                            path = f"v1/people/{pid}/stats" if scope == "person" else "v1/stats"
+                            query = {"stats": stat, "group": group, **params}
+                            if scope == "league":
+                                query.update({"sportIds": 1, "playerPool": "ALL", "limit": 100})
+                            data = get_json(http, path, query)
+                            got = list(iter_records(data, ("stats", "*", "splits"))) if data else []
+                            records.extend(
+                                {**({"person_id": pid} if pid else {}), **extra, **r} for r in got
+                            )
+                        if (
+                            records
+                            and name == "metric"
+                            and len({r.get("metric") for r in records}) >= 3
+                        ):
+                            break
+                    if records:
+                        hit = True
+                        key = minimal_key(records) or (
+                            ("person_id",) if scope == "person" else ("season",)
+                        )
+                        found.append((scope, stat, group, template, key))
+                        print(
+                            f"  param {scope:6s} {stat:20s} {group:9s} {name:16s} {len(records):6d} rows key={key}"
+                        )
+            tried.append(
+                f"{group}: sit/no_season/opposing"
+                + ("/metrics" if "metric" in stat.lower() or "tracking" in stat.lower() else "")
+                + " variants returned nothing"
+            )
+        if not hit:
+            unsupported.append((stat, date.today().isoformat(), tuple(tried[:2])))
+            print(f"  param {stat}: NO DATA after the protocol")
+    return found, unsupported
+
+
+def write_combos(
+    players: list[Any],
+    teams: list[Any],
+    people: list[Any],
+    param: list[Any] | None = None,
+    unsupported: list[Any] | None = None,
+) -> None:
     """Write ``stat_combos.py``."""
 
     def render(rows: list[Any], fallback: tuple[str, ...]) -> str:
@@ -197,7 +304,16 @@ def write_combos(players: list[Any], teams: list[Any], people: list[Any]) -> Non
         "#: (stat type, group, key columns) for ``/v1/teams/stats``\n"
         f"TEAM_STAT_COMBOS: tuple[tuple[str, str, tuple[str, ...]], ...] = {render(teams, ('season',))}\n"
         "#: (stat type, group, key columns) for ``/v1/people/{id}/stats`` (per person)\n"
-        f"PEOPLE_STAT_COMBOS: tuple[tuple[str, str, tuple[str, ...]], ...] = {render(people, ('person_id',))}\n",
+        f"PEOPLE_STAT_COMBOS: tuple[tuple[str, str, tuple[str, ...]], ...] = {render(people, ('person_id',))}\n"
+        "#: parameterized combinations: (scope, stat type, group, extra params, key columns); scope is\n"
+        "#: ``person`` (``/v1/people/{id}/stats``) or ``league`` (``/v1/stats``); ``{metric}``,\n"
+        "#: ``{opposing_team_id}`` and ``{opposing_player_id}`` placeholders are fan-out dimensions\n"
+        "PARAM_STAT_COMBOS: tuple[\n    tuple[str, str, str, tuple[tuple[str, str], ...], tuple[str, ...]], ...\n] = "
+        + (repr(tuple(param)) if param else "()")
+        + "\n#: stat types that stayed empty after the probe protocol: (stat type, verified on, what was tried)\n"
+        "UNSUPPORTED_STAT_TYPES: tuple[tuple[str, str, tuple[str, ...]], ...] = "
+        + (repr(tuple(unsupported)) if unsupported else "()")
+        + "\n",
         encoding="utf-8",
     )
 
@@ -304,8 +420,10 @@ def main() -> int:
         print(f"  stat groups: {groups}")
         players, teams = probe_combos(http, groups)
         people = probe_people_combos(http, groups)
+        productive = {c[0] for c in (*players, *teams, *people)}
+        param, unsupported_stats = probe_param_combos(http, groups, productive)
         if not args.check:
-            write_combos(players, teams, people)
+            write_combos(players, teams, people, param, unsupported_stats)
         print(f"  {len(players)} player, {len(teams)} team, {len(people)} person combos")
     # endpoints are built from stat_combos.py, so import them only after phase 1
     import baseballpy.sources.mlb_api.endpoints as endpoints_mod
@@ -320,6 +438,12 @@ def main() -> int:
         "award_ids": SAMPLE_AWARDS,
         "updated_since": SAMPLE_SINCE,
         "query": "Judge",
+        "sit_codes": tuple(c["code"] for c in get_json(http, "v1/situationCodes", {}) or []),
+        "metrics": tuple(
+            m["name"] for m in get_json(http, "v1/metrics", {}) or [] if m.get("name")
+        )[:4],
+        "opposing_team_ids": (147, 119),
+        "opposing_player_ids": (543037, 592450),
     }
     leaders = [t["displayName"] for t in get_json(http, "v1/leagueLeaderTypes", {}) or []]
     games = sample_games(http)

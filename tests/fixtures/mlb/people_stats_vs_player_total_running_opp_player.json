@@ -1,0 +1,50 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "vsPlayerTotal"
+   },
+   "group": {
+    "displayName": "running"
+   },
+   "totalSplits": 129,
+   "exemptions": [],
+   "splits": [
+    {
+     "gameType": "R",
+     "numTeams": 2,
+     "pitcher": {
+      "id": 518614,
+      "fullName": "Daniel Descalso",
+      "link": "/api/v1/people/518614",
+      "firstName": "Daniel",
+      "lastName": "Descalso"
+     }
+    },
+    {
+     "gameType": "R",
+     "numTeams": 2,
+     "pitcher": {
+      "id": 476451,
+      "fullName": "Jeremy Hellickson",
+      "link": "/api/v1/people/476451",
+      "firstName": "Jeremy",
+      "lastName": "Hellickson"
+     }
+    },
+    {
+     "gameType": "R",
+     "numTeams": 2,
+     "pitcher": {
+      "id": 592789,
+      "fullName": "Noah Syndergaard",
+      "link": "/api/v1/people/592789",
+      "firstName": "Noah",
+      "lastName": "Syndergaard"
+     }
+    }
+   ]
+  }
+ ]
+}

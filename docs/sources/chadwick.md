@@ -59,6 +59,13 @@ reg.search_name("Aron Juge", fuzzy=True, min_score=0.7)
 
 ## Dataset reference (generated)
 
+<!-- BEGIN GENERATED:chadwick.description_sources -->
+### Description sources
+
+No column descriptions have been written for this source yet.
+
+<!-- END GENERATED:chadwick.description_sources -->
+
 <!-- BEGIN GENERATED:chadwick.register -->
 ### Dataset: register
 
@@ -71,47 +78,47 @@ Master player-ID crosswalk (data/people-*.csv shards).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `key_person` | string | yes | — |  |
-| `key_uuid` | string | yes | — |  |
-| `key_mlbam` | int32 | yes | — |  |
-| `key_retro` | string | yes | — |  |
-| `key_bbref` | string | yes | — |  |
-| `key_bbref_minors` | string | yes | — |  |
-| `key_fangraphs` | int32 | yes | — |  |
-| `key_npb` | int32 | yes | — |  |
-| `key_sr_nfl` | string | yes | — |  |
-| `key_sr_nba` | string | yes | — |  |
-| `key_sr_nhl` | string | yes | — |  |
-| `key_wikidata` | string | yes | — |  |
-| `name_last` | string | yes | — |  |
-| `name_first` | string | yes | — |  |
-| `name_given` | string | yes | — |  |
-| `name_suffix` | string | yes | — |  |
-| `name_matrilineal` | string | yes | — |  |
-| `name_nick` | string | yes | — |  |
-| `birth_year` | int16 | yes | — |  |
-| `birth_month` | int16 | yes | — |  |
-| `birth_day` | int16 | yes | — |  |
-| `death_year` | int16 | yes | — |  |
-| `death_month` | int16 | yes | — |  |
-| `death_day` | int16 | yes | — |  |
-| `pro_played_first` | int16 | yes | — |  |
-| `pro_played_last` | int16 | yes | — |  |
-| `mlb_played_first` | int16 | yes | — |  |
-| `mlb_played_last` | int16 | yes | — |  |
-| `col_played_first` | int16 | yes | — |  |
-| `col_played_last` | int16 | yes | — |  |
-| `pro_managed_first` | int16 | yes | — |  |
-| `pro_managed_last` | int16 | yes | — |  |
-| `mlb_managed_first` | int16 | yes | — |  |
-| `mlb_managed_last` | int16 | yes | — |  |
-| `col_managed_first` | int16 | yes | — |  |
-| `col_managed_last` | int16 | yes | — |  |
-| `pro_umpired_first` | int16 | yes | — |  |
-| `pro_umpired_last` | int16 | yes | — |  |
-| `mlb_umpired_first` | int16 | yes | — |  |
-| `mlb_umpired_last` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `key_person` | string | yes | — | TODO |
+| `key_uuid` | string | yes | — | TODO |
+| `key_mlbam` | int32 | yes | — | TODO |
+| `key_retro` | string | yes | — | TODO |
+| `key_bbref` | string | yes | — | TODO |
+| `key_bbref_minors` | string | yes | — | TODO |
+| `key_fangraphs` | int32 | yes | — | TODO |
+| `key_npb` | int32 | yes | — | TODO |
+| `key_sr_nfl` | string | yes | — | TODO |
+| `key_sr_nba` | string | yes | — | TODO |
+| `key_sr_nhl` | string | yes | — | TODO |
+| `key_wikidata` | string | yes | — | TODO |
+| `name_last` | string | yes | — | TODO |
+| `name_first` | string | yes | — | TODO |
+| `name_given` | string | yes | — | TODO |
+| `name_suffix` | string | yes | — | TODO |
+| `name_matrilineal` | string | yes | — | TODO |
+| `name_nick` | string | yes | — | TODO |
+| `birth_year` | int16 | yes | — | TODO |
+| `birth_month` | int16 | yes | — | TODO |
+| `birth_day` | int16 | yes | — | TODO |
+| `death_year` | int16 | yes | — | TODO |
+| `death_month` | int16 | yes | — | TODO |
+| `death_day` | int16 | yes | — | TODO |
+| `pro_played_first` | int16 | yes | — | TODO |
+| `pro_played_last` | int16 | yes | — | TODO |
+| `mlb_played_first` | int16 | yes | — | TODO |
+| `mlb_played_last` | int16 | yes | — | TODO |
+| `col_played_first` | int16 | yes | — | TODO |
+| `col_played_last` | int16 | yes | — | TODO |
+| `pro_managed_first` | int16 | yes | — | TODO |
+| `pro_managed_last` | int16 | yes | — | TODO |
+| `mlb_managed_first` | int16 | yes | — | TODO |
+| `mlb_managed_last` | int16 | yes | — | TODO |
+| `col_managed_first` | int16 | yes | — | TODO |
+| `col_managed_last` | int16 | yes | — | TODO |
+| `pro_umpired_first` | int16 | yes | — | TODO |
+| `pro_umpired_last` | int16 | yes | — | TODO |
+| `mlb_umpired_first` | int16 | yes | — | TODO |
+| `mlb_umpired_last` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:chadwick.register -->
 
@@ -127,12 +134,12 @@ ISO / IOC / FIFA country codes (data/countries.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `key_iso_alpha2` | string | yes | — |  |
-| `key_iso_alpha3` | string | yes | — |  |
-| `key_ioc` | string | yes | — |  |
-| `key_fifa` | string | yes | — |  |
-| `name_full_en` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `key_iso_alpha2` | string | yes | — | TODO |
+| `key_iso_alpha3` | string | yes | — | TODO |
+| `key_ioc` | string | yes | — | TODO |
+| `key_fifa` | string | yes | — | TODO |
+| `name_full_en` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:chadwick.register_countries -->
 
@@ -148,10 +155,10 @@ External player identifiers by source (data/links.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `key_person` | string | yes | — |  |
-| `source` | string | yes | — |  |
-| `value` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `key_person` | string | yes | — | TODO |
+| `source` | string | yes | — | TODO |
+| `value` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:chadwick.register_links -->
 
@@ -167,22 +174,22 @@ Alternate names, spellings and nicknames (data/names.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `key_person` | string | yes | — |  |
-| `name_last` | string | yes | — |  |
-| `name_first` | string | yes | — |  |
-| `name_given` | string | yes | — |  |
-| `birth_year` | int16 | yes | — |  |
-| `birth_month` | int16 | yes | — |  |
-| `birth_day` | int16 | yes | — |  |
-| `altname_type` | string | yes | — |  |
-| `altname_lang` | string | yes | — |  |
-| `altname_last` | string | yes | — |  |
-| `altname_first` | string | yes | — |  |
-| `altname_given` | string | yes | — |  |
-| `altname_matrilineal` | string | yes | — |  |
-| `altname_nick` | string | yes | — |  |
-| `altname_date_start` | int16 | yes | — |  |
-| `altname_date_end` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `key_person` | string | yes | — | TODO |
+| `name_last` | string | yes | — | TODO |
+| `name_first` | string | yes | — | TODO |
+| `name_given` | string | yes | — | TODO |
+| `birth_year` | int16 | yes | — | TODO |
+| `birth_month` | int16 | yes | — | TODO |
+| `birth_day` | int16 | yes | — | TODO |
+| `altname_type` | string | yes | — | TODO |
+| `altname_lang` | string | yes | — | TODO |
+| `altname_last` | string | yes | — | TODO |
+| `altname_first` | string | yes | — | TODO |
+| `altname_given` | string | yes | — | TODO |
+| `altname_matrilineal` | string | yes | — | TODO |
+| `altname_nick` | string | yes | — | TODO |
+| `altname_date_start` | int16 | yes | — | TODO |
+| `altname_date_end` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:chadwick.register_names -->

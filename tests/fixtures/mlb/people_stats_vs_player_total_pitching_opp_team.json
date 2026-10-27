@@ -1,0 +1,77 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "vsPlayerTotal"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "totalSplits": 1,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 15,
+      "groundOuts": 4,
+      "airOuts": 1,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 3,
+      "strikeOuts": 2,
+      "baseOnBalls": 4,
+      "intentionalWalks": 0,
+      "hits": 10,
+      "hitByPitch": 1,
+      "avg": ".588",
+      "atBats": 17,
+      "obp": ".682",
+      "slg": "1.176",
+      "ops": "1.858",
+      "groundIntoDoublePlay": 1,
+      "numberOfPitches": 101,
+      "inningsPitched": "3.0",
+      "outsPitched": 0,
+      "whip": "4.67",
+      "battersFaced": 22,
+      "outs": 9,
+      "gamesPitched": 15,
+      "balls": 41,
+      "strikes": 60,
+      "strikePercentage": ".590",
+      "hitBatsmen": 1,
+      "balks": 0,
+      "wildPitches": 0,
+      "totalBases": 20,
+      "groundOutsToAirouts": "4.00",
+      "rbi": 7,
+      "pitchesPerInning": "33.67",
+      "strikeoutWalkRatio": "0.50",
+      "strikeoutsPer9Inn": "6.00",
+      "walksPer9Inn": "12.00",
+      "hitsPer9Inn": "30.00",
+      "homeRunsPer9": "9.00",
+      "catchersInterference": 0,
+      "sacBunts": 0,
+      "sacFlies": 0
+     },
+     "opponent": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "gameType": "R",
+     "numTeams": 12,
+     "pitcher": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     }
+    }
+   ]
+  }
+ ]
+}

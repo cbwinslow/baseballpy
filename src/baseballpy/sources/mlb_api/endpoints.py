@@ -11,6 +11,7 @@ from dataclasses import dataclass, field
 
 from baseballpy.core.schema_tools import snake
 from baseballpy.sources.mlb_api.stat_combos import (
+    PARAM_STAT_COMBOS,
     PEOPLE_STAT_COMBOS,
     PLAYER_STAT_COMBOS,
     TEAM_STAT_COMBOS,
@@ -55,6 +56,9 @@ class MlbEndpoint:
     tried: tuple[str, ...] = ()
     #: fetched in ``limit``/``offset`` pages (the total is ``stats[0].totalSplits``)
     paginated: bool = False
+    #: extra fan-out dimensions of a per-person endpoint: ``metric``, ``opposing_team_id``,
+    #: ``opposing_player_id`` (opt-in families: the cross product is too large for a default sweep)
+    fan_out: tuple[str, ...] = ()
     #: a 404 for one request means "nothing there" (recorded as an empty part, counted in the report)
     tolerate_missing: bool = False
 
@@ -64,6 +68,7 @@ class MlbEndpoint:
         return self.name.startswith(
             (
                 "stats_career",
+                "stats_stat_splits",  # league-wide situational splits: every player x every code
                 "stats_year_by_year",
                 "stats_stats_single_season",  # every player-season in history (192k rows)
                 "team_stats_career",
@@ -87,6 +92,10 @@ class Context:
     game_pks: Sequence[int] = ()
     leader_categories: Sequence[str] = ()
     person_ids: Sequence[int] = ()
+    sit_codes: Sequence[str] = ()
+    metrics: Sequence[str] = ()
+    opposing_team_ids: Sequence[int] = ()
+    opposing_player_ids: Sequence[int] = ()
     award_ids: Sequence[str] = ()
     updated_since: str | None = None
     query: str | None = None
@@ -109,6 +118,17 @@ def _fill(template: str, values: Mapping[str, str | int]) -> str:
         return template.format(**values)
     except KeyError as exc:
         raise ValueError(f"endpoint template {template!r} needs {exc.args[0]!r}") from None
+
+
+#: ``(endpoint, fan-out dimension, value)`` requests the provider answers with HTTP 500 for every
+#: person, with the evidence (re-verify with ADR 37: bare route, then one parameter at a time).
+PROVIDER_ERRORS: dict[tuple[str, str, str], str] = {
+    ("people_stats_metric_averages_pitching", "metric", "barreledBall"): (
+        "2026-10-27: GET /v1/people/{id}/stats?stats=metricAverages&group=pitching&metrics=barreledBall"
+        "&season=2024&sportId=1 returned 500 for 592450 and 543037; the same metric answered 200 "
+        "with group=hitting and with stats=metricLog (both groups)"
+    ),
+}
 
 
 def requests_for(endpoint: MlbEndpoint, ctx: Context) -> Iterator[Request]:
@@ -144,6 +164,7 @@ def requests_for(endpoint: MlbEndpoint, ctx: Context) -> Iterator[Request]:
                 **base,
                 "sport_id": sport,
                 "leader_categories": ",".join(ctx.leader_categories),
+                "sit_codes": ",".join(ctx.sit_codes),
             }
             ident = f"{endpoint.name}_{ctx.season}" + (
                 f"_sport{sport}" if "{sport_id}" in _all(endpoint) else ""
@@ -186,15 +207,31 @@ def requests_for(endpoint: MlbEndpoint, ctx: Context) -> Iterator[Request]:
                 {"game_pk": pk},
             )
     elif endpoint.scope == "person_season":
+        dims: dict[str, Sequence[str | int]] = {
+            "metric": ctx.metrics,
+            "opposing_team_id": ctx.opposing_team_ids,
+            "opposing_player_id": ctx.opposing_player_ids,
+        }
+        combos: list[dict[str, str | int]] = [{}]
+        for dim in endpoint.fan_out:
+            skip = {v for (name, d, v) in PROVIDER_ERRORS if name == endpoint.name and d == dim}
+            combos = [{**c, dim: v} for c in combos for v in dims[dim] if str(v) not in skip]
         for person in ctx.person_ids:
-            values = {**base, "person_id": person}
-            yield Request(
-                f"{endpoint.name}_{ctx.season}_{person}",
-                _fill(endpoint.path, values),
-                {k: _fill(str(v), values) for k, v in endpoint.params.items()},
-                ctx.season,
-                {"person_id": person},
-            )
+            for combo in combos:
+                values = {
+                    **base,
+                    "person_id": person,
+                    "sit_codes": ",".join(ctx.sit_codes),
+                    **combo,
+                }
+                tail = "".join(f"_{v}" for v in combo.values())
+                yield Request(
+                    f"{endpoint.name}_{ctx.season}_{person}{tail}",
+                    _fill(endpoint.path, values),
+                    {k: _fill(str(v), values) for k, v in endpoint.params.items()},
+                    ctx.season,
+                    {"person_id": person, **combo},
+                )
     elif endpoint.scope == "award_season":
         for award in ctx.award_ids:
             values = {**base, "award_id": award}
@@ -393,8 +430,59 @@ _PEOPLE_STATS = [
     for stat, group, keys in PEOPLE_STAT_COMBOS
 ]
 
+_FAN_OUT_PLACEHOLDERS = ("metric", "opposing_team_id", "opposing_player_id")
+
+
+def _param_stats() -> list[MlbEndpoint]:
+    out: list[MlbEndpoint] = []
+    for scope, stat, group, params, keys in PARAM_STAT_COMBOS:
+        merged = {"stats": stat, "group": group, **dict(params)}
+        dims = tuple(
+            d for d in _FAN_OUT_PLACEHOLDERS if any("{" + d + "}" in v for v in merged.values())
+        )
+        suffix = (
+            "_opp_player"
+            if "opposing_player_id" in dims
+            else "_opp_team"
+            if "opposing_team_id" in dims
+            else ""
+        )
+        if scope == "person":
+            out.append(
+                MlbEndpoint(
+                    f"people_stats_{snake(stat)}_{group}{suffix}",
+                    "v1/people/{person_id}/stats",
+                    ("stats", "*", "splits"),
+                    f"Per-player {group} stats, type {stat}, parameters {dict(params)}.",
+                    keys,
+                    "person_season",
+                    merged,
+                    "stats",
+                    fan_out=dims,
+                )
+            )
+        else:
+            out.append(
+                MlbEndpoint(
+                    f"stats_{snake(stat)}_{group}",
+                    "v1/stats",
+                    ("stats", "*", "splits"),
+                    f"League-wide {group} stats, type {stat}, parameters {dict(params)} (player pool ALL).",
+                    keys,
+                    "season",
+                    {**merged, "sportIds": "{sport_id}", "playerPool": "ALL"},
+                    "stats",
+                    paginated=True,
+                )
+            )
+    return out
+
+
+_PARAM_STATS = _param_stats()
+
 ENDPOINTS: tuple[MlbEndpoint, ...] = (
     *_STATS,
+    *_PARAM_STATS,
     *_PEOPLE_STATS,
     *_TEAM_STATS,
     *_reference_endpoints(),

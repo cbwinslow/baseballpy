@@ -1,0 +1,80 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "projected_Zips"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2026",
+     "stat": {
+      "gamesPlayed": 152,
+      "runs": 138,
+      "doubles": 30,
+      "triples": 5,
+      "homeRuns": 52,
+      "strikeOuts": 166,
+      "baseOnBalls": 95,
+      "intentionalWalks": 16,
+      "hits": 171,
+      "hitByPitch": 5,
+      "avg": ".289",
+      "atBats": 592,
+      "obp": ".389",
+      "slg": ".620",
+      "ops": "1.009",
+      "caughtStealing": 5,
+      "stolenBases": 29,
+      "stolenBasePercentage": ".853",
+      "caughtStealingPercentage": ".147",
+      "groundIntoDoublePlay": 6,
+      "plateAppearances": 696,
+      "totalBases": 367,
+      "rbi": 138,
+      "sacBunts": 0,
+      "sacFlies": 4,
+      "babip": ".315",
+      "atBatsPerHomeRun": "11.38",
+      "woba": 0.417332098589224,
+      "wRaa": 58.9254538995825,
+      "wRc": 141.163218079289,
+      "wRcPlus": 171.980215489414,
+      "rar": 67.6761941166275,
+      "war": 6.92412161261686,
+      "batting": 59.3767725808226,
+      "fielding": 0.0,
+      "baseRunning": 2.64333218336105,
+      "positional": -17.5,
+      "wLeague": 1.95870492048562,
+      "replacement": 21.1973844319582,
+      "spd": 0.0,
+      "ubr": 0.0,
+      "wSb": 0.0,
+      "strikeoutPercent": 0.238506,
+      "walkPercent": 0.136494,
+      "ratioBBSO": 0.572289,
+      "iso": 0.331081,
+      "dollars": 55.3929729009349,
+      "wbsr": 2.64333218336105
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R"
+    }
+   ]
+  }
+ ]
+}

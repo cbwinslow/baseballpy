@@ -18,3 +18,7 @@ Merging box accounts with play-by-play events (a consumer concern); the Negro Le
 
 ## Impact
 Additive datasets under `retrosheet`; `box_files` raw dataset unchanged.
+
+## As built (interim, 2026-10-27)
+- Implemented without the official document: `box_games`, `box_starters` and `box_batting_lines` are typed from layouts confirmed by the real data (all 10 local files, 6,194 games, parse with strict field counts) and the published `bline` description; every other record kind lands losslessly in `box_records` (kind, parsed fields, raw line), including unknown kinds. Nothing is dropped.
+- Still open: obtain `boxfile.txt` (task 1.1; retrosheet.org refuses automated fetches from this environment, so the owner must download it or allow another path) and replace `box_records` rows of kinds `phline`, `prline`, `dline`, `pline`, `tline`, `line`, `event,*` with typed datasets whose column names come from the document.

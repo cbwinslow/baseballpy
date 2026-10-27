@@ -1,0 +1,469 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "metricLog"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "metric": {
+       "group": "pitching",
+       "name": "releaseSpinRate",
+       "value": 2975,
+       "unit": "RPM",
+       "positionId": 1
+      },
+      "event": {
+       "details": {
+        "event": "strikeout",
+        "type": {
+         "code": "KC",
+         "description": "Knuckle Curve"
+        }
+       },
+       "count": {},
+       "playId": "91afdb61-2ad1-4b15-a128-16f5c08b8094"
+      }
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "venue": {
+      "id": 3313,
+      "name": "Yankee Stadium",
+      "link": "/api/v1/venues/3313"
+     },
+     "date": "2024-09-26",
+     "gameType": "R",
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 681297,
+      "fullName": "Colton Cowser",
+      "link": "/api/v1/people/681297",
+      "firstName": "Colton",
+      "lastName": "Cowser"
+     },
+     "fieldingTeam": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "battingTeam": {
+      "id": 110,
+      "name": "Baltimore Orioles",
+      "link": "/api/v1/teams/110"
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     },
+     "game": {
+      "gamePk": 745691,
+      "gameGuid": "1496ac40-f73a-4c6a-ad6b-5d987a10783f",
+      "link": "/api/v1.1/game/745691/feed/live",
+      "gameType": "R",
+      "season": "2024",
+      "gameDate": "2024-09-26T23:05:00Z",
+      "officialDate": "2024-09-26",
+      "status": {
+       "abstractGameState": "Final",
+       "codedGameState": "F",
+       "detailedState": "Final",
+       "statusCode": "F",
+       "startTimeTBD": false,
+       "abstractGameCode": "F"
+      },
+      "teams": {
+       "away": {
+        "team": {
+         "id": 110,
+         "name": "Baltimore Orioles",
+         "link": "/api/v1/teams/110"
+        },
+        "leagueRecord": {
+         "wins": 88,
+         "losses": 71,
+         "ties": 0,
+         "pct": ".553"
+        },
+        "score": 1,
+        "isWinner": false,
+        "splitSquad": false,
+        "seriesNumber": 51
+       },
+       "home": {
+        "team": {
+         "id": 147,
+         "name": "New York Yankees",
+         "link": "/api/v1/teams/147"
+        },
+        "leagueRecord": {
+         "wins": 93,
+         "losses": 66,
+         "ties": 0,
+         "pct": ".585"
+        },
+        "score": 10,
+        "isWinner": true,
+        "splitSquad": false,
+        "seriesNumber": 51
+       }
+      },
+      "venue": {
+       "id": 3313,
+       "name": "Yankee Stadium",
+       "link": "/api/v1/venues/3313"
+      },
+      "content": {
+       "link": "/api/v1/game/745691/content"
+      },
+      "isTie": false,
+      "gameNumber": 1,
+      "publicFacing": true,
+      "doubleHeader": "N",
+      "gamedayType": "P",
+      "tiebreaker": "N",
+      "calendarEventID": "14-745691-2024-09-26",
+      "seasonDisplay": "2024",
+      "dayNight": "night",
+      "scheduledInnings": 9,
+      "reverseHomeAwayStatus": false,
+      "inningBreakLength": 145,
+      "gamesInSeries": 3,
+      "seriesGameNumber": 3,
+      "seriesDescription": "Regular Season",
+      "recordSource": "S",
+      "ifNecessary": "N",
+      "ifNecessaryDescription": "Normal Game"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "metric": {
+       "group": "pitching",
+       "name": "releaseSpinRate",
+       "value": 2972,
+       "unit": "RPM",
+       "positionId": 1
+      },
+      "event": {
+       "details": {
+        "event": "blocked_ball",
+        "type": {
+         "code": "KC",
+         "description": "Knuckle Curve"
+        }
+       },
+       "count": {},
+       "playId": "0a19f934-042f-4f44-b081-c9106b0a3f95"
+      }
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "venue": {
+      "id": 3313,
+      "name": "Yankee Stadium",
+      "link": "/api/v1/venues/3313"
+     },
+     "date": "2024-07-06",
+     "gameType": "R",
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 807799,
+      "fullName": "Masataka Yoshida",
+      "link": "/api/v1/people/807799",
+      "firstName": "Masataka",
+      "lastName": "Yoshida"
+     },
+     "fieldingTeam": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "battingTeam": {
+      "id": 111,
+      "name": "Boston Red Sox",
+      "link": "/api/v1/teams/111"
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     },
+     "game": {
+      "gamePk": 745724,
+      "gameGuid": "b6d7215e-13ca-41ec-bd09-a5fb467c09e5",
+      "link": "/api/v1.1/game/745724/feed/live",
+      "gameType": "R",
+      "season": "2024",
+      "gameDate": "2024-07-06T17:05:00Z",
+      "officialDate": "2024-07-06",
+      "status": {
+       "abstractGameState": "Final",
+       "codedGameState": "F",
+       "detailedState": "Final",
+       "statusCode": "F",
+       "startTimeTBD": false,
+       "abstractGameCode": "F"
+      },
+      "teams": {
+       "away": {
+        "team": {
+         "id": 111,
+         "name": "Boston Red Sox",
+         "link": "/api/v1/teams/111"
+        },
+        "leagueRecord": {
+         "wins": 48,
+         "losses": 41,
+         "ties": 0,
+         "pct": ".539"
+        },
+        "score": 4,
+        "isWinner": false,
+        "splitSquad": false,
+        "seriesNumber": 29
+       },
+       "home": {
+        "team": {
+         "id": 147,
+         "name": "New York Yankees",
+         "link": "/api/v1/teams/147"
+        },
+        "leagueRecord": {
+         "wins": 55,
+         "losses": 36,
+         "ties": 0,
+         "pct": ".604"
+        },
+        "score": 14,
+        "isWinner": true,
+        "splitSquad": false,
+        "seriesNumber": 29
+       }
+      },
+      "venue": {
+       "id": 3313,
+       "name": "Yankee Stadium",
+       "link": "/api/v1/venues/3313"
+      },
+      "content": {
+       "link": "/api/v1/game/745724/content"
+      },
+      "isTie": false,
+      "gameNumber": 1,
+      "publicFacing": true,
+      "doubleHeader": "N",
+      "gamedayType": "P",
+      "tiebreaker": "N",
+      "calendarEventID": "14-745724-2024-07-06",
+      "seasonDisplay": "2024",
+      "dayNight": "day",
+      "scheduledInnings": 9,
+      "reverseHomeAwayStatus": false,
+      "inningBreakLength": 120,
+      "gamesInSeries": 3,
+      "seriesGameNumber": 2,
+      "seriesDescription": "Regular Season",
+      "recordSource": "S",
+      "ifNecessary": "N",
+      "ifNecessaryDescription": "Normal Game"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "metric": {
+       "group": "pitching",
+       "name": "releaseSpinRate",
+       "value": 2918,
+       "unit": "RPM",
+       "positionId": 1
+      },
+      "event": {
+       "details": {
+        "event": "called_strike",
+        "type": {
+         "code": "KC",
+         "description": "Knuckle Curve"
+        }
+       },
+       "count": {},
+       "playId": "777138e8-8e32-461c-85bb-6f2b4f5c1465"
+      }
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "venue": {
+      "id": 3313,
+      "name": "Yankee Stadium",
+      "link": "/api/v1/venues/3313"
+     },
+     "date": "2024-07-06",
+     "gameType": "R",
+     "pitcher": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     },
+     "batter": {
+      "id": 646240,
+      "fullName": "Rafael Devers",
+      "link": "/api/v1/people/646240",
+      "firstName": "Rafael",
+      "lastName": "Devers"
+     },
+     "fieldingTeam": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "battingTeam": {
+      "id": 111,
+      "name": "Boston Red Sox",
+      "link": "/api/v1/teams/111"
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     },
+     "game": {
+      "gamePk": 745724,
+      "gameGuid": "b6d7215e-13ca-41ec-bd09-a5fb467c09e5",
+      "link": "/api/v1.1/game/745724/feed/live",
+      "gameType": "R",
+      "season": "2024",
+      "gameDate": "2024-07-06T17:05:00Z",
+      "officialDate": "2024-07-06",
+      "status": {
+       "abstractGameState": "Final",
+       "codedGameState": "F",
+       "detailedState": "Final",
+       "statusCode": "F",
+       "startTimeTBD": false,
+       "abstractGameCode": "F"
+      },
+      "teams": {
+       "away": {
+        "team": {
+         "id": 111,
+         "name": "Boston Red Sox",
+         "link": "/api/v1/teams/111"
+        },
+        "leagueRecord": {
+         "wins": 48,
+         "losses": 41,
+         "ties": 0,
+         "pct": ".539"
+        },
+        "score": 4,
+        "isWinner": false,
+        "splitSquad": false,
+        "seriesNumber": 29
+       },
+       "home": {
+        "team": {
+         "id": 147,
+         "name": "New York Yankees",
+         "link": "/api/v1/teams/147"
+        },
+        "leagueRecord": {
+         "wins": 55,
+         "losses": 36,
+         "ties": 0,
+         "pct": ".604"
+        },
+        "score": 14,
+        "isWinner": true,
+        "splitSquad": false,
+        "seriesNumber": 29
+       }
+      },
+      "venue": {
+       "id": 3313,
+       "name": "Yankee Stadium",
+       "link": "/api/v1/venues/3313"
+      },
+      "content": {
+       "link": "/api/v1/game/745724/content"
+      },
+      "isTie": false,
+      "gameNumber": 1,
+      "publicFacing": true,
+      "doubleHeader": "N",
+      "gamedayType": "P",
+      "tiebreaker": "N",
+      "calendarEventID": "14-745724-2024-07-06",
+      "seasonDisplay": "2024",
+      "dayNight": "day",
+      "scheduledInnings": 9,
+      "reverseHomeAwayStatus": false,
+      "inningBreakLength": 120,
+      "gamesInSeries": 3,
+      "seriesGameNumber": 2,
+      "seriesDescription": "Regular Season",
+      "recordSource": "S",
+      "ifNecessary": "N",
+      "ifNecessaryDescription": "Normal Game"
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -53,9 +53,9 @@ def _provider_lists(**overrides: list[dict[str, object]]) -> None:
 
 @respx.mock
 def test_matching_provider_lists_produce_only_no_data_noise(http: HttpClient) -> None:
-    _provider_lists(statTypes=[{"displayName": "season"}, {"displayName": "vsPlayer"}])
+    _provider_lists(statTypes=[{"displayName": "season"}, {"displayName": "brandNewType"}])
     findings = audit_mlb(http)
-    assert [(f.kind, f.item) for f in findings] == [(Kind.NO_DATA, "stat type: vsPlayer")]
+    assert [(f.kind, f.item) for f in findings] == [(Kind.NO_DATA, "stat type: brandNewType")]
     assert not any(f.fails for f in findings)
 
 

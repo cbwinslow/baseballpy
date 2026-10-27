@@ -1,0 +1,332 @@
+id,ANA202304070
+version,3
+info,visteam,TOR
+info,hometeam,ANA
+info,site,ANA01
+info,date,2023/04/07
+info,number,0
+info,gametype,regular
+info,starttime,6:38PM
+info,daynight,night
+info,innings,9
+info,tiebreaker,2
+info,usedh,true
+info,umphome,knigb901
+info,ump1b,randt901
+info,ump2b,macka901
+info,ump3b,ticht901
+info,umplf,(none)
+info,umprf,(none)
+info,oscorer,munse701
+info,temp,64
+info,winddir,tocf
+info,windspeed,6
+info,fieldcond,unknown
+info,precip,none
+info,sky,cloudy
+info,timeofgame,153
+info,attendance,44735
+info,wp,bassc001
+info,lp,hergj001
+info,save,romaj004
+start,sprig001,"George Springer",0,1,9
+start,bichb001,"Bo Bichette",0,2,6
+start,guerv002,"Vladimir Guerrero Jr.",0,3,3
+start,chapm001,"Matt Chapman",0,4,5
+start,merrw001,"Whit Merrifield",0,5,7
+start,kirka001,"Alejandro Kirk",0,6,2
+start,espis001,"Santiago Espinal",0,7,4
+start,luplj001,"Jordan Luplow",0,8,10
+start,kierk001,"Kevin Kiermaier",0,9,8
+start,bassc001,"Chris Bassitt",0,0,1
+start,wardt002,"Taylor Ward",1,1,7
+start,troum001,"Mike Trout",1,2,8
+start,ohtas001,"Shohei Ohtani",1,3,10
+start,renfh001,"Hunter Renfroe",1,4,9
+start,lambj001,"Jake Lamb",1,5,3
+start,drurb001,"Brandon Drury",1,6,4
+start,urshg001,"Gio Urshela",1,7,5
+start,ohopl001,"Logan O'Hoppe",1,8,2
+start,fletd002,"David Fletcher",1,9,6
+start,sandp002,"Patrick Sandoval",1,0,1
+stat,bline,sprig001,0,1,1,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,bichb001,0,2,1,4,1,2,1,0,1,3,0,0,0,0,0,0,0,0,0,0
+stat,bline,guerv002,0,3,1,4,1,2,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,bline,chapm001,0,4,1,4,0,1,0,0,0,0,0,0,0,0,0,2,0,1,0,0
+stat,bline,merrw001,0,5,1,4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,varsd001,0,5,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,kirka001,0,6,1,3,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+stat,bline,espis001,0,7,1,4,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+stat,bline,luplj001,0,8,1,3,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0
+stat,bline,biggc002,0,8,2,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,bline,kierk001,0,9,1,4,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,bline,bassc001,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,garcy001,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,swane001,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,romaj004,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,wardt002,1,1,1,3,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0
+stat,bline,troum001,1,2,1,4,1,1,0,0,1,2,0,0,0,0,0,1,0,0,0,0
+stat,bline,ohtas001,1,3,1,4,0,2,1,0,0,0,0,0,0,0,0,2,0,0,0,0
+stat,bline,renfh001,1,4,1,3,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+stat,bline,lambj001,1,5,1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,drurb001,1,6,1,4,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,bline,urshg001,1,7,1,3,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0
+stat,bline,ohopl001,1,8,1,2,0,0,0,0,0,0,0,0,0,2,0,1,0,0,0,0
+stat,bline,fletd002,1,9,1,3,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0
+stat,bline,rengl001,1,9,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,sandp002,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,moorm003,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,hergj001,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,wanta001,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,pline,bassc001,0,1,18,0,26,3,0,0,1,3,2,5,0,5,0,0,0,0,0
+stat,pline,garcy001,0,2,3,0,3,0,0,0,0,0,0,0,0,1,0,0,0,0,0
+stat,pline,swane001,0,3,3,0,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0
+stat,pline,romaj004,0,4,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,pline,sandp002,1,1,18,0,24,6,1,0,0,1,1,1,0,2,0,1,0,0,0
+stat,pline,moorm003,1,2,2,0,3,1,0,0,0,1,1,0,0,1,0,0,0,0,0
+stat,pline,hergj001,1,3,1,0,3,2,0,0,1,2,2,0,0,1,0,0,0,0,0
+stat,pline,wanta001,1,4,6,0,6,0,0,0,0,0,0,0,0,3,0,0,0,0,0
+stat,dline,bassc001,0,1,1,18,0,1,0,0,0,0
+stat,dline,garcy001,0,1,1,3,0,0,0,0,0,0
+stat,dline,swane001,0,1,1,3,0,0,0,0,0,0
+stat,dline,romaj004,0,1,1,3,0,0,0,0,0,0
+stat,dline,sprig001,0,1,9,27,2,0,0,0,0,0
+stat,dline,bichb001,0,1,6,27,1,0,1,0,0,0
+stat,dline,guerv002,0,1,3,27,7,0,0,1,0,0
+stat,dline,chapm001,0,1,5,27,1,1,0,0,0,0
+stat,dline,merrw001,0,1,7,21,0,0,0,0,0,0
+stat,dline,varsd001,0,1,7,6,2,0,0,0,0,0
+stat,dline,kirka001,0,1,2,27,6,0,1,0,0,0
+stat,dline,espis001,0,1,4,27,2,3,0,1,0,0
+stat,dline,kierk001,0,1,8,27,6,0,0,0,0,0
+stat,dline,sandp002,1,1,1,18,0,1,0,0,0,0
+stat,dline,moorm003,1,1,1,2,0,0,0,0,0,0
+stat,dline,hergj001,1,1,1,1,0,0,0,0,0,0
+stat,dline,wanta001,1,1,1,6,0,1,0,0,0,0
+stat,dline,wardt002,1,1,7,27,1,0,0,0,0,0
+stat,dline,troum001,1,1,8,27,4,1,0,0,0,0
+stat,dline,renfh001,1,1,9,27,1,0,0,0,0,0
+stat,dline,lambj001,1,1,3,27,8,1,0,0,0,0
+stat,dline,drurb001,1,1,4,27,3,5,0,0,0,0
+stat,dline,urshg001,1,1,5,27,0,5,0,0,0,0
+stat,dline,ohopl001,1,1,2,27,7,1,0,0,0,0
+stat,dline,fletd002,1,1,6,27,3,2,0,0,0,0
+stat,phline,biggc002,9,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,phline,rengl001,9,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+event,csline,0,chapm001,sandp002,ohopl001,4
+event,dpline,0,espis001,guerv002
+event,hrline,1,troum001,bassc001,1,1,0
+event,hrline,0,bichb001,hergj001,7,2,2
+event,sbline,1,urshg001,bassc001,kirka001,4
+line,0,0,0,0,1,0,0,3,0,0
+line,1,2,0,0,1,0,0,0,0,0
+stat,tline,0,5,2,1,0
+stat,tline,1,6,4,0,0
+id,BOS195008151
+version,3
+info,visteam,PHA
+info,hometeam,BOS
+info,site,BOS07
+info,date,1950/08/15
+info,number,1
+info,starttime,0:00PM
+info,daynight,day
+info,usedh,false
+info,umphome,papaj901
+info,ump1b,romme101
+info,ump2b,(none)
+info,ump3b,hubbc901
+info,temp,0
+info,winddir,unknown
+info,windspeed,-1
+info,fieldcond,unknown
+info,precip,unknown
+info,sky,unknown
+info,timeofgame,137
+info,attendance,0
+info,wp,parnm101
+info,lp,wyseh101
+info,save,
+info,gwrbi,
+start,joose101,"Eddie Joost",0,1,6
+start,mccob101,"Barney McCosky",0,2,7
+start,lehnp101,"Paul Lehner",0,3,9
+start,chaps101,"Sam Chapman",0,4,8
+start,fainf101,"Ferris Fain",0,5,3
+start,hitcb101,"Billy Hitchcock",0,6,4
+start,wahlk101,"Kermit Wahl",0,7,5
+start,tiptj101,"Joe Tipton",0,8,2
+start,wyseh101,"Hank Wyse",0,9,1
+start,dimad101,"Dom DiMaggio",1,1,8
+start,peskj101,"Johnny Pesky",1,2,5
+start,goodb101,"Billy Goodman",1,3,7
+start,stepv101,"Vern Stephens",1,4,6
+start,dropw101,"Walt Dropo",1,5,3
+start,doerb101,"Bobby Doerr",1,6,4
+start,zaria101,"Al Zarilla",1,7,9
+start,battm101,"Matt Batts",1,8,2
+start,parnm101,"Mel Parnell",1,9,1
+stat,bline,joose101,0,1,1,3,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0
+stat,bline,mccob101,0,2,1,3,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0
+stat,bline,lehnp101,0,3,1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,chaps101,0,4,1,4,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,bline,fainf101,0,5,1,4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,hitcb101,0,6,1,3,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+stat,bline,wahlk101,0,7,1,3,2,1,1,0,0,0,0,0,0,1,0,1,0,0,0,0
+stat,bline,tiptj101,0,8,1,4,1,3,1,0,1,2,0,0,0,0,0,0,0,0,0,0
+stat,bline,wyseh101,0,9,1,2,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0
+stat,bline,schec101,0,9,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,shanb102,0,9,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,mosew101,0,9,4,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,bline,dimad101,1,1,1,5,1,3,0,2,0,1,0,0,0,0,0,0,0,0,0,0
+stat,bline,peskj101,1,2,1,5,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+stat,bline,goodb101,1,3,1,4,2,2,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+stat,bline,stepv101,1,4,1,5,3,4,1,0,1,2,0,0,0,0,0,0,0,0,0,0
+stat,bline,dropw101,1,5,1,2,1,1,0,0,1,2,0,0,1,0,0,1,0,0,0,0
+stat,bline,vollc101,1,5,2,1,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+stat,bline,doerb101,1,6,1,4,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0
+stat,bline,zaria101,1,7,1,4,1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,bline,battm101,1,8,1,4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+stat,bline,parnm101,1,9,1,4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,pline,wyseh101,0,1,18,0,29,11,1,2,2,6,6,0,0,2,1,0,0,0,0
+stat,pline,shanb102,0,2,6,0,11,5,1,0,0,2,2,1,0,1,0,0,0,0,0
+stat,pline,parnm101,1,1,27,0,36,7,2,0,1,3,3,4,0,5,0,0,0,0,0
+stat,dline,joose101,0,1,6,24,3,2,0,2,0,0
+stat,dline,mccob101,0,1,7,24,3,1,0,1,0,0
+stat,dline,lehnp101,0,1,9,24,1,0,0,0,0,0
+stat,dline,chaps101,0,1,8,24,2,0,0,0,0,0
+stat,dline,fainf101,0,1,3,24,10,0,0,1,0,0
+stat,dline,hitcb101,0,1,4,24,0,4,0,1,0,0
+stat,dline,wahlk101,0,1,5,24,1,3,0,0,0,0
+stat,dline,tiptj101,0,1,2,24,4,0,0,0,0,0
+stat,dline,wyseh101,0,1,1,18,0,1,0,0,0,0
+stat,dline,shanb102,0,1,1,6,0,0,0,0,0,0
+stat,dline,dimad101,1,1,8,27,2,0,0,0,0,0
+stat,dline,peskj101,1,1,5,27,2,2,0,0,0,0
+stat,dline,goodb101,1,1,7,15,3,0,0,0,0,0
+stat,dline,goodb101,1,2,3,12,5,0,0,1,0,0
+stat,dline,stepv101,1,1,6,27,1,4,0,1,0,0
+stat,dline,dropw101,1,1,3,15,1,0,0,0,0,0
+stat,dline,vollc101,1,1,7,12,1,0,0,0,0,0
+stat,dline,doerb101,1,1,4,27,5,3,0,1,0,0
+stat,dline,zaria101,1,1,9,27,2,0,0,0,0,0
+stat,dline,battm101,1,1,2,27,5,1,0,0,0,0
+stat,dline,parnm101,1,1,1,27,0,1,0,0,0,0
+stat,phline,schec101,7,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,phline,mosew101,9,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,prline,vollc101,5,1,0,0,0
+event,dpline,0,mccob101,joose101
+event,dpline,1,stepv101,doerb101,goodb101
+event,dpline,0,hitcb101,joose101,fainf101
+event,hpline,0,wyseh101,dropw101
+event,hrline,1,dropw101,wyseh101,4,1,0
+event,hrline,1,stepv101,wyseh101,5,1,2
+event,hrline,0,tiptj101,parnm101,9,1,2
+line,0,0,0,0,0,1,0,0,0,2
+line,1,1,0,0,2,2,1,2,0
+stat,tline,0,6,8,2,0
+stat,tline,1,8,3,1,0
+com,""ej,tebbb101,P,papaj901,Fight after HBP""
+id,CLE195008150
+version,3
+info,visteam,DET
+info,hometeam,CLE
+info,date,1950/08/15
+info,site,CLE07
+info,number,0
+info,starttime,0:00PM
+info,daynight,day
+info,usedh,false
+info,umphome,summb901
+info,ump1b,grieb901
+info,ump2b,berrc103
+info,ump3b,passa901
+info,temp,0
+info,winddir,unknown
+info,windspeed,-1
+info,fieldcond,unknown
+info,precip,unknown
+info,sky,unknown
+info,timeofgame,132
+info,attendance,40299
+info,wp,houta101
+info,lp,lemob101
+info,save,stuam101
+info,gwrbi,
+start,pridj101,"Jerry Priddy",0,1,4
+start,kolld101,"Don Kolloway",0,2,3
+start,kellg102,"George Kell",0,3,5
+start,wertv101,"Vic Wertz",0,4,9
+start,everh101,"Hoot Evers",0,5,7
+start,grotj102,"Johnny Groth",0,6,8
+start,robia101,"Aaron Robinson",0,7,2
+start,berrn101,"Neil Berry",0,8,6
+start,houta101,"Art Houtteman",0,9,1
+start,mitcd101,"Dale Mitchell",1,1,7
+start,kennb104,"Bob Kennedy",1,2,9
+start,dobyl101,"Larry Doby",1,3,8
+start,eastl101,"Luke Easter",1,4,3
+start,rosea101,"Al Rosen",1,5,5
+start,boonr101,"Ray Boone",1,6,6
+start,gordj101,"Joe Gordon",1,7,4
+start,hegaj101,"Jim Hegan",1,8,2
+start,lemob101,"Bob Lemon",1,9,1
+stat,bline,pridj101,0,1,1,3,0,1,0,0,0,0,0,0,0,1,0,1,0,0,0,0
+stat,bline,kolld101,0,2,1,4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,kellg102,0,3,1,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,wertv101,0,4,1,2,1,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0
+stat,bline,everh101,0,5,1,3,1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0
+stat,bline,grotj102,0,6,1,4,1,1,0,0,1,4,0,0,0,0,0,0,0,0,1,0
+stat,bline,robia101,0,7,1,4,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+stat,bline,berrn101,0,8,1,3,0,1,0,0,0,0,0,0,0,1,0,1,0,0,0,0
+stat,bline,houta101,0,9,1,3,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0
+stat,bline,stuam101,0,9,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,mitcd101,1,1,1,4,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+stat,bline,kennb104,1,2,1,3,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,tuckt102,1,2,2,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+stat,bline,clara102,1,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,boudl101,1,2,4,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,dobyl101,1,3,1,4,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0
+stat,bline,eastl101,1,4,1,3,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0
+stat,bline,rosea101,1,5,1,3,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+stat,bline,boonr101,1,6,1,2,1,1,0,0,0,0,0,0,0,2,0,0,0,0,0,0
+stat,bline,gordj101,1,7,1,4,0,1,0,0,0,0,0,0,0,0,0,2,0,0,0,0
+stat,bline,hegaj101,1,8,1,4,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+stat,bline,lemob101,1,9,1,2,0,0,0,0,0,1,0,0,0,2,0,0,0,0,0,0
+stat,pline,houta101,0,1,18,2,28,4,1,0,0,1,1,6,0,4,0,0,0,0,0
+stat,pline,stuam101,0,2,9,0,10,1,0,0,0,0,0,2,0,1,0,0,0,0,0
+stat,pline,lemob101,1,1,27,0,36,7,0,0,1,4,0,5,0,5,0,0,0,0,0
+stat,dline,pridj101,0,1,4,27,1,5,0,2,0,0
+stat,dline,kolld101,0,1,3,27,6,0,0,1,0,0
+stat,dline,kellg102,0,1,5,27,1,0,0,0,0,0
+stat,dline,wertv101,0,1,9,27,0,0,0,0,0,0
+stat,dline,everh101,0,1,7,27,5,0,0,0,0,0
+stat,dline,grotj102,0,1,8,27,4,0,0,0,0,0
+stat,dline,robia101,0,1,2,27,6,0,0,0,0,0
+stat,dline,berrn101,0,1,6,27,4,3,0,2,0,0
+stat,dline,houta101,0,1,1,18,0,0,0,0,0,0
+stat,dline,stuam101,0,1,1,9,0,0,0,0,0,0
+stat,dline,mitcd101,1,1,7,27,1,0,0,0,0,0
+stat,dline,kennb104,1,1,9,21,2,1,0,0,1,0
+stat,dline,clara102,1,1,9,3,0,0,0,0,0,0
+stat,dline,boudl101,1,1,3,3,2,1,0,0,0,0
+stat,dline,dobyl101,1,1,8,27,2,0,0,0,0,0
+stat,dline,eastl101,1,1,3,24,8,0,0,2,1,0
+stat,dline,eastl101,1,2,9,3,0,0,0,0,0,0
+stat,dline,rosea101,1,1,5,27,1,2,1,0,0,0
+stat,dline,boonr101,1,1,6,27,2,7,0,2,1,0
+stat,dline,gordj101,1,1,4,27,2,4,0,2,0,0
+stat,dline,hegaj101,1,1,2,27,6,0,0,0,0,1
+stat,dline,lemob101,1,1,1,27,1,0,0,0,0,0
+stat,phline,tuckt102,7,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+stat,prline,clara102,7,1,0,0,0
+event,dpline,1,boonr101,gordj101,eastl101
+event,dpline,0,pridj101,berrn101,kolld101
+event,dpline,1,gordj101,boonr101,eastl101
+event,dpline,0,pridj101,berrn101
+event,hrline,0,grotj102,lemob101,1,3,2
+event,tpline,1,kennb104,boonr101,eastl101
+line,0,4,0,0,0,0,0,0,0,0
+line,1,0,0,0,1,0,0,0,0,0
+stat,tline,0,5,1,2,0
+stat,tline,1,10,0,2,1

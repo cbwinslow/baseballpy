@@ -59,7 +59,11 @@ def full_season(repo: RetroRepo, year: int = 2024) -> RetroRepo:
     repo.add(f"{s}/{year}BAL.EVN", _game(f"BAL{year}04020", "BAL", "BOS"))
     repo.add(f"{s}/{year}ALCS.EVE", _game(f"BOS{year}10150"))
     repo.add(f"{s}/{year}.EDA", _game(f"BOS{year}05010"))
-    repo.add(f"{s}/{year}.EBA", b"id,BOS%d04010\nversion,3\nstat,bline,play01,0,1,1,4,1,1\n" % year)
+    repo.add(
+        f"{s}/{year}.EBA",
+        b"id,BOS%d04010\nversion,3\nstat,bline,play01,0,1,1,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n"
+        % year,
+    )
     repo.add(f"{s}/BOS{year}.ROS", b"play01,One,Batter,R,R,BOS,OF\n")
     repo.add(f"{s}/GL{year}.TXT", GAMELOG)
     repo.add(f"{s}/{year}schedule.csv", SCHEDULE)

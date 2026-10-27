@@ -1,0 +1,78 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "careerStatSplits"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 900,
+   "exemptions": [],
+   "splits": [
+    {
+     "player": {
+      "id": 123905,
+      "fullName": "Paul Waner",
+      "link": "/api/v1/people/123905",
+      "firstName": "Paul",
+      "lastName": "Waner"
+     },
+     "split": {
+      "code": "p9",
+      "description": "Right Field",
+      "sortOrder": 129
+     },
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "player": {
+      "id": 113664,
+      "fullName": "Leo Durocher",
+      "link": "/api/v1/people/113664",
+      "firstName": "Leo",
+      "lastName": "Durocher"
+     },
+     "split": {
+      "code": "p6",
+      "description": "Shortstop",
+      "sortOrder": 126
+     },
+     "position": {
+      "code": "6",
+      "name": "Shortstop",
+      "type": "Infielder",
+      "abbreviation": "SS"
+     }
+    },
+    {
+     "player": {
+      "id": 123904,
+      "fullName": "Lloyd Waner",
+      "link": "/api/v1/people/123904",
+      "firstName": "Lloyd",
+      "lastName": "Waner"
+     },
+     "split": {
+      "code": "p8",
+      "description": "Center Field",
+      "sortOrder": 128
+     },
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    }
+   ],
+   "playerPool": "ALL"
+  }
+ ]
+}

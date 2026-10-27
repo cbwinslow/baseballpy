@@ -1,0 +1,126 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "statSplitsAdvanced"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 109502,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 663562,
+      "fullName": "Noah Davis",
+      "link": "/api/v1/people/663562",
+      "firstName": "Noah",
+      "lastName": "Davis"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "split": {
+      "code": "fp",
+      "description": "First Pitch",
+      "sortOrder": 221
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "2024",
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 663562,
+      "fullName": "Noah Davis",
+      "link": "/api/v1/people/663562",
+      "firstName": "Noah",
+      "lastName": "Davis"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "split": {
+      "code": "pi001",
+      "description": "Pitches 1-15",
+      "sortOrder": 175
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "2024",
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 663562,
+      "fullName": "Noah Davis",
+      "link": "/api/v1/people/663562",
+      "firstName": "Noah",
+      "lastName": "Davis"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "split": {
+      "code": "pi000",
+      "description": "First 75 Pitches",
+      "sortOrder": 171
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    }
+   ],
+   "playerPool": "ALL"
+  }
+ ]
+}

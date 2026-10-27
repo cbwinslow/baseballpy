@@ -123,6 +123,13 @@ print(top_hr_seasons)
 
 ## Dataset reference (generated)
 
+<!-- BEGIN GENERATED:lahman.description_sources -->
+### Description sources
+
+No column descriptions have been written for this source yet.
+
+<!-- END GENERATED:lahman.description_sources -->
+
 <!-- BEGIN GENERATED:lahman.AllstarFull -->
 ### Dataset: AllstarFull
 
@@ -135,15 +142,15 @@ Lahman AllstarFull table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `gameNum` | int16 | yes | — |  |
-| `gameID` | string | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `GP` | int16 | yes | — |  |
-| `startingPos` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `gameNum` | int16 | yes | — | TODO |
+| `gameID` | string | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `GP` | int16 | yes | — | TODO |
+| `startingPos` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AllstarFull -->
 
@@ -159,28 +166,28 @@ Lahman Appearances table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `playerID` | string | yes | — |  |
-| `G_all` | int16 | yes | — |  |
-| `GS` | int16 | yes | — |  |
-| `G_batting` | int16 | yes | — |  |
-| `G_defense` | int16 | yes | — |  |
-| `G_p` | int16 | yes | — |  |
-| `G_c` | int16 | yes | — |  |
-| `G_1b` | int16 | yes | — |  |
-| `G_2b` | int16 | yes | — |  |
-| `G_3b` | int16 | yes | — |  |
-| `G_ss` | int16 | yes | — |  |
-| `G_lf` | int16 | yes | — |  |
-| `G_cf` | int16 | yes | — |  |
-| `G_rf` | int16 | yes | — |  |
-| `G_of` | int16 | yes | — |  |
-| `G_dh` | int16 | yes | — |  |
-| `G_ph` | int16 | yes | — |  |
-| `G_pr` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `yearID` | int16 | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `playerID` | string | yes | — | TODO |
+| `G_all` | int16 | yes | — | TODO |
+| `GS` | int16 | yes | — | TODO |
+| `G_batting` | int16 | yes | — | TODO |
+| `G_defense` | int16 | yes | — | TODO |
+| `G_p` | int16 | yes | — | TODO |
+| `G_c` | int16 | yes | — | TODO |
+| `G_1b` | int16 | yes | — | TODO |
+| `G_2b` | int16 | yes | — | TODO |
+| `G_3b` | int16 | yes | — | TODO |
+| `G_ss` | int16 | yes | — | TODO |
+| `G_lf` | int16 | yes | — | TODO |
+| `G_cf` | int16 | yes | — | TODO |
+| `G_rf` | int16 | yes | — | TODO |
+| `G_of` | int16 | yes | — | TODO |
+| `G_dh` | int16 | yes | — | TODO |
+| `G_ph` | int16 | yes | — | TODO |
+| `G_pr` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Appearances -->
 
@@ -196,13 +203,13 @@ Lahman AwardsManagers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `awardID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `tie` | string | yes | — |  |
-| `notes` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `awardID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `tie` | string | yes | — | TODO |
+| `notes` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AwardsManagers -->
 
@@ -218,13 +225,13 @@ Lahman AwardsPlayers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `awardID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `tie` | string | yes | — |  |
-| `notes` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `awardID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `tie` | string | yes | — | TODO |
+| `notes` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AwardsPlayers -->
 
@@ -240,14 +247,14 @@ Lahman AwardsShareManagers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `awardID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `playerID` | string | yes | — |  |
-| `pointsWon` | int16 | yes | — |  |
-| `pointsMax` | int16 | yes | — |  |
-| `votesFirst` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `awardID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `playerID` | string | yes | — | TODO |
+| `pointsWon` | int16 | yes | — | TODO |
+| `pointsMax` | int16 | yes | — | TODO |
+| `votesFirst` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AwardsShareManagers -->
 
@@ -263,14 +270,14 @@ Lahman AwardsSharePlayers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `awardID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `playerID` | string | yes | — |  |
-| `pointsWon` | int16 | yes | — |  |
-| `pointsMax` | int16 | yes | — |  |
-| `votesFirst` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `awardID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `playerID` | string | yes | — | TODO |
+| `pointsWon` | int16 | yes | — | TODO |
+| `pointsMax` | int16 | yes | — | TODO |
+| `votesFirst` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AwardsSharePlayers -->
 
@@ -286,29 +293,29 @@ Lahman Batting table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `stint` | int16 | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `AB` | int16 | yes | — |  |
-| `R` | int16 | yes | — |  |
-| `H` | int16 | yes | — |  |
-| `2B` | int16 | yes | — |  |
-| `3B` | int16 | yes | — |  |
-| `HR` | int16 | yes | — |  |
-| `RBI` | int16 | yes | — |  |
-| `SB` | int16 | yes | — |  |
-| `CS` | int16 | yes | — |  |
-| `BB` | int16 | yes | — |  |
-| `SO` | int16 | yes | — |  |
-| `IBB` | int16 | yes | — |  |
-| `HBP` | int16 | yes | — |  |
-| `SH` | int16 | yes | — |  |
-| `SF` | int16 | yes | — |  |
-| `GIDP` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `stint` | int16 | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `AB` | int16 | yes | — | TODO |
+| `R` | int16 | yes | — | TODO |
+| `H` | int16 | yes | — | TODO |
+| `2B` | int16 | yes | — | TODO |
+| `3B` | int16 | yes | — | TODO |
+| `HR` | int16 | yes | — | TODO |
+| `RBI` | int16 | yes | — | TODO |
+| `SB` | int16 | yes | — | TODO |
+| `CS` | int16 | yes | — | TODO |
+| `BB` | int16 | yes | — | TODO |
+| `SO` | int16 | yes | — | TODO |
+| `IBB` | int16 | yes | — | TODO |
+| `HBP` | int16 | yes | — | TODO |
+| `SH` | int16 | yes | — | TODO |
+| `SF` | int16 | yes | — | TODO |
+| `GIDP` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Batting -->
 
@@ -324,29 +331,29 @@ Lahman BattingPost table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — |  |
-| `round` | string | yes | — |  |
-| `playerID` | string | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `AB` | int16 | yes | — |  |
-| `R` | int16 | yes | — |  |
-| `H` | int16 | yes | — |  |
-| `2B` | int16 | yes | — |  |
-| `3B` | int16 | yes | — |  |
-| `HR` | int16 | yes | — |  |
-| `RBI` | int16 | yes | — |  |
-| `SB` | int16 | yes | — |  |
-| `CS` | int16 | yes | — |  |
-| `BB` | int16 | yes | — |  |
-| `SO` | int16 | yes | — |  |
-| `IBB` | int16 | yes | — |  |
-| `HBP` | int16 | yes | — |  |
-| `SH` | int16 | yes | — |  |
-| `SF` | int16 | yes | — |  |
-| `GIDP` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `yearID` | int16 | yes | — | TODO |
+| `round` | string | yes | — | TODO |
+| `playerID` | string | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `AB` | int16 | yes | — | TODO |
+| `R` | int16 | yes | — | TODO |
+| `H` | int16 | yes | — | TODO |
+| `2B` | int16 | yes | — | TODO |
+| `3B` | int16 | yes | — | TODO |
+| `HR` | int16 | yes | — | TODO |
+| `RBI` | int16 | yes | — | TODO |
+| `SB` | int16 | yes | — | TODO |
+| `CS` | int16 | yes | — | TODO |
+| `BB` | int16 | yes | — | TODO |
+| `SO` | int16 | yes | — | TODO |
+| `IBB` | int16 | yes | — | TODO |
+| `HBP` | int16 | yes | — | TODO |
+| `SH` | int16 | yes | — | TODO |
+| `SF` | int16 | yes | — | TODO |
+| `GIDP` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.BattingPost -->
 
@@ -362,10 +369,10 @@ Lahman CollegePlaying table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `schoolID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `schoolID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.CollegePlaying -->
 
@@ -381,25 +388,25 @@ Lahman Fielding table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `stint` | int16 | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `POS` | string | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `GS` | int16 | yes | — |  |
-| `InnOuts` | int16 | yes | — |  |
-| `PO` | int16 | yes | — |  |
-| `A` | int16 | yes | — |  |
-| `E` | int16 | yes | — |  |
-| `DP` | int16 | yes | — |  |
-| `PB` | int16 | yes | — |  |
-| `WP` | int16 | yes | — |  |
-| `SB` | int16 | yes | — |  |
-| `CS` | int16 | yes | — |  |
-| `ZR` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `stint` | int16 | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `POS` | string | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `GS` | int16 | yes | — | TODO |
+| `InnOuts` | int16 | yes | — | TODO |
+| `PO` | int16 | yes | — | TODO |
+| `A` | int16 | yes | — | TODO |
+| `E` | int16 | yes | — | TODO |
+| `DP` | int16 | yes | — | TODO |
+| `PB` | int16 | yes | — | TODO |
+| `WP` | int16 | yes | — | TODO |
+| `SB` | int16 | yes | — | TODO |
+| `CS` | int16 | yes | — | TODO |
+| `ZR` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Fielding -->
 
@@ -415,13 +422,13 @@ Lahman FieldingOF table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `stint` | int16 | yes | — |  |
-| `Glf` | int16 | yes | — |  |
-| `Gcf` | int16 | yes | — |  |
-| `Grf` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `stint` | int16 | yes | — | TODO |
+| `Glf` | int16 | yes | — | TODO |
+| `Gcf` | int16 | yes | — | TODO |
+| `Grf` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.FieldingOF -->
 
@@ -437,25 +444,25 @@ Lahman FieldingOFsplit table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `stint` | int16 | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `POS` | string | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `GS` | int16 | yes | — |  |
-| `InnOuts` | int16 | yes | — |  |
-| `PO` | int16 | yes | — |  |
-| `A` | int16 | yes | — |  |
-| `E` | int16 | yes | — |  |
-| `DP` | int16 | yes | — |  |
-| `PB` | int16 | yes | — |  |
-| `WP` | string | yes | — |  |
-| `SB` | int16 | yes | — |  |
-| `CS` | int16 | yes | — |  |
-| `ZR` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `stint` | int16 | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `POS` | string | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `GS` | int16 | yes | — | TODO |
+| `InnOuts` | int16 | yes | — | TODO |
+| `PO` | int16 | yes | — | TODO |
+| `A` | int16 | yes | — | TODO |
+| `E` | int16 | yes | — | TODO |
+| `DP` | int16 | yes | — | TODO |
+| `PB` | int16 | yes | — | TODO |
+| `WP` | string | yes | — | TODO |
+| `SB` | int16 | yes | — | TODO |
+| `CS` | int16 | yes | — | TODO |
+| `ZR` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.FieldingOFsplit -->
 
@@ -471,24 +478,24 @@ Lahman FieldingPost table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `round` | string | yes | — |  |
-| `POS` | string | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `GS` | int16 | yes | — |  |
-| `InnOuts` | int16 | yes | — |  |
-| `PO` | int16 | yes | — |  |
-| `A` | int16 | yes | — |  |
-| `E` | int16 | yes | — |  |
-| `DP` | int16 | yes | — |  |
-| `TP` | int16 | yes | — |  |
-| `PB` | int16 | yes | — |  |
-| `SB` | int16 | yes | — |  |
-| `CS` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `round` | string | yes | — | TODO |
+| `POS` | string | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `GS` | int16 | yes | — | TODO |
+| `InnOuts` | int16 | yes | — | TODO |
+| `PO` | int16 | yes | — | TODO |
+| `A` | int16 | yes | — | TODO |
+| `E` | int16 | yes | — | TODO |
+| `DP` | int16 | yes | — | TODO |
+| `TP` | int16 | yes | — | TODO |
+| `PB` | int16 | yes | — | TODO |
+| `SB` | int16 | yes | — | TODO |
+| `CS` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.FieldingPost -->
 
@@ -504,16 +511,16 @@ Lahman HallOfFame table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearid` | int16 | yes | — |  |
-| `votedBy` | string | yes | — |  |
-| `ballots` | int16 | yes | — |  |
-| `needed` | int16 | yes | — |  |
-| `votes` | int16 | yes | — |  |
-| `inducted` | string | yes | — |  |
-| `category` | string | yes | — |  |
-| `needed_note` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearid` | int16 | yes | — | TODO |
+| `votedBy` | string | yes | — | TODO |
+| `ballots` | int16 | yes | — | TODO |
+| `needed` | int16 | yes | — | TODO |
+| `votes` | int16 | yes | — | TODO |
+| `inducted` | string | yes | — | TODO |
+| `category` | string | yes | — | TODO |
+| `needed_note` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.HallOfFame -->
 
@@ -529,16 +536,16 @@ Lahman HomeGames table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearkey` | int16 | yes | — |  |
-| `leaguekey` | string | yes | — |  |
-| `teamkey` | string | yes | — |  |
-| `parkkey` | string | yes | — |  |
-| `spanfirst` | date32[day] | yes | — |  |
-| `spanlast` | date32[day] | yes | — |  |
-| `games` | int16 | yes | — |  |
-| `openings` | int16 | yes | — |  |
-| `attendance` | int32 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `yearkey` | int16 | yes | — | TODO |
+| `leaguekey` | string | yes | — | TODO |
+| `teamkey` | string | yes | — | TODO |
+| `parkkey` | string | yes | — | TODO |
+| `spanfirst` | date32[day] | yes | — | TODO |
+| `spanlast` | date32[day] | yes | — | TODO |
+| `games` | int16 | yes | — | TODO |
+| `openings` | int16 | yes | — | TODO |
+| `attendance` | int32 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.HomeGames -->
 
@@ -554,17 +561,17 @@ Lahman Managers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `inseason` | int16 | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `W` | int16 | yes | — |  |
-| `L` | int16 | yes | — |  |
-| `rank` | int16 | yes | — |  |
-| `plyrMgr` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `inseason` | int16 | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `W` | int16 | yes | — | TODO |
+| `L` | int16 | yes | — | TODO |
+| `rank` | int16 | yes | — | TODO |
+| `plyrMgr` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Managers -->
 
@@ -580,17 +587,17 @@ Lahman ManagersHalf table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `inseason` | int16 | yes | — |  |
-| `half` | int16 | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `W` | int16 | yes | — |  |
-| `L` | int16 | yes | — |  |
-| `rank` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `inseason` | int16 | yes | — | TODO |
+| `half` | int16 | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `W` | int16 | yes | — | TODO |
+| `L` | int16 | yes | — | TODO |
+| `rank` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.ManagersHalf -->
 
@@ -606,14 +613,14 @@ Lahman Parks table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `ID` | int16 | yes | — |  |
-| `parkalias` | string | yes | — |  |
-| `parkkey` | string | yes | — |  |
-| `parkname` | string | yes | — |  |
-| `city` | string | yes | — |  |
-| `state` | string | yes | — |  |
-| `country` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `ID` | int16 | yes | — | TODO |
+| `parkalias` | string | yes | — | TODO |
+| `parkkey` | string | yes | — | TODO |
+| `parkname` | string | yes | — | TODO |
+| `city` | string | yes | — | TODO |
+| `state` | string | yes | — | TODO |
+| `country` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Parks -->
 
@@ -629,32 +636,32 @@ Lahman People table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `ID` | int32 | yes | — |  |
-| `playerID` | string | yes | — |  |
-| `birthYear` | int16 | yes | — |  |
-| `birthMonth` | int16 | yes | — |  |
-| `birthDay` | int16 | yes | — |  |
-| `birthCity` | string | yes | — |  |
-| `birthCountry` | string | yes | — |  |
-| `birthState` | string | yes | — |  |
-| `deathYear` | int16 | yes | — |  |
-| `deathMonth` | int16 | yes | — |  |
-| `deathDay` | int16 | yes | — |  |
-| `deathCountry` | string | yes | — |  |
-| `deathState` | string | yes | — |  |
-| `deathCity` | string | yes | — |  |
-| `nameFirst` | string | yes | — |  |
-| `nameLast` | string | yes | — |  |
-| `nameGiven` | string | yes | — |  |
-| `weight` | int16 | yes | — |  |
-| `height` | int16 | yes | — |  |
-| `bats` | string | yes | — |  |
-| `throws` | string | yes | — |  |
-| `debut` | date32[day] | yes | — |  |
-| `bbrefID` | string | yes | — |  |
-| `finalGame` | date32[day] | yes | — |  |
-| `retroID` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `ID` | int32 | yes | — | TODO |
+| `playerID` | string | yes | — | TODO |
+| `birthYear` | int16 | yes | — | TODO |
+| `birthMonth` | int16 | yes | — | TODO |
+| `birthDay` | int16 | yes | — | TODO |
+| `birthCity` | string | yes | — | TODO |
+| `birthCountry` | string | yes | — | TODO |
+| `birthState` | string | yes | — | TODO |
+| `deathYear` | int16 | yes | — | TODO |
+| `deathMonth` | int16 | yes | — | TODO |
+| `deathDay` | int16 | yes | — | TODO |
+| `deathCountry` | string | yes | — | TODO |
+| `deathState` | string | yes | — | TODO |
+| `deathCity` | string | yes | — | TODO |
+| `nameFirst` | string | yes | — | TODO |
+| `nameLast` | string | yes | — | TODO |
+| `nameGiven` | string | yes | — | TODO |
+| `weight` | int16 | yes | — | TODO |
+| `height` | int16 | yes | — | TODO |
+| `bats` | string | yes | — | TODO |
+| `throws` | string | yes | — | TODO |
+| `debut` | date32[day] | yes | — | TODO |
+| `bbrefID` | string | yes | — | TODO |
+| `finalGame` | date32[day] | yes | — | TODO |
+| `retroID` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.People -->
 
@@ -670,37 +677,37 @@ Lahman Pitching table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `stint` | int16 | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `W` | int16 | yes | — |  |
-| `L` | int16 | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `GS` | int16 | yes | — |  |
-| `CG` | int16 | yes | — |  |
-| `SHO` | int16 | yes | — |  |
-| `SV` | int16 | yes | — |  |
-| `IPouts` | int16 | yes | — |  |
-| `H` | int16 | yes | — |  |
-| `ER` | int16 | yes | — |  |
-| `HR` | int16 | yes | — |  |
-| `BB` | int16 | yes | — |  |
-| `SO` | int16 | yes | — |  |
-| `BAOpp` | double | yes | — |  |
-| `ERA` | double | yes | — |  |
-| `IBB` | int16 | yes | — |  |
-| `WP` | int16 | yes | — |  |
-| `HBP` | int16 | yes | — |  |
-| `BK` | int16 | yes | — |  |
-| `BFP` | int16 | yes | — |  |
-| `GF` | int16 | yes | — |  |
-| `R` | int16 | yes | — |  |
-| `SH` | int16 | yes | — |  |
-| `SF` | int16 | yes | — |  |
-| `GIDP` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `stint` | int16 | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `W` | int16 | yes | — | TODO |
+| `L` | int16 | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `GS` | int16 | yes | — | TODO |
+| `CG` | int16 | yes | — | TODO |
+| `SHO` | int16 | yes | — | TODO |
+| `SV` | int16 | yes | — | TODO |
+| `IPouts` | int16 | yes | — | TODO |
+| `H` | int16 | yes | — | TODO |
+| `ER` | int16 | yes | — | TODO |
+| `HR` | int16 | yes | — | TODO |
+| `BB` | int16 | yes | — | TODO |
+| `SO` | int16 | yes | — | TODO |
+| `BAOpp` | double | yes | — | TODO |
+| `ERA` | double | yes | — | TODO |
+| `IBB` | int16 | yes | — | TODO |
+| `WP` | int16 | yes | — | TODO |
+| `HBP` | int16 | yes | — | TODO |
+| `BK` | int16 | yes | — | TODO |
+| `BFP` | int16 | yes | — | TODO |
+| `GF` | int16 | yes | — | TODO |
+| `R` | int16 | yes | — | TODO |
+| `SH` | int16 | yes | — | TODO |
+| `SF` | int16 | yes | — | TODO |
+| `GIDP` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Pitching -->
 
@@ -716,37 +723,37 @@ Lahman PitchingPost table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — |  |
-| `yearID` | int16 | yes | — |  |
-| `round` | string | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `W` | int16 | yes | — |  |
-| `L` | int16 | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `GS` | int16 | yes | — |  |
-| `CG` | int16 | yes | — |  |
-| `SHO` | int16 | yes | — |  |
-| `SV` | int16 | yes | — |  |
-| `IPouts` | int16 | yes | — |  |
-| `H` | int16 | yes | — |  |
-| `ER` | int16 | yes | — |  |
-| `HR` | int16 | yes | — |  |
-| `BB` | int16 | yes | — |  |
-| `SO` | int16 | yes | — |  |
-| `BAOpp` | double | yes | — |  |
-| `ERA` | double | yes | — |  |
-| `IBB` | int16 | yes | — |  |
-| `WP` | int16 | yes | — |  |
-| `HBP` | int16 | yes | — |  |
-| `BK` | int16 | yes | — |  |
-| `BFP` | int16 | yes | — |  |
-| `GF` | int16 | yes | — |  |
-| `R` | int16 | yes | — |  |
-| `SH` | int16 | yes | — |  |
-| `SF` | int16 | yes | — |  |
-| `GIDP` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `playerID` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | TODO |
+| `round` | string | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `W` | int16 | yes | — | TODO |
+| `L` | int16 | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `GS` | int16 | yes | — | TODO |
+| `CG` | int16 | yes | — | TODO |
+| `SHO` | int16 | yes | — | TODO |
+| `SV` | int16 | yes | — | TODO |
+| `IPouts` | int16 | yes | — | TODO |
+| `H` | int16 | yes | — | TODO |
+| `ER` | int16 | yes | — | TODO |
+| `HR` | int16 | yes | — | TODO |
+| `BB` | int16 | yes | — | TODO |
+| `SO` | int16 | yes | — | TODO |
+| `BAOpp` | double | yes | — | TODO |
+| `ERA` | double | yes | — | TODO |
+| `IBB` | int16 | yes | — | TODO |
+| `WP` | int16 | yes | — | TODO |
+| `HBP` | int16 | yes | — | TODO |
+| `BK` | int16 | yes | — | TODO |
+| `BFP` | int16 | yes | — | TODO |
+| `GF` | int16 | yes | — | TODO |
+| `R` | int16 | yes | — | TODO |
+| `SH` | int16 | yes | — | TODO |
+| `SF` | int16 | yes | — | TODO |
+| `GIDP` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.PitchingPost -->
 
@@ -762,12 +769,12 @@ Lahman Salaries table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `playerID` | string | yes | — |  |
-| `salary` | int32 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `yearID` | int16 | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `playerID` | string | yes | — | TODO |
+| `salary` | int32 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Salaries -->
 
@@ -783,12 +790,12 @@ Lahman Schools table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `schoolID` | string | yes | — |  |
-| `name_full` | string | yes | — |  |
-| `city` | string | yes | — |  |
-| `state` | string | yes | — |  |
-| `country` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `schoolID` | string | yes | — | TODO |
+| `name_full` | string | yes | — | TODO |
+| `city` | string | yes | — | TODO |
+| `state` | string | yes | — | TODO |
+| `country` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Schools -->
 
@@ -804,16 +811,16 @@ Lahman SeriesPost table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — |  |
-| `round` | string | yes | — |  |
-| `teamIDwinner` | string | yes | — |  |
-| `lgIDwinner` | string | yes | — |  |
-| `teamIDloser` | string | yes | — |  |
-| `lgIDloser` | string | yes | — |  |
-| `wins` | int16 | yes | — |  |
-| `losses` | int16 | yes | — |  |
-| `ties` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `yearID` | int16 | yes | — | TODO |
+| `round` | string | yes | — | TODO |
+| `teamIDwinner` | string | yes | — | TODO |
+| `lgIDwinner` | string | yes | — | TODO |
+| `teamIDloser` | string | yes | — | TODO |
+| `lgIDloser` | string | yes | — | TODO |
+| `wins` | int16 | yes | — | TODO |
+| `losses` | int16 | yes | — | TODO |
+| `ties` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.SeriesPost -->
 
@@ -829,55 +836,55 @@ Lahman Teams table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `franchID` | string | yes | — |  |
-| `divID` | string | yes | — |  |
-| `Rank` | int16 | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `Ghome` | int16 | yes | — |  |
-| `W` | int16 | yes | — |  |
-| `L` | int16 | yes | — |  |
-| `DivWin` | string | yes | — |  |
-| `WCWin` | string | yes | — |  |
-| `LgWin` | string | yes | — |  |
-| `WSWin` | string | yes | — |  |
-| `R` | int16 | yes | — |  |
-| `AB` | int16 | yes | — |  |
-| `H` | int16 | yes | — |  |
-| `2B` | int16 | yes | — |  |
-| `3B` | int16 | yes | — |  |
-| `HR` | int16 | yes | — |  |
-| `BB` | int16 | yes | — |  |
-| `SO` | int16 | yes | — |  |
-| `SB` | int16 | yes | — |  |
-| `CS` | int16 | yes | — |  |
-| `HBP` | int16 | yes | — |  |
-| `SF` | int16 | yes | — |  |
-| `RA` | int16 | yes | — |  |
-| `ER` | int16 | yes | — |  |
-| `ERA` | double | yes | — |  |
-| `CG` | int16 | yes | — |  |
-| `SHO` | int16 | yes | — |  |
-| `SV` | int16 | yes | — |  |
-| `IPouts` | int16 | yes | — |  |
-| `HA` | int16 | yes | — |  |
-| `HRA` | int16 | yes | — |  |
-| `BBA` | int16 | yes | — |  |
-| `SOA` | int16 | yes | — |  |
-| `E` | int16 | yes | — |  |
-| `DP` | int16 | yes | — |  |
-| `FP` | double | yes | — |  |
-| `name` | string | yes | — |  |
-| `park` | string | yes | — |  |
-| `attendance` | int32 | yes | — |  |
-| `BPF` | int16 | yes | — |  |
-| `PPF` | int16 | yes | — |  |
-| `teamIDBR` | string | yes | — |  |
-| `teamIDlahman45` | string | yes | — |  |
-| `teamIDretro` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `yearID` | int16 | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `franchID` | string | yes | — | TODO |
+| `divID` | string | yes | — | TODO |
+| `Rank` | int16 | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `Ghome` | int16 | yes | — | TODO |
+| `W` | int16 | yes | — | TODO |
+| `L` | int16 | yes | — | TODO |
+| `DivWin` | string | yes | — | TODO |
+| `WCWin` | string | yes | — | TODO |
+| `LgWin` | string | yes | — | TODO |
+| `WSWin` | string | yes | — | TODO |
+| `R` | int16 | yes | — | TODO |
+| `AB` | int16 | yes | — | TODO |
+| `H` | int16 | yes | — | TODO |
+| `2B` | int16 | yes | — | TODO |
+| `3B` | int16 | yes | — | TODO |
+| `HR` | int16 | yes | — | TODO |
+| `BB` | int16 | yes | — | TODO |
+| `SO` | int16 | yes | — | TODO |
+| `SB` | int16 | yes | — | TODO |
+| `CS` | int16 | yes | — | TODO |
+| `HBP` | int16 | yes | — | TODO |
+| `SF` | int16 | yes | — | TODO |
+| `RA` | int16 | yes | — | TODO |
+| `ER` | int16 | yes | — | TODO |
+| `ERA` | double | yes | — | TODO |
+| `CG` | int16 | yes | — | TODO |
+| `SHO` | int16 | yes | — | TODO |
+| `SV` | int16 | yes | — | TODO |
+| `IPouts` | int16 | yes | — | TODO |
+| `HA` | int16 | yes | — | TODO |
+| `HRA` | int16 | yes | — | TODO |
+| `BBA` | int16 | yes | — | TODO |
+| `SOA` | int16 | yes | — | TODO |
+| `E` | int16 | yes | — | TODO |
+| `DP` | int16 | yes | — | TODO |
+| `FP` | double | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `park` | string | yes | — | TODO |
+| `attendance` | int32 | yes | — | TODO |
+| `BPF` | int16 | yes | — | TODO |
+| `PPF` | int16 | yes | — | TODO |
+| `teamIDBR` | string | yes | — | TODO |
+| `teamIDlahman45` | string | yes | — | TODO |
+| `teamIDretro` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Teams -->
 
@@ -893,11 +900,11 @@ Lahman TeamsFranchises table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `franchID` | string | yes | — |  |
-| `franchName` | string | yes | — |  |
-| `active` | string | yes | — |  |
-| `NAassoc` | string | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `franchID` | string | yes | — | TODO |
+| `franchName` | string | yes | — | TODO |
+| `active` | string | yes | — | TODO |
+| `NAassoc` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.TeamsFranchises -->
 
@@ -913,16 +920,16 @@ Lahman TeamsHalf table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — |  |
-| `lgID` | string | yes | — |  |
-| `teamID` | string | yes | — |  |
-| `Half` | int16 | yes | — |  |
-| `divID` | string | yes | — |  |
-| `DivWin` | string | yes | — |  |
-| `Rank` | int16 | yes | — |  |
-| `G` | int16 | yes | — |  |
-| `W` | int16 | yes | — |  |
-| `L` | int16 | yes | — |  |
-| `_extras` | string | yes | — |  |
+| `yearID` | int16 | yes | — | TODO |
+| `lgID` | string | yes | — | TODO |
+| `teamID` | string | yes | — | TODO |
+| `Half` | int16 | yes | — | TODO |
+| `divID` | string | yes | — | TODO |
+| `DivWin` | string | yes | — | TODO |
+| `Rank` | int16 | yes | — | TODO |
+| `G` | int16 | yes | — | TODO |
+| `W` | int16 | yes | — | TODO |
+| `L` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.TeamsHalf -->

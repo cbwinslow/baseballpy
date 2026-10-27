@@ -1,0 +1,188 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "vsPlayerTotal"
+   },
+   "group": {
+    "displayName": "running"
+   },
+   "totalSplits": 129,
+   "exemptions": [],
+   "splits": [
+    {
+     "gameType": "R",
+     "numTeams": 2,
+     "pitcher": {
+      "id": 518614,
+      "fullName": "Daniel Descalso",
+      "link": "/api/v1/people/518614",
+      "firstName": "Daniel",
+      "lastName": "Descalso"
+     }
+    },
+    {
+     "gameType": "R",
+     "numTeams": 2,
+     "pitcher": {
+      "id": 476451,
+      "fullName": "Jeremy Hellickson",
+      "link": "/api/v1/people/476451",
+      "firstName": "Jeremy",
+      "lastName": "Hellickson"
+     }
+    },
+    {
+     "gameType": "R",
+     "numTeams": 2,
+     "pitcher": {
+      "id": 592789,
+      "fullName": "Noah Syndergaard",
+      "link": "/api/v1/people/592789",
+      "firstName": "Noah",
+      "lastName": "Syndergaard"
+     }
+    }
+   ]
+  },
+  {
+   "type": {
+    "displayName": "vsPlayer"
+   },
+   "group": {
+    "displayName": "running"
+   },
+   "totalSplits": 155,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2013",
+     "stats": {
+      "running": {
+       "standard": {
+        "gamesPlayed": 1,
+        "runs": 0,
+        "caughtStealing": 0,
+        "stolenBases": 0,
+        "stolenBasePercentage": ".---",
+        "caughtStealingPercentage": ".---"
+       }
+      }
+     },
+     "team": {
+      "id": 134,
+      "name": "Pittsburgh Pirates",
+      "link": "/api/v1/teams/134"
+     },
+     "opponent": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "gameType": "R",
+     "numTeams": 1,
+     "rank": 1,
+     "pitcher": {
+      "id": 425844,
+      "fullName": "Zack Greinke",
+      "link": "/api/v1/people/425844",
+      "firstName": "Donald",
+      "lastName": "Greinke"
+     },
+     "batter": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     }
+    },
+    {
+     "season": "2013",
+     "stats": {
+      "running": {
+       "standard": {
+        "gamesPlayed": 1,
+        "runs": 0,
+        "caughtStealing": 0,
+        "stolenBases": 0,
+        "stolenBasePercentage": ".---",
+        "caughtStealingPercentage": ".---"
+       }
+      }
+     },
+     "team": {
+      "id": 134,
+      "name": "Pittsburgh Pirates",
+      "link": "/api/v1/teams/134"
+     },
+     "opponent": {
+      "id": 143,
+      "name": "Philadelphia Phillies",
+      "link": "/api/v1/teams/143"
+     },
+     "gameType": "R",
+     "numTeams": 1,
+     "rank": 1,
+     "pitcher": {
+      "id": 430935,
+      "fullName": "Cole Hamels",
+      "link": "/api/v1/people/430935",
+      "firstName": "Colbert",
+      "lastName": "Hamels"
+     },
+     "batter": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     }
+    },
+    {
+     "season": "2013",
+     "stats": {
+      "running": {
+       "standard": {
+        "gamesPlayed": 1,
+        "runs": 0,
+        "caughtStealing": 0,
+        "stolenBases": 0,
+        "stolenBasePercentage": ".---",
+        "caughtStealingPercentage": ".---"
+       }
+      }
+     },
+     "team": {
+      "id": 134,
+      "name": "Pittsburgh Pirates",
+      "link": "/api/v1/teams/134"
+     },
+     "opponent": {
+      "id": 112,
+      "name": "Chicago Cubs",
+      "link": "/api/v1/teams/112"
+     },
+     "gameType": "R",
+     "numTeams": 1,
+     "rank": 1,
+     "pitcher": {
+      "id": 435044,
+      "fullName": "Scott Baker",
+      "link": "/api/v1/people/435044",
+      "firstName": "Timothy",
+      "lastName": "Baker"
+     },
+     "batter": {
+      "id": 543037,
+      "fullName": "Gerrit Cole",
+      "link": "/api/v1/people/543037",
+      "firstName": "Gerrit",
+      "lastName": "Cole"
+     }
+    }
+   ]
+  }
+ ]
+}

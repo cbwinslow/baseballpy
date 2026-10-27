@@ -18,6 +18,7 @@ from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.core.stores import ProcessedStore
 from baseballpy.sources import catalog
+from baseballpy.sources.retrosheet.box_parser import decode_box, parse_box_text
 from baseballpy.sources.retrosheet.downloader import RetrosheetDownloader
 from baseballpy.sources.retrosheet.pool import parse_stream
 from baseballpy.sources.retrosheet.tree import POSTSEASON_GAMELOG_KINDS
@@ -30,6 +31,7 @@ SEASON_DATASETS = (
     "events_postseason",
     "events_deduced",
     "boxscores",  # writes boxscores_batting and boxscores_pitching
+    "box_accounts",  # writes the four box_* datasets from the .EB* files
     "daily_splits",
     "substitutions",
     "rosters",
@@ -39,6 +41,8 @@ SEASON_DATASETS = (
     "umpires",
     "discrepancies",
 )
+
+BOX_DATASETS = ("box_games", "box_starters", "box_batting_lines", "box_records")
 
 _EVENT_KIND = {
     "events": "event_regular",
@@ -241,6 +245,32 @@ class RetrosheetSource:
             pa.concat_tables(pitching) if pitching else spec_p.schema.empty_table(),
         )
 
+    def box_accounts(self, year: int, refresh: bool = False) -> dict[str, pa.Table]:
+        """Box-score game accounts (``.EBA/.EBN/.EBE/.EBR/.EBF``) as the four ``box_*`` datasets.
+
+        Seasons whose games exist only as box accounts (many before 1920) have no play-by-play
+        events; seasons without any ``.EB*`` file store empty tables so the views keep a schema.
+        """
+        chunk = f"box_{year}"
+        cached = all(self.store.is_cached(_spec(n), chunk, year) for n in BOX_DATASETS)
+        if self.cache_config.enabled and not refresh and cached:
+            return {n: self.store.read_part(_spec(n), chunk, year) for n in BOX_DATASETS}
+        self.downloader.download_season(year, kinds=("box",), refresh=refresh)
+        parsed = [
+            parse_box_text(decode_box(path.read_bytes()), path.name)
+            for path in self.downloader.local_paths(year, "box")
+        ]
+        out: dict[str, pa.Table] = {}
+        for name in BOX_DATASETS:
+            parts = [t.by_name()[name] for t in parsed]
+            table = pa.concat_tables(parts) if parts else _spec(name).schema.empty_table()
+            out[name] = table
+            if self.cache_config.enabled:
+                self.store.put_stream(
+                    _spec(name), iter([table]), chunk_id=chunk, season=year, source_ref=self._ref
+                )
+        return out
+
     def daily_splits(self, year: int, refresh: bool = False) -> pa.Table:
         """Daily player appearance lines derived from the regular-season event files."""
         return self._derived("daily_splits", "daily_splits", "daily_splits", year, refresh)
@@ -361,6 +391,16 @@ class RetrosheetSource:
                 bat, pit = self.boxscores(year, refresh)
                 report.datasets["boxscores_batting"] = None if cached and not refresh else len(bat)
                 report.datasets["boxscores_pitching"] = None if cached and not refresh else len(pit)
+                continue
+            if name == "box_accounts":
+                box_cached = all(
+                    self.store.is_cached(_spec(n), f"box_{year}", year) for n in BOX_DATASETS
+                )
+                tables = self.box_accounts(year, refresh)
+                for box_name, box_table in tables.items():
+                    report.datasets[box_name] = (
+                        None if box_cached and not refresh else len(box_table)
+                    )
                 continue
             chunk = {
                 "events": "events",

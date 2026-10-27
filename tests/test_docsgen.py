@@ -7,7 +7,13 @@ from click.testing import CliRunner
 
 from baseballpy.cli import main
 from baseballpy.core.datasets import DATASETS, get_dataset
-from baseballpy.docsgen import generate_docs, render_dataset, render_source_doc, stale_blocks
+from baseballpy.docsgen import (
+    Described,
+    generate_docs,
+    render_dataset,
+    render_source_doc,
+    stale_blocks,
+)
 from baseballpy.sources import catalog
 
 DOCS = Path(__file__).parent.parent / "docs"
@@ -32,12 +38,18 @@ def test_every_dataset_has_a_generated_block_with_every_column() -> None:
 
 def test_render_dataset_documents_view_key_types_and_upstream_names() -> None:
     catalog.register_all()
-    block = render_dataset(get_dataset("retrosheet", "schedule"), {"game_date": "Scheduled date"})
+    block = render_dataset(
+        get_dataset("retrosheet", "schedule"),
+        {"schedule": {"game_date": Described("Scheduled date", None, True)}},
+    )
     assert "<!-- BEGIN GENERATED:retrosheet.schedule -->" in block
     assert "### Dataset: schedule" in block
     assert "`retrosheet_schedule`" in block and "season=YYYY" in block
-    assert "| `game_date` | date32[day] (`%Y%m%d`) | yes | `Date` | Scheduled date |" in block
-    assert "| `visitor_team` | string | yes | `Visitor` |  |" in block
+    assert (
+        "| `game_date` | date32[day] (`%Y%m%d`) | yes | `Date` | Scheduled date (authored) |"
+        in block
+    )
+    assert "| `visitor_team` | string | yes | `Visitor` | TODO |" in block
     assert "`_extras`" in block
 
 

@@ -94,118 +94,144 @@
     },
     {
      "stat": {
-      "name": "earnedRunAverage",
+      "name": "sluggingPercentage",
       "zones": [
        {
         "zone": "01",
-        "value": "-"
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".394"
        },
        {
         "zone": "02",
-        "value": "-"
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".531"
        },
        {
         "zone": "03",
-        "value": "-"
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".500"
        },
        {
         "zone": "04",
-        "value": "-"
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".286"
        },
        {
         "zone": "05",
-        "value": "-"
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".408"
        },
        {
         "zone": "06",
-        "value": "-"
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".615"
        },
        {
         "zone": "07",
-        "value": "-"
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "1.083"
        },
        {
         "zone": "08",
-        "value": "-"
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".400"
        },
        {
         "zone": "09",
-        "value": "-"
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".094"
        },
        {
         "zone": "11",
-        "value": "-"
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".296"
        },
        {
         "zone": "12",
-        "value": "-"
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".050"
        },
        {
         "zone": "13",
-        "value": "-"
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".267"
        },
        {
         "zone": "14",
-        "value": "-"
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".038"
        }
       ]
      }
     },
     {
      "stat": {
-      "name": "numberOfStrikes",
+      "name": "numberOfPitches",
       "zones": [
        {
         "zone": "01",
-        "value": "77.00"
+        "value": "102.00"
        },
        {
         "zone": "02",
-        "value": "67.00"
+        "value": "92.00"
        },
        {
         "zone": "03",
-        "value": "34.00"
+        "value": "57.00"
        },
        {
         "zone": "04",
-        "value": "70.00"
+        "value": "99.00"
        },
        {
         "zone": "05",
-        "value": "80.00"
+        "value": "124.00"
        },
        {
         "zone": "06",
-        "value": "59.00"
+        "value": "85.00"
        },
        {
         "zone": "07",
-        "value": "31.00"
+        "value": "43.00"
        },
        {
         "zone": "08",
-        "value": "65.00"
+        "value": "92.00"
        },
        {
         "zone": "09",
-        "value": "66.00"
+        "value": "87.00"
        },
        {
         "zone": "11",
-        "value": "61.00"
+        "value": "260.00"
        },
        {
         "zone": "12",
-        "value": "38.00"
+        "value": "131.00"
        },
        {
         "zone": "13",
-        "value": "22.00"
+        "value": "102.00"
        },
        {
         "zone": "14",
-        "value": "72.00"
+        "value": "260.00"
        }
       ]
      }
