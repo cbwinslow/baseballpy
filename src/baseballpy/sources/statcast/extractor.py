@@ -10,7 +10,7 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet
+from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger, get_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, get_http_client
@@ -70,6 +70,9 @@ class StatcastExtractor:
         )
         self.normalizer = StatcastNormalizer()
         self.manifest = ManifestTracker(self.cache_config.statcast_dir / "manifest.json")
+        cleanup_stale_parts(
+            self.cache_config.statcast_dir
+        )  # discard orphaned .part files from killed runs
 
     def _today(self) -> date:
         return self.cache_config.today or datetime.now().date()

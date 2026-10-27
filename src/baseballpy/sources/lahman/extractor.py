@@ -8,7 +8,7 @@ never be used: its data stops around 2023.
 import asyncio
 from pathlib import Path
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write
+from baseballpy.core.atomic import ManifestTracker, atomic_write, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, HttpResult, get_http_client
@@ -34,6 +34,9 @@ class LahmanExtractor:
         self.raw_dir = self.cache_config.lahman_dir / "raw"
         self.raw_dir.mkdir(parents=True, exist_ok=True)
         self.manifest = ManifestTracker(self.cache_config.lahman_dir / "manifest.json")
+        cleanup_stale_parts(
+            self.cache_config.lahman_dir
+        )  # discard orphaned .part files from killed runs
 
     def get_raw_path(self, table_name: str | LahmanTable) -> Path:
         """Return local path to raw CSV file."""

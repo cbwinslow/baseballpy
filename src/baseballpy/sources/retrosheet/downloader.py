@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from enum import StrEnum
 from pathlib import Path
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write
+from baseballpy.core.atomic import ManifestTracker, atomic_write, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, get_http_client
@@ -31,6 +31,10 @@ REFERENCE_TABLES = {
     "relatives": "reference/relatives.csv",
     "biofile": "reference/biofile.csv",
 }
+
+#: TEAM-file pseudo-teams (All-Star squads) whose games live in the all-star/postseason ``.EVE``
+#: files, so a missing ``{year}ALS.EVA``/``{year}NLS.EVN`` upstream is expected, not an error.
+OPTIONAL_TEAM_CODES = frozenset({"ALS", "NLS"})
 
 POSTSEASON_SUFFIXES = (
     "AS.EVE",
@@ -83,6 +87,7 @@ class RetrosheetDownloader:
         self.raw_dir = self.cache_config.retrosheet_dir / "raw"
         self.raw_dir.mkdir(parents=True, exist_ok=True)
         self.manifest = ManifestTracker(self.raw_dir / "manifest.json")
+        cleanup_stale_parts(self.raw_dir)  # discard orphaned .part files from killed runs
 
     def _get_season_dir(self, year: int) -> Path:
         path = self.raw_dir / str(year)
@@ -151,6 +156,7 @@ class RetrosheetDownloader:
             wanted: list[tuple[str, Path]] = []
             event_paths: list[Path] = []
             roster_paths: list[Path] = []
+            optional: set[Path] = set()
             for line in team_file.read_text(encoding="utf-8", errors="replace").splitlines():
                 parts = [p.strip() for p in line.strip().split(",")]
                 if not parts or not parts[0]:
@@ -162,12 +168,16 @@ class RetrosheetDownloader:
                 roster_name = f"{team_code}{year}.ROS"
                 event_paths.append(season_dir / event_name)
                 roster_paths.append(season_dir / roster_name)
+                if team_code.upper() in OPTIONAL_TEAM_CODES:
+                    optional.update({season_dir / event_name, season_dir / roster_name})
                 wanted.append((f"seasons/{year}/{event_name}", season_dir / event_name))
                 wanted.append((f"seasons/{year}/{roster_name}", season_dir / roster_name))
 
             outcomes = self._download_many(wanted, refresh)
             missing = sorted(
-                p.name for p in event_paths + roster_paths if outcomes[p] is FetchOutcome.ABSENT
+                p.name
+                for p in event_paths + roster_paths
+                if outcomes[p] is FetchOutcome.ABSENT and p not in optional
             )
 
             downloaded_files = [p for p in event_paths if outcomes[p] is not FetchOutcome.ABSENT]

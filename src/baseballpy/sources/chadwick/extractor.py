@@ -5,7 +5,7 @@ import concurrent.futures
 import logging
 from pathlib import Path
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write
+from baseballpy.core.atomic import ManifestTracker, atomic_write, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, HttpStatusError, TransportError, get_http_client
@@ -36,6 +36,9 @@ class ChadwickExtractor:
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
         self.manifest = ManifestTracker(self.cache_config.chadwick_dir / "manifest.json")
+        cleanup_stale_parts(
+            self.cache_config.chadwick_dir
+        )  # discard orphaned .part files from killed runs
 
     @property
     def shards_dir(self) -> Path:

@@ -626,3 +626,24 @@ def test_chadwick_sha_failure_is_logged_and_cache_served(
         http.close()
     assert "people-0.csv" in files
     assert any("Chadwick" in r.message for r in caplog.records)
+
+
+@respx.mock
+def test_retrosheet_allstar_pseudo_teams_may_be_absent(tmp_path: Path) -> None:
+    base = f"{GITHUB_RETROSHEET_BASE}/seasons/2003"
+    respx.get(f"{base}/TEAM2003").mock(
+        return_value=httpx.Response(
+            200, text="BOS,A,Boston,Red Sox\nALS,A,All-Star,AL\nNLS,N,All-Star,NL\n"
+        )
+    )
+    respx.get(f"{base}/2003BOS.EVA").mock(return_value=httpx.Response(200, content=b"id,x\n"))
+    respx.get(f"{base}/BOS2003.ROS").mock(return_value=httpx.Response(200, content=b"r\n"))
+    for name in ("2003ALS.EVA", "ALS2003.ROS", "2003NLS.EVN", "NLS2003.ROS"):
+        respx.get(f"{base}/{name}").mock(return_value=httpx.Response(404))
+    dl, http = _retro(tmp_path)
+    try:
+        files = dl.download_season(2003)
+    finally:
+        http.close()
+    assert [f.name for f in files] == ["2003BOS.EVA"]
+    assert dl.manifest.is_completed("season_2003")

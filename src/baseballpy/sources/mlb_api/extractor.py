@@ -7,7 +7,7 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet
+from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
 from baseballpy.core.freshness import is_fresh
@@ -35,6 +35,7 @@ class MlbApiExtractor:
         self.normalizer = MlbApiNormalizer()
         self.cache_dir = self.cache_config.mlb_api_dir
         self.manifest = ManifestTracker(self.cache_dir / "manifest.json")
+        cleanup_stale_parts(self.cache_dir)  # discard orphaned .part files from killed runs
 
     def _get_cache_file(self, category: str, identifier: str) -> Path:
         cat_dir = self.cache_dir / category
