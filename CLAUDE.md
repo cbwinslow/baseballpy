@@ -11,6 +11,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Never leave upstream data behind.** Every field, endpoint, group, level and file the provider offers is captured (typed column or `_extras`), even when another source has it. If something cannot be ingested, it stays registered as `unsupported` with probe evidence, or its raw bytes are kept; it is never silently skipped.
 - **Owner rules:** no subagents or workflows (work linearly in the session); Lahman comes only from `cbwinslow/lahman-database-csv` or user-supplied data, never `chadwickbureau/baseballdatabank`; commit per section with conventional messages, do not push; run the gates after every section; manual/live checks are really run and summarised in the commit.
 
+Autonomous runs: use `docs/agents/GOAL_SEEK_PROMPT.md` (loop with verification, audit and web-research protocol).
+
 ## Commands
 
 ```bash

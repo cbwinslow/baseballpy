@@ -178,4 +178,4 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 1. Tick `tasks.md` as work lands; when a change is finished merge its spec deltas into `openspec/specs/*` and move it to `openspec/changes/archive/<date>-<name>/`.
 2. Every deviation from a change's design is written into that change's `proposal.md`/`design.md` ("As built") and, if it is a decision, an ADR in `docs/DECISIONS.md`.
 3. Hand-typed counts and numbers do not belong in docs: use generated dictionaries and the probe JSON.
-
+4. Autonomous runs follow `docs/agents/GOAL_SEEK_PROMPT.md`; keep it aligned with this file.

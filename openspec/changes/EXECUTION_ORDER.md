@@ -26,3 +26,5 @@ Rules for the run (token-saving, per owner request):
 - Done and archived (`archive/2026-10-27-*`): `harden-ingestion-core`, `restructure-data-lake`, `complete-source-coverage`, `statcast-minor-league-pitches`, `statcast-chunk-alignment` (found and fixed after the coverage change closed).
 - `repo-hygiene-and-docs-sync`: tasks 1-3 done (license, coerce helpers, dependencies); 4-7 (lint policy, CI, docs rewrite, spec merge and archive) open.
 - `unified-pipeline-and-cli`: not started (`baseballpy ingest`, `catalog status`, `doctor`).
+- Proposed (not started), in suggested order: `catalog-completeness-audit` (needs `repo-hygiene-and-docs-sync` 5.1 for the weekly job), `retrosheet-box-accounts` (first task: obtain `boxfile.txt`), `column-descriptions-from-provider-metadata`, `historical-backfill-plan` (execution depends on `unified-pipeline-and-cli`).
+- Done and archived since: `agent-goal-seek-runbook` (`docs/agents/GOAL_SEEK_PROMPT.md`).
