@@ -1,0 +1,1503 @@
+{
+ "AllstarFull": {
+  "GP": {
+   "source": "lahman_readme",
+   "text": "1 if Played in the game"
+  },
+  "gameID": {
+   "source": "lahman_readme",
+   "text": "Retrosheet ID for the game"
+  },
+  "gameNum": {
+   "source": "lahman_readme",
+   "text": "Game number (zero if only one All-Star game played that season)"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "startingPos": {
+   "source": "lahman_readme",
+   "text": "If player was game starter, the position played, can have multiple positions listed"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "Appearances": {
+  "GS": {
+   "source": "lahman_readme",
+   "text": "Games started"
+  },
+  "G_1b": {
+   "source": "lahman_readme",
+   "text": "Games as first baseman"
+  },
+  "G_2b": {
+   "source": "lahman_readme",
+   "text": "Games as second baseman"
+  },
+  "G_3b": {
+   "source": "lahman_readme",
+   "text": "Games as third baseman"
+  },
+  "G_all": {
+   "source": "lahman_readme",
+   "text": "Total games played"
+  },
+  "G_batting": {
+   "source": "lahman_readme",
+   "text": "Games in which player batted"
+  },
+  "G_c": {
+   "source": "lahman_readme",
+   "text": "Games as catcher"
+  },
+  "G_cf": {
+   "source": "lahman_readme",
+   "text": "Games as center fielder"
+  },
+  "G_defense": {
+   "source": "lahman_readme",
+   "text": "Games in which player appeared on defense"
+  },
+  "G_dh": {
+   "source": "lahman_readme",
+   "text": "Games as designated hitter"
+  },
+  "G_lf": {
+   "source": "lahman_readme",
+   "text": "Games as left fielder"
+  },
+  "G_of": {
+   "source": "lahman_readme",
+   "text": "Games as outfielder (if a player appeared in a single game at multiple OF positions, this will count as one g_OF game)"
+  },
+  "G_p": {
+   "source": "lahman_readme",
+   "text": "Games as pitcher"
+  },
+  "G_ph": {
+   "source": "lahman_readme",
+   "text": "Games as pinch hitter"
+  },
+  "G_pr": {
+   "source": "lahman_readme",
+   "text": "Games as pinch runner"
+  },
+  "G_rf": {
+   "source": "lahman_readme",
+   "text": "Games as right fielder"
+  },
+  "G_ss": {
+   "source": "lahman_readme",
+   "text": "Games as shortstop"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "AwardsManagers": {
+  "awardID": {
+   "source": "lahman_readme",
+   "text": "Name of award won"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "notes": {
+   "source": "lahman_readme",
+   "text": "Notes about the award"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Manager ID code"
+  },
+  "tie": {
+   "source": "lahman_readme",
+   "text": "Award was a tie (Y or N)"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "AwardsPlayers": {
+  "awardID": {
+   "source": "lahman_readme",
+   "text": "Name of award won"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "notes": {
+   "source": "lahman_readme",
+   "text": "Notes about the award"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "tie": {
+   "source": "lahman_readme",
+   "text": "Award was a tie (Y or N)"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "AwardsShareManagers": {
+  "awardID": {
+   "source": "lahman_readme",
+   "text": "Name of award votes were received for"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Manager ID code"
+  },
+  "pointsMax": {
+   "source": "lahman_readme",
+   "text": "Maximum number of points possible"
+  },
+  "pointsWon": {
+   "source": "lahman_readme",
+   "text": "Number of points received"
+  },
+  "votesFirst": {
+   "source": "lahman_readme",
+   "text": "Number of first place votes"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "AwardsSharePlayers": {
+  "awardID": {
+   "source": "lahman_readme",
+   "text": "Name of award votes were received for"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "pointsMax": {
+   "source": "lahman_readme",
+   "text": "Maximum number of points possible"
+  },
+  "pointsWon": {
+   "source": "lahman_readme",
+   "text": "Number of points received"
+  },
+  "votesFirst": {
+   "source": "lahman_readme",
+   "text": "Number of first place votes"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "Batting": {
+  "2B": {
+   "source": "lahman_readme",
+   "text": "Doubles"
+  },
+  "3B": {
+   "source": "lahman_readme",
+   "text": "Triples"
+  },
+  "AB": {
+   "source": "lahman_readme",
+   "text": "At Bats"
+  },
+  "BB": {
+   "source": "lahman_readme",
+   "text": "Base on Balls"
+  },
+  "CS": {
+   "source": "lahman_readme",
+   "text": "Caught Stealing"
+  },
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games"
+  },
+  "GIDP": {
+   "source": "lahman_readme",
+   "text": "Grounded into double plays"
+  },
+  "H": {
+   "source": "lahman_readme",
+   "text": "Hits"
+  },
+  "HBP": {
+   "source": "lahman_readme",
+   "text": "Hit by pitch"
+  },
+  "HR": {
+   "source": "lahman_readme",
+   "text": "Homeruns"
+  },
+  "IBB": {
+   "source": "lahman_readme",
+   "text": "Intentional walks"
+  },
+  "R": {
+   "source": "lahman_readme",
+   "text": "Runs"
+  },
+  "RBI": {
+   "source": "lahman_readme",
+   "text": "Runs Batted In"
+  },
+  "SB": {
+   "source": "lahman_readme",
+   "text": "Stolen Bases"
+  },
+  "SF": {
+   "source": "lahman_readme",
+   "text": "Sacrifice flies"
+  },
+  "SH": {
+   "source": "lahman_readme",
+   "text": "Sacrifice hits"
+  },
+  "SO": {
+   "source": "lahman_readme",
+   "text": "Strikeouts"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "stint": {
+   "source": "lahman_readme",
+   "text": "player's stint (order of appearances within a season)"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "BattingPost": {
+  "2B": {
+   "source": "lahman_readme",
+   "text": "Doubles"
+  },
+  "3B": {
+   "source": "lahman_readme",
+   "text": "Triples"
+  },
+  "AB": {
+   "source": "lahman_readme",
+   "text": "At Bats"
+  },
+  "BB": {
+   "source": "lahman_readme",
+   "text": "Base on Balls"
+  },
+  "CS": {
+   "source": "lahman_readme",
+   "text": "Caught stealing"
+  },
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games"
+  },
+  "GIDP": {
+   "source": "lahman_readme",
+   "text": "Grounded into double plays"
+  },
+  "H": {
+   "source": "lahman_readme",
+   "text": "Hits"
+  },
+  "HBP": {
+   "source": "lahman_readme",
+   "text": "Hit by pitch"
+  },
+  "HR": {
+   "source": "lahman_readme",
+   "text": "Homeruns"
+  },
+  "IBB": {
+   "source": "lahman_readme",
+   "text": "Intentional walks"
+  },
+  "R": {
+   "source": "lahman_readme",
+   "text": "Runs"
+  },
+  "RBI": {
+   "source": "lahman_readme",
+   "text": "Runs Batted In"
+  },
+  "SB": {
+   "source": "lahman_readme",
+   "text": "Stolen Bases"
+  },
+  "SF": {
+   "source": "lahman_readme",
+   "text": "Sacrifice flies"
+  },
+  "SH": {
+   "source": "lahman_readme",
+   "text": "Sacrifices"
+  },
+  "SO": {
+   "source": "lahman_readme",
+   "text": "Strikeouts"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "round": {
+   "source": "lahman_readme",
+   "text": "Level of playoffs"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "CollegePlaying": {
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "schoolID": {
+   "source": "lahman_readme",
+   "text": "School ID code"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "Fielding": {
+  "A": {
+   "source": "lahman_readme",
+   "text": "Assists"
+  },
+  "CS": {
+   "source": "lahman_readme",
+   "text": "Opponents Caught Stealing (by catchers)"
+  },
+  "DP": {
+   "source": "lahman_readme",
+   "text": "Double Plays"
+  },
+  "E": {
+   "source": "lahman_readme",
+   "text": "Errors"
+  },
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games"
+  },
+  "GS": {
+   "source": "lahman_readme",
+   "text": "Games Started"
+  },
+  "InnOuts": {
+   "source": "lahman_readme",
+   "text": "Time played in the field expressed as outs"
+  },
+  "PB": {
+   "source": "lahman_readme",
+   "text": "Passed Balls (by catchers)"
+  },
+  "PO": {
+   "source": "lahman_readme",
+   "text": "Putouts"
+  },
+  "POS": {
+   "source": "lahman_readme",
+   "text": "Position"
+  },
+  "SB": {
+   "source": "lahman_readme",
+   "text": "Opponent Stolen Bases (by catchers)"
+  },
+  "WP": {
+   "source": "lahman_readme",
+   "text": "Wild Pitches (by catchers)"
+  },
+  "ZR": {
+   "source": "lahman_readme",
+   "text": "Zone Rating"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "stint": {
+   "source": "lahman_readme",
+   "text": "player's stint (order of appearances within a season)"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "FieldingOF": {
+  "Gcf": {
+   "source": "lahman_readme",
+   "text": "Games played in center field"
+  },
+  "Glf": {
+   "source": "lahman_readme",
+   "text": "Games played in left field"
+  },
+  "Grf": {
+   "source": "lahman_readme",
+   "text": "Games played in right field"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "stint": {
+   "source": "lahman_readme",
+   "text": "Player's stint (order of appearances within a season)"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "FieldingOFsplit": {
+  "A": {
+   "source": "lahman_readme",
+   "text": "Assists"
+  },
+  "DP": {
+   "source": "lahman_readme",
+   "text": "Double Plays"
+  },
+  "E": {
+   "source": "lahman_readme",
+   "text": "Errors"
+  },
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games"
+  },
+  "GS": {
+   "source": "lahman_readme",
+   "text": "Games Started"
+  },
+  "InnOuts": {
+   "source": "lahman_readme",
+   "text": "Time played in the field expressed as outs"
+  },
+  "PO": {
+   "source": "lahman_readme",
+   "text": "Putouts"
+  },
+  "POS": {
+   "source": "lahman_readme",
+   "text": "Position"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "stint": {
+   "source": "lahman_readme",
+   "text": "Player's stint (order of appearances within a season)"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "FieldingPost": {
+  "A": {
+   "source": "lahman_readme",
+   "text": "Assists"
+  },
+  "CS": {
+   "source": "lahman_readme",
+   "text": "Caught Stealing (by catcher)"
+  },
+  "DP": {
+   "source": "lahman_readme",
+   "text": "Double Plays"
+  },
+  "E": {
+   "source": "lahman_readme",
+   "text": "Errors"
+  },
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games"
+  },
+  "GS": {
+   "source": "lahman_readme",
+   "text": "Games Started"
+  },
+  "InnOuts": {
+   "source": "lahman_readme",
+   "text": "Time played in the field expressed as outs (innings played x 3)"
+  },
+  "PB": {
+   "source": "lahman_readme",
+   "text": "Passed Balls"
+  },
+  "PO": {
+   "source": "lahman_readme",
+   "text": "Putouts"
+  },
+  "POS": {
+   "source": "lahman_readme",
+   "text": "Position"
+  },
+  "SB": {
+   "source": "lahman_readme",
+   "text": "Stolen Bases allowed (by catcher)"
+  },
+  "TP": {
+   "source": "lahman_readme",
+   "text": "Triple Plays"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "round": {
+   "source": "lahman_readme",
+   "text": "Level of playoffs"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "HallOfFame": {
+  "ballots": {
+   "source": "lahman_readme",
+   "text": "Total ballots cast in that year"
+  },
+  "category": {
+   "source": "lahman_readme",
+   "text": "Category in which candidate was honored"
+  },
+  "inducted": {
+   "source": "lahman_readme",
+   "text": "Whether player was inducted by that vote or not (Y or N)"
+  },
+  "needed": {
+   "source": "lahman_readme",
+   "text": "Number of votes needed for selection in that year"
+  },
+  "needed_note": {
+   "source": "lahman_readme",
+   "text": "Explanation of qualifiers for special elections, revised in 2023 to include important notes about the record."
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "votedBy": {
+   "source": "lahman_readme",
+   "text": "Method by which player was voted upon"
+  },
+  "votes": {
+   "source": "lahman_readme",
+   "text": "Total votes received"
+  },
+  "yearid": {
+   "source": "lahman_readme",
+   "text": "Year of ballot"
+  }
+ },
+ "HomeGames": {
+  "attendance": {
+   "source": "lahman_readme",
+   "text": "Total attendance"
+  },
+  "games": {
+   "source": "lahman_readme",
+   "text": "Total number of games"
+  },
+  "leaguekey": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "openings": {
+   "source": "lahman_readme",
+   "text": "Total number of paid dates played (games with attendance, note that doubleheaders may make the openings less than games)"
+  },
+  "parkkey": {
+   "source": "lahman_readme",
+   "text": "Ballpark ID"
+  },
+  "spanfirst": {
+   "source": "lahman_readme",
+   "text": "Date of first game played"
+  },
+  "spanlast": {
+   "source": "lahman_readme",
+   "text": "Date of last game played"
+  },
+  "teamkey": {
+   "source": "lahman_readme",
+   "text": "Team ID"
+  },
+  "yearkey": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "Managers": {
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games managed"
+  },
+  "L": {
+   "source": "lahman_readme",
+   "text": "Losses"
+  },
+  "W": {
+   "source": "lahman_readme",
+   "text": "Wins"
+  },
+  "inseason": {
+   "source": "lahman_readme",
+   "text": "Managerial order, in order of appearance during the year.  One if the individual managed the team the entire year."
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID Number"
+  },
+  "plyrMgr": {
+   "source": "lahman_readme",
+   "text": "Player Manager (denoted by 'Y')"
+  },
+  "rank": {
+   "source": "lahman_readme",
+   "text": "Team's final position in standings that year"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "ManagersHalf": {
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games managed"
+  },
+  "L": {
+   "source": "lahman_readme",
+   "text": "Losses"
+  },
+  "W": {
+   "source": "lahman_readme",
+   "text": "Wins"
+  },
+  "half": {
+   "source": "lahman_readme",
+   "text": "First or second half of season"
+  },
+  "inseason": {
+   "source": "lahman_readme",
+   "text": "Managerial order, in order of appearance during the year, 1 if the individual managed the team the entire year"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Manager ID code"
+  },
+  "rank": {
+   "source": "lahman_readme",
+   "text": "Team's position in standings for the half"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "Parks": {
+  "city": {
+   "source": "lahman_readme",
+   "text": "City"
+  },
+  "country": {
+   "source": "lahman_readme",
+   "text": "Country"
+  },
+  "parkalias": {
+   "source": "lahman_readme",
+   "text": "Alternate names of ballpark, separated by semicolon"
+  },
+  "parkkey": {
+   "source": "lahman_readme",
+   "text": "Ballpark ID code"
+  },
+  "parkname": {
+   "source": "lahman_readme",
+   "text": "Name of ballpark"
+  },
+  "state": {
+   "source": "lahman_readme",
+   "text": "State"
+  }
+ },
+ "People": {
+  "ID": {
+   "source": "lahman_readme",
+   "text": "Numeric ID, not used anywhere else."
+  },
+  "bats": {
+   "source": "lahman_readme",
+   "text": "Player's batting hand (left, right, or both)"
+  },
+  "bbrefID": {
+   "source": "lahman_readme",
+   "text": "ID used by Baseball Reference website"
+  },
+  "birthCity": {
+   "source": "lahman_readme",
+   "text": "City where player was born"
+  },
+  "birthCountry": {
+   "source": "lahman_readme",
+   "text": "Country where player was born"
+  },
+  "birthDay": {
+   "source": "lahman_readme",
+   "text": "Day player was born"
+  },
+  "birthMonth": {
+   "source": "lahman_readme",
+   "text": "Month player was born"
+  },
+  "birthState": {
+   "source": "lahman_readme",
+   "text": "State where player was born"
+  },
+  "birthYear": {
+   "source": "lahman_readme",
+   "text": "Year player was born"
+  },
+  "deathCity": {
+   "source": "lahman_readme",
+   "text": "City where player died"
+  },
+  "deathCountry": {
+   "source": "lahman_readme",
+   "text": "Country where player died"
+  },
+  "deathDay": {
+   "source": "lahman_readme",
+   "text": "Day player died"
+  },
+  "deathMonth": {
+   "source": "lahman_readme",
+   "text": "Month player died"
+  },
+  "deathState": {
+   "source": "lahman_readme",
+   "text": "State where player died"
+  },
+  "deathYear": {
+   "source": "lahman_readme",
+   "text": "Year player died"
+  },
+  "debut": {
+   "source": "lahman_readme",
+   "text": "Date that player made first major league appearance"
+  },
+  "finalGame": {
+   "source": "lahman_readme",
+   "text": "Date that player made last major league appearance"
+  },
+  "height": {
+   "source": "lahman_readme",
+   "text": "Player's height in inches"
+  },
+  "nameFirst": {
+   "source": "lahman_readme",
+   "text": "Player's first name"
+  },
+  "nameGiven": {
+   "source": "lahman_readme",
+   "text": "Player's given name (typically first and middle)"
+  },
+  "nameLast": {
+   "source": "lahman_readme",
+   "text": "Player's last name"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "A unique code assigned to each player.  The playerID links the data in this file with records in the other files."
+  },
+  "retroID": {
+   "source": "lahman_readme",
+   "text": "ID used by Retrosheet"
+  },
+  "throws": {
+   "source": "lahman_readme",
+   "text": "Player's throwing hand (left or right)"
+  },
+  "weight": {
+   "source": "lahman_readme",
+   "text": "Player's weight in pounds"
+  }
+ },
+ "Pitching": {
+  "BAOpp": {
+   "source": "lahman_readme",
+   "text": "Opponent's Batting Average"
+  },
+  "BB": {
+   "source": "lahman_readme",
+   "text": "Walks"
+  },
+  "BFP": {
+   "source": "lahman_readme",
+   "text": "Batters faced by Pitcher"
+  },
+  "BK": {
+   "source": "lahman_readme",
+   "text": "Balks"
+  },
+  "CG": {
+   "source": "lahman_readme",
+   "text": "Complete Games"
+  },
+  "ER": {
+   "source": "lahman_readme",
+   "text": "Earned Runs"
+  },
+  "ERA": {
+   "source": "lahman_readme",
+   "text": "Earned Run Average"
+  },
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games"
+  },
+  "GF": {
+   "source": "lahman_readme",
+   "text": "Games Finished"
+  },
+  "GIDP": {
+   "source": "lahman_readme",
+   "text": "Grounded into double plays by opposing batter"
+  },
+  "GS": {
+   "source": "lahman_readme",
+   "text": "Games Started"
+  },
+  "H": {
+   "source": "lahman_readme",
+   "text": "Hits"
+  },
+  "HBP": {
+   "source": "lahman_readme",
+   "text": "Batters Hit By Pitch"
+  },
+  "HR": {
+   "source": "lahman_readme",
+   "text": "Homeruns"
+  },
+  "IBB": {
+   "source": "lahman_readme",
+   "text": "Intentional Walks"
+  },
+  "IPouts": {
+   "source": "lahman_readme",
+   "text": "Outs Pitched (innings pitched x 3)"
+  },
+  "L": {
+   "source": "lahman_readme",
+   "text": "Losses"
+  },
+  "R": {
+   "source": "lahman_readme",
+   "text": "Runs Allowed"
+  },
+  "SF": {
+   "source": "lahman_readme",
+   "text": "Sacrifice flies by opposing batters"
+  },
+  "SH": {
+   "source": "lahman_readme",
+   "text": "Sacrifices by opposing batters"
+  },
+  "SHO": {
+   "source": "lahman_readme",
+   "text": "Shutouts"
+  },
+  "SO": {
+   "source": "lahman_readme",
+   "text": "Strikeouts"
+  },
+  "SV": {
+   "source": "lahman_readme",
+   "text": "Saves"
+  },
+  "W": {
+   "source": "lahman_readme",
+   "text": "Wins"
+  },
+  "WP": {
+   "source": "lahman_readme",
+   "text": "Wild Pitches"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "stint": {
+   "source": "lahman_readme",
+   "text": "player's stint (order of appearances within a season)"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "PitchingPost": {
+  "BAOpp": {
+   "source": "lahman_readme",
+   "text": "Opponents' batting average"
+  },
+  "BB": {
+   "source": "lahman_readme",
+   "text": "Walks"
+  },
+  "BFP": {
+   "source": "lahman_readme",
+   "text": "Batters faced by Pitcher"
+  },
+  "BK": {
+   "source": "lahman_readme",
+   "text": "Balks"
+  },
+  "CG": {
+   "source": "lahman_readme",
+   "text": "Complete Games"
+  },
+  "ER": {
+   "source": "lahman_readme",
+   "text": "Earned Runs"
+  },
+  "ERA": {
+   "source": "lahman_readme",
+   "text": "Earned Run Average"
+  },
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games"
+  },
+  "GF": {
+   "source": "lahman_readme",
+   "text": "Games Finished"
+  },
+  "GIDP": {
+   "source": "lahman_readme",
+   "text": "Grounded into Double Plays"
+  },
+  "GS": {
+   "source": "lahman_readme",
+   "text": "Games Started"
+  },
+  "H": {
+   "source": "lahman_readme",
+   "text": "Hits"
+  },
+  "HBP": {
+   "source": "lahman_readme",
+   "text": "Batters Hit By Pitch"
+  },
+  "HR": {
+   "source": "lahman_readme",
+   "text": "Homeruns"
+  },
+  "IBB": {
+   "source": "lahman_readme",
+   "text": "Intentional Walks"
+  },
+  "IPouts": {
+   "source": "lahman_readme",
+   "text": "Outs Pitched (innings pitched x 3)"
+  },
+  "L": {
+   "source": "lahman_readme",
+   "text": "Losses"
+  },
+  "R": {
+   "source": "lahman_readme",
+   "text": "Runs Allowed"
+  },
+  "SF": {
+   "source": "lahman_readme",
+   "text": "Sacrifice Flies allowed"
+  },
+  "SH": {
+   "source": "lahman_readme",
+   "text": "Sacrifice Hits allowed"
+  },
+  "SHO": {
+   "source": "lahman_readme",
+   "text": "Shutouts"
+  },
+  "SO": {
+   "source": "lahman_readme",
+   "text": "Strikeouts"
+  },
+  "SV": {
+   "source": "lahman_readme",
+   "text": "Saves"
+  },
+  "W": {
+   "source": "lahman_readme",
+   "text": "Wins"
+  },
+  "WP": {
+   "source": "lahman_readme",
+   "text": "Wild Pitches"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "round": {
+   "source": "lahman_readme",
+   "text": "Level of playoffs"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "Salaries": {
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "playerID": {
+   "source": "lahman_readme",
+   "text": "Player ID code"
+  },
+  "salary": {
+   "source": "lahman_readme",
+   "text": "Salary"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "Schools": {
+  "schoolID": {
+   "source": "lahman_readme",
+   "text": "School ID code"
+  }
+ },
+ "SeriesPost": {
+  "lgIDloser": {
+   "source": "lahman_readme",
+   "text": "League ID of the team that lost the series"
+  },
+  "lgIDwinner": {
+   "source": "lahman_readme",
+   "text": "League ID of the team that won the series"
+  },
+  "losses": {
+   "source": "lahman_readme",
+   "text": "Losses by team that won the series"
+  },
+  "round": {
+   "source": "lahman_readme",
+   "text": "Level of playoffs"
+  },
+  "teamIDloser": {
+   "source": "lahman_readme",
+   "text": "Team ID of the team that lost the series"
+  },
+  "teamIDwinner": {
+   "source": "lahman_readme",
+   "text": "Team ID of the team that won the series"
+  },
+  "ties": {
+   "source": "lahman_readme",
+   "text": "Tie games"
+  },
+  "wins": {
+   "source": "lahman_readme",
+   "text": "Wins by team that won the series"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "Teams": {
+  "2B": {
+   "source": "lahman_readme",
+   "text": "Doubles"
+  },
+  "3B": {
+   "source": "lahman_readme",
+   "text": "Triples"
+  },
+  "AB": {
+   "source": "lahman_readme",
+   "text": "At bats"
+  },
+  "BB": {
+   "source": "lahman_readme",
+   "text": "Walks by batters"
+  },
+  "BBA": {
+   "source": "lahman_readme",
+   "text": "Walks allowed"
+  },
+  "BPF": {
+   "source": "lahman_readme",
+   "text": "Three-year park factor for batters"
+  },
+  "CG": {
+   "source": "lahman_readme",
+   "text": "Complete games"
+  },
+  "CS": {
+   "source": "lahman_readme",
+   "text": "Caught stealing"
+  },
+  "DP": {
+   "source": "lahman_readme",
+   "text": "Double Plays (team level)"
+  },
+  "DivWin": {
+   "source": "lahman_readme",
+   "text": "Division Winner (Y or N)"
+  },
+  "E": {
+   "source": "lahman_readme",
+   "text": "Errors"
+  },
+  "ER": {
+   "source": "lahman_readme",
+   "text": "Earned runs allowed"
+  },
+  "ERA": {
+   "source": "lahman_readme",
+   "text": "Earned run average"
+  },
+  "FP": {
+   "source": "lahman_readme",
+   "text": "Fielding  percentage"
+  },
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games played"
+  },
+  "Ghome": {
+   "source": "lahman_readme",
+   "text": "Games played at home"
+  },
+  "H": {
+   "source": "lahman_readme",
+   "text": "Hits by batters"
+  },
+  "HA": {
+   "source": "lahman_readme",
+   "text": "Hits allowed"
+  },
+  "HBP": {
+   "source": "lahman_readme",
+   "text": "Batters hit by pitch"
+  },
+  "HR": {
+   "source": "lahman_readme",
+   "text": "Homeruns by batters"
+  },
+  "HRA": {
+   "source": "lahman_readme",
+   "text": "Homeruns allowed"
+  },
+  "IPouts": {
+   "source": "lahman_readme",
+   "text": "Outs Pitched (innings pitched x 3)"
+  },
+  "L": {
+   "source": "lahman_readme",
+   "text": "Losses"
+  },
+  "LgWin": {
+   "source": "lahman_readme",
+   "text": "League Champion (Y or N)"
+  },
+  "PPF": {
+   "source": "lahman_readme",
+   "text": "Three-year park factor for pitchers"
+  },
+  "R": {
+   "source": "lahman_readme",
+   "text": "Runs scored"
+  },
+  "RA": {
+   "source": "lahman_readme",
+   "text": "Opponents runs scored"
+  },
+  "Rank": {
+   "source": "lahman_readme",
+   "text": "Position in final standings"
+  },
+  "SB": {
+   "source": "lahman_readme",
+   "text": "Stolen bases"
+  },
+  "SF": {
+   "source": "lahman_readme",
+   "text": "Sacrifice flies"
+  },
+  "SHO": {
+   "source": "lahman_readme",
+   "text": "Shutouts (team level)"
+  },
+  "SO": {
+   "source": "lahman_readme",
+   "text": "Strikeouts by batters"
+  },
+  "SOA": {
+   "source": "lahman_readme",
+   "text": "Strikeouts by pitchers"
+  },
+  "SV": {
+   "source": "lahman_readme",
+   "text": "Saves"
+  },
+  "W": {
+   "source": "lahman_readme",
+   "text": "Wins"
+  },
+  "WCWin": {
+   "source": "lahman_readme",
+   "text": "Wild Card Winner (Y or N)"
+  },
+  "WSWin": {
+   "source": "lahman_readme",
+   "text": "World Series Winner (Y or N)"
+  },
+  "attendance": {
+   "source": "lahman_readme",
+   "text": "Home attendance total"
+  },
+  "divID": {
+   "source": "lahman_readme",
+   "text": "Team's division"
+  },
+  "franchID": {
+   "source": "lahman_readme",
+   "text": "Franchise (links to TeamsFranchise table)"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "name": {
+   "source": "lahman_readme",
+   "text": "Team's full name"
+  },
+  "park": {
+   "source": "lahman_readme",
+   "text": "Name of team's home ballpark"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "teamIDBR": {
+   "source": "lahman_readme",
+   "text": "Team ID used by Baseball Reference website"
+  },
+  "teamIDretro": {
+   "source": "lahman_readme",
+   "text": "Team ID used by Retrosheet"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "TeamsFranchises": {
+  "NAassoc": {
+   "source": "lahman_readme",
+   "text": "ID of National Association team franchise played as"
+  },
+  "active": {
+   "source": "lahman_readme",
+   "text": "Whether team is currently active or not (Y or N)"
+  },
+  "franchID": {
+   "source": "lahman_readme",
+   "text": "Franchise ID"
+  },
+  "franchName": {
+   "source": "lahman_readme",
+   "text": "Franchise name"
+  }
+ },
+ "TeamsHalf": {
+  "DivWin": {
+   "source": "lahman_readme",
+   "text": "Won Division (Y or N)"
+  },
+  "G": {
+   "source": "lahman_readme",
+   "text": "Games played"
+  },
+  "Half": {
+   "source": "lahman_readme",
+   "text": "First or second half of season"
+  },
+  "L": {
+   "source": "lahman_readme",
+   "text": "Losses"
+  },
+  "Rank": {
+   "source": "lahman_readme",
+   "text": "Team's position in standings for the half"
+  },
+  "W": {
+   "source": "lahman_readme",
+   "text": "Wins"
+  },
+  "divID": {
+   "source": "lahman_readme",
+   "text": "Division"
+  },
+  "lgID": {
+   "source": "lahman_readme",
+   "text": "League"
+  },
+  "teamID": {
+   "source": "lahman_readme",
+   "text": "Team"
+  },
+  "yearID": {
+   "source": "lahman_readme",
+   "text": "Year"
+  }
+ },
+ "_sources": {
+  "lahman_readme": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/main/data/readme2025.txt"
+ }
+}

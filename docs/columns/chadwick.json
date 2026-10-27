@@ -1,0 +1,163 @@
+{
+ "*": {
+  "birth_day": {
+   "source": "chadwick_readme",
+   "text": "Basic name component or date of birth/death (README: People files)."
+  },
+  "birth_month": {
+   "source": "chadwick_readme",
+   "text": "Basic name component or date of birth/death (README: People files)."
+  },
+  "birth_year": {
+   "source": "chadwick_readme",
+   "text": "Basic name component or date of birth/death (README: People files)."
+  },
+  "col_managed_first": {
+   "source": "chadwick_readme",
+   "text": "First year spanned as manager in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "col_managed_last": {
+   "source": "chadwick_readme",
+   "text": "Last year spanned as manager in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "col_played_first": {
+   "source": "chadwick_readme",
+   "text": "First year spanned as player in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "col_played_last": {
+   "source": "chadwick_readme",
+   "text": "Last year spanned as player in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "col_umpired_first": {
+   "source": "chadwick_readme",
+   "text": "First year spanned as umpirer in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "col_umpired_last": {
+   "source": "chadwick_readme",
+   "text": "Last year spanned as umpirer in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "death_day": {
+   "source": "chadwick_readme",
+   "text": "Basic name component or date of birth/death (README: People files)."
+  },
+  "death_month": {
+   "source": "chadwick_readme",
+   "text": "Basic name component or date of birth/death (README: People files)."
+  },
+  "death_year": {
+   "source": "chadwick_readme",
+   "text": "Basic name component or date of birth/death (README: People files)."
+  },
+  "key_bbref": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier on Major League pages on baseball-reference.com."
+  },
+  "key_bbref_minors": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier on minor league pages on baseball-reference.com."
+  },
+  "key_fangraphs": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier on fangraphs.com."
+  },
+  "key_mlbam": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier at MLBAM."
+  },
+  "key_npb": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier on the NPB official site, npb.or.jp."
+  },
+  "key_person": {
+   "source": "chadwick_readme",
+   "text": "The first eight (hex) digits of the key_uuid; unique at any given time, but over time the same short key may be re-used for a different identity."
+  },
+  "key_retro": {
+   "source": "chadwick_readme",
+   "text": "The person's Retrosheet identifier."
+  },
+  "key_sr_nba": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier on basketball-reference.com."
+  },
+  "key_sr_nfl": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier on pro-football-reference.com."
+  },
+  "key_sr_nhl": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier on hockey-reference.com."
+  },
+  "key_uuid": {
+   "source": "chadwick_readme",
+   "text": "The primary key. This is guaranteed not to be re-used to label a different identity."
+  },
+  "key_wikidata": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier on wikidata.org."
+  },
+  "mlb_managed_first": {
+   "source": "chadwick_readme",
+   "text": "First year spanned as manager in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "mlb_managed_last": {
+   "source": "chadwick_readme",
+   "text": "Last year spanned as manager in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "mlb_played_first": {
+   "source": "chadwick_readme",
+   "text": "First year spanned as player in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "mlb_played_last": {
+   "source": "chadwick_readme",
+   "text": "Last year spanned as player in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "mlb_umpired_first": {
+   "source": "chadwick_readme",
+   "text": "First year spanned as umpirer in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "mlb_umpired_last": {
+   "source": "chadwick_readme",
+   "text": "Last year spanned as umpirer in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "name_first": {
+   "source": "chadwick_readme",
+   "text": "Basic name component or date of birth/death (README: People files)."
+  },
+  "name_given": {
+   "source": "chadwick_readme",
+   "text": "Basic name component or date of birth/death (README: People files)."
+  },
+  "name_last": {
+   "source": "chadwick_readme",
+   "text": "Basic name component or date of birth/death (README: People files)."
+  },
+  "pro_managed_first": {
+   "source": "chadwick_readme",
+   "text": "First year spanned as manager in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "pro_managed_last": {
+   "source": "chadwick_readme",
+   "text": "Last year spanned as manager in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "pro_played_first": {
+   "source": "chadwick_readme",
+   "text": "First year spanned as player in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "pro_played_last": {
+   "source": "chadwick_readme",
+   "text": "Last year spanned as player in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "pro_umpired_first": {
+   "source": "chadwick_readme",
+   "text": "First year spanned as umpirer in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete)."
+  },
+  "pro_umpired_last": {
+   "source": "chadwick_readme",
+   "text": "Last year spanned as umpirer in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete)."
+  }
+ },
+ "_sources": {
+  "chadwick_readme": "https://raw.githubusercontent.com/chadwickbureau/register/master/README.md"
+ }
+}

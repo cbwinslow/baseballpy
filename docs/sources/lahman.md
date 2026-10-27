@@ -126,7 +126,7 @@ print(top_hr_seasons)
 <!-- BEGIN GENERATED:lahman.description_sources -->
 ### Description sources
 
-No column descriptions have been written for this source yet.
+- `lahman_readme`: https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/main/data/readme2025.txt
 
 <!-- END GENERATED:lahman.description_sources -->
 
@@ -142,14 +142,14 @@ Lahman AllstarFull table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `gameNum` | int16 | yes | — | TODO |
-| `gameID` | string | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `GP` | int16 | yes | — | TODO |
-| `startingPos` | string | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `gameNum` | int16 | yes | — | Game number (zero if only one All-Star game played that season) (src: lahman_readme) |
+| `gameID` | string | yes | — | Retrosheet ID for the game (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `GP` | int16 | yes | — | 1 if Played in the game (src: lahman_readme) |
+| `startingPos` | string | yes | — | If player was game starter, the position played, can have multiple positions listed (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AllstarFull -->
@@ -166,27 +166,27 @@ Lahman Appearances table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `playerID` | string | yes | — | TODO |
-| `G_all` | int16 | yes | — | TODO |
-| `GS` | int16 | yes | — | TODO |
-| `G_batting` | int16 | yes | — | TODO |
-| `G_defense` | int16 | yes | — | TODO |
-| `G_p` | int16 | yes | — | TODO |
-| `G_c` | int16 | yes | — | TODO |
-| `G_1b` | int16 | yes | — | TODO |
-| `G_2b` | int16 | yes | — | TODO |
-| `G_3b` | int16 | yes | — | TODO |
-| `G_ss` | int16 | yes | — | TODO |
-| `G_lf` | int16 | yes | — | TODO |
-| `G_cf` | int16 | yes | — | TODO |
-| `G_rf` | int16 | yes | — | TODO |
-| `G_of` | int16 | yes | — | TODO |
-| `G_dh` | int16 | yes | — | TODO |
-| `G_ph` | int16 | yes | — | TODO |
-| `G_pr` | int16 | yes | — | TODO |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `G_all` | int16 | yes | — | Total games played (src: lahman_readme) |
+| `GS` | int16 | yes | — | Games started (src: lahman_readme) |
+| `G_batting` | int16 | yes | — | Games in which player batted (src: lahman_readme) |
+| `G_defense` | int16 | yes | — | Games in which player appeared on defense (src: lahman_readme) |
+| `G_p` | int16 | yes | — | Games as pitcher (src: lahman_readme) |
+| `G_c` | int16 | yes | — | Games as catcher (src: lahman_readme) |
+| `G_1b` | int16 | yes | — | Games as first baseman (src: lahman_readme) |
+| `G_2b` | int16 | yes | — | Games as second baseman (src: lahman_readme) |
+| `G_3b` | int16 | yes | — | Games as third baseman (src: lahman_readme) |
+| `G_ss` | int16 | yes | — | Games as shortstop (src: lahman_readme) |
+| `G_lf` | int16 | yes | — | Games as left fielder (src: lahman_readme) |
+| `G_cf` | int16 | yes | — | Games as center fielder (src: lahman_readme) |
+| `G_rf` | int16 | yes | — | Games as right fielder (src: lahman_readme) |
+| `G_of` | int16 | yes | — | Games as outfielder (if a player appeared in a single game at multiple OF positions, this will count as one g_OF game) (src: lahman_readme) |
+| `G_dh` | int16 | yes | — | Games as designated hitter (src: lahman_readme) |
+| `G_ph` | int16 | yes | — | Games as pinch hitter (src: lahman_readme) |
+| `G_pr` | int16 | yes | — | Games as pinch runner (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Appearances -->
@@ -203,12 +203,12 @@ Lahman AwardsManagers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `awardID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `tie` | string | yes | — | TODO |
-| `notes` | string | yes | — | TODO |
+| `playerID` | string | yes | — | Manager ID code (src: lahman_readme) |
+| `awardID` | string | yes | — | Name of award won (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `tie` | string | yes | — | Award was a tie (Y or N) (src: lahman_readme) |
+| `notes` | string | yes | — | Notes about the award (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AwardsManagers -->
@@ -225,12 +225,12 @@ Lahman AwardsPlayers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `awardID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `tie` | string | yes | — | TODO |
-| `notes` | string | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `awardID` | string | yes | — | Name of award won (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `tie` | string | yes | — | Award was a tie (Y or N) (src: lahman_readme) |
+| `notes` | string | yes | — | Notes about the award (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AwardsPlayers -->
@@ -247,13 +247,13 @@ Lahman AwardsShareManagers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `awardID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `playerID` | string | yes | — | TODO |
-| `pointsWon` | int16 | yes | — | TODO |
-| `pointsMax` | int16 | yes | — | TODO |
-| `votesFirst` | int16 | yes | — | TODO |
+| `awardID` | string | yes | — | Name of award votes were received for (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `playerID` | string | yes | — | Manager ID code (src: lahman_readme) |
+| `pointsWon` | int16 | yes | — | Number of points received (src: lahman_readme) |
+| `pointsMax` | int16 | yes | — | Maximum number of points possible (src: lahman_readme) |
+| `votesFirst` | int16 | yes | — | Number of first place votes (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AwardsShareManagers -->
@@ -270,13 +270,13 @@ Lahman AwardsSharePlayers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `awardID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `playerID` | string | yes | — | TODO |
-| `pointsWon` | int16 | yes | — | TODO |
-| `pointsMax` | int16 | yes | — | TODO |
-| `votesFirst` | int16 | yes | — | TODO |
+| `awardID` | string | yes | — | Name of award votes were received for (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `pointsWon` | int16 | yes | — | Number of points received (src: lahman_readme) |
+| `pointsMax` | int16 | yes | — | Maximum number of points possible (src: lahman_readme) |
+| `votesFirst` | int16 | yes | — | Number of first place votes (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.AwardsSharePlayers -->
@@ -293,28 +293,28 @@ Lahman Batting table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `stint` | int16 | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `AB` | int16 | yes | — | TODO |
-| `R` | int16 | yes | — | TODO |
-| `H` | int16 | yes | — | TODO |
-| `2B` | int16 | yes | — | TODO |
-| `3B` | int16 | yes | — | TODO |
-| `HR` | int16 | yes | — | TODO |
-| `RBI` | int16 | yes | — | TODO |
-| `SB` | int16 | yes | — | TODO |
-| `CS` | int16 | yes | — | TODO |
-| `BB` | int16 | yes | — | TODO |
-| `SO` | int16 | yes | — | TODO |
-| `IBB` | int16 | yes | — | TODO |
-| `HBP` | int16 | yes | — | TODO |
-| `SH` | int16 | yes | — | TODO |
-| `SF` | int16 | yes | — | TODO |
-| `GIDP` | int16 | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `stint` | int16 | yes | — | player's stint (order of appearances within a season) (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `G` | int16 | yes | — | Games (src: lahman_readme) |
+| `AB` | int16 | yes | — | At Bats (src: lahman_readme) |
+| `R` | int16 | yes | — | Runs (src: lahman_readme) |
+| `H` | int16 | yes | — | Hits (src: lahman_readme) |
+| `2B` | int16 | yes | — | Doubles (src: lahman_readme) |
+| `3B` | int16 | yes | — | Triples (src: lahman_readme) |
+| `HR` | int16 | yes | — | Homeruns (src: lahman_readme) |
+| `RBI` | int16 | yes | — | Runs Batted In (src: lahman_readme) |
+| `SB` | int16 | yes | — | Stolen Bases (src: lahman_readme) |
+| `CS` | int16 | yes | — | Caught Stealing (src: lahman_readme) |
+| `BB` | int16 | yes | — | Base on Balls (src: lahman_readme) |
+| `SO` | int16 | yes | — | Strikeouts (src: lahman_readme) |
+| `IBB` | int16 | yes | — | Intentional walks (src: lahman_readme) |
+| `HBP` | int16 | yes | — | Hit by pitch (src: lahman_readme) |
+| `SH` | int16 | yes | — | Sacrifice hits (src: lahman_readme) |
+| `SF` | int16 | yes | — | Sacrifice flies (src: lahman_readme) |
+| `GIDP` | int16 | yes | — | Grounded into double plays (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Batting -->
@@ -331,28 +331,28 @@ Lahman BattingPost table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — | TODO |
-| `round` | string | yes | — | TODO |
-| `playerID` | string | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `AB` | int16 | yes | — | TODO |
-| `R` | int16 | yes | — | TODO |
-| `H` | int16 | yes | — | TODO |
-| `2B` | int16 | yes | — | TODO |
-| `3B` | int16 | yes | — | TODO |
-| `HR` | int16 | yes | — | TODO |
-| `RBI` | int16 | yes | — | TODO |
-| `SB` | int16 | yes | — | TODO |
-| `CS` | int16 | yes | — | TODO |
-| `BB` | int16 | yes | — | TODO |
-| `SO` | int16 | yes | — | TODO |
-| `IBB` | int16 | yes | — | TODO |
-| `HBP` | int16 | yes | — | TODO |
-| `SH` | int16 | yes | — | TODO |
-| `SF` | int16 | yes | — | TODO |
-| `GIDP` | int16 | yes | — | TODO |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `round` | string | yes | — | Level of playoffs (src: lahman_readme) |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `G` | int16 | yes | — | Games (src: lahman_readme) |
+| `AB` | int16 | yes | — | At Bats (src: lahman_readme) |
+| `R` | int16 | yes | — | Runs (src: lahman_readme) |
+| `H` | int16 | yes | — | Hits (src: lahman_readme) |
+| `2B` | int16 | yes | — | Doubles (src: lahman_readme) |
+| `3B` | int16 | yes | — | Triples (src: lahman_readme) |
+| `HR` | int16 | yes | — | Homeruns (src: lahman_readme) |
+| `RBI` | int16 | yes | — | Runs Batted In (src: lahman_readme) |
+| `SB` | int16 | yes | — | Stolen Bases (src: lahman_readme) |
+| `CS` | int16 | yes | — | Caught stealing (src: lahman_readme) |
+| `BB` | int16 | yes | — | Base on Balls (src: lahman_readme) |
+| `SO` | int16 | yes | — | Strikeouts (src: lahman_readme) |
+| `IBB` | int16 | yes | — | Intentional walks (src: lahman_readme) |
+| `HBP` | int16 | yes | — | Hit by pitch (src: lahman_readme) |
+| `SH` | int16 | yes | — | Sacrifices (src: lahman_readme) |
+| `SF` | int16 | yes | — | Sacrifice flies (src: lahman_readme) |
+| `GIDP` | int16 | yes | — | Grounded into double plays (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.BattingPost -->
@@ -369,9 +369,9 @@ Lahman CollegePlaying table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `schoolID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `schoolID` | string | yes | — | School ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.CollegePlaying -->
@@ -388,24 +388,24 @@ Lahman Fielding table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `stint` | int16 | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `POS` | string | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `GS` | int16 | yes | — | TODO |
-| `InnOuts` | int16 | yes | — | TODO |
-| `PO` | int16 | yes | — | TODO |
-| `A` | int16 | yes | — | TODO |
-| `E` | int16 | yes | — | TODO |
-| `DP` | int16 | yes | — | TODO |
-| `PB` | int16 | yes | — | TODO |
-| `WP` | int16 | yes | — | TODO |
-| `SB` | int16 | yes | — | TODO |
-| `CS` | int16 | yes | — | TODO |
-| `ZR` | int16 | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `stint` | int16 | yes | — | player's stint (order of appearances within a season) (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `POS` | string | yes | — | Position (src: lahman_readme) |
+| `G` | int16 | yes | — | Games (src: lahman_readme) |
+| `GS` | int16 | yes | — | Games Started (src: lahman_readme) |
+| `InnOuts` | int16 | yes | — | Time played in the field expressed as outs (src: lahman_readme) |
+| `PO` | int16 | yes | — | Putouts (src: lahman_readme) |
+| `A` | int16 | yes | — | Assists (src: lahman_readme) |
+| `E` | int16 | yes | — | Errors (src: lahman_readme) |
+| `DP` | int16 | yes | — | Double Plays (src: lahman_readme) |
+| `PB` | int16 | yes | — | Passed Balls (by catchers) (src: lahman_readme) |
+| `WP` | int16 | yes | — | Wild Pitches (by catchers) (src: lahman_readme) |
+| `SB` | int16 | yes | — | Opponent Stolen Bases (by catchers) (src: lahman_readme) |
+| `CS` | int16 | yes | — | Opponents Caught Stealing (by catchers) (src: lahman_readme) |
+| `ZR` | int16 | yes | — | Zone Rating (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Fielding -->
@@ -422,12 +422,12 @@ Lahman FieldingOF table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `stint` | int16 | yes | — | TODO |
-| `Glf` | int16 | yes | — | TODO |
-| `Gcf` | int16 | yes | — | TODO |
-| `Grf` | int16 | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `stint` | int16 | yes | — | Player's stint (order of appearances within a season) (src: lahman_readme) |
+| `Glf` | int16 | yes | — | Games played in left field (src: lahman_readme) |
+| `Gcf` | int16 | yes | — | Games played in center field (src: lahman_readme) |
+| `Grf` | int16 | yes | — | Games played in right field (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.FieldingOF -->
@@ -444,19 +444,19 @@ Lahman FieldingOFsplit table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `stint` | int16 | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `POS` | string | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `GS` | int16 | yes | — | TODO |
-| `InnOuts` | int16 | yes | — | TODO |
-| `PO` | int16 | yes | — | TODO |
-| `A` | int16 | yes | — | TODO |
-| `E` | int16 | yes | — | TODO |
-| `DP` | int16 | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `stint` | int16 | yes | — | Player's stint (order of appearances within a season) (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `POS` | string | yes | — | Position (src: lahman_readme) |
+| `G` | int16 | yes | — | Games (src: lahman_readme) |
+| `GS` | int16 | yes | — | Games Started (src: lahman_readme) |
+| `InnOuts` | int16 | yes | — | Time played in the field expressed as outs (src: lahman_readme) |
+| `PO` | int16 | yes | — | Putouts (src: lahman_readme) |
+| `A` | int16 | yes | — | Assists (src: lahman_readme) |
+| `E` | int16 | yes | — | Errors (src: lahman_readme) |
+| `DP` | int16 | yes | — | Double Plays (src: lahman_readme) |
 | `PB` | int16 | yes | — | TODO |
 | `WP` | string | yes | — | TODO |
 | `SB` | int16 | yes | — | TODO |
@@ -478,23 +478,23 @@ Lahman FieldingPost table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `round` | string | yes | — | TODO |
-| `POS` | string | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `GS` | int16 | yes | — | TODO |
-| `InnOuts` | int16 | yes | — | TODO |
-| `PO` | int16 | yes | — | TODO |
-| `A` | int16 | yes | — | TODO |
-| `E` | int16 | yes | — | TODO |
-| `DP` | int16 | yes | — | TODO |
-| `TP` | int16 | yes | — | TODO |
-| `PB` | int16 | yes | — | TODO |
-| `SB` | int16 | yes | — | TODO |
-| `CS` | int16 | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `round` | string | yes | — | Level of playoffs (src: lahman_readme) |
+| `POS` | string | yes | — | Position (src: lahman_readme) |
+| `G` | int16 | yes | — | Games (src: lahman_readme) |
+| `GS` | int16 | yes | — | Games Started (src: lahman_readme) |
+| `InnOuts` | int16 | yes | — | Time played in the field expressed as outs (innings played x 3) (src: lahman_readme) |
+| `PO` | int16 | yes | — | Putouts (src: lahman_readme) |
+| `A` | int16 | yes | — | Assists (src: lahman_readme) |
+| `E` | int16 | yes | — | Errors (src: lahman_readme) |
+| `DP` | int16 | yes | — | Double Plays (src: lahman_readme) |
+| `TP` | int16 | yes | — | Triple Plays (src: lahman_readme) |
+| `PB` | int16 | yes | — | Passed Balls (src: lahman_readme) |
+| `SB` | int16 | yes | — | Stolen Bases allowed (by catcher) (src: lahman_readme) |
+| `CS` | int16 | yes | — | Caught Stealing (by catcher) (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.FieldingPost -->
@@ -511,15 +511,15 @@ Lahman HallOfFame table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearid` | int16 | yes | — | TODO |
-| `votedBy` | string | yes | — | TODO |
-| `ballots` | int16 | yes | — | TODO |
-| `needed` | int16 | yes | — | TODO |
-| `votes` | int16 | yes | — | TODO |
-| `inducted` | string | yes | — | TODO |
-| `category` | string | yes | — | TODO |
-| `needed_note` | string | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `yearid` | int16 | yes | — | Year of ballot (src: lahman_readme) |
+| `votedBy` | string | yes | — | Method by which player was voted upon (src: lahman_readme) |
+| `ballots` | int16 | yes | — | Total ballots cast in that year (src: lahman_readme) |
+| `needed` | int16 | yes | — | Number of votes needed for selection in that year (src: lahman_readme) |
+| `votes` | int16 | yes | — | Total votes received (src: lahman_readme) |
+| `inducted` | string | yes | — | Whether player was inducted by that vote or not (Y or N) (src: lahman_readme) |
+| `category` | string | yes | — | Category in which candidate was honored (src: lahman_readme) |
+| `needed_note` | string | yes | — | Explanation of qualifiers for special elections, revised in 2023 to include important notes about the record. (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.HallOfFame -->
@@ -536,15 +536,15 @@ Lahman HomeGames table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearkey` | int16 | yes | — | TODO |
-| `leaguekey` | string | yes | — | TODO |
-| `teamkey` | string | yes | — | TODO |
-| `parkkey` | string | yes | — | TODO |
-| `spanfirst` | date32[day] | yes | — | TODO |
-| `spanlast` | date32[day] | yes | — | TODO |
-| `games` | int16 | yes | — | TODO |
-| `openings` | int16 | yes | — | TODO |
-| `attendance` | int32 | yes | — | TODO |
+| `yearkey` | int16 | yes | — | Year (src: lahman_readme) |
+| `leaguekey` | string | yes | — | League (src: lahman_readme) |
+| `teamkey` | string | yes | — | Team ID (src: lahman_readme) |
+| `parkkey` | string | yes | — | Ballpark ID (src: lahman_readme) |
+| `spanfirst` | date32[day] | yes | — | Date of first game played (src: lahman_readme) |
+| `spanlast` | date32[day] | yes | — | Date of last game played (src: lahman_readme) |
+| `games` | int16 | yes | — | Total number of games (src: lahman_readme) |
+| `openings` | int16 | yes | — | Total number of paid dates played (games with attendance, note that doubleheaders may make the openings less than games) (src: lahman_readme) |
+| `attendance` | int32 | yes | — | Total attendance (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.HomeGames -->
@@ -561,16 +561,16 @@ Lahman Managers table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `inseason` | int16 | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `W` | int16 | yes | — | TODO |
-| `L` | int16 | yes | — | TODO |
-| `rank` | int16 | yes | — | TODO |
-| `plyrMgr` | string | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID Number (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `inseason` | int16 | yes | — | Managerial order, in order of appearance during the year.  One if the individual managed the team the entire year. (src: lahman_readme) |
+| `G` | int16 | yes | — | Games managed (src: lahman_readme) |
+| `W` | int16 | yes | — | Wins (src: lahman_readme) |
+| `L` | int16 | yes | — | Losses (src: lahman_readme) |
+| `rank` | int16 | yes | — | Team's final position in standings that year (src: lahman_readme) |
+| `plyrMgr` | string | yes | — | Player Manager (denoted by 'Y') (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Managers -->
@@ -587,16 +587,16 @@ Lahman ManagersHalf table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `inseason` | int16 | yes | — | TODO |
-| `half` | int16 | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `W` | int16 | yes | — | TODO |
-| `L` | int16 | yes | — | TODO |
-| `rank` | int16 | yes | — | TODO |
+| `playerID` | string | yes | — | Manager ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `inseason` | int16 | yes | — | Managerial order, in order of appearance during the year, 1 if the individual managed the team the entire year (src: lahman_readme) |
+| `half` | int16 | yes | — | First or second half of season (src: lahman_readme) |
+| `G` | int16 | yes | — | Games managed (src: lahman_readme) |
+| `W` | int16 | yes | — | Wins (src: lahman_readme) |
+| `L` | int16 | yes | — | Losses (src: lahman_readme) |
+| `rank` | int16 | yes | — | Team's position in standings for the half (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.ManagersHalf -->
@@ -614,12 +614,12 @@ Lahman Parks table.
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `ID` | int16 | yes | — | TODO |
-| `parkalias` | string | yes | — | TODO |
-| `parkkey` | string | yes | — | TODO |
-| `parkname` | string | yes | — | TODO |
-| `city` | string | yes | — | TODO |
-| `state` | string | yes | — | TODO |
-| `country` | string | yes | — | TODO |
+| `parkalias` | string | yes | — | Alternate names of ballpark, separated by semicolon (src: lahman_readme) |
+| `parkkey` | string | yes | — | Ballpark ID code (src: lahman_readme) |
+| `parkname` | string | yes | — | Name of ballpark (src: lahman_readme) |
+| `city` | string | yes | — | City (src: lahman_readme) |
+| `state` | string | yes | — | State (src: lahman_readme) |
+| `country` | string | yes | — | Country (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Parks -->
@@ -636,31 +636,31 @@ Lahman People table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `ID` | int32 | yes | — | TODO |
-| `playerID` | string | yes | — | TODO |
-| `birthYear` | int16 | yes | — | TODO |
-| `birthMonth` | int16 | yes | — | TODO |
-| `birthDay` | int16 | yes | — | TODO |
-| `birthCity` | string | yes | — | TODO |
-| `birthCountry` | string | yes | — | TODO |
-| `birthState` | string | yes | — | TODO |
-| `deathYear` | int16 | yes | — | TODO |
-| `deathMonth` | int16 | yes | — | TODO |
-| `deathDay` | int16 | yes | — | TODO |
-| `deathCountry` | string | yes | — | TODO |
-| `deathState` | string | yes | — | TODO |
-| `deathCity` | string | yes | — | TODO |
-| `nameFirst` | string | yes | — | TODO |
-| `nameLast` | string | yes | — | TODO |
-| `nameGiven` | string | yes | — | TODO |
-| `weight` | int16 | yes | — | TODO |
-| `height` | int16 | yes | — | TODO |
-| `bats` | string | yes | — | TODO |
-| `throws` | string | yes | — | TODO |
-| `debut` | date32[day] | yes | — | TODO |
-| `bbrefID` | string | yes | — | TODO |
-| `finalGame` | date32[day] | yes | — | TODO |
-| `retroID` | string | yes | — | TODO |
+| `ID` | int32 | yes | — | Numeric ID, not used anywhere else. (src: lahman_readme) |
+| `playerID` | string | yes | — | A unique code assigned to each player.  The playerID links the data in this file with records in the other files. (src: lahman_readme) |
+| `birthYear` | int16 | yes | — | Year player was born (src: lahman_readme) |
+| `birthMonth` | int16 | yes | — | Month player was born (src: lahman_readme) |
+| `birthDay` | int16 | yes | — | Day player was born (src: lahman_readme) |
+| `birthCity` | string | yes | — | City where player was born (src: lahman_readme) |
+| `birthCountry` | string | yes | — | Country where player was born (src: lahman_readme) |
+| `birthState` | string | yes | — | State where player was born (src: lahman_readme) |
+| `deathYear` | int16 | yes | — | Year player died (src: lahman_readme) |
+| `deathMonth` | int16 | yes | — | Month player died (src: lahman_readme) |
+| `deathDay` | int16 | yes | — | Day player died (src: lahman_readme) |
+| `deathCountry` | string | yes | — | Country where player died (src: lahman_readme) |
+| `deathState` | string | yes | — | State where player died (src: lahman_readme) |
+| `deathCity` | string | yes | — | City where player died (src: lahman_readme) |
+| `nameFirst` | string | yes | — | Player's first name (src: lahman_readme) |
+| `nameLast` | string | yes | — | Player's last name (src: lahman_readme) |
+| `nameGiven` | string | yes | — | Player's given name (typically first and middle) (src: lahman_readme) |
+| `weight` | int16 | yes | — | Player's weight in pounds (src: lahman_readme) |
+| `height` | int16 | yes | — | Player's height in inches (src: lahman_readme) |
+| `bats` | string | yes | — | Player's batting hand (left, right, or both) (src: lahman_readme) |
+| `throws` | string | yes | — | Player's throwing hand (left or right) (src: lahman_readme) |
+| `debut` | date32[day] | yes | — | Date that player made first major league appearance (src: lahman_readme) |
+| `bbrefID` | string | yes | — | ID used by Baseball Reference website (src: lahman_readme) |
+| `finalGame` | date32[day] | yes | — | Date that player made last major league appearance (src: lahman_readme) |
+| `retroID` | string | yes | — | ID used by Retrosheet (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.People -->
@@ -677,36 +677,36 @@ Lahman Pitching table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `stint` | int16 | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `W` | int16 | yes | — | TODO |
-| `L` | int16 | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `GS` | int16 | yes | — | TODO |
-| `CG` | int16 | yes | — | TODO |
-| `SHO` | int16 | yes | — | TODO |
-| `SV` | int16 | yes | — | TODO |
-| `IPouts` | int16 | yes | — | TODO |
-| `H` | int16 | yes | — | TODO |
-| `ER` | int16 | yes | — | TODO |
-| `HR` | int16 | yes | — | TODO |
-| `BB` | int16 | yes | — | TODO |
-| `SO` | int16 | yes | — | TODO |
-| `BAOpp` | double | yes | — | TODO |
-| `ERA` | double | yes | — | TODO |
-| `IBB` | int16 | yes | — | TODO |
-| `WP` | int16 | yes | — | TODO |
-| `HBP` | int16 | yes | — | TODO |
-| `BK` | int16 | yes | — | TODO |
-| `BFP` | int16 | yes | — | TODO |
-| `GF` | int16 | yes | — | TODO |
-| `R` | int16 | yes | — | TODO |
-| `SH` | int16 | yes | — | TODO |
-| `SF` | int16 | yes | — | TODO |
-| `GIDP` | int16 | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `stint` | int16 | yes | — | player's stint (order of appearances within a season) (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `W` | int16 | yes | — | Wins (src: lahman_readme) |
+| `L` | int16 | yes | — | Losses (src: lahman_readme) |
+| `G` | int16 | yes | — | Games (src: lahman_readme) |
+| `GS` | int16 | yes | — | Games Started (src: lahman_readme) |
+| `CG` | int16 | yes | — | Complete Games (src: lahman_readme) |
+| `SHO` | int16 | yes | — | Shutouts (src: lahman_readme) |
+| `SV` | int16 | yes | — | Saves (src: lahman_readme) |
+| `IPouts` | int16 | yes | — | Outs Pitched (innings pitched x 3) (src: lahman_readme) |
+| `H` | int16 | yes | — | Hits (src: lahman_readme) |
+| `ER` | int16 | yes | — | Earned Runs (src: lahman_readme) |
+| `HR` | int16 | yes | — | Homeruns (src: lahman_readme) |
+| `BB` | int16 | yes | — | Walks (src: lahman_readme) |
+| `SO` | int16 | yes | — | Strikeouts (src: lahman_readme) |
+| `BAOpp` | double | yes | — | Opponent's Batting Average (src: lahman_readme) |
+| `ERA` | double | yes | — | Earned Run Average (src: lahman_readme) |
+| `IBB` | int16 | yes | — | Intentional Walks (src: lahman_readme) |
+| `WP` | int16 | yes | — | Wild Pitches (src: lahman_readme) |
+| `HBP` | int16 | yes | — | Batters Hit By Pitch (src: lahman_readme) |
+| `BK` | int16 | yes | — | Balks (src: lahman_readme) |
+| `BFP` | int16 | yes | — | Batters faced by Pitcher (src: lahman_readme) |
+| `GF` | int16 | yes | — | Games Finished (src: lahman_readme) |
+| `R` | int16 | yes | — | Runs Allowed (src: lahman_readme) |
+| `SH` | int16 | yes | — | Sacrifices by opposing batters (src: lahman_readme) |
+| `SF` | int16 | yes | — | Sacrifice flies by opposing batters (src: lahman_readme) |
+| `GIDP` | int16 | yes | — | Grounded into double plays by opposing batter (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Pitching -->
@@ -723,36 +723,36 @@ Lahman PitchingPost table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `playerID` | string | yes | — | TODO |
-| `yearID` | int16 | yes | — | TODO |
-| `round` | string | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `W` | int16 | yes | — | TODO |
-| `L` | int16 | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `GS` | int16 | yes | — | TODO |
-| `CG` | int16 | yes | — | TODO |
-| `SHO` | int16 | yes | — | TODO |
-| `SV` | int16 | yes | — | TODO |
-| `IPouts` | int16 | yes | — | TODO |
-| `H` | int16 | yes | — | TODO |
-| `ER` | int16 | yes | — | TODO |
-| `HR` | int16 | yes | — | TODO |
-| `BB` | int16 | yes | — | TODO |
-| `SO` | int16 | yes | — | TODO |
-| `BAOpp` | double | yes | — | TODO |
-| `ERA` | double | yes | — | TODO |
-| `IBB` | int16 | yes | — | TODO |
-| `WP` | int16 | yes | — | TODO |
-| `HBP` | int16 | yes | — | TODO |
-| `BK` | int16 | yes | — | TODO |
-| `BFP` | int16 | yes | — | TODO |
-| `GF` | int16 | yes | — | TODO |
-| `R` | int16 | yes | — | TODO |
-| `SH` | int16 | yes | — | TODO |
-| `SF` | int16 | yes | — | TODO |
-| `GIDP` | int16 | yes | — | TODO |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `round` | string | yes | — | Level of playoffs (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `W` | int16 | yes | — | Wins (src: lahman_readme) |
+| `L` | int16 | yes | — | Losses (src: lahman_readme) |
+| `G` | int16 | yes | — | Games (src: lahman_readme) |
+| `GS` | int16 | yes | — | Games Started (src: lahman_readme) |
+| `CG` | int16 | yes | — | Complete Games (src: lahman_readme) |
+| `SHO` | int16 | yes | — | Shutouts (src: lahman_readme) |
+| `SV` | int16 | yes | — | Saves (src: lahman_readme) |
+| `IPouts` | int16 | yes | — | Outs Pitched (innings pitched x 3) (src: lahman_readme) |
+| `H` | int16 | yes | — | Hits (src: lahman_readme) |
+| `ER` | int16 | yes | — | Earned Runs (src: lahman_readme) |
+| `HR` | int16 | yes | — | Homeruns (src: lahman_readme) |
+| `BB` | int16 | yes | — | Walks (src: lahman_readme) |
+| `SO` | int16 | yes | — | Strikeouts (src: lahman_readme) |
+| `BAOpp` | double | yes | — | Opponents' batting average (src: lahman_readme) |
+| `ERA` | double | yes | — | Earned Run Average (src: lahman_readme) |
+| `IBB` | int16 | yes | — | Intentional Walks (src: lahman_readme) |
+| `WP` | int16 | yes | — | Wild Pitches (src: lahman_readme) |
+| `HBP` | int16 | yes | — | Batters Hit By Pitch (src: lahman_readme) |
+| `BK` | int16 | yes | — | Balks (src: lahman_readme) |
+| `BFP` | int16 | yes | — | Batters faced by Pitcher (src: lahman_readme) |
+| `GF` | int16 | yes | — | Games Finished (src: lahman_readme) |
+| `R` | int16 | yes | — | Runs Allowed (src: lahman_readme) |
+| `SH` | int16 | yes | — | Sacrifice Hits allowed (src: lahman_readme) |
+| `SF` | int16 | yes | — | Sacrifice Flies allowed (src: lahman_readme) |
+| `GIDP` | int16 | yes | — | Grounded into Double Plays (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.PitchingPost -->
@@ -769,11 +769,11 @@ Lahman Salaries table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `playerID` | string | yes | — | TODO |
-| `salary` | int32 | yes | — | TODO |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `playerID` | string | yes | — | Player ID code (src: lahman_readme) |
+| `salary` | int32 | yes | — | Salary (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Salaries -->
@@ -790,7 +790,7 @@ Lahman Schools table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `schoolID` | string | yes | — | TODO |
+| `schoolID` | string | yes | — | School ID code (src: lahman_readme) |
 | `name_full` | string | yes | — | TODO |
 | `city` | string | yes | — | TODO |
 | `state` | string | yes | — | TODO |
@@ -811,15 +811,15 @@ Lahman SeriesPost table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — | TODO |
-| `round` | string | yes | — | TODO |
-| `teamIDwinner` | string | yes | — | TODO |
-| `lgIDwinner` | string | yes | — | TODO |
-| `teamIDloser` | string | yes | — | TODO |
-| `lgIDloser` | string | yes | — | TODO |
-| `wins` | int16 | yes | — | TODO |
-| `losses` | int16 | yes | — | TODO |
-| `ties` | int16 | yes | — | TODO |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `round` | string | yes | — | Level of playoffs (src: lahman_readme) |
+| `teamIDwinner` | string | yes | — | Team ID of the team that won the series (src: lahman_readme) |
+| `lgIDwinner` | string | yes | — | League ID of the team that won the series (src: lahman_readme) |
+| `teamIDloser` | string | yes | — | Team ID of the team that lost the series (src: lahman_readme) |
+| `lgIDloser` | string | yes | — | League ID of the team that lost the series (src: lahman_readme) |
+| `wins` | int16 | yes | — | Wins by team that won the series (src: lahman_readme) |
+| `losses` | int16 | yes | — | Losses by team that won the series (src: lahman_readme) |
+| `ties` | int16 | yes | — | Tie games (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.SeriesPost -->
@@ -836,54 +836,54 @@ Lahman Teams table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `franchID` | string | yes | — | TODO |
-| `divID` | string | yes | — | TODO |
-| `Rank` | int16 | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `Ghome` | int16 | yes | — | TODO |
-| `W` | int16 | yes | — | TODO |
-| `L` | int16 | yes | — | TODO |
-| `DivWin` | string | yes | — | TODO |
-| `WCWin` | string | yes | — | TODO |
-| `LgWin` | string | yes | — | TODO |
-| `WSWin` | string | yes | — | TODO |
-| `R` | int16 | yes | — | TODO |
-| `AB` | int16 | yes | — | TODO |
-| `H` | int16 | yes | — | TODO |
-| `2B` | int16 | yes | — | TODO |
-| `3B` | int16 | yes | — | TODO |
-| `HR` | int16 | yes | — | TODO |
-| `BB` | int16 | yes | — | TODO |
-| `SO` | int16 | yes | — | TODO |
-| `SB` | int16 | yes | — | TODO |
-| `CS` | int16 | yes | — | TODO |
-| `HBP` | int16 | yes | — | TODO |
-| `SF` | int16 | yes | — | TODO |
-| `RA` | int16 | yes | — | TODO |
-| `ER` | int16 | yes | — | TODO |
-| `ERA` | double | yes | — | TODO |
-| `CG` | int16 | yes | — | TODO |
-| `SHO` | int16 | yes | — | TODO |
-| `SV` | int16 | yes | — | TODO |
-| `IPouts` | int16 | yes | — | TODO |
-| `HA` | int16 | yes | — | TODO |
-| `HRA` | int16 | yes | — | TODO |
-| `BBA` | int16 | yes | — | TODO |
-| `SOA` | int16 | yes | — | TODO |
-| `E` | int16 | yes | — | TODO |
-| `DP` | int16 | yes | — | TODO |
-| `FP` | double | yes | — | TODO |
-| `name` | string | yes | — | TODO |
-| `park` | string | yes | — | TODO |
-| `attendance` | int32 | yes | — | TODO |
-| `BPF` | int16 | yes | — | TODO |
-| `PPF` | int16 | yes | — | TODO |
-| `teamIDBR` | string | yes | — | TODO |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `franchID` | string | yes | — | Franchise (links to TeamsFranchise table) (src: lahman_readme) |
+| `divID` | string | yes | — | Team's division (src: lahman_readme) |
+| `Rank` | int16 | yes | — | Position in final standings (src: lahman_readme) |
+| `G` | int16 | yes | — | Games played (src: lahman_readme) |
+| `Ghome` | int16 | yes | — | Games played at home (src: lahman_readme) |
+| `W` | int16 | yes | — | Wins (src: lahman_readme) |
+| `L` | int16 | yes | — | Losses (src: lahman_readme) |
+| `DivWin` | string | yes | — | Division Winner (Y or N) (src: lahman_readme) |
+| `WCWin` | string | yes | — | Wild Card Winner (Y or N) (src: lahman_readme) |
+| `LgWin` | string | yes | — | League Champion (Y or N) (src: lahman_readme) |
+| `WSWin` | string | yes | — | World Series Winner (Y or N) (src: lahman_readme) |
+| `R` | int16 | yes | — | Runs scored (src: lahman_readme) |
+| `AB` | int16 | yes | — | At bats (src: lahman_readme) |
+| `H` | int16 | yes | — | Hits by batters (src: lahman_readme) |
+| `2B` | int16 | yes | — | Doubles (src: lahman_readme) |
+| `3B` | int16 | yes | — | Triples (src: lahman_readme) |
+| `HR` | int16 | yes | — | Homeruns by batters (src: lahman_readme) |
+| `BB` | int16 | yes | — | Walks by batters (src: lahman_readme) |
+| `SO` | int16 | yes | — | Strikeouts by batters (src: lahman_readme) |
+| `SB` | int16 | yes | — | Stolen bases (src: lahman_readme) |
+| `CS` | int16 | yes | — | Caught stealing (src: lahman_readme) |
+| `HBP` | int16 | yes | — | Batters hit by pitch (src: lahman_readme) |
+| `SF` | int16 | yes | — | Sacrifice flies (src: lahman_readme) |
+| `RA` | int16 | yes | — | Opponents runs scored (src: lahman_readme) |
+| `ER` | int16 | yes | — | Earned runs allowed (src: lahman_readme) |
+| `ERA` | double | yes | — | Earned run average (src: lahman_readme) |
+| `CG` | int16 | yes | — | Complete games (src: lahman_readme) |
+| `SHO` | int16 | yes | — | Shutouts (team level) (src: lahman_readme) |
+| `SV` | int16 | yes | — | Saves (src: lahman_readme) |
+| `IPouts` | int16 | yes | — | Outs Pitched (innings pitched x 3) (src: lahman_readme) |
+| `HA` | int16 | yes | — | Hits allowed (src: lahman_readme) |
+| `HRA` | int16 | yes | — | Homeruns allowed (src: lahman_readme) |
+| `BBA` | int16 | yes | — | Walks allowed (src: lahman_readme) |
+| `SOA` | int16 | yes | — | Strikeouts by pitchers (src: lahman_readme) |
+| `E` | int16 | yes | — | Errors (src: lahman_readme) |
+| `DP` | int16 | yes | — | Double Plays (team level) (src: lahman_readme) |
+| `FP` | double | yes | — | Fielding  percentage (src: lahman_readme) |
+| `name` | string | yes | — | Team's full name (src: lahman_readme) |
+| `park` | string | yes | — | Name of team's home ballpark (src: lahman_readme) |
+| `attendance` | int32 | yes | — | Home attendance total (src: lahman_readme) |
+| `BPF` | int16 | yes | — | Three-year park factor for batters (src: lahman_readme) |
+| `PPF` | int16 | yes | — | Three-year park factor for pitchers (src: lahman_readme) |
+| `teamIDBR` | string | yes | — | Team ID used by Baseball Reference website (src: lahman_readme) |
 | `teamIDlahman45` | string | yes | — | TODO |
-| `teamIDretro` | string | yes | — | TODO |
+| `teamIDretro` | string | yes | — | Team ID used by Retrosheet (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.Teams -->
@@ -900,10 +900,10 @@ Lahman TeamsFranchises table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `franchID` | string | yes | — | TODO |
-| `franchName` | string | yes | — | TODO |
-| `active` | string | yes | — | TODO |
-| `NAassoc` | string | yes | — | TODO |
+| `franchID` | string | yes | — | Franchise ID (src: lahman_readme) |
+| `franchName` | string | yes | — | Franchise name (src: lahman_readme) |
+| `active` | string | yes | — | Whether team is currently active or not (Y or N) (src: lahman_readme) |
+| `NAassoc` | string | yes | — | ID of National Association team franchise played as (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.TeamsFranchises -->
@@ -920,16 +920,16 @@ Lahman TeamsHalf table.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `yearID` | int16 | yes | — | TODO |
-| `lgID` | string | yes | — | TODO |
-| `teamID` | string | yes | — | TODO |
-| `Half` | int16 | yes | — | TODO |
-| `divID` | string | yes | — | TODO |
-| `DivWin` | string | yes | — | TODO |
-| `Rank` | int16 | yes | — | TODO |
-| `G` | int16 | yes | — | TODO |
-| `W` | int16 | yes | — | TODO |
-| `L` | int16 | yes | — | TODO |
+| `yearID` | int16 | yes | — | Year (src: lahman_readme) |
+| `lgID` | string | yes | — | League (src: lahman_readme) |
+| `teamID` | string | yes | — | Team (src: lahman_readme) |
+| `Half` | int16 | yes | — | First or second half of season (src: lahman_readme) |
+| `divID` | string | yes | — | Division (src: lahman_readme) |
+| `DivWin` | string | yes | — | Won Division (Y or N) (src: lahman_readme) |
+| `Rank` | int16 | yes | — | Team's position in standings for the half (src: lahman_readme) |
+| `G` | int16 | yes | — | Games played (src: lahman_readme) |
+| `W` | int16 | yes | — | Wins (src: lahman_readme) |
+| `L` | int16 | yes | — | Losses (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:lahman.TeamsHalf -->

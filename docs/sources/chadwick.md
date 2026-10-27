@@ -62,7 +62,7 @@ reg.search_name("Aron Juge", fuzzy=True, min_score=0.7)
 <!-- BEGIN GENERATED:chadwick.description_sources -->
 ### Description sources
 
-No column descriptions have been written for this source yet.
+- `chadwick_readme`: https://raw.githubusercontent.com/chadwickbureau/register/master/README.md
 
 <!-- END GENERATED:chadwick.description_sources -->
 
@@ -78,46 +78,46 @@ Master player-ID crosswalk (data/people-*.csv shards).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `key_person` | string | yes | — | TODO |
-| `key_uuid` | string | yes | — | TODO |
-| `key_mlbam` | int32 | yes | — | TODO |
-| `key_retro` | string | yes | — | TODO |
-| `key_bbref` | string | yes | — | TODO |
-| `key_bbref_minors` | string | yes | — | TODO |
-| `key_fangraphs` | int32 | yes | — | TODO |
-| `key_npb` | int32 | yes | — | TODO |
-| `key_sr_nfl` | string | yes | — | TODO |
-| `key_sr_nba` | string | yes | — | TODO |
-| `key_sr_nhl` | string | yes | — | TODO |
-| `key_wikidata` | string | yes | — | TODO |
-| `name_last` | string | yes | — | TODO |
-| `name_first` | string | yes | — | TODO |
-| `name_given` | string | yes | — | TODO |
+| `key_person` | string | yes | — | The first eight (hex) digits of the key_uuid; unique at any given time, but over time the same short key may be re-used for a different identity. (src: chadwick_readme) |
+| `key_uuid` | string | yes | — | The primary key. This is guaranteed not to be re-used to label a different identity. (src: chadwick_readme) |
+| `key_mlbam` | int32 | yes | — | The person's identifier at MLBAM. (src: chadwick_readme) |
+| `key_retro` | string | yes | — | The person's Retrosheet identifier. (src: chadwick_readme) |
+| `key_bbref` | string | yes | — | The person's identifier on Major League pages on baseball-reference.com. (src: chadwick_readme) |
+| `key_bbref_minors` | string | yes | — | The person's identifier on minor league pages on baseball-reference.com. (src: chadwick_readme) |
+| `key_fangraphs` | int32 | yes | — | The person's identifier on fangraphs.com. (src: chadwick_readme) |
+| `key_npb` | int32 | yes | — | The person's identifier on the NPB official site, npb.or.jp. (src: chadwick_readme) |
+| `key_sr_nfl` | string | yes | — | The person's identifier on pro-football-reference.com. (src: chadwick_readme) |
+| `key_sr_nba` | string | yes | — | The person's identifier on basketball-reference.com. (src: chadwick_readme) |
+| `key_sr_nhl` | string | yes | — | The person's identifier on hockey-reference.com. (src: chadwick_readme) |
+| `key_wikidata` | string | yes | — | The person's identifier on wikidata.org. (src: chadwick_readme) |
+| `name_last` | string | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `name_first` | string | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `name_given` | string | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
 | `name_suffix` | string | yes | — | TODO |
 | `name_matrilineal` | string | yes | — | TODO |
 | `name_nick` | string | yes | — | TODO |
-| `birth_year` | int16 | yes | — | TODO |
-| `birth_month` | int16 | yes | — | TODO |
-| `birth_day` | int16 | yes | — | TODO |
-| `death_year` | int16 | yes | — | TODO |
-| `death_month` | int16 | yes | — | TODO |
-| `death_day` | int16 | yes | — | TODO |
-| `pro_played_first` | int16 | yes | — | TODO |
-| `pro_played_last` | int16 | yes | — | TODO |
-| `mlb_played_first` | int16 | yes | — | TODO |
-| `mlb_played_last` | int16 | yes | — | TODO |
-| `col_played_first` | int16 | yes | — | TODO |
-| `col_played_last` | int16 | yes | — | TODO |
-| `pro_managed_first` | int16 | yes | — | TODO |
-| `pro_managed_last` | int16 | yes | — | TODO |
-| `mlb_managed_first` | int16 | yes | — | TODO |
-| `mlb_managed_last` | int16 | yes | — | TODO |
-| `col_managed_first` | int16 | yes | — | TODO |
-| `col_managed_last` | int16 | yes | — | TODO |
-| `pro_umpired_first` | int16 | yes | — | TODO |
-| `pro_umpired_last` | int16 | yes | — | TODO |
-| `mlb_umpired_first` | int16 | yes | — | TODO |
-| `mlb_umpired_last` | int16 | yes | — | TODO |
+| `birth_year` | int16 | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `birth_month` | int16 | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `birth_day` | int16 | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `death_year` | int16 | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `death_month` | int16 | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `death_day` | int16 | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `pro_played_first` | int16 | yes | — | First year spanned as player in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `pro_played_last` | int16 | yes | — | Last year spanned as player in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `mlb_played_first` | int16 | yes | — | First year spanned as player in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `mlb_played_last` | int16 | yes | — | Last year spanned as player in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `col_played_first` | int16 | yes | — | First year spanned as player in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `col_played_last` | int16 | yes | — | Last year spanned as player in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `pro_managed_first` | int16 | yes | — | First year spanned as manager in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `pro_managed_last` | int16 | yes | — | Last year spanned as manager in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `mlb_managed_first` | int16 | yes | — | First year spanned as manager in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `mlb_managed_last` | int16 | yes | — | Last year spanned as manager in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `col_managed_first` | int16 | yes | — | First year spanned as manager in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `col_managed_last` | int16 | yes | — | Last year spanned as manager in intercollegiate play (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `pro_umpired_first` | int16 | yes | — | First year spanned as umpirer in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `pro_umpired_last` | int16 | yes | — | Last year spanned as umpirer in professional leagues overall (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `mlb_umpired_first` | int16 | yes | — | First year spanned as umpirer in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
+| `mlb_umpired_last` | int16 | yes | — | Last year spanned as umpirer in Major League Baseball (README: year spans for playing, managing and umpiring; may be incomplete). (src: chadwick_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:chadwick.register -->
@@ -155,7 +155,7 @@ External player identifiers by source (data/links.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `key_person` | string | yes | — | TODO |
+| `key_person` | string | yes | — | The first eight (hex) digits of the key_uuid; unique at any given time, but over time the same short key may be re-used for a different identity. (src: chadwick_readme) |
 | `source` | string | yes | — | TODO |
 | `value` | string | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
@@ -174,13 +174,13 @@ Alternate names, spellings and nicknames (data/names.csv).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `key_person` | string | yes | — | TODO |
-| `name_last` | string | yes | — | TODO |
-| `name_first` | string | yes | — | TODO |
-| `name_given` | string | yes | — | TODO |
-| `birth_year` | int16 | yes | — | TODO |
-| `birth_month` | int16 | yes | — | TODO |
-| `birth_day` | int16 | yes | — | TODO |
+| `key_person` | string | yes | — | The first eight (hex) digits of the key_uuid; unique at any given time, but over time the same short key may be re-used for a different identity. (src: chadwick_readme) |
+| `name_last` | string | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `name_first` | string | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `name_given` | string | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `birth_year` | int16 | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `birth_month` | int16 | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
+| `birth_day` | int16 | yes | — | Basic name component or date of birth/death (README: People files). (src: chadwick_readme) |
 | `altname_type` | string | yes | — | TODO |
 | `altname_lang` | string | yes | — | TODO |
 | `altname_last` | string | yes | — | TODO |

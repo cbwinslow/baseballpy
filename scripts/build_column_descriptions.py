@@ -155,12 +155,112 @@ def build_statcast(http: HttpClient) -> dict[str, Any]:
     }
 
 
+LAHMAN_README = (
+    "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/main/data/readme2025.txt"
+)
+CHADWICK_README = "https://raw.githubusercontent.com/chadwickbureau/register/master/README.md"
+_LAHMAN_ALIASES = {"teamfranchises": "teamsfranchises"}
+_COLUMN_LINE = re.compile(r"^(\w+)\s{2,}(\S.*)$")
+
+
+def lahman_sections(text: str) -> dict[str, dict[str, str]]:
+    """``{table heading (compact, lower): {column: text}}`` from the SABR readme."""
+    out: dict[str, dict[str, str]] = {}
+    current: dict[str, str] | None = None
+    last = ""
+    for line in text.splitlines():
+        if line.rstrip().endswith(" TABLE") and line.isupper():
+            key = line.replace(" TABLE", "").replace(" ", "").lower()
+            current = out.setdefault(_LAHMAN_ALIASES.get(key, key), {})
+            last = ""
+        elif current is None or line.startswith("---") or not line.strip():
+            last = "" if not line.strip() else last
+        elif (m := _COLUMN_LINE.match(line)) and not line.startswith(" "):
+            last = m.group(1)
+            current[last] = m.group(2).strip()
+        elif last and line.startswith(" "):
+            current[last] += " " + line.strip()
+    return out
+
+
+def build_lahman(http: HttpClient) -> dict[str, Any]:
+    """Lahman descriptions: the SABR data dictionary (readme) per table and column."""
+    sections = lahman_sections(http.get_sync(LAHMAN_README).content.decode("utf-8", "replace"))
+    out: dict[str, Any] = {"_sources": {"lahman_readme": LAHMAN_README}}
+    for dataset, column in columns_of("lahman"):
+        found = sections.get(dataset.lower(), {})
+        match = next((v for k, v in found.items() if k.lower() == column.lower()), None)
+        if match:
+            out.setdefault(dataset, {})[column] = {"text": match, "source": "lahman_readme"}
+    return out
+
+
+_CHADWICK_KEYS = {
+    "key_uuid": "The primary key. This is guaranteed not to be re-used to label a different identity.",
+    "key_person": "The first eight (hex) digits of the key_uuid; unique at any given time, but over time the same short key may be re-used for a different identity.",
+    "key_retro": "The person's Retrosheet identifier.",
+    "key_mlbam": "The person's identifier at MLBAM.",
+    "key_bbref": "The person's identifier on Major League pages on baseball-reference.com.",
+    "key_bbref_minors": "The person's identifier on minor league pages on baseball-reference.com.",
+    "key_fangraphs": "The person's identifier on fangraphs.com.",
+    "key_npb": "The person's identifier on the NPB official site, npb.or.jp.",
+    "key_sr_nfl": "The person's identifier on pro-football-reference.com.",
+    "key_sr_nba": "The person's identifier on basketball-reference.com.",
+    "key_sr_nhl": "The person's identifier on hockey-reference.com.",
+    "key_wikidata": "The person's identifier on wikidata.org.",
+}
+_CHADWICK_SPANS = {
+    "pro": "professional leagues overall",
+    "mlb": "Major League Baseball",
+    "col": "intercollegiate play",
+}
+
+
+def build_chadwick(http: HttpClient) -> dict[str, Any]:
+    """Chadwick descriptions from the register README (identifier list, year spans, names)."""
+    page = http.get_sync(CHADWICK_README).content.decode("utf-8", "replace")
+    star: dict[str, Any] = {}
+    for column, text in _CHADWICK_KEYS.items():
+        if f"`{column}`" not in page:
+            raise SystemExit(f"{column} no longer documented in {CHADWICK_README}")
+        star[column] = {"text": text, "source": "chadwick_readme"}
+    for prefix, scope in _CHADWICK_SPANS.items():
+        for role in ("played", "managed", "umpired"):
+            for end in ("first", "last"):
+                star[f"{prefix}_{role}_{end}"] = {
+                    "text": f"{end.capitalize()} year spanned as {role[:-2]}er in {scope} "
+                    "(README: year spans for playing, managing and umpiring; may be incomplete).",
+                    "source": "chadwick_readme",
+                }
+    for column in (
+        "name_last",
+        "name_first",
+        "name_given",
+        "birth_year",
+        "birth_month",
+        "birth_day",
+        "death_year",
+        "death_month",
+        "death_day",
+    ):
+        star[column] = {
+            "text": "Basic name component or date of birth/death (README: People files).",
+            "source": "chadwick_readme",
+        }
+    return {"_sources": {"chadwick_readme": CHADWICK_README}, "*": star}
+
+
 def main() -> int:
     """Write the requested sources (default: all)."""
-    wanted = sys.argv[1:] or ["mlb_api", "statcast"]
+    wanted = sys.argv[1:] or ["mlb_api", "statcast", "lahman", "chadwick"]
     http = HttpClient(RateLimitConfig())
     OUT.mkdir(parents=True, exist_ok=True)
-    builders = {"mlb_api": build_mlb, "statcast": build_statcast}
+    builders = {
+        "mlb_api": build_mlb,
+        "statcast": build_statcast,
+        "lahman": build_lahman,
+        "chadwick": build_chadwick,
+    }
     for source in wanted:
         data = builders[source](http)
         (OUT / f"{source}.json").write_text(
