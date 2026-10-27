@@ -82,6 +82,15 @@ def build_mlb(http: HttpClient) -> dict[str, Any]:
             "text": f"{label}: {kind} ({groups}){lookup}.",
             "source": "mlb_baseball_stats",
         }
+    # Response keys are the provider's own ``lookupParam`` (battingAverage -> avg): use it as
+    # an alias only when exactly one statistic claims it, never by similarity.
+    claims: dict[str, list[dict[str, Any]]] = {}
+    for item in stats:
+        if item.get("lookupParam"):
+            claims.setdefault(snake("stat." + item["lookupParam"]), []).append(item)
+    for column, items in claims.items():
+        if len(items) == 1 and column not in star:
+            star[column] = star[snake("stat." + items[0]["name"])]
     game_types = http.get_sync(f"{MLB}/gameTypes").json()
     star["game_type"] = {
         "text": "Game type code: "

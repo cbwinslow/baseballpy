@@ -1196,6 +1196,14 @@
    "authored": true,
    "text": "Relative MLB Stats API path of the spring venue resource (prefix https://statsapi.mlb.com)."
   },
+  "stat_a": {
+   "source": "mlb_baseball_stats",
+   "text": "Assist: counting statistic (fielding, catching); lookup parameter `a`."
+  },
+  "stat_ab": {
+   "source": "mlb_baseball_stats",
+   "text": "atBats: counting statistic (hitting, catching); lookup parameter `ab`."
+  },
   "stat_acceleration": {
    "source": "mlb_baseball_stats",
    "text": "acceleration: rate or derived statistic (running); lookup parameter `acceleration`."
@@ -1227,6 +1235,14 @@
   "stat_attendance": {
    "source": "mlb_baseball_stats",
    "text": "attendance: counting statistic (game); lookup parameter `attendance`."
+  },
+  "stat_avg": {
+   "source": "mlb_baseball_stats",
+   "text": "battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`."
+  },
+  "stat_b": {
+   "source": "mlb_baseball_stats",
+   "text": "Balls: counting statistic (pitching); lookup parameter `b`."
   },
   "stat_babip": {
    "source": "mlb_baseball_stats",
@@ -1280,6 +1296,14 @@
    "source": "mlb_baseball_stats",
    "text": "battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`."
   },
+  "stat_bb": {
+   "source": "mlb_baseball_stats",
+   "text": "walks: counting statistic (hitting, pitching, catching); lookup parameter `bb`."
+  },
+  "stat_bb_9": {
+   "source": "mlb_baseball_stats",
+   "text": "walksPer9Inn: rate or derived statistic (pitching, catching); lookup parameter `bb_9`."
+  },
   "stat_bequeathed_runners": {
    "source": "mlb_baseball_stats",
    "text": "bequeathedRunners: counting statistic (pitching); lookup parameter `bq`."
@@ -1288,7 +1312,23 @@
    "source": "mlb_baseball_stats",
    "text": "bequeathedRunnersScored: counting statistic (pitching); lookup parameter `bqs`."
   },
+  "stat_bk": {
+   "source": "mlb_baseball_stats",
+   "text": "Balk: counting statistic (pitching); lookup parameter `bk`."
+  },
   "stat_blown_saves": {
+   "source": "mlb_baseball_stats",
+   "text": "blownSaves: counting statistic (pitching); lookup parameter `bs`."
+  },
+  "stat_bq": {
+   "source": "mlb_baseball_stats",
+   "text": "bequeathedRunners: counting statistic (pitching); lookup parameter `bq`."
+  },
+  "stat_bqs": {
+   "source": "mlb_baseball_stats",
+   "text": "bequeathedRunnersScored: counting statistic (pitching); lookup parameter `bqs`."
+  },
+  "stat_bs": {
    "source": "mlb_baseball_stats",
    "text": "blownSaves: counting statistic (pitching); lookup parameter `bs`."
   },
@@ -1316,6 +1356,14 @@
    "source": "mlb_baseball_stats",
    "text": "CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`."
   },
+  "stat_cera": {
+   "source": "mlb_baseball_stats",
+   "text": "catcherEarnedRunAverage: rate or derived statistic (fielding); lookup parameter `cera`."
+  },
+  "stat_cg": {
+   "source": "mlb_baseball_stats",
+   "text": "Complete Game: counting statistic (pitching); lookup parameter `cg`."
+  },
   "stat_chances": {
    "source": "mlb_baseball_stats",
    "text": "Chances: counting statistic (fielding, catching); lookup parameter `tc`."
@@ -1328,9 +1376,21 @@
    "source": "mlb_baseball_stats",
    "text": "chasePercentage: rate or derived statistic (hitting, pitching); lookup parameter `chasePercentage`."
   },
+  "stat_ci": {
+   "source": "mlb_baseball_stats",
+   "text": "Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`."
+  },
   "stat_complete_games": {
    "source": "mlb_baseball_stats",
    "text": "Complete Game: counting statistic (pitching); lookup parameter `cg`."
+  },
+  "stat_cs": {
+   "source": "mlb_baseball_stats",
+   "text": "CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`."
+  },
+  "stat_d": {
+   "source": "mlb_baseball_stats",
+   "text": "2B: counting statistic (hitting, pitching); lookup parameter `d`."
   },
   "stat_distance_covered": {
    "source": "mlb_baseball_stats",
@@ -1344,15 +1404,31 @@
    "source": "mlb_baseball_stats",
    "text": "2B: counting statistic (hitting, pitching); lookup parameter `d`."
   },
+  "stat_dp": {
+   "source": "mlb_baseball_stats",
+   "text": "DP: counting statistic (fielding, catching); lookup parameter `dp`."
+  },
   "stat_duration": {
    "source": "mlb_baseball_stats",
    "text": "duration: counting statistic (game); lookup parameter `duration`."
+  },
+  "stat_e": {
+   "source": "mlb_baseball_stats",
+   "text": "E: counting statistic (fielding, catching); lookup parameter `e`."
   },
   "stat_earned_run": {
    "source": "mlb_baseball_stats",
    "text": "earnedRun: counting statistic (pitching, catching); lookup parameter `er`."
   },
   "stat_earned_run_average": {
+   "source": "mlb_baseball_stats",
+   "text": "earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`."
+  },
+  "stat_er": {
+   "source": "mlb_baseball_stats",
+   "text": "earnedRun: counting statistic (pitching, catching); lookup parameter `er`."
+  },
+  "stat_era": {
    "source": "mlb_baseball_stats",
    "text": "earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`."
   },
@@ -1375,6 +1451,10 @@
   "stat_exchange": {
    "source": "mlb_baseball_stats",
    "text": "exchange: rate or derived statistic (fielding); lookup parameter `exchange`."
+  },
+  "stat_exit_velo": {
+   "source": "mlb_baseball_stats",
+   "text": "exitVelocity: rate or derived statistic (hitting, pitching); lookup parameter `exitVelo`."
   },
   "stat_exit_velocity": {
    "source": "mlb_baseball_stats",
@@ -1456,6 +1536,14 @@
    "source": "mlb_baseball_stats",
    "text": "fmli: rate or derived statistic (pitching)."
   },
+  "stat_fpct": {
+   "source": "mlb_baseball_stats",
+   "text": "fieldingPercentage: rate or derived statistic (fielding, catching); lookup parameter `fpct`."
+  },
+  "stat_g": {
+   "source": "mlb_baseball_stats",
+   "text": "gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`."
+  },
   "stat_game_date": {
    "source": "mlb_baseball_stats",
    "text": "gameDate: counting statistic (hitting, pitching, catching, fielding, running)."
@@ -1471,6 +1559,30 @@
   "stat_games_started": {
    "source": "mlb_baseball_stats",
    "text": "gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`."
+  },
+  "stat_gf": {
+   "source": "mlb_baseball_stats",
+   "text": "gamesFinished: counting statistic (pitching); lookup parameter `gf`."
+  },
+  "stat_gidp": {
+   "source": "mlb_baseball_stats",
+   "text": "GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`."
+  },
+  "stat_gidp_opp": {
+   "source": "mlb_baseball_stats",
+   "text": "groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`."
+  },
+  "stat_gitp": {
+   "source": "mlb_baseball_stats",
+   "text": "GITP: counting statistic (hitting, pitching); lookup parameter `gitp`."
+  },
+  "stat_go": {
+   "source": "mlb_baseball_stats",
+   "text": "Groundouts: counting statistic (hitting, pitching); lookup parameter `go`."
+  },
+  "stat_go_ao": {
+   "source": "mlb_baseball_stats",
+   "text": "Groundouts-flyouts: rate or derived statistic (hitting, pitching); lookup parameter `go_ao`."
   },
   "stat_ground_into_double_play_opportunities": {
    "source": "mlb_baseball_stats",
@@ -1492,6 +1604,18 @@
    "source": "mlb_baseball_stats",
    "text": "Groundouts-flyouts: rate or derived statistic (hitting, pitching); lookup parameter `go_ao`."
   },
+  "stat_gs": {
+   "source": "mlb_baseball_stats",
+   "text": "gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`."
+  },
+  "stat_h": {
+   "source": "mlb_baseball_stats",
+   "text": "hits: counting statistic (hitting, pitching, catching); lookup parameter `h`."
+  },
+  "stat_h_9": {
+   "source": "mlb_baseball_stats",
+   "text": "hitsPer9Inn: rate or derived statistic (pitching, catching); lookup parameter `h_9`."
+  },
   "stat_hang_time": {
    "source": "mlb_baseball_stats",
    "text": "hangTime: rate or derived statistic (hitting); lookup parameter `hangTime`."
@@ -1503,6 +1627,14 @@
   "stat_hard_hits": {
    "source": "mlb_baseball_stats",
    "text": "hardHits: rate or derived statistic (hitting, pitching); lookup parameter `hardHits`."
+  },
+  "stat_hb": {
+   "source": "mlb_baseball_stats",
+   "text": "hitBatsman: counting statistic (pitching, catching); lookup parameter `hb`."
+  },
+  "stat_hbp": {
+   "source": "mlb_baseball_stats",
+   "text": "HBP: counting statistic (hitting); lookup parameter `hbp`."
   },
   "stat_hit_batsman": {
    "source": "mlb_baseball_stats",
@@ -1531,6 +1663,10 @@
   "stat_hits_risp": {
    "source": "mlb_baseball_stats",
    "text": "hitsRisp: counting statistic (pitching, hitting); lookup parameter `hits_risp`."
+  },
+  "stat_hld": {
+   "source": "mlb_baseball_stats",
+   "text": "Hold: counting statistic (pitching); lookup parameter `hld`."
   },
   "stat_holds": {
    "source": "mlb_baseball_stats",
@@ -1576,6 +1712,14 @@
    "source": "mlb_baseball_stats",
    "text": "horizontalBreak: rate or derived statistic (hitting, pitching); lookup parameter `horizontalBreak`."
   },
+  "stat_hr": {
+   "source": "mlb_baseball_stats",
+   "text": "HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`."
+  },
+  "stat_ibb": {
+   "source": "mlb_baseball_stats",
+   "text": "IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`."
+  },
   "stat_inherited_runner": {
    "source": "mlb_baseball_stats",
    "text": "Inherited runners: counting statistic (pitching); lookup parameter `ir`."
@@ -1587,6 +1731,10 @@
   "stat_inli": {
    "source": "mlb_baseball_stats",
    "text": "inli: rate or derived statistic (pitching)."
+  },
+  "stat_inn": {
+   "source": "mlb_baseball_stats",
+   "text": "Innings: counting statistic (fielding, catching, game); lookup parameter `inn`."
   },
   "stat_innings": {
    "source": "mlb_baseball_stats",
@@ -1600,6 +1748,18 @@
    "source": "mlb_baseball_stats",
    "text": "IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`."
   },
+  "stat_ip": {
+   "source": "mlb_baseball_stats",
+   "text": "Innings Pitched: counting statistic (pitching); lookup parameter `ip`."
+  },
+  "stat_ir": {
+   "source": "mlb_baseball_stats",
+   "text": "Inherited runners: counting statistic (pitching); lookup parameter `ir`."
+  },
+  "stat_irs": {
+   "source": "mlb_baseball_stats",
+   "text": "Scored: counting statistic (pitching); lookup parameter `irs`."
+  },
   "stat_iso": {
    "source": "mlb_baseball_stats",
    "text": "iso: rate or derived statistic (hitting, pitching)."
@@ -1607,6 +1767,18 @@
   "stat_jump_distance": {
    "source": "mlb_baseball_stats",
    "text": "jumpDistance: rate or derived statistic (fielding); lookup parameter `jumpDistance`."
+  },
+  "stat_k_9": {
+   "source": "mlb_baseball_stats",
+   "text": "strikeoutsPer9Inn: rate or derived statistic (pitching, catching); lookup parameter `k_9`."
+  },
+  "stat_k_bb": {
+   "source": "mlb_baseball_stats",
+   "text": "strikeoutWalkRatio: rate or derived statistic (pitching, catching); lookup parameter `k_bb`."
+  },
+  "stat_l": {
+   "source": "mlb_baseball_stats",
+   "text": "losses: counting statistic (pitching); lookup parameter `l`."
   },
   "stat_launch_angle": {
    "source": "mlb_baseball_stats",
@@ -1617,6 +1789,14 @@
    "text": "leftOnBase: counting statistic (hitting); lookup parameter `lob`."
   },
   "stat_left_on_base_risp": {
+   "source": "mlb_baseball_stats",
+   "text": "leftOnBaseRisp: counting statistic (hitting); lookup parameter `lob_risp`."
+  },
+  "stat_lob": {
+   "source": "mlb_baseball_stats",
+   "text": "leftOnBase: counting statistic (hitting); lookup parameter `lob`."
+  },
+  "stat_lob_risp": {
    "source": "mlb_baseball_stats",
    "text": "leftOnBaseRisp: counting statistic (hitting); lookup parameter `lob_risp`."
   },
@@ -1652,6 +1832,10 @@
    "authored": true,
    "text": "Name of the stat."
   },
+  "stat_np": {
+   "source": "mlb_baseball_stats",
+   "text": "Pitches: counting statistic (hitting, pitching); lookup parameter `np`."
+  },
   "stat_number_of_balls": {
    "source": "mlb_baseball_stats",
    "text": "Balls: counting statistic (pitching); lookup parameter `b`."
@@ -1664,6 +1848,10 @@
    "source": "mlb_baseball_stats",
    "text": "Strikes: counting statistic (pitching); lookup parameter `s`."
   },
+  "stat_ofa": {
+   "source": "mlb_baseball_stats",
+   "text": "Outfield assists: counting statistic (fielding); lookup parameter `ofa`."
+  },
   "stat_on_base_percentage": {
    "source": "mlb_baseball_stats",
    "text": "onBasePercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `obp`."
@@ -1675,6 +1863,10 @@
   "stat_on_base_rate": {
    "source": "mlb_baseball_stats",
    "text": "onBaseRate: rate or derived statistic (hitting, pitching, catching); lookup parameter `obp`."
+  },
+  "stat_ops": {
+   "source": "mlb_baseball_stats",
+   "text": "onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`."
   },
   "stat_out_of_box": {
    "source": "mlb_baseball_stats",
@@ -1692,7 +1884,19 @@
    "source": "mlb_baseball_stats",
    "text": "Outs Pitched: counting statistic (pitching); lookup parameter `p_out`."
   },
+  "stat_p_ip": {
+   "source": "mlb_baseball_stats",
+   "text": "pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`."
+  },
+  "stat_p_out": {
+   "source": "mlb_baseball_stats",
+   "text": "Outs Pitched: counting statistic (pitching); lookup parameter `p_out`."
+  },
   "stat_passed_balls": {
+   "source": "mlb_baseball_stats",
+   "text": "PB: counting statistic (fielding, catching); lookup parameter `pb`."
+  },
+  "stat_pb": {
    "source": "mlb_baseball_stats",
    "text": "PB: counting statistic (fielding, catching); lookup parameter `pb`."
   },
@@ -1780,9 +1984,17 @@
    "source": "mlb_baseball_stats",
    "text": "Put Outs: counting statistic (fielding); lookup parameter `po`."
   },
+  "stat_qs": {
+   "source": "mlb_baseball_stats",
+   "text": "qualityStarts: counting statistic (pitching); lookup parameter `qs`."
+  },
   "stat_quality_starts": {
    "source": "mlb_baseball_stats",
    "text": "qualityStarts: counting statistic (pitching); lookup parameter `qs`."
+  },
+  "stat_r": {
+   "source": "mlb_baseball_stats",
+   "text": "runs: counting statistic (hitting, pitching, catching); lookup parameter `r`."
   },
   "stat_ra9_war": {
    "source": "mlb_baseball_stats",
@@ -1799,6 +2011,10 @@
   "stat_rar": {
    "source": "mlb_baseball_stats",
    "text": "rar: counting statistic (hitting)."
+  },
+  "stat_rbi": {
+   "source": "mlb_baseball_stats",
+   "text": "RBI: counting statistic (hitting); lookup parameter `rbi`."
   },
   "stat_reached_on_error": {
    "source": "mlb_baseball_stats",
@@ -1820,6 +2036,18 @@
    "source": "mlb_baseball_stats",
    "text": "replacement: counting statistic (hitting)."
   },
+  "stat_rf": {
+   "source": "mlb_baseball_stats",
+   "text": "Range Factor Per Game: rate or derived statistic (fielding, catching); lookup parameter `rf`."
+  },
+  "stat_rf_9": {
+   "source": "mlb_baseball_stats",
+   "text": "Range Factor Per 9 Innings: rate or derived statistic (fielding); lookup parameter `rf_9`."
+  },
+  "stat_roe": {
+   "source": "mlb_baseball_stats",
+   "text": "reachedOnError: counting statistic (hitting); lookup parameter `roe`."
+  },
   "stat_route_efficiency": {
    "source": "mlb_baseball_stats",
    "text": "routeEfficiency: rate or derived statistic (fielding); lookup parameter `routeEfficiency`."
@@ -1831,6 +2059,14 @@
   "stat_runs_batted_in": {
    "source": "mlb_baseball_stats",
    "text": "RBI: counting statistic (hitting); lookup parameter `rbi`."
+  },
+  "stat_s": {
+   "source": "mlb_baseball_stats",
+   "text": "Strikes: counting statistic (pitching); lookup parameter `s`."
+  },
+  "stat_sac": {
+   "source": "mlb_baseball_stats",
+   "text": "SAC: counting statistic (hitting, catching); lookup parameter `sac`."
   },
   "stat_sacrifice_bunts": {
    "source": "mlb_baseball_stats",
@@ -1847,6 +2083,14 @@
   "stat_saves": {
    "source": "mlb_baseball_stats",
    "text": "saves: counting statistic (pitching); lookup parameter `sv`."
+  },
+  "stat_sb": {
+   "source": "mlb_baseball_stats",
+   "text": "SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`."
+  },
+  "stat_sbpct": {
+   "source": "mlb_baseball_stats",
+   "text": "Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`."
   },
   "stat_sd": {
    "source": "mlb_baseball_stats",
@@ -1872,13 +2116,29 @@
    "source": "mlb_baseball_stats",
    "text": "secondaryLead: rate or derived statistic (running); lookup parameter `secondaryLead`."
   },
+  "stat_sf": {
+   "source": "mlb_baseball_stats",
+   "text": "SF: counting statistic (hitting, catching); lookup parameter `sf`."
+  },
+  "stat_sho": {
+   "source": "mlb_baseball_stats",
+   "text": "shutouts: counting statistic (pitching); lookup parameter `sho`."
+  },
   "stat_shutouts": {
    "source": "mlb_baseball_stats",
    "text": "shutouts: counting statistic (pitching); lookup parameter `sho`."
   },
+  "stat_slg": {
+   "source": "mlb_baseball_stats",
+   "text": "sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`."
+  },
   "stat_slugging_percentage": {
    "source": "mlb_baseball_stats",
    "text": "sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`."
+  },
+  "stat_so": {
+   "source": "mlb_baseball_stats",
+   "text": "strikeouts: counting statistic (hitting, pitching, catching); lookup parameter `so`."
   },
   "stat_spd": {
    "source": "mlb_baseball_stats",
@@ -1891,6 +2151,10 @@
   "stat_squared_up_percentage": {
    "source": "mlb_baseball_stats",
    "text": "squaredUpPercentage: rate or derived statistic (hitting, pitching); lookup parameter `squaredUpPercentage`."
+  },
+  "stat_steal_first_to_second_steal": {
+   "source": "mlb_baseball_stats",
+   "text": "firstToSecondSteal: rate or derived statistic (running); lookup parameter `stealFirstToSecondSteal`."
   },
   "stat_stolen_base_percentage": {
    "source": "mlb_baseball_stats",
@@ -1920,6 +2184,14 @@
    "source": "mlb_baseball_stats",
    "text": "strikeoutsPerPlateAppearance: rate or derived statistic (hitting, pitching)."
   },
+  "stat_sv": {
+   "source": "mlb_baseball_stats",
+   "text": "saves: counting statistic (pitching); lookup parameter `sv`."
+  },
+  "stat_svo": {
+   "source": "mlb_baseball_stats",
+   "text": "saveOpportunities: counting statistic (pitching); lookup parameter `svo`."
+  },
   "stat_swing_length": {
    "source": "mlb_baseball_stats",
    "text": "swingLength: rate or derived statistic (hitting, pitching); lookup parameter `swingLength`."
@@ -1932,9 +2204,29 @@
    "source": "mlb_baseball_stats",
    "text": "sword: rate or derived statistic (hitting, pitching); lookup parameter `sword`."
   },
+  "stat_swstr": {
+   "source": "mlb_baseball_stats",
+   "text": "Swinging Strike%: counting statistic (pitching); lookup parameter `swstr`."
+  },
+  "stat_t": {
+   "source": "mlb_baseball_stats",
+   "text": "3B: counting statistic (hitting, pitching); lookup parameter `t`."
+  },
   "stat_tag_first_step": {
    "source": "mlb_baseball_stats",
    "text": "tagFirstStep: rate or derived statistic (running); lookup parameter `tagFirstStep`."
+  },
+  "stat_tb": {
+   "source": "mlb_baseball_stats",
+   "text": "TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`."
+  },
+  "stat_tbf": {
+   "source": "mlb_baseball_stats",
+   "text": "Batters faced: counting statistic (pitching, catching); lookup parameter `tbf`."
+  },
+  "stat_tc": {
+   "source": "mlb_baseball_stats",
+   "text": "Chances: counting statistic (fielding, catching); lookup parameter `tc`."
   },
   "stat_third_to_home": {
    "source": "mlb_baseball_stats",
@@ -1960,6 +2252,10 @@
    "source": "mlb_baseball_stats",
    "text": "throwingAccuracy: rate or derived statistic (fielding); lookup parameter `throwingAccuracy`."
   },
+  "stat_throwing_e": {
+   "source": "mlb_baseball_stats",
+   "text": "Throwing Errors: counting statistic (fielding); lookup parameter `throwing_e`."
+  },
   "stat_throwing_errors": {
    "source": "mlb_baseball_stats",
    "text": "Throwing Errors: counting statistic (fielding); lookup parameter `throwing_e`."
@@ -1973,6 +2269,14 @@
    "text": "Batters faced: counting statistic (pitching, catching); lookup parameter `tbf`."
   },
   "stat_total_plate_appearances": {
+   "source": "mlb_baseball_stats",
+   "text": "totalPlateAppearances: counting statistic (hitting); lookup parameter `tpa`."
+  },
+  "stat_tp": {
+   "source": "mlb_baseball_stats",
+   "text": "TP: counting statistic (fielding, catching); lookup parameter `tp`."
+  },
+  "stat_tpa": {
    "source": "mlb_baseball_stats",
    "text": "totalPlateAppearances: counting statistic (hitting); lookup parameter `tpa`."
   },
@@ -1999,6 +2303,10 @@
   "stat_vertical_break": {
    "source": "mlb_baseball_stats",
    "text": "verticalBreak: rate or derived statistic (hitting, pitching); lookup parameter `verticalBreak`."
+  },
+  "stat_w": {
+   "source": "mlb_baseball_stats",
+   "text": "wins: counting statistic (pitching); lookup parameter `w`."
   },
   "stat_w_gdp": {
    "source": "mlb_baseball_stats",
@@ -2056,6 +2364,10 @@
    "source": "mlb_baseball_stats",
    "text": "whiffPercentage: rate or derived statistic (pitching); lookup parameter `whiffPercentage`."
   },
+  "stat_whip": {
+   "source": "mlb_baseball_stats",
+   "text": "walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`."
+  },
   "stat_wild_pitch": {
    "source": "mlb_baseball_stats",
    "text": "WP: counting statistic (pitching, fielding, catching); lookup parameter `wp`."
@@ -2072,9 +2384,21 @@
    "source": "mlb_baseball_stats",
    "text": "wins: counting statistic (pitching); lookup parameter `w`."
   },
+  "stat_wo": {
+   "source": "mlb_baseball_stats",
+   "text": "walkoffs: counting statistic (hitting); lookup parameter `wo`."
+  },
   "stat_woba": {
    "source": "mlb_baseball_stats",
    "text": "woba: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_wp": {
+   "source": "mlb_baseball_stats",
+   "text": "WP: counting statistic (pitching, fielding, catching); lookup parameter `wp`."
+  },
+  "stat_wpct": {
+   "source": "mlb_baseball_stats",
+   "text": "winPercentage: rate or derived statistic (pitching); lookup parameter `wpct`."
   },
   "stat_x_avg": {
    "source": "mlb_baseball_stats",
@@ -2091,6 +2415,10 @@
   "stat_x_wobacon": {
    "source": "mlb_baseball_stats",
    "text": "xWobacon: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_xbh": {
+   "source": "mlb_baseball_stats",
+   "text": "extraBaseHits: counting statistic (hitting); lookup parameter `xbh`."
   },
   "stat_xfip": {
    "source": "mlb_baseball_stats",

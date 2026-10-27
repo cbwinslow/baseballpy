@@ -502,7 +502,7 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Status:** Accepted - implemented (archived `column-descriptions-from-provider-metadata`); Retrosheet and Savant leaderboard content continues in `column-descriptions-retrosheet-and-leaderboards`.
 - **Context:** generated column dictionaries had empty description cells.
 - **Decision:** `docs/columns/<source>.json` holds descriptions with a `_sources` map; each cell cites a source key or is flagged `authored`; missing ones render `TODO`; `baseballpy docs coverage` reports per-source counts and a ratchet test (`coverage_baseline.json`) stops regressions. `scripts/build_column_descriptions.py` builds MLB content from `/v1/baseballStats`, `gameTypes`, `pitchTypes`, `positions` (plus authored structural suffix meanings) and Statcast from Savant's `csv-docs` page, Lahman from the SABR `readme2025.txt` and Chadwick from the register README. Where the provider's response key differs from its metadata name, nothing is guessed.
-- **Consequences:** coverage 2026-10-27: mlb_api 53.1%, statcast 26.4%, lahman 97.2%, chadwick 72.1%, retrosheet 36.9% (event, daily-split and substitution fields from the Chadwick tool documents; retrosheet.org refused connections, so Retrosheet's own format documents were not read).
+- **Consequences:** coverage 2026-10-27: mlb_api 56.7%, statcast 26.4%, lahman 97.2%, chadwick 72.1%, retrosheet 36.9% (event, daily-split and substitution fields from the Chadwick tool documents; retrosheet.org refused connections, so Retrosheet's own format documents were not read).
 - **Alternatives rejected:** inventing prose; matching metadata to response keys by similarity.
 
 ## ADR 37: The First Catalog Audit Found Wrong `unsupported` Verdicts; Probe Protocol

@@ -2791,19 +2791,19 @@ League-wide catching stats, type careerAdvanced (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -2953,10 +2953,10 @@ League-wide hitting stats, type careerAdvanced (player pool ALL).
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_reached_on_error` | int32 | yes | `stat.reachedOnError` | reachedOnError: counting statistic (hitting); lookup parameter `roe`. (src: mlb_baseball_stats) |
@@ -3000,8 +3000,8 @@ League-wide pitching stats, type careerAdvanced (player pool ALL).
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` | TODO |
 | `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` | TODO |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
@@ -3017,8 +3017,8 @@ League-wide pitching stats, type careerAdvanced (player pool ALL).
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
@@ -3101,19 +3101,19 @@ League-wide catching stats, type career (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -3244,11 +3244,11 @@ League-wide hitting stats, type career (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -3257,7 +3257,7 @@ League-wide hitting stats, type career (player pool ALL).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -3321,18 +3321,18 @@ League-wide pitching stats, type career (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -3341,7 +3341,7 @@ League-wide pitching stats, type career (player pool ALL).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -3414,8 +3414,8 @@ League-wide hitting stats, type expectedStatistics (player pool ALL).
 | `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
 | `stat_woba` | string | yes | `stat.woba` | woba: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_woba_con` | string | yes | `stat.wobaCon` | TODO |
 | `player_id` | int32 | yes | `player.id` | MLBAM identifier of the player. (authored) |
@@ -3458,8 +3458,8 @@ League-wide pitching stats, type expectedStatistics (player pool ALL).
 | `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
 | `stat_woba` | string | yes | `stat.woba` | woba: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_woba_con` | string | yes | `stat.wobaCon` | TODO |
 | `player_id` | int32 | yes | `player.id` | MLBAM identifier of the player. (authored) |
@@ -3583,11 +3583,11 @@ League-wide hitting stats, type lastXGames (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -3597,7 +3597,7 @@ League-wide hitting stats, type lastXGames (player pool ALL).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -3664,18 +3664,18 @@ League-wide pitching stats, type lastXGames (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -3684,7 +3684,7 @@ League-wide pitching stats, type lastXGames (player pool ALL).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -4078,18 +4078,18 @@ League-wide hitting stats, type projected (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
@@ -4158,15 +4158,15 @@ League-wide pitching stats, type projected (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | double | yes | `stat.avg` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_avg` | double | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -4407,19 +4407,19 @@ League-wide catching stats, type seasonAdvanced (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -4561,8 +4561,8 @@ League-wide hitting stats, type seasonAdvanced (player pool ALL).
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -4634,8 +4634,8 @@ League-wide pitching stats, type seasonAdvanced (player pool ALL).
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` | TODO |
 | `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` | TODO |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
@@ -4651,8 +4651,8 @@ League-wide pitching stats, type seasonAdvanced (player pool ALL).
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
@@ -4738,19 +4738,19 @@ League-wide catching stats, type season (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -4896,11 +4896,11 @@ League-wide hitting stats, type season (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -4909,7 +4909,7 @@ League-wide hitting stats, type season (player pool ALL).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -4976,18 +4976,18 @@ League-wide pitching stats, type season (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -4996,7 +4996,7 @@ League-wide pitching stats, type season (player pool ALL).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -5077,19 +5077,19 @@ League-wide catching stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -5242,10 +5242,10 @@ League-wide hitting stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `position_name` | string | yes | `position.name` | Name of the position. (authored) |
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_reached_on_error` | int32 | yes | `stat.reachedOnError` | reachedOnError: counting statistic (hitting); lookup parameter `roe`. (src: mlb_baseball_stats) |
@@ -5326,8 +5326,8 @@ League-wide pitching stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `position_name` | string | yes | `position.name` | Name of the position. (authored) |
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` | TODO |
 | `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` | TODO |
 | `stat_bequeathed_runners` | int32 | yes | `stat.bequeathedRunners` | bequeathedRunners: counting statistic (pitching); lookup parameter `bq`. (src: mlb_baseball_stats) |
@@ -5337,8 +5337,8 @@ League-wide pitching stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `stat_quality_starts` | int32 | yes | `stat.qualityStarts` | qualityStarts: counting statistic (pitching); lookup parameter `qs`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
 | `stat_total_swings` | int32 | yes | `stat.totalSwings` | TODO |
 | `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` | TODO |
@@ -5394,19 +5394,19 @@ League-wide catching stats, type statsSingleSeason (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -5536,15 +5536,15 @@ League-wide hitting stats, type statsSingleSeason (player pool ALL).
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` | atBatsPerHomeRun: rate or derived statistic (hitting). (src: mlb_baseball_stats) |
 | `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
@@ -5614,16 +5614,16 @@ League-wide pitching stats, type statsSingleSeason (player pool ALL).
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -5666,8 +5666,8 @@ League-wide pitching stats, type statsSingleSeason (player pool ALL).
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -6086,11 +6086,11 @@ Team catching stats, type atGameStart.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -6207,11 +6207,11 @@ Team hitting stats, type atGameStart.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -6220,7 +6220,7 @@ Team hitting stats, type atGameStart.
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -6278,18 +6278,18 @@ Team pitching stats, type atGameStart.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -6299,7 +6299,7 @@ Team pitching stats, type atGameStart.
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -6368,11 +6368,11 @@ Team catching stats, type byDateRange.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -6469,11 +6469,11 @@ Team hitting stats, type byDateRange.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -6482,7 +6482,7 @@ Team hitting stats, type byDateRange.
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -6530,18 +6530,18 @@ Team pitching stats, type byDateRange.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -6551,7 +6551,7 @@ Team pitching stats, type byDateRange.
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -6612,11 +6612,11 @@ Team catching stats, type careerAdvanced.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -6707,8 +6707,8 @@ Team hitting stats, type careerAdvanced.
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -6760,8 +6760,8 @@ Team pitching stats, type careerAdvanced.
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` | TODO |
 | `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` | TODO |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
@@ -6773,8 +6773,8 @@ Team pitching stats, type careerAdvanced.
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
@@ -6840,11 +6840,11 @@ Team catching stats, type career.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -6939,11 +6939,11 @@ Team hitting stats, type career.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -6952,7 +6952,7 @@ Team hitting stats, type career.
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -6999,18 +6999,18 @@ Team pitching stats, type career.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -7019,7 +7019,7 @@ Team pitching stats, type career.
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -7085,11 +7085,11 @@ Team catching stats, type careerPlayoffs.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -7177,15 +7177,15 @@ Team hitting stats, type careerPlayoffs.
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` | atBatsPerHomeRun: rate or derived statistic (hitting). (src: mlb_baseball_stats) |
@@ -7229,16 +7229,16 @@ Team pitching stats, type careerPlayoffs.
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -7296,11 +7296,11 @@ Team catching stats, type careerRegularSeason.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -7388,15 +7388,15 @@ Team hitting stats, type careerRegularSeason.
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` | atBatsPerHomeRun: rate or derived statistic (hitting). (src: mlb_baseball_stats) |
@@ -7440,16 +7440,16 @@ Team pitching stats, type careerRegularSeason.
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -7494,8 +7494,8 @@ Team hitting stats, type expectedStatistics.
 | `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
 | `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
 | `stat_woba` | string | yes | `stat.woba` | woba: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_woba_con` | string | yes | `stat.wobaCon` | TODO |
 | `player_id` | int32 | yes | `player.id` | MLBAM identifier of the player. (authored) |
@@ -7544,11 +7544,11 @@ Team catching stats, type gameLog.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -7665,11 +7665,11 @@ Team hitting stats, type gameLog.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -7678,7 +7678,7 @@ Team hitting stats, type gameLog.
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -7736,18 +7736,18 @@ Team pitching stats, type gameLog.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -7757,7 +7757,7 @@ Team pitching stats, type gameLog.
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -7826,11 +7826,11 @@ Team catching stats, type lastXGames.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -7927,11 +7927,11 @@ Team hitting stats, type lastXGames.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -7940,7 +7940,7 @@ Team hitting stats, type lastXGames.
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -7988,18 +7988,18 @@ Team pitching stats, type lastXGames.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -8009,7 +8009,7 @@ Team pitching stats, type lastXGames.
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -8071,11 +8071,11 @@ Team catching stats, type seasonAdvanced.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -8179,8 +8179,8 @@ Team hitting stats, type seasonAdvanced.
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -8234,8 +8234,8 @@ Team pitching stats, type seasonAdvanced.
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` | TODO |
 | `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` | TODO |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
@@ -8247,8 +8247,8 @@ Team pitching stats, type seasonAdvanced.
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
@@ -8316,11 +8316,11 @@ Team catching stats, type season.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -8428,11 +8428,11 @@ Team hitting stats, type season.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -8441,7 +8441,7 @@ Team hitting stats, type season.
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -8490,18 +8490,18 @@ Team pitching stats, type season.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -8510,7 +8510,7 @@ Team pitching stats, type season.
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -8621,11 +8621,11 @@ Team hitting stats, type vsOpponents.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -8635,7 +8635,7 @@ Team hitting stats, type vsOpponents.
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -8688,18 +8688,18 @@ Team pitching stats, type vsOpponents.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_outs_pitched` | int32 | yes | `stat.outsPitched` | Outs Pitched: counting statistic (pitching); lookup parameter `p_out`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
@@ -8709,7 +8709,7 @@ Team pitching stats, type vsOpponents.
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -8723,7 +8723,7 @@ Team pitching stats, type vsOpponents.
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_win_percentage` | string | yes | `stat.winPercentage` | winPercentage: rate or derived statistic (pitching); lookup parameter `wpct`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
@@ -8783,11 +8783,11 @@ Team catching stats, type yearByYearAdvanced.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -8882,7 +8882,7 @@ Team hitting stats, type yearByYearAdvanced.
 | `rank` | int32 | yes | — | TODO |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_walk_offs` | int32 | yes | `stat.walkOffs` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_stats_year_by_year_advanced_hitting -->
@@ -8967,11 +8967,11 @@ Team catching stats, type yearByYear.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -9059,15 +9059,15 @@ Team hitting stats, type yearByYear.
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` | atBatsPerHomeRun: rate or derived statistic (hitting). (src: mlb_baseball_stats) |
@@ -9111,16 +9111,16 @@ Team pitching stats, type yearByYear.
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -9178,11 +9178,11 @@ Team catching stats, type yearByYearPlayoffs.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -9270,15 +9270,15 @@ Team hitting stats, type yearByYearPlayoffs.
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` | atBatsPerHomeRun: rate or derived statistic (hitting). (src: mlb_baseball_stats) |
@@ -9322,16 +9322,16 @@ Team pitching stats, type yearByYearPlayoffs.
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -10144,7 +10144,7 @@ Per-player hitting stats, type byDateRangeAdvanced (one request per person).
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -10186,13 +10186,13 @@ Per-player pitching stats, type byDateRangeAdvanced (one request per person).
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikesouts_to_walks` | string | yes | `stat.strikesoutsToWalks` | TODO |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
@@ -10305,11 +10305,11 @@ Per-player hitting stats, type byDayOfWeek (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -10319,7 +10319,7 @@ Per-player hitting stats, type byDayOfWeek (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -10374,18 +10374,18 @@ Per-player pitching stats, type byDayOfWeek (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -10394,7 +10394,7 @@ Per-player pitching stats, type byDayOfWeek (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -10524,11 +10524,11 @@ Per-player hitting stats, type byMonth (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -10538,7 +10538,7 @@ Per-player hitting stats, type byMonth (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -10593,18 +10593,18 @@ Per-player pitching stats, type byMonth (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -10613,7 +10613,7 @@ Per-player pitching stats, type byMonth (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -10681,8 +10681,8 @@ Per-player hitting stats, type careerAdvanced (one request per person).
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -10743,8 +10743,8 @@ Per-player pitching stats, type careerAdvanced (one request per person).
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` | TODO |
 | `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` | TODO |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
@@ -10760,8 +10760,8 @@ Per-player pitching stats, type careerAdvanced (one request per person).
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
@@ -10906,11 +10906,11 @@ Per-player hitting stats, type career (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -10919,7 +10919,7 @@ Per-player hitting stats, type career (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -10975,18 +10975,18 @@ Per-player pitching stats, type career (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -10995,7 +10995,7 @@ Per-player pitching stats, type career (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -11136,11 +11136,11 @@ Per-player hitting stats, type careerPlayoffs (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -11149,7 +11149,7 @@ Per-player hitting stats, type careerPlayoffs (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -11205,18 +11205,18 @@ Per-player pitching stats, type careerPlayoffs (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -11225,7 +11225,7 @@ Per-player pitching stats, type careerPlayoffs (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -11366,11 +11366,11 @@ Per-player hitting stats, type careerRegularSeason (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -11379,7 +11379,7 @@ Per-player hitting stats, type careerRegularSeason (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -11435,18 +11435,18 @@ Per-player pitching stats, type careerRegularSeason (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -11455,7 +11455,7 @@ Per-player pitching stats, type careerRegularSeason (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -11519,8 +11519,8 @@ Per-player hitting stats, type expectedStatistics (one request per person).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
 | `season` | string | yes | — | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
 | `stat_woba` | string | yes | `stat.woba` | woba: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_woba_con` | string | yes | `stat.wobaCon` | TODO |
 | `player_id` | int32 | yes | `player.id` | MLBAM identifier of the player. (authored) |
@@ -11558,8 +11558,8 @@ Per-player pitching stats, type expectedStatistics (one request per person).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
 | `season` | string | yes | — | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
 | `stat_woba` | string | yes | `stat.woba` | woba: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_woba_con` | string | yes | `stat.wobaCon` | TODO |
 | `player_id` | int32 | yes | `player.id` | MLBAM identifier of the player. (authored) |
@@ -11683,11 +11683,11 @@ Per-player hitting stats, type gameLog (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -11697,7 +11697,7 @@ Per-player hitting stats, type gameLog (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -11766,18 +11766,18 @@ Per-player pitching stats, type gameLog (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -11786,7 +11786,7 @@ Per-player pitching stats, type gameLog (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -11917,11 +11917,11 @@ Per-player hitting stats, type homeAndAway (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -11931,7 +11931,7 @@ Per-player hitting stats, type homeAndAway (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -11975,18 +11975,18 @@ Per-player pitching stats, type homeAndAway (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -11995,7 +11995,7 @@ Per-player pitching stats, type homeAndAway (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -12158,11 +12158,11 @@ Per-player hitting stats, type lastXGames (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -12172,7 +12172,7 @@ Per-player hitting stats, type lastXGames (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -12223,18 +12223,18 @@ Per-player pitching stats, type lastXGames (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -12243,7 +12243,7 @@ Per-player pitching stats, type lastXGames (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -12791,18 +12791,18 @@ Per-player hitting stats, type projected (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
@@ -12862,15 +12862,15 @@ Per-player pitching stats, type projected (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | double | yes | `stat.avg` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_avg` | double | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -12930,10 +12930,10 @@ Per-player hitting stats, type rankingsByYear (one request per person).
 | `stat_strike_outs` | int32 | yes | `stat.strikeOuts` | TODO |
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
 | `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
@@ -12953,7 +12953,7 @@ Per-player hitting stats, type rankingsByYear (one request per person).
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -13063,16 +13063,16 @@ Per-player hitting stats, type rankings (one request per person).
 | `stat_base_on_balls` | int32 | yes | `stat.baseOnBalls` | TODO |
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
@@ -13378,8 +13378,8 @@ Per-player hitting stats, type seasonAdvanced (one request per person).
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -13440,8 +13440,8 @@ Per-player pitching stats, type seasonAdvanced (one request per person).
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` | TODO |
 | `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` | TODO |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
@@ -13457,8 +13457,8 @@ Per-player pitching stats, type seasonAdvanced (one request per person).
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
@@ -13603,11 +13603,11 @@ Per-player hitting stats, type season (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -13616,7 +13616,7 @@ Per-player hitting stats, type season (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -13672,18 +13672,18 @@ Per-player pitching stats, type season (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -13692,7 +13692,7 @@ Per-player pitching stats, type season (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -13819,8 +13819,8 @@ Per-player hitting stats, type statsSingleSeasonAdvanced (one request per person
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -13881,8 +13881,8 @@ Per-player pitching stats, type statsSingleSeasonAdvanced (one request per perso
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` | TODO |
 | `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` | TODO |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
@@ -13898,8 +13898,8 @@ Per-player pitching stats, type statsSingleSeasonAdvanced (one request per perso
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
@@ -14044,11 +14044,11 @@ Per-player hitting stats, type statsSingleSeason (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -14057,7 +14057,7 @@ Per-player hitting stats, type statsSingleSeason (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -14113,18 +14113,18 @@ Per-player pitching stats, type statsSingleSeason (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -14133,7 +14133,7 @@ Per-player pitching stats, type statsSingleSeason (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -14253,11 +14253,11 @@ Per-player hitting stats, type winLoss (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -14267,7 +14267,7 @@ Per-player hitting stats, type winLoss (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -14311,18 +14311,18 @@ Per-player pitching stats, type winLoss (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -14331,7 +14331,7 @@ Per-player pitching stats, type winLoss (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -14390,8 +14390,8 @@ Per-player hitting stats, type yearByYearAdvanced (one request per person).
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -14453,8 +14453,8 @@ Per-player pitching stats, type yearByYearAdvanced (one request per person).
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9` | string | yes | `stat.strikeoutsPer9` | TODO |
 | `stat_base_on_balls_per9` | string | yes | `stat.baseOnBallsPer9` | TODO |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
@@ -14470,8 +14470,8 @@ Per-player pitching stats, type yearByYearAdvanced (one request per person).
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
@@ -14618,11 +14618,11 @@ Per-player hitting stats, type yearByYear (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -14631,7 +14631,7 @@ Per-player hitting stats, type yearByYear (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -14688,18 +14688,18 @@ Per-player pitching stats, type yearByYear (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -14708,7 +14708,7 @@ Per-player pitching stats, type yearByYear (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -14851,11 +14851,11 @@ Per-player hitting stats, type yearByYearPlayoffs (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -14864,7 +14864,7 @@ Per-player hitting stats, type yearByYearPlayoffs (one request per person).
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -14921,18 +14921,18 @@ Per-player pitching stats, type yearByYearPlayoffs (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
@@ -14941,7 +14941,7 @@ Per-player pitching stats, type yearByYearPlayoffs (one request per person).
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -16423,8 +16423,8 @@ Per-player catching stats, type byDateRangeAdvanced (one request per person).
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_strikesouts_to_walks` | string | yes | `stat.strikesoutsToWalks` | TODO |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
@@ -16475,11 +16475,11 @@ Per-player catching stats, type byDayOfWeek (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -16536,11 +16536,11 @@ Per-player catching stats, type byMonth (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -16596,11 +16596,11 @@ Per-player catching stats, type career (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -16697,11 +16697,11 @@ Per-player catching stats, type careerPlayoffs (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -16798,11 +16798,11 @@ Per-player catching stats, type careerRegularSeason (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -16900,11 +16900,11 @@ Per-player catching stats, type gameLog (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -16973,11 +16973,11 @@ Per-player catching stats, type homeAndAway (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -17022,11 +17022,11 @@ Per-player catching stats, type lastXGames (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -17550,11 +17550,11 @@ Per-player catching stats, type season (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -17653,11 +17653,11 @@ Per-player catching stats, type statsSingleSeason (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -17755,11 +17755,11 @@ Per-player catching stats, type winLoss (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -17806,11 +17806,11 @@ Per-player catching stats, type yearByYear (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -17869,11 +17869,11 @@ Per-player catching stats, type yearByYearPlayoffs (one request per person).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -18598,11 +18598,11 @@ Per-player hitting stats, type careerStatSplits, parameters {'season': '{season}
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -18612,7 +18612,7 @@ Per-player hitting stats, type careerStatSplits, parameters {'season': '{season}
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -18673,18 +18673,18 @@ Per-player pitching stats, type careerStatSplits, parameters {'season': '{season
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_outs_pitched` | int32 | yes | `stat.outsPitched` | Outs Pitched: counting statistic (pitching); lookup parameter `p_out`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
@@ -18694,7 +18694,7 @@ Per-player pitching stats, type careerStatSplits, parameters {'season': '{season
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -18708,7 +18708,7 @@ Per-player pitching stats, type careerStatSplits, parameters {'season': '{season
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_win_percentage` | string | yes | `stat.winPercentage` | winPercentage: rate or derived statistic (pitching); lookup parameter `wpct`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
@@ -18980,11 +18980,11 @@ Per-player hitting stats, type projected_Zips2YR, parameters {}.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -18992,7 +18992,7 @@ Per-player hitting stats, type projected_Zips2YR, parameters {}.
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
@@ -19055,15 +19055,15 @@ Per-player pitching stats, type projected_Zips2YR, parameters {}.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | double | yes | `stat.avg` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_avg` | double | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -19131,11 +19131,11 @@ Per-player hitting stats, type projected_Zips3YR, parameters {}.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -19143,7 +19143,7 @@ Per-player hitting stats, type projected_Zips3YR, parameters {}.
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
@@ -19206,15 +19206,15 @@ Per-player pitching stats, type projected_Zips3YR, parameters {}.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | double | yes | `stat.avg` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_avg` | double | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -19282,11 +19282,11 @@ Per-player hitting stats, type projected_Zips, parameters {}.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -19294,7 +19294,7 @@ Per-player hitting stats, type projected_Zips, parameters {}.
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
@@ -19357,15 +19357,15 @@ Per-player pitching stats, type projected_Zips, parameters {}.
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | double | yes | `stat.avg` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_avg` | double | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -19475,8 +19475,8 @@ Per-player hitting stats, type statSplitsAdvanced, parameters {'season': '{seaso
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -19538,8 +19538,8 @@ Per-player pitching stats, type statSplitsAdvanced, parameters {'season': '{seas
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
 | `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` | TODO |
 | `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` | TODO |
@@ -19551,7 +19551,7 @@ Per-player pitching stats, type statSplitsAdvanced, parameters {'season': '{seas
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` | TODO |
@@ -19715,11 +19715,11 @@ Per-player hitting stats, type statSplits, parameters {'season': '{season}', 'si
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -19729,7 +19729,7 @@ Per-player hitting stats, type statSplits, parameters {'season': '{season}', 'si
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -19797,18 +19797,18 @@ Per-player pitching stats, type statSplits, parameters {'season': '{season}', 's
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_outs_pitched` | int32 | yes | `stat.outsPitched` | Outs Pitched: counting statistic (pitching); lookup parameter `p_out`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
@@ -19818,7 +19818,7 @@ Per-player pitching stats, type statSplits, parameters {'season': '{season}', 's
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -19832,7 +19832,7 @@ Per-player pitching stats, type statSplits, parameters {'season': '{season}', 's
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_win_percentage` | string | yes | `stat.winPercentage` | winPercentage: rate or derived statistic (pitching); lookup parameter `wpct`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
@@ -19953,17 +19953,17 @@ Per-player hitting stats, type vsPlayer5Y, parameters {'season': '{season}', 'op
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20022,17 +20022,17 @@ Per-player hitting stats, type vsPlayer5Y, parameters {'season': '{season}', 'op
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20091,16 +20091,16 @@ Per-player pitching stats, type vsPlayer5Y, parameters {'season': '{season}', 'o
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_outs_pitched` | int32 | yes | `stat.outsPitched` | Outs Pitched: counting statistic (pitching); lookup parameter `p_out`. (src: mlb_baseball_stats) |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -20112,7 +20112,7 @@ Per-player pitching stats, type vsPlayer5Y, parameters {'season': '{season}', 'o
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
 | `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` | strikeoutWalkRatio: rate or derived statistic (pitching, catching); lookup parameter `k_bb`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` | strikeoutsPer9Inn: rate or derived statistic (pitching, catching); lookup parameter `k_9`. (src: mlb_baseball_stats) |
@@ -20174,17 +20174,17 @@ Per-player hitting stats, type vsPlayer, parameters {'season': '{season}', 'oppo
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20244,17 +20244,17 @@ Per-player hitting stats, type vsPlayer, parameters {'season': '{season}', 'oppo
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20313,16 +20313,16 @@ Per-player pitching stats, type vsPlayer, parameters {'season': '{season}', 'opp
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_outs_pitched` | int32 | yes | `stat.outsPitched` | Outs Pitched: counting statistic (pitching); lookup parameter `p_out`. (src: mlb_baseball_stats) |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -20334,7 +20334,7 @@ Per-player pitching stats, type vsPlayer, parameters {'season': '{season}', 'opp
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
 | `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` | strikeoutWalkRatio: rate or derived statistic (pitching, catching); lookup parameter `k_bb`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` | strikeoutsPer9Inn: rate or derived statistic (pitching, catching); lookup parameter `k_9`. (src: mlb_baseball_stats) |
@@ -20444,17 +20444,17 @@ Per-player hitting stats, type vsPlayerTotal, parameters {'season': '{season}', 
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20507,17 +20507,17 @@ Per-player hitting stats, type vsPlayerTotal, parameters {'season': '{season}', 
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20568,16 +20568,16 @@ Per-player pitching stats, type vsPlayerTotal, parameters {'season': '{season}',
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_outs_pitched` | int32 | yes | `stat.outsPitched` | Outs Pitched: counting statistic (pitching); lookup parameter `p_out`. (src: mlb_baseball_stats) |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -20589,7 +20589,7 @@ Per-player pitching stats, type vsPlayerTotal, parameters {'season': '{season}',
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
 | `stat_strikeout_walk_ratio` | string | yes | `stat.strikeoutWalkRatio` | strikeoutWalkRatio: rate or derived statistic (pitching, catching); lookup parameter `k_bb`. (src: mlb_baseball_stats) |
 | `stat_strikeouts_per9_inn` | string | yes | `stat.strikeoutsPer9Inn` | strikeoutsPer9Inn: rate or derived statistic (pitching, catching); lookup parameter `k_9`. (src: mlb_baseball_stats) |
@@ -20671,17 +20671,17 @@ Per-player hitting stats, type vsTeam5Y, parameters {'season': '{season}', 'oppo
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20746,17 +20746,17 @@ Per-player hitting stats, type vsTeam5Y, parameters {'season': '{season}', 'oppo
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20821,17 +20821,17 @@ Per-player hitting stats, type vsTeam, parameters {'season': '{season}', 'opposi
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20895,17 +20895,17 @@ Per-player hitting stats, type vsTeamTotal, parameters {'season': '{season}', 'o
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -20965,11 +20965,11 @@ Per-player hitting stats, type vsTeamTotal, parameters {'season': '{season}', 'o
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -20979,7 +20979,7 @@ Per-player hitting stats, type vsTeamTotal, parameters {'season': '{season}', 'o
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -21099,11 +21099,11 @@ League-wide hitting stats, type careerStatSplits, parameters {'season': '{season
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -21113,7 +21113,7 @@ League-wide hitting stats, type careerStatSplits, parameters {'season': '{season
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -21177,18 +21177,18 @@ League-wide pitching stats, type careerStatSplits, parameters {'season': '{seaso
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_outs_pitched` | int32 | yes | `stat.outsPitched` | Outs Pitched: counting statistic (pitching); lookup parameter `p_out`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
@@ -21198,7 +21198,7 @@ League-wide pitching stats, type careerStatSplits, parameters {'season': '{seaso
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -21212,7 +21212,7 @@ League-wide pitching stats, type careerStatSplits, parameters {'season': '{seaso
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_win_percentage` | string | yes | `stat.winPercentage` | winPercentage: rate or derived statistic (pitching); lookup parameter `wpct`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
@@ -21281,11 +21281,11 @@ League-wide hitting stats, type projected_Zips2YR, parameters {} (player pool AL
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -21293,7 +21293,7 @@ League-wide hitting stats, type projected_Zips2YR, parameters {} (player pool AL
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
@@ -21365,15 +21365,15 @@ League-wide pitching stats, type projected_Zips2YR, parameters {} (player pool A
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | double | yes | `stat.avg` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_avg` | double | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -21450,11 +21450,11 @@ League-wide hitting stats, type projected_Zips3YR, parameters {} (player pool AL
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -21462,7 +21462,7 @@ League-wide hitting stats, type projected_Zips3YR, parameters {} (player pool AL
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
@@ -21534,15 +21534,15 @@ League-wide pitching stats, type projected_Zips3YR, parameters {} (player pool A
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | double | yes | `stat.avg` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_avg` | double | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -21619,11 +21619,11 @@ League-wide hitting stats, type projected_Zips, parameters {} (player pool ALL).
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
@@ -21631,7 +21631,7 @@ League-wide hitting stats, type projected_Zips, parameters {} (player pool ALL).
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
@@ -21703,15 +21703,15 @@ League-wide pitching stats, type projected_Zips, parameters {} (player pool ALL)
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | double | yes | `stat.avg` | TODO |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_avg` | double | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
 | `stat_saves` | int32 | yes | `stat.saves` | saves: counting statistic (pitching); lookup parameter `sv`. (src: mlb_baseball_stats) |
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -21879,8 +21879,8 @@ League-wide hitting stats, type statSplitsAdvanced, parameters {'season': '{seas
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_extra_base_hits` | int32 | yes | `stat.extraBaseHits` | extraBaseHits: counting statistic (hitting); lookup parameter `xbh`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
-| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
+| `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` | strikeoutsPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` | homeRunsPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -21945,8 +21945,8 @@ League-wide pitching stats, type statSplitsAdvanced, parameters {'season': '{sea
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_babip` | string | yes | `stat.babip` | babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_home_runs_per9` | string | yes | `stat.homeRunsPer9` | TODO |
 | `stat_inherited_runners` | int32 | yes | `stat.inheritedRunners` | TODO |
 | `stat_inherited_runners_scored` | int32 | yes | `stat.inheritedRunnersScored` | TODO |
@@ -21958,7 +21958,7 @@ League-wide pitching stats, type statSplitsAdvanced, parameters {'season': '{sea
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_gidp` | int32 | yes | `stat.gidp` | TODO |
+| `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_balks` | int32 | yes | `stat.balks` | TODO |
 | `stat_swing_and_misses` | int32 | yes | `stat.swingAndMisses` | TODO |
@@ -22174,16 +22174,16 @@ League-wide hitting stats, type statSplits, parameters {'season': '{season}', 's
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
@@ -22260,18 +22260,18 @@ League-wide pitching stats, type statSplits, parameters {'season': '{season}', '
 | `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
-| `stat_avg` | string | yes | `stat.avg` | TODO |
+| `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
 | `stat_obp` | string | yes | `stat.obp` | TODO |
-| `stat_slg` | string | yes | `stat.slg` | TODO |
-| `stat_ops` | string | yes | `stat.ops` | TODO |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
 | `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_era` | string | yes | `stat.era` | TODO |
+| `stat_era` | string | yes | `stat.era` | earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_outs_pitched` | int32 | yes | `stat.outsPitched` | Outs Pitched: counting statistic (pitching); lookup parameter `p_out`. (src: mlb_baseball_stats) |
 | `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
@@ -22281,7 +22281,7 @@ League-wide pitching stats, type statSplits, parameters {'season': '{season}', '
 | `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
-| `stat_whip` | string | yes | `stat.whip` | TODO |
+| `stat_whip` | string | yes | `stat.whip` | walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
@@ -22295,7 +22295,7 @@ League-wide pitching stats, type statSplits, parameters {'season': '{season}', '
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
-| `stat_rbi` | int32 | yes | `stat.rbi` | TODO |
+| `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
 | `stat_win_percentage` | string | yes | `stat.winPercentage` | winPercentage: rate or derived statistic (pitching); lookup parameter `wpct`. (src: mlb_baseball_stats) |
 | `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
