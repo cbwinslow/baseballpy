@@ -7,7 +7,8 @@ import pyarrow as pa
 import pytest
 import respx
 
-from baseballpy.core.config import CacheConfig
+from baseballpy.core.config import CacheConfig, RateLimitConfig
+from baseballpy.core.http import HttpClient
 from baseballpy.sources.mlb_api.api import MlbApiSource
 from baseballpy.sources.mlb_api.extractor import MLB_BASE_URL, MlbApiExtractor
 from baseballpy.sources.mlb_api.normalizer import MlbApiNormalizer
@@ -177,7 +178,8 @@ async def test_gameday_live_streamer_diffing() -> None:
         },
     }
 
-    async with httpx.AsyncClient() as client:
+    client = HttpClient(RateLimitConfig(default_requests_per_second=1000), http2=False)
+    try:
         with respx.mock:
             respx.get("https://statsapi.mlb.com/api/v1.1/game/745789/feed/live").mock(
                 return_value=httpx.Response(
@@ -185,7 +187,7 @@ async def test_gameday_live_streamer_diffing() -> None:
                 )
             )
 
-            streamer = GamedayLiveStreamer(game_pk=745789, poll_interval=0.01, client=client)
+            streamer = GamedayLiveStreamer(game_pk=745789, poll_interval=0.01, http=client)
             events = [ev async for ev in streamer.stream_events()]
 
             assert len(events) == 2
@@ -193,6 +195,8 @@ async def test_gameday_live_streamer_diffing() -> None:
             assert events[0]["description"] == "Called Strike"
             assert events[1]["event"] == "Home Run"
             assert events[1]["start_speed"] == pytest.approx(99.1)
+    finally:
+        client.close()
 
 
 @respx.mock

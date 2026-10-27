@@ -1,22 +1,32 @@
-"""Extractor for Baseball Savant (Statcast) pitch tracking data with date chunking and rate limits."""
+"""Extractor for Baseball Savant (Statcast) pitch tracking data with chunking and truncation guard."""
 
 import asyncio
+import concurrent.futures
+import logging
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
-from aiolimiter import AsyncLimiter
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential_jitter
 
 from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet
-from baseballpy.core.audit import default_audit_logger
+from baseballpy.core.audit import default_audit_logger, get_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
+from baseballpy.core.http import HttpClient, get_http_client
+from baseballpy.core.lazy import lazy_singleton
 from baseballpy.sources.statcast.normalizer import StatcastNormalizer
 
+logger = logging.getLogger(__name__)
+
 SAVANT_BASE_URL = "https://baseballsavant.mlb.com/statcast_search/csv"
+SAVANT_ROW_CAP = 25_000
+#: Chunks ending within this many days of today are always revalidated (scoring corrections).
+REVALIDATE_TRAILING_DAYS = 3
+
+
+class TruncatedResultError(RuntimeError):
+    """Raised when a single day still hits Savant's row cap (data would be silently truncated)."""
 
 
 def split_date_range(
@@ -38,23 +48,31 @@ def split_date_range(
     return ranges
 
 
+def _to_date(value: str | date) -> date:
+    return datetime.strptime(value, "%Y-%m-%d").date() if isinstance(value, str) else value
+
+
 class StatcastExtractor:
-    """Extracts pitch-level tracking data from Baseball Savant with chunking and token bucket limits."""
+    """Extracts pitch-level tracking data from Baseball Savant with chunking and row-cap bisection."""
 
     def __init__(
         self,
         cache_config: CacheConfig | None = None,
         rate_limit_config: RateLimitConfig | None = None,
         chunk_days: int = 5,
+        http: HttpClient | None = None,
     ) -> None:
         self.cache_config = cache_config or CacheConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
         self.chunk_days = chunk_days
-        rate = self.rate_limit_config.host_rates.get("baseballsavant.mlb.com", 2.5)
-        self.limiter = AsyncLimiter(rate, 1.0)
-        self.semaphore = asyncio.Semaphore(self.rate_limit_config.max_concurrency)
+        self.http = http or (
+            HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
+        )
         self.normalizer = StatcastNormalizer()
         self.manifest = ManifestTracker(self.cache_config.statcast_dir / "manifest.json")
+
+    def _today(self) -> date:
+        return self.cache_config.today or datetime.now().date()
 
     def _get_cache_path(self, start_dt: date, end_dt: date, **filters: Any) -> Path:
         """Derive cache file path for a date chunk with Hive-partitioning by season."""
@@ -73,21 +91,25 @@ class StatcastExtractor:
         season_dir.mkdir(parents=True, exist_ok=True)
         return season_dir / f"{filename}.parquet"
 
-    async def _fetch_chunk(
-        self,
-        client: httpx.AsyncClient,
-        start_dt: date,
-        end_dt: date,
-        refresh: bool = False,
-        **filters: Any,
-    ) -> pa.Table:
-        """Fetch and normalize a single date chunk with caching and rate limiting."""
-        cache_path = self._get_cache_path(start_dt, end_dt, **filters)
-        chunk_id = cache_path.stem
+    def _is_chunk_fresh(
+        self, chunk_id: str, cache_path: Path, start_dt: date, end_dt: date, refresh: bool
+    ) -> tuple[bool, int]:
+        """Return (fresh, recorded_row_count) per the freshness policy."""
+        entry = self.manifest.get_chunk(chunk_id)
+        if entry is None:
+            return False, 0
+        rows = int(entry.get("records_count", 0) or 0)
+        if rows > 0 and not cache_path.exists():
+            return False, rows
+        if end_dt >= self._today() - timedelta(days=REVALIDATE_TRAILING_DAYS) and (
+            start_dt.year >= self._today().year
+        ):
+            return False, rows
+        fresh = self.cache_config.is_fresh(entry, "statcast", season=start_dt.year, refresh=refresh)
+        return fresh, rows
 
-        if not refresh and cache_path.exists() and self.manifest.is_completed(chunk_id):
-            return pq.read_table(cache_path)
-
+    async def _fetch_window(self, start_dt: date, end_dt: date, **filters: Any) -> pa.Table:
+        """Fetch a window; bisect when Savant's 25,000-row cap is reached (never truncates)."""
         params: dict[str, Any] = {
             "all": "true",
             "type": "details",
@@ -95,29 +117,48 @@ class StatcastExtractor:
             "game_date_lt": end_dt.isoformat(),
         }
         params.update(filters)
+        result = await self.http.get(SAVANT_BASE_URL, params=params)
+        table = self.normalizer.normalize(result.content)
+        if len(table) < SAVANT_ROW_CAP:
+            return table
+        if start_dt >= end_dt:
+            raise TruncatedResultError(
+                f"Savant returned {len(table)} rows (the cap) for the single day {start_dt}; "
+                "data would be truncated"
+            )
+        mid = start_dt + (end_dt - start_dt) // 2
+        get_audit_logger().log(_bisect_event(start_dt, end_dt, len(table)))
+        left = await self._fetch_window(start_dt, mid, **filters)
+        right = await self._fetch_window(mid + timedelta(days=1), end_dt, **filters)
+        return pa.concat_tables([left, right], promote_options="default")
 
-        @retry(
-            reraise=True,
-            stop=stop_after_attempt(self.rate_limit_config.max_retries),
-            wait=wait_exponential_jitter(initial=1.0, max=10.0),
-            retry=retry_if_exception_type(
-                (httpx.HTTPStatusError, httpx.ConnectTimeout, httpx.ReadTimeout)
-            ),
-        )
-        async def _call() -> bytes:
-            async with self.semaphore, self.limiter:
-                resp = await client.get(SAVANT_BASE_URL, params=params)
-                resp.raise_for_status()
-                return resp.content
+    async def _fetch_chunk(
+        self,
+        start_dt: date,
+        end_dt: date,
+        refresh: bool = False,
+        **filters: Any,
+    ) -> tuple[pa.Table, bool]:
+        """Fetch/normalize one date chunk; returns (table, served_from_cache)."""
+        cache_path = self._get_cache_path(start_dt, end_dt, **filters)
+        chunk_id = cache_path.stem
 
-        raw_csv = await _call()
-        table = self.normalizer.normalize(raw_csv)
+        fresh, rows = self._is_chunk_fresh(chunk_id, cache_path, start_dt, end_dt, refresh)
+        if fresh and self.cache_config.enabled:
+            if rows == 0:
+                return pa.Table.from_batches([], schema=self.normalizer.schema), True
+            return pq.read_table(cache_path), True
 
-        if self.cache_config.enabled and len(table) > 0:
-            atomic_write_parquet(table, cache_path, compression="snappy")
-            self.manifest.set_completed(chunk_id, records_count=len(table))
+        table = await self._fetch_window(start_dt, end_dt, **filters)
 
-        return table
+        if self.cache_config.enabled:
+            if len(table) > 0:
+                atomic_write_parquet(table, cache_path, compression="snappy")
+            self.manifest.set_completed(
+                chunk_id, records_count=len(table), metadata={"season": start_dt.year}
+            )
+
+        return table, False
 
     async def extract_async(
         self,
@@ -127,36 +168,23 @@ class StatcastExtractor:
         **filters: Any,
     ) -> pa.Table:
         """Asynchronously extract and concat all date chunks for the requested range."""
-        start = (
-            datetime.strptime(start_date, "%Y-%m-%d").date()
-            if isinstance(start_date, str)
-            else start_date
-        )
-        end = (
-            datetime.strptime(end_date, "%Y-%m-%d").date()
-            if isinstance(end_date, str)
-            else end_date
-        )
-
+        start, end = _to_date(start_date), _to_date(end_date)
         chunks = split_date_range(start, end, chunk_days=self.chunk_days)
+        gate = asyncio.Semaphore(self.rate_limit_config.max_concurrency)
 
-        with default_audit_logger.track(
+        async def _bounded(s: date, e: date) -> tuple[pa.Table, bool]:
+            async with gate:
+                return await self._fetch_chunk(s, e, refresh=refresh, **filters)
+
+        async with default_audit_logger.async_track(
             operation="statcast_extract",
             source="statcast",
             endpoint=SAVANT_BASE_URL,
             destination=str(self.cache_config.statcast_dir),
         ) as tracker:
-            limits = httpx.Limits(max_keepalive_connections=10, max_connections=20)
-            async with httpx.AsyncClient(
-                http2=True,
-                limits=limits,
-                timeout=self.rate_limit_config.timeout_seconds,
-            ) as client:
-                tasks = [
-                    self._fetch_chunk(client, chunk_start, chunk_end, refresh=refresh, **filters)
-                    for chunk_start, chunk_end in chunks
-                ]
-                tables = await asyncio.gather(*tasks)
+            results = await asyncio.gather(*[_bounded(s, e) for s, e in chunks])
+            tables = [table for table, _ in results]
+            tracker.set_cache_hit(bool(results) and all(hit for _, hit in results))
 
             if not tables:
                 table = pa.Table.from_batches([], schema=self.normalizer.schema)
@@ -175,26 +203,34 @@ class StatcastExtractor:
     ) -> pa.Table:
         """Synchronously extract Statcast pitch data (safe for Jupyter/sync scripts)."""
         try:
-            loop = asyncio.get_running_loop()
+            asyncio.get_running_loop()
         except RuntimeError:
-            loop = None
-
-        if loop and loop.is_running():
-            # Running inside an active loop (e.g. Jupyter or async framework)
-            import concurrent.futures
-
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-                future = pool.submit(
-                    lambda: asyncio.run(
-                        self.extract_async(start_date, end_date, refresh=refresh, **filters)
-                    )
-                )
-                return future.result()
-        else:
             return asyncio.run(self.extract_async(start_date, end_date, refresh=refresh, **filters))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+            return pool.submit(
+                lambda: asyncio.run(
+                    self.extract_async(start_date, end_date, refresh=refresh, **filters)
+                )
+            ).result()
 
 
-_default_extractor = StatcastExtractor()
+def _bisect_event(start: date, end: date, rows: int) -> Any:
+    from baseballpy.core.audit import AuditEvent
+
+    now = datetime.now().astimezone().isoformat()
+    return AuditEvent(
+        timestamp_utc=now,
+        operation="statcast_row_cap_bisect",
+        source="statcast",
+        status="RETRY",
+        records_count=rows,
+        endpoint=SAVANT_BASE_URL,
+        destination=f"{start.isoformat()}..{end.isoformat()}",
+        error="row_cap_bisect",
+    )
+
+
+get_default_extractor = lazy_singleton(StatcastExtractor)
 
 
 def statcast_search(
@@ -204,6 +240,6 @@ def statcast_search(
     **filters: Any,
 ) -> pa.Table:
     """Synchronously extract Statcast pitch data (safe for Jupyter and scripts)."""
-    return _default_extractor.extract(
+    return get_default_extractor().extract(
         start_date=start_date, end_date=end_date, refresh=refresh, **filters
     )

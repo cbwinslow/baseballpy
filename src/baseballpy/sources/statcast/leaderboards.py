@@ -5,15 +5,14 @@ import io
 from pathlib import Path
 from typing import Any
 
-import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
-from aiolimiter import AsyncLimiter
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential_jitter
 
 from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
+from baseballpy.core.http import HttpClient, get_http_client
+from baseballpy.core.lazy import lazy_singleton
 
 SAVANT_BASE = "https://baseballsavant.mlb.com/leaderboard"
 
@@ -149,11 +148,13 @@ class StatcastLeaderboardExtractor:
         self,
         cache_config: CacheConfig | None = None,
         rate_limit_config: RateLimitConfig | None = None,
+        http: HttpClient | None = None,
     ) -> None:
         self.cache_config = cache_config or CacheConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
-        rate = self.rate_limit_config.host_rates.get("baseballsavant.mlb.com", 2.5)
-        self.limiter = AsyncLimiter(rate, 1.0)
+        self.http = http or (
+            HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
+        )
         self.normalizer = StatcastLeaderboardNormalizer()
         self.cache_dir = self.cache_config.statcast_dir / "leaderboards"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -190,8 +191,20 @@ class StatcastLeaderboardExtractor:
         cache_path = self._get_cache_path(name.lower(), year, **kwargs)
         chunk_id = cache_path.stem
 
-        if not refresh and cache_path.exists() and self.manifest.is_completed(chunk_id):
-            return pq.read_table(cache_path)
+        entry = self.manifest.get_chunk(chunk_id)
+        if cache_path.exists() and self.cache_config.is_fresh(
+            entry, "leaderboard", season=year, refresh=refresh
+        ):
+            with default_audit_logger.track(
+                operation=f"savant_leaderboard_{name.lower()}",
+                source="statcast",
+                endpoint=url,
+                destination=str(cache_path),
+            ) as hit:
+                hit.set_cache_hit(True)
+                cached = pq.read_table(cache_path)
+                hit.set_records(len(cached))
+                return cached
 
         with default_audit_logger.track(
             operation=f"savant_leaderboard_{name.lower()}",
@@ -199,29 +212,14 @@ class StatcastLeaderboardExtractor:
             endpoint=url,
             destination=str(cache_path),
         ) as tracker:
-
-            @retry(
-                reraise=True,
-                stop=stop_after_attempt(self.rate_limit_config.max_retries),
-                wait=wait_exponential_jitter(initial=1.0, max=10.0),
-                retry=retry_if_exception_type(
-                    (httpx.HTTPStatusError, httpx.ConnectTimeout, httpx.ReadTimeout)
-                ),
-            )
-            def _fetch() -> bytes:
-                with httpx.Client(
-                    timeout=self.rate_limit_config.timeout_seconds, follow_redirects=True
-                ) as client:
-                    resp = client.get(url, params=params)
-                    resp.raise_for_status()
-                    return resp.content
-
-            raw_bytes = _fetch()
+            raw_bytes = self.http.get_sync(url, params=params).content
             table = self.normalizer.normalize(raw_bytes)
 
             if self.cache_config.enabled and len(table) > 0:
                 atomic_write_parquet(table, cache_path)
-                self.manifest.set_completed(chunk_id, records_count=len(table))
+                self.manifest.set_completed(
+                    chunk_id, records_count=len(table), metadata={"season": year}
+                )
 
             tracker.set_cache_hit(False)
             tracker.set_records(len(table))
@@ -229,19 +227,19 @@ class StatcastLeaderboardExtractor:
 
 
 # Module-level convenience functions
-_default_extractor = StatcastLeaderboardExtractor()
+get_default_extractor = lazy_singleton(StatcastLeaderboardExtractor)
 
 
 def get_leaderboard(name: str, year: int = 2024, refresh: bool = False, **kwargs: Any) -> pa.Table:
     """Extract any Baseball Savant leaderboard by name."""
-    return _default_extractor.get_leaderboard(name=name, year=year, refresh=refresh, **kwargs)
+    return get_default_extractor().get_leaderboard(name=name, year=year, refresh=refresh, **kwargs)
 
 
 def expected_statistics(
     year: int = 2024, player_type: str = "batter", min_pa: str = "q", refresh: bool = False
 ) -> pa.Table:
     """Extract Expected Statistics (xBA, xSLG, xwOBA) leaderboard."""
-    return _default_extractor.get_leaderboard(
+    return get_default_extractor().get_leaderboard(
         "expected_statistics", year=year, type=player_type, min=min_pa, refresh=refresh
     )
 
@@ -250,14 +248,14 @@ def exit_velocity(
     year: int = 2024, player_type: str = "batter", min_bbe: str = "q", refresh: bool = False
 ) -> pa.Table:
     """Extract Exit Velocity & Barrels leaderboard."""
-    return _default_extractor.get_leaderboard(
+    return get_default_extractor().get_leaderboard(
         "exit_velocity", year=year, type=player_type, min=min_bbe, refresh=refresh
     )
 
 
 def sprint_speed(year: int = 2024, min_runs: int = 10, refresh: bool = False) -> pa.Table:
     """Extract Sprint Speed and Running Splits leaderboard."""
-    return _default_extractor.get_leaderboard(
+    return get_default_extractor().get_leaderboard(
         "sprint_speed", year=year, min=min_runs, refresh=refresh
     )
 
@@ -266,7 +264,7 @@ def bat_tracking(
     year: int = 2024, player_type: str = "batter", min_swings: str = "q", refresh: bool = False
 ) -> pa.Table:
     """Extract 2024+ Bat Tracking (bat speed, swing length, squared up %) leaderboard."""
-    return _default_extractor.get_leaderboard(
+    return get_default_extractor().get_leaderboard(
         "bat_tracking", year=year, type=player_type, min=min_swings, refresh=refresh
     )
 
@@ -275,7 +273,7 @@ def outs_above_average(
     year: int = 2024, fielder_type: str = "Fielder", min_att: str = "q", refresh: bool = False
 ) -> pa.Table:
     """Extract Outs Above Average (OAA) defensive leaderboard."""
-    return _default_extractor.get_leaderboard(
+    return get_default_extractor().get_leaderboard(
         "outs_above_average",
         year=year,
         startYear=year,

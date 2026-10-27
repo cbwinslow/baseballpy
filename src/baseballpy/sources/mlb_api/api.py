@@ -6,6 +6,7 @@ from typing import Any
 import pyarrow as pa
 
 from baseballpy.core.config import CacheConfig
+from baseballpy.core.lazy import lazy_singleton
 from baseballpy.sources.mlb_api.extractor import MlbApiExtractor
 from baseballpy.sources.mlb_api.stream import GamedayLiveStreamer
 
@@ -66,7 +67,7 @@ class MlbApiSource:
 
 
 # Module-level convenience functions
-_default_source = MlbApiSource()
+get_default_source = lazy_singleton(MlbApiSource)
 
 
 def get_schedule(
@@ -76,46 +77,46 @@ def get_schedule(
     refresh: bool = False,
 ) -> pa.Table:
     """Extract game schedule."""
-    return _default_source.schedule(
+    return get_default_source().schedule(
         season=season, start_date=start_date, end_date=end_date, refresh=refresh
     )
 
 
 def get_boxscore(game_pk: int, refresh: bool = False) -> tuple[pa.Table, pa.Table]:
     """Extract game boxscore as (batting_table, pitching_table)."""
-    return _default_source.boxscore(game_pk=game_pk, refresh=refresh)
+    return get_default_source().boxscore(game_pk=game_pk, refresh=refresh)
 
 
 def get_standings(season: int = 2024, refresh: bool = False) -> pa.Table:
     """Extract standings for a season."""
-    return _default_source.standings(season=season, refresh=refresh)
+    return get_default_source().standings(season=season, refresh=refresh)
 
 
 def get_teams(refresh: bool = False) -> pa.Table:
     """Extract active teams."""
-    return _default_source.teams(refresh=refresh)
+    return get_default_source().teams(refresh=refresh)
 
 
 def get_roster(team_id: int, refresh: bool = False) -> pa.Table:
     """Extract active roster for a team."""
-    return _default_source.roster(team_id=team_id, refresh=refresh)
+    return get_default_source().roster(team_id=team_id, refresh=refresh)
 
 
 def get_transactions(season: int = 2024, refresh: bool = False) -> pa.Table:
     """Extract transactions for a season."""
-    return _default_source.transactions(season=season, refresh=refresh)
+    return get_default_source().transactions(season=season, refresh=refresh)
 
 
 def get_draft(year: int = 2024, refresh: bool = False) -> pa.Table:
     """Extract draft picks for a year."""
-    return _default_source.draft(year=year, refresh=refresh)
+    return get_default_source().draft(year=year, refresh=refresh)
 
 
 def get_venues(refresh: bool = False) -> pa.Table:
     """Extract ballparks and venues."""
-    return _default_source.venues(refresh=refresh)
+    return get_default_source().venues(refresh=refresh)
 
 
 def stream_game(game_pk: int, poll_interval: float = 2.0) -> AsyncIterator[dict[str, Any]]:
     """Stream discrete live play events from an active game."""
-    return _default_source.stream_game(game_pk=game_pk, poll_interval=poll_interval)
+    return get_default_source().stream_game(game_pk=game_pk, poll_interval=poll_interval)

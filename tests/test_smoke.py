@@ -244,7 +244,8 @@ def test_smoke_cross_source_duckdb_and_polars_pipeline(tmp_path: Path) -> None:
 
     # 4. Ingest into PolarsSink and perform aggregations
     polars_sink = PolarsSink()
-    pl_df = polars_sink.write(pitches_table, destination="statcast_pitches")
+    assert polars_sink.write(pitches_table, destination="statcast_pitches") == 2
+    pl_df = polars_sink.last
     assert isinstance(pl_df, pl.DataFrame)
     assert pl_df.shape[0] == 2
     avg_speed = pl_df.select(pl.col("release_speed").mean()).item()

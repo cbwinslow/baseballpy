@@ -9,6 +9,7 @@ import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.csv as pacsv
 
+from baseballpy.core.quarantine import Quarantine, checked_cast, get_quarantine
 from baseballpy.sources.statcast.schema import STATCAST_SCHEMA
 
 logger = logging.getLogger(__name__)
@@ -17,8 +18,28 @@ logger = logging.getLogger(__name__)
 class StatcastNormalizer:
     """Normalizes raw Statcast CSV payloads into strongly-typed PyArrow Tables."""
 
-    def __init__(self, schema: pa.Schema | None = None) -> None:
+    def __init__(
+        self, schema: pa.Schema | None = None, quarantine: Quarantine | None = None
+    ) -> None:
         self._schema = schema or STATCAST_SCHEMA
+        self._quarantine = quarantine
+
+    def _to_date32(self, chunked: pa.ChunkedArray, col_name: str) -> pa.ChunkedArray:
+        """Parse ``YYYY-MM-DD`` strings to date32; unparseable values are quarantined."""
+        if chunked.type == pa.date32():
+            return chunked
+        as_str = chunked.cast(pa.string())
+        parsed = pc.strptime(as_str, format="%Y-%m-%d", unit="s", error_is_null=True)
+        failed = pc.and_(pc.is_valid(as_str), pc.is_null(parsed))
+        if pc.any(failed).as_py():
+            bad = pc.filter(as_str, failed).to_pylist()
+            (self._quarantine or get_quarantine()).write(
+                "statcast",
+                "pitches",
+                [{"column": col_name, "value": v} for v in bad],
+                f"unparseable dates in column {col_name!r}",
+            )
+        return pc.cast(parsed, pa.date32())
 
     @property
     def schema(self) -> pa.Schema:
@@ -62,33 +83,21 @@ class StatcastNormalizer:
             if col_name in table.column_names:
                 chunked = table.column(col_name)
 
-                # Special handling for dates
                 if target_type == pa.date32():
-                    if chunked.type != pa.date32():
-                        # Parse strings like '2024-04-05' to date32
-                        try:
-                            # Try strptime then cast to date32
-                            parsed = pc.strptime(
-                                chunked.cast(pa.string()), format="%Y-%m-%d", unit="s"
-                            )
-                            chunked = pc.cast(parsed, pa.date32())
-                        except Exception:
-                            chunked = pc.cast(chunked, pa.date32(), safe=False)
+                    chunked = self._to_date32(chunked, col_name)
                 # Special handling for dictionary encoding
                 elif pa.types.is_dictionary(target_type):
                     str_arr = chunked.cast(pa.string())
                     chunked = pc.dictionary_encode(str_arr).cast(target_type)
                 else:
-                    try:
-                        chunked = pc.cast(chunked, target_type, safe=False)
-                    except Exception as err:
-                        logger.warning(
-                            "Failed to cast Statcast column %s to %s: %s; falling back to nulls",
-                            col_name,
-                            target_type,
-                            err,
-                        )
-                        chunked = pa.chunked_array([pa.nulls(num_rows, type=target_type)])
+                    chunked = checked_cast(
+                        chunked,
+                        target_type,
+                        quarantine=self._quarantine,
+                        source="statcast",
+                        dataset="pitches",
+                        column=col_name,
+                    )
             else:
                 # Column missing in this payload, fill with nulls of expected type
                 chunked = pa.chunked_array([pa.nulls(num_rows, type=target_type)])
