@@ -1,0 +1,84 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "freeAgents": [
+  {
+   "player": {
+    "id": 642715,
+    "fullName": "Willy Adames",
+    "link": "/api/v1/people/642715"
+   },
+   "originalTeam": {
+    "id": 158,
+    "name": "Milwaukee Brewers",
+    "link": "/api/v1/teams/158"
+   },
+   "newTeam": {
+    "id": 137,
+    "name": "San Francisco Giants",
+    "link": "/api/v1/teams/137"
+   },
+   "notes": "Seven-Year Contract",
+   "dateSigned": "2024-12-10",
+   "dateDeclared": "2024-10-31",
+   "position": {
+    "code": "6",
+    "name": "Shortstop",
+    "type": "Infielder",
+    "abbreviation": "SS"
+   }
+  },
+  {
+   "player": {
+    "id": 677941,
+    "fullName": "Jordyn Adams",
+    "link": "/api/v1/people/677941"
+   },
+   "originalTeam": {
+    "id": 108,
+    "name": "Los Angeles Angels",
+    "link": "/api/v1/teams/108"
+   },
+   "newTeam": {
+    "id": 110,
+    "name": "Baltimore Orioles",
+    "link": "/api/v1/teams/110"
+   },
+   "notes": "Minor League Contract",
+   "dateSigned": "2024-12-23",
+   "dateDeclared": "2024-11-22",
+   "position": {
+    "code": "O",
+    "name": "Outfield",
+    "type": "Outfielder",
+    "abbreviation": "OF"
+   }
+  },
+  {
+   "player": {
+    "id": 605113,
+    "fullName": "Nick Ahmed",
+    "link": "/api/v1/people/605113"
+   },
+   "originalTeam": {
+    "id": 135,
+    "name": "San Diego Padres",
+    "link": "/api/v1/teams/135"
+   },
+   "newTeam": {
+    "id": 140,
+    "name": "Texas Rangers",
+    "link": "/api/v1/teams/140"
+   },
+   "notes": "Minor League Contract",
+   "dateSigned": "2025-02-04",
+   "dateDeclared": "2024-10-31",
+   "position": {
+    "code": "6",
+    "name": "Shortstop",
+    "type": "Infielder",
+    "abbreviation": "SS"
+   }
+  }
+ ],
+ "season": "2024"
+}

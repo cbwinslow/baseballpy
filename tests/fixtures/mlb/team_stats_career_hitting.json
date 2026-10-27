@@ -1,0 +1,144 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "career"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 5344,
+      "groundOuts": 51194,
+      "airOuts": 45984,
+      "runs": 26260,
+      "doubles": 9748,
+      "triples": 1371,
+      "homeRuns": 6026,
+      "strikeOuts": 40192,
+      "baseOnBalls": 16745,
+      "intentionalWalks": 1219,
+      "hits": 49356,
+      "hitByPitch": 1694,
+      "avg": ".269",
+      "atBats": 183395,
+      "obp": ".334",
+      "slg": ".436",
+      "ops": ".770",
+      "caughtStealing": 1438,
+      "stolenBases": 3229,
+      "stolenBasePercentage": ".692",
+      "caughtStealingPercentage": ".308",
+      "groundIntoDoublePlay": 4042,
+      "numberOfPitches": 766625,
+      "plateAppearances": 205339,
+      "totalBases": 79924,
+      "rbi": 24984,
+      "leftOnBase": 36785,
+      "sacBunts": 2042,
+      "sacFlies": 1433,
+      "babip": ".313",
+      "groundOutsToAirouts": "1.11",
+      "catchersInterference": 30,
+      "atBatsPerHomeRun": "30.43"
+     },
+     "team": {
+      "id": 115,
+      "link": "/api/v1/teams/115"
+     },
+     "rank": 1
+    },
+    {
+     "stat": {
+      "gamesPlayed": 19625,
+      "groundOuts": 63377,
+      "airOuts": 65595,
+      "runs": 91607,
+      "doubles": 33639,
+      "triples": 5641,
+      "homeRuns": 14892,
+      "strikeOuts": 91201,
+      "baseOnBalls": 67677,
+      "intentionalWalks": 3024,
+      "hits": 179028,
+      "hitByPitch": 4951,
+      "avg": ".267",
+      "atBats": 671538,
+      "obp": ".337",
+      "slg": ".400",
+      "ops": ".737",
+      "caughtStealing": 4516,
+      "stolenBases": 9841,
+      "stolenBasePercentage": ".685",
+      "caughtStealingPercentage": ".315",
+      "groundIntoDoublePlay": 11718,
+      "numberOfPitches": 1046306,
+      "plateAppearances": 758267,
+      "totalBases": 268624,
+      "rbi": 84983,
+      "leftOnBase": 142504,
+      "sacBunts": 10641,
+      "sacFlies": 3416,
+      "babip": ".289",
+      "groundOutsToAirouts": "0.97",
+      "catchersInterference": 44,
+      "atBatsPerHomeRun": "45.09"
+     },
+     "team": {
+      "id": 111,
+      "link": "/api/v1/teams/111"
+     },
+     "rank": 2
+    },
+    {
+     "stat": {
+      "gamesPlayed": 20927,
+      "groundOuts": 66003,
+      "airOuts": 63520,
+      "runs": 93584,
+      "doubles": 32228,
+      "triples": 7072,
+      "homeRuns": 13129,
+      "strikeOuts": 93896,
+      "baseOnBalls": 65013,
+      "intentionalWalks": 3798,
+      "hits": 189937,
+      "hitByPitch": 5360,
+      "avg": ".265",
+      "atBats": 715682,
+      "obp": ".330",
+      "slg": ".385",
+      "ops": ".715",
+      "caughtStealing": 4329,
+      "stolenBases": 15151,
+      "stolenBasePercentage": ".778",
+      "caughtStealingPercentage": ".222",
+      "groundIntoDoublePlay": 11046,
+      "numberOfPitches": 1006223,
+      "plateAppearances": 801353,
+      "totalBases": 275696,
+      "rbi": 85600,
+      "leftOnBase": 138900,
+      "sacBunts": 12012,
+      "sacFlies": 3222,
+      "babip": ".289",
+      "groundOutsToAirouts": "1.04",
+      "catchersInterference": 64,
+      "atBatsPerHomeRun": "54.51"
+     },
+     "team": {
+      "id": 138,
+      "link": "/api/v1/teams/138"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

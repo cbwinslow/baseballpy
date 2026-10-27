@@ -1,0 +1,5 @@
+"last_name, first_name","player_id","display_team_name","year","primary_pos_formatted","fielding_runs_prevented","outs_above_average","outs_above_average_infront","outs_above_average_lateral_toward3bline","outs_above_average_lateral_toward1bline","outs_above_average_behind","outs_above_average_rhh","outs_above_average_lhh","actual_success_rate_formatted","adj_estimated_success_rate_formatted","diff_success_rate_formatted"
+"Abrams, CJ","682928","Nationals","2025","SS","-8","-11","-4","0","-6","0","-11","0","75%","77%","-2%"
+"Abreu, Wilyer","677800","Red Sox","2025","RF","7","8","3","6","-3","2","8","0","89%","86%","3%"
+"Acosta, Maximo","691185","Marlins","2025","2B","-3","-3","-4","0","0","1","-2","-2","70%","76%","-6%"
+"Acuña Jr., Ronald","660670","Braves","2025","RF","-10","-11","-4","-3","-3","-1","-5","-6","80%","86%","-6%"

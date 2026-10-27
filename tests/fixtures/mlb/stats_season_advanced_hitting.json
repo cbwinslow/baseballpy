@@ -1,0 +1,218 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "seasonAdvanced"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 742,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "age": 28,
+      "plateAppearances": 6,
+      "totalBases": 7,
+      "leftOnBase": 2,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".500",
+      "extraBaseHits": 2,
+      "hitByPitch": 0,
+      "gidp": 0,
+      "gidpOpp": 1,
+      "numberOfPitches": 31,
+      "pitchesPerPlateAppearance": "5.167",
+      "walksPerPlateAppearance": ".167",
+      "strikeoutsPerPlateAppearance": ".000",
+      "homeRunsPerPlateAppearance": ".167",
+      "walksPerStrikeout": ".---",
+      "iso": ".800",
+      "reachedOnError": 0,
+      "walkOffs": 0,
+      "flyOuts": 1,
+      "totalSwings": 16,
+      "swingAndMisses": 3,
+      "ballsInPlay": 5,
+      "popOuts": 0,
+      "lineOuts": 0,
+      "groundOuts": 1,
+      "flyHits": 1,
+      "popHits": 0,
+      "lineHits": 2,
+      "groundHits": 0
+     },
+     "team": {
+      "id": 120,
+      "name": "Washington Nationals",
+      "link": "/api/v1/teams/120"
+     },
+     "player": {
+      "id": 656448,
+      "fullName": "Stone Garrett",
+      "link": "/api/v1/people/656448",
+      "firstName": "Stone",
+      "lastName": "Garrett"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "10",
+      "name": "Designated Hitter",
+      "type": "Hitter",
+      "abbreviation": "DH"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "age": 25,
+      "plateAppearances": 14,
+      "totalBases": 9,
+      "leftOnBase": 4,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".636",
+      "extraBaseHits": 2,
+      "hitByPitch": 0,
+      "gidp": 0,
+      "gidpOpp": 2,
+      "numberOfPitches": 39,
+      "pitchesPerPlateAppearance": "2.786",
+      "walksPerPlateAppearance": ".000",
+      "strikeoutsPerPlateAppearance": ".214",
+      "homeRunsPerPlateAppearance": ".000",
+      "walksPerStrikeout": ".---",
+      "iso": ".143",
+      "reachedOnError": 0,
+      "walkOffs": 0,
+      "flyOuts": 1,
+      "totalSwings": 21,
+      "swingAndMisses": 6,
+      "ballsInPlay": 11,
+      "popOuts": 0,
+      "lineOuts": 0,
+      "groundOuts": 3,
+      "flyHits": 1,
+      "popHits": 0,
+      "lineHits": 0,
+      "groundHits": 6
+     },
+     "team": {
+      "id": 120,
+      "name": "Washington Nationals",
+      "link": "/api/v1/teams/120"
+     },
+     "player": {
+      "id": 671117,
+      "fullName": "Darren Baker",
+      "link": "/api/v1/people/671117",
+      "firstName": "Darren",
+      "lastName": "Baker"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 2,
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "age": 25,
+      "plateAppearances": 5,
+      "totalBases": 2,
+      "leftOnBase": 3,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".500",
+      "extraBaseHits": 0,
+      "hitByPitch": 0,
+      "gidp": 0,
+      "gidpOpp": 1,
+      "numberOfPitches": 14,
+      "pitchesPerPlateAppearance": "2.800",
+      "walksPerPlateAppearance": ".000",
+      "strikeoutsPerPlateAppearance": ".200",
+      "homeRunsPerPlateAppearance": ".000",
+      "walksPerStrikeout": ".---",
+      "iso": ".000",
+      "reachedOnError": 0,
+      "walkOffs": 0,
+      "flyOuts": 0,
+      "totalSwings": 10,
+      "swingAndMisses": 5,
+      "ballsInPlay": 4,
+      "popOuts": 1,
+      "lineOuts": 0,
+      "groundOuts": 1,
+      "flyHits": 0,
+      "popHits": 0,
+      "lineHits": 0,
+      "groundHits": 2
+     },
+     "team": {
+      "id": 136,
+      "name": "Seattle Mariners",
+      "link": "/api/v1/teams/136"
+     },
+     "player": {
+      "id": 669392,
+      "fullName": "Samad Taylor",
+      "link": "/api/v1/people/669392",
+      "firstName": "Samad",
+      "lastName": "Taylor"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [],
+   "playerPool": "ALL"
+  }
+ ]
+}

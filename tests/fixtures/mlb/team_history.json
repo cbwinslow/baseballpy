@@ -1,0 +1,105 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "teams": [
+  {
+   "allStarStatus": "N",
+   "id": 133,
+   "name": "Athletics",
+   "link": "/api/v1/teams/133",
+   "season": 2024,
+   "venue": {
+    "id": 2529,
+    "name": "Sutter Health Park",
+    "link": "/api/v1/venues/2529"
+   },
+   "springVenue": {
+    "id": 2507,
+    "link": "/api/v1/venues/2507"
+   },
+   "teamCode": "ath",
+   "fileCode": "ath",
+   "abbreviation": "ATH",
+   "teamName": "Athletics",
+   "locationName": "Sacramento",
+   "firstYearOfPlay": "1901",
+   "league": {
+    "id": 103,
+    "name": "American League",
+    "link": "/api/v1/league/103"
+   },
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1",
+    "name": "Major League Baseball"
+   },
+   "shortName": "Athletics",
+   "franchiseName": "Athletics",
+   "clubName": "Athletics",
+   "active": true
+  },
+  {
+   "allStarStatus": "N",
+   "id": 133,
+   "name": "Oakland Athletics",
+   "link": "/api/v1/teams/133",
+   "season": 1968,
+   "venue": {
+    "id": 10,
+    "name": "Oakland-Alameda County Coliseum",
+    "link": "/api/v1/venues/10"
+   },
+   "teamCode": "oak",
+   "fileCode": "oak",
+   "abbreviation": "OAK",
+   "teamName": "Athletics",
+   "locationName": "Oakland",
+   "firstYearOfPlay": "1901",
+   "league": {
+    "id": 103,
+    "name": "American League",
+    "link": "/api/v1/league/103"
+   },
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1",
+    "name": "Major League Baseball"
+   },
+   "shortName": "Oakland",
+   "franchiseName": "Oakland",
+   "clubName": "Athletics",
+   "active": true
+  },
+  {
+   "allStarStatus": "N",
+   "id": 133,
+   "name": "Kansas City Athletics",
+   "link": "/api/v1/teams/133",
+   "season": 1955,
+   "venue": {
+    "id": 3137,
+    "name": "Municipal Stadium",
+    "link": "/api/v1/venues/3137"
+   },
+   "teamCode": "kc1",
+   "fileCode": "oak",
+   "abbreviation": "KCA",
+   "teamName": "Athletics",
+   "locationName": "Kansas City",
+   "firstYearOfPlay": "1901",
+   "league": {
+    "id": 103,
+    "name": "American League",
+    "link": "/api/v1/league/103"
+   },
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1",
+    "name": "Major League Baseball"
+   },
+   "shortName": "Kansas City",
+   "franchiseName": "Kansas City",
+   "clubName": "Athletics",
+   "active": true
+  }
+ ]
+}

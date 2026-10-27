@@ -1,0 +1,409 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "expectedStatistics"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 651,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".581",
+      "slg": "1.354",
+      "woba": ".770",
+      "wobaCon": ".784"
+     },
+     "player": {
+      "id": 656448,
+      "fullName": "Stone Garrett",
+      "link": "/api/v1/people/656448",
+      "firstName": "Gregory",
+      "lastName": "Garrett",
+      "primaryPosition": {
+       "code": "8",
+       "name": "Outfielder",
+       "type": "Outfielder",
+       "abbreviation": "CF"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".581",
+      "slg": "1.354",
+      "woba": ".770",
+      "wobaCon": ".784"
+     },
+     "player": {
+      "id": 656448,
+      "fullName": "Stone Garrett",
+      "link": "/api/v1/people/656448",
+      "firstName": "Gregory",
+      "lastName": "Garrett",
+      "primaryPosition": {
+       "code": "8",
+       "name": "Outfielder",
+       "type": "Outfielder",
+       "abbreviation": "CF"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".581",
+      "slg": "1.354",
+      "woba": ".770",
+      "wobaCon": ".784"
+     },
+     "player": {
+      "id": 656448,
+      "fullName": "Stone Garrett",
+      "link": "/api/v1/people/656448",
+      "firstName": "Gregory",
+      "lastName": "Garrett",
+      "primaryPosition": {
+       "code": "8",
+       "name": "Outfielder",
+       "type": "Outfielder",
+       "abbreviation": "CF"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 1
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".415",
+      "slg": ".474",
+      "woba": ".482",
+      "wobaCon": ".454"
+     },
+     "player": {
+      "id": 622110,
+      "fullName": "Matt Duffy",
+      "link": "/api/v1/people/622110",
+      "firstName": "Matthew",
+      "lastName": "Duffy",
+      "primaryPosition": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      }
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "gameType": "R",
+     "rank": 31
+    }
+   ]
+  }
+ ]
+}

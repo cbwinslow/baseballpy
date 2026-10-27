@@ -1,0 +1,38 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 693113,
+    "fullName": "Eric Cressey",
+    "link": "/api/v1/people/693113"
+   },
+   "jerseyNumber": "",
+   "job": "Director of Player Health",
+   "jobId": "DRPH",
+   "title": "Director of Player Health and Performance"
+  },
+  {
+   "person": {
+    "id": 674480,
+    "fullName": "Michael Schuk",
+    "link": "/api/v1/people/674480"
+   },
+   "jerseyNumber": "",
+   "job": "Director of Sports Performance",
+   "jobId": "DOSP",
+   "title": "Director of Sports Medicine and Rehabilitation"
+  },
+  {
+   "person": {
+    "id": 579797,
+    "fullName": "Tim Lentych",
+    "link": "/api/v1/people/579797"
+   },
+   "jerseyNumber": "",
+   "job": "Head Athletic Trainer",
+   "jobId": "HATR",
+   "title": "Head Athletic Trainer"
+  }
+ ]
+}

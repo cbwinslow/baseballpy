@@ -1,0 +1,293 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "leagueLeaders": [
+  {
+   "leaderCategory": "caughtStealing",
+   "season": "2024",
+   "gameType": {
+    "id": "R",
+    "description": "Regular Season"
+   },
+   "leaders": [
+    {
+     "rank": 1,
+     "value": "32",
+     "team": {
+      "id": 136,
+      "name": "Seattle Mariners",
+      "link": "/api/v1/teams/136"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "person": {
+      "id": 663728,
+      "fullName": "Cal Raleigh",
+      "link": "/api/v1/people/663728",
+      "firstName": "Cal",
+      "lastName": "Raleigh"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "season": "2024",
+     "numTeams": 1
+    },
+    {
+     "rank": 1,
+     "value": "32",
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "person": {
+      "id": 669257,
+      "fullName": "Will Smith",
+      "link": "/api/v1/people/669257",
+      "firstName": "Will",
+      "lastName": "Smith"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "season": "2024",
+     "numTeams": 1
+    },
+    {
+     "rank": 3,
+     "value": "30",
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "person": {
+      "id": 681351,
+      "fullName": "Logan O'Hoppe",
+      "link": "/api/v1/people/681351",
+      "firstName": "Logan",
+      "lastName": "O'Hoppe"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "season": "2024",
+     "numTeams": 1
+    }
+   ],
+   "statGroup": "catching",
+   "totalSplits": 91
+  },
+  {
+   "leaderCategory": "intentionalWalks",
+   "season": "2024",
+   "gameType": {
+    "id": "R",
+    "description": "Regular Season"
+   },
+   "leaders": [
+    {
+     "rank": 1,
+     "value": "7",
+     "team": {
+      "id": 133,
+      "name": "Oakland Athletics",
+      "link": "/api/v1/teams/133"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "person": {
+      "id": 518397,
+      "fullName": "Scott Alexander",
+      "link": "/api/v1/people/518397",
+      "firstName": "Scott",
+      "lastName": "Alexander"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "season": "2024",
+     "numTeams": 1
+    },
+    {
+     "rank": 1,
+     "value": "7",
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "person": {
+      "id": 573009,
+      "fullName": "Joe Mantiply",
+      "link": "/api/v1/people/573009",
+      "firstName": "Joe",
+      "lastName": "Mantiply"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "season": "2024",
+     "numTeams": 1
+    },
+    {
+     "rank": 3,
+     "value": "6",
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "person": {
+      "id": 607455,
+      "fullName": "Anthony Banda",
+      "link": "/api/v1/people/607455",
+      "firstName": "Anthony",
+      "lastName": "Banda"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "season": "2024",
+     "numTeams": 1
+    }
+   ],
+   "statGroup": "pitching",
+   "totalSplits": 291
+  },
+  {
+   "leaderCategory": "sluggingPercentage",
+   "season": "2024",
+   "gameType": {
+    "id": "R",
+    "description": "Regular Season"
+   },
+   "leaders": [
+    {
+     "rank": 1,
+     "value": ".311",
+     "team": {
+      "id": 116,
+      "name": "Detroit Tigers",
+      "link": "/api/v1/teams/116"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "person": {
+      "id": 669373,
+      "fullName": "Tarik Skubal",
+      "link": "/api/v1/people/669373",
+      "firstName": "Tarik",
+      "lastName": "Skubal"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "season": "2024",
+     "numTeams": 1
+    },
+    {
+     "rank": 2,
+     "value": ".315",
+     "team": {
+      "id": 144,
+      "name": "Atlanta Braves",
+      "link": "/api/v1/teams/144"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "person": {
+      "id": 608331,
+      "fullName": "Max Fried",
+      "link": "/api/v1/people/608331",
+      "firstName": "Max",
+      "lastName": "Fried"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "season": "2024",
+     "numTeams": 1
+    },
+    {
+     "rank": 3,
+     "value": ".319",
+     "team": {
+      "id": 144,
+      "name": "Atlanta Braves",
+      "link": "/api/v1/teams/144"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "person": {
+      "id": 519242,
+      "fullName": "Chris Sale",
+      "link": "/api/v1/people/519242",
+      "firstName": "Chris",
+      "lastName": "Sale"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "season": "2024",
+     "numTeams": 1
+    }
+   ],
+   "statGroup": "pitching",
+   "totalSplits": 58
+  }
+ ]
+}

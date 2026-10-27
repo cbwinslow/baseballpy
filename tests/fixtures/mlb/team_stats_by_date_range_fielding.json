@@ -1,0 +1,93 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "byDateRange"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "assists": 1456,
+      "putOuts": 4330,
+      "errors": 62,
+      "chances": 5848,
+      "fielding": ".989",
+      "rangeFactorPerGame": "35.72",
+      "rangeFactorPer9Inn": "36.09",
+      "innings": "1443.1",
+      "games": 162,
+      "doublePlays": 138,
+      "triplePlays": 0,
+      "throwingErrors": 28
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "numTeams": 1,
+     "rank": 1
+    },
+    {
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "assists": 1436,
+      "putOuts": 4330,
+      "errors": 68,
+      "chances": 5834,
+      "fielding": ".988",
+      "rangeFactorPerGame": "35.59",
+      "rangeFactorPer9Inn": "35.96",
+      "innings": "1443.1",
+      "games": 162,
+      "doublePlays": 131,
+      "triplePlays": 0,
+      "throwingErrors": 31
+     },
+     "team": {
+      "id": 144,
+      "name": "Atlanta Braves",
+      "link": "/api/v1/teams/144"
+     },
+     "numTeams": 1,
+     "rank": 2
+    },
+    {
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "assists": 1230,
+      "putOuts": 4321,
+      "errors": 70,
+      "chances": 5621,
+      "fielding": ".988",
+      "rangeFactorPerGame": "34.27",
+      "rangeFactorPer9Inn": "34.69",
+      "innings": "1440.1",
+      "games": 162,
+      "doublePlays": 75,
+      "triplePlays": 0,
+      "throwingErrors": 35
+     },
+     "team": {
+      "id": 142,
+      "name": "Minnesota Twins",
+      "link": "/api/v1/teams/142"
+     },
+     "numTeams": 1,
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

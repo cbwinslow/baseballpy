@@ -34,3 +34,27 @@ The Statcast Ingestion Engine extracts, chunks, normalizes, and caches pitch-by-
 ## 4. Two-Phase Atomic Writes & Checkpointing
 - All Parquet writes execute via `atomic_write_parquet()` writing to `.part` files and renaming atomically.
 - Partition chunk status recorded in `manifest.json`.
+
+---
+
+## 5. Coverage (complete-source-coverage, verified live 2026-10-27)
+
+### Requirement: Pitch Search Completeness
+The pitch schema MUST cover every column Savant exports (119 in every era from 2008, era-specific ones nullable); columns that appear later MUST be preserved in a trailing `_extras` JSON column (never per-file inferred types), and uncastable cells MUST be quarantined. Windows hitting the 25,000-row cap MUST be bisected; a capped single day MUST raise `TruncatedResultError` and MUST NOT be cached.
+
+#### Scenario: Filtered query
+- **GIVEN** `StatcastQuery(team="NYY")` or `game_types=("R",)`
+- **THEN** the rows are returned but never written to `statcast.pitches` (it would duplicate pitches).
+
+### Requirement: Leaderboard Registry
+Every supported leaderboard *variant* MUST be a registered dataset with a schema generated from live headers (`scripts/gen_savant_schemas.py`), a documented key verified unique per season, the widest `min` qualifier and the first season with data. Types MUST NOT be inferred from column-name substrings. Routes that offer no CSV, answer 4xx, or ignore the season MUST stay listed with an `unsupported` reason or be modelled as a flat snapshot. A request that deviates from the canonical parameters MUST NOT be persisted into the registered dataset. The `StatcastLeaderboard` enum MUST equal the registry's supported slugs.
+
+#### Scenario: Wrong season parameter
+- **GIVEN** a route that ignores `year=` and returns the current season for every year
+- **THEN** the probe detects identical payloads across seasons and the variant uses the route's real parameter (`season_start/season_end`, `seasonStart/seasonEnd`, `season`) or is a flat snapshot.
+
+### Requirement: Season Ingest
+`ingest_season(year)` MUST cover spring training through the postseason using the MLB season calendar, resume via the manifest (empty windows included), and report surplus duplicate `(game_pk, at_bat_number, pitch_number)` keys. `ingest_all(start=2008)` iterates seasons.
+
+### Requirement: Game Feed
+The per-game `/gf` JSON MAY be fetched on demand and stored raw (sha256); it MUST NOT be bulk-ingested and no typed table is derived from it.

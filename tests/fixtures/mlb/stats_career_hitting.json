@@ -1,0 +1,2735 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "career"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 22247,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 22,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 120,
+      "name": "Washington Nationals",
+      "link": "/api/v1/teams/120"
+     },
+     "player": {
+      "id": 407889,
+      "fullName": "Travis Hughes",
+      "link": "/api/v1/people/407889",
+      "firstName": "Travis",
+      "lastName": "Hughes"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 35,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "player": {
+      "id": 594857,
+      "fullName": "Keith Hessler",
+      "link": "/api/v1/people/594857",
+      "firstName": "Keith",
+      "lastName": "Hessler"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 12,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 4,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 136606,
+      "fullName": "Jeff Kubenka",
+      "link": "/api/v1/people/136606",
+      "firstName": "Jeff",
+      "lastName": "Kubenka"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "1.500",
+      "ops": "2.500",
+      "stolenBases": 0,
+      "plateAppearances": 2,
+      "totalBases": 3,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "player": {
+      "id": 116143,
+      "link": "/api/v1/people/116143",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 4,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 2,
+      "intentionalWalks": 0,
+      "hits": 3,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 3,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 5,
+      "totalBases": 3,
+      "rbi": 3,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 117,
+      "link": "/api/v1/teams/117"
+     },
+     "player": {
+      "id": 120156,
+      "link": "/api/v1/people/120156",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 8,
+      "runs": 3,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 114855,
+      "link": "/api/v1/people/114855",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 120550,
+      "link": "/api/v1/people/120550",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 66,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 135,
+      "link": "/api/v1/teams/135"
+     },
+     "player": {
+      "id": 600526,
+      "link": "/api/v1/people/600526",
+      "active": true
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 5,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 110,
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 123028,
+      "link": "/api/v1/people/123028",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 3,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 116089,
+      "link": "/api/v1/people/116089",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 117806,
+      "link": "/api/v1/people/117806",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 1,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 6149,
+      "link": "/api/v1/teams/6149"
+     },
+     "player": {
+      "id": 820391,
+      "link": "/api/v1/people/820391",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "stolenBases": 0,
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 144,
+      "link": "/api/v1/teams/144"
+     },
+     "player": {
+      "id": 117351,
+      "link": "/api/v1/people/117351",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 298,
+      "link": "/api/v1/teams/298"
+     },
+     "player": {
+      "id": 111743,
+      "link": "/api/v1/people/111743",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1
+    },
+    {
+     "stat": {
+      "gamesPlayed": 3,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 117487,
+      "link": "/api/v1/people/117487",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 5,
+      "runs": 2,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 1,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 1,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".000",
+      "caughtStealingPercentage": "1.000",
+      "plateAppearances": 2,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 116,
+      "link": "/api/v1/teams/116"
+     },
+     "player": {
+      "id": 119225,
+      "link": "/api/v1/people/119225",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 4,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 144,
+      "link": "/api/v1/teams/144"
+     },
+     "player": {
+      "id": 124590,
+      "link": "/api/v1/people/124590",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "4",
+      "name": "Second Base",
+      "type": "Infielder",
+      "abbreviation": "2B"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 3,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 112840,
+      "link": "/api/v1/people/112840",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 29,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 145,
+      "link": "/api/v1/teams/145"
+     },
+     "player": {
+      "id": 113731,
+      "link": "/api/v1/people/113731",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "player": {
+      "id": 123400,
+      "link": "/api/v1/people/123400",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 73,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 1,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "3.000",
+      "ops": "4.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 0,
+      "plateAppearances": 1,
+      "totalBases": 3,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 158,
+      "link": "/api/v1/teams/158"
+     },
+     "player": {
+      "id": 121350,
+      "link": "/api/v1/people/121350",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 6,
+      "plateAppearances": 2,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 121,
+      "link": "/api/v1/teams/121"
+     },
+     "player": {
+      "id": 429480,
+      "link": "/api/v1/people/429480",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 1,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "3.000",
+      "ops": "4.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 2,
+      "totalBases": 3,
+      "rbi": 1,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 145,
+      "link": "/api/v1/teams/145"
+     },
+     "player": {
+      "id": 117792,
+      "link": "/api/v1/people/117792",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 1,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 1526,
+      "link": "/api/v1/teams/1526"
+     },
+     "player": {
+      "id": 820266,
+      "link": "/api/v1/people/820266",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 6154,
+      "link": "/api/v1/teams/6154"
+     },
+     "player": {
+      "id": 816887,
+      "link": "/api/v1/people/816887",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 30,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 3,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 2,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 144,
+      "link": "/api/v1/teams/144"
+     },
+     "player": {
+      "id": 682989,
+      "link": "/api/v1/people/682989",
+      "active": true
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 3,
+      "runs": 1,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 117935,
+      "link": "/api/v1/people/117935",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 1504,
+      "link": "/api/v1/teams/1504"
+     },
+     "player": {
+      "id": 829467,
+      "link": "/api/v1/people/829467",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 114,
+      "link": "/api/v1/teams/114"
+     },
+     "player": {
+      "id": 114538,
+      "link": "/api/v1/people/114538",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 2,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 142,
+      "link": "/api/v1/teams/142"
+     },
+     "player": {
+      "id": 123395,
+      "link": "/api/v1/people/123395",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 21,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 142,
+      "link": "/api/v1/teams/142"
+     },
+     "player": {
+      "id": 445090,
+      "link": "/api/v1/people/445090",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 1,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "plateAppearances": 3,
+      "totalBases": 2,
+      "rbi": 2,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 142,
+      "link": "/api/v1/teams/142"
+     },
+     "player": {
+      "id": 121796,
+      "link": "/api/v1/people/121796",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 186,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 5,
+      "plateAppearances": 2,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 116,
+      "link": "/api/v1/teams/116"
+     },
+     "player": {
+      "id": 642397,
+      "link": "/api/v1/people/642397",
+      "active": true
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 113,
+      "link": "/api/v1/teams/113"
+     },
+     "player": {
+      "id": 118020,
+      "link": "/api/v1/people/118020",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 1,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 1529,
+      "link": "/api/v1/teams/1529"
+     },
+     "player": {
+      "id": 820643,
+      "link": "/api/v1/people/820643",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 2,
+      "totalBases": 2,
+      "rbi": 2,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 114,
+      "link": "/api/v1/teams/114"
+     },
+     "player": {
+      "id": 111002,
+      "link": "/api/v1/people/111002",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "4",
+      "name": "Second Base",
+      "type": "Infielder",
+      "abbreviation": "2B"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 156,
+      "groundOuts": 1,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 4,
+      "plateAppearances": 2,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 1,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "1.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "player": {
+      "id": 457425,
+      "link": "/api/v1/people/457425",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 25,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 158,
+      "link": "/api/v1/teams/158"
+     },
+     "player": {
+      "id": 118496,
+      "link": "/api/v1/people/118496",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 10,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 4,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 115,
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 220094,
+      "link": "/api/v1/people/220094",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 1,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 2,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 1515,
+      "link": "/api/v1/teams/1515"
+     },
+     "player": {
+      "id": 818508,
+      "link": "/api/v1/people/818508",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 1,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 142,
+      "link": "/api/v1/teams/142"
+     },
+     "player": {
+      "id": 123990,
+      "link": "/api/v1/people/123990",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "4",
+      "name": "Second Base",
+      "type": "Infielder",
+      "abbreviation": "2B"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 25,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 1,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 147,
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 572038,
+      "link": "/api/v1/people/572038",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 13,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "player": {
+      "id": 114590,
+      "link": "/api/v1/people/114590",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 3,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 113,
+      "link": "/api/v1/teams/113"
+     },
+     "player": {
+      "id": 110027,
+      "link": "/api/v1/people/110027",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 8,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 1,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "3.000",
+      "ops": "4.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 3,
+      "rbi": 1,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 121,
+      "link": "/api/v1/teams/121"
+     },
+     "player": {
+      "id": 276507,
+      "link": "/api/v1/people/276507",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 3,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 1,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "2.500",
+      "ops": "3.500",
+      "stolenBases": 0,
+      "plateAppearances": 2,
+      "totalBases": 5,
+      "rbi": 3,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "2.00"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 119923,
+      "link": "/api/v1/people/119923",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 9,
+      "groundOuts": 2,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 8,
+      "plateAppearances": 3,
+      "totalBases": 1,
+      "rbi": 1,
+      "leftOnBase": 0,
+      "sacBunts": 2,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "2.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 136,
+      "link": "/api/v1/teams/136"
+     },
+     "player": {
+      "id": 452027,
+      "link": "/api/v1/people/452027",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 120453,
+      "link": "/api/v1/people/120453",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 1,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 1513,
+      "link": "/api/v1/teams/1513"
+     },
+     "player": {
+      "id": 819725,
+      "link": "/api/v1/people/819725",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 115051,
+      "link": "/api/v1/people/115051",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 5,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "groundIntoDoublePlay": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "babip": "1.000",
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 138,
+      "link": "/api/v1/teams/138"
+     },
+     "player": {
+      "id": 124159,
+      "link": "/api/v1/people/124159",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 138,
+      "link": "/api/v1/teams/138"
+     },
+     "player": {
+      "id": 150227,
+      "link": "/api/v1/people/150227",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 4,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 138,
+      "link": "/api/v1/teams/138"
+     },
+     "player": {
+      "id": 276535,
+      "link": "/api/v1/people/276535",
+      "active": false
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    }
+   ]
+  }
+ ]
+}

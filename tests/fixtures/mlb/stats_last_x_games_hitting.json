@@ -1,0 +1,441 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "lastXGames"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 565,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 10,
+      "flyOuts": 1,
+      "groundOuts": 10,
+      "airOuts": 2,
+      "runs": 15,
+      "doubles": 6,
+      "triples": 0,
+      "homeRuns": 6,
+      "strikeOuts": 4,
+      "baseOnBalls": 4,
+      "intentionalWalks": 0,
+      "hits": 27,
+      "hitByPitch": 1,
+      "avg": ".628",
+      "atBats": 43,
+      "obp": ".667",
+      "slg": "1.186",
+      "ops": "1.853",
+      "caughtStealing": 0,
+      "stolenBases": 10,
+      "stolenBasePercentage": "1.000",
+      "caughtStealingPercentage": ".000",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 178,
+      "plateAppearances": 48,
+      "totalBases": 51,
+      "rbi": 20,
+      "leftOnBase": 5,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".636",
+      "groundOutsToAirouts": "5.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "7.17"
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "10",
+      "name": "Designated Hitter",
+      "type": "Hitter",
+      "abbreviation": "DH"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 10,
+      "flyOuts": 7,
+      "groundOuts": 4,
+      "airOuts": 8,
+      "runs": 8,
+      "doubles": 3,
+      "triples": 1,
+      "homeRuns": 2,
+      "strikeOuts": 5,
+      "baseOnBalls": 2,
+      "intentionalWalks": 0,
+      "hits": 15,
+      "hitByPitch": 0,
+      "avg": ".469",
+      "atBats": 32,
+      "obp": ".500",
+      "slg": ".813",
+      "ops": "1.313",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 1,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 129,
+      "plateAppearances": 34,
+      "totalBases": 26,
+      "rbi": 5,
+      "leftOnBase": 5,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".520",
+      "groundOutsToAirouts": "0.50",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "16.00"
+     },
+     "team": {
+      "id": 143,
+      "name": "Philadelphia Phillies",
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 592206,
+      "fullName": "Nick Castellanos",
+      "link": "/api/v1/people/592206",
+      "firstName": "Nick",
+      "lastName": "Castellanos"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 2,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 10,
+      "flyOuts": 3,
+      "groundOuts": 5,
+      "airOuts": 6,
+      "runs": 2,
+      "doubles": 2,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 3,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 12,
+      "hitByPitch": 0,
+      "avg": ".462",
+      "atBats": 26,
+      "obp": ".481",
+      "slg": ".538",
+      "ops": "1.019",
+      "caughtStealing": 1,
+      "stolenBases": 1,
+      "stolenBasePercentage": ".500",
+      "caughtStealingPercentage": ".500",
+      "groundIntoDoublePlay": 1,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 88,
+      "plateAppearances": 27,
+      "totalBases": 14,
+      "rbi": 1,
+      "leftOnBase": 1,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".522",
+      "groundOutsToAirouts": "0.83",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 114,
+      "name": "Cleveland Guardians",
+      "link": "/api/v1/teams/114"
+     },
+     "player": {
+      "id": 686823,
+      "fullName": "Will Brennan",
+      "link": "/api/v1/people/686823",
+      "firstName": "Will",
+      "lastName": "Brennan"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 10,
+      "flyOuts": 6,
+      "groundOuts": 8,
+      "airOuts": 13,
+      "runs": 3,
+      "doubles": 4,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 3,
+      "baseOnBalls": 3,
+      "intentionalWalks": 0,
+      "hits": 11,
+      "hitByPitch": 0,
+      "avg": ".324",
+      "atBats": 34,
+      "obp": ".378",
+      "slg": ".441",
+      "ops": ".819",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 116,
+      "plateAppearances": 38,
+      "totalBases": 15,
+      "rbi": 4,
+      "leftOnBase": 15,
+      "sacBunts": 1,
+      "sacFlies": 0,
+      "babip": ".355",
+      "groundOutsToAirouts": "0.62",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "player": {
+      "id": 701538,
+      "fullName": "Jackson Merrill",
+      "link": "/api/v1/people/701538",
+      "firstName": "Jackson",
+      "lastName": "Merrill"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 48,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 10,
+      "flyOuts": 6,
+      "groundOuts": 3,
+      "airOuts": 9,
+      "runs": 6,
+      "doubles": 3,
+      "triples": 0,
+      "homeRuns": 1,
+      "strikeOuts": 11,
+      "baseOnBalls": 4,
+      "intentionalWalks": 0,
+      "hits": 11,
+      "hitByPitch": 0,
+      "avg": ".324",
+      "atBats": 34,
+      "obp": ".395",
+      "slg": ".500",
+      "ops": ".895",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 148,
+      "plateAppearances": 38,
+      "totalBases": 17,
+      "rbi": 1,
+      "leftOnBase": 12,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".455",
+      "groundOutsToAirouts": "0.33",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "34.00"
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 681351,
+      "fullName": "Logan O'Hoppe",
+      "link": "/api/v1/people/681351",
+      "firstName": "Logan",
+      "lastName": "O'Hoppe"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 48,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 10,
+      "flyOuts": 8,
+      "groundOuts": 7,
+      "airOuts": 10,
+      "runs": 3,
+      "doubles": 2,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 6,
+      "baseOnBalls": 8,
+      "intentionalWalks": 1,
+      "hits": 11,
+      "hitByPitch": 1,
+      "avg": ".324",
+      "atBats": 34,
+      "obp": ".465",
+      "slg": ".382",
+      "ops": ".847",
+      "caughtStealing": 0,
+      "stolenBases": 2,
+      "stolenBasePercentage": "1.000",
+      "caughtStealingPercentage": ".000",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 173,
+      "plateAppearances": 43,
+      "totalBases": 13,
+      "rbi": 1,
+      "leftOnBase": 8,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".393",
+      "groundOutsToAirouts": "0.70",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 677951,
+      "fullName": "Bobby Witt Jr.",
+      "link": "/api/v1/people/677951",
+      "firstName": "Bobby",
+      "lastName": "Witt"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 48,
+     "position": {
+      "code": "6",
+      "name": "Shortstop",
+      "type": "Infielder",
+      "abbreviation": "SS"
+     }
+    }
+   ],
+   "playerPool": "ALL"
+  }
+ ]
+}

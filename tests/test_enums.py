@@ -82,8 +82,8 @@ def test_lahman_table_enum() -> None:
 def test_statcast_enums() -> None:
     """Test Statcast leaderboard and pitch type enums."""
     assert bp.StatcastLeaderboard.BAT_TRACKING == "bat_tracking"
-    assert bp.StatcastLeaderboard.EXIT_VELOCITY == "exit_velocity"
-    assert bp.StatcastLeaderboard.EXPECTED_STATISTICS == "expected_statistics"
+    assert bp.StatcastLeaderboard.EXIT_VELOCITY_BATTER == "exit_velocity_batter"
+    assert bp.StatcastLeaderboard.EXPECTED_STATISTICS_PITCHER == "expected_statistics_pitcher"
     assert bp.StatcastLeaderboard.PITCH_ARSENALS == "pitch_arsenals"
 
     assert bp.PitchType.FOUR_SEAM == "FF"

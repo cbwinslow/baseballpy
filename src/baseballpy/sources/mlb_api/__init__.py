@@ -4,12 +4,14 @@ from baseballpy.sources.mlb_api.api import (
     MlbApiSource,
     get_boxscore,
     get_draft,
+    get_endpoint,
     get_roster,
     get_schedule,
     get_standings,
     get_teams,
     get_transactions,
     get_venues,
+    ingest_season,
     stream_game,
 )
 from baseballpy.sources.mlb_api.extractor import MlbApiExtractor
@@ -51,11 +53,13 @@ __all__ = [
     "SportId",
     "get_boxscore",
     "get_draft",
+    "get_endpoint",
     "get_roster",
     "get_schedule",
     "get_standings",
     "get_teams",
     "get_transactions",
     "get_venues",
+    "ingest_season",
     "stream_game",
 ]

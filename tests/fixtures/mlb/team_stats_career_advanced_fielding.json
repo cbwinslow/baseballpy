@@ -1,0 +1,87 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "careerAdvanced"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 4596,
+      "gamesStarted": 4596,
+      "assists": 45018,
+      "putOuts": 123137,
+      "errors": 2672,
+      "chances": 170827,
+      "fielding": ".984",
+      "rangeFactorPerGame": "36.59",
+      "rangeFactorPer9Inn": "4.10",
+      "innings": "369411.0",
+      "games": 4596,
+      "doublePlays": 3959,
+      "triplePlays": 2,
+      "throwingErrors": 1117
+     },
+     "team": {
+      "id": 109,
+      "link": "/api/v1/teams/109"
+     },
+     "rank": 1
+    },
+    {
+     "stat": {
+      "gamesPlayed": 4594,
+      "gamesStarted": 4594,
+      "assists": 42480,
+      "putOuts": 122685,
+      "errors": 2794,
+      "chances": 167959,
+      "fielding": ".983",
+      "rangeFactorPerGame": "35.95",
+      "rangeFactorPer9Inn": "4.04",
+      "innings": "368055.0",
+      "games": 4594,
+      "doublePlays": 3964,
+      "triplePlays": 3,
+      "throwingErrors": 1171
+     },
+     "team": {
+      "id": 139,
+      "link": "/api/v1/teams/139"
+     },
+     "rank": 2
+    },
+    {
+     "stat": {
+      "gamesPlayed": 5344,
+      "gamesStarted": 5344,
+      "assists": 56859,
+      "putOuts": 141664,
+      "errors": 3364,
+      "chances": 201887,
+      "fielding": ".983",
+      "rangeFactorPerGame": "37.15",
+      "rangeFactorPer9Inn": "4.20",
+      "innings": "425010.0",
+      "games": 5344,
+      "doublePlays": 5450,
+      "triplePlays": 5,
+      "throwingErrors": 1434
+     },
+     "team": {
+      "id": 115,
+      "link": "/api/v1/teams/115"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

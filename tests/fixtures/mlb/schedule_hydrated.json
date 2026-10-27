@@ -1,0 +1,4267 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "totalItems": 2998,
+ "totalEvents": 0,
+ "totalGames": 2998,
+ "totalGamesInProgress": 0,
+ "dates": [
+  {
+   "date": "2024-02-22",
+   "totalItems": 1,
+   "totalEvents": 0,
+   "totalGames": 1,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 748266,
+     "gameGuid": "d5cb4300-04fc-4cd0-9a62-88099e61bd81",
+     "link": "/api/v1.1/game/748266/feed/live",
+     "gameType": "S",
+     "season": "2024",
+     "gameDate": "2024-02-22T20:10:00Z",
+     "officialDate": "2024-02-22",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "springLeague": {
+         "id": 114,
+         "name": "Cactus League",
+         "link": "/api/v1/league/114",
+         "abbreviation": "CL"
+        },
+        "allStarStatus": "N",
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "link": "/api/v1/teams/119",
+        "season": 2024,
+        "venue": {
+         "id": 22,
+         "name": "Dodger Stadium",
+         "link": "/api/v1/venues/22"
+        },
+        "springVenue": {
+         "id": 3809,
+         "link": "/api/v1/venues/3809"
+        },
+        "teamCode": "lan",
+        "fileCode": "la",
+        "abbreviation": "LAD",
+        "teamName": "Dodgers",
+        "locationName": "Los Angeles",
+        "firstYearOfPlay": "1884",
+        "league": {
+         "id": 104,
+         "name": "National League",
+         "link": "/api/v1/league/104"
+        },
+        "division": {
+         "id": 203,
+         "name": "National League West",
+         "link": "/api/v1/divisions/203"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "LA Dodgers",
+        "franchiseName": "Los Angeles",
+        "clubName": "Dodgers",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 14,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 694813,
+        "fullName": "Gavin Stone",
+        "link": "/api/v1/people/694813"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       }
+      },
+      "home": {
+       "team": {
+        "springLeague": {
+         "id": 114,
+         "name": "Cactus League",
+         "link": "/api/v1/league/114",
+         "abbreviation": "CL"
+        },
+        "allStarStatus": "N",
+        "id": 135,
+        "name": "San Diego Padres",
+        "link": "/api/v1/teams/135",
+        "season": 2024,
+        "venue": {
+         "id": 2680,
+         "name": "Petco Park",
+         "link": "/api/v1/venues/2680"
+        },
+        "springVenue": {
+         "id": 2530,
+         "link": "/api/v1/venues/2530"
+        },
+        "teamCode": "sdn",
+        "fileCode": "sd",
+        "abbreviation": "SD",
+        "teamName": "Padres",
+        "locationName": "San Diego",
+        "firstYearOfPlay": "1968",
+        "league": {
+         "id": 104,
+         "name": "National League",
+         "link": "/api/v1/league/104"
+        },
+        "division": {
+         "id": 203,
+         "name": "National League West",
+         "link": "/api/v1/divisions/203"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "San Diego",
+        "franchiseName": "San Diego",
+        "clubName": "Padres",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 1,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 605397,
+        "fullName": "Joe Musgrove",
+        "link": "/api/v1/people/605397"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       }
+      }
+     },
+     "linescore": {
+      "currentInning": 9,
+      "currentInningOrdinal": "9th",
+      "inningState": "Bottom",
+      "inningHalf": "Bottom",
+      "isTopInning": false,
+      "scheduledInnings": 9,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 8,
+         "hits": 5,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 2,
+        "ordinalNum": "2nd",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 3,
+        "ordinalNum": "3rd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 4,
+        "ordinalNum": "4th",
+        "home": {
+         "runs": 1,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       },
+       {
+        "num": 5,
+        "ordinalNum": "5th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       },
+       {
+        "num": 6,
+        "ordinalNum": "6th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 6,
+         "hits": 5,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 7,
+        "ordinalNum": "7th",
+        "home": {
+         "runs": 0,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 8,
+        "ordinalNum": "8th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 9,
+        "ordinalNum": "9th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 1,
+        "hits": 7,
+        "errors": 0,
+        "leftOnBase": 10,
+        "isWinner": false
+       },
+       "away": {
+        "runs": 14,
+        "hits": 12,
+        "errors": 0,
+        "leftOnBase": 7,
+        "isWinner": true
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 680701,
+        "fullName": "John Rooney",
+        "link": "/api/v1/people/680701"
+       },
+       "catcher": {
+        "id": 676439,
+        "fullName": "Hunter Feduccia",
+        "link": "/api/v1/people/676439"
+       },
+       "first": {
+        "id": 686781,
+        "fullName": "Brandon Lewis",
+        "link": "/api/v1/people/686781"
+       },
+       "second": {
+        "id": 682210,
+        "fullName": "Kody Hoese",
+        "link": "/api/v1/people/682210"
+       },
+       "third": {
+        "id": 663478,
+        "fullName": "Brendon Davis",
+        "link": "/api/v1/people/663478"
+       },
+       "shortstop": {
+        "id": 700242,
+        "fullName": "Trey Sweeney",
+        "link": "/api/v1/people/700242"
+       },
+       "left": {
+        "id": 682183,
+        "fullName": "Drew Avans",
+        "link": "/api/v1/people/682183"
+       },
+       "center": {
+        "id": 680552,
+        "fullName": "Travis Swaggerty",
+        "link": "/api/v1/people/680552"
+       },
+       "right": {
+        "id": 682947,
+        "fullName": "Jose Ramos",
+        "link": "/api/v1/people/682947"
+       },
+       "batter": {
+        "id": 682183,
+        "fullName": "Drew Avans",
+        "link": "/api/v1/people/682183"
+       },
+       "onDeck": {
+        "id": 682947,
+        "fullName": "Jose Ramos",
+        "link": "/api/v1/people/682947"
+       },
+       "inHole": {
+        "id": 669899,
+        "fullName": "Ryan Ward",
+        "link": "/api/v1/people/669899"
+       },
+       "battingOrder": 4,
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "link": "/api/v1/teams/119"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 664954,
+        "fullName": "Brett Sullivan",
+        "link": "/api/v1/people/664954"
+       },
+       "onDeck": {
+        "id": 670148,
+        "fullName": "Nate Mondou",
+        "link": "/api/v1/people/670148"
+       },
+       "inHole": {
+        "id": 687210,
+        "fullName": "Nathan Martorella",
+        "link": "/api/v1/people/687210"
+       },
+       "pitcher": {
+        "id": 669308,
+        "fullName": "Sean Reynolds",
+        "link": "/api/v1/people/669308"
+       },
+       "battingOrder": 2,
+       "team": {
+        "id": 135,
+        "name": "San Diego Padres",
+        "link": "/api/v1/teams/135"
+       }
+      },
+      "balls": 0,
+      "strikes": 3,
+      "outs": 3
+     },
+     "decisions": {
+      "winner": {
+       "id": 694813,
+       "fullName": "Gavin Stone",
+       "link": "/api/v1/people/694813"
+      },
+      "loser": {
+       "id": 605397,
+       "fullName": "Joe Musgrove",
+       "link": "/api/v1/people/605397"
+      }
+     },
+     "venue": {
+      "id": 2530,
+      "name": "Peoria Stadium",
+      "link": "/api/v1/venues/2530",
+      "active": true,
+      "season": "2024"
+     },
+     "broadcasts": [
+      {
+       "id": 102,
+       "name": "Dodgers Radio AM570",
+       "type": "AM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "KLAC AM570",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-22",
+       "mediaId": "192d8859-bed0-4fc9-b5f9-34935d3cc2c3",
+       "gameDateBroadcastGuid": "192d8859-bed0-4fc9-b5f9-34935d3cc2c3",
+       "homeAway": "away",
+       "freeGame": true,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": true,
+       "freeGameTypes": [
+        {
+         "freeGameType": {
+          "freeGameTypeCode": "FREE_GAME_OF_THE_DAY",
+          "freeGameTypeText": "Free Game of the Day",
+          "freeGameTypeDesc": "Free Game of the Day",
+          "freeGameTypeId": 1
+         },
+         "status": true
+        }
+       ]
+      },
+      {
+       "id": 142,
+       "name": "ESPN/ESPN App",
+       "type": "TV",
+       "language": "en",
+       "isNational": true,
+       "callSign": "ESPN",
+       "availability": {
+        "availabilityId": 4,
+        "availabilityCode": "national",
+        "availabilityText": "National"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-22",
+       "mediaId": "423569bd-235f-4108-9a7c-471bf2e42072",
+       "gameDateBroadcastGuid": "423569bd-235f-4108-9a7c-471bf2e42072",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": false,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 142,
+       "name": "ESPN/ESPN App",
+       "type": "TV",
+       "language": "en",
+       "isNational": true,
+       "callSign": "ESPN",
+       "availability": {
+        "availabilityId": 4,
+        "availabilityCode": "national",
+        "availabilityText": "National"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-22",
+       "mediaId": "ae37ae73-81fa-43bf-a9a3-cdd20f1dfc2f",
+       "gameDateBroadcastGuid": "ae37ae73-81fa-43bf-a9a3-cdd20f1dfc2f",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": false,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 4965,
+       "name": "SportsNet LA",
+       "type": "TV",
+       "language": "en",
+       "isNational": false,
+       "callSign": "SNLA",
+       "availability": {
+        "availabilityId": 1,
+        "availabilityCode": "local_in_market",
+        "availabilityText": "Local (In Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-22",
+       "mediaId": "d9c5a8f5-15f5-47cd-a40c-e5870146e67e",
+       "gameDateBroadcastGuid": "d9c5a8f5-15f5-47cd-a40c-e5870146e67e",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 5296,
+       "name": "KWFN 97.3",
+       "type": "FM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "KWFN",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-22",
+       "mediaId": "b9a8748b-62db-4f70-94b4-4df9b87bf412",
+       "gameDateBroadcastGuid": "b9a8748b-62db-4f70-94b4-4df9b87bf412",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 317,
+       "name": "KTNQ 1020",
+       "type": "AM",
+       "language": "es",
+       "isNational": false,
+       "callSign": "KTNQ",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-22",
+       "mediaId": "cebfa8d2-3545-4f98-97c3-7248849d6494",
+       "gameDateBroadcastGuid": "cebfa8d2-3545-4f98-97c3-7248849d6494",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      }
+     ],
+     "content": {
+      "link": "/api/v1/game/748266/content"
+     },
+     "isTie": false,
+     "officials": [
+      {
+       "official": {
+        "id": 511890,
+        "fullName": "Quinn Wolcott",
+        "link": "/api/v1/people/511890"
+       },
+       "officialType": "Third Base"
+      },
+      {
+       "official": {
+        "id": 427197,
+        "fullName": "Chris Guccione",
+        "link": "/api/v1/people/427197"
+       },
+       "officialType": "Second Base"
+      },
+      {
+       "official": {
+        "id": 427413,
+        "fullName": "Tony Randazzo",
+        "link": "/api/v1/people/427413"
+       },
+       "officialType": "First Base"
+      },
+      {
+       "official": {
+        "id": 483912,
+        "fullName": "Mike Muchlinski",
+        "link": "/api/v1/people/483912"
+       },
+       "officialType": "Home Plate"
+      }
+     ],
+     "weather": {
+      "condition": "Sunny",
+      "temp": "71",
+      "wind": "3 mph, L To R"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "N",
+     "tiebreaker": "N",
+     "calendarEventID": "14-748266-2024-02-22",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 145,
+     "gamesInSeries": 2,
+     "seriesGameNumber": 1,
+     "seriesDescription": "Spring Training",
+     "flags": {
+      "noHitter": false,
+      "perfectGame": false,
+      "awayTeamNoHitter": false,
+      "awayTeamPerfectGame": false,
+      "homeTeamNoHitter": false,
+      "homeTeamPerfectGame": false
+     },
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  },
+  {
+   "date": "2024-02-23",
+   "totalItems": 6,
+   "totalEvents": 0,
+   "totalGames": 6,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 748344,
+     "gameGuid": "1ae43208-ddd5-4d32-af13-334857bddb80",
+     "link": "/api/v1.1/game/748344/feed/live",
+     "gameType": "E",
+     "season": "2024",
+     "gameDate": "2024-02-23T18:05:00Z",
+     "officialDate": "2024-02-23",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "allStarStatus": "N",
+        "id": 343,
+        "name": "Northeastern Huskies",
+        "link": "/api/v1/teams/343",
+        "season": 2024,
+        "venue": {
+         "id": 4309,
+         "name": "JetBlue Park",
+         "link": "/api/v1/venues/4309"
+        },
+        "springVenue": {
+         "id": 4309,
+         "link": "/api/v1/venues/4309"
+        },
+        "teamCode": "neu",
+        "fileCode": "t343",
+        "abbreviation": "NEU",
+        "teamName": "Huskies",
+        "locationName": "Ft. Myers",
+        "firstYearOfPlay": "2004",
+        "league": {
+         "id": 107,
+         "name": "College Baseball",
+         "link": "/api/v1/league/107"
+        },
+        "sport": {
+         "id": 22,
+         "link": "/api/v1/sports/22",
+         "name": "College Baseball"
+        },
+        "shortName": "Northeastern",
+        "parentOrgName": "Office of the Commissioner",
+        "parentOrgId": 11,
+        "franchiseName": "Northeastern",
+        "clubName": "Huskies",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 2,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 809685,
+        "fullName": "Aiven Cabral",
+        "link": "/api/v1/people/809685"
+       },
+       "splitSquad": false
+      },
+      "home": {
+       "team": {
+        "springLeague": {
+         "id": 115,
+         "name": "Grapefruit League",
+         "link": "/api/v1/league/115",
+         "abbreviation": "GL"
+        },
+        "allStarStatus": "N",
+        "id": 111,
+        "name": "Boston Red Sox",
+        "link": "/api/v1/teams/111",
+        "season": 2024,
+        "venue": {
+         "id": 3,
+         "name": "Fenway Park",
+         "link": "/api/v1/venues/3"
+        },
+        "springVenue": {
+         "id": 4309,
+         "link": "/api/v1/venues/4309"
+        },
+        "teamCode": "bos",
+        "fileCode": "bos",
+        "abbreviation": "BOS",
+        "teamName": "Red Sox",
+        "locationName": "Boston",
+        "firstYearOfPlay": "1901",
+        "league": {
+         "id": 103,
+         "name": "American League",
+         "link": "/api/v1/league/103"
+        },
+        "division": {
+         "id": 201,
+         "name": "American League East",
+         "link": "/api/v1/divisions/201"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Boston",
+        "franchiseName": "Boston",
+        "clubName": "Red Sox",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 7,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 672487,
+        "fullName": "Helcris Olivárez",
+        "link": "/api/v1/people/672487"
+       },
+       "splitSquad": false,
+       "springLeague": {
+        "id": 115,
+        "name": "Grapefruit League",
+        "link": "/api/v1/league/115",
+        "abbreviation": "GL"
+       }
+      }
+     },
+     "linescore": {
+      "note": "None out when winning run scored.",
+      "currentInning": 7,
+      "currentInningOrdinal": "7th",
+      "inningState": "Bottom",
+      "inningHalf": "Bottom",
+      "isTopInning": false,
+      "scheduledInnings": 7,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 1,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 1,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       },
+       {
+        "num": 2,
+        "ordinalNum": "2nd",
+        "home": {
+         "runs": 1,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 3,
+        "ordinalNum": "3rd",
+        "home": {
+         "runs": 3,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 4,
+        "ordinalNum": "4th",
+        "home": {
+         "runs": 1,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 5,
+        "ordinalNum": "5th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 1,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 1,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 3
+        }
+       },
+       {
+        "num": 6,
+        "ordinalNum": "6th",
+        "home": {
+         "runs": 2,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 3
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 2,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 7,
+        "ordinalNum": "7th",
+        "home": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 7,
+        "hits": 10,
+        "errors": 2,
+        "leftOnBase": 7,
+        "isWinner": true
+       },
+       "away": {
+        "runs": 2,
+        "hits": 3,
+        "errors": 2,
+        "leftOnBase": 8,
+        "isWinner": false
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 809690,
+        "fullName": "Ryan Griffin",
+        "link": "/api/v1/people/809690"
+       },
+       "catcher": {
+        "id": 801307,
+        "fullName": "Gregory Bozzo",
+        "link": "/api/v1/people/801307"
+       },
+       "first": {
+        "id": 809695,
+        "fullName": "Tyler MacGregor",
+        "link": "/api/v1/people/809695"
+       },
+       "second": {
+        "id": 801296,
+        "fullName": "Luke Beckstein",
+        "link": "/api/v1/people/801296"
+       },
+       "third": {
+        "id": 801298,
+        "fullName": "Justin Bosland",
+        "link": "/api/v1/people/801298"
+       },
+       "shortstop": {
+        "id": 806275,
+        "fullName": "Jack Goodman",
+        "link": "/api/v1/people/806275"
+       },
+       "left": {
+        "id": 695664,
+        "fullName": "Harrison Feinberg",
+        "link": "/api/v1/people/695664"
+       },
+       "center": {
+        "id": 822815,
+        "fullName": "Ryan Gerety",
+        "link": "/api/v1/people/822815"
+       },
+       "right": {
+        "id": 809686,
+        "fullName": "Cam Maldonado",
+        "link": "/api/v1/people/809686"
+       },
+       "team": {
+        "id": 343,
+        "name": "Northeastern Huskies",
+        "link": "/api/v1/teams/343"
+       }
+      },
+      "offense": {
+       "pitcher": {
+        "id": 687938,
+        "fullName": "Jordan DiValerio",
+        "link": "/api/v1/people/687938"
+       },
+       "team": {
+        "id": 111,
+        "name": "Boston Red Sox",
+        "link": "/api/v1/teams/111"
+       }
+      },
+      "balls": 0,
+      "strikes": 0,
+      "outs": 0
+     },
+     "decisions": {
+      "winner": {
+       "id": 663767,
+       "fullName": "Chase Shugart",
+       "link": "/api/v1/people/663767"
+      },
+      "loser": {
+       "id": 809687,
+       "fullName": "Joseph Hauser",
+       "link": "/api/v1/people/809687"
+      }
+     },
+     "venue": {
+      "id": 4309,
+      "name": "JetBlue Park",
+      "link": "/api/v1/venues/4309",
+      "active": true,
+      "season": "2024"
+     },
+     "broadcasts": [
+      {
+       "id": 126,
+       "name": "NESN",
+       "type": "TV",
+       "language": "en",
+       "isNational": false,
+       "callSign": "NESN",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-23",
+       "mediaId": "ae9c0a9f-31a7-4032-94ed-a00a2d2bca86",
+       "gameDateBroadcastGuid": "ae9c0a9f-31a7-4032-94ed-a00a2d2bca86",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      }
+     ],
+     "content": {
+      "link": "/api/v1/game/748344/content"
+     },
+     "isTie": false,
+     "officials": [
+      {
+       "official": {
+        "id": 665277,
+        "fullName": "Sam Burch",
+        "link": "/api/v1/people/665277"
+       },
+       "officialType": "Home Plate"
+      },
+      {
+       "official": {
+        "id": 681791,
+        "fullName": "Bryan Van Vranken",
+        "link": "/api/v1/people/681791"
+       },
+       "officialType": "First Base"
+      },
+      {
+       "official": {
+        "id": 682505,
+        "fullName": "Sean Cassidy",
+        "link": "/api/v1/people/682505"
+       },
+       "officialType": "Second Base"
+      },
+      {
+       "official": {
+        "id": 691835,
+        "fullName": "Nelson Fraley",
+        "link": "/api/v1/people/691835"
+       },
+       "officialType": "Third Base"
+      }
+     ],
+     "weather": {
+      "condition": "Partly Cloudy",
+      "temp": "75",
+      "wind": "16 mph, R To L"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "N",
+     "tiebreaker": "N",
+     "calendarEventID": "14-748344-2024-02-23",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "scheduledInnings": 7,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "seriesDescription": "Exhibition Game",
+     "flags": {
+      "noHitter": false,
+      "perfectGame": false,
+      "awayTeamNoHitter": false,
+      "awayTeamPerfectGame": false,
+      "homeTeamNoHitter": false,
+      "homeTeamPerfectGame": false
+     },
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 748263,
+     "gameGuid": "33b22841-8ae2-4589-9e93-64bfe9efdf8a",
+     "link": "/api/v1.1/game/748263/feed/live",
+     "gameType": "S",
+     "season": "2024",
+     "gameDate": "2024-02-23T20:05:00Z",
+     "officialDate": "2024-02-23",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "springLeague": {
+         "id": 114,
+         "name": "Cactus League",
+         "link": "/api/v1/league/114",
+         "abbreviation": "CL"
+        },
+        "allStarStatus": "N",
+        "id": 118,
+        "name": "Kansas City Royals",
+        "link": "/api/v1/teams/118",
+        "season": 2024,
+        "venue": {
+         "id": 7,
+         "name": "Kauffman Stadium",
+         "link": "/api/v1/venues/7"
+        },
+        "springVenue": {
+         "id": 2603,
+         "link": "/api/v1/venues/2603"
+        },
+        "teamCode": "kca",
+        "fileCode": "kc",
+        "abbreviation": "KC",
+        "teamName": "Royals",
+        "locationName": "Kansas City",
+        "firstYearOfPlay": "1968",
+        "league": {
+         "id": 103,
+         "name": "American League",
+         "link": "/api/v1/league/103"
+        },
+        "division": {
+         "id": 202,
+         "name": "American League Central",
+         "link": "/api/v1/divisions/202"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Kansas City",
+        "franchiseName": "Kansas City",
+        "clubName": "Royals",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 4,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 663738,
+        "fullName": "Daniel Lynch IV",
+        "link": "/api/v1/people/663738"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       }
+      },
+      "home": {
+       "team": {
+        "springLeague": {
+         "id": 114,
+         "name": "Cactus League",
+         "link": "/api/v1/league/114",
+         "abbreviation": "CL"
+        },
+        "allStarStatus": "N",
+        "id": 140,
+        "name": "Texas Rangers",
+        "link": "/api/v1/teams/140",
+        "season": 2024,
+        "venue": {
+         "id": 5325,
+         "name": "Globe Life Field",
+         "link": "/api/v1/venues/5325"
+        },
+        "springVenue": {
+         "id": 2603,
+         "link": "/api/v1/venues/2603"
+        },
+        "teamCode": "tex",
+        "fileCode": "tex",
+        "abbreviation": "TEX",
+        "teamName": "Rangers",
+        "locationName": "Arlington",
+        "firstYearOfPlay": "1961",
+        "league": {
+         "id": 103,
+         "name": "American League",
+         "link": "/api/v1/league/103"
+        },
+        "division": {
+         "id": 200,
+         "name": "American League West",
+         "link": "/api/v1/divisions/200"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Texas",
+        "franchiseName": "Texas",
+        "clubName": "Rangers",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 5,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 641540,
+        "fullName": "Dane Dunning",
+        "link": "/api/v1/people/641540"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       }
+      }
+     },
+     "linescore": {
+      "currentInning": 9,
+      "currentInningOrdinal": "9th",
+      "inningState": "Top",
+      "inningHalf": "Top",
+      "isTopInning": true,
+      "scheduledInnings": 9,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 2,
+        "ordinalNum": "2nd",
+        "home": {
+         "runs": 3,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 1,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 3,
+        "ordinalNum": "3rd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 4,
+        "ordinalNum": "4th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 1,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 5,
+        "ordinalNum": "5th",
+        "home": {
+         "runs": 1,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 1,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 6,
+        "ordinalNum": "6th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 7,
+        "ordinalNum": "7th",
+        "home": {
+         "runs": 1,
+         "hits": 2,
+         "errors": 2,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 2,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 8,
+        "ordinalNum": "8th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 9,
+        "ordinalNum": "9th",
+        "home": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 5,
+        "hits": 4,
+        "errors": 2,
+        "leftOnBase": 7,
+        "isWinner": true
+       },
+       "away": {
+        "runs": 4,
+        "hits": 6,
+        "errors": 1,
+        "leftOnBase": 5,
+        "isWinner": false
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 687849,
+        "fullName": "Zak Kent",
+        "link": "/api/v1/people/687849"
+       },
+       "catcher": {
+        "id": 595284,
+        "fullName": "Andrew Knapp",
+        "link": "/api/v1/people/595284"
+       },
+       "first": {
+        "id": 688760,
+        "fullName": "Blaine Crim",
+        "link": "/api/v1/people/688760"
+       },
+       "second": {
+        "id": 679822,
+        "fullName": "Justin Foscue",
+        "link": "/api/v1/people/679822"
+       },
+       "third": {
+        "id": 673995,
+        "fullName": "Davis Wendzel",
+        "link": "/api/v1/people/673995"
+       },
+       "shortstop": {
+        "id": 680716,
+        "fullName": "Jonathan Ornelas",
+        "link": "/api/v1/people/680716"
+       },
+       "left": {
+        "id": 687957,
+        "fullName": "Dustin Harris",
+        "link": "/api/v1/people/687957"
+       },
+       "center": {
+        "id": 656537,
+        "fullName": "Derek Hill",
+        "link": "/api/v1/people/656537"
+       },
+       "right": {
+        "id": 609274,
+        "fullName": "Elier Hernandez",
+        "link": "/api/v1/people/609274"
+       },
+       "batter": {
+        "id": 679822,
+        "fullName": "Justin Foscue",
+        "link": "/api/v1/people/679822"
+       },
+       "onDeck": {
+        "id": 609274,
+        "fullName": "Elier Hernandez",
+        "link": "/api/v1/people/609274"
+       },
+       "inHole": {
+        "id": 687957,
+        "fullName": "Dustin Harris",
+        "link": "/api/v1/people/687957"
+       },
+       "battingOrder": 1,
+       "team": {
+        "id": 140,
+        "name": "Texas Rangers",
+        "link": "/api/v1/teams/140"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 681123,
+        "fullName": "Luca Tresh",
+        "link": "/api/v1/people/681123"
+       },
+       "onDeck": {
+        "id": 687478,
+        "fullName": "Cam Devanney",
+        "link": "/api/v1/people/687478"
+       },
+       "inHole": {
+        "id": 680769,
+        "fullName": "CJ Alexander",
+        "link": "/api/v1/people/680769"
+       },
+       "first": {
+        "id": 669336,
+        "fullName": "Joe Gray Jr.",
+        "link": "/api/v1/people/669336"
+       },
+       "pitcher": {
+        "id": 694361,
+        "fullName": "Will Klein",
+        "link": "/api/v1/people/694361"
+       },
+       "battingOrder": 9,
+       "team": {
+        "id": 118,
+        "name": "Kansas City Royals",
+        "link": "/api/v1/teams/118"
+       }
+      },
+      "balls": 0,
+      "strikes": 0,
+      "outs": 3
+     },
+     "decisions": {
+      "winner": {
+       "id": 681520,
+       "fullName": "Antoine Kelly",
+       "link": "/api/v1/people/681520"
+      },
+      "loser": {
+       "id": 686930,
+       "fullName": "Mason Barnett",
+       "link": "/api/v1/people/686930"
+      },
+      "save": {
+       "id": 687849,
+       "fullName": "Zak Kent",
+       "link": "/api/v1/people/687849"
+      }
+     },
+     "venue": {
+      "id": 2603,
+      "name": "Surprise Stadium",
+      "link": "/api/v1/venues/2603",
+      "active": true,
+      "season": "2024"
+     },
+     "broadcasts": [
+      {
+       "id": 251,
+       "name": "MLB Audio",
+       "type": "AM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "MLB Audio",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-23",
+       "mediaId": "9987b891-034d-417b-b328-6c77849e6f54",
+       "gameDateBroadcastGuid": "9987b891-034d-417b-b328-6c77849e6f54",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 1721,
+       "name": "Royals Radio Network",
+       "type": "AM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "RRN",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-23",
+       "mediaId": "456d99ee-bef8-4945-a26a-f45e87daaedc",
+       "gameDateBroadcastGuid": "456d99ee-bef8-4945-a26a-f45e87daaedc",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      }
+     ],
+     "content": {
+      "link": "/api/v1/game/748263/content"
+     },
+     "isTie": false,
+     "officials": [
+      {
+       "official": {
+        "id": 623946,
+        "fullName": "Malachi Moore",
+        "link": "/api/v1/people/623946"
+       },
+       "officialType": "Third Base"
+      },
+      {
+       "official": {
+        "id": 503077,
+        "fullName": "Adam Hamari",
+        "link": "/api/v1/people/503077"
+       },
+       "officialType": "Second Base"
+      },
+      {
+       "official": {
+        "id": 427413,
+        "fullName": "Tony Randazzo",
+        "link": "/api/v1/people/427413"
+       },
+       "officialType": "First Base"
+      },
+      {
+       "official": {
+        "id": 511890,
+        "fullName": "Quinn Wolcott",
+        "link": "/api/v1/people/511890"
+       },
+       "officialType": "Home Plate"
+      }
+     ],
+     "weather": {
+      "condition": "Partly Cloudy",
+      "temp": "76",
+      "wind": "9 mph, In From RF"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "N",
+     "tiebreaker": "N",
+     "calendarEventID": "14-748263-2024-02-23",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 2,
+     "seriesGameNumber": 1,
+     "seriesDescription": "Spring Training",
+     "flags": {
+      "noHitter": false,
+      "perfectGame": false,
+      "awayTeamNoHitter": false,
+      "awayTeamPerfectGame": false,
+      "homeTeamNoHitter": false,
+      "homeTeamPerfectGame": false
+     },
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 748341,
+     "gameGuid": "1e162b85-6a35-4a0b-a0f1-da6ee9b74b4d",
+     "link": "/api/v1.1/game/748341/feed/live",
+     "gameType": "S",
+     "season": "2024",
+     "gameDate": "2024-02-23T20:05:00Z",
+     "officialDate": "2024-02-23",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "springLeague": {
+         "id": 114,
+         "name": "Cactus League",
+         "link": "/api/v1/league/114",
+         "abbreviation": "CL"
+        },
+        "allStarStatus": "N",
+        "id": 145,
+        "name": "Chicago White Sox",
+        "link": "/api/v1/teams/145",
+        "season": 2024,
+        "venue": {
+         "id": 4,
+         "name": "Guaranteed Rate Field",
+         "link": "/api/v1/venues/4"
+        },
+        "springVenue": {
+         "id": 3809,
+         "link": "/api/v1/venues/3809"
+        },
+        "teamCode": "cha",
+        "fileCode": "cws",
+        "abbreviation": "CWS",
+        "teamName": "White Sox",
+        "locationName": "Chicago",
+        "firstYearOfPlay": "1901",
+        "league": {
+         "id": 103,
+         "name": "American League",
+         "link": "/api/v1/league/103"
+        },
+        "division": {
+         "id": 202,
+         "name": "American League Central",
+         "link": "/api/v1/divisions/202"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Chi White Sox",
+        "franchiseName": "Chicago",
+        "clubName": "White Sox",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 1,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 445926,
+        "fullName": "Jesse Chavez",
+        "link": "/api/v1/people/445926"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       }
+      },
+      "home": {
+       "team": {
+        "springLeague": {
+         "id": 114,
+         "name": "Cactus League",
+         "link": "/api/v1/league/114",
+         "abbreviation": "CL"
+        },
+        "allStarStatus": "N",
+        "id": 112,
+        "name": "Chicago Cubs",
+        "link": "/api/v1/teams/112",
+        "season": 2024,
+        "venue": {
+         "id": 17,
+         "name": "Wrigley Field",
+         "link": "/api/v1/venues/17"
+        },
+        "springVenue": {
+         "id": 4629,
+         "link": "/api/v1/venues/4629"
+        },
+        "teamCode": "chn",
+        "fileCode": "chc",
+        "abbreviation": "CHC",
+        "teamName": "Cubs",
+        "locationName": "Chicago",
+        "firstYearOfPlay": "1874",
+        "league": {
+         "id": 104,
+         "name": "National League",
+         "link": "/api/v1/league/104"
+        },
+        "division": {
+         "id": 205,
+         "name": "National League Central",
+         "link": "/api/v1/divisions/205"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Chi Cubs",
+        "franchiseName": "Chicago",
+        "clubName": "Cubs",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 8,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 696136,
+        "fullName": "Jordan Wicks",
+        "link": "/api/v1/people/696136"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       }
+      }
+     },
+     "linescore": {
+      "currentInning": 9,
+      "currentInningOrdinal": "9th",
+      "inningState": "Top",
+      "inningHalf": "Top",
+      "isTopInning": true,
+      "scheduledInnings": 9,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "runs": 6,
+         "hits": 6,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 2,
+        "ordinalNum": "2nd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 1,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 1,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       },
+       {
+        "num": 3,
+        "ordinalNum": "3rd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 4,
+        "ordinalNum": "4th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 5,
+        "ordinalNum": "5th",
+        "home": {
+         "runs": 2,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 3
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 6,
+        "ordinalNum": "6th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 7,
+        "ordinalNum": "7th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 8,
+        "ordinalNum": "8th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 9,
+        "ordinalNum": "9th",
+        "home": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 8,
+        "hits": 9,
+        "errors": 1,
+        "leftOnBase": 6,
+        "isWinner": true
+       },
+       "away": {
+        "runs": 1,
+        "hits": 4,
+        "errors": 0,
+        "leftOnBase": 4,
+        "isWinner": false
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 687863,
+        "fullName": "Porter Hodge",
+        "link": "/api/v1/people/687863"
+       },
+       "catcher": {
+        "id": 690180,
+        "fullName": "Bryce Windham",
+        "link": "/api/v1/people/690180"
+       },
+       "first": {
+        "id": 702333,
+        "fullName": "Haydn McGeary",
+        "link": "/api/v1/people/702333"
+       },
+       "second": {
+        "id": 668664,
+        "fullName": "Chase Strumpf",
+        "link": "/api/v1/people/668664"
+       },
+       "third": {
+        "id": 623520,
+        "fullName": "David Bote",
+        "link": "/api/v1/people/623520"
+       },
+       "shortstop": {
+        "id": 800473,
+        "fullName": "Jefferson Rojas",
+        "link": "/api/v1/people/800473"
+       },
+       "left": {
+        "id": 680695,
+        "fullName": "Brennen Davis",
+        "link": "/api/v1/people/680695"
+       },
+       "center": {
+        "id": 682634,
+        "fullName": "Kevin Alcántara",
+        "link": "/api/v1/people/682634"
+       },
+       "right": {
+        "id": 683357,
+        "fullName": "Owen Caissie",
+        "link": "/api/v1/people/683357"
+       },
+       "batter": {
+        "id": 683357,
+        "fullName": "Owen Caissie",
+        "link": "/api/v1/people/683357"
+       },
+       "onDeck": {
+        "id": 682634,
+        "fullName": "Kevin Alcántara",
+        "link": "/api/v1/people/682634"
+       },
+       "inHole": {
+        "id": 668664,
+        "fullName": "Chase Strumpf",
+        "link": "/api/v1/people/668664"
+       },
+       "battingOrder": 3,
+       "team": {
+        "id": 112,
+        "name": "Chicago Cubs",
+        "link": "/api/v1/teams/112"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 656024,
+        "fullName": "Carlos Pérez",
+        "link": "/api/v1/people/656024"
+       },
+       "onDeck": {
+        "id": 676113,
+        "fullName": "Zach DeLoach",
+        "link": "/api/v1/people/676113"
+       },
+       "inHole": {
+        "id": 621433,
+        "fullName": "Brett Phillips",
+        "link": "/api/v1/people/621433"
+       },
+       "second": {
+        "id": 621545,
+        "fullName": "Zach Remillard",
+        "link": "/api/v1/people/621545"
+       },
+       "pitcher": {
+        "id": 681410,
+        "fullName": "Connor McCullough",
+        "link": "/api/v1/people/681410"
+       },
+       "battingOrder": 5,
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox",
+        "link": "/api/v1/teams/145"
+       }
+      },
+      "balls": 1,
+      "strikes": 1,
+      "outs": 3
+     },
+     "decisions": {
+      "winner": {
+       "id": 696136,
+       "fullName": "Jordan Wicks",
+       "link": "/api/v1/people/696136"
+      },
+      "loser": {
+       "id": 445926,
+       "fullName": "Jesse Chavez",
+       "link": "/api/v1/people/445926"
+      }
+     },
+     "venue": {
+      "id": 4629,
+      "name": "Sloan Park",
+      "link": "/api/v1/venues/4629",
+      "active": true,
+      "season": "2024"
+     },
+     "broadcasts": [
+      {
+       "id": 229,
+       "name": "ESPN Chicago WMVP 1000 AM",
+       "type": "AM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "WMVP",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-23",
+       "mediaId": "deb2df2b-44b3-422a-b348-c4d3112ac52d",
+       "gameDateBroadcastGuid": "deb2df2b-44b3-422a-b348-c4d3112ac52d",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 339,
+       "name": "NBCSCH",
+       "type": "TV",
+       "language": "en",
+       "isNational": false,
+       "callSign": "NBCSCH",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-23",
+       "mediaId": "b30f5b87-f92a-4290-a2d9-57496aaff1f3",
+       "gameDateBroadcastGuid": "b30f5b87-f92a-4290-a2d9-57496aaff1f3",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 764,
+       "name": "104.3 The Score",
+       "type": "FM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "WSCR",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-23",
+       "mediaId": "b0818412-58c7-4da3-b5c6-51426d2d77a8",
+       "gameDateBroadcastGuid": "b0818412-58c7-4da3-b5c6-51426d2d77a8",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 5580,
+       "name": "Marquee Sports Network",
+       "type": "TV",
+       "language": "en",
+       "isNational": false,
+       "callSign": "MARQ",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-23",
+       "mediaId": "fbb5769d-f625-4456-863f-c4f48a212a30",
+       "gameDateBroadcastGuid": "fbb5769d-f625-4456-863f-c4f48a212a30",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      }
+     ],
+     "content": {
+      "link": "/api/v1/game/748341/content"
+     },
+     "isTie": false,
+     "officials": [
+      {
+       "official": {
+        "id": 427554,
+        "fullName": "Jim Wolf",
+        "link": "/api/v1/people/427554"
+       },
+       "officialType": "Home Plate"
+      },
+      {
+       "official": {
+        "id": 605673,
+        "fullName": "Alex Tosi",
+        "link": "/api/v1/people/605673"
+       },
+       "officialType": "Third Base"
+      },
+      {
+       "official": {
+        "id": 521051,
+        "fullName": "Nick Mahrley",
+        "link": "/api/v1/people/521051"
+       },
+       "officialType": "Second Base"
+      },
+      {
+       "official": {
+        "id": 427344,
+        "fullName": "Bill Miller",
+        "link": "/api/v1/people/427344"
+       },
+       "officialType": "First Base"
+      }
+     ],
+     "weather": {
+      "condition": "Cloudy",
+      "temp": "75",
+      "wind": "6 mph, Out To LF"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "Y",
+     "tiebreaker": "N",
+     "calendarEventID": "14-748341-2024-02-23",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 1,
+     "seriesGameNumber": 1,
+     "seriesDescription": "Spring Training",
+     "flags": {
+      "noHitter": false,
+      "perfectGame": false,
+      "awayTeamNoHitter": false,
+      "awayTeamPerfectGame": false,
+      "homeTeamNoHitter": false,
+      "homeTeamPerfectGame": false
+     },
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  },
+  {
+   "date": "2024-02-24",
+   "totalItems": 16,
+   "totalEvents": 0,
+   "totalGames": 16,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 748262,
+     "gameGuid": "897ede02-c6cd-4aed-ba85-2f254718cd98",
+     "link": "/api/v1.1/game/748262/feed/live",
+     "gameType": "S",
+     "season": "2024",
+     "gameDate": "2024-02-24T18:05:00Z",
+     "officialDate": "2024-02-24",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "springLeague": {
+         "id": 115,
+         "name": "Grapefruit League",
+         "link": "/api/v1/league/115",
+         "abbreviation": "GL"
+        },
+        "allStarStatus": "N",
+        "id": 111,
+        "name": "Boston Red Sox",
+        "link": "/api/v1/teams/111",
+        "season": 2024,
+        "venue": {
+         "id": 3,
+         "name": "Fenway Park",
+         "link": "/api/v1/venues/3"
+        },
+        "springVenue": {
+         "id": 4309,
+         "link": "/api/v1/venues/4309"
+        },
+        "teamCode": "bos",
+        "fileCode": "bos",
+        "abbreviation": "BOS",
+        "teamName": "Red Sox",
+        "locationName": "Boston",
+        "firstYearOfPlay": "1901",
+        "league": {
+         "id": 103,
+         "name": "American League",
+         "link": "/api/v1/league/103"
+        },
+        "division": {
+         "id": 201,
+         "name": "American League East",
+         "link": "/api/v1/divisions/201"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Boston",
+        "franchiseName": "Boston",
+        "clubName": "Red Sox",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 3,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 676477,
+        "fullName": "Garrett Whitlock",
+        "link": "/api/v1/people/676477"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 115,
+        "name": "Grapefruit League",
+        "link": "/api/v1/league/115",
+        "abbreviation": "GL"
+       }
+      },
+      "home": {
+       "team": {
+        "springLeague": {
+         "id": 115,
+         "name": "Grapefruit League",
+         "link": "/api/v1/league/115",
+         "abbreviation": "GL"
+        },
+        "allStarStatus": "N",
+        "id": 110,
+        "name": "Baltimore Orioles",
+        "link": "/api/v1/teams/110",
+        "season": 2024,
+        "venue": {
+         "id": 2,
+         "name": "Oriole Park at Camden Yards",
+         "link": "/api/v1/venues/2"
+        },
+        "springVenue": {
+         "id": 2508,
+         "link": "/api/v1/venues/2508"
+        },
+        "teamCode": "bal",
+        "fileCode": "bal",
+        "abbreviation": "BAL",
+        "teamName": "Orioles",
+        "locationName": "Baltimore",
+        "firstYearOfPlay": "1901",
+        "league": {
+         "id": 103,
+         "name": "American League",
+         "link": "/api/v1/league/103"
+        },
+        "division": {
+         "id": 201,
+         "name": "American League East",
+         "link": "/api/v1/divisions/201"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Baltimore",
+        "franchiseName": "Baltimore",
+        "clubName": "Orioles",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 4,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 669203,
+        "fullName": "Corbin Burnes",
+        "link": "/api/v1/people/669203"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 115,
+        "name": "Grapefruit League",
+        "link": "/api/v1/league/115",
+        "abbreviation": "GL"
+       }
+      }
+     },
+     "linescore": {
+      "note": "None out when winning run scored.",
+      "currentInning": 9,
+      "currentInningOrdinal": "9th",
+      "inningState": "Bottom",
+      "inningHalf": "Bottom",
+      "isTopInning": false,
+      "scheduledInnings": 9,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "runs": 1,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 2,
+        "ordinalNum": "2nd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 1,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 3,
+        "ordinalNum": "3rd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 2,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 4,
+        "ordinalNum": "4th",
+        "home": {
+         "runs": 1,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 5,
+        "ordinalNum": "5th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 6,
+        "ordinalNum": "6th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 7,
+        "ordinalNum": "7th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 8,
+        "ordinalNum": "8th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 1,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       },
+       {
+        "num": 9,
+        "ordinalNum": "9th",
+        "home": {
+         "runs": 2,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 4,
+        "hits": 8,
+        "errors": 0,
+        "leftOnBase": 8,
+        "isWinner": true
+       },
+       "away": {
+        "runs": 3,
+        "hits": 9,
+        "errors": 1,
+        "leftOnBase": 6,
+        "isWinner": false
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 695985,
+        "fullName": "Nate Tellier",
+        "link": "/api/v1/people/695985"
+       },
+       "catcher": {
+        "id": 656627,
+        "fullName": "Mark Kolozsvary",
+        "link": "/api/v1/people/656627"
+       },
+       "first": {
+        "id": 694359,
+        "fullName": "Niko Kavadas",
+        "link": "/api/v1/people/694359"
+       },
+       "second": {
+        "id": 686765,
+        "fullName": "Nick Sogard",
+        "link": "/api/v1/people/686765"
+       },
+       "third": {
+        "id": 805367,
+        "fullName": "Chase Meidroth",
+        "link": "/api/v1/people/805367"
+       },
+       "shortstop": {
+        "id": 666152,
+        "fullName": "David Hamilton",
+        "link": "/api/v1/people/666152"
+       },
+       "left": {
+        "id": 681468,
+        "fullName": "Corey Rosier",
+        "link": "/api/v1/people/681468"
+       },
+       "center": {
+        "id": 694812,
+        "fullName": "Tyler McDonough",
+        "link": "/api/v1/people/694812"
+       },
+       "right": {
+        "id": 689651,
+        "fullName": "Phillip Sikes",
+        "link": "/api/v1/people/689651"
+       },
+       "batter": {
+        "id": 694812,
+        "fullName": "Tyler McDonough",
+        "link": "/api/v1/people/694812"
+       },
+       "onDeck": {
+        "id": 681468,
+        "fullName": "Corey Rosier",
+        "link": "/api/v1/people/681468"
+       },
+       "inHole": {
+        "id": 694359,
+        "fullName": "Niko Kavadas",
+        "link": "/api/v1/people/694359"
+       },
+       "battingOrder": 1,
+       "team": {
+        "id": 111,
+        "name": "Boston Red Sox",
+        "link": "/api/v1/teams/111"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 681297,
+        "fullName": "Colton Cowser",
+        "link": "/api/v1/people/681297"
+       },
+       "onDeck": {
+        "id": 690961,
+        "fullName": "Enrique Bradfield Jr.",
+        "link": "/api/v1/people/690961"
+       },
+       "inHole": {
+        "id": 686976,
+        "fullName": "Silas Ardoin",
+        "link": "/api/v1/people/686976"
+       },
+       "pitcher": {
+        "id": 669682,
+        "fullName": "Morgan McSweeney",
+        "link": "/api/v1/people/669682"
+       },
+       "battingOrder": 9,
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles",
+        "link": "/api/v1/teams/110"
+       }
+      },
+      "balls": 1,
+      "strikes": 0,
+      "outs": 0
+     },
+     "decisions": {
+      "winner": {
+       "id": 669682,
+       "fullName": "Morgan McSweeney",
+       "link": "/api/v1/people/669682"
+      },
+      "loser": {
+       "id": 695985,
+       "fullName": "Nate Tellier",
+       "link": "/api/v1/people/695985"
+      }
+     },
+     "venue": {
+      "id": 2508,
+      "name": "Ed Smith Stadium",
+      "link": "/api/v1/venues/2508",
+      "active": true,
+      "season": "2024"
+     },
+     "broadcasts": [
+      {
+       "id": 126,
+       "name": "NESN",
+       "type": "TV",
+       "language": "en",
+       "isNational": false,
+       "callSign": "NESN",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "bd92abd8-3d55-4619-9ab4-a53a0215f9e8",
+       "gameDateBroadcastGuid": "bd92abd8-3d55-4619-9ab4-a53a0215f9e8",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 581,
+       "name": "MASN",
+       "type": "TV",
+       "language": "en",
+       "isNational": false,
+       "callSign": "MASN",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "3853c2ad-1600-4c85-ac99-b0804dac0b10",
+       "gameDateBroadcastGuid": "3853c2ad-1600-4c85-ac99-b0804dac0b10",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 4668,
+       "name": "WEEI 93.7",
+       "type": "FM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "WEEI",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "4719a12d-4fbf-443e-914a-fe292121f134",
+       "gameDateBroadcastGuid": "4719a12d-4fbf-443e-914a-fe292121f134",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 6033,
+       "name": "98 Rock FM/WBAL NewsRadio FM/AM",
+       "type": "FM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "98 Rock",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 3,
+        "mediaStateCode": "MEDIA_ARCHIVE",
+        "mediaStateText": "Media Archive"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "d7da704f-b21e-4420-8ab7-71cc4bf79058",
+       "gameDateBroadcastGuid": "d7da704f-b21e-4420-8ab7-71cc4bf79058",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      }
+     ],
+     "content": {
+      "link": "/api/v1/game/748262/content"
+     },
+     "isTie": false,
+     "officials": [
+      {
+       "official": {
+        "id": 608093,
+        "fullName": "Junior Valentine",
+        "link": "/api/v1/people/608093"
+       },
+       "officialType": "First Base"
+      },
+      {
+       "official": {
+        "id": 503490,
+        "fullName": "Chris Segal",
+        "link": "/api/v1/people/503490"
+       },
+       "officialType": "Third Base"
+      },
+      {
+       "official": {
+        "id": 431232,
+        "fullName": "Chad Fairchild",
+        "link": "/api/v1/people/431232"
+       },
+       "officialType": "Second Base"
+      },
+      {
+       "official": {
+        "id": 521251,
+        "fullName": "Ben May",
+        "link": "/api/v1/people/521251"
+       },
+       "officialType": "Home Plate"
+      }
+     ],
+     "weather": {
+      "condition": "Sunny",
+      "temp": "72",
+      "wind": "11 mph, R To L"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "N",
+     "tiebreaker": "N",
+     "calendarEventID": "14-748262-2024-02-24",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 1,
+     "seriesGameNumber": 1,
+     "seriesDescription": "Spring Training",
+     "flags": {
+      "noHitter": false,
+      "perfectGame": false,
+      "awayTeamNoHitter": false,
+      "awayTeamPerfectGame": false,
+      "homeTeamNoHitter": false,
+      "homeTeamPerfectGame": false
+     },
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 748258,
+     "gameGuid": "f9d4e91c-1f22-430d-b803-9f6b7bcfb3a9",
+     "link": "/api/v1.1/game/748258/feed/live",
+     "gameType": "S",
+     "season": "2024",
+     "gameDate": "2024-02-24T18:05:00Z",
+     "officialDate": "2024-02-24",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "springLeague": {
+         "id": 115,
+         "name": "Grapefruit League",
+         "link": "/api/v1/league/115",
+         "abbreviation": "GL"
+        },
+        "allStarStatus": "N",
+        "id": 134,
+        "name": "Pittsburgh Pirates",
+        "link": "/api/v1/teams/134",
+        "season": 2024,
+        "venue": {
+         "id": 31,
+         "name": "PNC Park",
+         "link": "/api/v1/venues/31"
+        },
+        "springVenue": {
+         "id": 2526,
+         "link": "/api/v1/venues/2526"
+        },
+        "teamCode": "pit",
+        "fileCode": "pit",
+        "abbreviation": "PIT",
+        "teamName": "Pirates",
+        "locationName": "Pittsburgh",
+        "firstYearOfPlay": "1882",
+        "league": {
+         "id": 104,
+         "name": "National League",
+         "link": "/api/v1/league/104"
+        },
+        "division": {
+         "id": 205,
+         "name": "National League Central",
+         "link": "/api/v1/divisions/205"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Pittsburgh",
+        "franchiseName": "Pittsburgh",
+        "clubName": "Pirates",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 3,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 663559,
+        "fullName": "Bailey Falter",
+        "link": "/api/v1/people/663559"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 115,
+        "name": "Grapefruit League",
+        "link": "/api/v1/league/115",
+        "abbreviation": "GL"
+       }
+      },
+      "home": {
+       "team": {
+        "springLeague": {
+         "id": 115,
+         "name": "Grapefruit League",
+         "link": "/api/v1/league/115",
+         "abbreviation": "GL"
+        },
+        "allStarStatus": "N",
+        "id": 142,
+        "name": "Minnesota Twins",
+        "link": "/api/v1/teams/142",
+        "season": 2024,
+        "venue": {
+         "id": 3312,
+         "name": "Target Field",
+         "link": "/api/v1/venues/3312"
+        },
+        "springVenue": {
+         "id": 2862,
+         "link": "/api/v1/venues/2862"
+        },
+        "teamCode": "min",
+        "fileCode": "min",
+        "abbreviation": "MIN",
+        "teamName": "Twins",
+        "locationName": "Minneapolis",
+        "firstYearOfPlay": "1901",
+        "league": {
+         "id": 103,
+         "name": "American League",
+         "link": "/api/v1/league/103"
+        },
+        "division": {
+         "id": 202,
+         "name": "American League Central",
+         "link": "/api/v1/divisions/202"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Minnesota",
+        "franchiseName": "Minnesota",
+        "clubName": "Twins",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 5,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 686973,
+        "fullName": "Louis Varland",
+        "link": "/api/v1/people/686973"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 115,
+        "name": "Grapefruit League",
+        "link": "/api/v1/league/115",
+        "abbreviation": "GL"
+       }
+      }
+     },
+     "linescore": {
+      "currentInning": 9,
+      "currentInningOrdinal": "9th",
+      "inningState": "Top",
+      "inningHalf": "Top",
+      "isTopInning": true,
+      "scheduledInnings": 9,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       },
+       {
+        "num": 2,
+        "ordinalNum": "2nd",
+        "home": {
+         "runs": 2,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 3,
+        "ordinalNum": "3rd",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 2,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 4,
+        "ordinalNum": "4th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       },
+       {
+        "num": 5,
+        "ordinalNum": "5th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 1,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       },
+       {
+        "num": 6,
+        "ordinalNum": "6th",
+        "home": {
+         "runs": 3,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 7,
+        "ordinalNum": "7th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 1,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 8,
+        "ordinalNum": "8th",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 9,
+        "ordinalNum": "9th",
+        "home": {
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 2
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 5,
+        "hits": 10,
+        "errors": 1,
+        "leftOnBase": 6,
+        "isWinner": true
+       },
+       "away": {
+        "runs": 3,
+        "hits": 10,
+        "errors": 0,
+        "leftOnBase": 12,
+        "isWinner": false
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 678279,
+        "fullName": "Miguel Rodriguez",
+        "link": "/api/v1/people/678279"
+       },
+       "catcher": {
+        "id": 665856,
+        "fullName": "Jair Camargo",
+        "link": "/api/v1/people/665856"
+       },
+       "first": {
+        "id": 693306,
+        "fullName": "Aaron Sabato",
+        "link": "/api/v1/people/693306"
+       },
+       "second": {
+        "id": 668791,
+        "fullName": "Anthony Prato",
+        "link": "/api/v1/people/668791"
+       },
+       "third": {
+        "id": 696160,
+        "fullName": "Jake Rucker",
+        "link": "/api/v1/people/696160"
+       },
+       "shortstop": {
+        "id": 683735,
+        "fullName": "Will Holland",
+        "link": "/api/v1/people/683735"
+       },
+       "left": {
+        "id": 684922,
+        "fullName": "Dalton Shuffield",
+        "link": "/api/v1/people/684922"
+       },
+       "center": {
+        "id": 681831,
+        "fullName": "Willie Joe Garry Jr.",
+        "link": "/api/v1/people/681831"
+       },
+       "right": {
+        "id": 679938,
+        "fullName": "Yoyner Fajardo",
+        "link": "/api/v1/people/679938"
+       },
+       "batter": {
+        "id": 684922,
+        "fullName": "Dalton Shuffield",
+        "link": "/api/v1/people/684922"
+       },
+       "onDeck": {
+        "id": 683735,
+        "fullName": "Will Holland",
+        "link": "/api/v1/people/683735"
+       },
+       "inHole": {
+        "id": 693306,
+        "fullName": "Aaron Sabato",
+        "link": "/api/v1/people/693306"
+       },
+       "battingOrder": 9,
+       "team": {
+        "id": 142,
+        "name": "Minnesota Twins",
+        "link": "/api/v1/teams/142"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 666179,
+        "fullName": "Seth Beer",
+        "link": "/api/v1/people/666179"
+       },
+       "onDeck": {
+        "id": 670208,
+        "fullName": "Matt Fraizer",
+        "link": "/api/v1/people/670208"
+       },
+       "inHole": {
+        "id": 702261,
+        "fullName": "Termarr Johnson",
+        "link": "/api/v1/people/702261"
+       },
+       "first": {
+        "id": 690448,
+        "fullName": "Mike Jarvis",
+        "link": "/api/v1/people/690448"
+       },
+       "second": {
+        "id": 669309,
+        "fullName": "Joe Perez",
+        "link": "/api/v1/people/669309"
+       },
+       "pitcher": {
+        "id": 676702,
+        "fullName": "Hunter Stratton",
+        "link": "/api/v1/people/676702"
+       },
+       "battingOrder": 6,
+       "team": {
+        "id": 134,
+        "name": "Pittsburgh Pirates",
+        "link": "/api/v1/teams/134"
+       }
+      },
+      "balls": 1,
+      "strikes": 0,
+      "outs": 3
+     },
+     "decisions": {
+      "winner": {
+       "id": 650960,
+       "fullName": "Daniel Duarte",
+       "link": "/api/v1/people/650960"
+      },
+      "loser": {
+       "id": 693312,
+       "fullName": "Kyle Nicolas",
+       "link": "/api/v1/people/693312"
+      },
+      "save": {
+       "id": 678279,
+       "fullName": "Miguel Rodriguez",
+       "link": "/api/v1/people/678279"
+      }
+     },
+     "venue": {
+      "id": 2862,
+      "name": "Lee Health Sports Complex",
+      "link": "/api/v1/venues/2862",
+      "active": true,
+      "season": "2024"
+     },
+     "broadcasts": [
+      {
+       "id": 1162,
+       "name": "TIBN",
+       "type": "AM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "TIBN",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "4b24ec58-57f8-4a34-a738-36e20bf481fe",
+       "gameDateBroadcastGuid": "4b24ec58-57f8-4a34-a738-36e20bf481fe",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": false,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 4324,
+       "name": "Sports Radio 93.7 KDKA The Fan",
+       "type": "FM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "KDKA",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "8195035f-7782-4a0a-9b64-ddeb0f3419ec",
+       "gameDateBroadcastGuid": "8195035f-7782-4a0a-9b64-ddeb0f3419ec",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 168,
+       "name": "WCCO 830",
+       "type": "AM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "WCCO",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "019916c9-479c-4a4d-a542-125a3d19bb2e",
+       "gameDateBroadcastGuid": "019916c9-479c-4a4d-a542-125a3d19bb2e",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 3402,
+       "name": "100.7 The Wolf",
+       "type": "FM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "100.7",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "a8bcaabf-2a42-46da-8f32-c40519e775fc",
+       "gameDateBroadcastGuid": "a8bcaabf-2a42-46da-8f32-c40519e775fc",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": false,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 5695,
+       "name": "Audacy App",
+       "type": "AM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "Audacy",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "6dc0a66a-6848-49ac-968e-2c303fac0145",
+       "gameDateBroadcastGuid": "6dc0a66a-6848-49ac-968e-2c303fac0145",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": false,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      }
+     ],
+     "content": {
+      "link": "/api/v1/game/748258/content"
+     },
+     "isTie": false,
+     "officials": [
+      {
+       "official": {
+        "id": 427164,
+        "fullName": "Andy Fletcher",
+        "link": "/api/v1/people/427164"
+       },
+       "officialType": "Second Base"
+      },
+      {
+       "official": {
+        "id": 485856,
+        "fullName": "Jonathan Parra",
+        "link": "/api/v1/people/485856"
+       },
+       "officialType": "Third Base"
+      },
+      {
+       "official": {
+        "id": 427243,
+        "fullName": "Marvin Hudson",
+        "link": "/api/v1/people/427243"
+       },
+       "officialType": "Home Plate"
+      },
+      {
+       "official": {
+        "id": 427366,
+        "fullName": "Brian O'Nora",
+        "link": "/api/v1/people/427366"
+       },
+       "officialType": "First Base"
+      }
+     ],
+     "weather": {
+      "condition": "Partly Cloudy",
+      "temp": "74",
+      "wind": "18 mph, L To R"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "E",
+     "tiebreaker": "N",
+     "calendarEventID": "14-748258-2024-02-24",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 1,
+     "seriesGameNumber": 1,
+     "seriesDescription": "Spring Training",
+     "flags": {
+      "noHitter": false,
+      "perfectGame": false,
+      "awayTeamNoHitter": false,
+      "awayTeamPerfectGame": false,
+      "homeTeamNoHitter": false,
+      "homeTeamPerfectGame": false
+     },
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 748256,
+     "gameGuid": "b0f3b96c-20c5-4b3b-b2e9-8a6a44f7876a",
+     "link": "/api/v1.1/game/748256/feed/live",
+     "gameType": "S",
+     "season": "2024",
+     "gameDate": "2024-02-24T18:05:00Z",
+     "officialDate": "2024-02-24",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "springLeague": {
+         "id": 115,
+         "name": "Grapefruit League",
+         "link": "/api/v1/league/115",
+         "abbreviation": "GL"
+        },
+        "allStarStatus": "N",
+        "id": 144,
+        "name": "Atlanta Braves",
+        "link": "/api/v1/teams/144",
+        "season": 2024,
+        "venue": {
+         "id": 4705,
+         "name": "Truist Park",
+         "link": "/api/v1/venues/4705"
+        },
+        "springVenue": {
+         "id": 5380,
+         "link": "/api/v1/venues/5380"
+        },
+        "teamCode": "atl",
+        "fileCode": "atl",
+        "abbreviation": "ATL",
+        "teamName": "Braves",
+        "locationName": "Atlanta",
+        "firstYearOfPlay": "1871",
+        "league": {
+         "id": 104,
+         "name": "National League",
+         "link": "/api/v1/league/104"
+        },
+        "division": {
+         "id": 204,
+         "name": "National League East",
+         "link": "/api/v1/divisions/204"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Atlanta",
+        "franchiseName": "Atlanta",
+        "clubName": "Braves",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 6,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 675911,
+        "fullName": "Spencer Strider",
+        "link": "/api/v1/people/675911"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 115,
+        "name": "Grapefruit League",
+        "link": "/api/v1/league/115",
+        "abbreviation": "GL"
+       }
+      },
+      "home": {
+       "team": {
+        "springLeague": {
+         "id": 115,
+         "name": "Grapefruit League",
+         "link": "/api/v1/league/115",
+         "abbreviation": "GL"
+        },
+        "allStarStatus": "N",
+        "id": 139,
+        "name": "Tampa Bay Rays",
+        "link": "/api/v1/teams/139",
+        "season": 2024,
+        "venue": {
+         "id": 12,
+         "name": "Tropicana Field",
+         "link": "/api/v1/venues/12"
+        },
+        "springVenue": {
+         "id": 2534,
+         "link": "/api/v1/venues/2534"
+        },
+        "teamCode": "tba",
+        "fileCode": "tb",
+        "abbreviation": "TB",
+        "teamName": "Rays",
+        "locationName": "St. Petersburg",
+        "firstYearOfPlay": "1996",
+        "league": {
+         "id": 103,
+         "name": "American League",
+         "link": "/api/v1/league/103"
+        },
+        "division": {
+         "id": 201,
+         "name": "American League East",
+         "link": "/api/v1/divisions/201"
+        },
+        "sport": {
+         "id": 1,
+         "link": "/api/v1/sports/1",
+         "name": "Major League Baseball"
+        },
+        "shortName": "Tampa Bay",
+        "franchiseName": "Tampa Bay",
+        "clubName": "Rays",
+        "active": true
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 5,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 686249,
+        "fullName": "Nathan Wiles",
+        "link": "/api/v1/people/686249"
+       },
+       "splitSquad": false,
+       "seriesNumber": 1,
+       "springLeague": {
+        "id": 115,
+        "name": "Grapefruit League",
+        "link": "/api/v1/league/115",
+        "abbreviation": "GL"
+       }
+      }
+     },
+     "linescore": {
+      "currentInning": 9,
+      "currentInningOrdinal": "9th",
+      "inningState": "Bottom",
+      "inningHalf": "Bottom",
+      "isTopInning": false,
+      "scheduledInnings": 9,
+      "innings": [
+       {
+        "num": 1,
+        "ordinalNum": "1st",
+        "home": {
+         "runs": 0,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 1,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 2,
+        "ordinalNum": "2nd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 3,
+         "hits": 4,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 3,
+        "ordinalNum": "3rd",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 4,
+        "ordinalNum": "4th",
+        "home": {
+         "runs": 1,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 2,
+         "hits": 3,
+         "errors": 0,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 5,
+        "ordinalNum": "5th",
+        "home": {
+         "runs": 1,
+         "hits": 1,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 6,
+        "ordinalNum": "6th",
+        "home": {
+         "runs": 1,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 2
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 1,
+         "leftOnBase": 1
+        }
+       },
+       {
+        "num": 7,
+        "ordinalNum": "7th",
+        "home": {
+         "runs": 1,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 8,
+        "ordinalNum": "8th",
+        "home": {
+         "runs": 1,
+         "hits": 2,
+         "errors": 0,
+         "leftOnBase": 1
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       },
+       {
+        "num": 9,
+        "ordinalNum": "9th",
+        "home": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        },
+        "away": {
+         "runs": 0,
+         "hits": 0,
+         "errors": 0,
+         "leftOnBase": 0
+        }
+       }
+      ],
+      "teams": {
+       "home": {
+        "runs": 5,
+        "hits": 11,
+        "errors": 0,
+        "leftOnBase": 7,
+        "isWinner": false
+       },
+       "away": {
+        "runs": 6,
+        "hits": 8,
+        "errors": 1,
+        "leftOnBase": 5,
+        "isWinner": true
+       }
+      },
+      "defense": {
+       "pitcher": {
+        "id": 676831,
+        "fullName": "Kodi Whitley",
+        "link": "/api/v1/people/676831"
+       },
+       "catcher": {
+        "id": 665861,
+        "fullName": "Sebastián Rivero",
+        "link": "/api/v1/people/665861"
+       },
+       "first": {
+        "id": 685298,
+        "fullName": "Cade Bunnell",
+        "link": "/api/v1/people/685298"
+       },
+       "second": {
+        "id": 544725,
+        "fullName": "Leury García",
+        "link": "/api/v1/people/544725"
+       },
+       "third": {
+        "id": 663897,
+        "fullName": "Luke Williams",
+        "link": "/api/v1/people/663897"
+       },
+       "shortstop": {
+        "id": 680672,
+        "fullName": "Luke Waddell",
+        "link": "/api/v1/people/680672"
+       },
+       "left": {
+        "id": 642451,
+        "fullName": "Luis Liberato",
+        "link": "/api/v1/people/642451"
+       },
+       "center": {
+        "id": 679881,
+        "fullName": "J.P. Martínez",
+        "link": "/api/v1/people/679881"
+       },
+       "right": {
+        "id": 681909,
+        "fullName": "Justin Dean",
+        "link": "/api/v1/people/681909"
+       },
+       "batter": {
+        "id": 685298,
+        "fullName": "Cade Bunnell",
+        "link": "/api/v1/people/685298"
+       },
+       "onDeck": {
+        "id": 681172,
+        "fullName": "Tyler Tolve",
+        "link": "/api/v1/people/681172"
+       },
+       "inHole": {
+        "id": 642451,
+        "fullName": "Luis Liberato",
+        "link": "/api/v1/people/642451"
+       },
+       "battingOrder": 3,
+       "team": {
+        "id": 144,
+        "name": "Atlanta Braves",
+        "link": "/api/v1/teams/144"
+       }
+      },
+      "offense": {
+       "batter": {
+        "id": 668853,
+        "fullName": "Austin Shenton",
+        "link": "/api/v1/people/668853"
+       },
+       "onDeck": {
+        "id": 682927,
+        "fullName": "Ronny Simon",
+        "link": "/api/v1/people/682927"
+       },
+       "inHole": {
+        "id": 670224,
+        "fullName": "Kameron Misner",
+        "link": "/api/v1/people/670224"
+       },
+       "pitcher": {
+        "id": 684871,
+        "fullName": "Enmanuel Mejia",
+        "link": "/api/v1/people/684871"
+       },
+       "battingOrder": 3,
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays",
+        "link": "/api/v1/teams/139"
+       }
+      },
+      "balls": 0,
+      "strikes": 3,
+      "outs": 3
+     },
+     "decisions": {
+      "winner": {
+       "id": 675911,
+       "fullName": "Spencer Strider",
+       "link": "/api/v1/people/675911"
+      },
+      "loser": {
+       "id": 686249,
+       "fullName": "Nathan Wiles",
+       "link": "/api/v1/people/686249"
+      },
+      "save": {
+       "id": 676831,
+       "fullName": "Kodi Whitley",
+       "link": "/api/v1/people/676831"
+      }
+     },
+     "venue": {
+      "id": 2534,
+      "name": "Charlotte Sports Park",
+      "link": "/api/v1/venues/2534",
+      "active": true,
+      "season": "2024"
+     },
+     "broadcasts": [
+      {
+       "id": 172,
+       "name": "WDAE 95.7 FM",
+       "type": "AM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "WDAE",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "e194cf89-32b1-4bf7-9370-7dc2c7a1f2a1",
+       "gameDateBroadcastGuid": "e194cf89-32b1-4bf7-9370-7dc2c7a1f2a1",
+       "homeAway": "home",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      },
+      {
+       "id": 4024,
+       "name": "680 AM/93.7 FM The Fan",
+       "type": "AM",
+       "language": "en",
+       "isNational": false,
+       "callSign": "680 AM",
+       "availability": {
+        "availabilityId": 2,
+        "availabilityCode": "local_out_of_market",
+        "availabilityText": "Local (Out of Market)"
+       },
+       "mediaState": {
+        "mediaStateId": 1,
+        "mediaStateCode": "MEDIA_OFF",
+        "mediaStateText": "Media Off"
+       },
+       "broadcastDate": "2024-02-24",
+       "mediaId": "ab6ce9b7-1e4c-4467-b1c5-f067ec3ade7b",
+       "gameDateBroadcastGuid": "ab6ce9b7-1e4c-4467-b1c5-f067ec3ade7b",
+       "homeAway": "away",
+       "freeGame": false,
+       "availableForStreaming": true,
+       "postGameShow": false,
+       "mvpdAuthRequired": false,
+       "freeGameStatus": false
+      }
+     ],
+     "content": {
+      "link": "/api/v1/game/748256/content"
+     },
+     "isTie": false,
+     "officials": [
+      {
+       "official": {
+        "id": 596740,
+        "fullName": "Jansen Visconti",
+        "link": "/api/v1/people/596740"
+       },
+       "officialType": "Second Base"
+      },
+      {
+       "official": {
+        "id": 504381,
+        "fullName": "Will Little",
+        "link": "/api/v1/people/504381"
+       },
+       "officialType": "First Base"
+      },
+      {
+       "official": {
+        "id": 605674,
+        "fullName": "Ryan Wills",
+        "link": "/api/v1/people/605674"
+       },
+       "officialType": "Third Base"
+      },
+      {
+       "official": {
+        "id": 605672,
+        "fullName": "Jeremie Rehak",
+        "link": "/api/v1/people/605672"
+       },
+       "officialType": "Home Plate"
+      }
+     ],
+     "weather": {
+      "condition": "Sunny",
+      "temp": "73",
+      "wind": "10 mph, L To R"
+     },
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "N",
+     "tiebreaker": "N",
+     "calendarEventID": "14-748256-2024-02-24",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 1,
+     "seriesGameNumber": 1,
+     "seriesDescription": "Spring Training",
+     "flags": {
+      "noHitter": false,
+      "perfectGame": false,
+      "awayTeamNoHitter": false,
+      "awayTeamPerfectGame": false,
+      "homeTeamNoHitter": false,
+      "homeTeamPerfectGame": false
+     },
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  }
+ ]
+}

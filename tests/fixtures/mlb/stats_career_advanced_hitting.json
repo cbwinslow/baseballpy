@@ -1,0 +1,134 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "careerAdvanced"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 22247,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "plateAppearances": 2699,
+      "totalBases": 1659,
+      "sacBunts": 20,
+      "extraBaseHits": 383,
+      "hitByPitch": 8,
+      "walksPerPlateAppearance": ".133",
+      "homeRunsPerPlateAppearance": ".065",
+      "iso": ".345"
+     },
+     "team": {
+      "id": 1536,
+      "link": "/api/v1/teams/1536"
+     },
+     "player": {
+      "id": 492568,
+      "fullName": "Josh Gibson",
+      "link": "/api/v1/people/492568",
+      "firstName": "Josh",
+      "lastName": "Gibson"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 3,
+     "rank": 1,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "stat": {
+      "plateAppearances": 13067,
+      "totalBases": 5859,
+      "sacBunts": 295,
+      "babip": ".372",
+      "extraBaseHits": 1137,
+      "hitByPitch": 94,
+      "walksPerPlateAppearance": ".096",
+      "strikeoutsPerPlateAppearance": ".027",
+      "homeRunsPerPlateAppearance": ".009",
+      "walksPerStrikeout": "3.499",
+      "iso": ".146"
+     },
+     "team": {
+      "id": 116,
+      "name": "Detroit Tigers",
+      "link": "/api/v1/teams/116"
+     },
+     "player": {
+      "id": 112431,
+      "fullName": "Ty Cobb",
+      "link": "/api/v1/people/112431",
+      "firstName": "Ty",
+      "lastName": "Cobb"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 2,
+     "rank": 2,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "stat": {
+      "plateAppearances": 3798,
+      "totalBases": 1954,
+      "sacBunts": 92,
+      "extraBaseHits": 447,
+      "hitByPitch": 34,
+      "walksPerPlateAppearance": ".125",
+      "homeRunsPerPlateAppearance": ".037",
+      "iso": ".249"
+     },
+     "team": {
+      "id": 1515,
+      "link": "/api/v1/teams/1515"
+     },
+     "player": {
+      "id": 492560,
+      "fullName": "Oscar Charleston",
+      "link": "/api/v1/people/492560",
+      "firstName": "Oscar",
+      "lastName": "Charleston"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 7,
+     "rank": 3,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

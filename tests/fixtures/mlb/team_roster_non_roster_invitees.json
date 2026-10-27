@@ -1,0 +1,62 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 656185,
+    "fullName": "Greg Allen",
+    "link": "/api/v1/people/656185"
+   },
+   "jerseyNumber": "31",
+   "position": {
+    "code": "8",
+    "name": "Outfielder",
+    "type": "Outfielder",
+    "abbreviation": "CF"
+   },
+   "status": {
+    "code": "NRI",
+    "description": "Non-Roster Invitee"
+   }
+  },
+  {
+   "person": {
+    "id": 677007,
+    "fullName": "Josh Breaux",
+    "link": "/api/v1/people/677007"
+   },
+   "jerseyNumber": "82",
+   "position": {
+    "code": "2",
+    "name": "Catcher",
+    "type": "Catcher",
+    "abbreviation": "C"
+   },
+   "status": {
+    "code": "NRI",
+    "description": "Non-Roster Invitee"
+   }
+  },
+  {
+   "person": {
+    "id": 660787,
+    "fullName": "Yerry De los Santos",
+    "link": "/api/v1/people/660787"
+   },
+   "jerseyNumber": "73",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "NRI",
+    "description": "Non-Roster Invitee"
+   }
+  }
+ ],
+ "link": "/api/v1/teams/147/roster",
+ "teamId": 147,
+ "rosterType": "nonRosterInvitees"
+}

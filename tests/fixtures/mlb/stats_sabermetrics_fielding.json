@@ -1,0 +1,146 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "sabermetrics"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 1133,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "position": {
+       "code": "7",
+       "name": "Outfielder",
+       "type": "Outfielder",
+       "abbreviation": "LF"
+      },
+      "uzr": 12.234653711319
+     },
+     "team": {
+      "id": 112,
+      "name": "Chicago Cubs",
+      "link": "/api/v1/teams/112"
+     },
+     "player": {
+      "id": 664023,
+      "fullName": "Ian Happ",
+      "link": "/api/v1/people/664023",
+      "firstName": "Ian",
+      "lastName": "Happ"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "position": {
+       "code": "8",
+       "name": "Outfielder",
+       "type": "Outfielder",
+       "abbreviation": "CF"
+      },
+      "uzr": 11.354990363121
+     },
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 686668,
+      "fullName": "Brenton Doyle",
+      "link": "/api/v1/people/686668",
+      "firstName": "Brenton",
+      "lastName": "Doyle"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 2,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "position": {
+       "code": "6",
+       "name": "Shortstop",
+       "type": "Infielder",
+       "abbreviation": "SS"
+      },
+      "uzr": 11.2294807434082
+     },
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 678662,
+      "fullName": "Ezequiel Tovar",
+      "link": "/api/v1/people/678662",
+      "firstName": "Ezequiel",
+      "lastName": "Tovar"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "6",
+      "name": "Shortstop",
+      "type": "Infielder",
+      "abbreviation": "SS"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [],
+   "playerPool": "ALL"
+  }
+ ]
+}

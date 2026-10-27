@@ -1,0 +1,1293 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "expectedStatistics"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "totalSplits": 1747,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".082",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 670124,
+      "fullName": "Adam Oller",
+      "link": "/api/v1/people/670124",
+      "firstName": "Adam ",
+      "lastName": "Oller"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".043",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 683627,
+      "fullName": "Anthony Molina",
+      "link": "/api/v1/people/683627",
+      "firstName": "Anthony",
+      "lastName": "Molina"
+     },
+     "sport": {
+      "id": 17,
+      "link": "/api/v1/sports/17",
+      "name": "Winter Leagues",
+      "abbreviation": "WIN"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".117",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 683618,
+      "fullName": "Edgardo Henriquez",
+      "link": "/api/v1/people/683618",
+      "firstName": "Edgardo",
+      "lastName": "Henriquez"
+     },
+     "sport": {
+      "id": 14,
+      "link": "/api/v1/sports/14",
+      "name": "Single-A",
+      "abbreviation": "A"
+     },
+     "gameType": "R",
+     "rank": 1
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".048",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 681217,
+      "fullName": "Chase Silseth",
+      "link": "/api/v1/people/681217",
+      "firstName": "Chase",
+      "lastName": "Silseth"
+     },
+     "sport": {
+      "id": 16,
+      "link": "/api/v1/sports/16",
+      "name": "Rookie",
+      "abbreviation": "ROK"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".047",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 592791,
+      "fullName": "Jameson Taillon",
+      "link": "/api/v1/people/592791",
+      "firstName": "Jameson",
+      "lastName": "Taillon"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".100",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 592836,
+      "fullName": "Taijuan Walker",
+      "link": "/api/v1/people/592836",
+      "firstName": "Taijuan",
+      "lastName": "Walker"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".073",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 681066,
+      "fullName": "Ky Bush",
+      "link": "/api/v1/people/681066",
+      "firstName": "Kyler",
+      "lastName": "Bush"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".097",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 681066,
+      "fullName": "Ky Bush",
+      "link": "/api/v1/people/681066",
+      "firstName": "Kyler",
+      "lastName": "Bush"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".045",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 592836,
+      "fullName": "Taijuan Walker",
+      "link": "/api/v1/people/592836",
+      "firstName": "Taijuan",
+      "lastName": "Walker"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".051",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 681035,
+      "fullName": "Christian Scott",
+      "link": "/api/v1/people/681035",
+      "firstName": "Christian",
+      "lastName": "Scott"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".098",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680897,
+      "fullName": "Nick Nastrini",
+      "link": "/api/v1/people/680897",
+      "firstName": "Nicholas",
+      "lastName": "Nastrini"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".048",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 592866,
+      "fullName": "Trevor Williams",
+      "link": "/api/v1/people/592866",
+      "firstName": "Trevor",
+      "lastName": "Williams"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".065",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680891,
+      "fullName": "Jack Neely",
+      "link": "/api/v1/people/680891",
+      "firstName": "Jack",
+      "lastName": "Neely"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".062",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680891,
+      "fullName": "Jack Neely",
+      "link": "/api/v1/people/680891",
+      "firstName": "Jack",
+      "lastName": "Neely"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".077",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 593334,
+      "fullName": "Domingo Germán",
+      "link": "/api/v1/people/593334",
+      "firstName": "Domingo",
+      "lastName": "Germán"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".053",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680885,
+      "fullName": "Spencer Schwellenbach",
+      "link": "/api/v1/people/680885",
+      "firstName": "Spencer",
+      "lastName": "Schwellenbach"
+     },
+     "sport": {
+      "id": 13,
+      "link": "/api/v1/sports/13",
+      "name": "High-A",
+      "abbreviation": "A+"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".033",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680885,
+      "fullName": "Spencer Schwellenbach",
+      "link": "/api/v1/people/680885",
+      "firstName": "Spencer",
+      "lastName": "Schwellenbach"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".088",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680880,
+      "fullName": "Grant Holman",
+      "link": "/api/v1/people/680880",
+      "firstName": "Grant",
+      "lastName": "Holman"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".089",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 593334,
+      "fullName": "Domingo Germán",
+      "link": "/api/v1/people/593334",
+      "firstName": "Domingo",
+      "lastName": "Germán"
+     },
+     "sport": {
+      "id": 17,
+      "link": "/api/v1/sports/17",
+      "name": "Winter Leagues",
+      "abbreviation": "WIN"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".041",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680744,
+      "fullName": "Ty Madden",
+      "link": "/api/v1/people/680744",
+      "firstName": "Tyler",
+      "lastName": "Madden"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".078",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680744,
+      "fullName": "Ty Madden",
+      "link": "/api/v1/people/680744",
+      "firstName": "Tyler",
+      "lastName": "Madden"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".047",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 593833,
+      "fullName": "Wander Suero",
+      "link": "/api/v1/people/593833",
+      "firstName": "Wander",
+      "lastName": "Suero"
+     },
+     "sport": {
+      "id": 17,
+      "link": "/api/v1/sports/17",
+      "name": "Winter Leagues",
+      "abbreviation": "WIN"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".063",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680742,
+      "fullName": "Jonathan Bowlan",
+      "link": "/api/v1/people/680742",
+      "firstName": "Jonathan",
+      "lastName": "Bowlan"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".000",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 593974,
+      "fullName": "Wandy Peralta",
+      "link": "/api/v1/people/593974",
+      "firstName": "Wandy",
+      "lastName": "Peralta"
+     },
+     "sport": {
+      "id": 14,
+      "link": "/api/v1/sports/14",
+      "name": "Single-A",
+      "abbreviation": "A"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".059",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680739,
+      "fullName": "Josh Winder",
+      "link": "/api/v1/people/680739",
+      "firstName": "Josh",
+      "lastName": "Winder"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".045",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680736,
+      "fullName": "Justin Wrobleski",
+      "link": "/api/v1/people/680736",
+      "firstName": "Justin",
+      "lastName": "Wrobleski"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".097",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680736,
+      "fullName": "Justin Wrobleski",
+      "link": "/api/v1/people/680736",
+      "firstName": "Justin",
+      "lastName": "Wrobleski"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".064",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 593974,
+      "fullName": "Wandy Peralta",
+      "link": "/api/v1/people/593974",
+      "firstName": "Wandy",
+      "lastName": "Peralta"
+     },
+     "sport": {
+      "id": 17,
+      "link": "/api/v1/sports/17",
+      "name": "Winter Leagues",
+      "abbreviation": "WIN"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".100",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680732,
+      "fullName": "Sean Burke",
+      "link": "/api/v1/people/680732",
+      "firstName": "Sean",
+      "lastName": "Burke"
+     },
+     "sport": {
+      "id": 16,
+      "link": "/api/v1/sports/16",
+      "name": "Rookie",
+      "abbreviation": "ROK"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".099",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680732,
+      "fullName": "Sean Burke",
+      "link": "/api/v1/people/680732",
+      "firstName": "Sean",
+      "lastName": "Burke"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".047",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680730,
+      "fullName": "Mitchell Parker",
+      "link": "/api/v1/people/680730",
+      "firstName": "Mitchell",
+      "lastName": "Parker"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".090",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 594580,
+      "fullName": "Sam Moll",
+      "link": "/api/v1/people/594580",
+      "firstName": "Samuel",
+      "lastName": "Moll"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".175",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680704,
+      "fullName": "Nick Sandlin",
+      "link": "/api/v1/people/680704",
+      "firstName": "Nick",
+      "lastName": "Sandlin"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".090",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680694,
+      "fullName": "Kyle Bradish",
+      "link": "/api/v1/people/680694",
+      "firstName": "Kyle",
+      "lastName": "Bradish"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".103",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680689,
+      "fullName": "Lyon Richardson",
+      "link": "/api/v1/people/680689",
+      "firstName": "Lyon",
+      "lastName": "Richardson"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".044",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 594798,
+      "fullName": "Jacob deGrom",
+      "link": "/api/v1/people/594798",
+      "firstName": "Jacob",
+      "lastName": "deGrom"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".100",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680686,
+      "fullName": "Josiah Gray",
+      "link": "/api/v1/people/680686",
+      "firstName": "Josiah",
+      "lastName": "Gray"
+     },
+     "sport": {
+      "id": 14,
+      "link": "/api/v1/sports/14",
+      "name": "Single-A",
+      "abbreviation": "A"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".058",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680686,
+      "fullName": "Josiah Gray",
+      "link": "/api/v1/people/680686",
+      "firstName": "Josiah",
+      "lastName": "Gray"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".036",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680686,
+      "fullName": "Josiah Gray",
+      "link": "/api/v1/people/680686",
+      "firstName": "Josiah",
+      "lastName": "Gray"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".097",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 594835,
+      "fullName": "Marco Gonzales",
+      "link": "/api/v1/people/594835",
+      "firstName": "Marco",
+      "lastName": "Gonzales"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".071",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680573,
+      "fullName": "Simeon Woods Richardson",
+      "link": "/api/v1/people/680573",
+      "firstName": "Simeon",
+      "lastName": "Woods Richardson"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".093",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 680572,
+      "fullName": "Adam Kloffenstein",
+      "link": "/api/v1/people/680572",
+      "firstName": "Adam",
+      "lastName": "Kloffenstein"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".100",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 679885,
+      "fullName": "Justin Martinez",
+      "link": "/api/v1/people/679885",
+      "firstName": "Justin",
+      "lastName": "Martinez"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".080",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 679525,
+      "fullName": "Alec Marsh",
+      "link": "/api/v1/people/679525",
+      "firstName": "Alec",
+      "lastName": "Marsh"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".135",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 595345,
+      "fullName": "Steven Okert",
+      "link": "/api/v1/people/595345",
+      "firstName": "Steven",
+      "lastName": "Okert"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".090",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 679358,
+      "fullName": "Eric Orze",
+      "link": "/api/v1/people/679358",
+      "firstName": "Eric",
+      "lastName": "Orze"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".063",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 679156,
+      "fullName": "Walter Pennington",
+      "link": "/api/v1/people/679156",
+      "firstName": "Walter",
+      "lastName": "Pennington"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".111",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 595881,
+      "fullName": "Tyler Beede",
+      "link": "/api/v1/people/595881",
+      "firstName": "Tyler",
+      "lastName": "Beede"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".117",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 678906,
+      "fullName": "Kai-Wei Teng",
+      "link": "/api/v1/people/678906",
+      "firstName": "Kai-Wei",
+      "lastName": "Teng"
+     },
+     "sport": {
+      "id": 16,
+      "link": "/api/v1/sports/16",
+      "name": "Rookie",
+      "abbreviation": "ROK"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".097",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 678821,
+      "fullName": "Luis Peralta",
+      "link": "/api/v1/people/678821",
+      "firstName": "Luis",
+      "lastName": "Peralta"
+     },
+     "sport": {
+      "id": 13,
+      "link": "/api/v1/sports/13",
+      "name": "High-A",
+      "abbreviation": "A+"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".073",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 678821,
+      "fullName": "Luis Peralta",
+      "link": "/api/v1/people/678821",
+      "firstName": "Luis",
+      "lastName": "Peralta"
+     },
+     "sport": {
+      "id": 12,
+      "link": "/api/v1/sports/12",
+      "name": "Double-A",
+      "abbreviation": "AA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".175",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 678821,
+      "fullName": "Luis Peralta",
+      "link": "/api/v1/people/678821",
+      "firstName": "Luis",
+      "lastName": "Peralta"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "avg": ".000",
+      "slg": ".000",
+      "woba": ".053",
+      "wobaCon": ".---"
+     },
+     "player": {
+      "id": 678692,
+      "fullName": "Ronny Henriquez",
+      "link": "/api/v1/people/678692",
+      "firstName": "Ronny",
+      "lastName": "Henriquez"
+     },
+     "sport": {
+      "id": 11,
+      "link": "/api/v1/sports/11",
+      "name": "Triple-A",
+      "abbreviation": "AAA"
+     },
+     "gameType": "R",
+     "rank": 1
+    }
+   ],
+   "playerPool": "ALL"
+  }
+ ]
+}

@@ -1,0 +1,129 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "byDateRange"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "runs": 841,
+      "homeRuns": 179,
+      "strikeOuts": 1363,
+      "baseOnBalls": 578,
+      "intentionalWalks": 38,
+      "hits": 1509,
+      "hitByPitch": 100,
+      "avg": ".254",
+      "atBats": 5939,
+      "obp": ".328",
+      "slg": ".408",
+      "ops": ".736",
+      "caughtStealing": 38,
+      "stolenBases": 131,
+      "stolenBasePercentage": ".775",
+      "caughtStealingPercentage": ".225",
+      "earnedRuns": 698,
+      "battersFaced": 6693,
+      "hitBatsmen": 100,
+      "wildPitches": 67,
+      "pickoffs": 1,
+      "totalBases": 2421,
+      "strikeoutWalkRatio": "2.36",
+      "catchersInterference": 1,
+      "sacBunts": 17,
+      "sacFlies": 58
+     },
+     "team": {
+      "id": 133,
+      "name": "Oakland Athletics",
+      "link": "/api/v1/teams/133"
+     },
+     "numTeams": 1,
+     "rank": 1
+    },
+    {
+     "stat": {
+      "runs": 850,
+      "homeRuns": 189,
+      "strikeOuts": 1498,
+      "baseOnBalls": 580,
+      "intentionalWalks": 19,
+      "hits": 1567,
+      "hitByPitch": 93,
+      "avg": ".253",
+      "atBats": 6192,
+      "obp": ".324",
+      "slg": ".408",
+      "ops": ".732",
+      "caughtStealing": 34,
+      "stolenBases": 178,
+      "stolenBasePercentage": ".840",
+      "caughtStealingPercentage": ".160",
+      "earnedRuns": 664,
+      "battersFaced": 6952,
+      "hitBatsmen": 93,
+      "wildPitches": 51,
+      "pickoffs": 0,
+      "totalBases": 2527,
+      "strikeoutWalkRatio": "2.58",
+      "catchersInterference": 8,
+      "sacBunts": 20,
+      "sacFlies": 59
+     },
+     "team": {
+      "id": 134,
+      "name": "Pittsburgh Pirates",
+      "link": "/api/v1/teams/134"
+     },
+     "numTeams": 1,
+     "rank": 2
+    },
+    {
+     "stat": {
+      "runs": 770,
+      "homeRuns": 203,
+      "strikeOuts": 1672,
+      "baseOnBalls": 542,
+      "intentionalWalks": 21,
+      "hits": 1477,
+      "hitByPitch": 75,
+      "avg": ".237",
+      "atBats": 6243,
+      "obp": ".303",
+      "slg": ".388",
+      "ops": ".691",
+      "caughtStealing": 29,
+      "stolenBases": 125,
+      "stolenBasePercentage": ".812",
+      "caughtStealingPercentage": ".188",
+      "earnedRuns": 617,
+      "battersFaced": 6934,
+      "hitBatsmen": 75,
+      "wildPitches": 73,
+      "pickoffs": 0,
+      "totalBases": 2421,
+      "strikeoutWalkRatio": "3.08",
+      "catchersInterference": 10,
+      "sacBunts": 18,
+      "sacFlies": 46
+     },
+     "team": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "numTeams": 1,
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

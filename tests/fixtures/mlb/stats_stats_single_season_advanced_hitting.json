@@ -1,0 +1,153 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "statsSingleSeasonAdvanced"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 105533,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "1894",
+     "stat": {
+      "age": 27,
+      "plateAppearances": 616,
+      "totalBases": 374,
+      "sacBunts": 10,
+      "babip": ".433",
+      "extraBaseHits": 85,
+      "hitByPitch": 1,
+      "walksPerPlateAppearance": ".107",
+      "strikeoutsPerPlateAppearance": ".024",
+      "homeRunsPerPlateAppearance": ".029",
+      "walksPerStrikeout": "4.400",
+      "iso": ".254"
+     },
+     "team": {
+      "id": 144,
+      "name": "Boston Beaneaters",
+      "link": "/api/v1/teams/144"
+     },
+     "player": {
+      "id": 113598,
+      "fullName": "Hugh Duffy",
+      "link": "/api/v1/people/113598",
+      "firstName": "Hugh",
+      "lastName": "Duffy"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "season": "1887",
+     "stat": {
+      "age": 29,
+      "plateAppearances": 572,
+      "totalBases": 357,
+      "extraBaseHits": 85,
+      "hitByPitch": 5,
+      "walksPerPlateAppearance": ".087",
+      "homeRunsPerPlateAppearance": ".024",
+      "iso": ".255"
+     },
+     "team": {
+      "id": 178,
+      "name": "St. Louis Cardinals",
+      "link": "/api/v1/teams/178"
+     },
+     "player": {
+      "id": 120022,
+      "fullName": "Tip O'Neill",
+      "link": "/api/v1/people/120022",
+      "firstName": "Tip",
+      "lastName": "O'Neill"
+     },
+     "league": {
+      "id": 100,
+      "name": "American Association",
+      "link": "/api/v1/league/100"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 2,
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "season": "1926",
+     "stat": {
+      "age": 25,
+      "plateAppearances": 397,
+      "totalBases": 314,
+      "sacBunts": 7,
+      "extraBaseHits": 79,
+      "hitByPitch": 1,
+      "walksPerPlateAppearance": ".078",
+      "homeRunsPerPlateAppearance": ".081",
+      "iso": ".453"
+     },
+     "team": {
+      "id": 1541,
+      "name": "St. Louis Stars",
+      "link": "/api/v1/teams/1541"
+     },
+     "player": {
+      "id": 817055,
+      "fullName": "Mule Suttles",
+      "link": "/api/v1/people/817055",
+      "firstName": "Mule",
+      "lastName": "Suttles"
+     },
+     "league": {
+      "id": 430,
+      "name": "Negro National League (I)",
+      "link": "/api/v1/league/430"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "3",
+      "name": "First Base",
+      "type": "Infielder",
+      "abbreviation": "1B"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

@@ -1,0 +1,90 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "yearByYearAdvanced"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 2891,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2025",
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "assists": 1364,
+      "putOuts": 4329,
+      "errors": 51,
+      "chances": 5744,
+      "fielding": ".991",
+      "rangeFactorPerGame": "35.14",
+      "rangeFactorPer9Inn": "3.95",
+      "innings": "12987.0",
+      "games": 162,
+      "doublePlays": 122,
+      "triplePlays": 0,
+      "throwingErrors": 27
+     },
+     "team": {
+      "id": 140,
+      "link": "/api/v1/teams/140"
+     },
+     "rank": 1
+    },
+    {
+     "season": "2013",
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "assists": 1614,
+      "putOuts": 4359,
+      "errors": 54,
+      "chances": 6027,
+      "fielding": ".991",
+      "rangeFactorPerGame": "36.87",
+      "rangeFactorPer9Inn": "4.11",
+      "innings": "13077.0",
+      "games": 162,
+      "doublePlays": 165,
+      "triplePlays": 0,
+      "throwingErrors": 28
+     },
+     "team": {
+      "id": 110,
+      "link": "/api/v1/teams/110"
+     },
+     "rank": 2
+    },
+    {
+     "season": "2020",
+     "stat": {
+      "gamesPlayed": 60,
+      "gamesStarted": 60,
+      "assists": 546,
+      "putOuts": 1572,
+      "errors": 20,
+      "chances": 2138,
+      "fielding": ".991",
+      "rangeFactorPerGame": "35.30",
+      "rangeFactorPer9Inn": "4.04",
+      "innings": "4716.0",
+      "games": 60,
+      "doublePlays": 48,
+      "triplePlays": 0,
+      "throwingErrors": 11
+     },
+     "team": {
+      "id": 117,
+      "link": "/api/v1/teams/117"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

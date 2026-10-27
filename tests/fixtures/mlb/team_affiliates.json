@@ -1,0 +1,115 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "teams": [
+  {
+   "allStarStatus": "N",
+   "id": 524,
+   "name": "Stockton Ports",
+   "link": "/api/v1/teams/524",
+   "season": 2024,
+   "venue": {
+    "id": 2731,
+    "name": "Banner Island Ballpark",
+    "link": "/api/v1/venues/2731"
+   },
+   "teamCode": "sto",
+   "fileCode": "t524",
+   "abbreviation": "STK",
+   "teamName": "Ports",
+   "locationName": "Stockton",
+   "firstYearOfPlay": "1946",
+   "league": {
+    "id": 110,
+    "name": "California League",
+    "link": "/api/v1/league/110"
+   },
+   "division": {
+    "id": 208,
+    "name": "California League North",
+    "link": "/api/v1/divisions/208"
+   },
+   "sport": {
+    "id": 14,
+    "link": "/api/v1/sports/14",
+    "name": "Single-A"
+   },
+   "shortName": "Stockton",
+   "parentOrgName": "Oakland Athletics",
+   "parentOrgId": 133,
+   "franchiseName": "Stockton",
+   "clubName": "Ports",
+   "active": true
+  },
+  {
+   "allStarStatus": "N",
+   "id": 602,
+   "name": "DSL Athletics",
+   "link": "/api/v1/teams/602",
+   "season": 2024,
+   "venue": {
+    "id": 6094,
+    "name": "Oakland Athletics DR Complex",
+    "link": "/api/v1/venues/6094"
+   },
+   "teamCode": "dat",
+   "fileCode": "t602",
+   "abbreviation": "D-ATH",
+   "teamName": "DSL Athletics",
+   "locationName": "Boca Chica",
+   "firstYearOfPlay": "1987",
+   "league": {
+    "id": 130,
+    "name": "Dominican Summer League",
+    "link": "/api/v1/league/130"
+   },
+   "division": {
+    "id": 250,
+    "name": "Dominican Summer League West",
+    "link": "/api/v1/divisions/250"
+   },
+   "sport": {
+    "id": 16,
+    "link": "/api/v1/sports/16",
+    "name": "Rookie"
+   },
+   "shortName": "DSL Athletics",
+   "parentOrgName": "Oakland Athletics",
+   "parentOrgId": 133,
+   "franchiseName": "DSL Athletics",
+   "clubName": "DSL Athletics",
+   "active": true
+  },
+  {
+   "allStarStatus": "N",
+   "id": 3254,
+   "name": "Athletics Alternate Training Site",
+   "link": "/api/v1/teams/3254",
+   "season": 2024,
+   "venue": {
+    "id": 2731,
+    "name": "Banner Island Ballpark",
+    "link": "/api/v1/venues/2731"
+   },
+   "teamCode": "oas",
+   "fileCode": "t3254",
+   "abbreviation": "OAK",
+   "teamName": "Athletics Alt. Site",
+   "locationName": "Stockton",
+   "firstYearOfPlay": "2001",
+   "league": {
+    "id": 5468,
+    "name": "Extended Spring Training",
+    "link": "/api/v1/league/5468"
+   },
+   "sport": {
+    "id": 21,
+    "link": "/api/v1/sports/21",
+    "name": "Minor League Baseball"
+   },
+   "shortName": "Athletics Alternate Training Site",
+   "parentOrgName": "Oakland Athletics",
+   "parentOrgId": 133,
+   "active": true
+  }
+ ]
+}

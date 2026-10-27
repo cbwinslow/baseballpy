@@ -36,6 +36,28 @@ def _safe_int(val: Any) -> int | None:
         return None
 
 
+#: the API writes "no games behind" as ``-`` and "already eliminated" as ``E`` in numeric fields
+_NO_GAMES = frozenset({"-", "--"})
+
+
+def _games_behind(val: Any) -> float | None:
+    """``gamesBack``/``wildCardGamesBack``: ``-`` means 0 games (the leader), ``+1.5`` is a lead."""
+    if isinstance(val, str) and val.strip() in _NO_GAMES:
+        return 0.0
+    return _safe_float(val)
+
+
+def _elimination_number(val: Any) -> int | None:
+    """``eliminationNumber``: ``E`` (eliminated) is 0 games needed, ``-`` is not applicable."""
+    if isinstance(val, str):
+        text = val.strip().upper()
+        if text == "E":
+            return 0
+        if text in _NO_GAMES:
+            return None
+    return _safe_int(val)
+
+
 def _arr(values: list[Any], field: pa.Field) -> pa.Array:
     return safe_array(values, field.type, source="mlb_api", dataset="normalize", column=field.name)
 
@@ -209,11 +231,11 @@ class MlbApiNormalizer:
                         "wins": _safe_int(tr.get("wins")),
                         "losses": _safe_int(tr.get("losses")),
                         "win_pct": _safe_float(tr.get("winningPercentage")),
-                        "games_back": _safe_float(tr.get("gamesBack")),
-                        "wild_card_gb": _safe_float(tr.get("wildCardGamesBack")),
+                        "games_back": _games_behind(tr.get("gamesBack")),
+                        "wild_card_gb": _games_behind(tr.get("wildCardGamesBack")),
                         "run_differential": _safe_int(tr.get("runDifferential")),
                         "streak": streak,
-                        "elim_num": _safe_int(tr.get("eliminationNumber")),
+                        "elim_num": _elimination_number(tr.get("eliminationNumber")),
                     }
                 )
 

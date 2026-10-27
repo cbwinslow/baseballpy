@@ -1,0 +1,3480 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "allPlays": [
+  {
+   "result": {
+    "type": "atBat",
+    "event": "Groundout",
+    "eventType": "field_out",
+    "description": "Nick Loftin grounds out to first baseman Nathaniel Lowe.",
+    "rbi": 0,
+    "awayScore": 0,
+    "homeScore": 0,
+    "isOut": true
+   },
+   "about": {
+    "atBatIndex": 0,
+    "halfInning": "top",
+    "isTopInning": true,
+    "inning": 1,
+    "startTime": "2024-06-23T18:37:18.822Z",
+    "endTime": "2024-06-23T18:38:28.168Z",
+    "isComplete": true,
+    "isScoringPlay": false,
+    "hasReview": false,
+    "hasOut": true,
+    "captivatingIndex": 0
+   },
+   "count": {
+    "balls": 3,
+    "strikes": 1,
+    "outs": 1
+   },
+   "matchup": {
+    "batter": {
+     "id": 679845,
+     "fullName": "Nick Loftin",
+     "link": "/api/v1/people/679845"
+    },
+    "batSide": {
+     "code": "R",
+     "description": "Right"
+    },
+    "pitcher": {
+     "id": 453286,
+     "fullName": "Max Scherzer",
+     "link": "/api/v1/people/453286"
+    },
+    "pitchHand": {
+     "code": "R",
+     "description": "Right"
+    },
+    "batterHotColdZones": [],
+    "pitcherHotColdZones": [],
+    "splits": {
+     "batter": "vs_RHP",
+     "pitcher": "vs_RHB",
+     "menOnBase": "Empty"
+    }
+   },
+   "pitchIndex": [
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "actionIndex": [
+    0,
+    1,
+    2
+   ],
+   "runnerIndex": [
+    0
+   ],
+   "runners": [
+    {
+     "movement": {
+      "originBase": null,
+      "start": null,
+      "end": null,
+      "outBase": "1B",
+      "isOut": true,
+      "outNumber": 1
+     },
+     "details": {
+      "event": "Groundout",
+      "eventType": "field_out",
+      "movementReason": null,
+      "runner": {
+       "id": 679845,
+       "fullName": "Nick Loftin",
+       "link": "/api/v1/people/679845"
+      },
+      "responsiblePitcher": null,
+      "isScoringEvent": false,
+      "rbi": false,
+      "earned": false,
+      "teamUnearned": false,
+      "playIndex": 7
+     },
+     "credits": [
+      {
+       "player": {
+        "id": 663993,
+        "link": "/api/v1/people/663993"
+       },
+       "position": {
+        "code": "3",
+        "name": "First Base",
+        "type": "Infielder",
+        "abbreviation": "1B"
+       },
+       "credit": "f_putout"
+      }
+     ]
+    }
+   ],
+   "playEvents": [
+    {
+     "details": {
+      "description": "Status Change - Pre-Game",
+      "event": "Game Advisory",
+      "eventType": "game_advisory",
+      "awayScore": 0,
+      "homeScore": 0,
+      "isScoringPlay": false,
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 0,
+      "strikes": 0,
+      "outs": 0
+     },
+     "index": 0,
+     "startTime": "2024-06-23T17:49:27.534Z",
+     "endTime": "2024-06-23T18:19:35.971Z",
+     "isPitch": false,
+     "type": "action",
+     "player": {
+      "id": 679845,
+      "link": "/api/v1/people/679845"
+     }
+    },
+    {
+     "details": {
+      "description": "Status Change - Warmup",
+      "event": "Game Advisory",
+      "eventType": "game_advisory",
+      "awayScore": 0,
+      "homeScore": 0,
+      "isScoringPlay": false,
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 0,
+      "strikes": 0,
+      "outs": 0
+     },
+     "index": 1,
+     "startTime": "2024-06-23T18:19:35.971Z",
+     "endTime": "2024-06-23T18:36:55.966Z",
+     "isPitch": false,
+     "type": "action",
+     "player": {
+      "id": 679845,
+      "link": "/api/v1/people/679845"
+     }
+    },
+    {
+     "details": {
+      "description": "Status Change - In Progress",
+      "event": "Game Advisory",
+      "eventType": "game_advisory",
+      "awayScore": 0,
+      "homeScore": 0,
+      "isScoringPlay": false,
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 0,
+      "strikes": 0,
+      "outs": 0
+     },
+     "index": 2,
+     "startTime": "2024-06-23T18:36:55.966Z",
+     "endTime": "2024-06-23T18:37:19.822Z",
+     "isPitch": false,
+     "type": "action",
+     "player": {
+      "id": 679845,
+      "link": "/api/v1/people/679845"
+     }
+    },
+    {
+     "details": {
+      "call": {
+       "code": "B",
+       "description": "Ball"
+      },
+      "description": "Ball",
+      "code": "B",
+      "ballColor": "rgba(39, 161, 39, 1.0)",
+      "trailColor": "rgba(188, 0, 33, 1.0)",
+      "isInPlay": false,
+      "isStrike": false,
+      "isBall": true,
+      "type": {
+       "code": "FF",
+       "description": "Four-Seam Fastball"
+      },
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 1,
+      "strikes": 0,
+      "outs": 0
+     },
+     "pitchData": {
+      "startSpeed": 92.6,
+      "endSpeed": 84.8,
+      "strikeZoneTop": 3.5178078764402,
+      "strikeZoneBottom": 1.73185528402863,
+      "coordinates": {
+       "aY": 28.44087040035959,
+       "aZ": -14.312699799470627,
+       "pfxX": -7.8894450055403365,
+       "pfxZ": 9.763820856343013,
+       "pX": 0.9190953491640169,
+       "pZ": 1.8329594345318707,
+       "vX0": 12.363154948637783,
+       "vY0": -134.24971267247778,
+       "vZ0": -6.971222020259185,
+       "x": 70.0,
+       "y": 187.33,
+       "x0": -2.7159422956360064,
+       "y0": 50.00453524719969,
+       "z0": 5.477768315775538,
+       "aX": -14.436131346802668
+      },
+      "breaks": {
+       "breakAngle": 37.2,
+       "breakLength": 4.8,
+       "breakY": 24.0,
+       "breakVertical": -15.7,
+       "breakVerticalInduced": 16.3,
+       "breakHorizontal": 11.8,
+       "spinRate": 2205,
+       "spinDirection": 222
+      },
+      "zone": 14,
+      "typeConfidence": 0.9,
+      "plateTime": 0.4076270030322231,
+      "extension": 5.966238592542145
+     },
+     "index": 3,
+     "playId": "9e2e3cd1-5f3f-407c-8799-78a8866a932f",
+     "pitchNumber": 1,
+     "startTime": "2024-06-23T18:37:19.822Z",
+     "endTime": "2024-06-23T18:37:24.230Z",
+     "isPitch": true,
+     "type": "pitch"
+    },
+    {
+     "details": {
+      "call": {
+       "code": "B",
+       "description": "Ball"
+      },
+      "description": "Ball",
+      "code": "B",
+      "ballColor": "rgba(39, 161, 39, 1.0)",
+      "trailColor": "rgba(188, 0, 33, 1.0)",
+      "isInPlay": false,
+      "isStrike": false,
+      "isBall": true,
+      "type": {
+       "code": "FF",
+       "description": "Four-Seam Fastball"
+      },
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 2,
+      "strikes": 0,
+      "outs": 0
+     },
+     "pitchData": {
+      "startSpeed": 93.2,
+      "endSpeed": 85.2,
+      "strikeZoneTop": 3.58999744868651,
+      "strikeZoneBottom": 1.70999644898111,
+      "coordinates": {
+       "aY": 28.57305360920195,
+       "aZ": -14.402857875481518,
+       "pfxX": -9.138056769016941,
+       "pfxZ": 9.64598068863664,
+       "pX": 1.924361067083574,
+       "pZ": 1.3178927408108752,
+       "vX0": 15.148676260241844,
+       "vY0": -134.70961739605883,
+       "vZ0": -8.147945681649654,
+       "x": 52.48,
+       "y": 192.98,
+       "x0": -2.578397851477388,
+       "y0": 50.00605699372007,
+       "z0": 5.394932299938918,
+       "aX": -16.842058230192613
+      },
+      "breaks": {
+       "breakAngle": 40.8,
+       "breakLength": 4.8,
+       "breakY": 24.0,
+       "breakVertical": -16.1,
+       "breakVerticalInduced": 15.7,
+       "breakHorizontal": 13.4,
+       "spinRate": 2326,
+       "spinDirection": 225
+      },
+      "zone": 14,
+      "typeConfidence": 0.9,
+      "plateTime": 0.40622156311056923,
+      "extension": 6.132279638820454
+     },
+     "index": 4,
+     "playId": "2b0057b3-0cae-415a-8173-f654605c996e",
+     "pitchNumber": 2,
+     "startTime": "2024-06-23T18:37:33.535Z",
+     "endTime": "2024-06-23T18:37:36.886Z",
+     "isPitch": true,
+     "type": "pitch"
+    },
+    {
+     "details": {
+      "call": {
+       "code": "C",
+       "description": "Called Strike"
+      },
+      "description": "Called Strike",
+      "code": "C",
+      "ballColor": "rgba(170, 21, 11, 1.0)",
+      "trailColor": "rgba(188, 0, 33, 1.0)",
+      "isInPlay": false,
+      "isStrike": true,
+      "isBall": false,
+      "type": {
+       "code": "FF",
+       "description": "Four-Seam Fastball"
+      },
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 2,
+      "strikes": 1,
+      "outs": 0
+     },
+     "pitchData": {
+      "startSpeed": 92.5,
+      "endSpeed": 84.9,
+      "strikeZoneTop": 3.50597310543553,
+      "strikeZoneBottom": 1.71287860298138,
+      "coordinates": {
+       "aY": 28.115043858462958,
+       "aZ": -15.472467148999119,
+       "pfxX": -7.207054740408021,
+       "pfxZ": 9.121517584660705,
+       "pX": 0.12932020135603725,
+       "pZ": 1.4312451541101407,
+       "vX0": 10.436626369172675,
+       "vY0": -134.24010700877287,
+       "vZ0": -7.429293319672963,
+       "x": 112.07,
+       "y": 200.14,
+       "x0": -2.866376798471425,
+       "y0": 50.005568652568265,
+       "z0": 5.329059858428092,
+       "aX": -13.201499447305737
+      },
+      "breaks": {
+       "breakAngle": 33.6,
+       "breakLength": 4.8,
+       "breakY": 24.0,
+       "breakVertical": -16.9,
+       "breakVerticalInduced": 15.1,
+       "breakHorizontal": 10.9,
+       "spinRate": 2132,
+       "spinDirection": 219
+      },
+      "zone": 14,
+      "typeConfidence": 0.9,
+      "plateTime": 0.4074742855582092,
+      "extension": 6.1358506789215115
+     },
+     "index": 5,
+     "playId": "cbc822db-99e6-4154-b2e2-245a7a884729",
+     "pitchNumber": 3,
+     "startTime": "2024-06-23T18:37:47.553Z",
+     "endTime": "2024-06-23T18:37:51.855Z",
+     "isPitch": true,
+     "type": "pitch"
+    },
+    {
+     "details": {
+      "call": {
+       "code": "B",
+       "description": "Ball"
+      },
+      "description": "Ball",
+      "code": "B",
+      "ballColor": "rgba(39, 161, 39, 1.0)",
+      "trailColor": "rgba(188, 0, 33, 1.0)",
+      "isInPlay": false,
+      "isStrike": false,
+      "isBall": true,
+      "type": {
+       "code": "FF",
+       "description": "Four-Seam Fastball"
+      },
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 3,
+      "strikes": 1,
+      "outs": 0
+     },
+     "pitchData": {
+      "startSpeed": 93.8,
+      "endSpeed": 86.2,
+      "strikeZoneTop": 3.58087753578967,
+      "strikeZoneBottom": 1.67872645674613,
+      "coordinates": {
+       "aY": 28.18710945435689,
+       "aZ": -14.412131486188379,
+       "pfxX": -7.674926162425357,
+       "pfxZ": 9.449304155920927,
+       "pX": 1.0165136500226641,
+       "pZ": 0.960772935290879,
+       "vX0": 12.831312072705884,
+       "vY0": -135.8522698085645,
+       "vZ0": -8.88735807941411,
+       "x": 78.25,
+       "y": 212.84,
+       "x0": -2.7585728101802567,
+       "y0": 50.003667370081345,
+       "z0": 5.264010253266174,
+       "aX": -14.428673421111835
+      },
+      "breaks": {
+       "breakAngle": 36.0,
+       "breakLength": 4.8,
+       "breakY": 24.0,
+       "breakVertical": -15.8,
+       "breakVerticalInduced": 15.4,
+       "breakHorizontal": 11.4,
+       "spinRate": 2218,
+       "spinDirection": 229
+      },
+      "zone": 14,
+      "typeConfidence": 0.9,
+      "plateTime": 0.4023056596401693,
+      "extension": 6.0563994598900095
+     },
+     "index": 6,
+     "playId": "2dfef3a4-2e20-43c9-b705-631051b6323f",
+     "pitchNumber": 4,
+     "startTime": "2024-06-23T18:38:03.319Z",
+     "endTime": "2024-06-23T18:38:06.609Z",
+     "isPitch": true,
+     "type": "pitch"
+    },
+    {
+     "details": {
+      "call": {
+       "code": "X",
+       "description": "In play, out(s)"
+      },
+      "description": "In play, out(s)",
+      "code": "X",
+      "ballColor": "rgba(26, 86, 190, 1.0)",
+      "trailColor": "rgba(188, 0, 33, 1.0)",
+      "isInPlay": true,
+      "isStrike": false,
+      "isBall": false,
+      "type": {
+       "code": "FF",
+       "description": "Four-Seam Fastball"
+      },
+      "isOut": true,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 3,
+      "strikes": 1,
+      "outs": 0
+     },
+     "pitchData": {
+      "startSpeed": 93.9,
+      "endSpeed": 86.1,
+      "strikeZoneTop": 3.59,
+      "strikeZoneBottom": 1.71,
+      "coordinates": {
+       "aY": 28.46867994625245,
+       "aZ": -14.815915526665837,
+       "pfxX": -6.597573856629468,
+       "pfxZ": 9.198774842250153,
+       "pX": 0.5206802916020599,
+       "pZ": 1.9863053931604682,
+       "vX0": 11.757010089723627,
+       "vY0": -136.1546270521123,
+       "vZ0": -6.107531339981509,
+       "x": 97.15,
+       "y": 185.15,
+       "x0": -2.986239031648632,
+       "y0": 50.003240757186944,
+       "z0": 5.274730597990436,
+       "aX": -12.451236158531396
+      },
+      "breaks": {
+       "breakAngle": 32.4,
+       "breakLength": 3.6,
+       "breakY": 24.0,
+       "breakVertical": -15.6,
+       "breakVerticalInduced": 15.6,
+       "breakHorizontal": 9.6,
+       "spinRate": 2275,
+       "spinDirection": 222
+      },
+      "zone": 9,
+      "typeConfidence": 0.9,
+      "plateTime": 0.4015104897745374,
+      "extension": 6.083309492444682
+     },
+     "hitData": {
+      "launchSpeed": 67.8,
+      "launchAngle": -2.0,
+      "totalDistance": 29.0,
+      "trajectory": "ground_ball",
+      "hardness": "medium",
+      "location": "3",
+      "coordinates": {
+       "coordX": 139.41,
+       "coordY": 183.78
+      }
+     },
+     "index": 7,
+     "playId": "442473c3-08e6-4e6b-936e-3407ea2618b5",
+     "pitchNumber": 5,
+     "startTime": "2024-06-23T18:38:20.155Z",
+     "endTime": "2024-06-23T18:38:28.168Z",
+     "isPitch": true,
+     "type": "pitch"
+    }
+   ],
+   "playEndTime": "2024-06-23T18:38:28.168Z",
+   "atBatIndex": 0
+  },
+  {
+   "result": {
+    "type": "atBat",
+    "event": "Strikeout",
+    "eventType": "strikeout",
+    "description": "Bobby Witt Jr. strikes out swinging.",
+    "rbi": 0,
+    "awayScore": 0,
+    "homeScore": 0,
+    "isOut": true
+   },
+   "about": {
+    "atBatIndex": 1,
+    "halfInning": "top",
+    "isTopInning": true,
+    "inning": 1,
+    "startTime": "2024-06-23T18:38:43.359Z",
+    "endTime": "2024-06-23T18:39:37.440Z",
+    "isComplete": true,
+    "isScoringPlay": false,
+    "hasReview": false,
+    "hasOut": true,
+    "captivatingIndex": 14
+   },
+   "count": {
+    "balls": 0,
+    "strikes": 3,
+    "outs": 2
+   },
+   "matchup": {
+    "batter": {
+     "id": 677951,
+     "fullName": "Bobby Witt Jr.",
+     "link": "/api/v1/people/677951"
+    },
+    "batSide": {
+     "code": "R",
+     "description": "Right"
+    },
+    "pitcher": {
+     "id": 453286,
+     "fullName": "Max Scherzer",
+     "link": "/api/v1/people/453286"
+    },
+    "pitchHand": {
+     "code": "R",
+     "description": "Right"
+    },
+    "batterHotColdZones": [],
+    "pitcherHotColdZones": [],
+    "splits": {
+     "batter": "vs_RHP",
+     "pitcher": "vs_RHB",
+     "menOnBase": "Empty"
+    }
+   },
+   "pitchIndex": [
+    0,
+    1,
+    2
+   ],
+   "actionIndex": [],
+   "runnerIndex": [
+    0
+   ],
+   "runners": [
+    {
+     "movement": {
+      "originBase": null,
+      "start": null,
+      "end": null,
+      "outBase": "1B",
+      "isOut": true,
+      "outNumber": 2
+     },
+     "details": {
+      "event": "Strikeout",
+      "eventType": "strikeout",
+      "movementReason": null,
+      "runner": {
+       "id": 677951,
+       "fullName": "Bobby Witt Jr.",
+       "link": "/api/v1/people/677951"
+      },
+      "responsiblePitcher": null,
+      "isScoringEvent": false,
+      "rbi": false,
+      "earned": false,
+      "teamUnearned": false,
+      "playIndex": 2
+     },
+     "credits": [
+      {
+       "player": {
+        "id": 668800,
+        "link": "/api/v1/people/668800"
+       },
+       "position": {
+        "code": "2",
+        "name": "Catcher",
+        "type": "Catcher",
+        "abbreviation": "C"
+       },
+       "credit": "f_putout"
+      }
+     ]
+    }
+   ],
+   "playEvents": [
+    {
+     "details": {
+      "call": {
+       "code": "C",
+       "description": "Called Strike"
+      },
+      "description": "Called Strike",
+      "code": "C",
+      "ballColor": "rgba(170, 21, 11, 1.0)",
+      "trailColor": "rgba(0, 0, 254, 1.0)",
+      "isInPlay": false,
+      "isStrike": true,
+      "isBall": false,
+      "type": {
+       "code": "SL",
+       "description": "Slider"
+      },
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 0,
+      "strikes": 1,
+      "outs": 1
+     },
+     "pitchData": {
+      "startSpeed": 85.4,
+      "endSpeed": 78.5,
+      "strikeZoneTop": 3.31933927327106,
+      "strikeZoneBottom": 1.32863381437156,
+      "coordinates": {
+       "aY": 25.011138494962843,
+       "aZ": -29.024103179934297,
+       "pfxX": 0.7769802114207391,
+       "pfxZ": 2.015796823651131,
+       "pX": -0.8297997736978043,
+       "pZ": 2.025757596740339,
+       "vX0": 5.402647004518797,
+       "vY0": -124.31811460451036,
+       "vZ0": -2.478117560870083,
+       "x": 148.63,
+       "y": 184.08,
+       "x0": -3.1325317466287275,
+       "y0": 50.00438631802756,
+       "z0": 5.445552967551399,
+       "aX": 1.2157170934838353
+      },
+      "breaks": {
+       "breakAngle": 4.8,
+       "breakLength": 7.2,
+       "breakY": 24.0,
+       "breakVertical": -34.2,
+       "breakVerticalInduced": 3.4,
+       "breakHorizontal": -2.6,
+       "spinRate": 2328,
+       "spinDirection": 170
+      },
+      "zone": 7,
+      "typeConfidence": 0.91,
+      "plateTime": 0.44063934991676046,
+      "extension": 5.905696113314686
+     },
+     "index": 0,
+     "playId": "eda5b7fe-3d3d-4167-a47e-f4b73380c7a6",
+     "pitchNumber": 1,
+     "startTime": "2024-06-23T18:38:54.965Z",
+     "endTime": "2024-06-23T18:38:59.155Z",
+     "isPitch": true,
+     "type": "pitch"
+    },
+    {
+     "details": {
+      "call": {
+       "code": "C",
+       "description": "Called Strike"
+      },
+      "description": "Called Strike",
+      "code": "C",
+      "ballColor": "rgba(170, 21, 11, 1.0)",
+      "trailColor": "rgba(188, 0, 33, 1.0)",
+      "isInPlay": false,
+      "isStrike": true,
+      "isBall": false,
+      "type": {
+       "code": "FF",
+       "description": "Four-Seam Fastball"
+      },
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 0,
+      "strikes": 2,
+      "outs": 1
+     },
+     "pitchData": {
+      "startSpeed": 93.9,
+      "endSpeed": 84.9,
+      "strikeZoneTop": 3.5119281216697,
+      "strikeZoneBottom": 1.65234001978397,
+      "coordinates": {
+       "aY": 32.75710538080798,
+       "aZ": -14.26856239830783,
+       "pfxX": -7.535354903859062,
+       "pfxZ": 9.653888332824117,
+       "pX": 0.5093557249049495,
+       "pZ": 1.7131028326685436,
+       "vX0": 11.431417295068231,
+       "vY0": -136.03613760105827,
+       "vZ0": -7.035347927571752,
+       "x": 97.58,
+       "y": 192.53,
+       "x0": -2.7886478932876098,
+       "y0": 50.00379130833071,
+       "z0": 5.342269276743099,
+       "aX": -13.97784573522836
+      },
+      "breaks": {
+       "breakAngle": 34.8,
+       "breakLength": 4.8,
+       "breakY": 24.0,
+       "breakVertical": -15.6,
+       "breakVerticalInduced": 15.8,
+       "breakHorizontal": 10.9,
+       "spinRate": 2298,
+       "spinDirection": 225
+      },
+      "zone": 9,
+      "typeConfidence": 0.9,
+      "plateTime": 0.4042645760505983,
+      "extension": 6.097799167556365
+     },
+     "index": 1,
+     "playId": "f4d0efa2-31e7-4f7f-8a5f-5cdd2da4ed51",
+     "pitchNumber": 2,
+     "startTime": "2024-06-23T18:39:12.742Z",
+     "endTime": "2024-06-23T18:39:17.841Z",
+     "isPitch": true,
+     "type": "pitch"
+    },
+    {
+     "details": {
+      "call": {
+       "code": "S",
+       "description": "Swinging Strike"
+      },
+      "description": "Swinging Strike",
+      "code": "S",
+      "ballColor": "rgba(170, 21, 11, 1.0)",
+      "trailColor": "rgba(188, 0, 33, 1.0)",
+      "isInPlay": false,
+      "isStrike": true,
+      "isBall": false,
+      "type": {
+       "code": "FF",
+       "description": "Four-Seam Fastball"
+      },
+      "isOut": true,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 0,
+      "strikes": 3,
+      "outs": 1
+     },
+     "pitchData": {
+      "startSpeed": 94.3,
+      "endSpeed": 84.9,
+      "strikeZoneTop": 3.57,
+      "strikeZoneBottom": 1.68,
+      "coordinates": {
+       "aY": 34.13170402014086,
+       "aZ": -13.170609901815604,
+       "pfxX": -5.606254197658596,
+       "pfxZ": 10.150213148285367,
+       "pX": 0.09408261313321993,
+       "pZ": 4.478088433401755,
+       "vX0": 9.687092518648283,
+       "vY0": -136.91612879237215,
+       "vZ0": -0.6115191787621856,
+       "x": 113.41,
+       "y": 117.87,
+       "x0": -2.7839840594505527,
+       "y0": 50.003212439280965,
+       "z0": 5.617469609629785,
+       "aX": -10.49786547701363
+      },
+      "breaks": {
+       "breakAngle": 31.2,
+       "breakLength": 3.6,
+       "breakY": 24.0,
+       "breakVertical": -12.8,
+       "breakVerticalInduced": 18.4,
+       "breakHorizontal": 7.8,
+       "spinRate": 2377,
+       "spinDirection": 223
+      },
+      "zone": 12,
+      "typeConfidence": 0.91,
+      "plateTime": 0.4021788493352343,
+      "extension": 5.99202027076136
+     },
+     "index": 2,
+     "playId": "3feaabb9-3f31-4cf3-8d95-583ec18de076",
+     "pitchNumber": 3,
+     "startTime": "2024-06-23T18:39:32.917Z",
+     "endTime": "2024-06-23T18:39:37.440Z",
+     "isPitch": true,
+     "type": "pitch"
+    }
+   ],
+   "playEndTime": "2024-06-23T18:39:37.440Z",
+   "atBatIndex": 1
+  },
+  {
+   "result": {
+    "type": "atBat",
+    "event": "Pop Out",
+    "eventType": "field_out",
+    "description": "Vinnie Pasquantino pops out to third baseman Ezequiel Duran.",
+    "rbi": 0,
+    "awayScore": 0,
+    "homeScore": 0,
+    "isOut": true
+   },
+   "about": {
+    "atBatIndex": 2,
+    "halfInning": "top",
+    "isTopInning": true,
+    "inning": 1,
+    "startTime": "2024-06-23T18:39:47.988Z",
+    "endTime": "2024-06-23T18:40:29.561Z",
+    "isComplete": true,
+    "isScoringPlay": false,
+    "hasReview": false,
+    "hasOut": true,
+    "captivatingIndex": 0
+   },
+   "count": {
+    "balls": 1,
+    "strikes": 0,
+    "outs": 3
+   },
+   "matchup": {
+    "batter": {
+     "id": 686469,
+     "fullName": "Vinnie Pasquantino",
+     "link": "/api/v1/people/686469"
+    },
+    "batSide": {
+     "code": "L",
+     "description": "Left"
+    },
+    "pitcher": {
+     "id": 453286,
+     "fullName": "Max Scherzer",
+     "link": "/api/v1/people/453286"
+    },
+    "pitchHand": {
+     "code": "R",
+     "description": "Right"
+    },
+    "batterHotColdZones": [],
+    "pitcherHotColdZones": [],
+    "splits": {
+     "batter": "vs_RHP",
+     "pitcher": "vs_LHB",
+     "menOnBase": "Empty"
+    }
+   },
+   "pitchIndex": [
+    0,
+    1
+   ],
+   "actionIndex": [],
+   "runnerIndex": [
+    0
+   ],
+   "runners": [
+    {
+     "movement": {
+      "originBase": null,
+      "start": null,
+      "end": null,
+      "outBase": "1B",
+      "isOut": true,
+      "outNumber": 3
+     },
+     "details": {
+      "event": "Pop Out",
+      "eventType": "field_out",
+      "movementReason": null,
+      "runner": {
+       "id": 686469,
+       "fullName": "Vinnie Pasquantino",
+       "link": "/api/v1/people/686469"
+      },
+      "responsiblePitcher": null,
+      "isScoringEvent": false,
+      "rbi": false,
+      "earned": false,
+      "teamUnearned": false,
+      "playIndex": 1
+     },
+     "credits": [
+      {
+       "player": {
+        "id": 677649,
+        "link": "/api/v1/people/677649"
+       },
+       "position": {
+        "code": "5",
+        "name": "Third Base",
+        "type": "Infielder",
+        "abbreviation": "3B"
+       },
+       "credit": "f_putout"
+      }
+     ]
+    }
+   ],
+   "playEvents": [
+    {
+     "details": {
+      "call": {
+       "code": "B",
+       "description": "Ball"
+      },
+      "description": "Ball",
+      "code": "B",
+      "ballColor": "rgba(39, 161, 39, 1.0)",
+      "trailColor": "rgba(188, 0, 33, 1.0)",
+      "isInPlay": false,
+      "isStrike": false,
+      "isBall": true,
+      "type": {
+       "code": "FF",
+       "description": "Four-Seam Fastball"
+      },
+      "isOut": false,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 1,
+      "strikes": 0,
+      "outs": 2
+     },
+     "pitchData": {
+      "startSpeed": 93.1,
+      "endSpeed": 84.1,
+      "strikeZoneTop": 3.6140675078722,
+      "strikeZoneBottom": 1.60803895147664,
+      "coordinates": {
+       "aY": 32.3895992654925,
+       "aZ": -13.65634765920095,
+       "pfxX": -6.269979972693939,
+       "pfxZ": 10.090458059079866,
+       "pX": -0.5304459770587954,
+       "pZ": 3.9983278651528726,
+       "vX0": 8.44905461127471,
+       "vY0": -135.32873286224532,
+       "vZ0": -1.767389853403195,
+       "x": 137.22,
+       "y": 130.83,
+       "x0": -2.8936085756530057,
+       "y0": 50.005879416729705,
+       "z0": 5.6276990246083445,
+       "aX": -11.511150640469754
+      },
+      "breaks": {
+       "breakAngle": 33.6,
+       "breakLength": 3.6,
+       "breakY": 24.0,
+       "breakVertical": -13.9,
+       "breakVerticalInduced": 18.0,
+       "breakHorizontal": 9.4,
+       "spinRate": 2281,
+       "spinDirection": 226
+      },
+      "zone": 11,
+      "typeConfidence": 0.9,
+      "plateTime": 0.4063588125786848,
+      "extension": 5.98731504065442
+     },
+     "index": 0,
+     "playId": "b0ac4e2c-4304-464a-bb22-2080174b0aad",
+     "pitchNumber": 1,
+     "startTime": "2024-06-23T18:40:03.810Z",
+     "endTime": "2024-06-23T18:40:07.921Z",
+     "isPitch": true,
+     "type": "pitch"
+    },
+    {
+     "details": {
+      "call": {
+       "code": "X",
+       "description": "In play, out(s)"
+      },
+      "description": "In play, out(s)",
+      "code": "X",
+      "ballColor": "rgba(26, 86, 190, 1.0)",
+      "trailColor": "rgba(152, 0, 101, 1.0)",
+      "isInPlay": true,
+      "isStrike": false,
+      "isBall": false,
+      "type": {
+       "code": "FC",
+       "description": "Cutter"
+      },
+      "isOut": true,
+      "hasReview": false
+     },
+     "count": {
+      "balls": 1,
+      "strikes": 0,
+      "outs": 2
+     },
+     "pitchData": {
+      "startSpeed": 87.5,
+      "endSpeed": 80.6,
+      "strikeZoneTop": 3.53,
+      "strikeZoneBottom": 1.62,
+      "coordinates": {
+       "aY": 24.221119815588732,
+       "aZ": -23.82873397283147,
+       "pfxX": -0.382208898885702,
+       "pfxZ": 5.052353788783483,
+       "pX": 0.05454343258160812,
+       "pZ": 3.548630708083636,
+       "vX0": 8.008466355783387,
+       "vY0": -127.24425737923286,
+       "vZ0": -0.07540820950731186,
+       "x": 114.92,
+       "y": 142.97,
+       "x0": -3.0737429917871886,
+       "y0": 50.00470237333324,
+       "z0": 5.454485431148907,
+       "aX": -0.6322905409480098
+      },
+      "breaks": {
+       "breakAngle": 2.4,
+       "breakLength": 6.0,
+       "breakY": 24.0,
+       "breakVertical": -26.2,
+       "breakVerticalInduced": 9.4,
+       "breakHorizontal": -1.0,
+       "spinRate": 2424,
+       "spinDirection": 204
+      },
+      "zone": 2,
+      "typeConfidence": 0.91,
+      "plateTime": 0.42918800812700564,
+      "extension": 5.895964163245868
+     },
+     "hitData": {
+      "launchSpeed": 65.3,
+      "launchAngle": 68.0,
+      "totalDistance": 114.0,
+      "trajectory": "popup",
+      "hardness": "medium",
+      "location": "5",
+      "coordinates": {
+       "coordX": 108.28,
+       "coordY": 157.03
+      }
+     },
+     "index": 1,
+     "playId": "d4f85fb4-58eb-4ab4-8438-55f0b8f2614d",
+     "pitchNumber": 2,
+     "startTime": "2024-06-23T18:40:20.719Z",
+     "endTime": "2024-06-23T18:40:29.561Z",
+     "isPitch": true,
+     "type": "pitch"
+    }
+   ],
+   "playEndTime": "2024-06-23T18:40:29.561Z",
+   "atBatIndex": 2
+  }
+ ],
+ "currentPlay": {
+  "result": {
+   "type": "atBat",
+   "event": "Groundout",
+   "eventType": "field_out",
+   "description": "Nick Loftin grounds out, third baseman Ezequiel Duran to first baseman Nathaniel Lowe.",
+   "rbi": 0,
+   "awayScore": 0,
+   "homeScore": 4,
+   "isOut": true
+  },
+  "about": {
+   "atBatIndex": 64,
+   "halfInning": "top",
+   "isTopInning": true,
+   "inning": 9,
+   "startTime": "2024-06-23T20:41:24.584Z",
+   "endTime": "2024-06-23T20:42:25.748Z",
+   "isComplete": true,
+   "isScoringPlay": false,
+   "hasReview": false,
+   "hasOut": true,
+   "captivatingIndex": 0
+  },
+  "count": {
+   "balls": 3,
+   "strikes": 1,
+   "outs": 3
+  },
+  "matchup": {
+   "batter": {
+    "id": 679845,
+    "fullName": "Nick Loftin",
+    "link": "/api/v1/people/679845"
+   },
+   "batSide": {
+    "code": "R",
+    "description": "Right"
+   },
+   "pitcher": {
+    "id": 570632,
+    "fullName": "José Ureña",
+    "link": "/api/v1/people/570632"
+   },
+   "pitchHand": {
+    "code": "R",
+    "description": "Right"
+   },
+   "batterHotColdZones": [],
+   "pitcherHotColdZones": [],
+   "splits": {
+    "batter": "vs_RHP",
+    "pitcher": "vs_RHB",
+    "menOnBase": "Empty"
+   }
+  },
+  "pitchIndex": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "actionIndex": [],
+  "runnerIndex": [
+   0
+  ],
+  "runners": [
+   {
+    "movement": {
+     "originBase": null,
+     "start": null,
+     "end": null,
+     "outBase": "1B",
+     "isOut": true,
+     "outNumber": 3
+    },
+    "details": {
+     "event": "Groundout",
+     "eventType": "field_out",
+     "movementReason": null,
+     "runner": {
+      "id": 679845,
+      "fullName": "Nick Loftin",
+      "link": "/api/v1/people/679845"
+     },
+     "responsiblePitcher": null,
+     "isScoringEvent": false,
+     "rbi": false,
+     "earned": false,
+     "teamUnearned": false,
+     "playIndex": 4
+    },
+    "credits": [
+     {
+      "player": {
+       "id": 677649,
+       "link": "/api/v1/people/677649"
+      },
+      "position": {
+       "code": "5",
+       "name": "Third Base",
+       "type": "Infielder",
+       "abbreviation": "3B"
+      },
+      "credit": "f_assist"
+     },
+     {
+      "player": {
+       "id": 663993,
+       "link": "/api/v1/people/663993"
+      },
+      "position": {
+       "code": "3",
+       "name": "First Base",
+       "type": "Infielder",
+       "abbreviation": "1B"
+      },
+      "credit": "f_putout"
+     }
+    ]
+   }
+  ],
+  "playEvents": [
+   {
+    "details": {
+     "call": {
+      "code": "B",
+      "description": "Ball"
+     },
+     "description": "Ball",
+     "code": "B",
+     "ballColor": "rgba(39, 161, 39, 1.0)",
+     "trailColor": "rgba(0, 0, 254, 1.0)",
+     "isInPlay": false,
+     "isStrike": false,
+     "isBall": true,
+     "type": {
+      "code": "SL",
+      "description": "Slider"
+     },
+     "isOut": false,
+     "hasReview": false
+    },
+    "count": {
+     "balls": 1,
+     "strikes": 0,
+     "outs": 2
+    },
+    "pitchData": {
+     "startSpeed": 86.6,
+     "endSpeed": 79.5,
+     "strikeZoneTop": 3.51018879796739,
+     "strikeZoneBottom": 1.6962978187198,
+     "coordinates": {
+      "aY": 25.26680712374605,
+      "aZ": -22.05397872395755,
+      "pfxX": -2.748644866427016,
+      "pfxZ": 6.331770748900286,
+      "pX": 1.5967281412120982,
+      "pZ": 1.6816034030987266,
+      "vX0": 11.161416648017154,
+      "vY0": -125.56659758915261,
+      "vZ0": -5.148856448084093,
+      "x": 56.14,
+      "y": 193.38,
+      "x0": -2.5473702431338716,
+      "y0": 50.00189158626437,
+      "z0": 5.551534601407731,
+      "aX": -4.39364873904196
+     },
+     "breaks": {
+      "breakAngle": 6.0,
+      "breakLength": 6.0,
+      "breakY": 24.0,
+      "breakVertical": -26.3,
+      "breakVerticalInduced": 10.4,
+      "breakHorizontal": 2.4,
+      "spinRate": 2257,
+      "spinDirection": 194
+     },
+     "zone": 14,
+     "typeConfidence": 2.0,
+     "plateTime": 0.43609870021290265,
+     "extension": 5.963671789709071
+    },
+    "index": 0,
+    "playId": "119e38b1-a7b8-4780-bbb2-884a99a941a2",
+    "pitchNumber": 1,
+    "startTime": "2024-06-23T20:41:26.724Z",
+    "endTime": "2024-06-23T20:41:31.047Z",
+    "isPitch": true,
+    "type": "pitch"
+   },
+   {
+    "details": {
+     "call": {
+      "code": "C",
+      "description": "Called Strike"
+     },
+     "description": "Called Strike",
+     "code": "C",
+     "ballColor": "rgba(170, 21, 11, 1.0)",
+     "trailColor": "rgba(0, 0, 254, 1.0)",
+     "isInPlay": false,
+     "isStrike": true,
+     "isBall": false,
+     "type": {
+      "code": "SL",
+      "description": "Slider"
+     },
+     "isOut": false,
+     "hasReview": false
+    },
+    "count": {
+     "balls": 1,
+     "strikes": 1,
+     "outs": 2
+    },
+    "pitchData": {
+     "startSpeed": 87.5,
+     "endSpeed": 80.4,
+     "strikeZoneTop": 3.50536603934369,
+     "strikeZoneBottom": 1.64676598963538,
+     "coordinates": {
+      "aY": 24.99504567319077,
+      "aZ": -22.473931284632698,
+      "pfxX": -5.2719197219973,
+      "pfxZ": 5.908598602867567,
+      "pX": 0.6702260105713699,
+      "pZ": 2.346807297643645,
+      "vX0": 10.25395060788659,
+      "vY0": -127.01160382587203,
+      "vZ0": -3.752089367112734,
+      "x": 91.45,
+      "y": 175.42,
+      "x0": -2.7265553179015067,
+      "y0": 50.00017352701609,
+      "z0": 5.621629760320508,
+      "aX": -8.650191728930313
+     },
+     "breaks": {
+      "breakAngle": 15.6,
+      "breakLength": 6.0,
+      "breakY": 24.0,
+      "breakVertical": -25.7,
+      "breakVerticalInduced": 10.1,
+      "breakHorizontal": 7.3,
+      "spinRate": 2276,
+      "spinDirection": 203
+     },
+     "zone": 6,
+     "typeConfidence": 2.0,
+     "plateTime": 0.4305699248435806,
+     "extension": 6.059301204078289
+    },
+    "index": 1,
+    "playId": "d440cf23-7529-4733-b0dd-e0436e7b5482",
+    "pitchNumber": 2,
+    "startTime": "2024-06-23T20:41:38.652Z",
+    "endTime": "2024-06-23T20:41:42.246Z",
+    "isPitch": true,
+    "type": "pitch"
+   },
+   {
+    "details": {
+     "call": {
+      "code": "B",
+      "description": "Ball"
+     },
+     "description": "Ball",
+     "code": "B",
+     "ballColor": "rgba(39, 161, 39, 1.0)",
+     "trailColor": "rgba(0, 0, 254, 1.0)",
+     "isInPlay": false,
+     "isStrike": false,
+     "isBall": true,
+     "type": {
+      "code": "SL",
+      "description": "Slider"
+     },
+     "isOut": false,
+     "hasReview": false
+    },
+    "count": {
+     "balls": 2,
+     "strikes": 1,
+     "outs": 2
+    },
+    "pitchData": {
+     "startSpeed": 86.5,
+     "endSpeed": 79.7,
+     "strikeZoneTop": 3.50568822031949,
+     "strikeZoneBottom": 1.69187297404687,
+     "coordinates": {
+      "aY": 24.24421554846197,
+      "aZ": -21.927992907009994,
+      "pfxX": -1.8608906352338983,
+      "pfxZ": 6.37874422146181,
+      "pX": 0.990563604764448,
+      "pZ": 2.2678346748177365,
+      "vX0": 9.808704283086598,
+      "vY0": -125.64955084722044,
+      "vZ0": -3.9072184756374626,
+      "x": 79.24,
+      "y": 177.55,
+      "x0": -2.7136080844986816,
+      "y0": 50.005707294081034,
+      "z0": 5.613987056863857,
+      "aX": -2.9913167902349715
+     },
+     "breaks": {
+      "breakAngle": 3.6,
+      "breakLength": 6.0,
+      "breakY": 24.0,
+      "breakVertical": -25.7,
+      "breakVerticalInduced": 10.9,
+      "breakHorizontal": 1.2,
+      "spinRate": 2249,
+      "spinDirection": 189
+     },
+     "zone": 14,
+     "typeConfidence": 2.0,
+     "plateTime": 0.43506633409753936,
+     "extension": 5.967038114704882
+    },
+    "index": 2,
+    "playId": "41399426-8d70-4e9e-9bcd-37fa67bfcf81",
+    "pitchNumber": 3,
+    "startTime": "2024-06-23T20:41:50.307Z",
+    "endTime": "2024-06-23T20:41:55.828Z",
+    "isPitch": true,
+    "type": "pitch"
+   },
+   {
+    "details": {
+     "call": {
+      "code": "B",
+      "description": "Ball"
+     },
+     "description": "Ball",
+     "code": "B",
+     "ballColor": "rgba(39, 161, 39, 1.0)",
+     "trailColor": "rgba(50, 0, 221, 1.0)",
+     "isInPlay": false,
+     "isStrike": false,
+     "isBall": true,
+     "type": {
+      "code": "SI",
+      "description": "Sinker"
+     },
+     "isOut": false,
+     "hasReview": false
+    },
+    "count": {
+     "balls": 3,
+     "strikes": 1,
+     "outs": 2
+    },
+    "pitchData": {
+     "startSpeed": 95.6,
+     "endSpeed": 87.0,
+     "strikeZoneTop": 3.50760690065049,
+     "strikeZoneBottom": 1.69385653146856,
+     "coordinates": {
+      "aY": 32.645042888479,
+      "aZ": -19.690171371873113,
+      "pfxX": -10.259683426598036,
+      "pfxZ": 6.450671516065765,
+      "pX": -0.1271760709577395,
+      "pZ": 1.061214474992648,
+      "vX0": 10.131969960442877,
+      "vY0": -138.6266630377651,
+      "vZ0": -8.337740785466178,
+      "x": 121.85,
+      "y": 210.13,
+      "x0": -2.5066166995805523,
+      "y0": 50.00121912274948,
+      "z0": 5.4356757808207385,
+      "aX": -19.852489519863255
+     },
+     "breaks": {
+      "breakAngle": 39.6,
+      "breakLength": 6.0,
+      "breakY": 24.0,
+      "breakVertical": -20.3,
+      "breakVerticalInduced": 10.0,
+      "breakHorizontal": 16.3,
+      "spinRate": 2182,
+      "spinDirection": 231
+     },
+     "zone": 13,
+     "typeConfidence": 2.0,
+     "plateTime": 0.39596392989677387,
+     "extension": 6.355545599734488
+    },
+    "index": 3,
+    "playId": "0b5622b4-68a0-44ad-82f9-b4832c401bae",
+    "pitchNumber": 4,
+    "startTime": "2024-06-23T20:42:03.015Z",
+    "endTime": "2024-06-23T20:42:06.704Z",
+    "isPitch": true,
+    "type": "pitch"
+   },
+   {
+    "details": {
+     "call": {
+      "code": "X",
+      "description": "In play, out(s)"
+     },
+     "description": "In play, out(s)",
+     "code": "X",
+     "ballColor": "rgba(26, 86, 190, 1.0)",
+     "trailColor": "rgba(0, 85, 254, 1.0)",
+     "isInPlay": true,
+     "isStrike": false,
+     "isBall": false,
+     "type": {
+      "code": "CH",
+      "description": "Changeup"
+     },
+     "isOut": true,
+     "hasReview": false
+    },
+    "count": {
+     "balls": 3,
+     "strikes": 1,
+     "outs": 2
+    },
+    "pitchData": {
+     "startSpeed": 88.3,
+     "endSpeed": 80.7,
+     "strikeZoneTop": 3.59,
+     "strikeZoneBottom": 1.71,
+     "coordinates": {
+      "aY": 27.512519268552072,
+      "aZ": -24.87448708928758,
+      "pfxX": -7.827074262782507,
+      "pfxZ": 4.401508969415061,
+      "pX": -0.28946175351381226,
+      "pZ": 1.6390313170688742,
+      "vX0": 8.985814536251384,
+      "vY0": -128.22747504761983,
+      "vZ0": -4.921747589270033,
+      "x": 128.03,
+      "y": 194.53,
+      "x0": -2.8289466126888176,
+      "y0": 50.003510257223326,
+      "z0": 5.533911018242218,
+      "aX": -12.982588107412624
+     },
+     "breaks": {
+      "breakAngle": 22.8,
+      "breakLength": 7.2,
+      "breakY": 24.0,
+      "breakVertical": -28.3,
+      "breakVerticalInduced": 7.0,
+      "breakHorizontal": 12.0,
+      "spinRate": 2337,
+      "spinDirection": 213
+     },
+     "zone": 13,
+     "typeConfidence": 2.0,
+     "plateTime": 0.427814143466577,
+     "extension": 6.139990009014643
+    },
+    "hitData": {
+     "launchSpeed": 73.8,
+     "launchAngle": -3.0,
+     "totalDistance": 23.0,
+     "trajectory": "ground_ball",
+     "hardness": "medium",
+     "location": "5",
+     "coordinates": {
+      "coordX": 103.44,
+      "coordY": 167.91
+     }
+    },
+    "index": 4,
+    "playId": "9340f5b5-1e5b-4dbb-93ef-bd389c31d73f",
+    "pitchNumber": 5,
+    "startTime": "2024-06-23T20:42:17.985Z",
+    "endTime": "2024-06-23T20:42:25.748Z",
+    "isPitch": true,
+    "type": "pitch"
+   }
+  ],
+  "playEndTime": "2024-06-23T20:42:25.748Z",
+  "atBatIndex": 64
+ },
+ "scoringPlays": [
+  26,
+  29,
+  51
+ ],
+ "playsByInning": [
+  {
+   "startIndex": 0,
+   "endIndex": 6,
+   "top": [
+    0,
+    1,
+    2
+   ],
+   "bottom": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "hits": {
+    "away": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 1,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 679845,
+       "fullName": "Nick Loftin",
+       "link": "/api/v1/people/679845"
+      },
+      "coordinates": {
+       "x": 139.41,
+       "y": 183.78
+      },
+      "type": "O",
+      "description": "Groundout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 1,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 686469,
+       "fullName": "Vinnie Pasquantino",
+       "link": "/api/v1/people/686469"
+      },
+      "coordinates": {
+       "x": 108.28,
+       "y": 157.03
+      },
+      "type": "O",
+      "description": "Pop Out"
+     }
+    ],
+    "home": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 1,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 543760,
+       "fullName": "Marcus Semien",
+       "link": "/api/v1/people/543760"
+      },
+      "coordinates": {
+       "x": 110.7,
+       "y": 211.42
+      },
+      "type": "O",
+      "description": "Pop Out"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 1,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 608369,
+       "fullName": "Corey Seager",
+       "link": "/api/v1/people/608369"
+      },
+      "coordinates": {
+       "x": 211.52,
+       "y": 121.71
+      },
+      "type": "H",
+      "description": "Double"
+     }
+    ]
+   }
+  },
+  {
+   "startIndex": 7,
+   "endIndex": 13,
+   "top": [
+    7,
+    8,
+    9
+   ],
+   "bottom": [
+    10,
+    11,
+    12,
+    13
+   ],
+   "hits": {
+    "away": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 2,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 521692,
+       "fullName": "Salvador Perez",
+       "link": "/api/v1/people/521692"
+      },
+      "coordinates": {
+       "x": 171.14,
+       "y": 123.78
+      },
+      "type": "O",
+      "description": "Flyout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 2,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 592669,
+       "fullName": "Hunter Renfroe",
+       "link": "/api/v1/people/592669"
+      },
+      "coordinates": {
+       "x": 125.2,
+       "y": 198.13
+      },
+      "type": "O",
+      "description": "Pop Out"
+     }
+    ],
+    "home": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 2,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 663993,
+       "fullName": "Nathaniel Lowe",
+       "link": "/api/v1/people/663993"
+      },
+      "coordinates": {
+       "x": 138.5,
+       "y": 150.98
+      },
+      "type": "O",
+      "description": "Groundout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 2,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 694671,
+       "fullName": "Wyatt Langford",
+       "link": "/api/v1/people/694671"
+      },
+      "coordinates": {
+       "x": 110.82,
+       "y": 142.07
+      },
+      "type": "O",
+      "description": "Groundout"
+     }
+    ]
+   }
+  },
+  {
+   "startIndex": 14,
+   "endIndex": 20,
+   "top": [
+    14,
+    15,
+    16
+   ],
+   "bottom": [
+    17,
+    18,
+    19,
+    20
+   ],
+   "hits": {
+    "away": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 3,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 676369,
+       "fullName": "Nelson Velázquez",
+       "link": "/api/v1/people/676369"
+      },
+      "coordinates": {
+       "x": 96.74,
+       "y": 171.38
+      },
+      "type": "O",
+      "description": "Groundout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 3,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 672580,
+       "fullName": "Maikel Garcia",
+       "link": "/api/v1/people/672580"
+      },
+      "coordinates": {
+       "x": 184.13,
+       "y": 98.95
+      },
+      "type": "O",
+      "description": "Lineout"
+     }
+    ],
+    "home": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 3,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 665750,
+       "fullName": "Leody Taveras",
+       "link": "/api/v1/people/665750"
+      },
+      "coordinates": {
+       "x": 159.05,
+       "y": 169.72
+      },
+      "type": "E",
+      "description": "Field Error"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 3,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 543760,
+       "fullName": "Marcus Semien",
+       "link": "/api/v1/people/543760"
+      },
+      "coordinates": {
+       "x": 200.15,
+       "y": 105.65
+      },
+      "type": "O",
+      "description": "Flyout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 3,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 608369,
+       "fullName": "Corey Seager",
+       "link": "/api/v1/people/608369"
+      },
+      "coordinates": {
+       "x": 162.71,
+       "y": 47.08
+      },
+      "type": "O",
+      "description": "Flyout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 3,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 669701,
+       "fullName": "Josh Smith",
+       "link": "/api/v1/people/669701"
+      },
+      "coordinates": {
+       "x": 126.11,
+       "y": 63.27
+      },
+      "type": "O",
+      "description": "Flyout"
+     }
+    ]
+   }
+  },
+  {
+   "startIndex": 21,
+   "endIndex": 30,
+   "top": [
+    21,
+    22,
+    23
+   ],
+   "bottom": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+   ],
+   "hits": {
+    "away": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 4,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 679845,
+       "fullName": "Nick Loftin",
+       "link": "/api/v1/people/679845"
+      },
+      "coordinates": {
+       "x": 109.49,
+       "y": 155.82
+      },
+      "type": "O",
+      "description": "Groundout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 4,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 677951,
+       "fullName": "Bobby Witt Jr.",
+       "link": "/api/v1/people/677951"
+      },
+      "coordinates": {
+       "x": 132.46,
+       "y": 189.67
+      },
+      "type": "O",
+      "description": "Pop Out"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 4,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 686469,
+       "fullName": "Vinnie Pasquantino",
+       "link": "/api/v1/people/686469"
+      },
+      "coordinates": {
+       "x": 70.59,
+       "y": 123.55
+      },
+      "type": "O",
+      "description": "Flyout"
+     }
+    ],
+    "home": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 4,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 663993,
+       "fullName": "Nathaniel Lowe",
+       "link": "/api/v1/people/663993"
+      },
+      "coordinates": {
+       "x": 95.65,
+       "y": 164.87
+      },
+      "type": "H",
+      "description": "Single"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 4,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 694671,
+       "fullName": "Wyatt Langford",
+       "link": "/api/v1/people/694671"
+      },
+      "coordinates": {
+       "x": 167.0,
+       "y": 64.6
+      },
+      "type": "H",
+      "description": "Double"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 4,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 677649,
+       "fullName": "Ezequiel Duran",
+       "link": "/api/v1/people/677649"
+      },
+      "coordinates": {
+       "x": 114.93,
+       "y": 162.47
+      },
+      "type": "O",
+      "description": "Groundout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 4,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 668800,
+       "fullName": "Andrew Knizner",
+       "link": "/api/v1/people/668800"
+      },
+      "coordinates": {
+       "x": 149.99,
+       "y": 151.59
+      },
+      "type": "O",
+      "description": "Pop Out"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 4,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 665750,
+       "fullName": "Leody Taveras",
+       "link": "/api/v1/people/665750"
+      },
+      "coordinates": {
+       "x": 85.81,
+       "y": 131.07
+      },
+      "type": "H",
+      "description": "Single"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 4,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 543760,
+       "fullName": "Marcus Semien",
+       "link": "/api/v1/people/543760"
+      },
+      "coordinates": {
+       "x": 114.32,
+       "y": 151.59
+      },
+      "type": "O",
+      "description": "Groundout"
+     }
+    ]
+   }
+  },
+  {
+   "startIndex": 31,
+   "endIndex": 39,
+   "top": [
+    31,
+    32,
+    33,
+    34
+   ],
+   "bottom": [
+    35,
+    36,
+    37,
+    38,
+    39
+   ],
+   "hits": {
+    "away": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 5,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 521692,
+       "fullName": "Salvador Perez",
+       "link": "/api/v1/people/521692"
+      },
+      "coordinates": {
+       "x": 129.5,
+       "y": 69.5
+      },
+      "type": "O",
+      "description": "Flyout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 5,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 669004,
+       "fullName": "MJ Melendez",
+       "link": "/api/v1/people/669004"
+      },
+      "coordinates": {
+       "x": 159.83,
+       "y": 46.19
+      },
+      "type": "H",
+      "description": "Double"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 5,
+      "pitcher": {
+       "id": 453286,
+       "fullName": "Max Scherzer",
+       "link": "/api/v1/people/453286"
+      },
+      "batter": {
+       "id": 676369,
+       "fullName": "Nelson Velázquez",
+       "link": "/api/v1/people/676369"
+      },
+      "coordinates": {
+       "x": 142.74,
+       "y": 154.41
+      },
+      "type": "O",
+      "description": "Groundout"
+     }
+    ],
+    "home": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 5,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 608369,
+       "fullName": "Corey Seager",
+       "link": "/api/v1/people/608369"
+      },
+      "coordinates": {
+       "x": 206.2,
+       "y": 121.37
+      },
+      "type": "H",
+      "description": "Single"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 5,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 669701,
+       "fullName": "Josh Smith",
+       "link": "/api/v1/people/669701"
+      },
+      "coordinates": {
+       "x": 136.08,
+       "y": 187.25
+      },
+      "type": "O",
+      "description": "Pop Out"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 5,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 666969,
+       "fullName": "Adolis García",
+       "link": "/api/v1/people/666969"
+      },
+      "coordinates": {
+       "x": 69.5,
+       "y": 104.62
+      },
+      "type": "H",
+      "description": "Single"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 5,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 663993,
+       "fullName": "Nathaniel Lowe",
+       "link": "/api/v1/people/663993"
+      },
+      "coordinates": {
+       "x": 143.23,
+       "y": 135.71
+      },
+      "type": "O",
+      "description": "Lineout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 5,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 694671,
+       "fullName": "Wyatt Langford",
+       "link": "/api/v1/people/694671"
+      },
+      "coordinates": {
+       "x": 178.22,
+       "y": 102.68
+      },
+      "type": "O",
+      "description": "Flyout"
+     }
+    ]
+   }
+  },
+  {
+   "startIndex": 40,
+   "endIndex": 47,
+   "top": [
+    40,
+    41,
+    42
+   ],
+   "bottom": [
+    43,
+    44,
+    45,
+    46,
+    47
+   ],
+   "hits": {
+    "away": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 6,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 672580,
+       "fullName": "Maikel Garcia",
+       "link": "/api/v1/people/672580"
+      },
+      "coordinates": {
+       "x": 137.45,
+       "y": 99.31
+      },
+      "type": "H",
+      "description": "Single"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 6,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 679845,
+       "fullName": "Nick Loftin",
+       "link": "/api/v1/people/679845"
+      },
+      "coordinates": {
+       "x": 110.09,
+       "y": 152.8
+      },
+      "type": "O",
+      "description": "Groundout"
+     }
+    ],
+    "home": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 6,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 677649,
+       "fullName": "Ezequiel Duran",
+       "link": "/api/v1/people/677649"
+      },
+      "coordinates": {
+       "x": 169.33,
+       "y": 184.23
+      },
+      "type": "O",
+      "description": "Pop Out"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 6,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 665750,
+       "fullName": "Leody Taveras",
+       "link": "/api/v1/people/665750"
+      },
+      "coordinates": {
+       "x": 76.47,
+       "y": 107.61
+      },
+      "type": "H",
+      "description": "Single"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 6,
+      "pitcher": {
+       "id": 679525,
+       "fullName": "Alec Marsh",
+       "link": "/api/v1/people/679525"
+      },
+      "batter": {
+       "id": 543760,
+       "fullName": "Marcus Semien",
+       "link": "/api/v1/people/543760"
+      },
+      "coordinates": {
+       "x": 40.84,
+       "y": 110.47
+      },
+      "type": "H",
+      "description": "Double"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 6,
+      "pitcher": {
+       "id": 669674,
+       "fullName": "Sam Long",
+       "link": "/api/v1/people/669674"
+      },
+      "batter": {
+       "id": 608369,
+       "fullName": "Corey Seager",
+       "link": "/api/v1/people/608369"
+      },
+      "coordinates": {
+       "x": 140.68,
+       "y": 38.3
+      },
+      "type": "O",
+      "description": "Flyout"
+     }
+    ]
+   }
+  },
+  {
+   "startIndex": 48,
+   "endIndex": 55,
+   "top": [
+    48,
+    49,
+    50
+   ],
+   "bottom": [
+    51,
+    52,
+    53,
+    54,
+    55
+   ],
+   "hits": {
+    "away": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 7,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 677951,
+       "fullName": "Bobby Witt Jr.",
+       "link": "/api/v1/people/677951"
+      },
+      "coordinates": {
+       "x": 85.84,
+       "y": 143.69
+      },
+      "type": "O",
+      "description": "Groundout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 7,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 686469,
+       "fullName": "Vinnie Pasquantino",
+       "link": "/api/v1/people/686469"
+      },
+      "coordinates": {
+       "x": 130.09,
+       "y": 80.39
+      },
+      "type": "O",
+      "description": "Lineout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 7,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 521692,
+       "fullName": "Salvador Perez",
+       "link": "/api/v1/people/521692"
+      },
+      "coordinates": {
+       "x": 94.38,
+       "y": 164.88
+      },
+      "type": "O",
+      "description": "Groundout"
+     }
+    ],
+    "home": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 7,
+      "pitcher": {
+       "id": 669674,
+       "fullName": "Sam Long",
+       "link": "/api/v1/people/669674"
+      },
+      "batter": {
+       "id": 669701,
+       "fullName": "Josh Smith",
+       "link": "/api/v1/people/669701"
+      },
+      "coordinates": {
+       "x": 210.89,
+       "y": 69.12
+      },
+      "type": "H",
+      "description": "Home Run"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 7,
+      "pitcher": {
+       "id": 669674,
+       "fullName": "Sam Long",
+       "link": "/api/v1/people/669674"
+      },
+      "batter": {
+       "id": 666969,
+       "fullName": "Adolis García",
+       "link": "/api/v1/people/666969"
+      },
+      "coordinates": {
+       "x": 127.94,
+       "y": 187.87
+      },
+      "type": "O",
+      "description": "Groundout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 7,
+      "pitcher": {
+       "id": 669674,
+       "fullName": "Sam Long",
+       "link": "/api/v1/people/669674"
+      },
+      "batter": {
+       "id": 663993,
+       "fullName": "Nathaniel Lowe",
+       "link": "/api/v1/people/663993"
+      },
+      "coordinates": {
+       "x": 78.66,
+       "y": 131.04
+      },
+      "type": "H",
+      "description": "Single"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 7,
+      "pitcher": {
+       "id": 672578,
+       "fullName": "Carlos Hernández",
+       "link": "/api/v1/people/672578"
+      },
+      "batter": {
+       "id": 694671,
+       "fullName": "Wyatt Langford",
+       "link": "/api/v1/people/694671"
+      },
+      "coordinates": {
+       "x": 106.97,
+       "y": 101.71
+      },
+      "type": "O",
+      "description": "Flyout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 7,
+      "pitcher": {
+       "id": 672578,
+       "fullName": "Carlos Hernández",
+       "link": "/api/v1/people/672578"
+      },
+      "batter": {
+       "id": 677649,
+       "fullName": "Ezequiel Duran",
+       "link": "/api/v1/people/677649"
+      },
+      "coordinates": {
+       "x": 110.09,
+       "y": 150.98
+      },
+      "type": "O",
+      "description": "Forceout"
+     }
+    ]
+   }
+  },
+  {
+   "startIndex": 56,
+   "endIndex": 61,
+   "top": [
+    56,
+    57,
+    58
+   ],
+   "bottom": [
+    59,
+    60,
+    61
+   ],
+   "hits": {
+    "away": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 8,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 669004,
+       "fullName": "MJ Melendez",
+       "link": "/api/v1/people/669004"
+      },
+      "coordinates": {
+       "x": 129.45,
+       "y": 177.14
+      },
+      "type": "O",
+      "description": "Groundout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 8,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 676369,
+       "fullName": "Nelson Velázquez",
+       "link": "/api/v1/people/676369"
+      },
+      "coordinates": {
+       "x": 109.49,
+       "y": 150.98
+      },
+      "type": "O",
+      "description": "Grounded Into DP"
+     }
+    ],
+    "home": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 8,
+      "pitcher": {
+       "id": 672578,
+       "fullName": "Carlos Hernández",
+       "link": "/api/v1/people/672578"
+      },
+      "batter": {
+       "id": 668800,
+       "fullName": "Andrew Knizner",
+       "link": "/api/v1/people/668800"
+      },
+      "coordinates": {
+       "x": 196.04,
+       "y": 137.79
+      },
+      "type": "O",
+      "description": "Flyout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 8,
+      "pitcher": {
+       "id": 672578,
+       "fullName": "Carlos Hernández",
+       "link": "/api/v1/people/672578"
+      },
+      "batter": {
+       "id": 665750,
+       "fullName": "Leody Taveras",
+       "link": "/api/v1/people/665750"
+      },
+      "coordinates": {
+       "x": 71.41,
+       "y": 155.82
+      },
+      "type": "O",
+      "description": "Flyout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 140,
+       "name": "Texas Rangers",
+       "link": "/api/v1/teams/140"
+      },
+      "inning": 8,
+      "pitcher": {
+       "id": 672578,
+       "fullName": "Carlos Hernández",
+       "link": "/api/v1/people/672578"
+      },
+      "batter": {
+       "id": 543760,
+       "fullName": "Marcus Semien",
+       "link": "/api/v1/people/543760"
+      },
+      "coordinates": {
+       "x": 59.39,
+       "y": 86.02
+      },
+      "type": "O",
+      "description": "Flyout"
+     }
+    ]
+   }
+  },
+  {
+   "startIndex": 62,
+   "endIndex": 64,
+   "top": [
+    62,
+    63,
+    64
+   ],
+   "bottom": [],
+   "hits": {
+    "away": [
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 9,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 672580,
+       "fullName": "Maikel Garcia",
+       "link": "/api/v1/people/672580"
+      },
+      "coordinates": {
+       "x": 165.39,
+       "y": 57.03
+      },
+      "type": "O",
+      "description": "Flyout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 9,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 680118,
+       "fullName": "Dairon Blanco",
+       "link": "/api/v1/people/680118"
+      },
+      "coordinates": {
+       "x": 113.12,
+       "y": 151.59
+      },
+      "type": "O",
+      "description": "Groundout"
+     },
+     {
+      "team": {
+       "springLeague": {
+        "id": 114,
+        "name": "Cactus League",
+        "link": "/api/v1/league/114",
+        "abbreviation": "CL"
+       },
+       "allStarStatus": "N",
+       "id": 118,
+       "name": "Kansas City Royals",
+       "link": "/api/v1/teams/118"
+      },
+      "inning": 9,
+      "pitcher": {
+       "id": 570632,
+       "fullName": "José Ureña",
+       "link": "/api/v1/people/570632"
+      },
+      "batter": {
+       "id": 679845,
+       "fullName": "Nick Loftin",
+       "link": "/api/v1/people/679845"
+      },
+      "coordinates": {
+       "x": 103.44,
+       "y": 167.91
+      },
+      "type": "O",
+      "description": "Groundout"
+     }
+    ],
+    "home": []
+   }
+  }
+ ]
+}

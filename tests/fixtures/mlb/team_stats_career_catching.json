@@ -1,0 +1,132 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "career"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 19599,
+      "runs": 204415,
+      "homeRuns": 43516,
+      "strikeOuts": 263767,
+      "baseOnBalls": 155686,
+      "intentionalWalks": 10822,
+      "hits": 395202,
+      "hitByPitch": 12739,
+      "avg": ".256",
+      "atBats": 1541431,
+      "obp": ".327",
+      "slg": ".399",
+      "ops": ".726",
+      "caughtStealing": 12704,
+      "stolenBases": 25212,
+      "stolenBasePercentage": ".665",
+      "caughtStealingPercentage": ".335",
+      "earnedRuns": 50518,
+      "battersFaced": 1737601,
+      "gamesPitched": 19599,
+      "hitBatsmen": 12739,
+      "wildPitches": 14513,
+      "pickoffs": 672,
+      "totalBases": 614475,
+      "strikeoutWalkRatio": "1.69",
+      "catchersInterference": 258,
+      "sacBunts": 14828,
+      "sacFlies": 12655,
+      "passedBall": 6582
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "rank": 1
+    },
+    {
+     "stat": {
+      "gamesPlayed": 22113,
+      "runs": 211109,
+      "homeRuns": 41140,
+      "strikeOuts": 284302,
+      "baseOnBalls": 155024,
+      "intentionalWalks": 16067,
+      "hits": 421566,
+      "hitByPitch": 13744,
+      "avg": ".261",
+      "atBats": 1613914,
+      "obp": ".329",
+      "slg": ".399",
+      "ops": ".728",
+      "caughtStealing": 13152,
+      "stolenBases": 28649,
+      "stolenBasePercentage": ".685",
+      "caughtStealingPercentage": ".315",
+      "earnedRuns": 57825,
+      "battersFaced": 1815018,
+      "gamesPitched": 22113,
+      "hitBatsmen": 13744,
+      "wildPitches": 14600,
+      "pickoffs": 774,
+      "totalBases": 644104,
+      "strikeoutWalkRatio": "1.83",
+      "catchersInterference": 359,
+      "sacBunts": 19377,
+      "sacFlies": 12600,
+      "passedBall": 12726
+     },
+     "team": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "rank": 2
+    },
+    {
+     "stat": {
+      "gamesPlayed": 9170,
+      "runs": 158471,
+      "homeRuns": 33912,
+      "strikeOuts": 239843,
+      "baseOnBalls": 119849,
+      "intentionalWalks": 12287,
+      "hits": 314194,
+      "hitByPitch": 9702,
+      "avg": ".255",
+      "atBats": 1230313,
+      "obp": ".324",
+      "slg": ".396",
+      "ops": ".720",
+      "caughtStealing": 10434,
+      "stolenBases": 25434,
+      "stolenBasePercentage": ".709",
+      "caughtStealingPercentage": ".291",
+      "earnedRuns": 36057,
+      "battersFaced": 1384423,
+      "gamesPitched": 9170,
+      "hitBatsmen": 9702,
+      "wildPitches": 11036,
+      "pickoffs": 490,
+      "totalBases": 487124,
+      "strikeoutWalkRatio": "2.00",
+      "catchersInterference": 269,
+      "sacBunts": 14759,
+      "sacFlies": 9531,
+      "passedBall": 2643
+     },
+     "team": {
+      "id": 135,
+      "link": "/api/v1/teams/135"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

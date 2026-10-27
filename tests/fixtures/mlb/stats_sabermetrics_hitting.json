@@ -1,0 +1,173 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "sabermetrics"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 742,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "woba": 0.475734,
+      "wRaa": 93.807,
+      "wRc": 176.16,
+      "wRcPlus": 218.656,
+      "rar": 108.587,
+      "war": 11.21462,
+      "batting": 95.5802,
+      "fielding": -6.22702,
+      "baseRunning": -0.477543,
+      "positional": -3.43107,
+      "wLeague": 1.85563,
+      "replacement": 21.2868,
+      "spd": 3.92011,
+      "ubr": 2.29999995231628,
+      "wGdp": -1.0,
+      "wSb": 0.366269
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 592450,
+      "fullName": "Aaron Judge",
+      "link": "/api/v1/people/592450",
+      "firstName": "Aaron",
+      "lastName": "Judge"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "woba": 0.409738,
+      "wRaa": 56.8131,
+      "wRc": 139.751,
+      "wRcPlus": 169.095,
+      "rar": 101.345,
+      "war": 10.46672,
+      "batting": 56.0526,
+      "fielding": 10.4526,
+      "baseRunning": 4.47226,
+      "positional": 7.06104,
+      "wLeague": 1.86881,
+      "replacement": 21.438,
+      "spd": 7.20232,
+      "ubr": 3.0,
+      "wGdp": 2.4,
+      "wSb": -0.0728204
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 677951,
+      "fullName": "Bobby Witt Jr.",
+      "link": "/api/v1/people/677951",
+      "firstName": "Bobby",
+      "lastName": "Witt"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 2,
+     "position": {
+      "code": "6",
+      "name": "Shortstop",
+      "type": "Infielder",
+      "abbreviation": "SS"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "woba": 0.430549,
+      "wRaa": 70.8202,
+      "wRc": 156.331,
+      "wRcPlus": 179.437,
+      "rar": 86.4285,
+      "war": 8.92614,
+      "batting": 69.4384,
+      "fielding": 0.0,
+      "baseRunning": 9.75101,
+      "positional": -17.1759,
+      "wLeague": 2.31185,
+      "replacement": 22.1032,
+      "spd": 8.10565,
+      "ubr": 1.89999985694885,
+      "wGdp": 2.2,
+      "wSb": 8.7988
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "Y",
+      "name": "Two-Way Player",
+      "type": "Two-Way Player",
+      "abbreviation": "TWP"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [],
+   "playerPool": "ALL"
+  }
+ ]
+}

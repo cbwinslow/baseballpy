@@ -1,0 +1,38 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 582413,
+    "fullName": "Fernando Alcala",
+    "link": "/api/v1/people/582413"
+   },
+   "jerseyNumber": "",
+   "job": "Official Scorer",
+   "jobId": "SCOR",
+   "title": "Official Scorer"
+  },
+  {
+   "person": {
+    "id": 434138,
+    "fullName": "Billy Altman",
+    "link": "/api/v1/people/434138"
+   },
+   "jerseyNumber": "",
+   "job": "Official Scorer",
+   "jobId": "SCOR",
+   "title": "Official Scorer"
+  },
+  {
+   "person": {
+    "id": 679924,
+    "fullName": "Kenny Ayres",
+    "link": "/api/v1/people/679924"
+   },
+   "jerseyNumber": "",
+   "job": "Official Scorer",
+   "jobId": "SCOR",
+   "title": "Official Scorer"
+  }
+ ]
+}

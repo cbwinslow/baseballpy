@@ -1,0 +1,108 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "vsOpponents"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "assists": 1364,
+      "putOuts": 4344,
+      "errors": 66,
+      "chances": 5774,
+      "fielding": ".989",
+      "rangeFactorPerGame": "35.23",
+      "rangeFactorPer9Inn": "3.94",
+      "innings": "13032.0",
+      "games": 162,
+      "doublePlays": 114,
+      "triplePlays": 0,
+      "throwingErrors": 30
+     },
+     "team": {
+      "id": 133,
+      "name": "Athletics",
+      "link": "/api/v1/teams/133"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "assists": 1415,
+      "putOuts": 4346,
+      "errors": 76,
+      "chances": 5837,
+      "fielding": ".987",
+      "rangeFactorPerGame": "35.56",
+      "rangeFactorPer9Inn": "3.98",
+      "innings": "13038.0",
+      "games": 162,
+      "doublePlays": 139,
+      "triplePlays": 0,
+      "throwingErrors": 42
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "rank": 2
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "assists": 1310,
+      "putOuts": 4300,
+      "errors": 76,
+      "chances": 5686,
+      "fielding": ".987",
+      "rangeFactorPerGame": "34.63",
+      "rangeFactorPer9Inn": "3.91",
+      "innings": "12900.0",
+      "games": 162,
+      "doublePlays": 104,
+      "triplePlays": 0,
+      "throwingErrors": 36
+     },
+     "team": {
+      "id": 140,
+      "name": "Texas Rangers",
+      "link": "/api/v1/teams/140"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

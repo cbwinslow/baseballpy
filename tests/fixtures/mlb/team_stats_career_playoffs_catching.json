@@ -1,0 +1,57 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "careerPlayoffs"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "totalSplits": 2891,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "1901",
+     "stat": {
+      "gamesPlayed": 137,
+      "earnedRuns": 0,
+      "gamesPitched": 137
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "rank": 1
+    },
+    {
+     "season": "1902",
+     "stat": {
+      "gamesPlayed": 137,
+      "earnedRuns": 0,
+      "gamesPitched": 137
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "rank": 2
+    },
+    {
+     "season": "1903",
+     "stat": {
+      "gamesPlayed": 137,
+      "earnedRuns": 0,
+      "gamesPitched": 137
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

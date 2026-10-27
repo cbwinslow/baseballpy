@@ -12,6 +12,8 @@ Global rules for every dataset: all upstream fields are kept (typed columns + `_
 
 ---
 
+> **Status 2026-10-27 (goal 4).** Section 1 and 2 were probed live: `docs/mlb_probe.json` (170 datasets: {'ok': 163, 'empty': 3, 'unsupported': 4}) and `docs/savant_probe.json` (32 leaderboard variants with data, first season per variant). Deviations from this target list are recorded in `docs/sources/mlb_api.md` (declarative endpoints, `unsupported` table) and `docs/sources/statcast.md` (variants table, routes probed and not ingested). Not implemented: live streamer rewrite, `/v1/people/{id}/stats`, award recipients, people search/changes, game boxscore players.
+
 ## 1. MLB Stats API — `https://statsapi.mlb.com/api` (8 req/s, HTTP/2)
 
 ### 1.1 Reference / meta (flat, refresh 24 h) — dataset `mlb_ref_<name>`

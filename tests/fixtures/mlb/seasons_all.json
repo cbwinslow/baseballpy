@@ -1,0 +1,50 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "seasons": [
+  {
+   "seasonId": "1876",
+   "hasWildcard": false,
+   "preSeasonStartDate": "1876-01-01",
+   "seasonStartDate": "1876-04-22",
+   "regularSeasonStartDate": "1876-04-22",
+   "regularSeasonEndDate": "1876-10-09",
+   "seasonEndDate": "1876-10-09",
+   "offseasonStartDate": "1876-10-10",
+   "offSeasonEndDate": "1877-04-29",
+   "seasonLevelGamedayType": "S",
+   "gameLevelGamedayType": "S",
+   "qualifierPlateAppearances": 3.1,
+   "qualifierOutsPitched": 3.0
+  },
+  {
+   "seasonId": "1877",
+   "hasWildcard": false,
+   "preSeasonStartDate": "1877-01-01",
+   "seasonStartDate": "1877-04-30",
+   "regularSeasonStartDate": "1877-04-30",
+   "regularSeasonEndDate": "1877-10-06",
+   "seasonEndDate": "1877-10-06",
+   "offseasonStartDate": "1877-10-07",
+   "offSeasonEndDate": "1878-04-30",
+   "seasonLevelGamedayType": "S",
+   "gameLevelGamedayType": "S",
+   "qualifierPlateAppearances": 3.1,
+   "qualifierOutsPitched": 3.0
+  },
+  {
+   "seasonId": "1878",
+   "hasWildcard": false,
+   "preSeasonStartDate": "1878-01-01",
+   "seasonStartDate": "1878-05-01",
+   "regularSeasonStartDate": "1878-05-01",
+   "regularSeasonEndDate": "1878-09-30",
+   "seasonEndDate": "1878-09-30",
+   "offseasonStartDate": "1878-10-01",
+   "offSeasonEndDate": "1879-04-30",
+   "seasonLevelGamedayType": "S",
+   "gameLevelGamedayType": "S",
+   "qualifierPlateAppearances": 3.1,
+   "qualifierOutsPitched": 3.0
+  }
+ ]
+}

@@ -9,11 +9,16 @@ from typing import Literal
 import pyarrow as pa
 
 from baseballpy.core.datasets import DATASETS, DatasetSpec, register
+from baseballpy.core.schema_tools import snake
 from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_SCHEMAS
 from baseballpy.sources.lahman.schema import LAHMAN_PRIMARY_KEYS, LAHMAN_SCHEMAS
 from baseballpy.sources.mlb_api import schemas as mlb
+from baseballpy.sources.mlb_api.endpoints import SUPPORTED as MLB_ENDPOINTS
+from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
 from baseballpy.sources.retrosheet import schema as retro
 from baseballpy.sources.retrosheet.schema import RETROSHEET_FLAT_KEYS, RETROSHEET_FLAT_SCHEMAS
+from baseballpy.sources.statcast.lb_catalog import SUPPORTED as SAVANT_LEADERBOARDS
+from baseballpy.sources.statcast.lb_schema import LEADERBOARD_SCHEMAS
 from baseballpy.sources.statcast.schema import STATCAST_SCHEMA
 
 Partition = Literal["season", "none"]
@@ -53,9 +58,21 @@ def register_all() -> dict[str, DatasetSpec]:
         STATCAST_SCHEMA,
         ("game_pk", "at_bat_number", "pitch_number"),
         "Pitch-level Statcast search results.",
-        "sources/statcast.md#1-granular-pitch-level-search-endpoint-statcast_searchcsv",
+        "sources/statcast.md#1-pitch-level-search-statcast_searchcsv---dataset-pitches",
         "season",
     )
+
+    for board in SAVANT_LEADERBOARDS:
+        _add(
+            "statcast",
+            board.dataset,
+            f"statcast_{board.dataset}",
+            LEADERBOARD_SCHEMAS[board.slug],
+            board.keys,
+            board.description,
+            "sources/statcast.md#2-leaderboards-leaderboardroute",
+            "none" if board.year_style == "none" else "season",
+        )
 
     mlb_doc = "sources/mlb_api.md"
     for name, schema, keys, partition, anchor, desc in (
@@ -141,6 +158,20 @@ def register_all() -> dict[str, DatasetSpec]:
             desc,
             f"{mlb_doc}#{anchor}",
             partition,
+        )
+
+    for endpoint in MLB_ENDPOINTS:
+        if endpoint.name not in MLB_SCHEMAS:
+            continue  # no live data when the schemas were generated (see docs/mlb_probe.json)
+        _add(
+            "mlb_api",
+            endpoint.name,
+            f"mlb_{endpoint.name}",
+            MLB_SCHEMAS[endpoint.name],
+            tuple(snake(k) for k in endpoint.keys),
+            endpoint.description,
+            "sources/mlb_api.md#declarative-endpoints",
+            "season" if endpoint.partitioned else "none",
         )
 
     for table, schema in LAHMAN_SCHEMAS.items():

@@ -1,0 +1,2411 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "statsSingleSeason"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 191958,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "1997",
+     "stat": {
+      "age": 29,
+      "gamesPlayed": 4,
+      "gamesStarted": 1,
+      "assists": 0,
+      "putOuts": 3,
+      "errors": 0,
+      "chances": 3,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.75",
+      "rangeFactorPer9Inn": "1.93",
+      "innings": "14.1",
+      "games": 4,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 110285,
+      "fullName": "Eric Anthony",
+      "link": "/api/v1/people/110285",
+      "firstName": "Eric",
+      "lastName": "Anthony"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "1996",
+     "stat": {
+      "age": 28,
+      "gamesPlayed": 9,
+      "gamesStarted": 9,
+      "assists": 2,
+      "putOuts": 13,
+      "errors": 0,
+      "chances": 15,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.67",
+      "rangeFactorPer9Inn": "2.11",
+      "innings": "64.0",
+      "games": 9,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 110285,
+      "fullName": "Eric Anthony",
+      "link": "/api/v1/people/110285",
+      "firstName": "Eric",
+      "lastName": "Anthony"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "1996",
+     "stat": {
+      "age": 28,
+      "gamesPlayed": 14,
+      "gamesStarted": 14,
+      "assists": 0,
+      "putOuts": 13,
+      "errors": 0,
+      "chances": 13,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.93",
+      "rangeFactorPer9Inn": "1.15",
+      "innings": "102.0",
+      "games": 14,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "player": {
+      "id": 110285,
+      "fullName": "Eric Anthony",
+      "link": "/api/v1/people/110285",
+      "firstName": "Eric",
+      "lastName": "Anthony"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [
+    {
+     "season": "1979",
+     "stat": {
+      "age": 26,
+      "gamesPlayed": 8,
+      "gamesStarted": 0,
+      "assists": 4,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 4,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.50",
+      "rangeFactorPer9Inn": "2.25",
+      "innings": "16.2",
+      "games": 8,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 114,
+      "link": "/api/v1/teams/114"
+     },
+     "player": {
+      "id": 110224,
+      "link": "/api/v1/people/110224",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1908",
+     "stat": {
+      "age": 34,
+      "gamesPlayed": 3,
+      "gamesStarted": 0,
+      "assists": 0,
+      "putOuts": 3,
+      "errors": 0,
+      "chances": 3,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.00",
+      "games": 3,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 145,
+      "link": "/api/v1/teams/145"
+     },
+     "player": {
+      "id": 110244,
+      "link": "/api/v1/people/110244",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "1995",
+     "stat": {
+      "age": 32,
+      "gamesPlayed": 6,
+      "gamesStarted": 4,
+      "assists": 3,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 4,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.67",
+      "rangeFactorPer9Inn": "1.44",
+      "innings": "25.1",
+      "games": 6,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 118,
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 110254,
+      "link": "/api/v1/people/110254",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1919",
+     "stat": {
+      "age": 21,
+      "gamesPlayed": 3,
+      "gamesStarted": 0,
+      "assists": 4,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 4,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.33",
+      "rangeFactorPer9Inn": "2.57",
+      "innings": "14.0",
+      "games": 3,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "player": {
+      "id": 110256,
+      "link": "/api/v1/people/110256",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1885",
+     "stat": {
+      "age": 26,
+      "gamesPlayed": 1,
+      "assists": 3,
+      "putOuts": 2,
+      "errors": 0,
+      "chances": 5,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "5.00",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 224,
+      "link": "/api/v1/teams/224"
+     },
+     "player": {
+      "id": 110277,
+      "link": "/api/v1/people/110277",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "5",
+      "name": "Third Base",
+      "type": "Infielder",
+      "abbreviation": "3B"
+     }
+    },
+    {
+     "season": "1937",
+     "stat": {
+      "age": 23,
+      "gamesPlayed": 4,
+      "gamesStarted": 0,
+      "assists": 4,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 4,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.00",
+      "rangeFactorPer9Inn": "4.00",
+      "innings": "9.0",
+      "games": 4,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 138,
+      "link": "/api/v1/teams/138"
+     },
+     "player": {
+      "id": 110271,
+      "link": "/api/v1/people/110271",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1988",
+     "stat": {
+      "age": 31,
+      "gamesPlayed": 7,
+      "gamesStarted": 3,
+      "assists": 3,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 4,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.57",
+      "rangeFactorPer9Inn": "1.06",
+      "innings": "34.0",
+      "games": 7,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 118,
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 110251,
+      "link": "/api/v1/people/110251",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1889",
+     "stat": {
+      "age": 20,
+      "gamesPlayed": 5,
+      "gamesStarted": 2,
+      "assists": 7,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 7,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.40",
+      "rangeFactorPer9Inn": "2.74",
+      "innings": "23.0",
+      "games": 5,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 110232,
+      "link": "/api/v1/people/110232",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1939",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 11,
+      "gamesStarted": 1,
+      "assists": 5,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 6,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.55",
+      "rangeFactorPer9Inn": "3.38",
+      "innings": "16.0",
+      "games": 11,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 138,
+      "link": "/api/v1/teams/138"
+     },
+     "player": {
+      "id": 110271,
+      "link": "/api/v1/people/110271",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1990",
+     "stat": {
+      "age": 27,
+      "gamesPlayed": 4,
+      "gamesStarted": 3,
+      "assists": 2,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 2,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.50",
+      "rangeFactorPer9Inn": "1.00",
+      "innings": "18.0",
+      "games": 4,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 120,
+      "link": "/api/v1/teams/120"
+     },
+     "player": {
+      "id": 110254,
+      "link": "/api/v1/people/110254",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1944",
+     "stat": {
+      "age": 31,
+      "gamesPlayed": 2,
+      "gamesStarted": 0,
+      "assists": 1,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 1,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.50",
+      "games": 2,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 110282,
+      "link": "/api/v1/people/110282",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "6",
+      "name": "Shortstop",
+      "type": "Infielder",
+      "abbreviation": "SS"
+     }
+    },
+    {
+     "season": "1946",
+     "stat": {
+      "age": 28,
+      "gamesPlayed": 15,
+      "gamesStarted": 13,
+      "assists": 25,
+      "putOuts": 8,
+      "errors": 0,
+      "chances": 33,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "2.20",
+      "rangeFactorPer9Inn": "2.91",
+      "innings": "102.0",
+      "games": 15,
+      "doublePlays": 1,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 111,
+      "link": "/api/v1/teams/111"
+     },
+     "player": {
+      "id": 110260,
+      "link": "/api/v1/people/110260",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "5",
+      "name": "Third Base",
+      "type": "Infielder",
+      "abbreviation": "3B"
+     }
+    },
+    {
+     "season": "2003",
+     "stat": {
+      "age": 33,
+      "gamesPlayed": 21,
+      "gamesStarted": 12,
+      "assists": 16,
+      "putOuts": 3,
+      "errors": 0,
+      "chances": 19,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.90",
+      "rangeFactorPer9Inn": "1.80",
+      "innings": "95.0",
+      "games": 21,
+      "doublePlays": 2,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 110209,
+      "link": "/api/v1/people/110209",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1984",
+     "stat": {
+      "age": 27,
+      "gamesPlayed": 7,
+      "gamesStarted": 1,
+      "assists": 4,
+      "putOuts": 2,
+      "errors": 0,
+      "chances": 6,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.86",
+      "rangeFactorPer9Inn": "3.38",
+      "innings": "16.0",
+      "games": 7,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 140,
+      "link": "/api/v1/teams/140"
+     },
+     "player": {
+      "id": 110241,
+      "link": "/api/v1/people/110241",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "5",
+      "name": "Third Base",
+      "type": "Infielder",
+      "abbreviation": "3B"
+     }
+    },
+    {
+     "season": "1957",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 1,
+      "gamesStarted": 0,
+      "assists": 0,
+      "putOuts": 2,
+      "errors": 0,
+      "chances": 2,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "2.00",
+      "rangeFactorPer9Inn": "2.57",
+      "innings": "7.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 110240,
+      "link": "/api/v1/people/110240",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "1955",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 10,
+      "gamesStarted": 5,
+      "assists": 0,
+      "putOuts": 12,
+      "errors": 0,
+      "chances": 12,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.20",
+      "rangeFactorPer9Inn": "2.00",
+      "innings": "54.0",
+      "games": 10,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 110222,
+      "link": "/api/v1/people/110222",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "1978",
+     "stat": {
+      "age": 27,
+      "gamesPlayed": 2,
+      "gamesStarted": 2,
+      "assists": 0,
+      "putOuts": 4,
+      "errors": 0,
+      "chances": 4,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "2.00",
+      "rangeFactorPer9Inn": "2.40",
+      "innings": "15.0",
+      "games": 2,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 110,
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 110248,
+      "link": "/api/v1/people/110248",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "1961",
+     "stat": {
+      "age": 22,
+      "gamesPlayed": 25,
+      "gamesStarted": 0,
+      "assists": 7,
+      "putOuts": 4,
+      "errors": 0,
+      "chances": 11,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.44",
+      "rangeFactorPer9Inn": "2.61",
+      "innings": "38.2",
+      "games": 25,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 138,
+      "link": "/api/v1/teams/138"
+     },
+     "player": {
+      "id": 110250,
+      "link": "/api/v1/people/110250",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1975",
+     "stat": {
+      "age": 24,
+      "gamesPlayed": 31,
+      "gamesStarted": 23,
+      "assists": 1,
+      "putOuts": 52,
+      "errors": 0,
+      "chances": 53,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.71",
+      "rangeFactorPer9Inn": "2.43",
+      "innings": "196.0",
+      "games": 31,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 110248,
+      "link": "/api/v1/people/110248",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "1996",
+     "stat": {
+      "age": 24,
+      "gamesPlayed": 6,
+      "gamesStarted": 5,
+      "assists": 0,
+      "putOuts": 13,
+      "errors": 0,
+      "chances": 13,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "2.17",
+      "rangeFactorPer9Inn": "2.60",
+      "innings": "45.2",
+      "games": 6,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 108,
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 110236,
+      "link": "/api/v1/people/110236",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "1894",
+     "stat": {
+      "age": 20,
+      "gamesPlayed": 1,
+      "assists": 1,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 2,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "2.00",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 110244,
+      "link": "/api/v1/people/110244",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "5",
+      "name": "Third Base",
+      "type": "Infielder",
+      "abbreviation": "3B"
+     }
+    },
+    {
+     "season": "1983",
+     "stat": {
+      "age": 26,
+      "gamesPlayed": 1,
+      "gamesStarted": 0,
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "assists": 0,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 1,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.00",
+      "rangeFactorPer9Inn": "9.00",
+      "innings": "1.0",
+      "games": 1,
+      "passedBall": 0,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "catcherERA": "9.00",
+      "catchersInterference": 0,
+      "wildPitches": 0,
+      "throwingErrors": 0,
+      "pickoffs": 0
+     },
+     "team": {
+      "id": 140,
+      "link": "/api/v1/teams/140"
+     },
+     "player": {
+      "id": 110241,
+      "link": "/api/v1/people/110241",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "season": "1940",
+     "stat": {
+      "age": 26,
+      "gamesPlayed": 6,
+      "gamesStarted": 0,
+      "assists": 5,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 5,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.83",
+      "rangeFactorPer9Inn": "3.75",
+      "innings": "12.0",
+      "games": 6,
+      "doublePlays": 2,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 114,
+      "link": "/api/v1/teams/114"
+     },
+     "player": {
+      "id": 110271,
+      "link": "/api/v1/people/110271",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1972",
+     "stat": {
+      "age": 24,
+      "gamesPlayed": 21,
+      "gamesStarted": 0,
+      "assists": 1,
+      "putOuts": 2,
+      "errors": 0,
+      "chances": 3,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.14",
+      "rangeFactorPer9Inn": "1.69",
+      "innings": "16.0",
+      "games": 21,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 118,
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 110280,
+      "link": "/api/v1/people/110280",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1894",
+     "stat": {
+      "age": 42,
+      "gamesPlayed": 1,
+      "assists": 1,
+      "putOuts": 4,
+      "errors": 0,
+      "chances": 5,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "5.00",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 112,
+      "link": "/api/v1/teams/112"
+     },
+     "player": {
+      "id": 110284,
+      "link": "/api/v1/people/110284",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "4",
+      "name": "Second Base",
+      "type": "Infielder",
+      "abbreviation": "2B"
+     }
+    },
+    {
+     "season": "1993",
+     "stat": {
+      "age": 29,
+      "gamesPlayed": 3,
+      "gamesStarted": 3,
+      "assists": 0,
+      "putOuts": 5,
+      "errors": 0,
+      "chances": 5,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.67",
+      "rangeFactorPer9Inn": "1.88",
+      "innings": "24.0",
+      "games": 3,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 110,
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 110229,
+      "link": "/api/v1/people/110229",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "1999",
+     "stat": {
+      "age": 35,
+      "gamesPlayed": 9,
+      "gamesStarted": 9,
+      "assists": 0,
+      "putOuts": 17,
+      "errors": 0,
+      "chances": 17,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.89",
+      "rangeFactorPer9Inn": "2.01",
+      "innings": "76.0",
+      "games": 9,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 110,
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 110229,
+      "link": "/api/v1/people/110229",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    },
+    {
+     "season": "1991",
+     "stat": {
+      "age": 27,
+      "gamesPlayed": 9,
+      "gamesStarted": 3,
+      "assists": 0,
+      "putOuts": 11,
+      "errors": 0,
+      "chances": 11,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.22",
+      "rangeFactorPer9Inn": "2.54",
+      "innings": "39.0",
+      "games": 9,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 110,
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 110229,
+      "link": "/api/v1/people/110229",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "1903",
+     "stat": {
+      "age": 29,
+      "gamesPlayed": 3,
+      "gamesStarted": 3,
+      "assists": 1,
+      "putOuts": 3,
+      "errors": 0,
+      "chances": 4,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.33",
+      "rangeFactorPer9Inn": "1.44",
+      "innings": "25.0",
+      "games": 3,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 110,
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 110244,
+      "link": "/api/v1/people/110244",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "1965",
+     "stat": {
+      "age": 32,
+      "gamesPlayed": 2,
+      "gamesStarted": 1,
+      "assists": 0,
+      "putOuts": 12,
+      "errors": 0,
+      "chances": 12,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "6.00",
+      "rangeFactorPer9Inn": "13.50",
+      "innings": "8.1",
+      "games": 2,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 112,
+      "link": "/api/v1/teams/112"
+     },
+     "player": {
+      "id": 110199,
+      "link": "/api/v1/people/110199",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "3",
+      "name": "First Base",
+      "type": "Infielder",
+      "abbreviation": "1B"
+     }
+    },
+    {
+     "season": "1981",
+     "stat": {
+      "age": 24,
+      "gamesPlayed": 2,
+      "gamesStarted": 0,
+      "assists": 3,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 3,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.50",
+      "rangeFactorPer9Inn": "9.00",
+      "innings": "3.0",
+      "games": 2,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 136,
+      "link": "/api/v1/teams/136"
+     },
+     "player": {
+      "id": 110241,
+      "link": "/api/v1/people/110241",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "5",
+      "name": "Third Base",
+      "type": "Infielder",
+      "abbreviation": "3B"
+     }
+    },
+    {
+     "season": "2006",
+     "stat": {
+      "age": 39,
+      "gamesPlayed": 11,
+      "gamesStarted": 10,
+      "assists": 0,
+      "putOuts": 19,
+      "errors": 0,
+      "chances": 19,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.73",
+      "rangeFactorPer9Inn": "2.16",
+      "innings": "79.0",
+      "games": 11,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 137,
+      "link": "/api/v1/teams/137"
+     },
+     "player": {
+      "id": 110189,
+      "link": "/api/v1/people/110189",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    },
+    {
+     "season": "1990",
+     "stat": {
+      "age": 29,
+      "gamesPlayed": 2,
+      "gamesStarted": 0,
+      "assists": 1,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 1,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.50",
+      "rangeFactorPer9Inn": "1.50",
+      "innings": "6.2",
+      "games": 2,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 137,
+      "link": "/api/v1/teams/137"
+     },
+     "player": {
+      "id": 110231,
+      "link": "/api/v1/people/110231",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "5",
+      "name": "Third Base",
+      "type": "Infielder",
+      "abbreviation": "3B"
+     }
+    },
+    {
+     "season": "1978",
+     "stat": {
+      "age": 21,
+      "gamesPlayed": 1,
+      "gamesStarted": 0,
+      "assists": 0,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 1,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.00",
+      "rangeFactorPer9Inn": "0.00",
+      "innings": "0.1",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 108,
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 110241,
+      "link": "/api/v1/people/110241",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "4",
+      "name": "Second Base",
+      "type": "Infielder",
+      "abbreviation": "2B"
+     }
+    },
+    {
+     "season": "1958",
+     "stat": {
+      "age": 28,
+      "gamesPlayed": 5,
+      "gamesStarted": 1,
+      "assists": 2,
+      "putOuts": 0,
+      "errors": 0,
+      "chances": 2,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.40",
+      "rangeFactorPer9Inn": "1.13",
+      "innings": "16.0",
+      "games": 5,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 110242,
+      "link": "/api/v1/people/110242",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1960",
+     "stat": {
+      "age": 28,
+      "gamesPlayed": 18,
+      "gamesStarted": 16,
+      "assists": 1,
+      "putOuts": 28,
+      "errors": 0,
+      "chances": 29,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.61",
+      "rangeFactorPer9Inn": "1.99",
+      "innings": "131.2",
+      "games": 18,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 113,
+      "link": "/api/v1/teams/113"
+     },
+     "player": {
+      "id": 110240,
+      "link": "/api/v1/people/110240",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    },
+    {
+     "season": "1957",
+     "stat": {
+      "age": 27,
+      "gamesPlayed": 1,
+      "gamesStarted": 0,
+      "assists": 0,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 1,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.00",
+      "rangeFactorPer9Inn": "1.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 110222,
+      "link": "/api/v1/people/110222",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "1996",
+     "stat": {
+      "age": 24,
+      "gamesPlayed": 3,
+      "gamesStarted": 1,
+      "assists": 0,
+      "putOuts": 5,
+      "errors": 0,
+      "chances": 5,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.67",
+      "rangeFactorPer9Inn": "3.00",
+      "innings": "15.0",
+      "games": 3,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 108,
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 110236,
+      "link": "/api/v1/people/110236",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "season": "1997",
+     "stat": {
+      "age": 35,
+      "gamesPlayed": 6,
+      "gamesStarted": 1,
+      "assists": 0,
+      "putOuts": 2,
+      "errors": 0,
+      "chances": 2,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.33",
+      "rangeFactorPer9Inn": "1.29",
+      "innings": "14.0",
+      "games": 6,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 136,
+      "link": "/api/v1/teams/136"
+     },
+     "player": {
+      "id": 110214,
+      "link": "/api/v1/people/110214",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "1901",
+     "stat": {
+      "age": 27,
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 0,
+      "putOuts": 3,
+      "errors": 0,
+      "chances": 3,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "3.00",
+      "rangeFactorPer9Inn": "3.38",
+      "innings": "8.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 110,
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 110244,
+      "link": "/api/v1/people/110244",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "1999",
+     "stat": {
+      "age": 27,
+      "gamesPlayed": 32,
+      "gamesStarted": 31,
+      "assists": 1,
+      "putOuts": 54,
+      "errors": 0,
+      "chances": 55,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.72",
+      "rangeFactorPer9Inn": "1.78",
+      "innings": "278.2",
+      "games": 32,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 108,
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 110236,
+      "link": "/api/v1/people/110236",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    },
+    {
+     "season": "1989",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 2,
+      "gamesStarted": 1,
+      "assists": 0,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 1,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.50",
+      "rangeFactorPer9Inn": "0.90",
+      "innings": "10.0",
+      "games": 2,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 108,
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 110246,
+      "link": "/api/v1/people/110246",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "1992",
+     "stat": {
+      "age": 28,
+      "gamesPlayed": 3,
+      "gamesStarted": 3,
+      "assists": 0,
+      "putOuts": 6,
+      "errors": 0,
+      "chances": 6,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "2.00",
+      "rangeFactorPer9Inn": "2.45",
+      "innings": "22.0",
+      "games": 3,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 110,
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 110229,
+      "link": "/api/v1/people/110229",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "season": "1989",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 7,
+      "gamesStarted": 3,
+      "assists": 7,
+      "putOuts": 5,
+      "errors": 0,
+      "chances": 12,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.71",
+      "rangeFactorPer9Inn": "3.48",
+      "innings": "31.0",
+      "games": 7,
+      "doublePlays": 2,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 108,
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 110246,
+      "link": "/api/v1/people/110246",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "4",
+      "name": "Second Base",
+      "type": "Infielder",
+      "abbreviation": "2B"
+     }
+    },
+    {
+     "season": "1915",
+     "stat": {
+      "age": 22,
+      "gamesPlayed": 4,
+      "gamesStarted": 1,
+      "assists": 5,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 6,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "1.50",
+      "rangeFactorPer9Inn": "3.18",
+      "innings": "17.2",
+      "games": 4,
+      "doublePlays": 1,
+      "triplePlays": 0
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "player": {
+      "id": 110223,
+      "link": "/api/v1/people/110223",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1987",
+     "stat": {
+      "age": 24,
+      "gamesPlayed": 8,
+      "gamesStarted": 0,
+      "assists": 3,
+      "putOuts": 2,
+      "errors": 0,
+      "chances": 5,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.63",
+      "rangeFactorPer9Inn": "4.09",
+      "innings": "11.1",
+      "games": 8,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 140,
+      "link": "/api/v1/teams/140"
+     },
+     "player": {
+      "id": 110254,
+      "link": "/api/v1/people/110254",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1986",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 5,
+      "gamesStarted": 2,
+      "assists": 8,
+      "putOuts": 4,
+      "errors": 0,
+      "chances": 12,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "2.40",
+      "rangeFactorPer9Inn": "4.91",
+      "innings": "22.0",
+      "games": 5,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 110231,
+      "link": "/api/v1/people/110231",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "4",
+      "name": "Second Base",
+      "type": "Infielder",
+      "abbreviation": "2B"
+     }
+    },
+    {
+     "season": "1979",
+     "stat": {
+      "age": 22,
+      "gamesPlayed": 3,
+      "gamesStarted": 1,
+      "caughtStealing": 0,
+      "stolenBases": 4,
+      "stolenBasePercentage": "1.000",
+      "caughtStealingPercentage": ".000",
+      "assists": 0,
+      "putOuts": 6,
+      "errors": 0,
+      "chances": 6,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "2.00",
+      "rangeFactorPer9Inn": "4.91",
+      "innings": "11.2",
+      "games": 3,
+      "passedBall": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "catcherERA": "1.54",
+      "catchersInterference": 0,
+      "wildPitches": 3,
+      "throwingErrors": 0,
+      "pickoffs": 0
+     },
+     "team": {
+      "id": 108,
+      "link": "/api/v1/teams/108"
+     },
+     "player": {
+      "id": 110241,
+      "link": "/api/v1/people/110241",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "season": "1991",
+     "stat": {
+      "age": 21,
+      "gamesPlayed": 10,
+      "gamesStarted": 9,
+      "assists": 7,
+      "putOuts": 1,
+      "errors": 0,
+      "chances": 8,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.80",
+      "rangeFactorPer9Inn": "1.29",
+      "innings": "56.1",
+      "games": 10,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 145,
+      "link": "/api/v1/teams/145"
+     },
+     "player": {
+      "id": 110209,
+      "link": "/api/v1/people/110209",
+      "active": false
+     },
+     "league": {
+      "id": 103,
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1986",
+     "stat": {
+      "age": 29,
+      "gamesPlayed": 15,
+      "gamesStarted": 5,
+      "assists": 4,
+      "putOuts": 8,
+      "errors": 0,
+      "chances": 12,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "0.80",
+      "rangeFactorPer9Inn": "2.20",
+      "innings": "49.2",
+      "games": 15,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 121,
+      "link": "/api/v1/teams/121"
+     },
+     "player": {
+      "id": 110251,
+      "link": "/api/v1/people/110251",
+      "active": false
+     },
+     "league": {
+      "id": 104,
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    }
+   ]
+  }
+ ]
+}

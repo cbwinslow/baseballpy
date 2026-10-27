@@ -1,0 +1,171 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "vsOpponents"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "groundOuts": 1483,
+      "airOuts": 1486,
+      "runs": 929,
+      "doubles": 290,
+      "triples": 38,
+      "homeRuns": 221,
+      "strikeOuts": 1118,
+      "baseOnBalls": 563,
+      "intentionalWalks": 12,
+      "hits": 1604,
+      "hitByPitch": 66,
+      "avg": ".285",
+      "atBats": 5623,
+      "obp": ".354",
+      "slg": ".468",
+      "ops": ".822",
+      "caughtStealing": 40,
+      "stolenBases": 141,
+      "stolenBasePercentage": ".779",
+      "caughtStealingPercentage": ".221",
+      "groundIntoDoublePlay": 145,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 24164,
+      "plateAppearances": 6322,
+      "totalBases": 2633,
+      "rbi": 877,
+      "leftOnBase": 1135,
+      "sacBunts": 18,
+      "sacFlies": 50,
+      "babip": ".319",
+      "groundOutsToAirouts": "1.00",
+      "catchersInterference": 2,
+      "atBatsPerHomeRun": "25.44"
+     },
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "groundOuts": 1405,
+      "airOuts": 1470,
+      "runs": 788,
+      "doubles": 331,
+      "triples": 44,
+      "homeRuns": 181,
+      "strikeOuts": 1313,
+      "baseOnBalls": 481,
+      "intentionalWalks": 32,
+      "hits": 1468,
+      "hitByPitch": 54,
+      "avg": ".262",
+      "atBats": 5596,
+      "obp": ".324",
+      "slg": ".434",
+      "ops": ".758",
+      "caughtStealing": 25,
+      "stolenBases": 109,
+      "stolenBasePercentage": ".813",
+      "caughtStealingPercentage": ".187",
+      "groundIntoDoublePlay": 122,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 23618,
+      "plateAppearances": 6195,
+      "totalBases": 2430,
+      "rbi": 759,
+      "leftOnBase": 1096,
+      "sacBunts": 12,
+      "sacFlies": 48,
+      "babip": ".310",
+      "groundOutsToAirouts": "0.96",
+      "catchersInterference": 4,
+      "atBatsPerHomeRun": "30.92"
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "rank": 2
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "groundOuts": 1377,
+      "airOuts": 1475,
+      "runs": 764,
+      "doubles": 262,
+      "triples": 27,
+      "homeRuns": 168,
+      "strikeOuts": 1314,
+      "baseOnBalls": 473,
+      "intentionalWalks": 11,
+      "hits": 1429,
+      "hitByPitch": 43,
+      "avg": ".258",
+      "atBats": 5537,
+      "obp": ".319",
+      "slg": ".406",
+      "ops": ".725",
+      "caughtStealing": 30,
+      "stolenBases": 132,
+      "stolenBasePercentage": ".815",
+      "caughtStealingPercentage": ".185",
+      "groundIntoDoublePlay": 131,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 23850,
+      "plateAppearances": 6114,
+      "totalBases": 2249,
+      "rbi": 720,
+      "leftOnBase": 1068,
+      "sacBunts": 14,
+      "sacFlies": 44,
+      "babip": ".308",
+      "groundOutsToAirouts": "0.93",
+      "catchersInterference": 3,
+      "atBatsPerHomeRun": "32.96"
+     },
+     "team": {
+      "id": 120,
+      "name": "Washington Nationals",
+      "link": "/api/v1/teams/120"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

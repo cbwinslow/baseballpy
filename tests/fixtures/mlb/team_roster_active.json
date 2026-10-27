@@ -1,0 +1,62 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 677076,
+    "fullName": "Clayton Andrews",
+    "link": "/api/v1/people/677076"
+   },
+   "jerseyNumber": "74",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "MIN",
+    "description": "Minor League Contract"
+   }
+  },
+  {
+   "person": {
+    "id": 690925,
+    "fullName": "Clayton Beeter",
+    "link": "/api/v1/people/690925"
+   },
+   "jerseyNumber": "85",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "40M",
+    "description": "Forty Man"
+   }
+  },
+  {
+   "person": {
+    "id": 542932,
+    "fullName": "Jon Berti",
+    "link": "/api/v1/people/542932"
+   },
+   "jerseyNumber": "19",
+   "position": {
+    "code": "5",
+    "name": "Third Base",
+    "type": "Infielder",
+    "abbreviation": "3B"
+   },
+   "status": {
+    "code": "40M",
+    "description": "Forty Man"
+   }
+  }
+ ],
+ "link": "/api/v1/teams/147/roster",
+ "teamId": 147,
+ "rosterType": "fullSeason"
+}

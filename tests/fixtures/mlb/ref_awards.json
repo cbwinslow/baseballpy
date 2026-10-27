@@ -1,0 +1,1022 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "awards": [
+  {
+   "id": "MLBHOF",
+   "name": "Hall Of Fame",
+   "description": "Member of Hall of Fame",
+   "sortOrder": 1,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_108",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_109",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_110",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_111",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_112",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_113",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_114",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_115",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_116",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_117",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_118",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_119",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_120",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_121",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_133",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_134",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_135",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_136",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_137",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_138",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_139",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_140",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_141",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_142",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_143",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_144",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_145",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_146",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_147",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "RETIREDUNI_158",
+   "name": "Uniform number retired",
+   "sortOrder": 4,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "ALMVP",
+   "name": "AL MVP",
+   "sortOrder": 7,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLMVP",
+   "name": "NL MVP",
+   "sortOrder": 7,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "ALAWARD",
+   "name": "The American League Award",
+   "sortOrder": 8,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": false
+  },
+  {
+   "id": "ALCHALM",
+   "name": "The Chalmers Award (AL)",
+   "sortOrder": 8,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": false
+  },
+  {
+   "id": "NLCHALM",
+   "name": "The Chalmers Award (NL)",
+   "sortOrder": 8,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": false
+  },
+  {
+   "id": "NLAWARD",
+   "name": "The National League Award",
+   "sortOrder": 8,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": false
+  },
+  {
+   "id": "ALCY",
+   "name": "AL Cy Young",
+   "sortOrder": 11,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLCY",
+   "name": "NL Cy Young",
+   "sortOrder": 11,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "MLBCY",
+   "name": "MLB Cy Young",
+   "sortOrder": 12,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": false
+  },
+  {
+   "id": "ALROY",
+   "name": "Jackie Robinson AL Rookie of the Year",
+   "sortOrder": 14,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLROY",
+   "name": "Jackie Robinson NL Rookie of the Year",
+   "sortOrder": 14,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "MLBROY",
+   "name": "MLB Rookie of the Year",
+   "sortOrder": 15,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": false
+  },
+  {
+   "id": "WSMVP",
+   "name": "Willie Mays World Series MVP",
+   "description": "World Series MVP",
+   "sortOrder": 17,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "notes": "World Series MVP",
+   "active": true
+  },
+  {
+   "id": "WSCHAMP",
+   "name": "World Series Championship",
+   "description": "players that won world series championships",
+   "sortOrder": 18,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "WSCHAMPMGR",
+   "name": "World Series Champion Manager",
+   "sortOrder": 19,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "ALMOY",
+   "name": "AL Manager of the Year",
+   "sortOrder": 22,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLMOY",
+   "name": "NL Manager of the Year",
+   "sortOrder": 22,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "ASMVP",
+   "name": "Ted Williams All-Star MVP",
+   "sortOrder": 25,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "ALAS",
+   "name": "AL All-Star",
+   "description": "Made roster of all-star team",
+   "sortOrder": 26,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "notes": "Made roster of AL All-Star team",
+   "active": true
+  },
+  {
+   "id": "NLAS",
+   "name": "NL All-Star",
+   "description": "Made roster of all-star team",
+   "sortOrder": 26,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "notes": "Made roster of NL All-Star team",
+   "active": true
+  },
+  {
+   "id": "ALCSMVP",
+   "name": "ALCS MVP",
+   "description": "ALCS MVP",
+   "sortOrder": 29,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "notes": "AL Championship Series MVP",
+   "active": true
+  },
+  {
+   "id": "NLCSMVP",
+   "name": "NLCS MVP",
+   "description": "NLCS MVP",
+   "sortOrder": 29,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "notes": "NL Championship Series MVP",
+   "active": true
+  },
+  {
+   "id": "ALSS",
+   "name": "AL Silver Slugger",
+   "sortOrder": 30,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLSS",
+   "name": "NL Silver Slugger",
+   "sortOrder": 30,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "MLBAFIRST",
+   "name": "All-MLB First Team",
+   "sortOrder": 31,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "MLBSECOND",
+   "name": "All-MLB Second Team",
+   "sortOrder": 32,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "MLAGG",
+   "name": "MLB Rawlings All-Time Gold Glove",
+   "sortOrder": 33,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": false
+  },
+  {
+   "id": "ALPG",
+   "name": "Rawlings AL Platinum Glove",
+   "sortOrder": 34,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLPG",
+   "name": "Rawlings NL Platinum Glove",
+   "sortOrder": 34,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "ALGG",
+   "name": "Rawlings AL Gold Glove",
+   "sortOrder": 35,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLGG",
+   "name": "Rawlings NL Gold Glove",
+   "sortOrder": 35,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "MLGG",
+   "name": "Rawlings MLB Gold Glove",
+   "sortOrder": 36,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": false
+  },
+  {
+   "id": "WMLBDPOY",
+   "name": "Wilson MLB Defensive Player of the Year",
+   "sortOrder": 38,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": false
+  },
+  {
+   "id": "WALDPOY",
+   "name": "Wilson AL Defensive Player of the Year",
+   "sortOrder": 39,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": false
+  },
+  {
+   "id": "WNLDPOY",
+   "name": "Wilson NL Defensive Player of the Year",
+   "sortOrder": 39,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": false
+  },
+  {
+   "id": "WDPOY",
+   "name": "Wilson Defensive Player of the Year",
+   "sortOrder": 40,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": false
+  },
+  {
+   "id": "WTDPOY",
+   "name": "Wilson Team Defensive Player of the Year",
+   "sortOrder": 41,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": false
+  },
+  {
+   "id": "ALCPOY",
+   "name": "AL Comeback Player of the Year",
+   "sortOrder": 43,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLCPOY",
+   "name": "NL Comeback Player of the Year",
+   "sortOrder": 43,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "HRDERBYWIN",
+   "name": "Home Run Derby Winner",
+   "sortOrder": 46,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "HRDERBY",
+   "name": "Home Run Derby Participant",
+   "sortOrder": 47,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "MLBCOMHA",
+   "name": "Commissioner’s Historic Achievement Award",
+   "sortOrder": 49,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "MLBRC",
+   "name": "Roberto Clemente Award",
+   "sortOrder": 50,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "HUTCH",
+   "name": "The Hutch Award",
+   "sortOrder": 51,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "ALHAA",
+   "name": "AL Hank Aaron Award",
+   "sortOrder": 52,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLHAA",
+   "name": "NL Hank Aaron Award",
+   "sortOrder": 52,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "BABERUTH",
+   "name": "Babe Ruth Award",
+   "description": "Postseason MVP",
+   "sortOrder": 53,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "LOUBROCK",
+   "name": "Lou Brock Award",
+   "sortOrder": 54,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "LOUGEHRIG",
+   "name": "Lou Gehrig Award",
+   "sortOrder": 54,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "WARRENSPAHN",
+   "name": "Warren Spahn Award",
+   "sortOrder": 55,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "TONYCONIGLIARO",
+   "name": "Tony Conigliaro Award",
+   "sortOrder": 56,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "BOBFELLER",
+   "name": "Bob Feller Act of Valor Award",
+   "sortOrder": 57,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "DHOY",
+   "name": "Edgar Martinez Outstanding DH of the Year",
+   "sortOrder": 58,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "ALREL",
+   "name": "Mariano Rivera AL Reliever of the Year",
+   "description": "Mariano Rivera American League Reliever of the Year",
+   "sortOrder": 59,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLREL",
+   "name": "Trevor Hoffman NL Reliever of the Year",
+   "description": "Trevor Hoffman National League Reliever of the Year",
+   "sortOrder": 59,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "MLBEXECOY",
+   "name": "MLB Executive of the Year",
+   "sortOrder": 60,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "MLBAENT",
+   "name": "MLB Awards Entertainer of the Year",
+   "sortOrder": 61,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "MLBAPLAY",
+   "name": "MLB Awards Premier Play of the Year",
+   "sortOrder": 61,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": true
+  },
+  {
+   "id": "ALRM",
+   "name": "AL Relief Man Award",
+   "sortOrder": 62,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": false
+  },
+  {
+   "id": "NLRM",
+   "name": "NL Relief Man Award",
+   "sortOrder": 62,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": false
+  },
+  {
+   "id": "DHLDMOY",
+   "name": "DHL Delivery Man of the Year",
+   "sortOrder": 63,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": false
+  },
+  {
+   "id": "DHLDMOM",
+   "name": "DHL Delivery Man of the Month",
+   "sortOrder": 64,
+   "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+   },
+   "active": false
+  },
+  {
+   "id": "ALPOM",
+   "name": "AL Player of the Month",
+   "sortOrder": 65,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "notes": "AL Player of the Month",
+   "active": true
+  },
+  {
+   "id": "NLPOM",
+   "name": "NL Player of the Month",
+   "sortOrder": 65,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "notes": "NL Player of the Month",
+   "active": true
+  },
+  {
+   "id": "ALPITOM",
+   "name": "AL Pitcher of the Month",
+   "sortOrder": 66,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLPITOM",
+   "name": "NL Pitcher of the Month",
+   "sortOrder": 66,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "ALROM",
+   "name": "AL Rookie of the Month",
+   "sortOrder": 67,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  },
+  {
+   "id": "NLROM",
+   "name": "NL Rookie of the Month",
+   "sortOrder": 67,
+   "league": {
+    "id": 104,
+    "link": "/api/v1/league/104"
+   },
+   "active": true
+  },
+  {
+   "id": "ALRRELMON",
+   "name": "AL Reliever of the Month",
+   "sortOrder": 68,
+   "league": {
+    "id": 103,
+    "link": "/api/v1/league/103"
+   },
+   "active": true
+  }
+ ]
+}

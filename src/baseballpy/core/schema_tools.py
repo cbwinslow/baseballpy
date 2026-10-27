@@ -39,6 +39,7 @@ _TYPES: dict[str, pa.DataType] = {
     "float32": pa.float32(),
     "float64": pa.float64(),
     "date32": pa.date32(),
+    "timestamp": pa.timestamp("us", tz="UTC"),
 }
 
 _warned: set[tuple[str, str, str]] = set()
@@ -171,8 +172,8 @@ def read_csv_strings(
     if not data.strip():
         return pa.table({})
     if header is None:
-        first_line = data.split(b"\n", 1)[0].decode("utf-8-sig", errors="replace").rstrip("\r")
-        names = next(csv.reader([first_line], delimiter=delimiter))
+        head = data.split(b"\n", 1)[0].decode("utf-8-sig", errors="replace")
+        names = next(csv.reader(io.StringIO(head, newline=""), delimiter=delimiter), [])
         skip = 1
     else:
         names, skip = list(header), 0
@@ -283,6 +284,25 @@ def _find_source(field: pa.Field, table: pa.Table, by_lower: dict[str, str]) -> 
     return None
 
 
+def pack_extras(
+    table: pa.Table, extra_names: Sequence[str], *, source: str, dataset: str
+) -> pa.Array:
+    """Serialise the columns of ``table`` named in ``extra_names`` into one JSON string per row.
+
+    Rows whose extra cells are all NULL get NULL; the first sighting of each unknown column per
+    dataset is logged as schema drift.
+    """
+    if not extra_names:
+        return pa.nulls(table.num_rows, type=pa.string())
+    _warn_once(source, dataset, extra_names)
+    lists = [table.column(n).to_pylist() for n in extra_names]
+    payload = [
+        json.dumps({n: v for n, v in zip(extra_names, row, strict=True) if v is not None})
+        for row in zip(*lists, strict=True)
+    ]
+    return pa.array([p if p != "{}" else None for p in payload], pa.string())
+
+
 def normalize_csv(
     raw: bytes | str,
     schema: pa.Schema,
@@ -342,16 +362,7 @@ def normalize_csv(
     extra_names = [n for n in table.column_names if n not in used]
     fields = [pa.field(f.name, f.type) for f in known]
     if wants_extras:
-        if extra_names:
-            _warn_once(source, dataset, extra_names)
-            lists = [table.column(n).to_pylist() for n in extra_names]
-            payload = [
-                json.dumps({n: v for n, v in zip(extra_names, row, strict=True) if v is not None})
-                for row in zip(*lists, strict=True)
-            ]
-            columns.append(pa.array([p if p != "{}" else None for p in payload], pa.string()))
-        else:
-            columns.append(pa.nulls(num_rows, type=pa.string()))
+        columns.append(pack_extras(table, extra_names, source=source, dataset=dataset))
         fields.append(pa.field(EXTRAS, pa.string()))
     elif extra_names:
         _warn_once(source, dataset, extra_names)

@@ -1,0 +1,108 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "yearByYearAdvanced"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "totalSplits": 2891,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "1901",
+     "stat": {
+      "winningPercentage": ".485",
+      "runsScoredPer9": "5.70",
+      "battersFaced": 5239,
+      "babip": ".299",
+      "obp": ".339",
+      "strikeoutsPer9": "2.62",
+      "baseOnBallsPer9": "2.80",
+      "homeRunsPer9": "0.15",
+      "hitsPer9": "10.09",
+      "strikesoutsToWalks": "0.94",
+      "gamesFinished": 13,
+      "wildPitches": 40,
+      "balks": 0,
+      "strikeoutsMinusWalksPercentage": "-.005",
+      "battersFacedPerGame": "38.24",
+      "inningsPitchedPerGame": "8.76",
+      "walksPerPlateAppearance": ".071",
+      "strikeoutsPerPlateAppearance": ".067",
+      "homeRunsPerPlateAppearance": ".004",
+      "walksPerStrikeout": "1.069"
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "rank": 1
+    },
+    {
+     "season": "1902",
+     "stat": {
+      "winningPercentage": ".485",
+      "runsScoredPer9": "4.71",
+      "battersFaced": 5171,
+      "babip": ".296",
+      "obp": ".333",
+      "strikeoutsPer9": "3.37",
+      "baseOnBallsPer9": "2.72",
+      "homeRunsPer9": "0.24",
+      "hitsPer9": "9.56",
+      "strikesoutsToWalks": "1.24",
+      "gamesFinished": 23,
+      "wildPitches": 28,
+      "balks": 3,
+      "strikeoutsMinusWalksPercentage": ".017",
+      "battersFacedPerGame": "37.74",
+      "inningsPitchedPerGame": "8.88",
+      "walksPerPlateAppearance": ".071",
+      "strikeoutsPerPlateAppearance": ".088",
+      "homeRunsPerPlateAppearance": ".006",
+      "walksPerStrikeout": ".809"
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "rank": 2
+    },
+    {
+     "season": "1903",
+     "stat": {
+      "winningPercentage": ".485",
+      "runsScoredPer9": "3.87",
+      "battersFaced": 4953,
+      "babip": ".289",
+      "obp": ".305",
+      "strikeoutsPer9": "5.43",
+      "baseOnBallsPer9": "2.35",
+      "homeRunsPer9": "0.15",
+      "hitsPer9": "8.38",
+      "strikesoutsToWalks": "2.31",
+      "gamesFinished": 25,
+      "wildPitches": 38,
+      "balks": 2,
+      "strikeoutsMinusWalksPercentage": ".083",
+      "battersFacedPerGame": "36.15",
+      "inningsPitchedPerGame": "8.81",
+      "walksPerPlateAppearance": ".064",
+      "strikeoutsPerPlateAppearance": ".147",
+      "homeRunsPerPlateAppearance": ".004",
+      "walksPerStrikeout": ".433"
+     },
+     "team": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

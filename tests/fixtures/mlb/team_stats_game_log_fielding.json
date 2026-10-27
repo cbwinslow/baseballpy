@@ -1,0 +1,2192 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "gameLog"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 4858,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 14,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 41,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "41.00",
+      "rangeFactorPer9Inn": "41.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 115,
+      "link": "/api/v1/teams/115"
+     },
+     "date": "2024-03-28",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747224,
+      "link": "/api/v1.1/game/747224/feed/live",
+      "content": {
+       "link": "/api/v1/game/747224/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 115,
+      "link": "/api/v1/teams/115"
+     },
+     "date": "2024-03-29",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747223,
+      "link": "/api/v1.1/game/747223/feed/live",
+      "content": {
+       "link": "/api/v1/game/747223/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 12,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 39,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "39.00",
+      "rangeFactorPer9Inn": "39.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 2,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 115,
+      "link": "/api/v1/teams/115"
+     },
+     "date": "2024-03-31",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747222,
+      "link": "/api/v1.1/game/747222/feed/live",
+      "content": {
+       "link": "/api/v1/game/747222/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 120,
+      "link": "/api/v1/teams/120"
+     },
+     "date": "2024-06-20",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 744841,
+      "link": "/api/v1.1/game/744841/feed/live",
+      "content": {
+       "link": "/api/v1/game/744841/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 11,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 38,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "38.00",
+      "rangeFactorPer9Inn": "38.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "date": "2024-06-21",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 745562,
+      "link": "/api/v1.1/game/745562/feed/live",
+      "content": {
+       "link": "/api/v1/game/745562/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 24,
+      "errors": 0,
+      "chances": 33,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "33.00",
+      "rangeFactorPer9Inn": "37.13",
+      "innings": "8.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "date": "2024-06-22",
+     "isHome": false,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 745564,
+      "link": "/api/v1.1/game/745564/feed/live",
+      "content": {
+       "link": "/api/v1/game/745564/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 142,
+      "link": "/api/v1/teams/142"
+     },
+     "date": "2024-06-26",
+     "isHome": true,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 747184,
+      "link": "/api/v1.1/game/747184/feed/live",
+      "content": {
+       "link": "/api/v1/game/747184/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 6,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 33,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "33.00",
+      "rangeFactorPer9Inn": "33.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "date": "2024-06-28",
+     "isHome": true,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 747183,
+      "link": "/api/v1.1/game/747183/feed/live",
+      "content": {
+       "link": "/api/v1/game/747183/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 12,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 39,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "39.00",
+      "rangeFactorPer9Inn": "39.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 133,
+      "link": "/api/v1/teams/133"
+     },
+     "date": "2024-06-29",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747186,
+      "link": "/api/v1.1/game/747186/feed/live",
+      "content": {
+       "link": "/api/v1/game/747186/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 10,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 37,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "37.00",
+      "rangeFactorPer9Inn": "37.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 3,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "date": "2024-07-03",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746128,
+      "link": "/api/v1.1/game/746128/feed/live",
+      "content": {
+       "link": "/api/v1/game/746128/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 8,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 35,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "35.00",
+      "rangeFactorPer9Inn": "35.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "date": "2024-07-04",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746126,
+      "link": "/api/v1.1/game/746126/feed/live",
+      "content": {
+       "link": "/api/v1/game/746126/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 8,
+      "putOuts": 30,
+      "errors": 0,
+      "chances": 38,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "38.00",
+      "rangeFactorPer9Inn": "34.20",
+      "innings": "10.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 135,
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-07-06",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 745395,
+      "link": "/api/v1.1/game/745395/feed/live",
+      "content": {
+       "link": "/api/v1/game/745395/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 10,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 37,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "37.00",
+      "rangeFactorPer9Inn": "37.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 135,
+      "link": "/api/v1/teams/135"
+     },
+     "date": "2024-07-07",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 745391,
+      "link": "/api/v1.1/game/745391/feed/live",
+      "content": {
+       "link": "/api/v1/game/745391/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 8,
+      "putOuts": 33,
+      "errors": 0,
+      "chances": 41,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "41.00",
+      "rangeFactorPer9Inn": "33.55",
+      "innings": "11.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 144,
+      "link": "/api/v1/teams/144"
+     },
+     "date": "2024-07-08",
+     "isHome": true,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 747181,
+      "link": "/api/v1.1/game/747181/feed/live",
+      "content": {
+       "link": "/api/v1/game/747181/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 6,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 33,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "33.00",
+      "rangeFactorPer9Inn": "33.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 144,
+      "link": "/api/v1/teams/144"
+     },
+     "date": "2024-07-10",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747179,
+      "link": "/api/v1.1/game/747179/feed/live",
+      "content": {
+       "link": "/api/v1/game/747179/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 11,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 38,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "38.00",
+      "rangeFactorPer9Inn": "38.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 144,
+      "link": "/api/v1/teams/144"
+     },
+     "date": "2024-07-11",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747178,
+      "link": "/api/v1.1/game/747178/feed/live",
+      "content": {
+       "link": "/api/v1/game/747178/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 141,
+      "link": "/api/v1/teams/141"
+     },
+     "date": "2024-07-12",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747175,
+      "link": "/api/v1.1/game/747175/feed/live",
+      "content": {
+       "link": "/api/v1/game/747175/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 10,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 37,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "37.00",
+      "rangeFactorPer9Inn": "37.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 141,
+      "link": "/api/v1/teams/141"
+     },
+     "date": "2024-07-13",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747177,
+      "link": "/api/v1.1/game/747177/feed/live",
+      "content": {
+       "link": "/api/v1/game/747177/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 4,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 31,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "31.00",
+      "rangeFactorPer9Inn": "31.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 112,
+      "link": "/api/v1/teams/112"
+     },
+     "date": "2024-07-19",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746854,
+      "link": "/api/v1.1/game/746854/feed/live",
+      "content": {
+       "link": "/api/v1/game/746854/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 12,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 39,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "39.00",
+      "rangeFactorPer9Inn": "39.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 112,
+      "link": "/api/v1/teams/112"
+     },
+     "date": "2024-07-20",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746852,
+      "link": "/api/v1.1/game/746852/feed/live",
+      "content": {
+       "link": "/api/v1/game/746852/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 6,
+      "putOuts": 28,
+      "errors": 0,
+      "chances": 34,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "34.00",
+      "rangeFactorPer9Inn": "34.00",
+      "innings": "9.1",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 112,
+      "link": "/api/v1/teams/112"
+     },
+     "date": "2024-07-21",
+     "isHome": false,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 746853,
+      "link": "/api/v1.1/game/746853/feed/live",
+      "content": {
+       "link": "/api/v1/game/746853/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 7,
+      "putOuts": 24,
+      "errors": 0,
+      "chances": 31,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "31.00",
+      "rangeFactorPer9Inn": "34.88",
+      "innings": "8.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 118,
+      "link": "/api/v1/teams/118"
+     },
+     "date": "2024-07-22",
+     "isHome": false,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 746280,
+      "link": "/api/v1.1/game/746280/feed/live",
+      "content": {
+       "link": "/api/v1/game/746280/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 12,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 39,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "39.00",
+      "rangeFactorPer9Inn": "39.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 2,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 118,
+      "link": "/api/v1/teams/118"
+     },
+     "date": "2024-07-23",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746281,
+      "link": "/api/v1.1/game/746281/feed/live",
+      "content": {
+       "link": "/api/v1/game/746281/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 10,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 37,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "37.00",
+      "rangeFactorPer9Inn": "37.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 3,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 118,
+      "link": "/api/v1/teams/118"
+     },
+     "date": "2024-07-24",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746279,
+      "link": "/api/v1.1/game/746279/feed/live",
+      "content": {
+       "link": "/api/v1/game/746279/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "date": "2024-07-26",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747174,
+      "link": "/api/v1.1/game/747174/feed/live",
+      "content": {
+       "link": "/api/v1/game/747174/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "date": "2024-07-27",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747171,
+      "link": "/api/v1.1/game/747171/feed/live",
+      "content": {
+       "link": "/api/v1/game/747171/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 11,
+      "putOuts": 30,
+      "errors": 0,
+      "chances": 41,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "41.00",
+      "rangeFactorPer9Inn": "36.90",
+      "innings": "10.0",
+      "games": 1,
+      "doublePlays": 2,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "date": "2024-07-28",
+     "isHome": true,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 747173,
+      "link": "/api/v1.1/game/747173/feed/live",
+      "content": {
+       "link": "/api/v1/game/747173/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 18,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 45,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "45.00",
+      "rangeFactorPer9Inn": "45.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 120,
+      "link": "/api/v1/teams/120"
+     },
+     "date": "2024-07-29",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747172,
+      "link": "/api/v1.1/game/747172/feed/live",
+      "content": {
+       "link": "/api/v1/game/747172/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 120,
+      "link": "/api/v1/teams/120"
+     },
+     "date": "2024-07-30",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747167,
+      "link": "/api/v1.1/game/747167/feed/live",
+      "content": {
+       "link": "/api/v1/game/747167/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 12,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 39,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "39.00",
+      "rangeFactorPer9Inn": "39.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 120,
+      "link": "/api/v1/teams/120"
+     },
+     "date": "2024-07-31",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747170,
+      "link": "/api/v1.1/game/747170/feed/live",
+      "content": {
+       "link": "/api/v1/game/747170/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 14,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 41,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "41.00",
+      "rangeFactorPer9Inn": "41.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "date": "2024-08-02",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 745471,
+      "link": "/api/v1.1/game/745471/feed/live",
+      "content": {
+       "link": "/api/v1/game/745471/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 7,
+      "putOuts": 24,
+      "errors": 0,
+      "chances": 31,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "31.00",
+      "rangeFactorPer9Inn": "34.88",
+      "innings": "8.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "date": "2024-08-03",
+     "isHome": false,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 745474,
+      "link": "/api/v1.1/game/745474/feed/live",
+      "content": {
+       "link": "/api/v1/game/745474/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 4,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 31,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "31.00",
+      "rangeFactorPer9Inn": "31.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 134,
+      "link": "/api/v1/teams/134"
+     },
+     "date": "2024-08-04",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 745468,
+      "link": "/api/v1.1/game/745468/feed/live",
+      "content": {
+       "link": "/api/v1/game/745468/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 11,
+      "putOuts": 30,
+      "errors": 0,
+      "chances": 41,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "41.00",
+      "rangeFactorPer9Inn": "36.90",
+      "innings": "10.0",
+      "games": 1,
+      "doublePlays": 3,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 114,
+      "link": "/api/v1/teams/114"
+     },
+     "date": "2024-08-05",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746600,
+      "link": "/api/v1.1/game/746600/feed/live",
+      "content": {
+       "link": "/api/v1/game/746600/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 8,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 35,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "35.00",
+      "rangeFactorPer9Inn": "35.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 114,
+      "link": "/api/v1/teams/114"
+     },
+     "date": "2024-08-07",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746604,
+      "link": "/api/v1.1/game/746604/feed/live",
+      "content": {
+       "link": "/api/v1/game/746604/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 11,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 38,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "38.00",
+      "rangeFactorPer9Inn": "38.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "date": "2024-08-08",
+     "isHome": true,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 747169,
+      "link": "/api/v1.1/game/747169/feed/live",
+      "content": {
+       "link": "/api/v1/game/747169/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "date": "2024-08-09",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747168,
+      "link": "/api/v1.1/game/747168/feed/live",
+      "content": {
+       "link": "/api/v1/game/747168/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 12,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 39,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "39.00",
+      "rangeFactorPer9Inn": "39.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 2,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "date": "2024-08-11",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747166,
+      "link": "/api/v1.1/game/747166/feed/live",
+      "content": {
+       "link": "/api/v1/game/747166/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 6,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 33,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "33.00",
+      "rangeFactorPer9Inn": "33.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 115,
+      "link": "/api/v1/teams/115"
+     },
+     "date": "2024-08-12",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747165,
+      "link": "/api/v1.1/game/747165/feed/live",
+      "content": {
+       "link": "/api/v1/game/747165/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 5,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 32,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "32.00",
+      "rangeFactorPer9Inn": "32.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 115,
+      "link": "/api/v1/teams/115"
+     },
+     "date": "2024-08-13",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747160,
+      "link": "/api/v1.1/game/747160/feed/live",
+      "content": {
+       "link": "/api/v1/game/747160/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 8,
+      "putOuts": 24,
+      "errors": 0,
+      "chances": 32,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "32.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "8.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 139,
+      "link": "/api/v1/teams/139"
+     },
+     "date": "2024-08-17",
+     "isHome": false,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 745049,
+      "link": "/api/v1.1/game/745049/feed/live",
+      "content": {
+       "link": "/api/v1/game/745049/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 12,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 39,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "39.00",
+      "rangeFactorPer9Inn": "39.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 3,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 146,
+      "link": "/api/v1/teams/146"
+     },
+     "date": "2024-08-19",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746027,
+      "link": "/api/v1.1/game/746027/feed/live",
+      "content": {
+       "link": "/api/v1/game/746027/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 146,
+      "link": "/api/v1/teams/146"
+     },
+     "date": "2024-08-20",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746029,
+      "link": "/api/v1.1/game/746029/feed/live",
+      "content": {
+       "link": "/api/v1/game/746029/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 10,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 37,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "37.00",
+      "rangeFactorPer9Inn": "37.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 146,
+      "link": "/api/v1/teams/146"
+     },
+     "date": "2024-08-21",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746028,
+      "link": "/api/v1.1/game/746028/feed/live",
+      "content": {
+       "link": "/api/v1/game/746028/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 12,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 39,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "39.00",
+      "rangeFactorPer9Inn": "39.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 111,
+      "link": "/api/v1/teams/111"
+     },
+     "date": "2024-08-23",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746920,
+      "link": "/api/v1.1/game/746920/feed/live",
+      "content": {
+       "link": "/api/v1/game/746920/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 6,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 33,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "33.00",
+      "rangeFactorPer9Inn": "33.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 111,
+      "link": "/api/v1/teams/111"
+     },
+     "date": "2024-08-24",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746917,
+      "link": "/api/v1.1/game/746917/feed/live",
+      "content": {
+       "link": "/api/v1/game/746917/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 3,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 111,
+      "link": "/api/v1/teams/111"
+     },
+     "date": "2024-08-25",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 746918,
+      "link": "/api/v1.1/game/746918/feed/live",
+      "content": {
+       "link": "/api/v1/game/746918/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 8,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 35,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "35.00",
+      "rangeFactorPer9Inn": "35.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 121,
+      "link": "/api/v1/teams/121"
+     },
+     "date": "2024-08-28",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747161,
+      "link": "/api/v1.1/game/747161/feed/live",
+      "content": {
+       "link": "/api/v1/game/747161/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 7,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 34,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "34.00",
+      "rangeFactorPer9Inn": "34.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "date": "2024-08-30",
+     "isHome": true,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 747156,
+      "link": "/api/v1.1/game/747156/feed/live",
+      "content": {
+       "link": "/api/v1/game/747156/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 4,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 31,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "31.00",
+      "rangeFactorPer9Inn": "31.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 0,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "date": "2024-09-01",
+     "isHome": true,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 747157,
+      "link": "/api/v1.1/game/747157/feed/live",
+      "content": {
+       "link": "/api/v1/game/747157/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 36,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "36.00",
+      "rangeFactorPer9Inn": "36.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 119,
+      "link": "/api/v1/teams/119"
+     },
+     "date": "2024-09-02",
+     "isHome": true,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 747155,
+      "link": "/api/v1.1/game/747155/feed/live",
+      "content": {
+       "link": "/api/v1/game/747155/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 5,
+      "putOuts": 27,
+      "errors": 0,
+      "chances": 32,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "32.00",
+      "rangeFactorPer9Inn": "32.00",
+      "innings": "9.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 137,
+      "link": "/api/v1/teams/137"
+     },
+     "date": "2024-09-04",
+     "isHome": false,
+     "isWin": true,
+     "rank": 1,
+     "game": {
+      "gamePk": 745290,
+      "link": "/api/v1.1/game/745290/feed/live",
+      "content": {
+       "link": "/api/v1/game/745290/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 1,
+      "gamesStarted": 1,
+      "assists": 9,
+      "putOuts": 24,
+      "errors": 0,
+      "chances": 33,
+      "fielding": "1.000",
+      "rangeFactorPerGame": "33.00",
+      "rangeFactorPer9Inn": "37.13",
+      "innings": "8.0",
+      "games": 1,
+      "doublePlays": 1,
+      "triplePlays": 0,
+      "throwingErrors": 0
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "opponent": {
+      "id": 117,
+      "link": "/api/v1/teams/117"
+     },
+     "date": "2024-09-06",
+     "isHome": false,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 746343,
+      "link": "/api/v1.1/game/746343/feed/live",
+      "content": {
+       "link": "/api/v1/game/746343/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    }
+   ]
+  }
+ ]
+}

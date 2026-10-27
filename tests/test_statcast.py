@@ -1,5 +1,6 @@
 """Tests for Statcast (Baseball Savant) extraction, chunking, leaderboards, and normalization."""
 
+import json
 from datetime import date
 from pathlib import Path
 
@@ -76,7 +77,8 @@ def test_statcast_normalizer_preserves_new_columns() -> None:
     csv_text = "pitch_type,game_date,release_speed,custom_metric\nFF,2024-04-05,98.2,42.5\n"
     table = normalizer.normalize(csv_text)
 
-    assert "custom_metric" in table.column_names
+    assert "custom_metric" not in table.column_names  # a stable schema: unknowns go to _extras
+    assert json.loads(table.column("_extras")[0].as_py()) == {"custom_metric": "42.5"}
     assert len(table) == 1
 
 
@@ -106,12 +108,12 @@ def test_savant_leaderboards_normalizer() -> None:
         '"Judge, Aaron",592450,2024,704,402,0.322,0.315,-0.007,0.701,0.685,0.472,0.460\n'
     ).encode("utf-8")
 
-    table = normalizer.normalize(sample_csv)
+    table = normalizer.normalize(sample_csv, "expected_statistics_batter")
     assert isinstance(table, pa.Table)
     assert len(table) == 1
     assert "player_id" in table.column_names
     assert table.schema.field("player_id").type == pa.int32()
-    assert table.schema.field("est_ba").type == pa.float32()
+    assert table.schema.field("est_ba").type == pa.float64()
     assert table["player_id"].to_pylist() == [592450]
     assert table["est_ba"].to_pylist()[0] == pytest.approx(0.315, rel=1e-3)
 

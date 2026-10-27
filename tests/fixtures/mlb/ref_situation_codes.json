@@ -1,0 +1,1002 @@
+[
+ {
+  "code": "h",
+  "sortOrder": 1,
+  "navigationMenu": "Game",
+  "description": "Home Games",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "a",
+  "sortOrder": 2,
+  "navigationMenu": "Game",
+  "description": "Away Games",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "d",
+  "sortOrder": 3,
+  "navigationMenu": "Game",
+  "description": "Day Games",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "n",
+  "sortOrder": 4,
+  "navigationMenu": "Game",
+  "description": "Night Games",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "g",
+  "sortOrder": 5,
+  "navigationMenu": "Game",
+  "description": "On Grass",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "t",
+  "sortOrder": 6,
+  "navigationMenu": "Game",
+  "description": "On Turf",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "2",
+  "sortOrder": 20,
+  "navigationMenu": "Month",
+  "description": "February",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "3",
+  "sortOrder": 21,
+  "navigationMenu": "Month",
+  "description": "March",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "4",
+  "sortOrder": 22,
+  "navigationMenu": "Month",
+  "description": "April",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "5",
+  "sortOrder": 23,
+  "navigationMenu": "Month",
+  "description": "May",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "6",
+  "sortOrder": 24,
+  "navigationMenu": "Month",
+  "description": "June",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "7",
+  "sortOrder": 25,
+  "navigationMenu": "Month",
+  "description": "July",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "8",
+  "sortOrder": 26,
+  "navigationMenu": "Month",
+  "description": "August",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "9",
+  "sortOrder": 27,
+  "navigationMenu": "Month",
+  "description": "September",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "10",
+  "sortOrder": 28,
+  "navigationMenu": "Month",
+  "description": "October",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "11",
+  "sortOrder": 29,
+  "navigationMenu": "Month",
+  "description": "November",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "12",
+  "sortOrder": 30,
+  "navigationMenu": "Month",
+  "description": "December",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "1",
+  "sortOrder": 31,
+  "navigationMenu": "Month",
+  "description": "January",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "h0",
+  "sortOrder": 41,
+  "navigationMenu": "Timeframe",
+  "description": "Season To Date",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "h1",
+  "sortOrder": 42,
+  "navigationMenu": "Timeframe",
+  "description": "First Half",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "h2",
+  "sortOrder": 43,
+  "navigationMenu": "Timeframe",
+  "description": "Second Half",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "preas",
+  "sortOrder": 44,
+  "navigationMenu": "Timeframe",
+  "description": "Pre All-Star",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "posas",
+  "sortOrder": 45,
+  "navigationMenu": "Timeframe",
+  "description": "Post All-Star",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "d1",
+  "sortOrder": 46,
+  "navigationMenu": "Timeframe",
+  "description": "Yesterday",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "d7",
+  "sortOrder": 47,
+  "navigationMenu": "Timeframe",
+  "description": "Last 7 Days",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "d30",
+  "sortOrder": 48,
+  "navigationMenu": "Timeframe",
+  "description": "Last 30 Days",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "dmo",
+  "sortOrder": 51,
+  "navigationMenu": "Day",
+  "description": "On Mondays",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "dtu",
+  "sortOrder": 52,
+  "navigationMenu": "Day",
+  "description": "On Tuesdays",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "dwe",
+  "sortOrder": 53,
+  "navigationMenu": "Day",
+  "description": "On Wednesdays",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "dth",
+  "sortOrder": 54,
+  "navigationMenu": "Day",
+  "description": "On Thursdays",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "dfr",
+  "sortOrder": 55,
+  "navigationMenu": "Day",
+  "description": "On Fridays",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "dsa",
+  "sortOrder": 56,
+  "navigationMenu": "Day",
+  "description": "On Saturdays",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "dsu",
+  "sortOrder": 57,
+  "navigationMenu": "Day",
+  "description": "On Sundays",
+  "team": true,
+  "batting": true,
+  "fielding": true,
+  "pitching": true
+ },
+ {
+  "code": "vlg",
+  "sortOrder": 61,
+  "navigationMenu": "Opponent",
+  "description": "vs. League",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "vdv",
+  "sortOrder": 62,
+  "navigationMenu": "Opponent",
+  "description": "vs. Division",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "vt",
+  "sortOrder": 63,
+  "navigationMenu": "Opponent",
+  "description": "vs. Team",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "val",
+  "sortOrder": 64,
+  "navigationMenu": "Opponent",
+  "description": "vs. AL",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "vnl",
+  "sortOrder": 65,
+  "navigationMenu": "Opponent",
+  "description": "vs. NL",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "int",
+  "sortOrder": 66,
+  "navigationMenu": "Opponent",
+  "description": "Interleague",
+  "team": true,
+  "batting": false,
+  "fielding": true,
+  "pitching": false
+ },
+ {
+  "code": "ven",
+  "sortOrder": 67,
+  "navigationMenu": "Venue",
+  "description": "By Venue",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "l",
+  "sortOrder": 71,
+  "navigationMenu": "At-Bat",
+  "description": "Batting Left",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "r",
+  "sortOrder": 72,
+  "navigationMenu": "At-Bat",
+  "description": "Batting Right",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "vl",
+  "sortOrder": 73,
+  "navigationMenu": "At-Bat",
+  "description": "vs Left",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "vr",
+  "sortOrder": 74,
+  "navigationMenu": "At-Bat",
+  "description": "vs Right",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "vls",
+  "sortOrder": 75,
+  "navigationMenu": "At-Bat",
+  "description": "vs Left Handed Starter",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "vrs",
+  "sortOrder": 76,
+  "navigationMenu": "At-Bat",
+  "description": "vs Right Handed Starter",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "vgo",
+  "sortOrder": 81,
+  "navigationMenu": "At-Bat",
+  "description": "vs. Ground Ball Pitcher",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "vao",
+  "sortOrder": 82,
+  "navigationMenu": "At-Bat",
+  "description": "vs. Fly Ball Pitcher",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "vb",
+  "sortOrder": 83,
+  "navigationMenu": "At-Bat",
+  "description": "vs. Batter",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "vp",
+  "sortOrder": 84,
+  "navigationMenu": "At-Bat",
+  "description": "vs. Pitcher",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "1r",
+  "sortOrder": 91,
+  "navigationMenu": "Score",
+  "description": "One Run",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "sah",
+  "sortOrder": 92,
+  "navigationMenu": "Score",
+  "description": "Team is ahead",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "sbh",
+  "sortOrder": 93,
+  "navigationMenu": "Score",
+  "description": "Team is behind",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "sti",
+  "sortOrder": 94,
+  "navigationMenu": "Score",
+  "description": "Score is tied",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "ex",
+  "sortOrder": 95,
+  "navigationMenu": "Inning",
+  "description": "Extra Innnings",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "l10",
+  "sortOrder": 96,
+  "navigationMenu": "Timeframe",
+  "description": "Last 10",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "twn",
+  "sortOrder": 101,
+  "navigationMenu": "Result",
+  "description": "In games won by team",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "tls",
+  "sortOrder": 102,
+  "navigationMenu": "Result",
+  "description": "In games lost by team",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "tti",
+  "sortOrder": 103,
+  "navigationMenu": "Result",
+  "description": "In tie games",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "taw",
+  "sortOrder": 104,
+  "navigationMenu": "Result",
+  "description": "In games following a win",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "tal",
+  "sortOrder": 105,
+  "navigationMenu": "Result",
+  "description": "In games following a loss",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "tat",
+  "sortOrder": 106,
+  "navigationMenu": "Result",
+  "description": "In games following a tie",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "b1",
+  "sortOrder": 111,
+  "navigationMenu": "Order",
+  "description": "Batting First",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "b2",
+  "sortOrder": 112,
+  "navigationMenu": "Order",
+  "description": "Batting Second",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "b3",
+  "sortOrder": 113,
+  "navigationMenu": "Order",
+  "description": "Batting Third",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "b4",
+  "sortOrder": 114,
+  "navigationMenu": "Order",
+  "description": "Batting Fourth",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "b5",
+  "sortOrder": 115,
+  "navigationMenu": "Order",
+  "description": "Batting Fifth",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "b6",
+  "sortOrder": 116,
+  "navigationMenu": "Order",
+  "description": "Batting Sixth",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "b7",
+  "sortOrder": 117,
+  "navigationMenu": "Order",
+  "description": "Batting Seventh",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "b8",
+  "sortOrder": 118,
+  "navigationMenu": "Order",
+  "description": "Batting Eighth",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "b9",
+  "sortOrder": 119,
+  "navigationMenu": "Order",
+  "description": "Batting Ninth",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "lo",
+  "sortOrder": 120,
+  "navigationMenu": "Runners",
+  "description": "Leading Off Inning",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "p1",
+  "sortOrder": 121,
+  "navigationMenu": "Position",
+  "description": "Pitcher",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "p2",
+  "sortOrder": 122,
+  "navigationMenu": "Position",
+  "description": "Catcher",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "p3",
+  "sortOrder": 123,
+  "navigationMenu": "Position",
+  "description": "First Base",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "p4",
+  "sortOrder": 124,
+  "navigationMenu": "Position",
+  "description": "Second Base",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "p5",
+  "sortOrder": 125,
+  "navigationMenu": "Position",
+  "description": "Third Base",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "p6",
+  "sortOrder": 126,
+  "navigationMenu": "Position",
+  "description": "Shortstop",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "p7",
+  "sortOrder": 127,
+  "navigationMenu": "Position",
+  "description": "Left Field",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "p8",
+  "sortOrder": 128,
+  "navigationMenu": "Position",
+  "description": "Center Field",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "p9",
+  "sortOrder": 129,
+  "navigationMenu": "Position",
+  "description": "Right Field",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "pO",
+  "sortOrder": 130,
+  "navigationMenu": "Position",
+  "description": "Outfield",
+  "team": false,
+  "batting": false,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "sp",
+  "sortOrder": 131,
+  "navigationMenu": "Pitching",
+  "description": "Starter",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "rp",
+  "sortOrder": 132,
+  "navigationMenu": "Pitching",
+  "description": "Reliever",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "pD",
+  "sortOrder": 133,
+  "navigationMenu": "Position",
+  "description": "Designated Hitter",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "pH",
+  "sortOrder": 134,
+  "navigationMenu": "Position",
+  "description": "Pinch Hitter",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "pR",
+  "sortOrder": 135,
+  "navigationMenu": "Position",
+  "description": "Pinch Runner",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "pX",
+  "sortOrder": 136,
+  "navigationMenu": "Position",
+  "description": "Undefined (e.g. PH bats twice in an inning)",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": false
+ },
+ {
+  "code": "dr1",
+  "sortOrder": 141,
+  "navigationMenu": "Pitching",
+  "description": "One Day of Rest",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "dr2",
+  "sortOrder": 142,
+  "navigationMenu": "Pitching",
+  "description": "Two Days of Rest",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "dr3",
+  "sortOrder": 143,
+  "navigationMenu": "Pitching",
+  "description": "Three Days of Rest",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "dr4",
+  "sortOrder": 144,
+  "navigationMenu": "Pitching",
+  "description": "Four Days of Rest",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "dr5",
+  "sortOrder": 145,
+  "navigationMenu": "Pitching",
+  "description": "Five Plus Days of Rest",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "fip",
+  "sortOrder": 146,
+  "navigationMenu": "Pitching",
+  "description": "First Inning Pitched",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "fba",
+  "sortOrder": 147,
+  "navigationMenu": "Pitching",
+  "description": "First Batter (RP Only)",
+  "team": true,
+  "batting": false,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "i01",
+  "sortOrder": 151,
+  "navigationMenu": "Inning",
+  "description": "First Inning",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "i02",
+  "sortOrder": 152,
+  "navigationMenu": "Inning",
+  "description": "Second Inning",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "i03",
+  "sortOrder": 153,
+  "navigationMenu": "Inning",
+  "description": "Third Inning",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "i04",
+  "sortOrder": 154,
+  "navigationMenu": "Inning",
+  "description": "Fourth Inning",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ },
+ {
+  "code": "i05",
+  "sortOrder": 155,
+  "navigationMenu": "Inning",
+  "description": "Fifth Inning",
+  "team": true,
+  "batting": true,
+  "fielding": false,
+  "pitching": true
+ }
+]

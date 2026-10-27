@@ -1,0 +1,245 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "season"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "totalSplits": 100,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "age": 33,
+      "gamesPlayed": 1,
+      "runs": 0,
+      "homeRuns": 0,
+      "strikeOuts": 2,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": ".250",
+      "atBats": 4,
+      "obp": ".250",
+      "slg": ".250",
+      "ops": ".500",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "era": "0.00",
+      "inningsPitched": "1.0",
+      "earnedRuns": 0,
+      "whip": "1.00",
+      "battersFaced": 4,
+      "outs": 3,
+      "gamesPitched": 1,
+      "hitBatsmen": 0,
+      "wildPitches": 0,
+      "pickoffs": 0,
+      "totalBases": 1,
+      "strikeoutWalkRatio": "-.--",
+      "strikeoutsPer9Inn": "18.00",
+      "walksPer9Inn": "0.00",
+      "hitsPer9Inn": "9.00",
+      "runsScoredPer9": "0.00",
+      "homeRunsPer9": "0.00",
+      "catchersInterference": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "passedBall": 0,
+      "pickoffAttempts": 0
+     },
+     "team": {
+      "id": 121,
+      "name": "New York Mets",
+      "link": "/api/v1/teams/121"
+     },
+     "player": {
+      "id": 621529,
+      "fullName": "Joe Hudson",
+      "link": "/api/v1/people/621529",
+      "firstName": "Joe",
+      "lastName": "Hudson"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 1,
+      "runs": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": ".250",
+      "atBats": 4,
+      "obp": ".250",
+      "slg": ".250",
+      "ops": ".500",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "era": "0.00",
+      "inningsPitched": "1.0",
+      "earnedRuns": 0,
+      "whip": "1.00",
+      "battersFaced": 4,
+      "outs": 3,
+      "gamesPitched": 1,
+      "hitBatsmen": 0,
+      "wildPitches": 0,
+      "pickoffs": 0,
+      "totalBases": 1,
+      "strikeoutWalkRatio": "-.--",
+      "strikeoutsPer9Inn": "0.00",
+      "walksPer9Inn": "0.00",
+      "hitsPer9Inn": "9.00",
+      "runsScoredPer9": "0.00",
+      "homeRunsPer9": "0.00",
+      "catchersInterference": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "passedBall": 0,
+      "pickoffAttempts": 0
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 700250,
+      "fullName": "Ben Rice",
+      "link": "/api/v1/people/700250",
+      "firstName": "Ben",
+      "lastName": "Rice"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "10",
+      "name": "Designated Hitter",
+      "type": "Hitter",
+      "abbreviation": "DH"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "age": 33,
+      "gamesPlayed": 6,
+      "runs": 16,
+      "homeRuns": 3,
+      "strikeOuts": 45,
+      "baseOnBalls": 21,
+      "intentionalWalks": 0,
+      "hits": 37,
+      "hitByPitch": 2,
+      "avg": ".210",
+      "atBats": 176,
+      "obp": ".302",
+      "slg": ".284",
+      "ops": ".586",
+      "caughtStealing": 4,
+      "stolenBases": 8,
+      "stolenBasePercentage": ".667",
+      "caughtStealingPercentage": ".333",
+      "era": "1.84",
+      "inningsPitched": "49.0",
+      "earnedRuns": 10,
+      "whip": "1.18",
+      "battersFaced": 200,
+      "outs": 147,
+      "gamesPitched": 6,
+      "hitBatsmen": 2,
+      "wildPitches": 2,
+      "pickoffs": 0,
+      "totalBases": 50,
+      "strikeoutWalkRatio": "2.14",
+      "strikeoutsPer9Inn": "8.27",
+      "walksPer9Inn": "3.86",
+      "hitsPer9Inn": "6.80",
+      "runsScoredPer9": "2.94",
+      "homeRunsPer9": "0.55",
+      "catchersInterference": 0,
+      "sacBunts": 1,
+      "sacFlies": 0,
+      "passedBall": 0,
+      "pickoffAttempts": 2
+     },
+     "team": {
+      "id": 113,
+      "name": "Cincinnati Reds",
+      "link": "/api/v1/teams/113"
+     },
+     "player": {
+      "id": 642851,
+      "fullName": "Austin Wynns",
+      "link": "/api/v1/people/642851",
+      "firstName": "Austin",
+      "lastName": "Wynns"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [],
+   "playerPool": "ALL"
+  }
+ ]
+}

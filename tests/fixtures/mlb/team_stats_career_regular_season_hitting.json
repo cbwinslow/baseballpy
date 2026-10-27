@@ -1,0 +1,101 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "careerRegularSeason"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 2891,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "1894",
+     "stat": {
+      "gamesPlayed": 129,
+      "runs": 1143,
+      "doubles": 252,
+      "triples": 131,
+      "homeRuns": 40,
+      "strikeOuts": 245,
+      "baseOnBalls": 496,
+      "hits": 1732,
+      "hitByPitch": 57,
+      "avg": ".349",
+      "atBats": 4967,
+      "obp": ".414",
+      "slg": ".476",
+      "ops": ".890",
+      "stolenBases": 273,
+      "plateAppearances": 5639,
+      "totalBases": 2366,
+      "rbi": 981,
+      "sacBunts": 119,
+      "babip": ".361",
+      "atBatsPerHomeRun": "124.18"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "rank": 1
+    },
+    {
+     "season": "1873",
+     "stat": {
+      "gamesPlayed": 60,
+      "runs": 739,
+      "doubles": 146,
+      "triples": 44,
+      "homeRuns": 12,
+      "strikeOuts": 24,
+      "baseOnBalls": 62,
+      "hits": 930,
+      "avg": ".338",
+      "atBats": 2755,
+      "slg": ".436",
+      "plateAppearances": 2817,
+      "totalBases": 1200,
+      "rbi": 489,
+      "babip": ".338",
+      "atBatsPerHomeRun": "229.58"
+     },
+     "team": {
+      "id": 144,
+      "link": "/api/v1/teams/144"
+     },
+     "rank": 2
+    },
+    {
+     "season": "1876",
+     "stat": {
+      "gamesPlayed": 66,
+      "runs": 624,
+      "doubles": 131,
+      "triples": 32,
+      "homeRuns": 8,
+      "strikeOuts": 45,
+      "baseOnBalls": 70,
+      "hits": 926,
+      "avg": ".337",
+      "atBats": 2748,
+      "slg": ".417",
+      "plateAppearances": 2818,
+      "totalBases": 1145,
+      "rbi": 441,
+      "babip": ".341",
+      "atBatsPerHomeRun": "343.50"
+     },
+     "team": {
+      "id": 112,
+      "link": "/api/v1/teams/112"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

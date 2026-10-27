@@ -1,15 +1,14 @@
 """Normalizer for Baseball Savant (Statcast) pitch tracking data."""
 
-import io
 import logging
 from collections.abc import Iterator
 from typing import Any
 
 import pyarrow as pa
 import pyarrow.compute as pc
-import pyarrow.csv as pacsv
 
 from baseballpy.core.quarantine import Quarantine, checked_cast, get_quarantine
+from baseballpy.core.schema_tools import EXTRAS, pack_extras, read_csv_strings
 from baseballpy.sources.statcast.schema import STATCAST_SCHEMA
 
 logger = logging.getLogger(__name__)
@@ -59,38 +58,26 @@ class StatcastNormalizer:
             # Return empty table with schema
             return pa.Table.from_batches([], schema=self._schema)
 
-        parse_options = pacsv.ParseOptions(delimiter=",")
-        convert_options = pacsv.ConvertOptions(
-            strings_can_be_null=True,
-            null_values=["", "NA", "null", "None", "<NA>", "NaN"],
-        )
-
-        table = pacsv.read_csv(
-            io.BytesIO(raw_bytes),
-            parse_options=parse_options,
-            convert_options=convert_options,
-        )
-
-        num_rows = len(table)
-        final_columns: list[pa.ChunkedArray] = []
-        final_fields: list[pa.Field] = []
-
-        # 1. Coerce all fields in the canonical schema
+        table = read_csv_strings(raw_bytes)
+        num_rows = table.num_rows
+        by_name = dict.fromkeys(table.column_names)
+        final_columns: list[pa.ChunkedArray | pa.Array] = []
         for field in self._schema:
             col_name = field.name
             target_type = field.type
-
-            if col_name in table.column_names:
-                chunked = table.column(col_name)
-
-                if target_type == pa.date32():
-                    chunked = self._to_date32(chunked, col_name)
-                # Special handling for dictionary encoding
-                elif pa.types.is_dictionary(target_type):
-                    str_arr = chunked.cast(pa.string())
-                    chunked = pc.dictionary_encode(str_arr).cast(target_type)
-                else:
-                    chunked = checked_cast(
+            if col_name == EXTRAS:
+                continue
+            if col_name not in by_name:
+                final_columns.append(pa.nulls(num_rows, type=target_type))
+                continue
+            chunked = table.column(col_name)
+            if target_type == pa.date32():
+                final_columns.append(self._to_date32(chunked, col_name))
+            elif pa.types.is_dictionary(target_type):
+                final_columns.append(pc.dictionary_encode(chunked).cast(target_type))
+            else:
+                final_columns.append(
+                    checked_cast(
                         chunked,
                         target_type,
                         quarantine=self._quarantine,
@@ -98,24 +85,22 @@ class StatcastNormalizer:
                         dataset="pitches",
                         column=col_name,
                     )
-            else:
-                # Column missing in this payload, fill with nulls of expected type
-                chunked = pa.chunked_array([pa.nulls(num_rows, type=target_type)])
-
-            final_columns.append(chunked)
-            final_fields.append(field)
-
-        # 2. Schema Drift Resilience & Full Data Preservation (ADR 9 & ADR 15)
-        # Capture any new/unexpected columns present in upstream CSV
-        canonical_names = set(self._schema.names)
-        for col_name in table.column_names:
-            if col_name not in canonical_names:
-                logger.info("Preserving newly discovered upstream Statcast column: %s", col_name)
-                chunked = table.column(col_name)
-                final_columns.append(chunked)
-                final_fields.append(pa.field(col_name, chunked.type))
-
-        return pa.Table.from_arrays(final_columns, schema=pa.schema(final_fields))
+                )
+        known = {f.name for f in self._schema}
+        extra_names = [n for n in table.column_names if n not in known]
+        fields = [f for f in self._schema if f.name != EXTRAS]
+        if EXTRAS in known:
+            # unknown upstream columns are kept as JSON (never dropped, never a per-part schema)
+            final_columns.append(
+                pack_extras(table, extra_names, source="statcast", dataset="pitches")
+            )
+            fields.append(self._schema.field(EXTRAS))
+        elif extra_names:
+            logger.warning("dropping unknown Statcast columns for a custom schema: %s", extra_names)
+        return pa.Table.from_arrays(
+            [c if isinstance(c, pa.ChunkedArray) else pa.chunked_array([c]) for c in final_columns],
+            schema=pa.schema(fields),
+        )
 
     def normalize_stream(
         self, raw_data_iter: Iterator[bytes | str | dict[str, Any]]

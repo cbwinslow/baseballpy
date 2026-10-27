@@ -1,0 +1,227 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "season"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 742,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "age": 28,
+      "gamesPlayed": 2,
+      "groundOuts": 1,
+      "airOuts": 1,
+      "runs": 2,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 1,
+      "strikeOuts": 0,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 3,
+      "hitByPitch": 0,
+      "avg": ".600",
+      "atBats": 5,
+      "obp": ".667",
+      "slg": "1.400",
+      "ops": "2.067",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 31,
+      "plateAppearances": 6,
+      "totalBases": 7,
+      "rbi": 3,
+      "leftOnBase": 2,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".500",
+      "groundOutsToAirouts": "1.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "5.00"
+     },
+     "team": {
+      "id": 120,
+      "name": "Washington Nationals",
+      "link": "/api/v1/teams/120"
+     },
+     "player": {
+      "id": 656448,
+      "fullName": "Stone Garrett",
+      "link": "/api/v1/people/656448",
+      "firstName": "Stone",
+      "lastName": "Garrett"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "10",
+      "name": "Designated Hitter",
+      "type": "Hitter",
+      "abbreviation": "DH"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 9,
+      "groundOuts": 3,
+      "airOuts": 1,
+      "runs": 1,
+      "doubles": 2,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 3,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 7,
+      "hitByPitch": 0,
+      "avg": ".500",
+      "atBats": 14,
+      "obp": ".500",
+      "slg": ".643",
+      "ops": "1.143",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 39,
+      "plateAppearances": 14,
+      "totalBases": 9,
+      "rbi": 0,
+      "leftOnBase": 4,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".636",
+      "groundOutsToAirouts": "3.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 120,
+      "name": "Washington Nationals",
+      "link": "/api/v1/teams/120"
+     },
+     "player": {
+      "id": 671117,
+      "fullName": "Darren Baker",
+      "link": "/api/v1/people/671117",
+      "firstName": "Darren",
+      "lastName": "Baker"
+     },
+     "league": {
+      "id": 104,
+      "name": "NL",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 2,
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "age": 25,
+      "gamesPlayed": 3,
+      "groundOuts": 1,
+      "airOuts": 1,
+      "runs": 2,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 1,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": ".400",
+      "atBats": 5,
+      "obp": ".400",
+      "slg": ".400",
+      "ops": ".800",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 14,
+      "plateAppearances": 5,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 3,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": ".500",
+      "groundOutsToAirouts": "1.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 136,
+      "name": "Seattle Mariners",
+      "link": "/api/v1/teams/136"
+     },
+     "player": {
+      "id": 669392,
+      "fullName": "Samad Taylor",
+      "link": "/api/v1/people/669392",
+      "firstName": "Samad",
+      "lastName": "Taylor"
+     },
+     "league": {
+      "id": 103,
+      "name": "AL",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "abbreviation": "MLB"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [],
+   "playerPool": "ALL"
+  }
+ ]
+}

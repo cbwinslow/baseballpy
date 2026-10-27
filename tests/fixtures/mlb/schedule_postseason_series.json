@@ -1,0 +1,781 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "totalItems": 43,
+ "totalEvents": 0,
+ "totalGames": 43,
+ "totalGamesInProgress": 0,
+ "wait": 10,
+ "series": [
+  {
+   "series": {
+    "id": "W_1",
+    "sortNumber": 1,
+    "isDefault": true,
+    "gameType": "W"
+   },
+   "totalItems": 5,
+   "totalGames": 5,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 775300,
+     "gameGuid": "fb97fd78-be7e-4439-b30c-733a91400fbf",
+     "link": "/api/v1.1/game/775300/feed/live",
+     "gameType": "W",
+     "season": "2024",
+     "gameDate": "2024-10-26T00:08:00Z",
+     "officialDate": "2024-10-25",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees",
+        "link": "/api/v1/teams/147"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 3,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "link": "/api/v1/teams/119"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 6,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "venue": {
+      "id": 22,
+      "name": "Dodger Stadium",
+      "link": "/api/v1/venues/22"
+     },
+     "content": {
+      "link": "/api/v1/game/775300/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775300-2024-10-25",
+     "seasonDisplay": "2024",
+     "dayNight": "night",
+     "description": "World Series Game 1",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 1,
+     "seriesDescription": "World Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775294,
+     "gameGuid": "e8d50a03-7c3f-44f5-87bb-43476e34fe94",
+     "link": "/api/v1.1/game/775294/feed/live",
+     "gameType": "W",
+     "season": "2024",
+     "gameDate": "2024-10-27T00:08:00Z",
+     "officialDate": "2024-10-26",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees",
+        "link": "/api/v1/teams/147"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 2,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 2,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "link": "/api/v1/teams/119"
+       },
+       "leagueRecord": {
+        "wins": 2,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 4,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "venue": {
+      "id": 22,
+      "name": "Dodger Stadium",
+      "link": "/api/v1/venues/22"
+     },
+     "content": {
+      "link": "/api/v1/game/775294/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775294-2024-10-26",
+     "seasonDisplay": "2024",
+     "dayNight": "night",
+     "description": "World Series Game 2",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 2,
+     "seriesDescription": "World Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775298,
+     "gameGuid": "e6fed413-e8ca-4217-bdf0-d13912b4411a",
+     "link": "/api/v1.1/game/775298/feed/live",
+     "gameType": "W",
+     "season": "2024",
+     "gameDate": "2024-10-29T00:08:00Z",
+     "officialDate": "2024-10-28",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "link": "/api/v1/teams/119"
+       },
+       "leagueRecord": {
+        "wins": 3,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 4,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees",
+        "link": "/api/v1/teams/147"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 3,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 2,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "venue": {
+      "id": 3313,
+      "name": "Yankee Stadium",
+      "link": "/api/v1/venues/3313"
+     },
+     "content": {
+      "link": "/api/v1/game/775298/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775298-2024-10-28",
+     "seasonDisplay": "2024",
+     "dayNight": "night",
+     "description": "World Series Game 3",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 3,
+     "seriesDescription": "World Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775297,
+     "gameGuid": "79cb2c8c-d698-49f7-9c33-0bb7a6895efb",
+     "link": "/api/v1.1/game/775297/feed/live",
+     "gameType": "W",
+     "season": "2024",
+     "gameDate": "2024-10-30T00:08:00Z",
+     "officialDate": "2024-10-29",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "link": "/api/v1/teams/119"
+       },
+       "leagueRecord": {
+        "wins": 3,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".750"
+       },
+       "score": 4,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees",
+        "link": "/api/v1/teams/147"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 3,
+        "ties": 0,
+        "pct": ".250"
+       },
+       "score": 11,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "venue": {
+      "id": 3313,
+      "name": "Yankee Stadium",
+      "link": "/api/v1/venues/3313"
+     },
+     "content": {
+      "link": "/api/v1/game/775297/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775297-2024-10-29",
+     "seasonDisplay": "2024",
+     "dayNight": "night",
+     "description": "World Series Game 4",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 4,
+     "seriesDescription": "World Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775296,
+     "gameGuid": "920f8c2c-a626-4716-9ffb-89b3059e2dfe",
+     "link": "/api/v1.1/game/775296/feed/live",
+     "gameType": "W",
+     "season": "2024",
+     "gameDate": "2024-10-31T00:08:00Z",
+     "officialDate": "2024-10-30",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers",
+        "link": "/api/v1/teams/119"
+       },
+       "leagueRecord": {
+        "wins": 4,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".800"
+       },
+       "score": 7,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees",
+        "link": "/api/v1/teams/147"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 4,
+        "ties": 0,
+        "pct": ".200"
+       },
+       "score": 6,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "venue": {
+      "id": 3313,
+      "name": "Yankee Stadium",
+      "link": "/api/v1/venues/3313"
+     },
+     "content": {
+      "link": "/api/v1/game/775296/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": true,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775296-2024-10-30",
+     "seasonDisplay": "2024",
+     "dayNight": "night",
+     "description": "World Series Game 5",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 5,
+     "seriesDescription": "World Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "sortOrder": 1
+  },
+  {
+   "series": {
+    "id": "F_2",
+    "sortNumber": 0,
+    "isDefault": false,
+    "gameType": "F"
+   },
+   "totalItems": 2,
+   "totalGames": 2,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 775343,
+     "gameGuid": "bdc94e2d-6fc5-4142-a631-2e79734119c4",
+     "link": "/api/v1.1/game/775343/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-01T20:08:00Z",
+     "officialDate": "2024-10-01",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 118,
+        "name": "Kansas City Royals",
+        "link": "/api/v1/teams/118"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 1,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 2
+      },
+      "home": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles",
+        "link": "/api/v1/teams/110"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 0,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 2
+      }
+     },
+     "venue": {
+      "id": 2,
+      "name": "Oriole Park at Camden Yards",
+      "link": "/api/v1/venues/2"
+     },
+     "content": {
+      "link": "/api/v1/game/775343/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775343-2024-10-01",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "description": "AL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 1,
+     "seriesDescription": "AL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775341,
+     "gameGuid": "df087a55-ce92-4c79-a6ef-ac84f45e7ac6",
+     "link": "/api/v1.1/game/775341/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-02T20:38:00Z",
+     "officialDate": "2024-10-02",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 118,
+        "name": "Kansas City Royals",
+        "link": "/api/v1/teams/118"
+       },
+       "leagueRecord": {
+        "wins": 2,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 2,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 2
+      },
+      "home": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles",
+        "link": "/api/v1/teams/110"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 2,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 1,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 2
+      }
+     },
+     "venue": {
+      "id": 2,
+      "name": "Oriole Park at Camden Yards",
+      "link": "/api/v1/venues/2"
+     },
+     "content": {
+      "link": "/api/v1/game/775341/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": true,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775341-2024-10-02",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "description": "AL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 2,
+     "seriesDescription": "AL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "sortOrder": 0
+  },
+  {
+   "series": {
+    "id": "F_1",
+    "sortNumber": 0,
+    "isDefault": false,
+    "gameType": "F"
+   },
+   "totalItems": 2,
+   "totalGames": 2,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 775345,
+     "gameGuid": "6b7b7364-6d16-4191-8f70-8e9678a067a7",
+     "link": "/api/v1.1/game/775345/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-01T18:32:00Z",
+     "officialDate": "2024-10-01",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 116,
+        "name": "Detroit Tigers",
+        "link": "/api/v1/teams/116"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 3,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 117,
+        "name": "Houston Astros",
+        "link": "/api/v1/teams/117"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 1,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "venue": {
+      "id": 2392,
+      "name": "Minute Maid Park",
+      "link": "/api/v1/venues/2392"
+     },
+     "content": {
+      "link": "/api/v1/game/775345/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775345-2024-10-01",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "description": "AL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 1,
+     "seriesDescription": "AL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775344,
+     "gameGuid": "ffb51248-46d5-43ae-bc40-944f5092b110",
+     "link": "/api/v1.1/game/775344/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-02T18:32:00Z",
+     "officialDate": "2024-10-02",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 116,
+        "name": "Detroit Tigers",
+        "link": "/api/v1/teams/116"
+       },
+       "leagueRecord": {
+        "wins": 2,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 5,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 117,
+        "name": "Houston Astros",
+        "link": "/api/v1/teams/117"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 2,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 2,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "venue": {
+      "id": 2392,
+      "name": "Minute Maid Park",
+      "link": "/api/v1/venues/2392"
+     },
+     "content": {
+      "link": "/api/v1/game/775344/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": true,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775344-2024-10-02",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "description": "AL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 2,
+     "seriesDescription": "AL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "sortOrder": 0
+  }
+ ]
+}

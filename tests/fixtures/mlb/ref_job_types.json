@@ -1,0 +1,502 @@
+[
+ {
+  "code": "UMPR",
+  "job": "Umpire",
+  "sortOrder": 1
+ },
+ {
+  "code": "UDIR",
+  "job": "Director of Instant Replay",
+  "sortOrder": 11
+ },
+ {
+  "code": "ROFF",
+  "job": "Replay Official",
+  "sortOrder": 21
+ },
+ {
+  "code": "MSTR",
+  "job": "Stringer",
+  "sortOrder": 101
+ },
+ {
+  "code": "BOSS",
+  "job": "BOSS Operator",
+  "sortOrder": 111
+ },
+ {
+  "code": "FTCO",
+  "job": "Field Timing Coordinator",
+  "sortOrder": 121
+ },
+ {
+  "code": "VRMO",
+  "job": "Video Room Monitor",
+  "sortOrder": 131
+ },
+ {
+  "code": "TRCK",
+  "job": "Tracking Operator",
+  "sortOrder": 151
+ },
+ {
+  "code": "SCRB",
+  "job": "Scrubber Operator",
+  "sortOrder": 161
+ },
+ {
+  "code": "PITO",
+  "job": "Pitchcast Operator",
+  "sortOrder": 171
+ },
+ {
+  "code": "SCOR",
+  "job": "Official Scorer",
+  "sortOrder": 201
+ },
+ {
+  "code": "SUPV",
+  "job": "Supervisor",
+  "sortOrder": 251
+ },
+ {
+  "code": "MNGR",
+  "job": "Manager",
+  "sortOrder": 301
+ },
+ {
+  "code": "COAB",
+  "job": "Bench Coach",
+  "sortOrder": 311
+ },
+ {
+  "code": "NTRM",
+  "job": "Interim Manager",
+  "sortOrder": 311
+ },
+ {
+  "code": "ASSM",
+  "job": "Associate Manager",
+  "sortOrder": 312
+ },
+ {
+  "code": "COAT",
+  "job": "Hitting Coach",
+  "sortOrder": 321
+ },
+ {
+  "code": "COAH",
+  "job": "Batting Coach",
+  "sortOrder": 331
+ },
+ {
+  "code": "COHB",
+  "job": "Hitting/Bench Coach",
+  "sortOrder": 341
+ },
+ {
+  "code": "COHF",
+  "job": "Hitting/First Base Coach",
+  "sortOrder": 351
+ },
+ {
+  "code": "INFC",
+  "job": "Infield Coach",
+  "sortOrder": 360
+ },
+ {
+  "code": "COHT",
+  "job": "Hitting/Third Base Coach",
+  "sortOrder": 361
+ },
+ {
+  "code": "COHU",
+  "job": "Hitting/Bullpen Coach",
+  "sortOrder": 371
+ },
+ {
+  "code": "COHI",
+  "job": "Interim Hitting Coach",
+  "sortOrder": 375
+ },
+ {
+  "code": "COPI",
+  "job": "Interim Pitching Coach",
+  "sortOrder": 376
+ },
+ {
+  "code": "COAA",
+  "job": "Assistant Hitting Coach",
+  "sortOrder": 381
+ },
+ {
+  "code": "MLAH",
+  "job": "Major League Assistant Hitting Coach",
+  "sortOrder": 391
+ },
+ {
+  "code": "OFFC",
+  "job": "Offensive Coordinator",
+  "sortOrder": 395
+ },
+ {
+  "code": "COAP",
+  "job": "Pitching Coach",
+  "sortOrder": 401
+ },
+ {
+  "code": "COPA",
+  "job": "Assistant Pitching Coach",
+  "sortOrder": 411
+ },
+ {
+  "code": "DMLP",
+  "job": "Director of ML Pitching",
+  "sortOrder": 415
+ },
+ {
+  "code": "COA1",
+  "job": "First Base Coach",
+  "sortOrder": 421
+ },
+ {
+  "code": "COFU",
+  "job": "First Base/Bullpen Coach",
+  "sortOrder": 431
+ },
+ {
+  "code": "COA3",
+  "job": "Third Base Coach",
+  "sortOrder": 441
+ },
+ {
+  "code": "FUND",
+  "job": "Fundamentals Coach",
+  "sortOrder": 450
+ },
+ {
+  "code": "INBC",
+  "job": "Interim Bench Coach",
+  "sortOrder": 451
+ },
+ {
+  "code": "OBRC",
+  "job": "Outfield and Baserunning Coordinator",
+  "sortOrder": 457
+ },
+ {
+  "code": "BCCH",
+  "job": "Bench/Catching Coach",
+  "sortOrder": 461
+ },
+ {
+  "code": "DEFC",
+  "job": "Defensive Coach",
+  "sortOrder": 466
+ },
+ {
+  "code": "COAU",
+  "job": "Bullpen Coach",
+  "sortOrder": 481
+ },
+ {
+  "code": "BCGP",
+  "job": "Bullpen, Catching/Game Planning Coach",
+  "sortOrder": 481
+ },
+ {
+  "code": "INBU",
+  "job": "Interim Bullpen Coach",
+  "sortOrder": 481
+ },
+ {
+  "code": "DPBC",
+  "job": "Director of Pitching Development & Bullpen Coach",
+  "sortOrder": 485
+ },
+ {
+  "code": "MAJC",
+  "job": "Major League Coach",
+  "sortOrder": 491
+ },
+ {
+  "code": "MLHC",
+  "job": "Major League Hitting Consultant",
+  "sortOrder": 492
+ },
+ {
+  "code": "ADLA",
+  "job": "Advisor, Latin America",
+  "sortOrder": 500
+ },
+ {
+  "code": "ASBC",
+  "job": "Assistant Bench Coach",
+  "sortOrder": 500
+ },
+ {
+  "code": "SABO",
+  "job": "Senior Advisor to the President of Baseball Operations",
+  "sortOrder": 500
+ },
+ {
+  "code": "VPGM",
+  "job": "Senior Vice President/General Manager",
+  "sortOrder": 500
+ },
+ {
+  "code": "FTHC",
+  "job": "Fourth Coach",
+  "sortOrder": 500
+ },
+ {
+  "code": "HINS",
+  "job": "Hitting Instructor",
+  "sortOrder": 500
+ },
+ {
+  "code": "MLHS",
+  "job": "Major League Hitting Strategist",
+  "sortOrder": 501
+ },
+ {
+  "code": "QUAC",
+  "job": "Quality Control Coach",
+  "sortOrder": 501
+ },
+ {
+  "code": "MLPS",
+  "job": "Major League Pitching Strategist",
+  "sortOrder": 501
+ },
+ {
+  "code": "HANI",
+  "job": "Hitting Analytics Instructor",
+  "sortOrder": 511
+ },
+ {
+  "code": "PINC",
+  "job": "Player Information Coach",
+  "sortOrder": 511
+ },
+ {
+  "code": "DIPD",
+  "job": "Director, Player Development",
+  "sortOrder": 511
+ },
+ {
+  "code": "ACAS",
+  "job": "Academy Supervisor",
+  "sortOrder": 511
+ },
+ {
+  "code": "MLPI",
+  "job": "Major League Player Information Coordinator",
+  "sortOrder": 512
+ },
+ {
+  "code": "BASS",
+  "job": "Bullpen Assistant",
+  "sortOrder": 521
+ },
+ {
+  "code": "COOC",
+  "job": "Complex Operations Coordinator",
+  "sortOrder": 521
+ },
+ {
+  "code": "ANAC",
+  "job": "Analytics Coordinator",
+  "sortOrder": 531
+ },
+ {
+  "code": "BUCO",
+  "job": "Bullpen Coordinator",
+  "sortOrder": 531
+ },
+ {
+  "code": "CBCA",
+  "job": "Coach/Bullpen Catcher",
+  "sortOrder": 535
+ },
+ {
+  "code": "BCAT",
+  "job": "Bullpen Catcher",
+  "sortOrder": 541
+ },
+ {
+  "code": "MOBC",
+  "job": "Major League Operations Assistant/Bullpen Catcher",
+  "sortOrder": 551
+ },
+ {
+  "code": "MLSC",
+  "job": "Major League Staff Coordinator",
+  "sortOrder": 552
+ },
+ {
+  "code": "CATC",
+  "job": "Catching Coach",
+  "sortOrder": 561
+ },
+ {
+  "code": "CASC",
+  "job": "Catching and Advance Scouting Coordinator",
+  "sortOrder": 571
+ },
+ {
+  "code": "DCAC",
+  "job": "Defensive Coordinator and Advance Coach",
+  "sortOrder": 581
+ },
+ {
+  "code": "BOFF",
+  "job": "Baserunning/Outfield and First Base Coach",
+  "sortOrder": 591
+ },
+ {
+  "code": "COAC",
+  "job": "Coach",
+  "sortOrder": 601
+ },
+ {
+  "code": "PLIC",
+  "job": "Player Information Coach",
+  "sortOrder": 602
+ },
+ {
+  "code": "COSA",
+  "job": "Special Assignment Coach",
+  "sortOrder": 611
+ },
+ {
+  "code": "GAME",
+  "job": "Game Planning Coach",
+  "sortOrder": 611
+ },
+ {
+  "code": "SPHI",
+  "job": "Special Assignment Hitting Coach",
+  "sortOrder": 612
+ },
+ {
+  "code": "MADC",
+  "job": "Major League administrative coach",
+  "sortOrder": 613
+ },
+ {
+  "code": "MLRC",
+  "job": "Major League Replay Coordinator",
+  "sortOrder": 615
+ },
+ {
+  "code": "SADV",
+  "job": "Special Advisor",
+  "sortOrder": 631
+ },
+ {
+  "code": "SASU",
+  "job": "Special Assistant",
+  "sortOrder": 641
+ },
+ {
+  "code": "SBAD",
+  "job": "Senior Baseball Advisor",
+  "sortOrder": 651
+ },
+ {
+  "code": "COCO",
+  "job": "Condition Coach",
+  "sortOrder": 705
+ },
+ {
+  "code": "HCEM",
+  "job": "Head Clubhouse and Equipment Manager",
+  "sortOrder": 785
+ },
+ {
+  "code": "HEAD",
+  "job": "Head Coach",
+  "sortOrder": 901
+ },
+ {
+  "code": "ASSC",
+  "job": "Assistant Coach",
+  "sortOrder": 911
+ },
+ {
+  "code": "AUXC",
+  "job": "Auxiliary Coach",
+  "sortOrder": 921
+ },
+ {
+  "code": "TRIA",
+  "job": "Trials Coach",
+  "sortOrder": 931
+ },
+ {
+  "code": "STUD",
+  "job": "Student Manager",
+  "sortOrder": 941
+ },
+ {
+  "code": "COMM",
+  "job": "Commissioner",
+  "sortOrder": 1001
+ },
+ {
+  "code": "LPRS",
+  "job": "League President",
+  "sortOrder": 1011
+ },
+ {
+  "code": "CRPR",
+  "job": "Coordinator, Run Prevention",
+  "sortOrder": 2000
+ },
+ {
+  "code": "CORP",
+  "job": "Coordinator, Run Production",
+  "sortOrder": 2000
+ },
+ {
+  "code": "OWNR",
+  "job": "Owner",
+  "sortOrder": 2001
+ },
+ {
+  "code": "FICO",
+  "job": "Field Coordinator",
+  "sortOrder": 2001
+ },
+ {
+  "code": "AFCO",
+  "job": "Assistand Field Coordinator",
+  "sortOrder": 2002
+ },
+ {
+  "code": "OWNP",
+  "job": "Part Owner",
+  "sortOrder": 2011
+ },
+ {
+  "code": "IBRC",
+  "job": "Infield & Baserunning Coordinator",
+  "sortOrder": 2050
+ },
+ {
+  "code": "PRES",
+  "job": "President",
+  "sortOrder": 2101
+ },
+ {
+  "code": "PBBO",
+  "job": "President, Baseball Operations",
+  "sortOrder": 2111
+ },
+ {
+  "code": "PBBG",
+  "job": "President, Baseball Operations and General Manager",
+  "sortOrder": 2112
+ }
+]

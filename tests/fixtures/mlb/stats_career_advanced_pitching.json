@@ -1,0 +1,202 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "careerAdvanced"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "totalSplits": 12076,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "winningPercentage": ".524",
+      "runsScoredPer9": "4.08",
+      "battersFaced": 4730,
+      "babip": ".286",
+      "obp": ".331",
+      "slg": ".383",
+      "ops": ".714",
+      "strikeoutsPer9": "5.20",
+      "baseOnBallsPer9": "3.71",
+      "homeRunsPer9": "0.72",
+      "hitsPer9": "8.80",
+      "strikesoutsToWalks": "1.40",
+      "inheritedRunners": 288,
+      "inheritedRunnersScored": 104,
+      "bequeathedRunners": 179,
+      "bequeathedRunnersScored": 76,
+      "stolenBases": 63,
+      "caughtStealing": 58,
+      "qualityStarts": 44,
+      "gamesFinished": 235,
+      "doubles": 192,
+      "triples": 28,
+      "gidp": 106,
+      "gidpOpp": 748,
+      "wildPitches": 22,
+      "balks": 3,
+      "pickoffs": 0,
+      "totalSwings": 5908,
+      "swingAndMisses": 1875,
+      "strikeoutsMinusWalksPercentage": ".039",
+      "gidpPercentage": ".142",
+      "battersFacedPerGame": "10.56",
+      "inningsPitchedPerGame": "2.48",
+      "buntsFailed": 19,
+      "buntsMissedTipped": 6,
+      "whiffPercentage": ".317",
+      "flyBallPercentage": ".071",
+      "ballsInPlay": 3625,
+      "runSupport": 514,
+      "strikePercentage": ".720",
+      "pitchesPerInning": "7.80",
+      "pitchesPerPlateAppearance": "1.830",
+      "walksPerPlateAppearance": ".097",
+      "strikeoutsPerPlateAppearance": ".136",
+      "homeRunsPerPlateAppearance": ".019",
+      "walksPerStrikeout": ".713",
+      "iso": ".123",
+      "flyOuts": 234,
+      "popOuts": 115,
+      "lineOuts": 140,
+      "groundOuts": 433,
+      "flyHits": 23,
+      "popHits": 0,
+      "lineHits": 67,
+      "groundHits": 62
+     },
+     "team": {
+      "id": 110,
+      "name": "Baltimore Orioles",
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 110003,
+      "fullName": "Don Aase",
+      "link": "/api/v1/people/110003",
+      "firstName": "Don",
+      "lastName": "Aase"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 5,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "winningPercentage": ".355",
+      "runsScoredPer9": "7.00",
+      "battersFaced": 2568,
+      "babip": ".308",
+      "obp": ".352",
+      "strikeoutsPer9": "2.55",
+      "baseOnBallsPer9": "3.04",
+      "homeRunsPer9": "0.29",
+      "hitsPer9": "10.87",
+      "strikesoutsToWalks": "0.84",
+      "gamesFinished": 14,
+      "wildPitches": 18,
+      "balks": 0,
+      "strikeoutsMinusWalksPercentage": "-.012",
+      "battersFacedPerGame": "32.51",
+      "inningsPitchedPerGame": "7.19",
+      "walksPerPlateAppearance": ".075",
+      "strikeoutsPerPlateAppearance": ".063",
+      "homeRunsPerPlateAppearance": ".007",
+      "walksPerStrikeout": "1.193"
+     },
+     "team": {
+      "id": 221,
+      "link": "/api/v1/teams/221"
+     },
+     "player": {
+      "id": 110006,
+      "fullName": "Bert Abbey",
+      "link": "/api/v1/people/110006",
+      "firstName": "Bert",
+      "lastName": "Abbey"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 3,
+     "rank": 2,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "winningPercentage": ".---",
+      "runsScoredPer9": "13.50",
+      "battersFaced": 12,
+      "babip": ".500",
+      "obp": ".500",
+      "strikeoutsPer9": "0.00",
+      "baseOnBallsPer9": "0.00",
+      "homeRunsPer9": "0.00",
+      "hitsPer9": "27.00",
+      "strikesoutsToWalks": "-.--",
+      "gamesFinished": 1,
+      "wildPitches": 1,
+      "balks": 0,
+      "strikeoutsMinusWalksPercentage": ".000",
+      "battersFacedPerGame": "12.00",
+      "inningsPitchedPerGame": "2.00",
+      "walksPerPlateAppearance": ".000",
+      "strikeoutsPerPlateAppearance": ".000",
+      "homeRunsPerPlateAppearance": ".000",
+      "walksPerStrikeout": ".---"
+     },
+     "team": {
+      "id": 221,
+      "link": "/api/v1/teams/221"
+     },
+     "player": {
+      "id": 110007,
+      "fullName": "Charlie Abbey",
+      "link": "/api/v1/people/110007",
+      "firstName": "Charlie",
+      "lastName": "Abbey"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

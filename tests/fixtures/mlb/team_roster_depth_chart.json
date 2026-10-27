@@ -1,0 +1,62 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 687396,
+    "fullName": "Brent Headrick",
+    "link": "/api/v1/people/687396"
+   },
+   "jerseyNumber": "",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "A",
+    "description": "Active"
+   }
+  },
+  {
+   "person": {
+    "id": 621112,
+    "fullName": "Paul Blackburn",
+    "link": "/api/v1/people/621112"
+   },
+   "jerseyNumber": "",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "A",
+    "description": "Active"
+   }
+  },
+  {
+   "person": {
+    "id": 677960,
+    "fullName": "Ryan Weathers",
+    "link": "/api/v1/people/677960"
+   },
+   "jerseyNumber": "",
+   "position": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "status": {
+    "code": "A",
+    "description": "Active"
+   }
+  }
+ ],
+ "link": "/api/v1/teams/147/roster",
+ "teamId": 147,
+ "rosterType": "depthChart"
+}

@@ -1,0 +1,14 @@
+[
+ {
+  "id": "games",
+  "description": "game schedule"
+ },
+ {
+  "id": "xref",
+  "description": "xref games"
+ },
+ {
+  "id": "events",
+  "description": "all events schedule"
+ }
+]

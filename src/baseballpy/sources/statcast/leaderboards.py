@@ -1,179 +1,130 @@
-"""Baseball Savant (Statcast) Leaderboards Extractor and Normalizer."""
+"""Baseball Savant (Statcast) leaderboards: registry-driven extraction with strict schemas.
 
-import csv
-import io
-import re
-from pathlib import Path
+Every variant in :mod:`baseballpy.sources.statcast.lb_catalog` is a registered dataset
+(``statcast.leaderboard_<slug>``) whose schema was generated from the live CSV headers. Requests
+that deviate from the variant's canonical parameters (a different ``min`` qualifier, ad hoc
+``custom_leaderboard`` selections) return a table but are never written into the registered
+dataset, so a dataset always holds one consistent population.
+"""
+
+import logging
+from dataclasses import dataclass
 from typing import Any
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import ManifestTracker
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
-from baseballpy.core.datasets import DatasetSpec
+from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
-from baseballpy.core.quarantine import safe_array
+from baseballpy.core.quarantine import Quarantine
+from baseballpy.core.schema_tools import infer_type_name, normalize_csv, read_csv_strings, snake
 from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
+from baseballpy.sources import catalog
+from baseballpy.sources.statcast.lb_catalog import (
+    BY_SLUG,
+    SAVANT_BASE,
+    SUPPORTED,
+    LeaderboardDef,
+    request_params,
+    resolve,
+)
+from baseballpy.sources.statcast.lb_parse import html_json_to_csv
+from baseballpy.sources.statcast.lb_schema import (
+    LEADERBOARD_SCHEMAS,
+    default_min,
+    min_year,
+)
+
+logger = logging.getLogger(__name__)
+
+__all__ = [
+    "SAVANT_BASE",
+    "LeaderboardReport",
+    "StatcastLeaderboardExtractor",
+    "StatcastLeaderboardNormalizer",
+    "bat_tracking",
+    "custom_leaderboard",
+    "exit_velocity",
+    "expected_statistics",
+    "get_leaderboard",
+    "leaderboard_spec",
+    "outs_above_average",
+    "sprint_speed",
+]
 
 
 def leaderboard_spec(name: str, schema: pa.Schema | None = None) -> DatasetSpec:
-    """Unregistered spec for a Savant leaderboard (typed schemas arrive with coverage C-4)."""
+    """The registered spec of a variant, or an unregistered spec for an ad hoc leaderboard name."""
+    catalog.register_all()
+    slug = name.lower()
+    if slug in LEADERBOARD_SCHEMAS:
+        return get_dataset("statcast", f"leaderboard_{slug}")
     return DatasetSpec(
         source="statcast",
-        name=f"leaderboard_{name}",
-        view=f"statcast_leaderboard_{name}",
+        name=f"leaderboard_{slug}",
+        view=f"statcast_leaderboard_{slug}",
         schema=schema or pa.schema([]),
         partition="season",
         keys=(),
-        description=f"Baseball Savant {name} leaderboard (schema inferred).",
-        endpoint_doc="sources/statcast.md#2-dedicated-analytical-leaderboards-leaderboard",
+        description=f"Ad hoc Baseball Savant {slug} leaderboard (schema inferred).",
+        endpoint_doc="sources/statcast.md#2-leaderboards-leaderboardroute",
     )
 
 
-SAVANT_BASE = "https://baseballsavant.mlb.com/leaderboard"
-
-LEADERBOARD_ROUTES = {
-    "expected_statistics": "expected_statistics",
-    "exit_velocity": "statcast",
-    "sprint_speed": "sprint_speed",
-    "running_splits": "running_splits",
-    "bat_tracking": "bat-tracking",
-    "outs_above_average": "outs_above_average",
-    "arm_strength": "arm-strength",
-    "poptime": "poptime",
-    "catcher_framing": "catcher-framing",
-    "pitch_arsenals": "pitch-arsenals",
-    "pitch_movement": "pitch-movement",
-    "abs_challenges": "abs-challenges",
-}
-
-
-def _safe_float(val: Any) -> float | None:
-    if val is None or val == "" or val == "null" or val == "None":
-        return None
-    try:
-        s = str(val).strip().rstrip("%")
-        return float(s)
-    except (ValueError, TypeError):
-        return None
-
-
-def _safe_int(val: Any) -> int | None:
-    if val is None or val == "" or val == "null" or val == "None":
-        return None
-    try:
-        return int(float(val))
-    except (ValueError, TypeError):
-        return None
-
-
 class StatcastLeaderboardNormalizer:
-    """Normalizes raw Savant Leaderboard CSV payloads into strongly-typed PyArrow Tables."""
+    """Maps Savant leaderboard payloads onto the strict generated schema of a variant."""
 
-    def normalize(self, raw_bytes: bytes) -> pa.Table:
-        """Parse CSV bytes (stripping BOM if present) into a typed PyArrow Table."""
-        if not raw_bytes:
-            return pa.table({})
+    def __init__(self, quarantine: Quarantine | None = None) -> None:
+        self._quarantine = quarantine
 
-        text = raw_bytes.decode("utf-8-sig", errors="replace")
-        reader = csv.reader(io.StringIO(text, newline=""))
-        header = next(reader, None)
-        if not header:
-            return pa.table({})
-
-        # Clean header names (lowercase, strip, replace spaces/dashes with underscores)
-        cleaned_headers = [
-            h.strip().replace(" ", "_").replace("-", "_").replace(".", "_").lower() for h in header
-        ]
-
-        rows: list[list[Any]] = []
-        for r in reader:
-            if not r or all(c == "" for c in r):
-                continue
-            # Pad or truncate row to header length
-            row_vals = r + [""] * (len(cleaned_headers) - len(r))
-            rows.append(row_vals[: len(cleaned_headers)])
-
-        if not rows:
-            # Build empty string table
-            fields = [(h, pa.string()) for h in cleaned_headers]
-            return pa.Table.from_batches([], schema=pa.schema(fields))
-
-        # Infer and cast column types
-        arrays = []
-        for col_idx, col_name in enumerate(cleaned_headers):
-            raw_vals = [row[col_idx] for row in rows]
-
-            # 1. Integer candidate
-            if col_name == "id" or any(
-                id_pattern in col_name
-                for id_pattern in (
-                    "_id",
-                    "player_id",
-                    "entity_id",
-                    "pitcher",
-                    "year",
-                    "age",
-                    "bolts",
-                    "swings",
-                    "attempts",
-                )
-            ):
-                int_vals = [_safe_int(v) for v in raw_vals]
-                arrays.append(
-                    safe_array(
-                        int_vals,
-                        pa.int32(),
-                        source="statcast",
-                        dataset="leaderboard",
-                        column=col_name,
-                    )
-                )
-            # 2. Float candidate (metrics, speeds, percentages, runs)
-            elif any(
-                metric_pattern in col_name
-                for metric_pattern in (
-                    "speed",
-                    "velo",
-                    "rate",
-                    "percent",
-                    "pct",
-                    "avg",
-                    "est_",
-                    "ba",
-                    "slg",
-                    "woba",
-                    "diff",
-                    "rv_",
-                    "distance",
-                    "pop_",
-                    "arm_",
-                    "length",
-                    "value",
-                )
-            ):
-                flt_vals = [_safe_float(v) for v in raw_vals]
-                arrays.append(
-                    safe_array(
-                        flt_vals,
-                        pa.float32(),
-                        source="statcast",
-                        dataset="leaderboard",
-                        column=col_name,
-                    )
-                )
-            # 3. String fallback
-            else:
-                str_vals = [v.strip() if v else None for v in raw_vals]
-                arrays.append(pa.array(str_vals, type=pa.string()))
-
-        schema = pa.schema(
-            [(cleaned_headers[i], arrays[i].type) for i in range(len(cleaned_headers))]
+    def normalize(self, raw_bytes: bytes, slug: str | None = None) -> pa.Table:
+        """Typed table for ``slug``; without a slug the types are inferred (ad hoc results only)."""
+        defn = BY_SLUG[slug] if slug is not None else None
+        payload = (
+            html_json_to_csv(raw_bytes)
+            if defn is not None and defn.fmt == "html_json"
+            else raw_bytes
         )
-        return pa.Table.from_arrays(arrays, schema=schema)
+        if slug is not None:
+            return normalize_csv(
+                payload,
+                LEADERBOARD_SCHEMAS[slug],
+                source="statcast",
+                dataset=f"leaderboard_{slug}",
+                quarantine=self._quarantine,
+            )
+        return _infer_table(payload)
+
+
+def _infer_table(raw: bytes) -> pa.Table:
+    """Ad hoc typing: infer each column over the full payload (never persisted to the lake)."""
+    table = read_csv_strings(raw)
+    columns = []
+    names = []
+    for name in table.column_names:
+        column = table.column(name)
+        kind = infer_type_name(column.to_pylist())
+        target = {
+            "int16": pa.int32(),
+            "int32": pa.int32(),
+            "int64": pa.int64(),
+            "float64": pa.float64(),
+        }.get(kind)
+        columns.append(column.cast(target) if target is not None else column)
+        names.append(snake(name))
+    return pa.table(columns, names=names)
+
+
+@dataclass(frozen=True)
+class LeaderboardReport:
+    """Outcome of ingesting one variant: rows per season (``None`` = served from cache)."""
+
+    slug: str
+    seasons: dict[int, int | None]
+    unsupported: str | None = None
 
 
 class StatcastLeaderboardExtractor:
@@ -185,6 +136,7 @@ class StatcastLeaderboardExtractor:
         rate_limit_config: RateLimitConfig | None = None,
         http: HttpClient | None = None,
     ) -> None:
+        catalog.register_all()
         self.cache_config = cache_config or LakeConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
         self.http = http or (
@@ -195,139 +147,199 @@ class StatcastLeaderboardExtractor:
         self.raw = RawStore(self.cache_config)
 
     @staticmethod
-    def _chunk_id(name: str, year: int, **params: Any) -> str:
-        param_str = "_".join(f"{k}-{v}" for k, v in sorted(params.items()) if v is not None)
-        chunk = f"{name}_{year}"
-        return f"{chunk}_{param_str}" if param_str else chunk
+    def _chunk_id(slug: str, year: int | None) -> str:
+        return slug if year is None else f"{slug}_{year}"
 
-    def _manifest(self, name: str) -> ManifestTracker:
-        return self.cache_config.dataset_manifest("statcast", f"leaderboard_{name}")
+    def _manifest(self, slug: str) -> Any:
+        return self.cache_config.dataset_manifest("statcast", f"leaderboard_{slug}")
 
-    def _get_cache_path(self, name: str, year: int, **params: Any) -> Path:
-        spec = leaderboard_spec(name)
-        return self.store.part_path(spec, self._chunk_id(name, year, **params), year)
+    def _season_of(self, defn: LeaderboardDef, year: int | None) -> int | None:
+        return None if defn.year_style == "none" else year
+
+    def _fetch(self, defn: LeaderboardDef, year: int, min_value: str | None) -> bytes:
+        url = f"{SAVANT_BASE}/{defn.route}"
+        result = self.http.get_sync(url, params=request_params(defn, year, min_value))
+        return result.content
 
     def get_leaderboard(
         self,
         name: str,
-        year: int = 2024,
+        year: int | None = None,
         refresh: bool = False,
-        **kwargs: Any,
+        **overrides: Any,
     ) -> pa.Table:
-        """Fetch and normalize a Savant leaderboard table."""
-        route = LEADERBOARD_ROUTES.get(name.lower(), name)
-        url = f"{SAVANT_BASE}/{route}"
+        """Fetch one season of a leaderboard variant as a strictly typed table.
 
-        # Clean params
-        params: dict[str, Any] = {"year": year, "csv": "true"}
-        if "type" in kwargs:
-            params["type"] = kwargs["type"]
-        if "min" in kwargs:
-            params["min"] = kwargs["min"]
-        for k, v in kwargs.items():
-            if k not in params and v is not None:
-                params[k] = v
+        ``name`` is a variant slug (``expected_statistics_pitcher``) or a legacy name plus
+        ``type=`` (``get_leaderboard("expected_statistics", type="pitcher")``). ``min=`` and any
+        other override change the population, so the result is returned but not persisted.
+        """
+        player_type = overrides.get("type")
+        defn = resolve(name, str(player_type).lower() if player_type is not None else None)
+        if defn.unsupported is not None:
+            raise NotImplementedError(
+                f"Savant leaderboard {defn.slug!r} is unsupported: {defn.unsupported}"
+            )
+        year = year if year is not None else self.cache_config.today_or_now().year
+        persisted = not {k for k in overrides if k != "type"}
+        min_value = str(overrides["min"]) if "min" in overrides else default_min(defn.slug)
+        spec = get_dataset("statcast", defn.dataset)
+        season = self._season_of(defn, year)
+        chunk_id = self._chunk_id(defn.slug, season)
+        cache_path = self.store.part_path(spec, chunk_id, season)
+        url = f"{SAVANT_BASE}/{defn.route}"
 
-        lname = re.sub(r"[^a-z0-9_]+", "_", name.lower())
-        cache_path = self._get_cache_path(lname, year, **kwargs)
-        chunk_id = self._chunk_id(lname, year, **kwargs)
-        manifest = self._manifest(lname)
-
-        entry = manifest.get_chunk(manifest_key(chunk_id, year))
-        if cache_path.exists() and self.cache_config.is_fresh(
-            entry, "leaderboard", season=year, refresh=refresh
-        ):
-            with default_audit_logger.track(
-                operation=f"savant_leaderboard_{name.lower()}",
-                source="statcast",
-                endpoint=url,
-                destination=str(cache_path),
-            ) as hit:
-                hit.set_cache_hit(True)
-                cached = pq.read_table(cache_path)
-                hit.set_records(len(cached))
-                return cached
+        if persisted:
+            entry = self._manifest(defn.slug).get_chunk(manifest_key(chunk_id, season))
+            if cache_path.exists() and self.cache_config.is_fresh(
+                entry, "leaderboard", season=season, refresh=refresh
+            ):
+                with default_audit_logger.track(
+                    operation=f"savant_leaderboard_{defn.slug}",
+                    source="statcast",
+                    endpoint=url,
+                    destination=str(cache_path),
+                ) as hit:
+                    hit.set_cache_hit(True)
+                    cached = pq.read_table(cache_path, schema=spec.schema)
+                    hit.set_records(len(cached))
+                    return cached
 
         with default_audit_logger.track(
-            operation=f"savant_leaderboard_{name.lower()}",
+            operation=f"savant_leaderboard_{defn.slug}",
             source="statcast",
             endpoint=url,
             destination=str(cache_path),
         ) as tracker:
-            result = self.http.get_sync(url, params=params)
-            raw_bytes = result.content
-            table = self.normalizer.normalize(raw_bytes)
-
-            if self.cache_config.enabled and len(table) > 0:
-                spec = leaderboard_spec(lname, table.schema)
+            payload = self._fetch(defn, year, min_value)
+            table = self.normalizer.normalize(payload, defn.slug)
+            if persisted and self.cache_config.enabled:
+                suffix = "html" if defn.fmt == "html_json" else "csv"
                 self.raw.put(
                     "statcast",
                     spec.name,
-                    f"{chunk_id}.csv",
-                    raw_bytes,
-                    season=year,
-                    etag=result.etag or "",
+                    f"{chunk_id}.{suffix}",
+                    payload,
+                    season=season,
+                    source_ref=url,
                 )
-                self.store.put(spec, table, chunk_id=chunk_id, season=year)
-
+                self.store.put(spec, table, chunk_id=chunk_id, season=season)
             tracker.set_cache_hit(False)
             tracker.set_records(len(table))
             return table
+
+    def ingest_leaderboard(
+        self, name: str, years: list[int] | None = None, refresh: bool = False
+    ) -> LeaderboardReport:
+        """Ingest every season of one variant from its first season with data (or ``years``)."""
+        defn = resolve(name)
+        if defn.unsupported is not None:
+            return LeaderboardReport(defn.slug, {}, unsupported=defn.unsupported)
+        if defn.year_style == "none":
+            wanted = [self.cache_config.today_or_now().year]
+        elif years is not None:
+            wanted = years
+        else:
+            first = min_year(defn.slug) or self.cache_config.today_or_now().year
+            wanted = list(range(first, self.cache_config.today_or_now().year + 1))
+        seasons: dict[int, int | None] = {}
+        for year in wanted:
+            spec = get_dataset("statcast", defn.dataset)
+            season = self._season_of(defn, year)
+            chunk_id = self._chunk_id(defn.slug, season)
+            entry = self._manifest(defn.slug).get_chunk(manifest_key(chunk_id, season))
+            cached = self.store.part_path(spec, chunk_id, season).exists() and (
+                self.cache_config.is_fresh(entry, "leaderboard", season=season, refresh=refresh)
+            )
+            table = self.get_leaderboard(defn.slug, year=year, refresh=refresh)
+            seasons[year] = None if cached else table.num_rows
+        return LeaderboardReport(defn.slug, seasons)
+
+    def ingest_all(
+        self, years: list[int] | None = None, refresh: bool = False
+    ) -> list[LeaderboardReport]:
+        """Ingest every supported variant (unsupported ones are reported with their reason)."""
+        reports = [self.ingest_leaderboard(d.slug, years, refresh) for d in SUPPORTED]
+        reports.extend(
+            LeaderboardReport(d.slug, {}, unsupported=d.unsupported)
+            for d in BY_SLUG.values()
+            if d.unsupported is not None
+        )
+        return reports
+
+    def custom_leaderboard(
+        self,
+        year: int,
+        player_type: str = "batter",
+        selections: list[str] | None = None,
+        min_value: str = "q",
+        **params: Any,
+    ) -> pa.Table:
+        """Savant's custom leaderboard (``selections`` = metric ids). Ad hoc: typed by inference."""
+        url = f"{SAVANT_BASE}/custom"
+        query: dict[str, str | int] = {
+            "year": year,
+            "type": player_type,
+            "min": min_value,
+            "csv": "true",
+        }
+        if selections:
+            query["selections"] = ",".join(selections)
+        query.update({k: v for k, v in params.items() if v is not None})
+        result = self.http.get_sync(url, params=query)
+        return self.normalizer.normalize(result.content)
 
 
 # Module-level convenience functions
 get_default_extractor = lazy_singleton(StatcastLeaderboardExtractor)
 
 
-def get_leaderboard(name: str, year: int = 2024, refresh: bool = False, **kwargs: Any) -> pa.Table:
-    """Extract any Baseball Savant leaderboard by name."""
+def get_leaderboard(
+    name: str, year: int | None = None, refresh: bool = False, **kwargs: Any
+) -> pa.Table:
+    """Extract any Baseball Savant leaderboard variant by slug (or legacy name + ``type=``)."""
     return get_default_extractor().get_leaderboard(name=name, year=year, refresh=refresh, **kwargs)
 
 
+def custom_leaderboard(
+    year: int,
+    player_type: str = "batter",
+    selections: list[str] | None = None,
+    min_value: str = "q",
+    **params: Any,
+) -> pa.Table:
+    """Savant custom leaderboard with arbitrary metric ``selections`` (ad hoc, inferred types)."""
+    return get_default_extractor().custom_leaderboard(
+        year, player_type, selections, min_value, **params
+    )
+
+
 def expected_statistics(
-    year: int = 2024, player_type: str = "batter", min_pa: str = "q", refresh: bool = False
+    year: int = 2024, player_type: str = "batter", refresh: bool = False
 ) -> pa.Table:
-    """Extract Expected Statistics (xBA, xSLG, xwOBA) leaderboard."""
+    """Expected Statistics (xBA, xSLG, xwOBA; xERA for pitchers) leaderboard."""
     return get_default_extractor().get_leaderboard(
-        "expected_statistics", year=year, type=player_type, min=min_pa, refresh=refresh
+        f"expected_statistics_{player_type}", year=year, refresh=refresh
     )
 
 
-def exit_velocity(
-    year: int = 2024, player_type: str = "batter", min_bbe: str = "q", refresh: bool = False
-) -> pa.Table:
-    """Extract Exit Velocity & Barrels leaderboard."""
+def exit_velocity(year: int = 2024, player_type: str = "batter", refresh: bool = False) -> pa.Table:
+    """Exit Velocity & Barrels leaderboard (``batter``, ``pitcher``, ``batter_team``, ...)."""
     return get_default_extractor().get_leaderboard(
-        "exit_velocity", year=year, type=player_type, min=min_bbe, refresh=refresh
+        f"exit_velocity_{player_type.replace('-', '_')}", year=year, refresh=refresh
     )
 
 
-def sprint_speed(year: int = 2024, min_runs: int = 10, refresh: bool = False) -> pa.Table:
-    """Extract Sprint Speed and Running Splits leaderboard."""
-    return get_default_extractor().get_leaderboard(
-        "sprint_speed", year=year, min=min_runs, refresh=refresh
-    )
+def sprint_speed(year: int = 2024, refresh: bool = False) -> pa.Table:
+    """Sprint Speed leaderboard."""
+    return get_default_extractor().get_leaderboard("sprint_speed", year=year, refresh=refresh)
 
 
-def bat_tracking(
-    year: int = 2024, player_type: str = "batter", min_swings: str = "q", refresh: bool = False
-) -> pa.Table:
-    """Extract 2024+ Bat Tracking (bat speed, swing length, squared up %) leaderboard."""
-    return get_default_extractor().get_leaderboard(
-        "bat_tracking", year=year, type=player_type, min=min_swings, refresh=refresh
-    )
+def bat_tracking(year: int = 2024, refresh: bool = False) -> pa.Table:
+    """Bat tracking (bat speed, swing length, squared-up, blasts) leaderboard (2023+)."""
+    return get_default_extractor().get_leaderboard("bat_tracking", year=year, refresh=refresh)
 
 
-def outs_above_average(
-    year: int = 2024, fielder_type: str = "Fielder", min_att: str = "q", refresh: bool = False
-) -> pa.Table:
-    """Extract Outs Above Average (OAA) defensive leaderboard."""
-    return get_default_extractor().get_leaderboard(
-        "outs_above_average",
-        year=year,
-        startYear=year,
-        endYear=year,
-        type=fielder_type,
-        min=min_att,
-        refresh=refresh,
-    )
+def outs_above_average(year: int = 2024, refresh: bool = False) -> pa.Table:
+    """Outs Above Average (OAA) defensive leaderboard."""
+    return get_default_extractor().get_leaderboard("outs_above_average", year=year, refresh=refresh)

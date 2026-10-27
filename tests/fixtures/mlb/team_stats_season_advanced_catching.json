@@ -1,0 +1,141 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "seasonAdvanced"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "runs": 2292,
+      "homeRuns": 507,
+      "strikeOuts": 3789,
+      "baseOnBalls": 1590,
+      "intentionalWalks": 102,
+      "hits": 4155,
+      "hitByPitch": 276,
+      "avg": ".253",
+      "atBats": 16410,
+      "obp": ".327",
+      "slg": ".410",
+      "ops": ".737",
+      "caughtStealing": 111,
+      "stolenBases": 342,
+      "stolenBasePercentage": ".755",
+      "caughtStealingPercentage": ".245",
+      "earnedRuns": 698,
+      "battersFaced": 18483,
+      "gamesPitched": 162,
+      "hitBatsmen": 276,
+      "wildPitches": 180,
+      "pickoffs": 3,
+      "totalBases": 6726,
+      "strikeoutWalkRatio": "2.38",
+      "catchersInterference": 3,
+      "sacBunts": 51,
+      "sacFlies": 153,
+      "passedBall": 36,
+      "pickoffAttempts": 9
+     },
+     "team": {
+      "id": 133,
+      "name": "Oakland Athletics",
+      "link": "/api/v1/teams/133"
+     },
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "runs": 3695,
+      "homeRuns": 830,
+      "strikeOuts": 6780,
+      "baseOnBalls": 2575,
+      "intentionalWalks": 80,
+      "hits": 6845,
+      "hitByPitch": 425,
+      "avg": ".250",
+      "atBats": 27420,
+      "obp": ".321",
+      "slg": ".402",
+      "ops": ".723",
+      "caughtStealing": 135,
+      "stolenBases": 770,
+      "stolenBasePercentage": ".851",
+      "caughtStealingPercentage": ".149",
+      "earnedRuns": 664,
+      "battersFaced": 30795,
+      "gamesPitched": 162,
+      "hitBatsmen": 425,
+      "wildPitches": 190,
+      "pickoffs": 0,
+      "totalBases": 11035,
+      "strikeoutWalkRatio": "2.63",
+      "catchersInterference": 35,
+      "sacBunts": 85,
+      "sacFlies": 255,
+      "passedBall": 60,
+      "pickoffAttempts": 15
+     },
+     "team": {
+      "id": 134,
+      "name": "Pittsburgh Pirates",
+      "link": "/api/v1/teams/134"
+     },
+     "rank": 2
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "runs": 2676,
+      "homeRuns": 676,
+      "strikeOuts": 5812,
+      "baseOnBalls": 1848,
+      "intentionalWalks": 68,
+      "hits": 5184,
+      "hitByPitch": 268,
+      "avg": ".238",
+      "atBats": 21740,
+      "obp": ".304",
+      "slg": ".385",
+      "ops": ".689",
+      "caughtStealing": 92,
+      "stolenBases": 404,
+      "stolenBasePercentage": ".815",
+      "caughtStealingPercentage": ".185",
+      "earnedRuns": 617,
+      "battersFaced": 24116,
+      "gamesPitched": 162,
+      "hitBatsmen": 268,
+      "wildPitches": 252,
+      "pickoffs": 0,
+      "totalBases": 8380,
+      "strikeoutWalkRatio": "3.15",
+      "catchersInterference": 36,
+      "sacBunts": 68,
+      "sacFlies": 156,
+      "passedBall": 64,
+      "pickoffAttempts": 36
+     },
+     "team": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

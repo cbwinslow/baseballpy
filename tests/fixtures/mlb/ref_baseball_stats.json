@@ -1,0 +1,1582 @@
+[
+ {
+  "name": "airOuts",
+  "lookupParam": "ao",
+  "isCounting": true,
+  "label": "Airouts",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "assists",
+  "lookupParam": "a",
+  "isCounting": true,
+  "label": "Assist",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "atBats",
+  "lookupParam": "ab",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "atBatsPerHomeRun",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "balk",
+  "lookupParam": "bk",
+  "isCounting": true,
+  "label": "Balk",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "battingAverage",
+  "lookupParam": "avg",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "babip",
+  "lookupParam": "babip",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "qualityStarts",
+  "lookupParam": "qs",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "bequeathedRunners",
+  "lookupParam": "bq",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "bequeathedRunnersScored",
+  "lookupParam": "bqs",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "blownSaves",
+  "lookupParam": "bs",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "catcherEarnedRunAverage",
+  "lookupParam": "cera",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "catchersInterference",
+  "lookupParam": "ci",
+  "isCounting": true,
+  "label": "Catcher's Interference",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "caughtStealing",
+  "lookupParam": "cs",
+  "isCounting": true,
+  "label": "CS",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "chances",
+  "lookupParam": "tc",
+  "isCounting": true,
+  "label": "Chances",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "completeGames",
+  "lookupParam": "cg",
+  "isCounting": true,
+  "label": "Complete Game",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "doublePlays",
+  "lookupParam": "dp",
+  "isCounting": true,
+  "label": "DP",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "doubles",
+  "lookupParam": "d",
+  "isCounting": true,
+  "label": "2B",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "earnedRun",
+  "lookupParam": "er",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "earnedRunAverage",
+  "lookupParam": "era",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "errors",
+  "lookupParam": "e",
+  "isCounting": true,
+  "label": "E",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "exitVelocity",
+  "lookupParam": "exitVelo",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "extraBaseHits",
+  "lookupParam": "xbh",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "fieldingPercentage",
+  "lookupParam": "fpct",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "flyouts",
+  "lookupParam": "ao",
+  "isCounting": true,
+  "label": "Flyouts",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "gamesFinished",
+  "lookupParam": "gf",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "gamesPlayed",
+  "lookupParam": "g",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   },
+   {
+    "displayName": "game"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "gamesStarted",
+  "lookupParam": "gs",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "game"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "groundIntoDoublePlays",
+  "lookupParam": "gidp",
+  "isCounting": true,
+  "label": "GIDP",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "groundIntoDoublePlayOpportunities",
+  "lookupParam": "gidp_opp",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "groundIntoTriplePlays",
+  "lookupParam": "gitp",
+  "isCounting": true,
+  "label": "GITP",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "groundOuts",
+  "lookupParam": "go",
+  "isCounting": true,
+  "label": "Groundouts",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "groundoutToFlyoutRatio",
+  "lookupParam": "go_ao",
+  "isCounting": false,
+  "label": "Groundouts-flyouts",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "hits",
+  "lookupParam": "h",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "hitsRisp",
+  "lookupParam": "hits_risp",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "hitBatsman",
+  "lookupParam": "hb",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "hitByPitches",
+  "lookupParam": "hbp",
+  "isCounting": true,
+  "label": "HBP",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "hitsPer9Inn",
+  "lookupParam": "h_9",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "holds",
+  "lookupParam": "hld",
+  "isCounting": true,
+  "label": "Hold",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "homeRuns",
+  "lookupParam": "hr",
+  "isCounting": true,
+  "label": "HR",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "homeRunsPerPlateAppearance",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "inheritedRunner",
+  "lookupParam": "ir",
+  "isCounting": true,
+  "label": "Inherited runners",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "inheritedRunnerScored",
+  "lookupParam": "irs",
+  "isCounting": true,
+  "label": "Scored",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "innings",
+  "lookupParam": "inn",
+  "isCounting": true,
+  "label": "Innings",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   },
+   {
+    "displayName": "game"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "outsPitched",
+  "lookupParam": "p_out",
+  "isCounting": true,
+  "label": "Outs Pitched",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "inningsPitched",
+  "lookupParam": "ip",
+  "isCounting": true,
+  "label": "Innings Pitched",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "intentionalWalks",
+  "lookupParam": "ibb",
+  "isCounting": true,
+  "label": "IBB",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "iso",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "leftOnBase",
+  "lookupParam": "lob",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "leftOnBaseRisp",
+  "lookupParam": "lob_risp",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "losses",
+  "lookupParam": "l",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "numberOfStrikes",
+  "lookupParam": "s",
+  "isCounting": true,
+  "label": "Strikes",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "numberOfBalls",
+  "lookupParam": "b",
+  "isCounting": true,
+  "label": "Balls",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "numberOfPitches",
+  "lookupParam": "np",
+  "isCounting": true,
+  "label": "Pitches",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "onBasePercentage",
+  "lookupParam": "obp",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "onBasePlusSlugging",
+  "lookupParam": "ops",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "outfieldAssists",
+  "lookupParam": "ofa",
+  "isCounting": true,
+  "label": "Outfield assists",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "UZR",
+  "lookupParam": "uzr",
+  "isCounting": false,
+  "label": "UZR",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "passedBalls",
+  "lookupParam": "pb",
+  "isCounting": true,
+  "label": "PB",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "pickoffs",
+  "lookupParam": "po",
+  "isCounting": true,
+  "label": "PO",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "pitchesPerInning",
+  "lookupParam": "p_ip",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "pitchesPerPlateAppearance",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "putOuts",
+  "lookupParam": "po",
+  "isCounting": true,
+  "label": "Put Outs",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "rangeFactorPerGame",
+  "lookupParam": "rf",
+  "isCounting": false,
+  "label": "Range Factor Per Game",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "rangeFactorPer9Inn",
+  "lookupParam": "rf_9",
+  "isCounting": false,
+  "label": "Range Factor Per 9 Innings",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "reachedOnError",
+  "lookupParam": "roe",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "runs",
+  "lookupParam": "r",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "runsBattedIn",
+  "lookupParam": "rbi",
+  "isCounting": true,
+  "label": "RBI",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "sacrificeBunts",
+  "lookupParam": "sac",
+  "isCounting": true,
+  "label": "SAC",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "sacrificeFlies",
+  "lookupParam": "sf",
+  "isCounting": true,
+  "label": "SF",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "saves",
+  "lookupParam": "sv",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "saveOpportunities",
+  "lookupParam": "svo",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "shutouts",
+  "lookupParam": "sho",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "sluggingPercentage",
+  "lookupParam": "slg",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "stolenBases",
+  "lookupParam": "sb",
+  "isCounting": true,
+  "label": "SB",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "stolenBasePercentage",
+  "lookupParam": "sbpct",
+  "isCounting": false,
+  "label": "Stolen Base Percentage",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "strikeouts",
+  "lookupParam": "so",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "strikeoutsPer9Inn",
+  "lookupParam": "k_9",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "strikeoutsPerPlateAppearance",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "strikeoutWalkRatio",
+  "lookupParam": "k_bb",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "throwingErrors",
+  "lookupParam": "throwing_e",
+  "isCounting": true,
+  "label": "Throwing Errors",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "totalBases",
+  "lookupParam": "tb",
+  "isCounting": true,
+  "label": "TB",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "totalBattersFaced",
+  "lookupParam": "tbf",
+  "isCounting": true,
+  "label": "Batters faced",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "totalPlateAppearances",
+  "lookupParam": "tpa",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "triplePlays",
+  "lookupParam": "tp",
+  "isCounting": true,
+  "label": "TP",
+  "statGroups": [
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "triples",
+  "lookupParam": "t",
+  "isCounting": true,
+  "label": "3B",
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "walksPerStrikeout",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "walksPerPlateAppearance",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "walksAndHitsPerInningPitched",
+  "lookupParam": "whip",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "walks",
+  "lookupParam": "bb",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "walksPer9Inn",
+  "lookupParam": "bb_9",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "walkoffs",
+  "lookupParam": "wo",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "wildPitch",
+  "lookupParam": "wp",
+  "isCounting": true,
+  "label": "WP",
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   },
+   {
+    "displayName": "fielding"
+   },
+   {
+    "displayName": "catching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "wins",
+  "lookupParam": "w",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "winPercentage",
+  "lookupParam": "wpct",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "attendance",
+  "lookupParam": "attendance",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "game"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "duration",
+  "lookupParam": "duration",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "game"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "winStreak",
+  "lookupParam": "win_streak",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "game"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "lossStreak",
+  "lookupParam": "loss_streak",
+  "isCounting": true,
+  "statGroups": [
+   {
+    "displayName": "game"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ },
+ {
+  "name": "woba",
+  "isCounting": false,
+  "statGroups": [
+   {
+    "displayName": "hitting"
+   },
+   {
+    "displayName": "pitching"
+   }
+  ],
+  "orgTypes": [],
+  "highLowTypes": [],
+  "streakLevels": []
+ }
+]

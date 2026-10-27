@@ -1,0 +1,607 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "totalItems": 43,
+ "totalEvents": 0,
+ "totalGames": 43,
+ "totalGamesInProgress": 0,
+ "wait": 10,
+ "dates": [
+  {
+   "date": "2024-10-01",
+   "totalItems": 4,
+   "totalEvents": 0,
+   "totalGames": 4,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 775345,
+     "gameGuid": "6b7b7364-6d16-4191-8f70-8e9678a067a7",
+     "link": "/api/v1.1/game/775345/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-01T18:32:00Z",
+     "officialDate": "2024-10-01",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 116,
+        "name": "Detroit Tigers",
+        "link": "/api/v1/teams/116"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 3,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 117,
+        "name": "Houston Astros",
+        "link": "/api/v1/teams/117"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 1,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "venue": {
+      "id": 2392,
+      "name": "Minute Maid Park",
+      "link": "/api/v1/venues/2392"
+     },
+     "content": {
+      "link": "/api/v1/game/775345/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775345-2024-10-01",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "description": "AL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 1,
+     "seriesDescription": "AL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775343,
+     "gameGuid": "bdc94e2d-6fc5-4142-a631-2e79734119c4",
+     "link": "/api/v1.1/game/775343/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-01T20:08:00Z",
+     "officialDate": "2024-10-01",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 118,
+        "name": "Kansas City Royals",
+        "link": "/api/v1/teams/118"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 1,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 2
+      },
+      "home": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles",
+        "link": "/api/v1/teams/110"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 0,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 2
+      }
+     },
+     "venue": {
+      "id": 2,
+      "name": "Oriole Park at Camden Yards",
+      "link": "/api/v1/venues/2"
+     },
+     "content": {
+      "link": "/api/v1/game/775343/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775343-2024-10-01",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "description": "AL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 1,
+     "seriesDescription": "AL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775340,
+     "gameGuid": "777e37a4-6a87-4849-82d2-006934e0cabb",
+     "link": "/api/v1.1/game/775340/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-01T21:32:00Z",
+     "officialDate": "2024-10-01",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 121,
+        "name": "New York Mets",
+        "link": "/api/v1/teams/121"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 8,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 3
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers",
+        "link": "/api/v1/teams/158"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 4,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 3
+      }
+     },
+     "venue": {
+      "id": 32,
+      "name": "American Family Field",
+      "link": "/api/v1/venues/32"
+     },
+     "content": {
+      "link": "/api/v1/game/775340/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775340-2024-10-01",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "description": "NL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 1,
+     "seriesDescription": "NL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  },
+  {
+   "date": "2024-10-02",
+   "totalItems": 4,
+   "totalEvents": 0,
+   "totalGames": 4,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 775344,
+     "gameGuid": "ffb51248-46d5-43ae-bc40-944f5092b110",
+     "link": "/api/v1.1/game/775344/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-02T18:32:00Z",
+     "officialDate": "2024-10-02",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 116,
+        "name": "Detroit Tigers",
+        "link": "/api/v1/teams/116"
+       },
+       "leagueRecord": {
+        "wins": 2,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 5,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 1
+      },
+      "home": {
+       "team": {
+        "id": 117,
+        "name": "Houston Astros",
+        "link": "/api/v1/teams/117"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 2,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 2,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 1
+      }
+     },
+     "venue": {
+      "id": 2392,
+      "name": "Minute Maid Park",
+      "link": "/api/v1/venues/2392"
+     },
+     "content": {
+      "link": "/api/v1/game/775344/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": true,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775344-2024-10-02",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "description": "AL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 2,
+     "seriesDescription": "AL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775341,
+     "gameGuid": "df087a55-ce92-4c79-a6ef-ac84f45e7ac6",
+     "link": "/api/v1.1/game/775341/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-02T20:38:00Z",
+     "officialDate": "2024-10-02",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 118,
+        "name": "Kansas City Royals",
+        "link": "/api/v1/teams/118"
+       },
+       "leagueRecord": {
+        "wins": 2,
+        "losses": 0,
+        "ties": 0,
+        "pct": "1.000"
+       },
+       "score": 2,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 2
+      },
+      "home": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles",
+        "link": "/api/v1/teams/110"
+       },
+       "leagueRecord": {
+        "wins": 0,
+        "losses": 2,
+        "ties": 0,
+        "pct": ".000"
+       },
+       "score": 1,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 2
+      }
+     },
+     "venue": {
+      "id": 2,
+      "name": "Oriole Park at Camden Yards",
+      "link": "/api/v1/venues/2"
+     },
+     "content": {
+      "link": "/api/v1/game/775341/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": true,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775341-2024-10-02",
+     "seasonDisplay": "2024",
+     "dayNight": "day",
+     "description": "AL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 2,
+     "seriesDescription": "AL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    },
+    {
+     "gamePk": 775339,
+     "gameGuid": "9366e3e4-f8d5-4375-bc3b-36866d265440",
+     "link": "/api/v1.1/game/775339/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-02T23:38:00Z",
+     "officialDate": "2024-10-02",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 121,
+        "name": "New York Mets",
+        "link": "/api/v1/teams/121"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".500"
+       },
+       "score": 3,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 3
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers",
+        "link": "/api/v1/teams/158"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".500"
+       },
+       "score": 5,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 3
+      }
+     },
+     "venue": {
+      "id": 32,
+      "name": "American Family Field",
+      "link": "/api/v1/venues/32"
+     },
+     "content": {
+      "link": "/api/v1/game/775339/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": false,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775339-2024-10-02",
+     "seasonDisplay": "2024",
+     "dayNight": "night",
+     "description": "NL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 2,
+     "seriesDescription": "NL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  },
+  {
+   "date": "2024-10-03",
+   "totalItems": 1,
+   "totalEvents": 0,
+   "totalGames": 1,
+   "totalGamesInProgress": 0,
+   "games": [
+    {
+     "gamePk": 775337,
+     "gameGuid": "487c2d33-3fc3-4775-8f7c-dd1a976ca46f",
+     "link": "/api/v1.1/game/775337/feed/live",
+     "gameType": "F",
+     "season": "2024",
+     "gameDate": "2024-10-03T23:08:00Z",
+     "officialDate": "2024-10-03",
+     "status": {
+      "abstractGameState": "Final",
+      "codedGameState": "F",
+      "detailedState": "Final",
+      "statusCode": "F",
+      "startTimeTBD": false,
+      "abstractGameCode": "F"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 121,
+        "name": "New York Mets",
+        "link": "/api/v1/teams/121"
+       },
+       "leagueRecord": {
+        "wins": 2,
+        "losses": 1,
+        "ties": 0,
+        "pct": ".667"
+       },
+       "score": 4,
+       "isWinner": true,
+       "splitSquad": false,
+       "seriesNumber": 3
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers",
+        "link": "/api/v1/teams/158"
+       },
+       "leagueRecord": {
+        "wins": 1,
+        "losses": 2,
+        "ties": 0,
+        "pct": ".333"
+       },
+       "score": 2,
+       "isWinner": false,
+       "splitSquad": false,
+       "seriesNumber": 3
+      }
+     },
+     "venue": {
+      "id": 32,
+      "name": "American Family Field",
+      "link": "/api/v1/venues/32"
+     },
+     "content": {
+      "link": "/api/v1/game/775337/content"
+     },
+     "isTie": false,
+     "isFeaturedGame": true,
+     "gameNumber": 1,
+     "publicFacing": true,
+     "doubleHeader": "N",
+     "gamedayType": "P",
+     "tiebreaker": "N",
+     "calendarEventID": "14-775337-2024-10-03",
+     "seasonDisplay": "2024",
+     "dayNight": "night",
+     "description": "NL Wild Card Series ",
+     "scheduledInnings": 9,
+     "reverseHomeAwayStatus": false,
+     "inningBreakLength": 120,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 3,
+     "seriesDescription": "NL Wild Card Series",
+     "recordSource": "S",
+     "ifNecessary": "N",
+     "ifNecessaryDescription": "Normal Game"
+    }
+   ],
+   "events": []
+  }
+ ]
+}

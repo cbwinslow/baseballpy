@@ -1,0 +1,141 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "seasonAdvanced"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "plateAppearances": 6103,
+      "totalBases": 2321,
+      "leftOnBase": 1068,
+      "sacBunts": 28,
+      "sacFlies": 31,
+      "babip": ".295",
+      "extraBaseHits": 467,
+      "hitByPitch": 56,
+      "gidp": 133,
+      "gidpOpp": 939,
+      "numberOfPitches": 23637,
+      "pitchesPerPlateAppearance": "3.873",
+      "walksPerPlateAppearance": ".075",
+      "strikeoutsPerPlateAppearance": ".176",
+      "homeRunsPerPlateAppearance": ".031",
+      "walksPerStrikeout": ".425",
+      "iso": ".157",
+      "reachedOnError": 34,
+      "walkOffs": 10,
+      "flyOuts": 888,
+      "totalSwings": 11319,
+      "swingAndMisses": 2295,
+      "ballsInPlay": 4508,
+      "popOuts": 305,
+      "lineOuts": 396,
+      "groundOuts": 1463,
+      "flyHits": 260,
+      "popHits": 1,
+      "lineHits": 725,
+      "groundHits": 470
+     },
+     "team": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "plateAppearances": 6284,
+      "totalBases": 2430,
+      "leftOnBase": 1111,
+      "sacBunts": 34,
+      "sacFlies": 66,
+      "babip": ".302",
+      "extraBaseHits": 519,
+      "hitByPitch": 84,
+      "gidp": 112,
+      "gidpOpp": 876,
+      "numberOfPitches": 24532,
+      "pitchesPerPlateAppearance": "3.904",
+      "walksPerPlateAppearance": ".091",
+      "strikeoutsPerPlateAppearance": ".201",
+      "homeRunsPerPlateAppearance": ".034",
+      "walksPerStrikeout": ".450",
+      "iso": ".177",
+      "reachedOnError": 39,
+      "walkOffs": 9,
+      "flyOuts": 800,
+      "totalSwings": 11198,
+      "swingAndMisses": 2479,
+      "ballsInPlay": 4357,
+      "popOuts": 324,
+      "lineOuts": 348,
+      "groundOuts": 1433,
+      "flyHits": 302,
+      "popHits": 8,
+      "lineHits": 643,
+      "groundHits": 499
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "rank": 2
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "plateAppearances": 6107,
+      "totalBases": 2314,
+      "leftOnBase": 1113,
+      "sacBunts": 12,
+      "sacFlies": 46,
+      "babip": ".299",
+      "extraBaseHits": 470,
+      "hitByPitch": 67,
+      "gidp": 132,
+      "gidpOpp": 938,
+      "numberOfPitches": 22359,
+      "pitchesPerPlateAppearance": "3.661",
+      "walksPerPlateAppearance": ".073",
+      "strikeoutsPerPlateAppearance": ".193",
+      "homeRunsPerPlateAppearance": ".031",
+      "walksPerStrikeout": ".381",
+      "iso": ".157",
+      "reachedOnError": 42,
+      "walkOffs": 6,
+      "flyOuts": 892,
+      "totalSwings": 11130,
+      "swingAndMisses": 2623,
+      "ballsInPlay": 4412,
+      "popOuts": 268,
+      "lineOuts": 407,
+      "groundOuts": 1397,
+      "flyHits": 303,
+      "popHits": 4,
+      "lineHits": 651,
+      "groundHits": 490
+     },
+     "team": {
+      "id": 117,
+      "name": "Houston Astros",
+      "link": "/api/v1/teams/117"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

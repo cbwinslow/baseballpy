@@ -1,0 +1,98 @@
+[
+ {
+  "languageId": 1,
+  "languageCode": "en",
+  "name": "English",
+  "locale": "en_US"
+ },
+ {
+  "languageId": 2,
+  "languageCode": "xe",
+  "name": "Elias",
+  "locale": "en_US"
+ },
+ {
+  "languageId": 3,
+  "languageCode": "es",
+  "name": "Spanish",
+  "locale": "es_ES"
+ },
+ {
+  "languageId": 4,
+  "languageCode": "xc",
+  "name": "English",
+  "locale": "en_US"
+ },
+ {
+  "languageId": 5,
+  "languageCode": "ja",
+  "name": "Japanese",
+  "locale": "ja_JA"
+ },
+ {
+  "languageId": 6,
+  "languageCode": "ko",
+  "name": "Korean",
+  "locale": "ko_KO"
+ },
+ {
+  "languageId": 7,
+  "languageCode": "zh",
+  "name": "Chinese",
+  "locale": "zh_ZH"
+ },
+ {
+  "languageId": 8,
+  "languageCode": "fr",
+  "name": "French",
+  "locale": "fr_FR"
+ },
+ {
+  "languageId": 9,
+  "languageCode": "de",
+  "name": "German",
+  "locale": "de_DE"
+ },
+ {
+  "languageId": 10,
+  "languageCode": "it",
+  "name": "Italian",
+  "locale": "it_IT"
+ },
+ {
+  "languageId": 11,
+  "languageCode": "nl",
+  "name": "Dutch",
+  "locale": "nl_NL"
+ },
+ {
+  "languageId": 12,
+  "languageCode": "pt",
+  "name": "Portuguese",
+  "locale": "pt_PT"
+ },
+ {
+  "languageId": 13,
+  "languageCode": "el",
+  "name": "Greek",
+  "locale": "el_EL"
+ },
+ {
+  "languageId": 14,
+  "languageCode": "tl",
+  "name": "Tagalog",
+  "locale": "tl_TL"
+ },
+ {
+  "languageId": 21,
+  "languageCode": "j2",
+  "name": "Japanese 2",
+  "locale": "j2_J2"
+ },
+ {
+  "languageId": 22,
+  "languageCode": "ov",
+  "name": "English",
+  "locale": "en_US"
+ }
+]

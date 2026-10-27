@@ -1,0 +1,135 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "careerAdvanced"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "plateAppearances": 205339,
+      "totalBases": 79924,
+      "leftOnBase": 36785,
+      "sacBunts": 2042,
+      "sacFlies": 1433,
+      "babip": ".313",
+      "extraBaseHits": 17145,
+      "hitByPitch": 1694,
+      "gidp": 4042,
+      "gidpOpp": 28762,
+      "numberOfPitches": 766625,
+      "pitchesPerPlateAppearance": "3.733",
+      "walksPerPlateAppearance": ".082",
+      "strikeoutsPerPlateAppearance": ".196",
+      "homeRunsPerPlateAppearance": ".029",
+      "walksPerStrikeout": ".417",
+      "iso": ".167",
+      "reachedOnError": 1859,
+      "walkOffs": 227,
+      "flyOuts": 26539,
+      "totalSwings": 363617,
+      "swingAndMisses": 83648,
+      "ballsInPlay": 146678,
+      "popOuts": 9557,
+      "lineOuts": 9888,
+      "groundOuts": 51194,
+      "flyHits": 8855,
+      "popHits": 341,
+      "lineHits": 21345,
+      "groundHits": 14948
+     },
+     "team": {
+      "id": 115,
+      "link": "/api/v1/teams/115"
+     },
+     "rank": 1
+    },
+    {
+     "stat": {
+      "plateAppearances": 758267,
+      "totalBases": 268624,
+      "leftOnBase": 142504,
+      "sacBunts": 10641,
+      "sacFlies": 3416,
+      "babip": ".289",
+      "extraBaseHits": 54172,
+      "hitByPitch": 4951,
+      "gidp": 11718,
+      "gidpOpp": 49599,
+      "numberOfPitches": 1046306,
+      "pitchesPerPlateAppearance": "1.380",
+      "walksPerPlateAppearance": ".089",
+      "strikeoutsPerPlateAppearance": ".120",
+      "homeRunsPerPlateAppearance": ".020",
+      "walksPerStrikeout": ".742",
+      "iso": ".133",
+      "reachedOnError": 3172,
+      "walkOffs": 497,
+      "flyOuts": 37330,
+      "totalSwings": 509548,
+      "swingAndMisses": -237263,
+      "ballsInPlay": 594394,
+      "popOuts": 14201,
+      "lineOuts": 14064,
+      "groundOuts": 63377,
+      "flyHits": 12051,
+      "popHits": 409,
+      "lineHits": 26201,
+      "groundHits": 17928
+     },
+     "team": {
+      "id": 111,
+      "link": "/api/v1/teams/111"
+     },
+     "rank": 2
+    },
+    {
+     "stat": {
+      "plateAppearances": 801353,
+      "totalBases": 275696,
+      "leftOnBase": 138900,
+      "sacBunts": 12012,
+      "sacFlies": 3222,
+      "babip": ".289",
+      "extraBaseHits": 52429,
+      "hitByPitch": 5360,
+      "gidp": 11046,
+      "gidpOpp": 46278,
+      "numberOfPitches": 1006223,
+      "pitchesPerPlateAppearance": "1.256",
+      "walksPerPlateAppearance": ".081",
+      "strikeoutsPerPlateAppearance": ".117",
+      "homeRunsPerPlateAppearance": ".016",
+      "walksPerStrikeout": ".692",
+      "iso": ".120",
+      "reachedOnError": 3098,
+      "walkOffs": 572,
+      "flyOuts": 35500,
+      "totalSwings": 504991,
+      "swingAndMisses": -279247,
+      "ballsInPlay": 637020,
+      "popOuts": 13923,
+      "lineOuts": 14097,
+      "groundOuts": 66003,
+      "flyHits": 8824,
+      "popHits": 388,
+      "lineHits": 24679,
+      "groundHits": 18786
+     },
+     "team": {
+      "id": 138,
+      "link": "/api/v1/teams/138"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

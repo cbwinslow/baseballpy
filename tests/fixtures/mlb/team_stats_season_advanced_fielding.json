@@ -1,0 +1,117 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "seasonAdvanced"
+   },
+   "group": {
+    "displayName": "fielding"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "caughtStealing": 25,
+      "stolenBases": 109,
+      "stolenBasePercentage": ".813",
+      "caughtStealingPercentage": ".187",
+      "assists": 1456,
+      "putOuts": 4330,
+      "errors": 62,
+      "chances": 5848,
+      "fielding": ".989",
+      "rangeFactorPerGame": "35.72",
+      "rangeFactorPer9Inn": "4.01",
+      "innings": "12990.0",
+      "games": 162,
+      "passedBall": 7,
+      "doublePlays": 138,
+      "triplePlays": 0,
+      "catchersInterference": 4,
+      "wildPitches": 49,
+      "throwingErrors": 28,
+      "pickoffs": 1
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "rank": 1
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "caughtStealing": 33,
+      "stolenBases": 129,
+      "stolenBasePercentage": ".796",
+      "caughtStealingPercentage": ".204",
+      "assists": 1436,
+      "putOuts": 4330,
+      "errors": 68,
+      "chances": 5834,
+      "fielding": ".988",
+      "rangeFactorPerGame": "35.59",
+      "rangeFactorPer9Inn": "3.99",
+      "innings": "12990.0",
+      "games": 162,
+      "passedBall": 4,
+      "doublePlays": 131,
+      "triplePlays": 0,
+      "catchersInterference": 1,
+      "wildPitches": 34,
+      "throwingErrors": 31,
+      "pickoffs": 0
+     },
+     "team": {
+      "id": 144,
+      "name": "Atlanta Braves",
+      "link": "/api/v1/teams/144"
+     },
+     "rank": 2
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "gamesPlayed": 162,
+      "gamesStarted": 162,
+      "caughtStealing": 22,
+      "stolenBases": 112,
+      "stolenBasePercentage": ".836",
+      "caughtStealingPercentage": ".164",
+      "assists": 1230,
+      "putOuts": 4321,
+      "errors": 70,
+      "chances": 5621,
+      "fielding": ".988",
+      "rangeFactorPerGame": "34.27",
+      "rangeFactorPer9Inn": "3.85",
+      "innings": "12963.0",
+      "games": 162,
+      "passedBall": 4,
+      "doublePlays": 75,
+      "triplePlays": 0,
+      "catchersInterference": 4,
+      "wildPitches": 47,
+      "throwingErrors": 35,
+      "pickoffs": 1
+     },
+     "team": {
+      "id": 142,
+      "name": "Minnesota Twins",
+      "link": "/api/v1/teams/142"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

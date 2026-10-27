@@ -1,0 +1,166 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "people": [
+  {
+   "id": 671096,
+   "fullName": "Andrew Abbott",
+   "link": "/api/v1/people/671096",
+   "firstName": "Andrew",
+   "lastName": "Abbott",
+   "primaryNumber": "41",
+   "birthDate": "1999-06-01",
+   "currentAge": 27,
+   "birthCity": "Lynchburg",
+   "birthStateProvince": "VA",
+   "birthCountry": "USA",
+   "height": "6' 0\"",
+   "weight": 192,
+   "active": true,
+   "currentTeam": {
+    "id": 113,
+    "name": "Cincinnati Reds",
+    "link": "/api/v1/teams/113"
+   },
+   "primaryPosition": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "useName": "Andrew",
+   "useLastName": "Abbott",
+   "middleName": "Cole",
+   "boxscoreName": "Abbott, A",
+   "gender": "M",
+   "isPlayer": true,
+   "isVerified": true,
+   "draftYear": 2021,
+   "mlbDebutDate": "2023-06-05",
+   "batSide": {
+    "code": "L",
+    "description": "Left"
+   },
+   "pitchHand": {
+    "code": "L",
+    "description": "Left"
+   },
+   "nameFirstLast": "Andrew Abbott",
+   "nameSlug": "andrew-abbott-671096",
+   "firstLastName": "Andrew Abbott",
+   "lastFirstName": "Abbott, Andrew",
+   "lastInitName": "Abbott, A",
+   "initLastName": "A Abbott",
+   "fullFMLName": "Andrew Cole Abbott",
+   "fullLFMName": "Abbott, Andrew Cole",
+   "strikeZoneTop": 3.37,
+   "strikeZoneBottom": 1.54
+  },
+  {
+   "id": 682928,
+   "fullName": "CJ Abrams",
+   "link": "/api/v1/people/682928",
+   "firstName": "Paul",
+   "lastName": "Abrams",
+   "primaryNumber": "5",
+   "birthDate": "2000-10-03",
+   "currentAge": 26,
+   "birthCity": "Alpharetta",
+   "birthStateProvince": "GA",
+   "birthCountry": "USA",
+   "height": "6' 0\"",
+   "weight": 191,
+   "active": true,
+   "currentTeam": {
+    "id": 120,
+    "name": "Washington Nationals",
+    "link": "/api/v1/teams/120"
+   },
+   "primaryPosition": {
+    "code": "6",
+    "name": "Shortstop",
+    "type": "Infielder",
+    "abbreviation": "SS"
+   },
+   "useName": "CJ",
+   "useLastName": "Abrams",
+   "middleName": "Christopher",
+   "boxscoreName": "Abrams",
+   "gender": "M",
+   "isPlayer": true,
+   "isVerified": true,
+   "draftYear": 2019,
+   "mlbDebutDate": "2022-04-08",
+   "batSide": {
+    "code": "L",
+    "description": "Left"
+   },
+   "pitchHand": {
+    "code": "R",
+    "description": "Right"
+   },
+   "nameFirstLast": "CJ Abrams",
+   "nameSlug": "cj-abrams-682928",
+   "firstLastName": "CJ Abrams",
+   "lastFirstName": "Abrams, CJ",
+   "lastInitName": "Abrams, C",
+   "initLastName": "C Abrams",
+   "fullFMLName": "Paul Christopher Abrams",
+   "fullLFMName": "Abrams, Paul Christopher",
+   "strikeZoneTop": 3.223,
+   "strikeZoneBottom": 1.626
+  },
+  {
+   "id": 650556,
+   "fullName": "Bryan Abreu",
+   "link": "/api/v1/people/650556",
+   "firstName": "Bryan",
+   "lastName": "Abreu",
+   "primaryNumber": "52",
+   "birthDate": "1997-04-22",
+   "currentAge": 29,
+   "birthCity": "Santo Domingo Centro",
+   "birthCountry": "Dominican Republic",
+   "height": "6' 1\"",
+   "weight": 230,
+   "active": true,
+   "currentTeam": {
+    "id": 117,
+    "name": "Houston Astros",
+    "link": "/api/v1/teams/117"
+   },
+   "primaryPosition": {
+    "code": "1",
+    "name": "Pitcher",
+    "type": "Pitcher",
+    "abbreviation": "P"
+   },
+   "useName": "Bryan",
+   "useLastName": "Abreu",
+   "middleName": "Enrique",
+   "boxscoreName": "Abreu, B",
+   "gender": "M",
+   "nameMatrilineal": "Jimenez",
+   "isPlayer": true,
+   "isVerified": true,
+   "mlbDebutDate": "2019-07-31",
+   "batSide": {
+    "code": "R",
+    "description": "Right"
+   },
+   "pitchHand": {
+    "code": "R",
+    "description": "Right"
+   },
+   "nameFirstLast": "Bryan Abreu",
+   "nameSlug": "bryan-abreu-650556",
+   "firstLastName": "Bryan Abreu",
+   "lastFirstName": "Abreu, Bryan",
+   "lastInitName": "Abreu, B",
+   "initLastName": "B Abreu",
+   "fullFMLName": "Bryan Enrique Abreu",
+   "fullLFMName": "Abreu, Bryan Enrique",
+   "strikeZoneTop": 3.255,
+   "strikeZoneBottom": 1.643
+  }
+ ]
+}

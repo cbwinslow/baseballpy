@@ -1,0 +1,177 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "gameLog"
+   },
+   "group": {
+    "displayName": "catching"
+   },
+   "totalSplits": 4858,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "runs": 8,
+      "homeRuns": 0,
+      "strikeOuts": 7,
+      "baseOnBalls": 3,
+      "intentionalWalks": 0,
+      "hits": 11,
+      "hitByPitch": 3,
+      "avg": ".314",
+      "atBats": 35,
+      "obp": ".405",
+      "slg": ".486",
+      "ops": ".891",
+      "caughtStealing": 1,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".000",
+      "caughtStealingPercentage": "1.000",
+      "earnedRuns": 8,
+      "battersFaced": 42,
+      "hitBatsmen": 3,
+      "wildPitches": 0,
+      "pickoffs": 0,
+      "totalBases": 17,
+      "strikeoutWalkRatio": "2.33",
+      "catchersInterference": 0,
+      "sacBunts": 0,
+      "sacFlies": 1
+     },
+     "team": {
+      "id": 133,
+      "name": "Oakland Athletics",
+      "link": "/api/v1/teams/133"
+     },
+     "opponent": {
+      "id": 114,
+      "link": "/api/v1/teams/114"
+     },
+     "date": "2024-03-28",
+     "isHome": true,
+     "isWin": false,
+     "rank": 1,
+     "game": {
+      "gamePk": 745687,
+      "link": "/api/v1.1/game/745687/feed/live",
+      "content": {
+       "link": "/api/v1/game/745687/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "runs": 6,
+      "homeRuns": 1,
+      "strikeOuts": 9,
+      "baseOnBalls": 6,
+      "intentionalWalks": 0,
+      "hits": 9,
+      "hitByPitch": 0,
+      "avg": ".265",
+      "atBats": 34,
+      "obp": ".375",
+      "slg": ".471",
+      "ops": ".846",
+      "caughtStealing": 2,
+      "stolenBases": 2,
+      "stolenBasePercentage": ".500",
+      "caughtStealingPercentage": ".500",
+      "earnedRuns": 5,
+      "battersFaced": 40,
+      "hitBatsmen": 0,
+      "wildPitches": 1,
+      "pickoffs": 0,
+      "totalBases": 16,
+      "strikeoutWalkRatio": "1.50",
+      "catchersInterference": 0,
+      "sacBunts": 0,
+      "sacFlies": 0
+     },
+     "team": {
+      "id": 133,
+      "name": "Oakland Athletics",
+      "link": "/api/v1/teams/133"
+     },
+     "opponent": {
+      "id": 114,
+      "link": "/api/v1/teams/114"
+     },
+     "date": "2024-03-29",
+     "isHome": true,
+     "isWin": false,
+     "rank": 2,
+     "game": {
+      "gamePk": 745682,
+      "link": "/api/v1.1/game/745682/feed/live",
+      "content": {
+       "link": "/api/v1/game/745682/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "runs": 12,
+      "homeRuns": 1,
+      "strikeOuts": 6,
+      "baseOnBalls": 5,
+      "intentionalWalks": 0,
+      "hits": 15,
+      "hitByPitch": 2,
+      "avg": ".366",
+      "atBats": 41,
+      "obp": ".440",
+      "slg": ".585",
+      "ops": "1.025",
+      "caughtStealing": 0,
+      "stolenBases": 6,
+      "stolenBasePercentage": "1.000",
+      "caughtStealingPercentage": ".000",
+      "earnedRuns": 10,
+      "battersFaced": 50,
+      "hitBatsmen": 2,
+      "wildPitches": 1,
+      "pickoffs": 0,
+      "totalBases": 24,
+      "strikeoutWalkRatio": "1.20",
+      "catchersInterference": 0,
+      "sacBunts": 0,
+      "sacFlies": 2
+     },
+     "team": {
+      "id": 133,
+      "name": "Oakland Athletics",
+      "link": "/api/v1/teams/133"
+     },
+     "opponent": {
+      "id": 114,
+      "link": "/api/v1/teams/114"
+     },
+     "date": "2024-03-30",
+     "isHome": true,
+     "isWin": false,
+     "rank": 3,
+     "game": {
+      "gamePk": 745684,
+      "link": "/api/v1.1/game/745684/feed/live",
+      "content": {
+       "link": "/api/v1/game/745684/content"
+      },
+      "gameNumber": 1,
+      "dayNight": "day"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

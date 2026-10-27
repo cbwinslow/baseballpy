@@ -1,0 +1,222 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "statsSingleSeasonAdvanced"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "totalSplits": 52880,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "1952",
+     "stat": {
+      "age": 25,
+      "winningPercentage": ".---",
+      "runsScoredPer9": "3.00",
+      "battersFaced": 12,
+      "babip": ".200",
+      "obp": ".273",
+      "strikeoutsPer9": "0.00",
+      "baseOnBallsPer9": "3.00",
+      "homeRunsPer9": "0.00",
+      "hitsPer9": "6.00",
+      "strikesoutsToWalks": "0.00",
+      "gamesFinished": 2,
+      "wildPitches": 0,
+      "balks": 0,
+      "strikeoutsMinusWalksPercentage": "-.083",
+      "battersFacedPerGame": "6.00",
+      "inningsPitchedPerGame": "1.50",
+      "walksPerPlateAppearance": ".083",
+      "strikeoutsPerPlateAppearance": ".000",
+      "homeRunsPerPlateAppearance": ".000",
+      "walksPerStrikeout": ".---"
+     },
+     "team": {
+      "id": 138,
+      "name": "St. Louis Cardinals",
+      "link": "/api/v1/teams/138"
+     },
+     "player": {
+      "id": 112523,
+      "fullName": "Jackie Collum",
+      "link": "/api/v1/people/112523",
+      "firstName": "Jackie",
+      "lastName": "Collum"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1956",
+     "stat": {
+      "age": 30,
+      "winningPercentage": ".---",
+      "runsScoredPer9": "0.00",
+      "battersFaced": 9,
+      "babip": ".200",
+      "obp": ".333",
+      "strikeoutsPer9": "9.00",
+      "baseOnBallsPer9": "9.00",
+      "homeRunsPer9": "0.00",
+      "hitsPer9": "4.50",
+      "strikesoutsToWalks": "1.00",
+      "gamesFinished": 1,
+      "wildPitches": 0,
+      "balks": 0,
+      "strikeoutsMinusWalksPercentage": ".000",
+      "battersFacedPerGame": "9.00",
+      "inningsPitchedPerGame": "2.00",
+      "walksPerPlateAppearance": ".222",
+      "strikeoutsPerPlateAppearance": ".222",
+      "homeRunsPerPlateAppearance": ".000",
+      "walksPerStrikeout": "1.000"
+     },
+     "team": {
+      "id": 119,
+      "name": "Brooklyn Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 111378,
+      "fullName": "Ralph Branca",
+      "link": "/api/v1/people/111378",
+      "firstName": "Ralph",
+      "lastName": "Branca"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 2,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "1991",
+     "stat": {
+      "age": 27,
+      "winningPercentage": ".---",
+      "runsScoredPer9": "0.00",
+      "battersFaced": 15,
+      "babip": ".182",
+      "obp": ".267",
+      "slg": ".154",
+      "ops": ".421",
+      "strikeoutsPer9": "4.50",
+      "baseOnBallsPer9": "4.50",
+      "homeRunsPer9": "0.00",
+      "hitsPer9": "4.50",
+      "strikesoutsToWalks": "1.00",
+      "inheritedRunners": 0,
+      "inheritedRunnersScored": 0,
+      "bequeathedRunners": 0,
+      "bequeathedRunnersScored": 0,
+      "stolenBases": 0,
+      "caughtStealing": 0,
+      "qualityStarts": 0,
+      "gamesFinished": 3,
+      "doubles": 0,
+      "triples": 0,
+      "gidp": 1,
+      "gidpOpp": 3,
+      "wildPitches": 0,
+      "balks": 0,
+      "pickoffs": 0,
+      "totalSwings": 28,
+      "swingAndMisses": 4,
+      "strikeoutsMinusWalksPercentage": ".000",
+      "gidpPercentage": ".333",
+      "battersFacedPerGame": "5.00",
+      "inningsPitchedPerGame": "1.33",
+      "buntsFailed": 0,
+      "buntsMissedTipped": 0,
+      "whiffPercentage": ".143",
+      "flyBallPercentage": ".364",
+      "ballsInPlay": 11,
+      "runSupport": 4,
+      "strikePercentage": ".600",
+      "pitchesPerInning": "13.00",
+      "pitchesPerPlateAppearance": "3.467",
+      "walksPerPlateAppearance": ".133",
+      "strikeoutsPerPlateAppearance": ".133",
+      "homeRunsPerPlateAppearance": ".000",
+      "walksPerStrikeout": "1.000",
+      "iso": ".000",
+      "flyOuts": 4,
+      "popOuts": 1,
+      "lineOuts": 0,
+      "groundOuts": 4,
+      "flyHits": 0,
+      "popHits": 1,
+      "lineHits": 1,
+      "groundHits": 0
+     },
+     "team": {
+      "id": 112,
+      "name": "Chicago Cubs",
+      "link": "/api/v1/teams/112"
+     },
+     "player": {
+      "id": 113062,
+      "fullName": "Doug Dascenzo",
+      "link": "/api/v1/people/113062",
+      "firstName": "Doug",
+      "lastName": "Dascenzo"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

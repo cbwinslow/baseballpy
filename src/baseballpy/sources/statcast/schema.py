@@ -9,19 +9,40 @@ import pyarrow as pa
 
 
 class StatcastLeaderboard(StrEnum):
-    """Supported analytical leaderboards on Baseball Savant."""
+    """Supported Savant leaderboard variants (one member per registry slug; test-enforced)."""
 
-    BAT_TRACKING = "bat_tracking"
-    EXIT_VELOCITY = "exit_velocity"
-    EXPECTED_STATISTICS = "expected_statistics"
+    EXPECTED_STATISTICS_BATTER = "expected_statistics_batter"
+    EXPECTED_STATISTICS_PITCHER = "expected_statistics_pitcher"
+    EXIT_VELOCITY_BATTER = "exit_velocity_batter"
+    EXIT_VELOCITY_PITCHER = "exit_velocity_pitcher"
+    EXIT_VELOCITY_BATTER_TEAM = "exit_velocity_batter_team"
+    EXIT_VELOCITY_PITCHER_TEAM = "exit_velocity_pitcher_team"
     SPRINT_SPEED = "sprint_speed"
     RUNNING_SPLITS = "running_splits"
+    BASERUNNING = "baserunning"
+    BASERUNNING_RUN_VALUE = "baserunning_run_value"
+    BASESTEALING_RUN_VALUE = "basestealing_run_value"
+    BAT_TRACKING = "bat_tracking"
+    SWING_PATH_ATTACK_ANGLE = "swing_path_attack_angle"
     OUTS_ABOVE_AVERAGE = "outs_above_average"
+    OUTFIELD_JUMP = "outfield_jump"
     ARM_STRENGTH = "arm_strength"
     POPTIME = "poptime"
     CATCHER_FRAMING = "catcher_framing"
+    CATCHER_BLOCKING = "catcher_blocking"
     PITCH_ARSENALS = "pitch_arsenals"
+    PITCH_ARSENAL_STATS = "pitch_arsenal_stats"
+    PITCH_MOVEMENT = "pitch_movement"
+    PITCH_TEMPO = "pitch_tempo"
+    SPIN_DIRECTION_PITCHES = "spin_direction_pitches"
+    PERCENTILE_RANKINGS_BATTER = "percentile_rankings_batter"
+    PERCENTILE_RANKINGS_PITCHER = "percentile_rankings_pitcher"
+    HOME_RUNS = "home_runs"
+    BATTED_BALL = "batted_ball"
+    SWING_TAKE = "swing_take"
     ABS_CHALLENGES = "abs_challenges"
+    PITCH_CLOCK = "pitch_clock"
+    PARK_FACTORS = "park_factors"
 
 
 class PitchType(StrEnum):
@@ -150,8 +171,6 @@ STATCAST_SCHEMA = pa.schema(
         ("fielder_7", pa.int32()),
         ("fielder_8", pa.int32()),
         ("fielder_9", pa.int32()),
-        ("pitcher_1", pa.int32()),
-        ("fielder_2_1", pa.int32()),
         ("if_fielding_alignment", D_STRING),
         ("of_fielding_alignment", D_STRING),
         # Deprecated / Rare Metadata Fields (preserved per ADR 15)
@@ -163,5 +182,35 @@ STATCAST_SCHEMA = pa.schema(
         ("tfs_zulu_deprecated", pa.string()),
         ("umpire", pa.string()),
         ("sv_id", pa.string()),
+        # Win-probability, age and workload context (present in every era's export; live-verified)
+        ("miss_distance", pa.float32()),
+        ("estimated_slg_using_speedangle", pa.float32()),
+        ("delta_pitcher_run_exp", pa.float32()),
+        ("hyper_speed", pa.float32()),
+        ("home_score_diff", pa.int16()),
+        ("bat_score_diff", pa.int16()),
+        ("home_win_exp", pa.float32()),
+        ("bat_win_exp", pa.float32()),
+        ("age_pit_legacy", pa.int16()),
+        ("age_bat_legacy", pa.int16()),
+        ("age_pit", pa.int16()),
+        ("age_bat", pa.int16()),
+        ("n_thruorder_pitcher", pa.int16()),
+        ("n_priorpa_thisgame_player_at_bat", pa.int16()),
+        ("pitcher_days_since_prev_game", pa.int16()),
+        ("batter_days_since_prev_game", pa.int16()),
+        ("pitcher_days_until_next_game", pa.int16()),
+        ("batter_days_until_next_game", pa.int16()),
+        ("api_break_z_with_gravity", pa.float32()),
+        ("api_break_x_arm", pa.float32()),
+        ("api_break_x_batter_in", pa.float32()),
+        # Swing path (bat tracking, 2024+; NULL earlier)
+        ("attack_angle", pa.float32()),
+        ("attack_direction", pa.float32()),
+        ("swing_path_tilt", pa.float32()),
+        ("intercept_ball_minus_batter_pos_x_inches", pa.float32()),
+        ("intercept_ball_minus_batter_pos_y_inches", pa.float32()),
+        # Upstream columns added after this schema was written, as JSON (schema drift)
+        ("_extras", pa.string()),
     ]
 )

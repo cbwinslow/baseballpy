@@ -1,0 +1,164 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "stats": [
+  {
+   "type": {
+    "displayName": "sabermetrics"
+   },
+   "group": {
+    "displayName": "pitching"
+   },
+   "totalSplits": 855,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "2024",
+     "stat": {
+      "fip": 2.0858,
+      "xfip": 2.64425,
+      "fipMinus": 52.9751,
+      "ra9War": 6.96292,
+      "rar": 56.5962,
+      "war": 6.46705,
+      "sd": 0.0,
+      "md": 0.0,
+      "pli": 0.947388,
+      "inli": 0.897382,
+      "gmli": 0.870428,
+      "exli": 0.830662,
+      "eraMinus": 57.7098
+     },
+     "team": {
+      "id": 144,
+      "name": "Atlanta Braves",
+      "link": "/api/v1/teams/144"
+     },
+     "player": {
+      "id": 519242,
+      "fullName": "Chris Sale",
+      "link": "/api/v1/people/519242",
+      "firstName": "Chris",
+      "lastName": "Sale"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 1,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "fip": 2.4946,
+      "xfip": 2.82561,
+      "fipMinus": 59.5812,
+      "ra9War": 6.68279,
+      "rar": 53.9918,
+      "war": 6.04459,
+      "sd": 0.0,
+      "md": 0.0,
+      "pli": 0.922378,
+      "inli": 0.916231,
+      "gmli": 0.876832,
+      "exli": 0.954845,
+      "eraMinus": 58.9966
+     },
+     "team": {
+      "id": 116,
+      "name": "Detroit Tigers",
+      "link": "/api/v1/teams/116"
+     },
+     "player": {
+      "id": 669373,
+      "fullName": "Tarik Skubal",
+      "link": "/api/v1/people/669373",
+      "firstName": "Tarik",
+      "lastName": "Skubal"
+     },
+     "league": {
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 2,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "season": "2024",
+     "stat": {
+      "fip": 3.12648,
+      "xfip": 3.30069,
+      "fipMinus": 75.3548,
+      "ra9War": 7.25733,
+      "rar": 49.7197,
+      "war": 5.47499,
+      "sd": 0.0,
+      "md": 0.0,
+      "pli": 0.924382,
+      "inli": 0.903218,
+      "gmli": 0.873313,
+      "exli": 0.783975,
+      "eraMinus": 60.2492
+     },
+     "team": {
+      "id": 143,
+      "name": "Philadelphia Phillies",
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 554430,
+      "fullName": "Zack Wheeler",
+      "link": "/api/v1/people/554430",
+      "firstName": "Zack",
+      "lastName": "Wheeler"
+     },
+     "league": {
+      "id": 104,
+      "name": "National League",
+      "link": "/api/v1/league/104"
+     },
+     "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1",
+      "name": "Major League Baseball"
+     },
+     "numTeams": 1,
+     "rank": 3,
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [],
+   "playerPool": "ALL"
+  }
+ ]
+}

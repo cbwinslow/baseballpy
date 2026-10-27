@@ -1,0 +1,38 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 666938,
+    "fullName": "Edward Alvarez",
+    "link": "/api/v1/people/666938"
+   },
+   "jerseyNumber": "",
+   "job": "Stringer",
+   "jobId": "MSTR",
+   "title": "Stringer"
+  },
+  {
+   "person": {
+    "id": 684798,
+    "fullName": "David Amoriello",
+    "link": "/api/v1/people/684798"
+   },
+   "jerseyNumber": "",
+   "job": "Stringer",
+   "jobId": "MSTR",
+   "title": "Stringer"
+  },
+  {
+   "person": {
+    "id": 632811,
+    "fullName": "Doug Anderson",
+    "link": "/api/v1/people/632811"
+   },
+   "jerseyNumber": "",
+   "job": "Stringer",
+   "jobId": "MSTR",
+   "title": "Stringer"
+  }
+ ]
+}

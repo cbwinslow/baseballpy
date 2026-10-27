@@ -1,0 +1,38 @@
+{
+ "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+ "roster": [
+  {
+   "person": {
+    "id": 596809,
+    "fullName": "Ryan Additon",
+    "link": "/api/v1/people/596809"
+   },
+   "jerseyNumber": "67",
+   "job": "Umpire",
+   "jobId": "UMPR",
+   "title": "Umpire"
+  },
+  {
+   "person": {
+    "id": 623938,
+    "fullName": "Erich Bacchus",
+    "link": "/api/v1/people/623938"
+   },
+   "jerseyNumber": "12",
+   "job": "Umpire",
+   "jobId": "UMPR",
+   "title": "Umpire"
+  },
+  {
+   "person": {
+    "id": 545402,
+    "fullName": "John Bacon",
+    "link": "/api/v1/people/545402"
+   },
+   "jerseyNumber": "70",
+   "job": "Umpire",
+   "jobId": "UMPR",
+   "title": "Umpire"
+  }
+ ]
+}

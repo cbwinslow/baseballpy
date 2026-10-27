@@ -1,0 +1,147 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "lastXGames"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 30,
+   "exemptions": [],
+   "splits": [
+    {
+     "stat": {
+      "gamesPlayed": 162,
+      "groundOuts": 1463,
+      "airOuts": 1589,
+      "runs": 760,
+      "doubles": 259,
+      "triples": 18,
+      "homeRuns": 190,
+      "strikeOuts": 1077,
+      "baseOnBalls": 458,
+      "intentionalWalks": 18,
+      "hits": 1456,
+      "hitByPitch": 56,
+      "avg": ".263",
+      "atBats": 5526,
+      "obp": ".324",
+      "slg": ".420",
+      "ops": ".744",
+      "caughtStealing": 28,
+      "stolenBases": 120,
+      "stolenBasePercentage": ".811",
+      "caughtStealingPercentage": ".189",
+      "groundIntoDoublePlay": 133,
+      "numberOfPitches": 23637,
+      "plateAppearances": 6103,
+      "totalBases": 2321,
+      "rbi": 726,
+      "leftOnBase": 1068,
+      "sacBunts": 28,
+      "sacFlies": 31,
+      "babip": ".295",
+      "groundOutsToAirouts": "0.92",
+      "atBatsPerHomeRun": "29.08"
+     },
+     "team": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "numTeams": 1,
+     "rank": 1
+    },
+    {
+     "stat": {
+      "gamesPlayed": 162,
+      "groundOuts": 1433,
+      "airOuts": 1472,
+      "runs": 886,
+      "doubles": 271,
+      "triples": 37,
+      "homeRuns": 211,
+      "strikeOuts": 1265,
+      "baseOnBalls": 569,
+      "intentionalWalks": 17,
+      "hits": 1452,
+      "hitByPitch": 84,
+      "avg": ".263",
+      "atBats": 5522,
+      "obp": ".337",
+      "slg": ".440",
+      "ops": ".777",
+      "caughtStealing": 30,
+      "stolenBases": 119,
+      "stolenBasePercentage": ".799",
+      "caughtStealingPercentage": ".201",
+      "groundIntoDoublePlay": 112,
+      "numberOfPitches": 24532,
+      "plateAppearances": 6284,
+      "totalBases": 2430,
+      "rbi": 845,
+      "leftOnBase": 1111,
+      "sacBunts": 34,
+      "sacFlies": 66,
+      "babip": ".302",
+      "groundOutsToAirouts": "0.97",
+      "atBatsPerHomeRun": "26.17"
+     },
+     "team": {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "link": "/api/v1/teams/109"
+     },
+     "numTeams": 1,
+     "rank": 2
+    },
+    {
+     "stat": {
+      "gamesPlayed": 161,
+      "groundOuts": 1397,
+      "airOuts": 1567,
+      "runs": 740,
+      "doubles": 264,
+      "triples": 16,
+      "homeRuns": 190,
+      "strikeOuts": 1176,
+      "baseOnBalls": 448,
+      "intentionalWalks": 28,
+      "hits": 1448,
+      "hitByPitch": 67,
+      "avg": ".262",
+      "atBats": 5530,
+      "obp": ".322",
+      "slg": ".418",
+      "ops": ".740",
+      "caughtStealing": 24,
+      "stolenBases": 93,
+      "stolenBasePercentage": ".795",
+      "caughtStealingPercentage": ".205",
+      "groundIntoDoublePlay": 132,
+      "numberOfPitches": 22359,
+      "plateAppearances": 6107,
+      "totalBases": 2314,
+      "rbi": 701,
+      "leftOnBase": 1113,
+      "sacBunts": 12,
+      "sacFlies": 46,
+      "babip": ".299",
+      "groundOutsToAirouts": "0.89",
+      "atBatsPerHomeRun": "29.10"
+     },
+     "team": {
+      "id": 117,
+      "name": "Houston Astros",
+      "link": "/api/v1/teams/117"
+     },
+     "numTeams": 1,
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}

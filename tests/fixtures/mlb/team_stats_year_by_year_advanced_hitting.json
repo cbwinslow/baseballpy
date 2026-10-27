@@ -1,0 +1,77 @@
+{
+ "stats": [
+  {
+   "type": {
+    "displayName": "yearByYearAdvanced"
+   },
+   "group": {
+    "displayName": "hitting"
+   },
+   "totalSplits": 2891,
+   "exemptions": [],
+   "splits": [
+    {
+     "season": "1894",
+     "stat": {
+      "plateAppearances": 5639,
+      "totalBases": 2366,
+      "sacBunts": 119,
+      "babip": ".361",
+      "extraBaseHits": 423,
+      "hitByPitch": 57,
+      "walksPerPlateAppearance": ".088",
+      "strikeoutsPerPlateAppearance": ".043",
+      "homeRunsPerPlateAppearance": ".007",
+      "walksPerStrikeout": "2.024",
+      "iso": ".128"
+     },
+     "team": {
+      "id": 143,
+      "link": "/api/v1/teams/143"
+     },
+     "rank": 1
+    },
+    {
+     "season": "1873",
+     "stat": {
+      "plateAppearances": 2817,
+      "totalBases": 1200,
+      "babip": ".338",
+      "extraBaseHits": 202,
+      "walksPerPlateAppearance": ".022",
+      "strikeoutsPerPlateAppearance": ".009",
+      "homeRunsPerPlateAppearance": ".004",
+      "walksPerStrikeout": "2.583",
+      "iso": ".098"
+     },
+     "team": {
+      "id": 144,
+      "link": "/api/v1/teams/144"
+     },
+     "rank": 2
+    },
+    {
+     "season": "1876",
+     "stat": {
+      "plateAppearances": 2818,
+      "totalBases": 1145,
+      "babip": ".341",
+      "extraBaseHits": 171,
+      "walksPerPlateAppearance": ".025",
+      "strikeoutsPerPlateAppearance": ".016",
+      "homeRunsPerPlateAppearance": ".003",
+      "walksPerStrikeout": "1.556",
+      "iso": ".080"
+     },
+     "team": {
+      "id": 112,
+      "link": "/api/v1/teams/112"
+     },
+     "rank": 3
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": []
+  }
+ ]
+}
