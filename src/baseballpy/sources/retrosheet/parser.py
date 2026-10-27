@@ -1,10 +1,14 @@
 """Retrosheet parsers bridging chadwickpy into strongly-typed PyArrow Tables."""
 
 import csv
+import functools
 import io
+import logging
+from collections.abc import Callable
+from contextvars import ContextVar
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, TypeVar
 
 import pyarrow as pa
 from chadwickpy.box import box_create
@@ -13,6 +17,8 @@ from chadwickpy.tools import daily, sub
 from chadwickpy.tools.events import event_rows
 from chadwickpy.tools.tools import iterate_games
 
+from baseballpy.core.coerce import NULL_TOKENS, CoercionError, to_bool, to_int
+from baseballpy.core.quarantine import get_quarantine
 from baseballpy.sources.retrosheet.schema import (
     RETROSHEET_BALLPARKS_SCHEMA,
     RETROSHEET_BIOFILE_SCHEMA,
@@ -29,30 +35,59 @@ from baseballpy.sources.retrosheet.schema import (
     RETROSHEET_TEAMS_SCHEMA,
 )
 
+logger = logging.getLogger(__name__)
+T = TypeVar("T")
+_BAD_VALUES: ContextVar[list[dict[str, Any]] | None] = ContextVar("retrosheet_bad", default=None)
+
+
+def _record_bad(kind: str, val: Any, exc: CoercionError) -> None:
+    bucket = _BAD_VALUES.get()
+    if bucket is not None:
+        bucket.append({"type": kind, "value": val, "error": str(exc)})
+
 
 def _safe_int(val: Any) -> int | None:
-    if val is None or val == "" or val == "null" or val == "(null)":
-        return None
+    """Coerce to int; unparseable values become NULL *and* are quarantined by the parser."""
     try:
-        return int(val)
-    except (ValueError, TypeError):
+        return to_int(val, nulls=NULL_TOKENS)
+    except CoercionError as exc:
+        _record_bad("int", val, exc)
         return None
 
 
 def _safe_bool(val: Any) -> bool | None:
-    if val is None or val == "" or val == "null" or val == "(null)":
+    """Coerce to bool; unparseable values become NULL *and* are quarantined by the parser."""
+    try:
+        return to_bool(val, nulls=NULL_TOKENS)
+    except CoercionError as exc:
+        _record_bad("bool", val, exc)
         return None
-    if isinstance(val, bool):
-        return val
-    s = str(val).strip().lower()
-    if s in ("1", "t", "true", "y"):
-        return True
-    if s in ("0", "f", "false", "n"):
-        return False
-    return None
+
+
+def quarantining(dataset: str) -> Callable[[Callable[..., T]], Callable[..., T]]:
+    """Decorator: collect uncoercible values during a parse call and quarantine them."""
+
+    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> T:
+            bucket: list[dict[str, Any]] = []
+            token = _BAD_VALUES.set(bucket)
+            try:
+                return func(*args, **kwargs)
+            finally:
+                _BAD_VALUES.reset(token)
+                if bucket:
+                    get_quarantine().write(
+                        "retrosheet", dataset, bucket, f"{len(bucket)} uncoercible value(s)"
+                    )
+
+        return wrapper
+
+    return decorator
 
 
 def _load_league(paths: list[Path], year: int | None = None) -> League | None:
+    """Load the season TEAM file for name resolution; failures are logged, not hidden."""
     if not paths:
         return None
     parent = paths[0].parent
@@ -62,8 +97,12 @@ def _load_league(paths: list[Path], year: int | None = None) -> League | None:
             league = League()
             league.read(team_file.read_bytes())
             return league
-        except Exception:
-            return None
+        except (ValueError, KeyError, IndexError, UnicodeDecodeError, OSError):
+            logger.warning(
+                "could not load Retrosheet team file %s; player/team names will be unresolved",
+                team_file,
+                exc_info=True,
+            )
     return None
 
 
@@ -73,6 +112,7 @@ class RetrosheetEventParser:
     def __init__(self, league: League | None = None) -> None:
         self.league = league
 
+    @quarantining("events")
     def parse_files(self, paths: list[Path], year: int | None = None) -> pa.Table:
         """Parse multiple event files into a consolidated typed PyArrow Table."""
         if not paths:
@@ -118,6 +158,7 @@ class RetrosheetBoxScoreParser:
     def __init__(self, league: League | None = None) -> None:
         self.league = league
 
+    @quarantining("boxscores")
     def parse_files(self, paths: list[Path], year: int | None = None) -> tuple[pa.Table, pa.Table]:
         """Parse event files and return (batting_table, pitching_table)."""
         if not paths:
@@ -238,6 +279,7 @@ class RetrosheetDailySplitsParser:
     def __init__(self, league: League | None = None) -> None:
         self.league = league
 
+    @quarantining("daily_splits")
     def parse_files(self, paths: list[Path], year: int | None = None) -> pa.Table:
         """Parse daily lines from event files."""
         if not paths:
@@ -281,6 +323,7 @@ class RetrosheetSubstitutionsParser:
     def __init__(self, league: League | None = None) -> None:
         self.league = league
 
+    @quarantining("substitutions")
     def parse_files(self, paths: list[Path], year: int | None = None) -> pa.Table:
         """Parse substitutions from event files."""
         if not paths:
@@ -321,6 +364,7 @@ class RetrosheetSubstitutionsParser:
 class RetrosheetGameLogParser:
     """Parses 161-column Retrosheet Game Logs (glYYYY.txt) into strongly-typed PyArrow Tables."""
 
+    @quarantining("gamelogs")
     def parse_file(self, path: Path) -> pa.Table:
         """Parse a game log file into PyArrow Table."""
         if not path.exists():
@@ -370,6 +414,7 @@ class RetrosheetGameLogParser:
 class RetrosheetRosterParser:
     """Parses Retrosheet roster files (.ROS) into PyArrow Tables."""
 
+    @quarantining("rosters")
     def parse_files(self, paths: list[Path], year: int | None = None) -> pa.Table:
         """Parse one or more .ROS roster files."""
         records: list[dict[str, Any]] = []
@@ -421,6 +466,7 @@ class RetrosheetReferenceParser:
         "biofile": RETROSHEET_BIOFILE_SCHEMA,
     }
 
+    @quarantining("reference")
     def parse_file(self, table_name: str, path: Path) -> pa.Table:
         """Parse a reference CSV into PyArrow Table."""
         schema = self.SCHEMAS.get(table_name.lower())
@@ -438,30 +484,47 @@ class RetrosheetReferenceParser:
         if not header:
             return pa.Table.from_batches([], schema=schema)
 
+        # Schema-drift handling: the canonical schema is positional, so a header that is wider
+        # than the schema must not lose data, and a narrower one must be reported.
+        width = len(schema)
+        if len(header) != width:
+            logger.warning(
+                "retrosheet reference %s: header has %d column(s) but schema expects %d; "
+                "extra columns are preserved as strings, missing ones are NULL (header=%s)",
+                table_name,
+                len(header),
+                width,
+                header,
+            )
+        used = set(schema.names)
+        extra_fields: list[pa.Field] = []
+        for offset, raw_name in enumerate(header[width:]):
+            clean = "_".join(raw_name.strip().lower().split()) or f"extra_{offset}"
+            while clean in used:
+                clean = f"{clean}_extra"
+            used.add(clean)
+            extra_fields.append(pa.field(clean, pa.string()))
+        full_schema = pa.schema(list(schema) + extra_fields)
+
         records: list[dict[str, Any]] = []
         for row in reader:
             if not row:
                 continue
             rec: dict[str, Any] = {}
-            for i, field in enumerate(schema):
+            for i, field in enumerate(full_schema):
                 val = row[i] if i < len(row) else None
                 name = field.name
-                target_type = field.type
 
-                if pa.types.is_integer(target_type):
+                if pa.types.is_integer(field.type):
                     rec[name] = _safe_int(val)
                 else:
                     rec[name] = val if val else None
             records.append(rec)
 
         if not records:
-            return pa.Table.from_batches([], schema=schema)
+            return pa.Table.from_batches([], schema=full_schema)
 
-        arrays = []
-        for field in schema:
-            name = field.name
-            target_type = field.type
-            col_vals = [r.get(name) for r in records]
-            arrays.append(pa.array(col_vals, type=target_type))
-
-        return pa.Table.from_arrays(arrays, schema=schema)
+        arrays = [
+            pa.array([r.get(field.name) for r in records], type=field.type) for field in full_schema
+        ]
+        return pa.Table.from_arrays(arrays, schema=full_schema)

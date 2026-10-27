@@ -5,6 +5,7 @@ import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet
 from baseballpy.core.config import CacheConfig
+from baseballpy.core.lazy import lazy_singleton
 from baseballpy.sources.retrosheet.downloader import RetrosheetDownloader
 from baseballpy.sources.retrosheet.parser import (
     RetrosheetBoxScoreParser,
@@ -208,44 +209,46 @@ class RetrosheetSource:
 
 
 # Module-level convenience functions
-_default_source = RetrosheetSource()
+get_default_source = lazy_singleton(RetrosheetSource)
 
 
 def events(year: int, include_postseason: bool = False, refresh: bool = False) -> pa.Table:
     """Extract Retrosheet play-by-play events for a season."""
-    return _default_source.events(year=year, include_postseason=include_postseason, refresh=refresh)
+    return get_default_source().events(
+        year=year, include_postseason=include_postseason, refresh=refresh
+    )
 
 
 def boxscores(year: int, refresh: bool = False) -> tuple[pa.Table, pa.Table]:
     """Extract Retrosheet batting and pitching boxscores for a season."""
-    return _default_source.boxscores(year=year, refresh=refresh)
+    return get_default_source().boxscores(year=year, refresh=refresh)
 
 
 def daily_splits(year: int, refresh: bool = False) -> pa.Table:
     """Extract Retrosheet daily player lines for a season."""
-    return _default_source.daily_splits(year=year, refresh=refresh)
+    return get_default_source().daily_splits(year=year, refresh=refresh)
 
 
 def substitutions(year: int, refresh: bool = False) -> pa.Table:
     """Extract Retrosheet player substitutions for a season."""
-    return _default_source.substitutions(year=year, refresh=refresh)
+    return get_default_source().substitutions(year=year, refresh=refresh)
 
 
 def game_logs(year: int, refresh: bool = False) -> pa.Table:
     """Extract Retrosheet game logs for a season."""
-    return _default_source.game_logs(year=year, refresh=refresh)
+    return get_default_source().game_logs(year=year, refresh=refresh)
 
 
 def postseason_game_logs(kind: str, refresh: bool = False) -> pa.Table:
     """Extract Retrosheet postseason game logs (wild_card, division_series, lcs, world_series, all_star)."""
-    return _default_source.postseason_game_logs(kind=kind, refresh=refresh)
+    return get_default_source().postseason_game_logs(kind=kind, refresh=refresh)
 
 
 def rosters(year: int, refresh: bool = False) -> pa.Table:
     """Extract Retrosheet team rosters for a season."""
-    return _default_source.rosters(year=year, refresh=refresh)
+    return get_default_source().rosters(year=year, refresh=refresh)
 
 
 def reference(table_name: str, refresh: bool = False) -> pa.Table:
     """Extract Retrosheet reference tables (ballparks, teams, ejections, coaches, relatives, biofile)."""
-    return _default_source.reference(table_name=table_name, refresh=refresh)
+    return get_default_source().reference(table_name=table_name, refresh=refresh)
