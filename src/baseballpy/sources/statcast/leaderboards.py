@@ -13,6 +13,7 @@ from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
+from baseballpy.core.quarantine import safe_array
 
 SAVANT_BASE = "https://baseballsavant.mlb.com/leaderboard"
 
@@ -57,13 +58,13 @@ class StatcastLeaderboardNormalizer:
     def normalize(self, raw_bytes: bytes) -> pa.Table:
         """Parse CSV bytes (stripping BOM if present) into a typed PyArrow Table."""
         if not raw_bytes:
-            return pa.Table.from_batches([])
+            return pa.table({})
 
         text = raw_bytes.decode("utf-8-sig", errors="replace")
-        reader = csv.reader(io.StringIO(text))
+        reader = csv.reader(io.StringIO(text, newline=""))
         header = next(reader, None)
         if not header:
-            return pa.Table.from_batches([])
+            return pa.table({})
 
         # Clean header names (lowercase, strip, replace spaces/dashes with underscores)
         cleaned_headers = [
@@ -104,7 +105,15 @@ class StatcastLeaderboardNormalizer:
                 )
             ):
                 int_vals = [_safe_int(v) for v in raw_vals]
-                arrays.append(pa.array(int_vals, type=pa.int32()))
+                arrays.append(
+                    safe_array(
+                        int_vals,
+                        pa.int32(),
+                        source="statcast",
+                        dataset="leaderboard",
+                        column=col_name,
+                    )
+                )
             # 2. Float candidate (metrics, speeds, percentages, runs)
             elif any(
                 metric_pattern in col_name
@@ -129,7 +138,15 @@ class StatcastLeaderboardNormalizer:
                 )
             ):
                 flt_vals = [_safe_float(v) for v in raw_vals]
-                arrays.append(pa.array(flt_vals, type=pa.float32()))
+                arrays.append(
+                    safe_array(
+                        flt_vals,
+                        pa.float32(),
+                        source="statcast",
+                        dataset="leaderboard",
+                        column=col_name,
+                    )
+                )
             # 3. String fallback
             else:
                 str_vals = [v.strip() if v else None for v in raw_vals]

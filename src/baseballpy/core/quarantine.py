@@ -1,13 +1,15 @@
 """Dead-letter quarantine for payloads and rows that fail schema coercion."""
 
 import base64
+import functools
 import json
 import logging
 import uuid
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
+from contextvars import ContextVar
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, TypeVar
 
 import pyarrow as pa
 import pyarrow.compute as pc
@@ -16,6 +18,7 @@ from baseballpy.core.config import QuarantineConfig
 from baseballpy.core.lazy import lazy_singleton
 
 logger = logging.getLogger(__name__)
+T = TypeVar("T")
 
 
 def _jsonable(value: Any) -> Any:
@@ -123,3 +126,68 @@ def checked_cast(
             source, dataset, bad, f"uncastable values in column {column!r} to {target}"
         )
     return pa.chunked_array([pa.array(out, type=target)])
+
+
+_BAD_VALUES: ContextVar[list[dict[str, Any]] | None] = ContextVar("quarantine_bad", default=None)
+
+
+def record_bad_value(kind: str, value: Any, error: Exception | str) -> None:
+    """Note an uncoercible value; flushed to quarantine by :func:`collect_bad_values`."""
+    bucket = _BAD_VALUES.get()
+    if bucket is not None:
+        bucket.append({"type": kind, "value": value, "error": str(error)})
+    else:
+        logger.warning(
+            "uncoercible %s value %r (%s) outside a collecting scope", kind, value, error
+        )
+
+
+def collect_bad_values(source: str, dataset: str) -> Callable[[Callable[..., T]], Callable[..., T]]:
+    """Decorator: gather values reported via ``record_bad_value`` and quarantine them on exit."""
+
+    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> T:
+            bucket: list[dict[str, Any]] = []
+            token = _BAD_VALUES.set(bucket)
+            try:
+                return func(*args, **kwargs)
+            finally:
+                _BAD_VALUES.reset(token)
+                if bucket:
+                    get_quarantine().write(
+                        source, dataset, bucket, f"{len(bucket)} uncoercible value(s)"
+                    )
+
+        return wrapper
+
+    return decorator
+
+
+def safe_array(
+    values: list[Any],
+    target: pa.DataType,
+    *,
+    source: str,
+    dataset: str,
+    column: str,
+    quarantine: Quarantine | None = None,
+) -> pa.Array:
+    """Build an Arrow array; values that do not fit ``target`` become NULL and are quarantined."""
+    try:
+        return pa.array(values, type=target)
+    except (pa.ArrowInvalid, pa.ArrowTypeError, pa.ArrowNotImplementedError, OverflowError):
+        pass
+    out: list[Any] = []
+    bad: list[dict[str, Any]] = []
+    for idx, value in enumerate(values):
+        try:
+            pa.array([value], type=target)
+            out.append(value)
+        except (pa.ArrowInvalid, pa.ArrowTypeError, pa.ArrowNotImplementedError, OverflowError):
+            out.append(None)
+            bad.append({"column": column, "row": idx, "value": value})
+    (quarantine or get_quarantine()).write(
+        source, dataset, bad, f"values in column {column!r} do not fit {target}"
+    )
+    return pa.array(out, type=target)

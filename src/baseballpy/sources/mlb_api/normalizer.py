@@ -1,10 +1,11 @@
 """Normalizer transforming MLB Stats API responses into strongly-typed PyArrow Tables."""
 
-from datetime import datetime
 from typing import Any
 
 import pyarrow as pa
 
+from baseballpy.core.coerce import CoercionError, to_date, to_float, to_int
+from baseballpy.core.quarantine import collect_bad_values, record_bad_value, safe_array
 from baseballpy.sources.mlb_api.schemas import (
     MLB_BOX_BATTING_SCHEMA,
     MLB_BOX_PITCHING_SCHEMA,
@@ -20,26 +21,29 @@ from baseballpy.sources.mlb_api.schemas import (
 
 
 def _safe_float(val: Any) -> float | None:
-    if val is None or val == "":
-        return None
     try:
-        return float(val)
-    except (ValueError, TypeError):
+        return to_float(val)
+    except CoercionError as exc:
+        record_bad_value("float", val, exc)
         return None
 
 
 def _safe_int(val: Any) -> int | None:
-    if val is None or val == "":
-        return None
     try:
-        return int(val)
-    except (ValueError, TypeError):
+        return to_int(val)
+    except CoercionError as exc:
+        record_bad_value("int", val, exc)
         return None
+
+
+def _arr(values: list[Any], field: pa.Field) -> pa.Array:
+    return safe_array(values, field.type, source="mlb_api", dataset="normalize", column=field.name)
 
 
 class MlbApiNormalizer:
     """Transforms deserialized MLB Stats API objects into strongly-typed PyArrow Tables."""
 
+    @collect_bad_values("mlb_api", "schedule")
     def normalize_schedule(self, data: dict[str, Any]) -> pa.Table:
         """Normalize /v1/schedule response."""
         dates = data.get("dates", [])
@@ -48,8 +52,9 @@ class MlbApiNormalizer:
         for d in dates:
             date_str = d.get("date", "")
             try:
-                game_date = datetime.strptime(date_str, "%Y-%m-%d").date()
-            except Exception:
+                game_date = to_date(date_str)
+            except CoercionError as exc:
+                record_bad_value("date", date_str, exc)
                 game_date = None
 
             for g in d.get("games", []):
@@ -86,12 +91,12 @@ class MlbApiNormalizer:
         arrays = []
         for field in MLB_SCHEDULE_SCHEMA:
             col_name = field.name
-            target_type = field.type
             col_vals = [r.get(col_name) for r in records]
-            arrays.append(pa.array(col_vals, type=target_type))
+            arrays.append(_arr(col_vals, field))
 
         return pa.Table.from_arrays(arrays, schema=MLB_SCHEDULE_SCHEMA)
 
+    @collect_bad_values("mlb_api", "live_plays")
     def normalize_live_plays(self, events: list[dict[str, Any]]) -> pa.Table:
         """Normalize discrete live play events into PyArrow Table."""
         if not events:
@@ -100,12 +105,12 @@ class MlbApiNormalizer:
         arrays = []
         for field in MLB_LIVE_PLAYS_SCHEMA:
             col_name = field.name
-            target_type = field.type
             col_vals = [e.get(col_name) for e in events]
-            arrays.append(pa.array(col_vals, type=target_type))
+            arrays.append(_arr(col_vals, field))
 
         return pa.Table.from_arrays(arrays, schema=MLB_LIVE_PLAYS_SCHEMA)
 
+    @collect_bad_values("mlb_api", "boxscore")
     def normalize_boxscore(self, data: dict[str, Any], game_pk: int) -> tuple[pa.Table, pa.Table]:
         """Normalize /v1/game/{game_pk}/boxscore into (batting_table, pitching_table)."""
         teams = data.get("teams", {})
@@ -175,7 +180,7 @@ class MlbApiNormalizer:
         def _to_table(recs: list[dict[str, Any]], schema: pa.Schema) -> pa.Table:
             if not recs:
                 return pa.Table.from_batches([], schema=schema)
-            arrs = [pa.array([r.get(f.name) for r in recs], type=f.type) for f in schema]
+            arrs = [_arr([r.get(f.name) for r in recs], f) for f in schema]
             return pa.Table.from_arrays(arrs, schema=schema)
 
         return (
@@ -183,6 +188,7 @@ class MlbApiNormalizer:
             _to_table(pitching_records, MLB_BOX_PITCHING_SCHEMA),
         )
 
+    @collect_bad_values("mlb_api", "standings")
     def normalize_standings(self, data: dict[str, Any], season: int) -> pa.Table:
         """Normalize /v1/standings response."""
         records: list[dict[str, Any]] = []
@@ -214,11 +220,10 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_STANDINGS_SCHEMA)
 
-        arrays = [
-            pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_STANDINGS_SCHEMA
-        ]
+        arrays = [_arr([r.get(f.name) for r in records], f) for f in MLB_STANDINGS_SCHEMA]
         return pa.Table.from_arrays(arrays, schema=MLB_STANDINGS_SCHEMA)
 
+    @collect_bad_values("mlb_api", "teams")
     def normalize_teams(self, data: dict[str, Any]) -> pa.Table:
         """Normalize /v1/teams response."""
         records: list[dict[str, Any]] = []
@@ -245,9 +250,10 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_TEAMS_SCHEMA)
 
-        arrays = [pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_TEAMS_SCHEMA]
+        arrays = [_arr([r.get(f.name) for r in records], f) for f in MLB_TEAMS_SCHEMA]
         return pa.Table.from_arrays(arrays, schema=MLB_TEAMS_SCHEMA)
 
+    @collect_bad_values("mlb_api", "roster")
     def normalize_roster(self, data: dict[str, Any], team_id: int) -> pa.Table:
         """Normalize /v1/teams/{team_id}/roster response."""
         records: list[dict[str, Any]] = []
@@ -271,11 +277,10 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_ROSTERS_SCHEMA)
 
-        arrays = [
-            pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_ROSTERS_SCHEMA
-        ]
+        arrays = [_arr([r.get(f.name) for r in records], f) for f in MLB_ROSTERS_SCHEMA]
         return pa.Table.from_arrays(arrays, schema=MLB_ROSTERS_SCHEMA)
 
+    @collect_bad_values("mlb_api", "transactions")
     def normalize_transactions(self, data: dict[str, Any]) -> pa.Table:
         """Normalize /v1/transactions response."""
         records: list[dict[str, Any]] = []
@@ -301,11 +306,10 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_TRANSACTIONS_SCHEMA)
 
-        arrays = [
-            pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_TRANSACTIONS_SCHEMA
-        ]
+        arrays = [_arr([r.get(f.name) for r in records], f) for f in MLB_TRANSACTIONS_SCHEMA]
         return pa.Table.from_arrays(arrays, schema=MLB_TRANSACTIONS_SCHEMA)
 
+    @collect_bad_values("mlb_api", "draft")
     def normalize_draft(self, data: dict[str, Any], year: int) -> pa.Table:
         """Normalize /v1/draft response."""
         records: list[dict[str, Any]] = []
@@ -333,9 +337,10 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_DRAFT_SCHEMA)
 
-        arrays = [pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_DRAFT_SCHEMA]
+        arrays = [_arr([r.get(f.name) for r in records], f) for f in MLB_DRAFT_SCHEMA]
         return pa.Table.from_arrays(arrays, schema=MLB_DRAFT_SCHEMA)
 
+    @collect_bad_values("mlb_api", "venues")
     def normalize_venues(self, data: dict[str, Any]) -> pa.Table:
         """Normalize /v1/venues response."""
         records: list[dict[str, Any]] = []
@@ -360,7 +365,5 @@ class MlbApiNormalizer:
         if not records:
             return pa.Table.from_batches([], schema=MLB_VENUES_SCHEMA)
 
-        arrays = [
-            pa.array([r.get(f.name) for r in records], type=f.type) for f in MLB_VENUES_SCHEMA
-        ]
+        arrays = [_arr([r.get(f.name) for r in records], f) for f in MLB_VENUES_SCHEMA]
         return pa.Table.from_arrays(arrays, schema=MLB_VENUES_SCHEMA)

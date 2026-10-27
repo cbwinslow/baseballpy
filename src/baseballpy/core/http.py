@@ -28,6 +28,9 @@ from tenacity import (
 from baseballpy.core.config import RateLimitConfig, get_config
 from baseballpy.core.lazy import lazy_singleton
 
+#: Re-exported so no other module needs to import httpx directly.
+TransportError = httpx.TransportError
+
 RETRYABLE_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
 MAX_RETRY_AFTER_SECONDS = 120.0
 
@@ -258,5 +261,6 @@ __all__ = [
     "HttpResult",
     "HttpStatusError",
     "RetryableStatus",
+    "TransportError",
     "get_http_client",
 ]

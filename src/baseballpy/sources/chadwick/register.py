@@ -148,7 +148,8 @@ class ChadwickRegister:
     def to_polars(self) -> pl.DataFrame:
         """Return as a Polars DataFrame with zero-copy memory handoff."""
         df = pl.from_arrow(self._table)
-        assert isinstance(df, pl.DataFrame)
+        if not isinstance(df, pl.DataFrame):
+            raise TypeError(f"expected a Polars DataFrame, got {type(df).__name__}")
         return df
 
     def to_dataframe(self) -> nw.DataFrame[Any]:

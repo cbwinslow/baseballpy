@@ -5,12 +5,10 @@ import concurrent.futures
 import logging
 from pathlib import Path
 
-import httpx
-
 from baseballpy.core.atomic import ManifestTracker, atomic_write
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import CacheConfig, RateLimitConfig
-from baseballpy.core.http import HttpClient, HttpStatusError, get_http_client
+from baseballpy.core.http import HttpClient, HttpStatusError, TransportError, get_http_client
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +65,7 @@ class ChadwickExtractor:
                 CHADWICK_COMMITS_API, headers={"Accept": "application/vnd.github+json"}
             )
             commits = result.json()
-        except (HttpStatusError, httpx.TransportError, ValueError) as exc:
+        except (HttpStatusError, TransportError, ValueError) as exc:
             logger.warning("could not determine latest Chadwick register commit: %s", exc)
             return None
         if isinstance(commits, list) and commits and isinstance(commits[0], dict):
