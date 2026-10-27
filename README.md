@@ -28,7 +28,7 @@ uv add baseballpy
 pip install baseballpy
 
 # With optional Retrosheet and Chadwick support
-uv add "baseballpy[retrosheet]"
+uv add "baseballpy[retrosheet]"  # alias; chadwickpy is installed by default
 
 # Full installation
 uv add "baseballpy[all]"
@@ -207,5 +207,9 @@ export BASEBALLPY_CACHE_DIR=/path/to/custom/cache
 ## Citation & License
 
 This project is licensed under **GPL-3.0-or-later**. See [LICENSE](LICENSE) for details.
+
+`baseballpy` ships no data. Each upstream source (MLB/Statcast, Retrosheet, Lahman, Chadwick Register) has its own terms and attribution requirements: see [docs/DATA_LICENSES.md](docs/DATA_LICENSES.md) or run `baseballpy --licenses`.
+
+`baseballpy` ships no data. Each upstream source (MLB/Statcast, Retrosheet, Lahman, Chadwick Register) has its own terms and attribution requirements: see [docs/DATA_LICENSES.md](docs/DATA_LICENSES.md) or run `baseballpy --licenses`.
 
 If you use `baseballpy` in academic or sabermetric research, please cite using [CITATION.cff](CITATION.cff).

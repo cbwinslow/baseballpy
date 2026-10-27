@@ -19,6 +19,7 @@ from baseballpy.core.protocols import (
     StreamExtractorProtocol,
 )
 from baseballpy.database import BaseballDatabase, connect_db, sync_database
+from baseballpy.frames import scan, to_dataframe
 from baseballpy.sinks import (
     CompressionCodec,
     DltSink,
@@ -220,6 +221,8 @@ __all__ = [
     # Convenience Functions - Sinks & Database
     "connect_db",
     "sync_database",
+    "scan",
+    "to_dataframe",
     "to_duckdb",
     "to_parquet",
     "to_polars",

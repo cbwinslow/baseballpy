@@ -12,8 +12,30 @@ from baseballpy.sources.statcast.extractor import StatcastExtractor
 console = Console()
 
 
+DATA_LICENSE_SUMMARY = """baseballpy is GPL-3.0-or-later and ships no data. Upstream terms apply to downloaded data:
+  MLB / Statcast / Stats API : MLBAM copyright notice (non-commercial, non-bulk) http://gdx.mlb.com/components/copyright.txt
+  Retrosheet                 : attribution required; https://www.retrosheet.org
+  Lahman Database            : (c) SABR / Sean Lahman; https://sabr.org/lahman-database/
+  Chadwick Register          : ODC-By 1.0; http://opendatacommons.org/licenses/by/1.0/
+Details: docs/DATA_LICENSES.md"""
+
+
+def _print_licenses(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+    if value and not ctx.resilient_parsing:
+        click.echo(DATA_LICENSE_SUMMARY)
+        ctx.exit()
+
+
 @click.group()
 @click.version_option()
+@click.option(
+    "--licenses",
+    is_flag=True,
+    is_eager=True,
+    expose_value=False,
+    callback=_print_licenses,
+    help="Show the license/attribution terms of the upstream data sources and exit.",
+)
 def main() -> None:
     """baseballpy: Fast, modular, and strongly-typed baseball data ingestion layer."""
     pass

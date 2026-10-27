@@ -26,4 +26,6 @@ uvx mypy --strict src
 1. **Decoupled Architecture:** Keep Extract (`sources/`), Parse/Schema (`schemas/`), and Sink (`sinks/`) decoupled through strict Python Protocols (`typing.Protocol`).
 2. **Columnar Typing Mandate:** Every dataset MUST have an explicit, strongly-typed PyArrow schema. No generic all-VARCHAR tables.
 3. **OpenSpec & ADR Workflow:** All work is proposed and tracked in `openspec/changes/` and major decisions documented in `docs/DECISIONS.md`.
-4. **License Boundary:** Keep `baseballpy` Apache-2.0. Interface with GPL-3.0 dependencies (like `retrosheetpy` / `chadwickpy`) via adapters or optional extras.
+4. **License:** `baseballpy` is GPL-3.0-or-later (see `LICENSE`, `NOTICE`, ADR 26). GPL dependencies (like `chadwickpy`) may be imported directly; keep any dependency that is not GPL-compatible optional. Upstream data licenses are in `docs/DATA_LICENSES.md`.
+5. **Lahman data source:** only the owner's `cbwinslow/lahman-database-csv` mirror or a user-supplied archive — never `chadwickbureau/baseballdatabank` (data stops ~2023).
+6. **Network & failure rules:** all HTTP goes through `baseballpy.core.http.HttpClient`; never swallow exceptions; route uncoercible rows to quarantine (`core/quarantine.py`, `core/coerce.py`).

@@ -16,7 +16,7 @@ pip install baseballpy
 
 Optional feature bundles:
 ```bash
-uv add "baseballpy[all]"  # Includes retrosheet, streaming, and pandas support
+uv add "baseballpy[all]"  # Includes pandas and the Postgres/Snowflake dlt destinations
 ```
 
 ---

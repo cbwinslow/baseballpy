@@ -530,3 +530,41 @@ def test_polars_sink_returns_row_count() -> None:
     sink = PolarsSink()
     assert sink.write(_table(3), "ignored") == 3
     assert sink.last is not None and len(sink.last) == 3
+
+
+# ----------------------------------------------------------------------------- frames / processes
+
+
+def test_frames_to_dataframe_and_scan(tmp_path: Path) -> None:
+    import polars as pl
+
+    from baseballpy import scan, to_dataframe
+
+    table = _table(4).append_column("season", pa.array([2023, 2023, 2024, 2024], pa.int16()))
+    assert isinstance(to_dataframe(table), pl.DataFrame)
+    assert isinstance(to_dataframe(table, "pyarrow"), pa.Table)
+    with pytest.raises(ValueError):
+        to_dataframe(table, "excel")  # type: ignore[arg-type]
+    ParquetSink().write(table, str(tmp_path / "ds"), partition_by=["season"])
+    frame = scan(tmp_path / "ds").collect()
+    assert len(frame) == 4
+
+
+def _proc_writer(path: str, idx: int) -> None:
+    tracker = ManifestTracker(path)
+    for n in range(8):
+        tracker.set_completed(f"p{idx}-{n}", records_count=n)
+
+
+def test_manifest_is_safe_across_processes(tmp_path: Path) -> None:
+    import multiprocessing as mp
+
+    path = str(tmp_path / "manifest.json")
+    ctx = mp.get_context("spawn")
+    procs = [ctx.Process(target=_proc_writer, args=(path, i)) for i in range(3)]
+    for p in procs:
+        p.start()
+    for p in procs:
+        p.join(timeout=120)
+        assert p.exitcode == 0
+    assert len(json.loads(Path(path).read_text(encoding="utf-8"))["chunks"]) == 24
