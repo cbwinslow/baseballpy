@@ -279,7 +279,7 @@ def probe_param_combos(
                 + " variants returned nothing"
             )
         if not hit:
-            unsupported.append((stat, date.today().isoformat(), tuple(tried[:2])))
+            unsupported.append((stat, date.today().isoformat(), tuple(tried)))
             print(f"  param {stat}: NO DATA after the protocol")
     return found, unsupported
 
@@ -316,6 +316,47 @@ def write_combos(
         + "\n",
         encoding="utf-8",
     )
+
+
+#: single-parameter variants tried one at a time on the bare route (ADR 37)
+REPROBE_VARIANTS = (
+    ("gameType=P", {"gameType": "P"}),
+    ("gameType=R", {"gameType": "R"}),
+    ("sportId=1", {"sportId": 1}),
+    ("season=2024", {"season": 2024}),
+    ("season=2024&gameType=P", {"season": 2024, "gameType": "P"}),
+)
+
+
+def reprobe_unsupported(http: HttpClient) -> None:
+    """Re-verify every ``unsupported`` stat type: bare route, then one parameter at a time.
+
+    Appends the outcome of each variant to the entry's ``tried`` list, stamps today's date
+    and rewrites ``stat_combos.py`` (the other tables are kept as they are).
+    """
+    import baseballpy.sources.mlb_api.stat_combos as combos
+
+    person = SAMPLE_PEOPLE[0][0]
+    updated: list[Any] = []
+    for stat, _, old in combos.UNSUPPORTED_STAT_TYPES:
+        tried = [t for t in old if not t.startswith("reprobe ")]
+        for group in ("hitting", "pitching"):
+            for label, extra in (("bare", {}), *REPROBE_VARIANTS):
+                query = {"stats": stat, "group": group, **extra}
+                data = get_json(http, f"v1/people/{person}/stats", query)
+                got = list(iter_records(data, ("stats", "*", "splits"))) if data else []
+                tried.append(f"reprobe {group} {label}: {len(got)} splits")
+                if got:
+                    print(f"  REVIVED {stat} {group} {label}: {len(got)} splits")
+        updated.append((stat, date.today().isoformat(), tuple(tried)))
+    write_combos(
+        list(combos.PLAYER_STAT_COMBOS),
+        list(combos.TEAM_STAT_COMBOS),
+        list(combos.PEOPLE_STAT_COMBOS),
+        list(combos.PARAM_STAT_COMBOS),
+        updated,
+    )
+    print(f"  re-verified {len(updated)} unsupported stat types")
 
 
 def sample_games(http: HttpClient) -> tuple[int, ...]:
@@ -411,9 +452,17 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--only", nargs="*")
     parser.add_argument("--skip-combos", action="store_true")
+    parser.add_argument(
+        "--reprobe-unsupported",
+        action="store_true",
+        help="re-verify the unsupported stat types (bare route, then one parameter at a time)",
+    )
     parser.add_argument("--check", action="store_true", help="probe only, write nothing")
     args = parser.parse_args()
     http = HttpClient(RateLimitConfig())
+    if args.reprobe_unsupported:
+        reprobe_unsupported(http)
+        return 0
     if not args.skip_combos and not args.only:
         print("phase 1: stat combos")
         groups = stat_groups(http)

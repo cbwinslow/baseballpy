@@ -250,9 +250,48 @@ def build_chadwick(http: HttpClient) -> dict[str, Any]:
     return {"_sources": {"chadwick_readme": CHADWICK_README}, "*": star}
 
 
+CHADWICK_DOCS = "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/"
+#: Chadwick tool documents that define the field names Retrosheet datasets carry (cwevent, ...)
+RETRO_DOCS = {
+    "cwevent": ("events", "events_postseason", "events_deduced"),
+    "cwdaily": ("daily_splits",),
+    "cwsub": ("substitutions",),
+}
+_RST_ROW = re.compile(
+    r"^\s+\* - \S+\n\s+- (?P<text>.+?)\n\s+- ``(?P<col>[A-Za-z0-9_]+)``", re.MULTILINE
+)
+_RST_REF = re.compile(r":ref:`([^<`]*?)\s*<[^>]*>`")
+
+
+def rst_fields(text: str) -> dict[str, str]:
+    """``{FIELD_NAME: description}`` from the field tables of a Chadwick tool document."""
+    out: dict[str, str] = {}
+    for m in _RST_ROW.finditer(text):
+        out.setdefault(m.group("col"), _RST_REF.sub(r"\1", m.group("text")).strip())
+    return out
+
+
+def build_retrosheet(http: HttpClient) -> dict[str, Any]:
+    """Retrosheet descriptions from the Chadwick tool documents (retrosheet.org was unreachable)."""
+    out: dict[str, Any] = {"_sources": {}}
+    for doc, datasets in RETRO_DOCS.items():
+        url = f"{CHADWICK_DOCS}{doc}.rst"
+        fields = rst_fields(http.get_sync(url).content.decode("utf-8", "replace"))
+        if not fields:
+            raise SystemExit(f"no field table found in {url}")
+        key = f"chadwick_{doc}"
+        out["_sources"][key] = url
+        for dataset in datasets:
+            names = {c for d, c in columns_of("retrosheet") if d == dataset}
+            out[dataset] = {
+                c: {"text": fields[c], "source": key} for c in sorted(names) if c in fields
+            }
+    return out
+
+
 def main() -> int:
     """Write the requested sources (default: all)."""
-    wanted = sys.argv[1:] or ["mlb_api", "statcast", "lahman", "chadwick"]
+    wanted = sys.argv[1:] or ["mlb_api", "statcast", "lahman", "chadwick", "retrosheet"]
     http = HttpClient(RateLimitConfig())
     OUT.mkdir(parents=True, exist_ok=True)
     builders = {
@@ -260,6 +299,7 @@ def main() -> int:
         "statcast": build_statcast,
         "lahman": build_lahman,
         "chadwick": build_chadwick,
+        "retrosheet": build_retrosheet,
     }
     for source in wanted:
         data = builders[source](http)
