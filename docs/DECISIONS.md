@@ -97,7 +97,7 @@ Aggressive scraping of baseball endpoints risks IP bans, 429 Too Many Requests e
 ## ADR 6: Architecture & Integration Relationship with `retrosheetpy`
 
 * **Date:** 2026-10-26
-* **Status:** Accepted
+* **Status:** Accepted; the license decision is superseded by ADR 26 (GPL-3.0-or-later)
 
 ### Context
 `retrosheetpy` already exists as a mature, strongly-typed Python library for Retrosheet play-by-play event files, game logs, and rosters, relying on `chadwickpy` (a pure-Python port of the Chadwick C tools).
