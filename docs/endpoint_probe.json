@@ -1,0 +1,610 @@
+{
+  "chadwick": {
+    "ref": "781c175e748b89e5730fd3f5de0086b9355b2f92",
+    "register": {
+      "bytes": 4257746,
+      "elapsed_seconds": 0.69,
+      "first_line": "key_person,key_uuid,key_mlbam,key_retro,key_bbref,key_bbref_minors,key_fangraphs,key_npb,key_sr_nfl,key_sr_nba,key_sr_nhl,key_wikidata,name_last,name_first,name_given,name_suffix,name_matrilineal,name_nick,birth_year,birth_month,birth_day,death_year,death_month,death_day,pro_played_first,pro_played_",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/chadwickbureau/register/781c175e748b89e5730fd3f5de0086b9355b2f92/data/people-0.csv"
+    },
+    "register_countries": {
+      "bytes": 6303,
+      "elapsed_seconds": 0.1,
+      "first_line": "key_iso_alpha2,key_iso_alpha3,key_ioc,key_fifa,name_full_en",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/chadwickbureau/register/781c175e748b89e5730fd3f5de0086b9355b2f92/data/countries.csv"
+    },
+    "register_links": {
+      "bytes": 691658,
+      "elapsed_seconds": 0.15,
+      "first_line": "key_person,source,value",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/chadwickbureau/register/781c175e748b89e5730fd3f5de0086b9355b2f92/data/links.csv"
+    },
+    "register_names": {
+      "bytes": 110469,
+      "elapsed_seconds": 0.09,
+      "first_line": "key_person,name_last,name_first,name_given,birth_year,birth_month,birth_day,altname_type,altname_lang,altname_last,altname_first,altname_given,altname_matrilineal,altname_nick,altname_date_start,altname_date_end",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/chadwickbureau/register/781c175e748b89e5730fd3f5de0086b9355b2f92/data/names.csv"
+    }
+  },
+  "generated": "2026-10-27",
+  "lahman": {
+    "AllstarFull": {
+      "bytes": 255977,
+      "elapsed_seconds": 0.12,
+      "first_line": "playerID,yearID,gameNum,gameID,teamID,lgID,GP,startingPos",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/AllstarFull.csv"
+    },
+    "Appearances": {
+      "bytes": 7833413,
+      "elapsed_seconds": 0.69,
+      "first_line": "yearID,teamID,lgID,playerID,G_all,GS,G_batting,G_defense,G_p,G_c,G_1b,G_2b,G_3b,G_ss,G_lf,G_cf,G_rf,G_of,G_dh,G_ph,G_pr",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/Appearances.csv"
+    },
+    "AwardsManagers": {
+      "bytes": 10986,
+      "elapsed_seconds": 0.1,
+      "first_line": "playerID,awardID,yearID,lgID,tie,notes",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/AwardsManagers.csv"
+    },
+    "AwardsPlayers": {
+      "bytes": 590678,
+      "elapsed_seconds": 0.17,
+      "first_line": "playerID,awardID,yearID,lgID,tie,notes",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/AwardsPlayers.csv"
+    },
+    "AwardsShareManagers": {
+      "bytes": 29062,
+      "elapsed_seconds": 0.12,
+      "first_line": "awardID,yearID,lgID,playerID,pointsWon,pointsMax,votesFirst",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/AwardsShareManagers.csv"
+    },
+    "AwardsSharePlayers": {
+      "bytes": 361165,
+      "elapsed_seconds": 0.11,
+      "first_line": "awardID,yearID,lgID,playerID,pointsWon,pointsMax,votesFirst",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/AwardsSharePlayers.csv"
+    },
+    "Batting": {
+      "bytes": 7999073,
+      "elapsed_seconds": 0.76,
+      "first_line": "playerID,yearID,stint,teamID,lgID,G,AB,R,H,2B,3B,HR,RBI,SB,CS,BB,SO,IBB,HBP,SH,SF,GIDP",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/Batting.csv"
+    },
+    "BattingPost": {
+      "bytes": 1155184,
+      "elapsed_seconds": 0.21,
+      "first_line": "yearID,round,playerID,teamID,lgID,G,AB,R,H,2B,3B,HR,RBI,SB,CS,BB,SO,IBB,HBP,SH,SF,GIDP",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/BattingPost.csv"
+    },
+    "CollegePlaying": {
+      "bytes": 429375,
+      "elapsed_seconds": 0.12,
+      "first_line": "playerID,schoolID,yearID",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/CollegePlaying.csv"
+    },
+    "Fielding": {
+      "bytes": 8767478,
+      "elapsed_seconds": 0.82,
+      "first_line": "playerID,yearID,stint,teamID,lgID,POS,G,GS,InnOuts,PO,A,E,DP,PB,WP,SB,CS,ZR",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/Fielding.csv"
+    },
+    "FieldingOF": {
+      "bytes": 298472,
+      "elapsed_seconds": 0.14,
+      "first_line": "playerID,yearID,stint,Glf,Gcf,Grf",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/FieldingOF.csv"
+    },
+    "FieldingOFsplit": {
+      "bytes": 2270383,
+      "elapsed_seconds": 0.31,
+      "first_line": "playerID,yearID,stint,teamID,lgID,POS,G,GS,InnOuts,PO,A,E,DP,PB,WP,SB,CS,ZR",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/FieldingOFsplit.csv"
+    },
+    "FieldingPost": {
+      "bytes": 905643,
+      "elapsed_seconds": 0.21,
+      "first_line": "playerID,yearID,teamID,lgID,round,POS,G,GS,InnOuts,PO,A,E,DP,TP,PB,SB,CS",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/FieldingPost.csv"
+    },
+    "HallOfFame": {
+      "bytes": 314822,
+      "elapsed_seconds": 0.13,
+      "first_line": "playerID,yearid,votedBy,ballots,needed,votes,inducted,category,needed_note",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/HallOfFame.csv"
+    },
+    "HomeGames": {
+      "bytes": 178043,
+      "elapsed_seconds": 0.1,
+      "first_line": "yearkey,leaguekey,teamkey,parkkey,spanfirst,spanlast,games,openings,attendance",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/HomeGames.csv"
+    },
+    "Managers": {
+      "bytes": 169548,
+      "elapsed_seconds": 0.1,
+      "first_line": "playerID,yearID,teamID,lgID,inseason,G,W,L,rank,plyrMgr",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/Managers.csv"
+    },
+    "ManagersHalf": {
+      "bytes": 3568,
+      "elapsed_seconds": 0.09,
+      "first_line": "playerID,yearID,teamID,lgID,inseason,half,G,W,L,rank",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/ManagersHalf.csv"
+    },
+    "Parks": {
+      "bytes": 22638,
+      "elapsed_seconds": 0.12,
+      "first_line": "ID,parkalias,parkkey,parkname,city,state,country",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/Parks.csv"
+    },
+    "People": {
+      "bytes": 3223128,
+      "elapsed_seconds": 0.37,
+      "first_line": "ID,playerID,birthYear,birthMonth,birthDay,birthCity,birthCountry,birthState,deathYear,deathMonth,deathDay,deathCountry,deathState,deathCity,nameFirst,nameLast,nameGiven,weight,height,bats,throws,debut,bbrefID,finalGame,retroID",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/People.csv"
+    },
+    "Pitching": {
+      "bytes": 5112472,
+      "elapsed_seconds": 0.72,
+      "first_line": "playerID,yearID,stint,teamID,lgID,W,L,G,GS,CG,SHO,SV,IPouts,H,ER,HR,BB,SO,BAOpp,ERA,IBB,WP,HBP,BK,BFP,GF,R,SH,SF,GIDP",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/Pitching.csv"
+    },
+    "PitchingPost": {
+      "bytes": 624914,
+      "elapsed_seconds": 0.19,
+      "first_line": "playerID,yearID,round,teamID,lgID,W,L,G,GS,CG,SHO,SV,IPouts,H,ER,HR,BB,SO,BAOpp,ERA,IBB,WP,HBP,BK,BFP,GF,R,SH,SF,GIDP",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/PitchingPost.csv"
+    },
+    "Salaries": {
+      "bytes": 800653,
+      "elapsed_seconds": 0.18,
+      "first_line": "yearID,teamID,lgID,playerID,salary",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/Salaries.csv"
+    },
+    "Schools": {
+      "bytes": 66713,
+      "elapsed_seconds": 0.13,
+      "first_line": "schoolID,name_full,city,state,country",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/Schools.csv"
+    },
+    "SeriesPost": {
+      "bytes": 13628,
+      "elapsed_seconds": 0.09,
+      "first_line": "yearID,round,teamIDwinner,lgIDwinner,teamIDloser,lgIDloser,wins,losses,ties",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/SeriesPost.csv"
+    },
+    "Teams": {
+      "bytes": 701384,
+      "elapsed_seconds": 0.19,
+      "first_line": "yearID,lgID,teamID,franchID,divID,Rank,G,Ghome,W,L,DivWin,WCWin,LgWin,WSWin,R,AB,H,2B,3B,HR,BB,SO,SB,CS,HBP,SF,RA,ER,ERA,CG,SHO,SV,IPouts,HA,HRA,BBA,SOA,E,DP,FP,name,park,attendance,BPF,PPF,teamIDBR,teamIDlahman45,teamIDretro",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/Teams.csv"
+    },
+    "TeamsFranchises": {
+      "bytes": 5610,
+      "elapsed_seconds": 0.08,
+      "first_line": "franchID,franchName,active,NAassoc",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/TeamsFranchises.csv"
+    },
+    "TeamsHalf": {
+      "bytes": 3782,
+      "elapsed_seconds": 0.08,
+      "first_line": "yearID,lgID,teamID,Half,divID,DivWin,Rank,G,W,L",
+      "http_status": 200,
+      "status": "ok",
+      "url": "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/TeamsHalf.csv"
+    },
+    "ref": "0377e0b8d3f1b8f6710cc4faee7d842d0e81f344",
+    "repo": "cbwinslow/lahman-database-csv"
+  },
+  "retrosheet": {
+    "postseason_gamelogs": {
+      "GLAS.TXT": {
+        "bytes": 103567,
+        "elapsed_seconds": 0.21,
+        "first_line": "\"19330706\",\"0\",\"Thu\",\"NLS\",\"ML\",1,\"ALS\",\"ML\",1,2,4,51,\"D\",\"\",\"\",\"\",\"CHI10\",47595,125,\"000002000\",\"01200100x\",34,8,1,1,1,2,0,0,0,0,0,4,0,0,1,0,5,3,4,4,0,0,24,11,0,0,1,0,31,9,0,0,1,4,1,0,0,6,0,4,1,0,1,0,10,3,2,2,0,0,27,11,1,0,1,0,\"dinnb101\",\"Bill Dinneen\",\"klemb901\",\"Bill Klem\",\"mcgob901\",\"Bill McGowa",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/gamelog/GLAS.TXT"
+      },
+      "GLDV.TXT": {
+        "bytes": 567538,
+        "elapsed_seconds": 0.23,
+        "first_line": "\"19811006\",\"0\",\"Tue\",\"LAN\",\"NL\",1,\"HOU\",\"NL\",1,1,3,53,\"N\",\"\",\"\",\"\",\"HOU02\",44836,142,\"000000100\",\"000001002\",28,2,0,0,1,1,0,0,0,1,0,7,0,0,1,0,1,2,3,3,0,0,26,9,0,0,0,0,33,8,1,0,1,3,0,0,0,2,1,7,2,0,0,0,6,1,1,1,0,0,27,11,0,0,1,0,\"dalej901\",\"Jerry Dale\",\"quicj901\",\"Jim Quick\",\"davis901\",\"Satch Davidson\"",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/gamelog/GLDV.TXT"
+      },
+      "GLLC.TXT": {
+        "bytes": 643564,
+        "elapsed_seconds": 0.25,
+        "first_line": "\"19691004\",\"0\",\"Sat\",\"NYN\",\"NL\",1,\"ATL\",\"NL\",1,9,5,54,\"D\",\"\",\"\",\"\",\"ATL01\",50122,157,\"020200050\",\"012010100\",35,10,1,1,0,6,0,0,0,4,1,5,1,0,2,0,3,2,5,5,0,0,27,9,1,1,0,0,36,10,5,0,2,5,0,1,1,3,2,4,1,0,0,0,9,2,4,4,0,0,27,19,2,1,2,0,\"barla901\",\"Al Barlick\",\"donaa901\",\"Augie Donatelli\",\"sudoe901\",\"Ed Sudo",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/gamelog/GLLC.TXT"
+      },
+      "GLWC.TXT": {
+        "bytes": 81322,
+        "elapsed_seconds": 0.19,
+        "first_line": "\"20121005\",\"0\",\"Fri\",\"BAL\",\"AL\",1,\"TEX\",\"AL\",1,5,1,54,\"N\",\"\",\"\",\"\",\"ARL02\",46931,199,\"100001102\",\"100000000\",33,8,1,0,0,5,1,2,1,1,0,12,2,0,0,0,6,4,1,1,0,0,27,15,2,0,3,0,34,9,0,0,0,0,0,0,0,2,0,6,0,0,3,0,8,4,4,4,1,0,27,2,2,0,0,0,\"darlg901\",\"Gary Darling\",\"laynj901\",\"Jerry Layne\",\"barrt901\",\"Ted Barret",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/gamelog/GLWC.TXT"
+      },
+      "GLWS.TXT": {
+        "bytes": 763558,
+        "elapsed_seconds": 0.22,
+        "first_line": "\"19031001\",\"0\",\"Thu\",\"PIT\",\"NL\",1,\"BOS\",\"AL\",1,7,3,54,\"D\",\"\",\"\",\"\",\"BOS06\",16242,115,\"401100100\",\"000000201\",40,12,0,3,1,6,0,0,0,3,0,5,3,1,0,0,9,1,2,2,0,0,27,7,2,0,0,0,35,6,0,2,0,3,0,0,1,0,0,10,0,0,0,0,6,1,3,3,0,0,27,13,4,0,0,0,\"connt901\",\"Tommy Connolly\",\"odayh101\",\"Hank O'Day\",,,,,\"\",\"(none)\",\"\",\"",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/gamelog/GLWS.TXT"
+      }
+    },
+    "ref": "ee82e50bad713c27df6ca12a81d206de4267e073",
+    "reference": {
+      "ballparks.csv": {
+        "bytes": 35253,
+        "elapsed_seconds": 0.1,
+        "first_line": "PARKID,NAME,AKA,CITY,STATE,START,END,LEAGUE,NOTES",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/reference/ballparks.csv"
+      },
+      "biofile.csv": {
+        "bytes": 4962035,
+        "elapsed_seconds": 0.51,
+        "first_line": "PLAYERID,LAST,FIRST,NICKNAME,BIRTHDATE,BIRTH.CITY,BIRTH.STATE,BIRTH.COUNTRY,PLAY.DEBUT,PLAY.LASTGAME,MGR.DEBUT,MGR.LASTGAME,COACH.DEBUT,COACH.LASTGAME,UMP.DEBUT,UMP.LASTGAME,DEATHDATE,DEATH.CITY,DEATH.STATE,DEATH.COUNTRY,BATS,THROWS,HEIGHT,WEIGHT,CEMETERY,CEME.CITY,CEME.STATE,CEME.COUNTRY,CEME.NOTE,",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/reference/biofile.csv"
+      },
+      "biofile0.csv": {
+        "bytes": 4066230,
+        "elapsed_seconds": 0.35,
+        "first_line": "id,lastname,usename,fullname,birthdate,birthcity,birthstate,birthcountry,deathdate,deathcity,deathstate,deathcountry,cemetery,cem_city,cem_state,cem_ctry,cem_note,birthname,altname,debut_p,last_p,debut_c,last_c,debut_m,last_m,debut_u,last_u,bats,throws,height,weight,HOF",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/reference/biofile0.csv"
+      },
+      "coaches.csv": {
+        "bytes": 525070,
+        "elapsed_seconds": 0.2,
+        "first_line": "id,year,team,role,start,end",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/reference/coaches.csv"
+      },
+      "ejections.csv": {
+        "bytes": 1862872,
+        "elapsed_seconds": 0.2,
+        "first_line": "GAMEID,DATE,DH,EJECTEE,EJECTEENAME,TEAM,JOB,UMPIRE,UMPIRENAME,INNING,REASON",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/reference/ejections.csv"
+      },
+      "relatives.csv": {
+        "bytes": 34358,
+        "elapsed_seconds": 0.15,
+        "first_line": "id1,relation,id2",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/reference/relatives.csv"
+      },
+      "teams.csv": {
+        "bytes": 10634,
+        "elapsed_seconds": 0.1,
+        "first_line": "TEAM,LEAGUE,CITY,NICKNAME,FIRST,LAST",
+        "http_status": 200,
+        "status": "ok",
+        "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/reference/teams.csv"
+      }
+    },
+    "season_files": {
+      "1950": {
+        "box": {
+          "bytes": 5042,
+          "elapsed_seconds": 0.12,
+          "file": "seasons/1950/1950.EBR",
+          "first_line": "id,ASW195008200",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/1950.EBR"
+        },
+        "discrepancies": {
+          "bytes": 32939,
+          "elapsed_seconds": 0.1,
+          "file": "seasons/1950/1950aldiscs.csv",
+          "first_line": "ID,Player,Year,Team,Type,Pos,Cat,Game,Retro,Official,Cross,Code,,Notes,Accepted",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/1950aldiscs.csv"
+        },
+        "event_deduced": {
+          "bytes": 163837,
+          "elapsed_seconds": 0.19,
+          "file": "seasons/1950/1950.EDN",
+          "first_line": "id,BSN195007090",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/1950.EDN"
+        },
+        "event_postseason": {
+          "bytes": 4682,
+          "elapsed_seconds": 0.1,
+          "file": "seasons/1950/1950.EVR",
+          "first_line": "id,ASW195008200",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/1950.EVR"
+        },
+        "event_regular": {
+          "bytes": 180791,
+          "elapsed_seconds": 0.15,
+          "file": "seasons/1950/1950SLA.EVA",
+          "first_line": "id,SLA195004220",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/1950SLA.EVA"
+        },
+        "gamelog": {
+          "bytes": 1295536,
+          "elapsed_seconds": 0.2,
+          "file": "seasons/1950/GL1950.TXT",
+          "first_line": "\"19500418\",\"0\",\"Tue\",\"NYA\",\"AL\",1,\"BOS\",\"AL\",1,15,10,54,\"D\",\"\",\"\",\"\",\"BOS07\",31822,208,\"000004092\",\"310500100\",41,15,4,3,0,14,1,0,1,8,0,5,0,0,0,0,9,4,10,10,0,0,27,7,0,0,1,0,40,15,2,0,1,10,0,0,0,10,0,4,0,0,1,0,13,6,15,15,1,0,27,9,0,0,0,0,\"mcgob901\",\"Bill McGowan\",\"mckib901\",\"Bill McKinley\",\"hurle901\"",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/GL1950.TXT"
+        },
+        "roster": {
+          "bytes": 489,
+          "elapsed_seconds": 0.13,
+          "file": "seasons/1950/ASE1950.ROS",
+          "first_line": "brews101,Brewer,Sherwood,R,R,ASE,3B",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/ASE1950.ROS"
+        },
+        "schedule": {
+          "bytes": 75207,
+          "elapsed_seconds": 0.12,
+          "file": "seasons/1950/1950schedule.csv",
+          "first_line": "Date,Num,Day,Visitor,League,Game,Home,League,Game,Day/Night,Postponed,Makeup",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/1950schedule.csv"
+        },
+        "team": {
+          "bytes": 490,
+          "elapsed_seconds": 0.13,
+          "file": "seasons/1950/TEAM1950",
+          "first_line": "ALS,A,American League,All Stars(A)",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/TEAM1950"
+        },
+        "umpires": {
+          "bytes": 728,
+          "elapsed_seconds": 0.1,
+          "file": "seasons/1950/UMPIRES1950.txt",
+          "first_line": "ID,last,first",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/1950/UMPIRES1950.txt"
+        }
+      },
+      "2023": {
+        "box": {
+          "bytes": 230073,
+          "elapsed_seconds": 0.18,
+          "file": "seasons/2023/2023.EBE",
+          "first_line": "id,ALS202307110",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2023/2023.EBE"
+        },
+        "event_postseason": {
+          "bytes": 6944,
+          "elapsed_seconds": 0.13,
+          "file": "seasons/2023/2023AS.EVE",
+          "first_line": "id,ALS202307110",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2023/2023AS.EVE"
+        },
+        "event_regular": {
+          "bytes": 385922,
+          "elapsed_seconds": 0.19,
+          "file": "seasons/2023/2023NYA.EVA",
+          "first_line": "id,NYA202303300",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2023/2023NYA.EVA"
+        },
+        "gamelog": {
+          "bytes": 2647332,
+          "elapsed_seconds": 0.3,
+          "file": "seasons/2023/GL2023.TXT",
+          "first_line": "\"20230330\",\"0\",\"Thu\",\"MIL\",\"NL\",1,\"CHN\",\"NL\",1,0,4,51,\"D\",\"\",\"\",\"\",\"CHI11\",36054,141,\"000000000\",\"00400000x\",29,4,0,0,0,0,0,0,0,5,0,12,0,0,2,0,7,4,4,4,0,0,24,12,1,0,1,0,30,6,0,0,0,3,0,0,1,4,0,5,0,0,1,0,7,4,0,0,1,0,27,13,1,2,2,0,\"kulpr901\",\"Ron Kulpa\",\"blasc901\",\"Cory Blaser\",\"torrc901\",\"Carlos Torre",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2023/GL2023.TXT"
+        },
+        "roster": {
+          "bytes": 945,
+          "elapsed_seconds": 0.14,
+          "file": "seasons/2023/NLS2023.ROS",
+          "first_line": "acunr001,Acuna,Ronald,R,R,ATL,OF",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2023/NLS2023.ROS"
+        },
+        "schedule": {
+          "bytes": 145719,
+          "elapsed_seconds": 0.15,
+          "file": "seasons/2023/2023schedule.csv",
+          "first_line": "Date,Num,Day,Visitor,League,Game,Home,League,Game,Day/Night,Postponed,Makeup",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2023/2023schedule.csv"
+        },
+        "team": {
+          "bytes": 768,
+          "elapsed_seconds": 0.12,
+          "file": "seasons/2023/TEAM2023",
+          "first_line": "ALS,A,American League,All Stars(A)",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2023/TEAM2023"
+        },
+        "umpires": {
+          "bytes": 2114,
+          "elapsed_seconds": 0.08,
+          "file": "seasons/2023/UMPIRES2023.txt",
+          "first_line": "ID,last,first",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2023/UMPIRES2023.txt"
+        }
+      },
+      "2025": {
+        "box": {
+          "bytes": 264131,
+          "elapsed_seconds": 0.19,
+          "file": "seasons/2025/2025.EBE",
+          "first_line": "id,CHN202509300",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2025/2025.EBE"
+        },
+        "event_postseason": {
+          "bytes": 7551,
+          "elapsed_seconds": 0.1,
+          "file": "seasons/2025/2025AS.EVE",
+          "first_line": "id,NLS202507150",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2025/2025AS.EVE"
+        },
+        "event_regular": {
+          "bytes": 387831,
+          "elapsed_seconds": 0.13,
+          "file": "seasons/2025/2025PIT.EVN",
+          "first_line": "id,PIT202504040",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2025/2025PIT.EVN"
+        },
+        "gamelog": {
+          "bytes": 2648075,
+          "elapsed_seconds": 0.31,
+          "file": "seasons/2025/GL2025.TXT",
+          "first_line": "\"20250318\",\"0\",\"Tue\",\"LAN\",\"NL\",1,\"CHN\",\"NL\",1,4,1,54,\"N\",\"\",\"\",\"\",\"TOK01\",42365,158,\"000030001\",\"010000000\",34,7,2,0,0,3,0,0,0,8,0,9,0,0,0,0,11,5,1,1,0,0,27,8,0,0,0,0,30,3,1,0,0,1,0,0,1,1,0,9,1,0,0,0,4,4,3,3,0,0,27,9,2,0,0,0,\"millb901\",\"Bill Miller\",\"estam901\",\"Mike Estabrook\",\"barrl901\",\"Lance Bar",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2025/GL2025.TXT"
+        },
+        "roster": {
+          "bytes": 988,
+          "elapsed_seconds": 0.13,
+          "file": "seasons/2025/ALS2025.ROS",
+          "first_line": "aranj001,Aranda,Jonathan,L,R,ALS,1B",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2025/ALS2025.ROS"
+        },
+        "schedule": {
+          "bytes": 121473,
+          "elapsed_seconds": 0.11,
+          "file": "seasons/2025/2025schedule.csv",
+          "first_line": "Date,Num,Day,Visitor,League,Game,Home,League,Game,Day/Night,Location,Postponed,Makeup",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2025/2025schedule.csv"
+        },
+        "team": {
+          "bytes": 765,
+          "elapsed_seconds": 0.1,
+          "file": "seasons/2025/TEAM2025",
+          "first_line": "ALS,A,American League,All-Stars",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2025/TEAM2025"
+        },
+        "umpires": {
+          "bytes": 2075,
+          "elapsed_seconds": 0.11,
+          "file": "seasons/2025/UMPIRES2025.TXT",
+          "first_line": "ID,last,first",
+          "http_status": 200,
+          "status": "ok",
+          "url": "https://raw.githubusercontent.com/chadwickbureau/retrosheet/ee82e50bad713c27df6ca12a81d206de4267e073/seasons/2025/UMPIRES2025.TXT"
+        }
+      }
+    },
+    "seasons_in_tree": [
+      1871,
+      2026
+    ],
+    "uncovered_files": [
+      "seasons/2020/2020sched-orig.csv"
+    ]
+  }
+}

@@ -84,6 +84,7 @@ def test_classify_covers_every_published_file_kind() -> None:
         "seasons/1950/1950BOS.EVN",
         "seasons/2026/2026SCHEDULE.CSV",
         "seasons/2023/2023.EBN",
+        "seasons/2020/2020sched-orig.csv",
         "seasons/2023/mystery.bin",
         "gamelog/GLWS.TXT",
         "gamelog/GLAS.TXT",
@@ -100,7 +101,8 @@ def test_classify_covers_every_published_file_kind() -> None:
     assert kinds["1950AS.EVE"] == "event_postseason" and kinds["1950BOS.EVA"] == "event_regular"
     assert kinds["1950BOS.EVN"] == "event_regular" and kinds["2023.EBN"] == "box"
     assert kinds["2026SCHEDULE.CSV"] == "schedule"
-    assert tree.seasons() == [1912, 1950, 2023, 2026]
+    assert kinds["2020sched-orig.csv"] == "schedule_original"
+    assert tree.seasons() == [1912, 1950, 2020, 2023, 2026]
     assert tree.uncovered == ["seasons/2023/mystery.bin"]
     assert [f.name for f in tree.postseason_gamelogs] == ["GLWS.TXT", "GLAS.TXT"]
     assert tree.postseason_gamelog("world_series") is not None
@@ -550,3 +552,16 @@ def test_process_pool_parsing_matches_in_process_parsing(
 def test_module_level_names_exist() -> None:
     assert callable(retro_api.ingest_all) and callable(retro_api.schedule)
     assert FetchOutcome.ABSENT == "absent"
+
+
+@respx.mock
+def test_original_schedule_is_its_own_dataset(tmp_path: Path, retro_repo: RetroRepo) -> None:
+    retro_repo.add("seasons/2020/2020sched-orig.csv", SCHEDULE.replace(b"2024", b"2020"))
+    retro_repo.add(
+        "seasons/2020/2020schedule.csv", SCHEDULE.replace(b"2024", b"2020").replace(b"BAL", b"NYA")
+    )
+    retro_repo.mount()
+    source = RetrosheetSource(cache_config=LakeConfig(home=tmp_path))
+    assert source.schedule_original(2020)["visitor_team"].to_pylist() == ["BAL"]
+    assert source.schedule(2020)["visitor_team"].to_pylist() == ["NYA"]
+    assert get_dataset("retrosheet", "schedule_original").view == "retrosheet_schedule_original"

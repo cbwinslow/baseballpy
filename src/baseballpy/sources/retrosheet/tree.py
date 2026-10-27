@@ -22,6 +22,7 @@ RAW_DATASET = {
     "roster": "rosters",
     "gamelog": "gamelogs",
     "schedule": "schedule",
+    "schedule_original": "schedule_original",
     "umpires": "umpires",
     "discrepancies": "discrepancies",
 }
@@ -37,6 +38,7 @@ _SEASON_RULES: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("box", re.compile(r"\.EB[ANEFR]$", re.I)),
     ("roster", re.compile(r"\.ROS$", re.I)),
     ("gamelog", re.compile(r"^GL\d{4}\.TXT$", re.I)),
+    ("schedule_original", re.compile(r"sched-orig\.csv$", re.I)),
     ("schedule", re.compile(r"schedule\.csv$", re.I)),
     ("umpires", re.compile(r"^UMPIRES\d{4}\.txt$", re.I)),
     ("discrepancies", re.compile(r"discs\.csv$", re.I)),

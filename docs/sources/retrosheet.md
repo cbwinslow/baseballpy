@@ -29,6 +29,7 @@
 | `<TEAM><year>.ROS` | `rosters/` | `rosters` |
 | `GL<year>.TXT` | `gamelogs/` | `gamelogs` |
 | `<year>schedule.csv` (`2026SCHEDULE.CSV`) | `schedule/` | `schedule` |
+| `<year>sched-orig.csv` (e.g. 2020: the original pre-COVID schedule) | `schedule_original/` | `schedule_original` |
 | `UMPIRES<year>.txt` | `umpires/` | `umpires` |
 | `<year>aldiscs.csv`, `nldiscs.csv`, `fldiscs.csv` | `discrepancies/` | `discrepancies` |
 | `gamelog/GL{WC,DV,LC,WS,AS}.TXT` | `gamelogs_postseason/` | `gamelogs_postseason` |
@@ -1376,3 +1377,31 @@ Umpires working each season (seasons/<year>/UMPIRES<year>.txt).
 | `_extras` | string | yes | — |  |
 
 <!-- END GENERATED:retrosheet.umpires -->
+
+<!-- BEGIN GENERATED:retrosheet.schedule_original -->
+### Dataset: schedule_original
+
+Original pre-disruption schedules (seasons/<year>/<year>sched-orig.csv).
+
+- **View:** `retrosheet_schedule_original`
+- **Processed path:** `processed/retrosheet/schedule_original/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_date`, `game_number`, `visitor_team`, `visitor_game_number`, `home_team`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_date` | date32[day] (`%Y%m%d`) | yes | `Date` |  |
+| `game_number` | int16 | yes | `Num` |  |
+| `day_of_week` | string | yes | `Day` |  |
+| `visitor_team` | string | yes | `Visitor` |  |
+| `visitor_league` | string | yes | `League` |  |
+| `visitor_game_number` | int16 | yes | `Game` |  |
+| `home_team` | string | yes | `Home` |  |
+| `home_league` | string | yes | `League__2` |  |
+| `home_game_number` | int16 | yes | `Game__2` |  |
+| `day_night` | string | yes | `Day/Night` |  |
+| `postponed` | string | yes | `Postponed` |  |
+| `makeup_date` | string | yes | `Makeup` |  |
+| `_extras` | string | yes | — |  |
+
+<!-- END GENERATED:retrosheet.schedule_original -->

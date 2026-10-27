@@ -259,3 +259,37 @@ def test_retrosheet_downloader_2025_casing(tmp_path: Path, retro_repo: RetroRepo
     assert gl_path.exists()
     assert gl_path.parent == cache_config.raw_dir("retrosheet", "gamelogs", 2025)
     assert b"20250327" in gl_path.read_bytes()
+
+
+def test_boxscores_include_substitutes_and_relievers_not_just_starters(tmp_path: Path) -> None:
+    """Regression: chadwickpy hands back the *latest* player of each chain; walking only `next`
+    emitted exactly the starters (2 pitchers per game, ~20 batters) for every season."""
+    game = (
+        b"id,BOS202404010\n"
+        b"info,date,2024/04/01\n"
+        b"info,hometeam,BOS\n"
+        b"info,visteam,BAL\n"
+        b"start,vis01,Vis One,0,1,4\n"
+        b"start,vpit1,Vis Pitcher,0,0,1\n"
+        b"start,hom01,Home One,1,1,4\n"
+        b"start,hpit1,Home Pitcher,1,0,1\n"
+        b"play,1,0,vis01,00,,S\n"
+        b"sub,vpit2,Vis Reliever,0,0,1\n"
+        b"sub,vis02,Vis Sub,0,1,4\n"
+        b"play,1,0,vis02,00,,K\n"
+        b"sub,hpit2,Home Reliever,1,0,1\n"
+        b"play,1,1,hom01,00,,K\n"
+        b"data,er,hpit1,0\n"
+    )
+    path = tmp_path / "2024BOS.EVA"
+    path.write_bytes(game)
+    batting, pitching = RetrosheetBoxScoreParser().parse_files([path], year=2024)
+    assert set(batting["player_id"].to_pylist()) >= {"vis01", "vis02", "hom01"}
+    pitchers = pitching.to_pydict()
+    assert set(pitchers["pitcher_id"]) == {"vpit1", "vpit2", "hpit1", "hpit2"}
+    starters = {
+        p for p, fl in zip(pitchers["pitcher_id"], pitchers["starter_fl"], strict=True) if fl
+    }
+    assert starters == {"vpit1", "hpit1"}
+    by_pitcher = dict(zip(pitchers["pitcher_id"], pitchers["seq"], strict=True))
+    assert by_pitcher["vpit1"] == 1 and by_pitcher["vpit2"] == 2

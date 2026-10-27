@@ -430,7 +430,7 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Alternatives rejected:** keeping per-source ad-hoc layouts; storing data in DuckDB only (loses columnar file portability and partial re-processing).
 
 ## ADR 24: Complete Source Coverage via Registry, Generated Schemas, and `_extras`
-- **Status:** Proposed (OpenSpec change `complete-source-coverage`).
+- **Status:** Partially accepted — implemented for Lahman, Chadwick and Retrosheet (generated strict schemas, `_extras`, tree discovery, generated docs, `docs generate`); Statcast/Savant and the MLB Stats API remain (OpenSpec change `complete-source-coverage`). Findings that justified the policy: the hand-written Chadwick `names`/`links` schemas matched neither real file, `"NA"` was silently NULLed (Namibia, Lahman `lgID` NA), the Retrosheet reference schemas were positional guesses, and the tree exposed files nothing ingested (`countries.csv`, `biofile0.csv`, `2020sched-orig.csv`, umpires, discrepancies, schedules).
 - **Context:** Only a fraction of upstream endpoints/tables were ingested; schemas dropped fields; docs drifted.
 - **Decision:** A `DATASETS` registry drives ingestion, views, docs and tests; schemas are generated from real upstream headers/payloads and committed; unmapped fields are never dropped (`_extras`); GitHub-hosted sources are discovered via the tree API; docs and column dictionaries are generated; `docs/ENDPOINT_CATALOG.md` + live probe track coverage.
 - **Consequences:** Adding an endpoint is data + schema + fixture, not new code paths; larger storage footprint (raw JSON retained).

@@ -45,7 +45,7 @@ from baseballpy import PlayerIdType
 reg = bb.chadwick.get_register()
 
 # 2. Crosswalk from one id system to another
-reg.resolve_id(660271, PlayerIdType.MLBAM, PlayerIdType.RETRO)   # -> "ohtas001"
+reg.resolve_id(660271, PlayerIdType.MLBAM, PlayerIdType.RETRO)  # -> "ohtas001"
 
 # 3. Complete record lookup
 player = reg.resolve(mlbam=660271)

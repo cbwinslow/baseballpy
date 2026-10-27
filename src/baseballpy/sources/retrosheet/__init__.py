@@ -16,6 +16,7 @@ from baseballpy.sources.retrosheet.api import (
     reference,
     rosters,
     schedule,
+    schedule_original,
     substitutions,
     umpires,
 )
@@ -64,6 +65,7 @@ __all__ = [
     "reference",
     "rosters",
     "schedule",
+    "schedule_original",
     "substitutions",
     "umpires",
 ]

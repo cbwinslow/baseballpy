@@ -35,6 +35,7 @@ SEASON_DATASETS = (
     "rosters",
     "gamelogs",
     "schedule",
+    "schedule_original",
     "umpires",
     "discrepancies",
 )
@@ -269,6 +270,17 @@ class RetrosheetSource:
             "schedule", "flat:schedule", "schedule", f"schedule_{year}", year, refresh
         )
 
+    def schedule_original(self, year: int, refresh: bool = False) -> pa.Table:
+        """The original (pre-disruption) schedule, e.g. 2020's ``2020sched-orig.csv``."""
+        return self._files(
+            "schedule_original",
+            "flat:schedule_original",
+            "schedule_original",
+            f"schedule_original_{year}",
+            year,
+            refresh,
+        )
+
     def umpires(self, year: int, refresh: bool = False) -> pa.Table:
         """Umpires of a season (``UMPIRES<year>.txt``)."""
         return self._files("umpires", "flat:umpires", "umpires", f"umpires_{year}", year, refresh)
@@ -359,6 +371,7 @@ class RetrosheetSource:
                 "rosters": f"rosters_{year}",
                 "gamelogs": f"gl{year}",
                 "schedule": f"schedule_{year}",
+                "schedule_original": f"schedule_original_{year}",
                 "umpires": f"umpires_{year}",
                 "discrepancies": f"discrepancies_{year}",
             }[name]
@@ -492,6 +505,11 @@ def rosters(year: int, refresh: bool = False) -> pa.Table:
 def schedule(year: int, refresh: bool = False) -> pa.Table:
     """Extract the Retrosheet schedule of a season."""
     return get_default_source().schedule(year=year, refresh=refresh)
+
+
+def schedule_original(year: int, refresh: bool = False) -> pa.Table:
+    """Extract the original (pre-disruption) Retrosheet schedule of a season."""
+    return get_default_source().schedule_original(year=year, refresh=refresh)
 
 
 def umpires(year: int, refresh: bool = False) -> pa.Table:

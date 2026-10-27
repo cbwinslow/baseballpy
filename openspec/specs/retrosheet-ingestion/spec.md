@@ -28,3 +28,26 @@ Raw event, roster, gamelog and reference files MUST be stored under `raw/retrosh
    - Writing directly to final cache filenames is prohibited. All writes route through `atomic_write()` or `atomic_write_parquet()` via `.part` files.
 3. **Manifest Tracking:**
    - `manifest.json` tracks chunk completion with records count and hashes to enable instant resumption.
+
+---
+
+## 4. Discovery, Completeness and Streaming
+### Requirement: Tree-Driven Discovery
+Available seasons and files MUST be discovered from the upstream repository tree at the pinned ref, not hard-coded; file kinds map to datasets through a pattern registry and files no pattern covers MUST be reported.
+
+### Requirement: Complete Dataset Set
+The system MUST ingest event files (regular `events`, `events_postseason`, `events_deduced`), rosters, regular and postseason game logs, schedules (including `schedule_original`), umpires, discrepancy files, every CSV under `reference/`, and the derived `boxscores_*`, `daily_splits` and `substitutions` tables. Box-score game accounts (`.EB*`) MUST be stored raw with a documented reason when they are not parsed.
+
+### Requirement: Honest Completion
+A season MUST be marked COMPLETED only if every file the tree lists for it is present and valid; a tree-listed file answering 404 is recorded `ABSENT`; a 404 is never success. Every raw file records its sha256 and the pinned `source_ref`.
+
+#### Scenario: Interrupted ingest
+- **GIVEN** an `ingest_all(2000, 2005)` killed during 2003
+- **WHEN** re-run
+- **THEN** 2000-2002 are skipped, 2003's `.part` files are discarded, and 2003-2005 complete.
+
+### Requirement: Streaming Parse
+Parsing MUST stream into Parquet row-group batches (one per source file) without accumulating whole-season Python lists; CPU-bound parsing MAY use a bounded process pool.
+
+### Requirement: GPL Boundary
+`chadwickpy` MUST be imported only from `sources/retrosheet/_chadwick_adapter.py`, which raises an `ImportError` naming the `retrosheet` extra when the package is missing.

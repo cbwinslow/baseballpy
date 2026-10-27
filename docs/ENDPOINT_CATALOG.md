@@ -95,14 +95,14 @@ Granularity per slug (player-season, player-pitchtype, team-season, game, rollin
 ---
 
 ## 3. Lahman Baseball Database (`cbwinslow/lahman-database-csv` `data/*.csv`, pinned ref, 1871–2025; or user-supplied zip/dir via `import_archive`; no other source — never `chadwickbureau/baseballdatabank`)
-27 tables, flat partition each, view `lahman_<table_lower>`; schema from real headers + `_extras`; PKs below (verify):
+27 tables, flat partition each, view `lahman_<table_lower>`; schemas generated from the real headers (+ `_extras`); PKs below **verified unique on the 2025 release**. Probed live on 2026-10-27 (`docs/endpoint_probe.json`): all 27 `ok`.
 
 | Table | PK |
 |---|---|
-| AllstarFull | `playerID, yearID, gameNum, gameID` |
+| AllstarFull | `playerID, yearID, gameNum, gameID, teamID, lgID` (verified unique; the shorter key is not) |
 | Appearances | `yearID, teamID, playerID` |
 | AwardsManagers | `playerID, awardID, yearID, lgID` |
-| AwardsPlayers | `playerID, awardID, yearID, lgID` |
+| AwardsPlayers | `playerID, awardID, yearID, lgID, notes` (verified unique; the shorter key is not) |
 | AwardsShareManagers | `awardID, yearID, lgID, playerID` |
 | AwardsSharePlayers | `awardID, yearID, lgID, playerID` |
 | Batting | `playerID, yearID, stint` |
@@ -112,7 +112,7 @@ Granularity per slug (player-season, player-pitchtype, team-season, game, rollin
 | FieldingOF | `playerID, yearID, stint` |
 | FieldingOFsplit | `playerID, yearID, stint, POS` |
 | FieldingPost | `playerID, yearID, round, POS` |
-| HallOfFame | `playerID, yearID, votedBy` |
+| HallOfFame | `playerID, yearid, votedBy` (upstream spells the column `yearid`) |
 | HomeGames | `yearkey, leaguekey, teamkey, parkkey` |
 | Managers | `yearID, teamID, inseason` |
 | ManagersHalf | `yearID, teamID, half, playerID` |
@@ -131,35 +131,38 @@ Granularity per slug (player-season, player-pitchtype, team-season, game, rollin
 
 ---
 
-## 4. Chadwick Bureau Register — `chadwickbureau/register` (pinned SHA, revalidated every 24 h)
-| Dataset | Files (discover via tree) | Keys |
+## 4. Chadwick Bureau Register — `chadwickbureau/register` (pinned SHA, revalidated every 24 h when floating)
+Probed live on 2026-10-27: all four files `ok` (`docs/endpoint_probe.json`).
+| Dataset | Files (discovered via tree) | Keys |
 |---|---|---|
-| `register` | `data/people-0.csv … people-f.csv` (16 shards) | `key_person` (unique), `key_uuid` |
-| `register_names` | `data/names.csv` (if present) | `key_person, name_type, name_*` |
-| `register_links` | `data/links.csv` (if present) | `key_person, link_type, link_url` |
-Views: `chadwick_register` plus `v_player_crosswalk` (MLBAM ↔ Retrosheet ↔ BBRef ↔ FanGraphs ↔ Lahman via `People.retroID/bbrefID`).
+| `register` | `data/people-0.csv … people-f.csv` (16 shards, 526,894 rows, 40 columns) | `key_person` (unique) |
+| `register_names` | `data/names.csv` (1,346 rows; `altname_*` columns) | `key_person` + `altname_*` (one exact duplicate row upstream) |
+| `register_links` | `data/links.csv` (27,340 rows; `key_person, source, value`) | `key_person, source, value` |
+| `register_countries` | `data/countries.csv` (249 rows) | `key_iso_alpha2` |
+Views: `chadwick_register`, `chadwick_register_names`, `chadwick_register_links`, `chadwick_register_countries` plus `v_player_crosswalk` (MLBAM ↔ Retrosheet ↔ BBRef ↔ FanGraphs ↔ Chadwick person id).
 
 ---
 
 ## 5. Retrosheet — `chadwickbureau/retrosheet` (pinned SHA; tree discovery via GitHub API; never `retrosheet.org` for bulk)
-Datasets (raw = files as published; processed = typed Parquet). All seasons present in the tree (event files from 1912 where available; game logs from 1871).
-| Dataset | Source files (patterns confirmed from tree) | Partition | Keys |
+Datasets (raw = files as published under `raw/retrosheet/<dataset>/season=YYYY/`; processed = typed Parquet). Probed live on 2026-10-27 for 1950, 2023 and 2025 plus all reference files and postseason logs: every file kind `ok`. The tree lists 156 seasons (1871–2026).
+| Dataset | Source files (patterns confirmed from the tree) | Partition | Keys |
 |---|---|---|---|
-| `event_files` (raw only) | regular `*.EVA/*.EVN`, postseason/all-star `*.EVE`, `TEAM{year}` | season | file name |
-| `events` | parsed regular-season events (98-column schema) | season | `game_id, event_id` |
-| `events_postseason` | parsed postseason/all-star events | season | `game_id, event_id` |
-| `boxscore_batting` / `boxscore_pitching` | derived from event files (chadwickpy `cwbox`) | season | `game_id, player_id` |
-| `box_files` + parsed `box_*` | `box/` directory files (parse if format supported; else raw only with documented reason) | season | `game_id, ...` |
-| `daily_splits` | derived (`cwdaily`, 154 columns) | season | `game_id, player_id, appear_dt` |
-| `substitutions` | derived (`cwsub`, 26 columns) | season | `game_id, event_id` |
-| `rosters` | `*.ROS` | season | `team_id, player_id, season` |
-| `gamelogs` | `GL{year}.TXT` / `gl{year}.txt` (161 columns, header-less, positional by documented spec) | season | `date, game_number, home_team, visiting_team` |
-| `gamelogs_postseason` | `GLWC/GLDV/GLLC/GLWS/GLAS.TXT` (and any others in tree) | flat | same |
-| `schedule` | `schedule/` files | season | `date, game_number, home, visitor` |
-| `reference_<stem>` | every CSV in `reference/` (known: `ballparks, teams, ejections, coaches, relatives, biofile`; discover others such as umpires, franchises, etc.) | flat | per file |
-| `misc_<stem>` | files in `misc/` if tabular | flat | per file |
-
----
+| `events` | `seasons/<Y>/*.EVA`, `*.EVN` parsed (98-column schema) | season | `GAME_ID` |
+| `events_postseason` | `*.EVE`, `*.EVR`, `*.EVF` (postseason, all-star, special games) | season | `GAME_ID` |
+| `events_deduced` | `*.EDA`, `*.EDN`, `*.EDF` (deduced from box scores) | season | `GAME_ID` |
+| `boxscores_batting` / `boxscores_pitching` | derived from the regular-season event files (chadwickpy `box_create`) | season | `game_id, team_id, player_id/pitcher_id, slot/seq` |
+| `daily_splits` | derived (`cwdaily`, 154 columns) | season | `GAME_ID, TEAM_ID, PLAYER_ID` |
+| `substitutions` | derived (`cwsub`, 26 columns) | season | `GAME_ID, EVENT_ID` |
+| `rosters` | `*.ROS` | season | `year, team, player_id` |
+| `gamelogs` | `GL<Y>.TXT` (161 positional columns) | season | `date, game_num, home_team` |
+| `gamelogs_postseason` | `gamelog/GLWC, GLDV, GLLC, GLWS, GLAS .TXT` | flat | same |
+| `schedule` | `<Y>schedule.csv` (`2026SCHEDULE.CSV`) | season | `game_date, game_number, visitor_team, visitor_game_number, home_team` |
+| `schedule_original` | `<Y>sched-orig.csv` (2020 original schedule) | season | same |
+| `umpires` | `UMPIRES<Y>.txt` | season | `umpire_id` (per season) |
+| `discrepancies` | `<Y>aldiscs.csv`, `nldiscs.csv`, `fldiscs.csv` | season | `disc_id` |
+| `reference_<stem>` | every `reference/*.csv`: `ballparks, teams, ejections, coaches, relatives, biofile, biofile0` | flat | per file |
+| *(raw only)* `box_files` | `*.EBA/.EBN/.EBE/.EBR/.EBF` box-score game accounts — format needs the retrosheet.org spec, not parsed (documented follow-up) | season | file name |
+| *(raw only)* `event_files` | all event files + `TEAM<Y>` as published | season | file name |
 
 ## 6. Discovery & verification procedure (executor checklist)
 1. `scripts/probe_endpoints.py` iterates this catalog's machine-readable twin `docs/endpoint_catalog.yaml` (generate from this file; one record per dataset with `source, dataset, url_template, params, fan_out, partition, keys, status`) and, for each, performs a minimal live call, records `{status_code, bytes, sample_columns, elapsed}` into `docs/endpoint_probe.json`.

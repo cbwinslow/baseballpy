@@ -71,6 +71,18 @@ def _load_league(paths: list[Path], year: int | None = None) -> cw.League | None
     return None
 
 
+def _chain_head(node: Any) -> Any:
+    """First element of chadwickpy's doubly linked box chains.
+
+    ``box.slots[slot][team]`` and ``box.pitchers[team]`` point at the *most recent* player; the
+    starter (and every substitute before the last) is reached through ``prev``. Walking only
+    ``next`` from the handle silently drops everyone but the last entry.
+    """
+    while node is not None and getattr(node, "prev", None) is not None:
+        node = node.prev
+    return node
+
+
 class RetrosheetEventParser:
     """Parses Retrosheet .EVA / .EVN / .EVE event files using pure-Python chadwickpy."""
 
@@ -147,7 +159,8 @@ class RetrosheetBoxScoreParser:
                 # 1. Batting lines from slots
                 for team_idx, team_code in enumerate((vis_team, home_team)):
                     for slot_idx in range(len(box.slots)):
-                        player = box.slots[slot_idx][team_idx]
+                        # chadwick keeps the *latest* occupant of a slot; rewind to the starter
+                        player = _chain_head(box.slots[slot_idx][team_idx])
                         while player is not None:
                             b = player.batting
                             pos = player.positions[0] if player.positions else player.start_position
@@ -182,7 +195,7 @@ class RetrosheetBoxScoreParser:
 
                 # 2. Pitching lines
                 for team_idx, team_code in enumerate((vis_team, home_team)):
-                    pitcher = box.pitchers[team_idx]
+                    pitcher = _chain_head(box.pitchers[team_idx])  # starter first
                     seq = 1
                     while pitcher is not None:
                         p = pitcher.pitching

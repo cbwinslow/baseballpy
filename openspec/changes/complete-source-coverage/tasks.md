@@ -3,7 +3,7 @@
 Prerequisites: `harden-ingestion-core` (tasks 1-6) and `restructure-data-lake` (tasks 1-4). Work source by source;
 each source section is independently committable. Every section ends with: fixtures, tests, generated docs, live probe.
 
-- [ ] 0. Shared machinery (C-2, C-9) <!-- id: 0 -->
+- [ ] 0. Shared machinery (C-2, C-9) <!-- id: 0 --> <!-- goal 3: 0.1, 0.3 done; 0.2 done for Retrosheet/Chadwick/Lahman (scripts/gen_schemas.py, scripts/probe_endpoints.py); 0.4 partial (docs block per dataset enforced; fixture-per-dataset only for these three sources) -->
   - [x] 0.1 `core/schema_tools.py`: `snake()`, `flatten()`, `map_by_header()`, `normalize_records()` with `_extras` + drift log
   - [ ] 0.2 `scripts/gen_schemas.py` (fetch/flatten/propose types) and `scripts/probe_endpoints.py` (probe every catalog row; write `docs/endpoint_probe.json`)
   - [x] 0.3 `docs generate` command + `docs/columns/<source>.yaml` description files + stale-docs test
@@ -43,17 +43,17 @@ each source section is independently committable. Every section ends with: fixtu
   - [x] 4.5 `_chadwick_adapter.py` isolating GPL imports; helpful ImportError
   - [x] 4.6 `ingest_all(start, end)` with resume
   - [x] 4.7 Tests: fixtures for each file kind, 404-absent handling, resume after interruption, header drift in reference CSV
-  - [ ] 4.8 Live probe: one old season (e.g. 1950), one modern (2023), 2025
+  - [x] 4.8 Live probe: one old season (e.g. 1950), one modern (2023), 2025
 - [x] 5. Chadwick Register (C-8) <!-- id: 5 -->
   - [x] 5.1 Tree discovery of shards/aux files; SHA revalidation every 24 h
   - [x] 5.2 Header-based schema + `_extras`; `register_names`, `register_links` datasets when present
   - [x] 5.3 Replace silent `except` in SHA lookup; authenticated API option
   - [x] 5.4 Tests incl. missing shard -> hard error, SHA change -> refetch
-- [ ] 6. Documentation (C-9) <!-- id: 6 -->
+- [ ] 6. Documentation (C-9) <!-- id: 6 --> <!-- goal 3: Retrosheet, Chadwick, Lahman pages + catalog rows + specs + ADR 24 (partial) done; MLB/Statcast pending -->
   - [ ] 6.1 Rewrite `docs/sources/*.md`: endpoints, params, headers, methods, rate limits, caps, quirks, era notes, keys, partitioning, freshness, generated column dictionaries for **every** dataset
   - [ ] 6.2 Update `docs/ENDPOINT_CATALOG.md` "verified on / status" columns from `docs/endpoint_probe.json`
   - [ ] 6.3 ADR 24; merge spec deltas into `openspec/specs/*`
-- [ ] 7. Verification <!-- id: 7 -->
+- [ ] 7. Verification <!-- id: 7 --> <!-- goal 3: verified for Retrosheet/Chadwick/Lahman (live ingest of 1950/2023/2025, all 27 tables, register; 15 spot checks); MLB/Statcast pending -->
   - [ ] 7.1 `uv run pytest`, `uvx ruff check .`, `uvx ruff format --check .`, `uvx mypy --strict src`
   - [ ] 7.2 Manual full-coverage run into a scratch `BASEBALLPY_HOME`: `baseballpy ingest all --seasons 2023` then `--seasons 1950` (Lahman/Retrosheet/MLB) and Statcast 2008 + 2024 one week each; confirm every registered dataset has ≥1 processed partition or a documented `unsupported`/`empty` reason (`baseballpy catalog status` prints the table)
   - [ ] 7.3 Manual: spot-check 10 random columns per source against the upstream website values

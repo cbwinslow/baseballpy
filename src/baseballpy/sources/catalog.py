@@ -277,10 +277,11 @@ def register_all() -> dict[str, DatasetSpec]:
         "reference_biofile": "Biographical file (reference/biofile.csv).",
         "reference_biofile0": "Biographical file, ISO-date edition (reference/biofile0.csv).",
         "schedule": "Season schedules (seasons/<year>/<year>schedule.csv).",
+        "schedule_original": "Original pre-disruption schedules (seasons/<year>/<year>sched-orig.csv).",
         "umpires": "Umpires working each season (seasons/<year>/UMPIRES<year>.txt).",
         "discrepancies": "Known data discrepancies (seasons/<year>/*discs.csv).",
     }
-    seasonal = {"schedule", "umpires", "discrepancies"}
+    seasonal = {"schedule", "schedule_original", "umpires", "discrepancies"}
     for flat_name, flat_schema in RETROSHEET_FLAT_SCHEMAS.items():
         _add(
             "retrosheet",

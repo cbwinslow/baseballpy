@@ -134,6 +134,20 @@ RETROSHEET_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {
         ("makeup_date", "string", "Makeup"),
         ("park_id", "string", "Location"),
     ),
+    "schedule_original": (  # 2,430 rows from 1 file(s)
+        ("game_date", "date32:%Y%m%d", "Date"),
+        ("game_number", "int16", "Num"),
+        ("day_of_week", "string", "Day"),
+        ("visitor_team", "string", "Visitor"),
+        ("visitor_league", "string", "League"),
+        ("visitor_game_number", "int16", "Game"),
+        ("home_team", "string", "Home"),
+        ("home_league", "string", "League__2"),
+        ("home_game_number", "int16", "Game__2"),
+        ("day_night", "string", "Day/Night"),
+        ("postponed", "string", "Postponed"),
+        ("makeup_date", "string", "Makeup"),
+    ),
     "umpires": (  # 9,909 rows from 155 file(s)
         ("umpire_id", "string", "ID"),
         ("last_name", "string", "last"),
@@ -167,10 +181,18 @@ RETROSHEET_KEYS: dict[str, tuple[str, ...]] = {
     "reference_relatives": ("person_id_1", "relation", "person_id_2"),
     "reference_teams": ("team_id", "first_year"),
     "schedule": ("game_date", "game_number", "visitor_team", "visitor_game_number", "home_team"),
+    "schedule_original": (
+        "game_date",
+        "game_number",
+        "visitor_team",
+        "visitor_game_number",
+        "home_team",
+    ),
     "umpires": ("umpire_id",),
     "discrepancies": ("disc_id",),
 }
 
 RETROSHEET_DEFAULT_HEADERS: dict[str, str] = {
     "schedule": "Date,Num,Day,Visitor,League,Game,Home,League,Game,Day/Night,Postponed,Makeup",
+    "schedule_original": "Date,Num,Day,Visitor,League,Game,Home,League,Game,Day/Night,Postponed,Makeup",
 }
