@@ -5,6 +5,7 @@ import json
 import os
 import shutil
 import sys
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -148,6 +149,31 @@ def _disk_usage(path: Path) -> tuple[int, int]:
     return usage.free, usage.total
 
 
+def split_datasets(tokens: Sequence[str], sources: Sequence[str]) -> dict[str, tuple[str, ...]]:
+    """Group ``--datasets`` tokens (``name`` or ``source:name``, comma-separated) by source.
+
+    A bare name is only unambiguous with exactly one selected source; otherwise it must be
+    written ``source:name``. A source named in a token but not selected is an error.
+    """
+    grouped: dict[str, list[str]] = {}
+    for token in tokens:
+        for raw in token.split(","):
+            item = raw.strip()
+            if not item:
+                continue
+            source, sep, name = item.partition(":")
+            if not sep:
+                if len(sources) != 1:
+                    raise click.BadParameter(
+                        f"dataset {item!r} is ambiguous with {len(sources)} sources; use source:name"
+                    )
+                source, name = sources[0], item
+            if source not in sources:
+                raise click.BadParameter(f"dataset {item!r} names a source that is not selected")
+            grouped.setdefault(source, []).append(name)
+    return {k: tuple(v) for k, v in grouped.items()}
+
+
 @click.command("ingest")
 @click.argument("sources", nargs=-1)
 @click.option(
@@ -162,7 +188,7 @@ def _disk_usage(path: Path) -> tuple[int, int]:
     "-d",
     "datasets",
     multiple=True,
-    help="Target dataset name(s) to ingest (repeatable).",
+    help="Dataset(s) to ingest: name (one source) or source:name (repeatable, comma-separated).",
 )
 @click.option(
     "--refresh",
@@ -214,13 +240,7 @@ def ingest_cmd(
     except (ValueError, KeyError) as exc:
         raise click.BadParameter(str(exc)) from exc
 
-    dataset_list: list[str] = []
-    for d in datasets:
-        for item in d.split(","):
-            cleaned = item.strip()
-            if cleaned:
-                dataset_list.append(cleaned)
-    datasets_tuple = tuple(dataset_list)
+    by_source = split_datasets(datasets, tuple(adapters))
 
     planned_jobs: list[Job] = []
     try:
@@ -233,7 +253,7 @@ def ingest_cmd(
             sel = Selection(
                 seasons=parsed_seasons,
                 sources=(source,),
-                datasets=datasets_tuple,
+                datasets=by_source.get(source, ()),
                 refresh=refresh,
             )
             jobs = plan_jobs({source: adapter}, sel)

@@ -41,7 +41,8 @@ datasets appear as their coverage sections land; this change builds the framewor
 - [x] C. CLI `ingest`, `catalog status`, `doctor` in `cli_ingest.py` + CliRunner tests (agy, reviewed; wired into `cli.py` by one call)
 - [x] D1. Manual 2026-10-27 (scratch home): `ingest all --seasons 2023 --dry-run` planned 35 jobs with zero requests; real runs of lahman (28 tables), chadwick and retrosheet 1964 (gamelogs + box accounts) completed; the re-run of retrosheet was SKIPPED; `catalog status` and `doctor` correct (0 orphans)
 - [ ] D2. Not verified: a live Ctrl-C mid-run followed by resume (the runner's KeyboardInterrupt path is unit-tested only); live runs of statcast and mlb_api adapters
-- [ ] E. Still open from the original tasks: protocol conformance contract test (P-5), `get_config()` (P-4), `catalog list|show`, `db`, `stream`, `quarantine`, `refs` groups in the new style, `docs/CLI.md`, ADR 25 final text, spec merge
+- [x] E1. `catalog list|show` (`cli_catalog.py`, agy + review) and source-qualified `--datasets source:name` (2026-10-27)
+- [ ] E. Still open from the original tasks: protocol conformance contract test (P-5), `get_config()` (P-4), `db`, `stream`, `quarantine`, `refs` groups in the new style, `docs/CLI.md`, ADR 25 final text, spec merge
 
 ## Status (2026-10-27)
 Not started. Prerequisites are met: the dataset registry, per-source extractors and `ingest_season`/`ingest_all`/`ingest_reference`/`ingest_history`/`ingest_people_stats` entry points exist for all five sources (`complete-source-coverage`), so the `Pipeline`/`Job` layer and the `ingest`, `catalog status`, `stream` and `doctor` commands can wrap them. `catalog status` should report `raw_only` and `unsupported` endpoints from the probes.

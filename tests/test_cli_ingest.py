@@ -333,3 +333,21 @@ def test_doctor_json_output() -> None:
     assert "registered_adapters" in doc_json
     assert "orphans" in doc_json
     assert doc_json["orphans"]["count"] == 0
+
+
+def test_split_datasets_needs_source_prefix_when_ambiguous() -> None:
+    import click
+
+    from baseballpy.cli_ingest import split_datasets
+
+    assert split_datasets(("gamelogs,box_accounts",), ("retrosheet",)) == {
+        "retrosheet": ("gamelogs", "box_accounts")
+    }
+    assert split_datasets(("lahman:People", "retrosheet:gamelogs"), ("lahman", "retrosheet")) == {
+        "lahman": ("People",),
+        "retrosheet": ("gamelogs",),
+    }
+    with pytest.raises(click.BadParameter, match="ambiguous"):
+        split_datasets(("People",), ("lahman", "retrosheet"))
+    with pytest.raises(click.BadParameter, match="not selected"):
+        split_datasets(("mlb_api:season",), ("lahman",))
