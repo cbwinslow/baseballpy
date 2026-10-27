@@ -8,10 +8,11 @@ never be used: its data stops around 2023.
 import asyncio
 from pathlib import Path
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write, cleanup_stale_parts
+from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
-from baseballpy.core.config import CacheConfig, RateLimitConfig
+from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, HttpResult, get_http_client
+from baseballpy.core.stores import RawStore
 from baseballpy.sources.lahman.schema import LahmanTable
 
 LAHMAN_GITHUB_BASE = "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/main/data"
@@ -22,25 +23,26 @@ class LahmanExtractor:
 
     def __init__(
         self,
-        cache_config: CacheConfig | None = None,
+        cache_config: LakeConfig | None = None,
         rate_limit_config: RateLimitConfig | None = None,
         http: HttpClient | None = None,
     ) -> None:
-        self.cache_config = cache_config or CacheConfig()
+        self.cache_config = cache_config or LakeConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
         self.http = http or (
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
-        self.raw_dir = self.cache_config.lahman_dir / "raw"
-        self.raw_dir.mkdir(parents=True, exist_ok=True)
-        self.manifest = ManifestTracker(self.cache_config.lahman_dir / "manifest.json")
-        cleanup_stale_parts(
-            self.cache_config.lahman_dir
-        )  # discard orphaned .part files from killed runs
+        self.raw = RawStore(self.cache_config)
+        # discard orphaned .part files from killed runs
+        cleanup_stale_parts(self.cache_config.raw_root / "lahman")
+
+    def manifest_for(self, table_name: str | LahmanTable) -> ManifestTracker:
+        """Per-table raw manifest at ``raw/lahman/<Table>/manifest.json``."""
+        return self.cache_config.dataset_manifest("lahman", str(table_name), "raw")
 
     def get_raw_path(self, table_name: str | LahmanTable) -> Path:
-        """Return local path to raw CSV file."""
-        return self.raw_dir / f"{table_name}.csv"
+        """Return local path to raw CSV file (``raw/lahman/<Table>/<Table>.csv``)."""
+        return self.cache_config.raw_dir("lahman", str(table_name)) / f"{table_name}.csv"
 
     def _is_cached(self, name: str, refresh: bool) -> bool:
         """A table is cached only if the file exists AND the manifest recorded its completion."""
@@ -49,15 +51,20 @@ class LahmanExtractor:
             not refresh
             and target.exists()
             and target.stat().st_size > 0
-            and self.cache_config.is_fresh(self.manifest.get_chunk(name), "lahman")
+            and self.cache_config.is_fresh(self.manifest_for(name).get_chunk(name), "lahman")
         )
 
     def _store(self, name: str, result: HttpResult) -> bytes:
         content = result.content
         if self.cache_config.enabled:
-            with atomic_write(self.get_raw_path(name)) as part_path:
-                part_path.write_bytes(content)
-            self.manifest.set_completed(
+            self.raw.put(
+                "lahman",
+                name,
+                f"{name}.csv",
+                content,
+                etag=result.etag or "",
+            )
+            self.manifest_for(name).set_completed(
                 name,
                 records_count=content.count(b"\n"),
                 etag=result.etag or "",

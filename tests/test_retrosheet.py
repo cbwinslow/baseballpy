@@ -6,7 +6,8 @@ import httpx
 import pyarrow as pa
 import respx
 
-from baseballpy.core.config import CacheConfig
+from baseballpy.core.config import LakeConfig
+from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.sources.retrosheet.api import RetrosheetSource
 from baseballpy.sources.retrosheet.downloader import GITHUB_RETROSHEET_BASE
 from baseballpy.sources.retrosheet.parser import (
@@ -18,6 +19,10 @@ from baseballpy.sources.retrosheet.parser import (
     RetrosheetRosterParser,
     RetrosheetSubstitutionsParser,
 )
+
+
+def _spec(name: str) -> DatasetSpec:
+    return get_dataset("retrosheet", name)
 
 
 def test_parse_events_via_chadwick(tmp_path: Path) -> None:
@@ -179,7 +184,7 @@ def test_parse_rosters(tmp_path: Path) -> None:
 
 @respx.mock
 def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
     source = RetrosheetSource(cache_config=cache_config)
 
     # Mock TEAM manifest and event files
@@ -212,13 +217,13 @@ def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
     assert events_table["GAME_ID"].to_pylist() == ["BOS202404010"]
 
     # Check two-tier directory structure
-    raw_season = cache_config.retrosheet_dir / "raw" / "2024"
-    processed_season = cache_config.retrosheet_dir / "processed" / "events" / "season=2024"
+    raw_season = cache_config.raw_dir("retrosheet", "event_files", 2024)
+    processed_season = cache_config.processed_dir("retrosheet", "events", 2024)
     assert (raw_season / "2024BOS.EVA").exists()
-    assert (processed_season / "events.parquet").exists()
+    assert (processed_season / "part-events.parquet").exists()
 
     # Check manifest recorded completion
-    assert source.manifest.is_completed("events_2024")
+    assert source.store.is_cached(_spec("events"), "events", 2024)
 
     # 2. Second run reads from processed parquet cache without network calls
     respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2024/TEAM2024").mock(
@@ -231,8 +236,8 @@ def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
     batting, pitching = source.boxscores(2024)
     assert len(batting) > 0
     assert len(pitching) > 0
-    assert source.manifest.is_completed("box_batting_2024")
-    assert source.manifest.is_completed("box_pitching_2024")
+    assert source.store.is_cached(_spec("boxscores_batting"), "batting", 2024)
+    assert source.store.is_cached(_spec("boxscores_pitching"), "pitching", 2024)
 
     # 4. Reference tables
     respx.get(f"{GITHUB_RETROSHEET_BASE}/reference/teams.csv").mock(
@@ -248,7 +253,7 @@ def test_retrosheet_source_orchestrator(tmp_path: Path) -> None:
 @respx.mock
 def test_retrosheet_downloader_2025_casing(tmp_path: Path) -> None:
     """Verify download_gamelog resolves uppercase GL2025.TXT used by 2025 Retrosheet."""
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
     source = RetrosheetSource(cache_config=cache_config)
 
     # Mock 2025 with uppercase GL2025.TXT

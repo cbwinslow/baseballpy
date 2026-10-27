@@ -1,12 +1,16 @@
-"""High-level Retrosheet extraction and query interface."""
+"""High-level Retrosheet extraction and query interface (lake layout v2)."""
+
+from collections.abc import Callable
+from pathlib import Path
 
 import pyarrow as pa
-import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet
-from baseballpy.core.config import CacheConfig
+from baseballpy.core.config import LakeConfig
+from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.lazy import lazy_singleton
-from baseballpy.sources.retrosheet.downloader import RetrosheetDownloader
+from baseballpy.core.stores import ProcessedStore
+from baseballpy.sources import catalog
+from baseballpy.sources.retrosheet.downloader import POSTSEASON_SUFFIXES, RetrosheetDownloader
 from baseballpy.sources.retrosheet.parser import (
     RetrosheetBoxScoreParser,
     RetrosheetDailySplitsParser,
@@ -18,194 +22,156 @@ from baseballpy.sources.retrosheet.parser import (
 )
 
 
-class RetrosheetSource:
-    """Retrosheet dataset orchestrator with two-tier raw/processed caching and pause/resume."""
+def _spec(name: str) -> DatasetSpec:
+    return get_dataset("retrosheet", name)
 
-    def __init__(self, cache_config: CacheConfig | None = None) -> None:
-        self.cache_config = cache_config or CacheConfig()
+
+class RetrosheetSource:
+    """Retrosheet dataset orchestrator: raw/ bytes, processed/ Parquet, pause/resume."""
+
+    def __init__(self, cache_config: LakeConfig | None = None) -> None:
+        catalog.register_all()
+        self.cache_config = cache_config or LakeConfig()
         self.downloader = RetrosheetDownloader(cache_config=self.cache_config)
-        self.processed_dir = self.cache_config.retrosheet_dir / "processed"
-        self.processed_dir.mkdir(parents=True, exist_ok=True)
-        self.manifest = ManifestTracker(self.processed_dir / "manifest.json")
+        self.store = ProcessedStore(self.cache_config)
+
+    def _cached(
+        self,
+        name: str,
+        chunk_id: str,
+        season: int | None,
+        refresh: bool,
+        build: Callable[[], pa.Table],
+    ) -> pa.Table:
+        """Return the stored part if complete, else build, store (if non-empty) and return it."""
+        spec = _spec(name)
+        if not refresh and self.store.is_cached(spec, chunk_id, season):
+            return self.store.read_part(spec, chunk_id, season)
+        table = build()
+        if self.cache_config.enabled and len(table) > 0:
+            self.store.put(spec, table, chunk_id=chunk_id, season=season)
+        return table
 
     def events(
         self, year: int, include_postseason: bool = False, refresh: bool = False
     ) -> pa.Table:
-        """Extract and parse play-by-play events for a season into strongly-typed Arrow."""
-        chunk_id = f"events_{year}" if not include_postseason else f"events_{year}_postseason"
-        out_dir = self.processed_dir / "events" / f"season={year}"
-        out_file = out_dir / ("events.parquet" if not include_postseason else "events_all.parquet")
+        """Parse play-by-play events for a season into strongly-typed Arrow.
 
-        if not refresh and out_file.exists() and self.manifest.is_completed(chunk_id):
-            return pq.read_table(out_file)
-
-        event_files = self.downloader.download_season(
-            year, include_postseason=include_postseason, refresh=refresh
+        Regular-season and postseason events are separate datasets (``events`` and
+        ``events_postseason``); ``include_postseason=True`` returns both concatenated.
+        """
+        regular = self._cached(
+            "events",
+            "events",
+            year,
+            refresh,
+            lambda: RetrosheetEventParser().parse_files(
+                self.downloader.download_season(year, refresh=refresh), year=year
+            ),
         )
-        parser = RetrosheetEventParser()
-        table = parser.parse_files(event_files, year=year)
+        if not include_postseason:
+            return regular
 
-        if self.cache_config.enabled and len(table) > 0:
-            atomic_write_parquet(table, out_file)
-            self.manifest.set_completed(chunk_id, records_count=len(table))
+        def build_postseason() -> pa.Table:
+            files = self.downloader.download_season(year, include_postseason=True, refresh=refresh)
+            post = [p for p in files if p.name.endswith(POSTSEASON_SUFFIXES)]
+            return RetrosheetEventParser().parse_files(post, year=year)
 
-        return table
+        postseason = self._cached("events_postseason", "events", year, refresh, build_postseason)
+        if len(postseason) == 0:
+            return regular
+        return pa.concat_tables([regular, postseason], promote_options="permissive")
 
     def boxscores(self, year: int, refresh: bool = False) -> tuple[pa.Table, pa.Table]:
-        """Extract and parse batting and pitching boxscores for a season."""
-        batting_chunk_id = f"box_batting_{year}"
-        pitching_chunk_id = f"box_pitching_{year}"
-
-        batting_file = (
-            self.processed_dir / "boxscores_batting" / f"season={year}" / "batting.parquet"
-        )
-        pitching_file = (
-            self.processed_dir / "boxscores_pitching" / f"season={year}" / "pitching.parquet"
-        )
-
+        """Parse batting and pitching boxscores for a season."""
+        spec_b, spec_p = _spec("boxscores_batting"), _spec("boxscores_pitching")
         if (
             not refresh
-            and batting_file.exists()
-            and pitching_file.exists()
-            and self.manifest.is_completed(batting_chunk_id)
-            and self.manifest.is_completed(pitching_chunk_id)
+            and self.store.is_cached(spec_b, "batting", year)
+            and self.store.is_cached(spec_p, "pitching", year)
         ):
-            return pq.read_table(batting_file), pq.read_table(pitching_file)
-
-        event_files = self.downloader.download_season(year, refresh=refresh)
-        parser = RetrosheetBoxScoreParser()
-        batting_table, pitching_table = parser.parse_files(event_files, year=year)
-
+            return (
+                self.store.read_part(spec_b, "batting", year),
+                self.store.read_part(spec_p, "pitching", year),
+            )
+        files = self.downloader.download_season(year, refresh=refresh)
+        batting, pitching = RetrosheetBoxScoreParser().parse_files(files, year=year)
         if self.cache_config.enabled:
-            if len(batting_table) > 0:
-                atomic_write_parquet(batting_table, batting_file)
-                self.manifest.set_completed(batting_chunk_id, records_count=len(batting_table))
-            if len(pitching_table) > 0:
-                atomic_write_parquet(pitching_table, pitching_file)
-                self.manifest.set_completed(pitching_chunk_id, records_count=len(pitching_table))
-
-        return batting_table, pitching_table
+            if len(batting) > 0:
+                self.store.put(spec_b, batting, chunk_id="batting", season=year)
+            if len(pitching) > 0:
+                self.store.put(spec_p, pitching, chunk_id="pitching", season=year)
+        return batting, pitching
 
     def daily_splits(self, year: int, refresh: bool = False) -> pa.Table:
-        """Extract and parse daily player lines for a season."""
-        chunk_id = f"daily_splits_{year}"
-        out_dir = self.processed_dir / "daily_splits" / f"season={year}"
-        out_file = out_dir / "daily_splits.parquet"
-
-        if not refresh and out_file.exists() and self.manifest.is_completed(chunk_id):
-            return pq.read_table(out_file)
-
-        event_files = self.downloader.download_season(year, refresh=refresh)
-        parser = RetrosheetDailySplitsParser()
-        table = parser.parse_files(event_files, year=year)
-
-        if self.cache_config.enabled and len(table) > 0:
-            atomic_write_parquet(table, out_file)
-            self.manifest.set_completed(chunk_id, records_count=len(table))
-
-        return table
+        """Parse daily player lines for a season."""
+        return self._cached(
+            "daily_splits",
+            "daily_splits",
+            year,
+            refresh,
+            lambda: RetrosheetDailySplitsParser().parse_files(
+                self.downloader.download_season(year, refresh=refresh), year=year
+            ),
+        )
 
     def substitutions(self, year: int, refresh: bool = False) -> pa.Table:
-        """Extract and parse in-game substitutions for a season."""
-        chunk_id = f"substitutions_{year}"
-        out_dir = self.processed_dir / "substitutions" / f"season={year}"
-        out_file = out_dir / "substitutions.parquet"
-
-        if not refresh and out_file.exists() and self.manifest.is_completed(chunk_id):
-            return pq.read_table(out_file)
-
-        event_files = self.downloader.download_season(year, refresh=refresh)
-        parser = RetrosheetSubstitutionsParser()
-        table = parser.parse_files(event_files, year=year)
-
-        if self.cache_config.enabled and len(table) > 0:
-            atomic_write_parquet(table, out_file)
-            self.manifest.set_completed(chunk_id, records_count=len(table))
-
-        return table
+        """Parse in-game substitutions for a season."""
+        return self._cached(
+            "substitutions",
+            "substitutions",
+            year,
+            refresh,
+            lambda: RetrosheetSubstitutionsParser().parse_files(
+                self.downloader.download_season(year, refresh=refresh), year=year
+            ),
+        )
 
     def game_logs(self, year: int, refresh: bool = False) -> pa.Table:
-        """Extract and parse 161-column historical game logs for a season."""
-        chunk_id = f"gamelogs_{year}"
-        out_dir = self.processed_dir / "gamelogs"
-        out_dir.mkdir(parents=True, exist_ok=True)
-        out_file = out_dir / f"gl{year}.parquet"
-
-        if not refresh and out_file.exists() and self.manifest.is_completed(chunk_id):
-            return pq.read_table(out_file)
-
-        raw_path = self.downloader.download_gamelog(year, refresh=refresh)
-        parser = RetrosheetGameLogParser()
-        table = parser.parse_file(raw_path)
-
-        if self.cache_config.enabled and len(table) > 0:
-            atomic_write_parquet(table, out_file)
-            self.manifest.set_completed(chunk_id, records_count=len(table))
-
-        return table
+        """Parse 161-column historical game logs for a season."""
+        return self._cached(
+            "gamelogs",
+            f"gl{year}",
+            year,
+            refresh,
+            lambda: RetrosheetGameLogParser().parse_file(
+                self.downloader.download_gamelog(year, refresh=refresh)
+            ),
+        )
 
     def postseason_game_logs(self, kind: str, refresh: bool = False) -> pa.Table:
-        """Extract and parse postseason game logs (wild_card, division_series, lcs, world_series, all_star)."""
-        chunk_id = f"gamelogs_postseason_{kind.lower()}"
-        out_dir = self.processed_dir / "gamelogs" / "postseason"
-        out_dir.mkdir(parents=True, exist_ok=True)
-        out_file = out_dir / f"gl_{kind.lower()}.parquet"
-
-        if not refresh and out_file.exists() and self.manifest.is_completed(chunk_id):
-            return pq.read_table(out_file)
-
-        raw_path = self.downloader.download_postseason_gamelog(kind, refresh=refresh)
-        parser = RetrosheetGameLogParser()
-        table = parser.parse_file(raw_path)
-
-        if self.cache_config.enabled and len(table) > 0:
-            atomic_write_parquet(table, out_file)
-            self.manifest.set_completed(chunk_id, records_count=len(table))
-
-        return table
+        """Parse postseason game logs (wild_card, division_series, lcs, world_series, all_star)."""
+        return self._cached(
+            "gamelogs_postseason",
+            kind.lower(),
+            None,
+            refresh,
+            lambda: RetrosheetGameLogParser().parse_file(
+                self.downloader.download_postseason_gamelog(kind, refresh=refresh)
+            ),
+        )
 
     def rosters(self, year: int, refresh: bool = False) -> pa.Table:
-        """Extract and parse team rosters for a season."""
-        chunk_id = f"rosters_{year}"
-        out_dir = self.processed_dir / "rosters"
-        out_dir.mkdir(parents=True, exist_ok=True)
-        out_file = out_dir / f"rosters_{year}.parquet"
+        """Parse team rosters for a season."""
 
-        if not refresh and out_file.exists() and self.manifest.is_completed(chunk_id):
-            return pq.read_table(out_file)
+        def build() -> pa.Table:
+            self.downloader.download_season(year, refresh=refresh)
+            roster_files: list[Path] = sorted(self.downloader.roster_dir(year).glob("*.ROS"))
+            return RetrosheetRosterParser().parse_files(roster_files, year=year)
 
-        self.downloader.download_season(year, refresh=refresh)
-        season_dir = self.downloader.raw_dir / str(year)
-        roster_files = list(season_dir.glob("*.ROS"))
-
-        parser = RetrosheetRosterParser()
-        table = parser.parse_files(roster_files, year=year)
-
-        if self.cache_config.enabled and len(table) > 0:
-            atomic_write_parquet(table, out_file)
-            self.manifest.set_completed(chunk_id, records_count=len(table))
-
-        return table
+        return self._cached("rosters", f"rosters_{year}", year, refresh, build)
 
     def reference(self, table_name: str, refresh: bool = False) -> pa.Table:
-        """Extract and parse reference tables (ballparks, teams, ejections, coaches, relatives, biofile)."""
-        chunk_id = f"reference_{table_name.lower()}"
-        out_dir = self.processed_dir / "reference"
-        out_dir.mkdir(parents=True, exist_ok=True)
-        out_file = out_dir / f"{table_name.lower()}.parquet"
-
-        if not refresh and out_file.exists() and self.manifest.is_completed(chunk_id):
-            return pq.read_table(out_file)
-
-        raw_path = self.downloader.download_reference_table(table_name, refresh=refresh)
-        parser = RetrosheetReferenceParser()
-        table = parser.parse_file(table_name, raw_path)
-
-        if self.cache_config.enabled and len(table) > 0:
-            atomic_write_parquet(table, out_file)
-            self.manifest.set_completed(chunk_id, records_count=len(table))
-
-        return table
+        """Parse reference tables (ballparks, teams, ejections, coaches, relatives, biofile)."""
+        return self._cached(
+            f"reference_{table_name.lower()}",
+            "data",
+            None,
+            refresh,
+            lambda: RetrosheetReferenceParser().parse_file(
+                table_name, self.downloader.download_reference_table(table_name, refresh=refresh)
+            ),
+        )
 
 
 # Module-level convenience functions

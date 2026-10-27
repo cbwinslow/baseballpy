@@ -22,7 +22,7 @@ from baseballpy.core.atomic import (
 )
 from baseballpy.core.audit import AuditConfig, AuditLogger
 from baseballpy.core.coerce import CoercionError, to_bool, to_date, to_float, to_int
-from baseballpy.core.config import CacheConfig, QuarantineConfig, RateLimitConfig
+from baseballpy.core.config import LakeConfig, QuarantineConfig, RateLimitConfig
 from baseballpy.core.freshness import is_fresh
 from baseballpy.core.http import HttpClient, HttpStatusError
 from baseballpy.core.protocols import SinkProtocol
@@ -252,7 +252,7 @@ def test_freshness_rules() -> None:
 
 
 def test_cache_config_ttl_policy(tmp_path: Path) -> None:
-    cfg = CacheConfig(base_dir=tmp_path, today=date(2026, 6, 1), ttl_overrides={"schedule": 5})
+    cfg = LakeConfig(home=tmp_path, today=date(2026, 6, 1), ttl_overrides={"schedule": 5})
     assert cfg.ttl_for("schedule") == 5
     assert cfg.ttl_for("lahman") is None
     assert cfg.ttl_for("unknown-dataset") == cfg.ttl_seconds

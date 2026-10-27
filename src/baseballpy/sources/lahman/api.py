@@ -6,31 +6,50 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import atomic_write, atomic_write_parquet
 from baseballpy.core.audit import default_audit_logger
-from baseballpy.core.config import CacheConfig
+from baseballpy.core.config import LakeConfig
+from baseballpy.core.datasets import DATASETS, DatasetSpec
+from baseballpy.core.stores import ProcessedStore, RawStore
+from baseballpy.sources import catalog
 from baseballpy.sources.lahman.extractor import LahmanExtractor
 from baseballpy.sources.lahman.normalizer import LahmanNormalizer
 from baseballpy.sources.lahman.schema import LahmanTable
 
 
+def lahman_spec(table_name: str, schema: pa.Schema | None = None) -> DatasetSpec:
+    """Registered spec for a Lahman table, or an unregistered placeholder for untyped tables."""
+    if (spec := DATASETS.get(f"lahman.{table_name}")) is not None:
+        return spec
+    return DatasetSpec(
+        source="lahman",
+        name=table_name,
+        view=f"lahman_{table_name.lower()}",
+        schema=schema or pa.schema([]),
+        partition="none",
+        keys=(),
+        description=f"Lahman {table_name} table (schema inferred; typed in complete-source-coverage).",
+        endpoint_doc="sources/lahman.md#all-27-supported-tables",
+    )
+
+
 class LahmanSource:
     """Orchestrator for Lahman Baseball Database extraction, local import, and caching."""
 
-    def __init__(self, cache_config: CacheConfig | None = None) -> None:
-        self.cache_config = cache_config or CacheConfig()
+    def __init__(self, cache_config: LakeConfig | None = None) -> None:
+        catalog.register_all()
+        self.cache_config = cache_config or LakeConfig()
         self.extractor = LahmanExtractor(cache_config=self.cache_config)
         self.normalizer = LahmanNormalizer()
-        self.raw_dir = self.cache_config.lahman_dir / "raw"
-        self.processed_dir = self.cache_config.lahman_dir / "processed"
-        self.raw_dir.mkdir(parents=True, exist_ok=True)
-        self.processed_dir.mkdir(parents=True, exist_ok=True)
+        self.raw = RawStore(self.cache_config)
+        self.store = ProcessedStore(self.cache_config)
 
-    @staticmethod
-    def _write_raw(target: Path, data: bytes) -> None:
-        """Write a raw CSV atomically (never leaves a partial file under its final name)."""
-        with atomic_write(target) as part:
-            part.write_bytes(data)
+    def _import_csv(self, filename: str, data: bytes) -> None:
+        """Store one user-supplied CSV in raw/ and compile it to typed Parquet in processed/."""
+        table_name = Path(filename).stem
+        self.raw.put("lahman", table_name, f"{table_name}.csv", data, source_ref="user-supplied")
+        table = self.normalizer.normalize(data, table_name=table_name)
+        self.store.put(lahman_spec(table_name, table.schema), table, source_ref="user-supplied")
+        self.extractor.manifest_for(table_name).set_completed(table_name, records_count=len(table))
 
     def import_archive(self, archive_path: Path | str) -> int:
         """Import a local Lahman ZIP archive or unzipped directory downloaded from SABR Box.
@@ -46,7 +65,7 @@ class LahmanSource:
             operation="lahman_import_archive",
             source="lahman",
             endpoint=str(path),
-            destination=str(self.processed_dir),
+            destination=str(self.cache_config.processed_root / "lahman"),
         ) as tracker:
             imported_count = 0
 
@@ -55,19 +74,8 @@ class LahmanSource:
                 with zipfile.ZipFile(path, "r") as zf:
                     for member in zf.namelist():
                         if member.lower().endswith(".csv") and not member.startswith("__MACOSX"):
-                            filename = Path(member).name
-                            target_raw = self.raw_dir / filename
                             with zf.open(member) as src:
-                                self._write_raw(target_raw, src.read())
-                            # Process immediately to Parquet
-                            table_name = target_raw.stem
-                            content = target_raw.read_bytes()
-                            table = self.normalizer.normalize(content, table_name=table_name)
-                            target_parquet = self.processed_dir / f"{table_name}.parquet"
-                            atomic_write_parquet(table, target_parquet)
-                            self.extractor.manifest.set_completed(
-                                table_name, records_count=len(table)
-                            )
+                                self._import_csv(Path(member).name, src.read())
                             imported_count += 1
                 tracker.set_records(imported_count)
                 return imported_count
@@ -77,15 +85,7 @@ class LahmanSource:
                 for csv_file in path.glob("**/*.csv"):
                     if csv_file.name.startswith("."):
                         continue
-                    target_raw = self.raw_dir / csv_file.name
-                    self._write_raw(target_raw, csv_file.read_bytes())
-
-                    table_name = target_raw.stem
-                    content = target_raw.read_bytes()
-                    table = self.normalizer.normalize(content, table_name=table_name)
-                    target_parquet = self.processed_dir / f"{table_name}.parquet"
-                    atomic_write_parquet(table, target_parquet)
-                    self.extractor.manifest.set_completed(table_name, records_count=len(table))
+                    self._import_csv(csv_file.name, csv_file.read_bytes())
                     imported_count += 1
                 tracker.set_records(imported_count)
                 return imported_count
@@ -99,7 +99,8 @@ class LahmanSource:
     ) -> pa.Table:
         """Extract, normalize, and cache any Lahman table."""
         name_str = str(table_name)
-        target_parquet = self.processed_dir / f"{name_str}.parquet"
+        spec = lahman_spec(name_str)
+        target_parquet = self.store.part_path(spec, "data")
 
         with default_audit_logger.track(
             operation="lahman_get_table",
@@ -120,9 +121,9 @@ class LahmanSource:
             # 3. Normalize into strongly typed PyArrow Table
             table = self.normalizer.normalize(raw_bytes, table_name=name_str)
 
-            # 4. Save to processed Parquet cache
+            # 4. Save to processed Parquet
             if self.cache_config.enabled and len(table) > 0:
-                atomic_write_parquet(table, target_parquet)
+                self.store.put(lahman_spec(name_str, table.schema), table)
 
             tracker.set_cache_hit(False)
             tracker.set_records(len(table))

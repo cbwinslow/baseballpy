@@ -7,10 +7,11 @@ from typing import Any
 import narwhals as nw
 import polars as pl
 import pyarrow as pa
-import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import atomic_write_parquet
-from baseballpy.core.config import CacheConfig
+from baseballpy.core.config import LakeConfig
+from baseballpy.core.datasets import get_dataset
+from baseballpy.core.stores import ProcessedStore
+from baseballpy.sources import catalog
 from baseballpy.sources.chadwick.extractor import ChadwickExtractor
 from baseballpy.sources.chadwick.normalizer import ChadwickNormalizer
 from baseballpy.sources.chadwick.schema import PlayerIdType
@@ -117,6 +118,16 @@ COMMON_NICKNAMES: dict[str, list[str]] = {
     "buster": ["gerald"],
     "shohei": ["shohei"],
 }
+
+
+def _read_links(raw: bytes) -> list[dict[str, str | None]]:
+    """Parse links.csv rows (key_person, link_type, link_url) as strings; unknown cols dropped."""
+    import csv
+    import io
+
+    wanted = ("key_person", "link_type", "link_url")
+    reader = csv.DictReader(io.StringIO(raw.decode("utf-8", errors="replace"), newline=""))
+    return [{k: (row.get(k) or None) for k in wanted} for row in reader]
 
 
 class ChadwickRegister:
@@ -354,17 +365,20 @@ class ChadwickRegister:
     def load(
         cls,
         refresh: bool = False,
-        cache_config: CacheConfig | None = None,
+        cache_config: LakeConfig | None = None,
     ) -> "ChadwickRegister":
         """Load register from local Parquet cache or extract from GitHub shards."""
-        config = cache_config or CacheConfig()
-        parquet_path = config.chadwick_dir / "people.parquet"
-        names_parquet = config.chadwick_dir / "names.parquet"
+        catalog.register_all()
+        config = cache_config or LakeConfig()
+        store = ProcessedStore(config)
+        register_spec = get_dataset("chadwick", "register")
+        names_spec = get_dataset("chadwick", "names")
+        links_spec = get_dataset("chadwick", "links")
 
         extractor = ChadwickExtractor(cache_config=config)
-        if not refresh and parquet_path.exists() and extractor.is_cache_current(refresh=False):
-            table = pq.read_table(parquet_path)
-            names_table = pq.read_table(names_parquet) if names_parquet.exists() else None
+        if not refresh and store.is_cached(register_spec) and extractor.is_cache_current(False):
+            table = store.read_part(register_spec)
+            names_table = store.read_part(names_spec) if store.is_cached(names_spec) else None
             return cls(table, names_table=names_table)
 
         # Extract and normalize
@@ -376,10 +390,17 @@ class ChadwickRegister:
         if "names.csv" in raw_shards:
             names_table = normalizer.normalize_names(raw_shards["names.csv"])
 
-        # Cache as Parquet
+        # Persist as typed Parquet in processed/
         if config.enabled and len(table) > 0:
-            atomic_write_parquet(table, parquet_path)
+            ref = (extractor.manifest.get_chunk("commit_sha") or {}).get("sha") or None
+            store.put(register_spec, table, source_ref=ref)
             if names_table is not None and len(names_table) > 0:
-                atomic_write_parquet(names_table, names_parquet)
+                store.put(names_spec, names_table, source_ref=ref)
+            if "links.csv" in raw_shards:
+                links = pa.Table.from_pylist(
+                    list(_read_links(raw_shards["links.csv"])), schema=links_spec.schema
+                )
+                if len(links) > 0:
+                    store.put(links_spec, links, source_ref=ref)
 
         return cls(table, names_table=names_table)

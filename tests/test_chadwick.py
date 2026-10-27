@@ -6,7 +6,7 @@ import httpx
 import pyarrow as pa
 import respx
 
-from baseballpy.core.config import CacheConfig
+from baseballpy.core.config import LakeConfig
 from baseballpy.sources.chadwick.extractor import (
     CHADWICK_COMMITS_API,
     CHADWICK_DATA_BASE_URL,
@@ -86,7 +86,7 @@ def test_chadwick_register_dataframe_interop() -> None:
 
 @respx.mock
 def test_chadwick_sharded_extractor(tmp_path: Path) -> None:
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
     extractor = ChadwickExtractor(cache_config=cache_config)
 
     sample_csv = FIXTURE_PATH.read_bytes()

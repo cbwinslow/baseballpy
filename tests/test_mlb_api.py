@@ -7,7 +7,7 @@ import pyarrow as pa
 import pytest
 import respx
 
-from baseballpy.core.config import CacheConfig, RateLimitConfig
+from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient
 from baseballpy.sources.mlb_api.api import MlbApiSource
 from baseballpy.sources.mlb_api.extractor import MLB_BASE_URL, MlbApiExtractor
@@ -201,7 +201,7 @@ async def test_gameday_live_streamer_diffing() -> None:
 
 @respx.mock
 def test_mlb_extractor_caching(tmp_path: Path) -> None:
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
     extractor = MlbApiExtractor(cache_config=cache_config)
 
     fake_teams = {
@@ -224,7 +224,7 @@ def test_mlb_extractor_caching(tmp_path: Path) -> None:
     table = extractor.extract_teams()
     assert len(table) == 1
     assert table["team_name"].to_pylist() == ["New York Yankees"]
-    assert extractor.manifest.is_completed("teams_mlb")
+    assert extractor.manifest_for("teams").is_completed("teams_mlb")
 
     # Second fetch reads from cache
     respx.get(f"{MLB_BASE_URL}/v1/teams").mock(return_value=httpx.Response(500))
@@ -234,7 +234,7 @@ def test_mlb_extractor_caching(tmp_path: Path) -> None:
 
 @respx.mock
 def test_mlb_source_orchestrator(tmp_path: Path) -> None:
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
     source = MlbApiSource(cache_config=cache_config)
 
     fake_standings = {

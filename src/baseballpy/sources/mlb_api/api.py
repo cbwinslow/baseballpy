@@ -5,7 +5,7 @@ from typing import Any
 
 import pyarrow as pa
 
-from baseballpy.core.config import CacheConfig
+from baseballpy.core.config import LakeConfig
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.sources.mlb_api.extractor import MlbApiExtractor
 from baseballpy.sources.mlb_api.stream import GamedayLiveStreamer
@@ -14,8 +14,8 @@ from baseballpy.sources.mlb_api.stream import GamedayLiveStreamer
 class MlbApiSource:
     """Orchestrator for MLB Stats API historical and live data extraction."""
 
-    def __init__(self, cache_config: CacheConfig | None = None) -> None:
-        self.cache_config = cache_config or CacheConfig()
+    def __init__(self, cache_config: LakeConfig | None = None) -> None:
+        self.cache_config = cache_config or LakeConfig()
         self.extractor = MlbApiExtractor(cache_config=self.cache_config)
 
     def schedule(

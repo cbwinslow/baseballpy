@@ -1,0 +1,152 @@
+"""Tests for the dataset registry and the raw/processed stores (lake layout v2)."""
+
+import re
+from pathlib import Path
+
+import pyarrow as pa
+import pyarrow.parquet as pq
+import pytest
+
+from baseballpy.core.config import LakeConfig
+from baseballpy.core.datasets import DATASETS, SOURCES, DatasetSpec, get_dataset, register
+from baseballpy.core.sql import quote_ident
+from baseballpy.core.stores import ProcessedStore, RawStore, reprocess
+from baseballpy.sources import catalog
+
+DOCS = Path(__file__).parent.parent / "docs"
+
+
+def _slug(heading: str) -> str:
+    """GitHub-style anchor for a Markdown heading."""
+    text = heading.strip().lower()
+    text = re.sub(r"[^\w\- ]", "", text)
+    return text.replace(" ", "-")
+
+
+def _anchors(doc: Path) -> set[str]:
+    return {
+        _slug(line.lstrip("#"))
+        for line in doc.read_text(encoding="utf-8").splitlines()
+        if line.startswith("#")
+    }
+
+
+def test_registry_is_populated_and_complete() -> None:
+    catalog.register_all()
+    assert len(DATASETS) >= 36
+    assert {d.source for d in DATASETS.values()} == set(SOURCES)
+    views = [d.view for d in DATASETS.values()]
+    assert len(views) == len(set(views))
+    for spec in DATASETS.values():
+        assert spec.key == f"{spec.source}.{spec.name}"
+        assert len(spec.schema) > 0, spec.key
+        assert spec.keys, spec.key
+        assert set(spec.keys) <= set(spec.schema.names), (spec.key, spec.keys)
+        assert quote_ident(spec.view)
+        assert spec.description, spec.key
+
+
+def test_every_endpoint_doc_anchor_exists() -> None:
+    catalog.register_all()
+    missing: list[str] = []
+    for spec in DATASETS.values():
+        doc_path, _, anchor = spec.endpoint_doc.partition("#")
+        doc = DOCS / doc_path
+        assert doc.exists(), (spec.key, spec.endpoint_doc)
+        if anchor not in _anchors(doc):
+            missing.append(f"{spec.key} -> {spec.endpoint_doc}")
+    assert missing == []
+
+
+def test_regular_and_postseason_events_are_distinct_datasets() -> None:
+    catalog.register_all()
+    assert get_dataset("retrosheet", "events").view == "retrosheet_events"
+    assert get_dataset("retrosheet", "events_postseason").view == "retrosheet_events_postseason"
+
+
+def test_register_rejects_conflicts_and_unknown_sources() -> None:
+    catalog.register_all()
+    existing = get_dataset("lahman", "People")
+    assert register(existing) is existing  # identical re-registration is a no-op
+    clash = DatasetSpec(
+        "lahman", "Other", existing.view, pa.schema([("a", pa.int32())]), "none", ("a",), "x", "x"
+    )
+    with pytest.raises(ValueError, match="already used"):
+        register(clash)
+    with pytest.raises(ValueError, match="unknown source"):
+        register(
+            DatasetSpec("nope", "x", "v_x", pa.schema([("a", pa.int32())]), "none", ("a",), "", "")
+        )
+    with pytest.raises(KeyError, match="known:"):
+        get_dataset("lahman", "Nope")
+
+
+def test_raw_store_records_sha_and_detects_tampering(tmp_path: Path) -> None:
+    cfg = LakeConfig(home=tmp_path)
+    raw = RawStore(cfg)
+    path = raw.put("statcast", "pitches", "a.csv", b"x,y\n1,2\n", season=2024, source_ref="abc")
+    assert path == tmp_path / "raw" / "statcast" / "pitches" / "season=2024" / "a.csv"
+    entry = cfg.dataset_manifest("statcast", "pitches", "raw").get_chunk("season=2024/a.csv")
+    assert entry is not None
+    assert entry["bytes"] == 8 and entry["source_ref"] == "abc" and len(entry["sha256"]) == 64
+    assert raw.verify("statcast", "pitches", "a.csv", 2024)
+    assert raw.get("statcast", "pitches", "a.csv", 2024) == b"x,y\n1,2\n"
+    path.write_bytes(b"tampered")
+    assert not raw.verify("statcast", "pitches", "a.csv", 2024)
+    assert list(tmp_path.rglob("*.part")) == []
+
+
+@pytest.mark.parametrize("bad", ["../x", "a/b", "a\\b", ""])
+def test_raw_store_rejects_path_traversal(tmp_path: Path, bad: str) -> None:
+    with pytest.raises(ValueError, match="invalid chunk id"):
+        RawStore(LakeConfig(home=tmp_path)).put("lahman", "People", bad, b"x")
+
+
+def test_processed_store_layout_partitions_and_manifest(tmp_path: Path) -> None:
+    catalog.register_all()
+    cfg = LakeConfig(home=tmp_path)
+    store = ProcessedStore(cfg)
+    spec = get_dataset("retrosheet", "events")
+    table = pa.table({"GAME_ID": ["A", "B"]})
+    path = store.put(spec, table, chunk_id="events", season=2023, source_ref="sha1")
+    assert (
+        path
+        == tmp_path / "processed" / "retrosheet" / "events" / "season=2023" / "part-events.parquet"
+    )
+    assert pq.ParquetFile(path).metadata.num_rows == 2
+    assert store.is_cached(spec, "events", 2023)
+    assert not store.is_cached(spec, "events", 2024)
+    assert store.row_count(spec) == 2
+    entry = cfg.dataset_manifest("retrosheet", "events").get_chunk("season=2023/events")
+    assert entry is not None and entry["records_count"] == 2 and entry["source_ref"] == "sha1"
+    # rerun overwrites deterministically instead of duplicating
+    store.put(spec, pa.table({"GAME_ID": ["C"]}), chunk_id="events", season=2023)
+    assert store.row_count(spec) == 1
+    assert store.read(spec, 2023)["GAME_ID"].to_pylist() == ["C"]
+
+
+def test_processed_store_enforces_partition_contract(tmp_path: Path) -> None:
+    catalog.register_all()
+    store = ProcessedStore(LakeConfig(home=tmp_path))
+    table = pa.table({"a": [1]})
+    with pytest.raises(ValueError, match="season-partitioned"):
+        store.put(get_dataset("statcast", "pitches"), table, chunk_id="x")
+    with pytest.raises(ValueError, match="not season-partitioned"):
+        store.put(get_dataset("lahman", "People"), table, season=2024)
+
+
+def test_reprocess_rebuilds_processed_from_raw_without_network(tmp_path: Path) -> None:
+    catalog.register_all()
+    cfg = LakeConfig(home=tmp_path)
+    spec = get_dataset("retrosheet", "gamelogs")
+    RawStore(cfg).put("retrosheet", "gamelogs", "gl2023.txt", b"a\nb\n", season=2023)
+
+    def parse(raw_dir: Path) -> pa.Table:
+        lines = (raw_dir / "gl2023.txt").read_text().split()
+        return pa.table({"date": lines})
+
+    out = reprocess(spec, 2023, parse, config=cfg, chunk_id="gl2023")
+    assert out.exists()
+    assert ProcessedStore(cfg).read(spec, 2023)["date"].to_pylist() == ["a", "b"]
+    with pytest.raises(FileNotFoundError, match="no raw data"):
+        reprocess(spec, 1999, parse, config=cfg)

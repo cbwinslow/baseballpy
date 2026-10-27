@@ -1,15 +1,19 @@
 """Configuration models for downloaders, cache managers, and sinks powered by Pydantic Settings."""
 
 import os
+import warnings
 from datetime import date
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any, Literal
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from baseballpy.core.freshness import DEFAULT_TTLS, is_fresh
+
+if TYPE_CHECKING:
+    from baseballpy.core.atomic import ManifestTracker
 
 
 def get_default_base_dir() -> Path:
@@ -21,25 +25,38 @@ def get_default_base_dir() -> Path:
     return (Path.home() / ".baseballpy").resolve()
 
 
-class CacheConfig(BaseSettings):
-    """Cache configuration partitioned by data source, loadable via BASEBALLPY_CACHE_* env."""
+LAYOUT_VERSION = 2
+
+_LEGACY_ENV = {
+    "enabled": "BASEBALLPY_CACHE_ENABLED",
+    "ttl_seconds": "BASEBALLPY_CACHE_TTL_SECONDS",
+}
+
+
+class LakeConfig(BaseSettings):
+    """Layout and freshness settings for the local data lake, loadable via BASEBALLPY_* env.
+
+    Layout v2 (``$BASEBALLPY_HOME``): ``raw/``, ``processed/``, ``quarantine/``,
+    ``cache/http/``, ``databases/baseball.duckdb``, ``logs/`` and a ``VERSION`` file.
+    Path helpers never create directories; writers create them when they write.
+    """
 
     model_config = SettingsConfigDict(
-        env_prefix="BASEBALLPY_CACHE_",
+        env_prefix="BASEBALLPY_",
         extra="ignore",
         env_file=".env",
         env_file_encoding="utf-8",
+        populate_by_name=True,
     )
 
-    base_dir: Path = Field(
+    home: Path = Field(
         default_factory=get_default_base_dir,
-        description="Root base directory for baseballpy data and cache",
+        description="Lake root (BASEBALLPY_HOME; default ~/.baseballpy)",
     )
-    enabled: bool = Field(default=True, description="Whether caching is enabled")
+    enabled: bool = Field(default=True, description="Whether persisting to the lake is enabled")
     ttl_seconds: int = Field(
-        default=86400 * 30, description="Time-to-live for cached historical files in seconds"
+        default=86400 * 30, description="Fallback time-to-live for mutable data in seconds"
     )
-
     ttl_overrides: dict[str, int | None] = Field(
         default_factory=dict,
         description="Per-dataset TTL seconds (None = immutable); keys match freshness.DEFAULT_TTLS",
@@ -47,22 +64,110 @@ class CacheConfig(BaseSettings):
     today: date | None = Field(
         default=None, description="Override for 'today' (deterministic tests); None = real date"
     )
+    raw_root_override: Path | None = Field(default=None, description="Override for raw/")
+    processed_root_override: Path | None = Field(
+        default=None, description="Override for processed/"
+    )
+    quarantine_root_override: Path | None = Field(
+        default=None, description="Override for quarantine/"
+    )
+    http_cache_root_override: Path | None = Field(
+        default=None, description="Override for cache/http/"
+    )
+    database_path_override: Path | None = Field(
+        default=None, description="Override for databases/baseball.duckdb"
+    )
 
-    statcast_dir_override: Path | None = Field(
-        default=None, description="Explicit directory override for Statcast cache"
-    )
-    mlb_api_dir_override: Path | None = Field(
-        default=None, description="Explicit directory override for MLB API cache"
-    )
-    retrosheet_dir_override: Path | None = Field(
-        default=None, description="Explicit directory override for Retrosheet cache"
-    )
-    chadwick_dir_override: Path | None = Field(
-        default=None, description="Explicit directory override for Chadwick cache"
-    )
-    lahman_dir_override: Path | None = Field(
-        default=None, description="Explicit directory override for Lahman cache"
-    )
+    def __init__(self, **values: Any) -> None:
+        """Build the config; ``base_dir=`` is accepted as a deprecated alias of ``home=``."""
+        if "base_dir" in values:
+            values.setdefault("home", values.pop("base_dir"))
+        super().__init__(**values)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _legacy_inputs(cls, data: Any) -> Any:
+        """Accept the pre-v2 BASEBALLPY_CACHE_* env vars (deprecated)."""
+        if not isinstance(data, dict):
+            return data
+        values = dict(data)
+        for field, env_name in _LEGACY_ENV.items():
+            if field not in values and (raw := os.getenv(env_name)) is not None:
+                warnings.warn(
+                    f"{env_name} is deprecated; use BASEBALLPY_{field.upper()}",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+                values[field] = raw
+        return values
+
+    @property
+    def base_dir(self) -> Path:
+        """Alias of ``home`` (kept for pre-v2 callers)."""
+        return self.home
+
+    @property
+    def raw_root(self) -> Path:
+        """Root of immutable upstream bytes."""
+        return self.raw_root_override or (self.home / "raw")
+
+    @property
+    def processed_root(self) -> Path:
+        """Root of typed Parquet datasets (the only tier DuckDB views read)."""
+        return self.processed_root_override or (self.home / "processed")
+
+    @property
+    def quarantine_root(self) -> Path:
+        """Root of dead-letter JSONL files."""
+        return self.quarantine_root_override or (self.home / "quarantine")
+
+    @property
+    def http_cache_root(self) -> Path:
+        """ETag/TTL bookkeeping only; always safe to delete."""
+        return self.http_cache_root_override or (self.home / "cache" / "http")
+
+    @property
+    def database_path(self) -> Path:
+        """Location of the DuckDB catalog (views only)."""
+        return self.database_path_override or (self.home / "databases" / "baseball.duckdb")
+
+    @property
+    def version_file(self) -> Path:
+        """Path of the layout ``VERSION`` file."""
+        return self.home / "VERSION"
+
+    def _dir(self, root: Path, source: str, dataset: str, season: int | None, create: bool) -> Path:
+        path = root / source / dataset
+        if season is not None:
+            path = path / f"season={season}"
+        if create:
+            path.mkdir(parents=True, exist_ok=True)
+        return path
+
+    def raw_dir(
+        self, source: str, dataset: str, season: int | None = None, *, create: bool = False
+    ) -> Path:
+        """``raw/<source>/<dataset>/[season=YYYY/]`` (created only when ``create``)."""
+        return self._dir(self.raw_root, source, dataset, season, create)
+
+    def processed_dir(
+        self, source: str, dataset: str, season: int | None = None, *, create: bool = False
+    ) -> Path:
+        """``processed/<source>/<dataset>/[season=YYYY/]`` (created only when ``create``)."""
+        return self._dir(self.processed_root, source, dataset, season, create)
+
+    def dataset_manifest(
+        self, source: str, dataset: str, tier: Literal["raw", "processed"] = "processed"
+    ) -> "ManifestTracker":
+        """Manifest tracker stored at ``<tier>/<source>/<dataset>/manifest.json``."""
+        from baseballpy.core.atomic import ManifestTracker
+
+        root = self.raw_dir if tier == "raw" else self.processed_dir
+        return ManifestTracker(root(source, dataset) / "manifest.json")
+
+    def today_or_now(self) -> date:
+        """The configured ``today`` or the real current date."""
+        return self.today or date.today()
 
     def ttl_for(self, dataset: str) -> int | None:
         """TTL seconds for a dataset family (None = immutable); falls back to ``ttl_seconds``."""
@@ -89,47 +194,18 @@ class CacheConfig(BaseSettings):
             refresh=refresh,
         )
 
-    @property
-    def cache_root(self) -> Path:
-        """Root directory for cached downloads."""
-        path = self.base_dir / "cache"
-        path.mkdir(parents=True, exist_ok=True)
-        return path
 
-    @property
-    def statcast_dir(self) -> Path:
-        """Partitioned cache directory for Statcast."""
-        path = self.statcast_dir_override or (self.cache_root / "statcast")
-        path.mkdir(parents=True, exist_ok=True)
-        return path
+class CacheConfig(LakeConfig):
+    """Deprecated alias of :class:`LakeConfig`; construct ``LakeConfig`` instead."""
 
-    @property
-    def mlb_api_dir(self) -> Path:
-        """Partitioned cache directory for MLB Stats API."""
-        path = self.mlb_api_dir_override or (self.cache_root / "mlb_api")
-        path.mkdir(parents=True, exist_ok=True)
-        return path
-
-    @property
-    def chadwick_dir(self) -> Path:
-        """Partitioned cache directory for Chadwick Register."""
-        path = self.chadwick_dir_override or (self.cache_root / "chadwick")
-        path.mkdir(parents=True, exist_ok=True)
-        return path
-
-    @property
-    def lahman_dir(self) -> Path:
-        """Partitioned cache directory for Lahman database."""
-        path = self.lahman_dir_override or (self.cache_root / "lahman")
-        path.mkdir(parents=True, exist_ok=True)
-        return path
-
-    @property
-    def retrosheet_dir(self) -> Path:
-        """Partitioned cache directory for Retrosheet."""
-        path = self.retrosheet_dir_override or (self.cache_root / "retrosheet")
-        path.mkdir(parents=True, exist_ok=True)
-        return path
+    def __init__(self, **values: Any) -> None:
+        """Warn about the deprecated name, then behave exactly like ``LakeConfig``."""
+        warnings.warn(
+            "CacheConfig is deprecated; use LakeConfig (layout v2)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(**values)
 
 
 class AuditConfig(BaseSettings):
@@ -154,9 +230,7 @@ class AuditConfig(BaseSettings):
     @property
     def log_dir(self) -> Path:
         """Directory for logs."""
-        path = self.log_dir_override or (self.base_dir / "logs")
-        path.mkdir(parents=True, exist_ok=True)
-        return path
+        return self.log_dir_override or (self.base_dir / "logs")
 
     @property
     def audit_file(self) -> Path:
@@ -254,9 +328,7 @@ class QuarantineConfig(BaseSettings):
     @property
     def quarantine_dir(self) -> Path:
         """Directory for persisting unparseable or malformed payloads."""
-        path = self.quarantine_dir_override or (self.base_dir / "quarantine")
-        path.mkdir(parents=True, exist_ok=True)
-        return path
+        return self.quarantine_dir_override or (self.base_dir / "quarantine")
 
 
 class PipelineConfig(BaseSettings):
@@ -269,7 +341,7 @@ class PipelineConfig(BaseSettings):
         env_file_encoding="utf-8",
     )
 
-    cache: CacheConfig = Field(default_factory=CacheConfig)
+    lake: LakeConfig = Field(default_factory=LakeConfig)
     audit: AuditConfig = Field(default_factory=AuditConfig)
     rate_limit: RateLimitConfig = Field(default_factory=RateLimitConfig)
     streaming: StreamingConfig = Field(default_factory=StreamingConfig)

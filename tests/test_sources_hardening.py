@@ -9,7 +9,7 @@ import pytest
 import respx
 
 from baseballpy.core.audit import get_audit_logger
-from baseballpy.core.config import CacheConfig, QuarantineConfig, RateLimitConfig, StreamingConfig
+from baseballpy.core.config import LakeConfig, QuarantineConfig, RateLimitConfig, StreamingConfig
 from baseballpy.core.http import HttpClient
 from baseballpy.core.quarantine import Quarantine
 from baseballpy.sources.chadwick.extractor import (
@@ -64,7 +64,7 @@ def make_csv(rows: int) -> bytes:
 def _statcast(tmp_path: Path, today: date, **cfg: object) -> tuple[StatcastExtractor, HttpClient]:
     rates = fast_rates("baseballsavant.mlb.com")
     http = HttpClient(rates, http2=False)
-    cache = CacheConfig(base_dir=tmp_path / "cache", today=today, **cfg)  # type: ignore[arg-type]
+    cache = LakeConfig(home=tmp_path / "cache", today=today, **cfg)  # type: ignore[arg-type]
     return StatcastExtractor(cache_config=cache, rate_limit_config=rates, http=http), http
 
 
@@ -107,7 +107,7 @@ def test_statcast_single_day_at_cap_raises_and_is_not_cached(
     finally:
         http.close()
     assert list((tmp_path / "cache").rglob("*.parquet")) == []
-    assert extractor.manifest.get_chunk("2024-04-01_2024-04-01") is None
+    assert extractor.manifest.get_chunk("season=2024/2024-04-01_2024-04-01") is None
 
 
 @respx.mock
@@ -196,7 +196,7 @@ def test_statcast_normalizer_quarantines_instead_of_truncating(tmp_path: Path) -
 def _mlb(tmp_path: Path, **cfg: object) -> tuple[MlbApiExtractor, HttpClient]:
     rates = fast_rates("statsapi.mlb.com")
     http = HttpClient(rates, http2=False)
-    cache = CacheConfig(base_dir=tmp_path / "cache", today=date(2026, 6, 1), **cfg)  # type: ignore[arg-type]
+    cache = LakeConfig(home=tmp_path / "cache", today=date(2026, 6, 1), **cfg)  # type: ignore[arg-type]
     return MlbApiExtractor(cache_config=cache, rate_limit_config=rates, http=http), http
 
 
@@ -393,7 +393,7 @@ async def test_streamer_stops_after_inactivity_limit() -> None:
 def _retro(tmp_path: Path) -> tuple[RetrosheetDownloader, HttpClient]:
     rates = fast_rates("raw.githubusercontent.com")
     http = HttpClient(rates, http2=False)
-    cache = CacheConfig(base_dir=tmp_path / "cache")
+    cache = LakeConfig(home=tmp_path / "cache")
     return RetrosheetDownloader(cache_config=cache, rate_limit_config=rates, http=http), http
 
 
@@ -537,10 +537,11 @@ def test_lahman_cache_requires_manifest_completion(tmp_path: Path) -> None:
     rates = fast_rates("raw.githubusercontent.com")
     http = HttpClient(rates, http2=False)
     ext = LahmanExtractor(
-        cache_config=CacheConfig(base_dir=tmp_path / "c"), rate_limit_config=rates, http=http
+        cache_config=LakeConfig(home=tmp_path / "c"), rate_limit_config=rates, http=http
     )
     try:
         # A leftover, never-completed file must NOT be trusted as a cache hit.
+        ext.get_raw_path("Parks").parent.mkdir(parents=True)
         ext.get_raw_path("Parks").write_bytes(b"corrupt partial")
         assert ext.extract_table("Parks") == b"parkkey\nBOS07\n"
         assert ext.extract_table("Parks") == b"parkkey\nBOS07\n"
@@ -574,7 +575,7 @@ def _mock_register(sha: str = "sha1", status: int = 200) -> None:
 def _chadwick(tmp_path: Path, **cfg: object) -> tuple[ChadwickExtractor, HttpClient]:
     rates = fast_rates("raw.githubusercontent.com", "api.github.com")
     http = HttpClient(rates, http2=False)
-    cache = CacheConfig(base_dir=tmp_path / "c", **cfg)  # type: ignore[arg-type]
+    cache = LakeConfig(home=tmp_path / "c", **cfg)  # type: ignore[arg-type]
     return ChadwickExtractor(cache_config=cache, rate_limit_config=rates, http=http), http
 
 

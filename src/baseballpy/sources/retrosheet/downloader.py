@@ -8,7 +8,7 @@ from pathlib import Path
 
 from baseballpy.core.atomic import ManifestTracker, atomic_write, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
-from baseballpy.core.config import CacheConfig, RateLimitConfig
+from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, get_http_client
 
 logger = logging.getLogger(__name__)
@@ -74,25 +74,27 @@ class RetrosheetDownloader:
 
     def __init__(
         self,
-        cache_config: CacheConfig | None = None,
+        cache_config: LakeConfig | None = None,
         rate_limit_config: RateLimitConfig | None = None,
         http: HttpClient | None = None,
     ) -> None:
-        self.cache_config = cache_config or CacheConfig()
+        self.cache_config = cache_config or LakeConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
         self.http = http or (
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
         self.base_url = GITHUB_RETROSHEET_BASE
-        self.raw_dir = self.cache_config.retrosheet_dir / "raw"
-        self.raw_dir.mkdir(parents=True, exist_ok=True)
-        self.manifest = ManifestTracker(self.raw_dir / "manifest.json")
-        cleanup_stale_parts(self.raw_dir)  # discard orphaned .part files from killed runs
+        self.manifest = self.cache_config.dataset_manifest("retrosheet", "event_files", "raw")
+        # discard orphaned .part files from killed runs
+        cleanup_stale_parts(self.cache_config.raw_root / "retrosheet")
 
     def _get_season_dir(self, year: int) -> Path:
-        path = self.raw_dir / str(year)
-        path.mkdir(parents=True, exist_ok=True)
-        return path
+        """``raw/retrosheet/event_files/season=YYYY`` (TEAM, event and postseason files)."""
+        return self.cache_config.raw_dir("retrosheet", "event_files", year, create=True)
+
+    def roster_dir(self, year: int) -> Path:
+        """``raw/retrosheet/rosters/season=YYYY`` (the ``*.ROS`` files)."""
+        return self.cache_config.raw_dir("retrosheet", "rosters", year)
 
     def download_file(
         self, relative_url: str, target_path: Path, refresh: bool = False
@@ -153,6 +155,7 @@ class RetrosheetDownloader:
                 tracker.set_records(0)
                 return []
 
+            roster_dir = self.cache_config.raw_dir("retrosheet", "rosters", year, create=True)
             wanted: list[tuple[str, Path]] = []
             event_paths: list[Path] = []
             roster_paths: list[Path] = []
@@ -167,11 +170,11 @@ class RetrosheetDownloader:
                 event_name = f"{year}{team_code}.{ext}"
                 roster_name = f"{team_code}{year}.ROS"
                 event_paths.append(season_dir / event_name)
-                roster_paths.append(season_dir / roster_name)
+                roster_paths.append(roster_dir / roster_name)
                 if team_code.upper() in OPTIONAL_TEAM_CODES:
-                    optional.update({season_dir / event_name, season_dir / roster_name})
+                    optional.update({season_dir / event_name, roster_dir / roster_name})
                 wanted.append((f"seasons/{year}/{event_name}", season_dir / event_name))
-                wanted.append((f"seasons/{year}/{roster_name}", season_dir / roster_name))
+                wanted.append((f"seasons/{year}/{roster_name}", roster_dir / roster_name))
 
             outcomes = self._download_many(wanted, refresh)
             missing = sorted(
@@ -209,6 +212,7 @@ class RetrosheetDownloader:
 
     def _download_single(
         self,
+        manifest: ManifestTracker,
         chunk_id: str,
         candidates: Sequence[str],
         target_path: Path,
@@ -222,7 +226,7 @@ class RetrosheetDownloader:
             endpoint=f"{self.base_url}/{candidates[0]}",
             destination=str(target_path),
         ) as tracker:
-            if not refresh and self.manifest.is_completed(chunk_id) and target_path.exists():
+            if not refresh and manifest.is_completed(chunk_id) and target_path.exists():
                 tracker.set_cache_hit(True)
                 tracker.set_records(_count_lines(target_path))
                 return target_path
@@ -231,21 +235,21 @@ class RetrosheetDownloader:
                 outcome = self.download_file(candidate, target_path, refresh=refresh)
                 if outcome is not FetchOutcome.ABSENT:
                     lines = _count_lines(target_path)
-                    self.manifest.set_completed(chunk_id, records_count=lines)
+                    manifest.set_completed(chunk_id, records_count=lines)
                     tracker.set_cache_hit(False)
                     tracker.set_records(lines)
                     return target_path
 
-            self.manifest.set_absent(chunk_id, f"none of {list(candidates)} exist upstream")
+            manifest.set_absent(chunk_id, f"none of {list(candidates)} exist upstream")
             raise FileNotFoundError(
                 f"Retrosheet file not found upstream (tried {', '.join(candidates)})"
             )
 
     def download_gamelog(self, year: int, refresh: bool = False) -> Path:
         """Download historical season Game Log GL{year}.TXT (case variants are tried)."""
-        gamelog_dir = self.raw_dir / "gamelogs"
-        gamelog_dir.mkdir(parents=True, exist_ok=True)
+        gamelog_dir = self.cache_config.raw_dir("retrosheet", "gamelogs", create=True)
         return self._download_single(
+            manifest=self.cache_config.dataset_manifest("retrosheet", "gamelogs", "raw"),
             chunk_id=f"gamelog_{year}",
             candidates=[
                 f"seasons/{year}/GL{year}.TXT",
@@ -265,9 +269,9 @@ class RetrosheetDownloader:
             raise ValueError(
                 f"Unknown postseason gamelog kind '{kind}'. Valid kinds: {list(POSTSEASON_GAMELOGS.keys())}"
             )
-        gamelog_dir = self.raw_dir / "gamelogs"
-        gamelog_dir.mkdir(parents=True, exist_ok=True)
+        gamelog_dir = self.cache_config.raw_dir("retrosheet", "gamelogs", create=True)
         return self._download_single(
+            manifest=self.cache_config.dataset_manifest("retrosheet", "gamelogs", "raw"),
             chunk_id=f"gamelog_postseason_{kind.lower()}",
             candidates=[f"gamelog/{filename}"],
             target_path=gamelog_dir / filename,
@@ -282,10 +286,11 @@ class RetrosheetDownloader:
             raise ValueError(
                 f"Unknown reference table '{table_name}'. Valid tables: {list(REFERENCE_TABLES.keys())}"
             )
-        ref_dir = self.raw_dir / "reference"
-        ref_dir.mkdir(parents=True, exist_ok=True)
+        dataset = f"reference_{table_name.lower()}"
+        ref_dir = self.cache_config.raw_dir("retrosheet", dataset, create=True)
         return self._download_single(
-            chunk_id=f"reference_{table_name.lower()}",
+            manifest=self.cache_config.dataset_manifest("retrosheet", dataset, "raw"),
+            chunk_id=dataset,
             candidates=[rel_path],
             target_path=ref_dir / f"{table_name.lower()}.csv",
             operation="retrosheet_download_reference",

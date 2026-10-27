@@ -13,7 +13,8 @@ import pytest
 import respx
 
 from baseballpy.core.atomic import atomic_write
-from baseballpy.core.config import CacheConfig
+from baseballpy.core.config import LakeConfig
+from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.sinks.duckdb import DuckDBSink
 from baseballpy.sinks.polars import PolarsSink
 from baseballpy.sources.mlb_api.api import MlbApiSource
@@ -27,10 +28,14 @@ from baseballpy.sources.statcast.extractor import (
 FIXTURE_PATH = Path(__file__).parent / "fixtures" / "statcast" / "sample_pitches.csv"
 
 
+def _spec(name: str) -> DatasetSpec:
+    return get_dataset("retrosheet", name)
+
+
 @respx.mock
 def test_smoke_retrosheet_multi_season_and_idempotency(tmp_path: Path) -> None:
     """Stress test multi-season Retrosheet download, Chadwick parsing, and zero-loss cache hits."""
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
     source = RetrosheetSource(cache_config=cache_config)
 
     # 1. Setup mock files for seasons 2022 and 2023
@@ -68,15 +73,15 @@ def test_smoke_retrosheet_multi_season_and_idempotency(tmp_path: Path) -> None:
     assert events_2023["GAME_ID"].to_pylist() == ["BOS202304010"]
 
     # 3. Check filesystem separation
-    raw_2022 = cache_config.retrosheet_dir / "raw" / "2022"
-    raw_2023 = cache_config.retrosheet_dir / "raw" / "2023"
-    proc_2022 = cache_config.retrosheet_dir / "processed" / "events" / "season=2022"
-    proc_2023 = cache_config.retrosheet_dir / "processed" / "events" / "season=2023"
+    raw_2022 = cache_config.raw_dir("retrosheet", "event_files", 2022)
+    raw_2023 = cache_config.raw_dir("retrosheet", "event_files", 2023)
+    proc_2022 = cache_config.processed_dir("retrosheet", "events", 2022)
+    proc_2023 = cache_config.processed_dir("retrosheet", "events", 2023)
 
     assert (raw_2022 / "2022BOS.EVA").exists()
     assert (raw_2023 / "2023BOS.EVA").exists()
-    assert (proc_2022 / "events.parquet").exists()
-    assert (proc_2023 / "events.parquet").exists()
+    assert (proc_2022 / "part-events.parquet").exists()
+    assert (proc_2023 / "part-events.parquet").exists()
 
     # 4. Boxscores across both seasons
     bat_22, pitch_22 = source.boxscores(2022)
@@ -85,10 +90,10 @@ def test_smoke_retrosheet_multi_season_and_idempotency(tmp_path: Path) -> None:
     assert len(bat_23) > 0 and len(pitch_23) > 0
 
     # 5. Check manifest checkpoint status
-    assert source.manifest.is_completed("events_2022")
-    assert source.manifest.is_completed("events_2023")
-    assert source.manifest.is_completed("box_batting_2022")
-    assert source.manifest.is_completed("box_pitching_2023")
+    assert source.store.is_cached(_spec("events"), "events", 2022)
+    assert source.store.is_cached(_spec("events"), "events", 2023)
+    assert source.store.is_cached(_spec("boxscores_batting"), "batting", 2022)
+    assert source.store.is_cached(_spec("boxscores_pitching"), "pitching", 2023)
 
     # 6. Idempotency test: Invalidate network endpoints to fail with HTTP 500
     respx.get(f"{GITHUB_RETROSHEET_BASE}/seasons/2022/TEAM2022").mock(
@@ -109,7 +114,7 @@ def test_smoke_retrosheet_multi_season_and_idempotency(tmp_path: Path) -> None:
 @respx.mock
 def test_smoke_statcast_multi_chunk_idempotency_and_manifest(tmp_path: Path) -> None:
     """Stress test Statcast 15-day range split into three 5-day chunks with manifest tracking."""
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
     extractor = StatcastExtractor(cache_config=cache_config, chunk_days=5)
 
     sample_csv = FIXTURE_PATH.read_bytes()
@@ -126,13 +131,13 @@ def test_smoke_statcast_multi_chunk_idempotency_and_manifest(tmp_path: Path) -> 
     assert search_route.call_count == 3
 
     # Check that exactly 3 parquet files exist in cache (season=2024/ partition)
-    parquet_files = sorted(list(cache_config.statcast_dir.glob("**/*.parquet")))
+    parquet_files = sorted(cache_config.processed_dir("statcast", "pitches").rglob("*.parquet"))
     assert len(parquet_files) == 3
 
     # Check manifest records all 3 chunks
     for chunk_file in parquet_files:
-        chunk_name = chunk_file.stem
-        assert extractor.manifest.is_completed(chunk_name)
+        chunk_name = chunk_file.stem.removeprefix("part-")
+        assert extractor.manifest.is_completed(f"season=2024/{chunk_name}")
 
     # Test idempotency: Mock route to return 500 error to ensure network is not touched
     search_route.mock(return_value=httpx.Response(500))
@@ -177,7 +182,7 @@ def test_smoke_atomic_gate_and_error_recovery(tmp_path: Path) -> None:
 @respx.mock
 def test_smoke_cross_source_duckdb_and_polars_pipeline(tmp_path: Path) -> None:
     """Stress test pipeline writing Statcast & MLB API data to DuckDB and Polars sinks."""
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
 
     # 1. Statcast data
     statcast_extractor = StatcastExtractor(cache_config=cache_config, chunk_days=5)

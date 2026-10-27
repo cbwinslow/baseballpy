@@ -161,8 +161,10 @@ class AuditLogger:
         if not self.config.enabled:
             return
         line = self._encoder.encode(event) + b"\n"
-        with self._lock, open(self.log_path, "ab") as f:
-            f.write(line)
+        with self._lock:
+            self.log_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.log_path, "ab") as f:
+                f.write(line)
 
     @contextmanager
     def track(

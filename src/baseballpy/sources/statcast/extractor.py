@@ -10,11 +10,14 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet, cleanup_stale_parts
+from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger, get_audit_logger
-from baseballpy.core.config import CacheConfig, RateLimitConfig
+from baseballpy.core.config import LakeConfig, RateLimitConfig
+from baseballpy.core.datasets import get_dataset
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
+from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
+from baseballpy.sources import catalog
 from baseballpy.sources.statcast.normalizer import StatcastNormalizer
 
 logger = logging.getLogger(__name__)
@@ -57,48 +60,47 @@ class StatcastExtractor:
 
     def __init__(
         self,
-        cache_config: CacheConfig | None = None,
+        cache_config: LakeConfig | None = None,
         rate_limit_config: RateLimitConfig | None = None,
         chunk_days: int = 5,
         http: HttpClient | None = None,
     ) -> None:
-        self.cache_config = cache_config or CacheConfig()
+        catalog.register_all()
+        self.cache_config = cache_config or LakeConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
         self.chunk_days = chunk_days
         self.http = http or (
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
         self.normalizer = StatcastNormalizer()
-        self.manifest = ManifestTracker(self.cache_config.statcast_dir / "manifest.json")
-        cleanup_stale_parts(
-            self.cache_config.statcast_dir
-        )  # discard orphaned .part files from killed runs
+        self.spec = get_dataset("statcast", "pitches")
+        self.store = ProcessedStore(self.cache_config)
+        self.raw = RawStore(self.cache_config)
+        self.manifest = self.cache_config.dataset_manifest("statcast", "pitches")
+        # discard orphaned .part files from killed runs
+        cleanup_stale_parts(self.cache_config.raw_root / "statcast")
+        cleanup_stale_parts(self.cache_config.processed_root / "statcast")
 
     def _today(self) -> date:
         return self.cache_config.today or datetime.now().date()
 
-    def _get_cache_path(self, start_dt: date, end_dt: date, **filters: Any) -> Path:
-        """Derive cache file path for a date chunk with Hive-partitioning by season."""
+    @staticmethod
+    def _chunk_id(start_dt: date, end_dt: date, **filters: Any) -> str:
+        """Deterministic chunk id: ``<start>_<end>[_<filter>-<value>...]``."""
         filter_str = "_".join(f"{k}-{v}" for k, v in sorted(filters.items()) if v is not None)
-        filename = f"{start_dt.isoformat()}_{end_dt.isoformat()}"
-        if filter_str:
-            filename = f"{filename}_{filter_str}"
+        chunk = f"{start_dt.isoformat()}_{end_dt.isoformat()}"
+        return f"{chunk}_{filter_str}" if filter_str else chunk
 
-        # 1. Check legacy flat file for backward compatibility
-        legacy_path = self.cache_config.statcast_dir / f"{filename}.parquet"
-        if legacy_path.exists():
-            return legacy_path
-
-        # 2. Modern Hive-partitioned directory: season=YYYY/
-        season_dir = self.cache_config.statcast_dir / f"season={start_dt.year}"
-        season_dir.mkdir(parents=True, exist_ok=True)
-        return season_dir / f"{filename}.parquet"
+    def _get_cache_path(self, start_dt: date, end_dt: date, **filters: Any) -> Path:
+        """Path of the processed part for a date chunk (``season=YYYY/part-<chunk>.parquet``)."""
+        chunk_id = self._chunk_id(start_dt, end_dt, **filters)
+        return self.store.part_path(self.spec, chunk_id, start_dt.year)
 
     def _is_chunk_fresh(
         self, chunk_id: str, cache_path: Path, start_dt: date, end_dt: date, refresh: bool
     ) -> tuple[bool, int]:
         """Return (fresh, recorded_row_count) per the freshness policy."""
-        entry = self.manifest.get_chunk(chunk_id)
+        entry = self.manifest.get_chunk(manifest_key(chunk_id, start_dt.year))
         if entry is None:
             return False, 0
         rows = int(entry.get("records_count", 0) or 0)
@@ -123,6 +125,15 @@ class StatcastExtractor:
         result = await self.http.get(SAVANT_BASE_URL, params=params)
         table = self.normalizer.normalize(result.content)
         if len(table) < SAVANT_ROW_CAP:
+            if self.cache_config.enabled and len(table) > 0:
+                self.raw.put(
+                    "statcast",
+                    "pitches",
+                    f"{self._chunk_id(start_dt, end_dt, **filters)}.csv",
+                    result.content,
+                    season=start_dt.year,
+                    etag=result.etag or "",
+                )
             return table
         if start_dt >= end_dt:
             raise TruncatedResultError(
@@ -144,7 +155,7 @@ class StatcastExtractor:
     ) -> tuple[pa.Table, bool]:
         """Fetch/normalize one date chunk; returns (table, served_from_cache)."""
         cache_path = self._get_cache_path(start_dt, end_dt, **filters)
-        chunk_id = cache_path.stem
+        chunk_id = self._chunk_id(start_dt, end_dt, **filters)
 
         fresh, rows = self._is_chunk_fresh(chunk_id, cache_path, start_dt, end_dt, refresh)
         if fresh and self.cache_config.enabled:
@@ -156,10 +167,14 @@ class StatcastExtractor:
 
         if self.cache_config.enabled:
             if len(table) > 0:
-                atomic_write_parquet(table, cache_path, compression="snappy")
-            self.manifest.set_completed(
-                chunk_id, records_count=len(table), metadata={"season": start_dt.year}
-            )
+                self.store.put(self.spec, table, chunk_id=chunk_id, season=start_dt.year)
+            else:
+                # zero-row windows are cached via the manifest so they are not re-fetched
+                self.manifest.set_completed(
+                    manifest_key(chunk_id, start_dt.year),
+                    records_count=0,
+                    metadata={"season": start_dt.year},
+                )
 
         return table, False
 
@@ -183,7 +198,7 @@ class StatcastExtractor:
             operation="statcast_extract",
             source="statcast",
             endpoint=SAVANT_BASE_URL,
-            destination=str(self.cache_config.statcast_dir),
+            destination=str(self.store.dataset_dir(self.spec)),
         ) as tracker:
             results = await asyncio.gather(*[_bounded(s, e) for s, e in chunks])
             tables = [table for table, _ in results]

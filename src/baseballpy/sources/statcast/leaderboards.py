@@ -2,18 +2,36 @@
 
 import csv
 import io
+import re
 from pathlib import Path
 from typing import Any
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write_parquet
+from baseballpy.core.atomic import ManifestTracker
 from baseballpy.core.audit import default_audit_logger
-from baseballpy.core.config import CacheConfig, RateLimitConfig
+from baseballpy.core.config import LakeConfig, RateLimitConfig
+from baseballpy.core.datasets import DatasetSpec
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.core.quarantine import safe_array
+from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
+
+
+def leaderboard_spec(name: str, schema: pa.Schema | None = None) -> DatasetSpec:
+    """Unregistered spec for a Savant leaderboard (typed schemas arrive with coverage C-4)."""
+    return DatasetSpec(
+        source="statcast",
+        name=f"leaderboard_{name}",
+        view=f"statcast_leaderboard_{name}",
+        schema=schema or pa.schema([]),
+        partition="season",
+        keys=(),
+        description=f"Baseball Savant {name} leaderboard (schema inferred).",
+        endpoint_doc="sources/statcast.md#2-dedicated-analytical-leaderboards-leaderboard",
+    )
+
 
 SAVANT_BASE = "https://baseballsavant.mlb.com/leaderboard"
 
@@ -163,26 +181,31 @@ class StatcastLeaderboardExtractor:
 
     def __init__(
         self,
-        cache_config: CacheConfig | None = None,
+        cache_config: LakeConfig | None = None,
         rate_limit_config: RateLimitConfig | None = None,
         http: HttpClient | None = None,
     ) -> None:
-        self.cache_config = cache_config or CacheConfig()
+        self.cache_config = cache_config or LakeConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
         self.http = http or (
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
         self.normalizer = StatcastLeaderboardNormalizer()
-        self.cache_dir = self.cache_config.statcast_dir / "leaderboards"
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self.manifest = ManifestTracker(self.cache_dir / "manifest.json")
+        self.store = ProcessedStore(self.cache_config)
+        self.raw = RawStore(self.cache_config)
+
+    @staticmethod
+    def _chunk_id(name: str, year: int, **params: Any) -> str:
+        param_str = "_".join(f"{k}-{v}" for k, v in sorted(params.items()) if v is not None)
+        chunk = f"{name}_{year}"
+        return f"{chunk}_{param_str}" if param_str else chunk
+
+    def _manifest(self, name: str) -> ManifestTracker:
+        return self.cache_config.dataset_manifest("statcast", f"leaderboard_{name}")
 
     def _get_cache_path(self, name: str, year: int, **params: Any) -> Path:
-        param_str = "_".join(f"{k}={v}" for k, v in sorted(params.items()) if v is not None)
-        filename = f"{name}_{year}"
-        if param_str:
-            filename = f"{filename}_{param_str}"
-        return self.cache_dir / f"{filename}.parquet"
+        spec = leaderboard_spec(name)
+        return self.store.part_path(spec, self._chunk_id(name, year, **params), year)
 
     def get_leaderboard(
         self,
@@ -205,10 +228,12 @@ class StatcastLeaderboardExtractor:
             if k not in params and v is not None:
                 params[k] = v
 
-        cache_path = self._get_cache_path(name.lower(), year, **kwargs)
-        chunk_id = cache_path.stem
+        lname = re.sub(r"[^a-z0-9_]+", "_", name.lower())
+        cache_path = self._get_cache_path(lname, year, **kwargs)
+        chunk_id = self._chunk_id(lname, year, **kwargs)
+        manifest = self._manifest(lname)
 
-        entry = self.manifest.get_chunk(chunk_id)
+        entry = manifest.get_chunk(manifest_key(chunk_id, year))
         if cache_path.exists() and self.cache_config.is_fresh(
             entry, "leaderboard", season=year, refresh=refresh
         ):
@@ -229,14 +254,21 @@ class StatcastLeaderboardExtractor:
             endpoint=url,
             destination=str(cache_path),
         ) as tracker:
-            raw_bytes = self.http.get_sync(url, params=params).content
+            result = self.http.get_sync(url, params=params)
+            raw_bytes = result.content
             table = self.normalizer.normalize(raw_bytes)
 
             if self.cache_config.enabled and len(table) > 0:
-                atomic_write_parquet(table, cache_path)
-                self.manifest.set_completed(
-                    chunk_id, records_count=len(table), metadata={"season": year}
+                spec = leaderboard_spec(lname, table.schema)
+                self.raw.put(
+                    "statcast",
+                    spec.name,
+                    f"{chunk_id}.csv",
+                    raw_bytes,
+                    season=year,
+                    etag=result.etag or "",
                 )
+                self.store.put(spec, table, chunk_id=chunk_id, season=year)
 
             tracker.set_cache_hit(False)
             tracker.set_records(len(table))

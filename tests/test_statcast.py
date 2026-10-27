@@ -8,7 +8,7 @@ import pyarrow as pa
 import pytest
 import respx
 
-from baseballpy.core.config import CacheConfig
+from baseballpy.core.config import LakeConfig
 from baseballpy.sources.statcast.extractor import (
     SAVANT_BASE_URL,
     StatcastExtractor,
@@ -82,7 +82,7 @@ def test_statcast_normalizer_preserves_new_columns() -> None:
 
 @respx.mock
 def test_statcast_extractor_mocked(tmp_path: Path) -> None:
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
     extractor = StatcastExtractor(cache_config=cache_config, chunk_days=3)
 
     sample_csv = FIXTURE_PATH.read_bytes()
@@ -94,7 +94,7 @@ def test_statcast_extractor_mocked(tmp_path: Path) -> None:
     assert "game_pk" in table.column_names
 
     # Check cache directory contains parquet files (in season=2024/ partition)
-    cached_files = list(cache_config.statcast_dir.glob("**/*.parquet"))
+    cached_files = list(cache_config.processed_dir("statcast", "pitches").rglob("*.parquet"))
     assert len(cached_files) == 2
 
 
@@ -118,7 +118,7 @@ def test_savant_leaderboards_normalizer() -> None:
 
 @respx.mock
 def test_savant_leaderboards_extractor_mocked(tmp_path: Path) -> None:
-    cache_config = CacheConfig(base_dir=tmp_path)
+    cache_config = LakeConfig(home=tmp_path)
     extractor = StatcastLeaderboardExtractor(cache_config=cache_config)
 
     sample_bat_tracking = (
@@ -137,9 +137,11 @@ def test_savant_leaderboards_extractor_mocked(tmp_path: Path) -> None:
     assert table["id"].to_pylist() == [592450, 660271]
 
     # Verify atomic parquet cache file created and manifest recorded
-    cache_files = list((cache_config.statcast_dir / "leaderboards").glob("*.parquet"))
+    cache_files = list(
+        cache_config.processed_dir("statcast", "leaderboard_bat_tracking").rglob("*.parquet")
+    )
     assert len(cache_files) == 1
-    assert extractor.manifest.is_completed("bat_tracking_2024")
+    assert extractor._manifest("bat_tracking").is_completed("season=2024/bat_tracking_2024")
 
     # Second call should read from parquet cache without network calls
     respx.get(f"{SAVANT_BASE}/bat-tracking").mock(return_value=httpx.Response(500))

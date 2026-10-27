@@ -5,10 +5,11 @@ import concurrent.futures
 import logging
 from pathlib import Path
 
-from baseballpy.core.atomic import ManifestTracker, atomic_write, cleanup_stale_parts
+from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
-from baseballpy.core.config import CacheConfig, RateLimitConfig
+from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, HttpStatusError, TransportError, get_http_client
+from baseballpy.core.stores import RawStore
 
 logger = logging.getLogger(__name__)
 
@@ -26,36 +27,34 @@ class ChadwickExtractor:
 
     def __init__(
         self,
-        cache_config: CacheConfig | None = None,
+        cache_config: LakeConfig | None = None,
         rate_limit_config: RateLimitConfig | None = None,
         http: HttpClient | None = None,
     ) -> None:
-        self.cache_config = cache_config or CacheConfig()
+        self.cache_config = cache_config or LakeConfig()
         self.rate_limit_config = rate_limit_config or RateLimitConfig()
         self.http = http or (
             HttpClient(self.rate_limit_config) if rate_limit_config else get_http_client()
         )
-        self.manifest = ManifestTracker(self.cache_config.chadwick_dir / "manifest.json")
-        cleanup_stale_parts(
-            self.cache_config.chadwick_dir
-        )  # discard orphaned .part files from killed runs
+        self.manifest = self.cache_config.dataset_manifest("chadwick", "register", "raw")
+        self.raw = RawStore(self.cache_config)
+        # discard orphaned .part files from killed runs
+        cleanup_stale_parts(self.cache_config.raw_root / "chadwick")
 
     @property
     def shards_dir(self) -> Path:
-        """Directory holding the individual hex shard CSV files."""
-        path = self.cache_config.chadwick_dir / "shards"
-        path.mkdir(parents=True, exist_ok=True)
-        return path
+        """Directory holding the individual hex shard CSV files (``raw/chadwick/register``)."""
+        return self.cache_config.raw_dir("chadwick", "register")
 
     @property
     def names_file(self) -> Path:
         """Path for cached names.csv (nicknames and aliases)."""
-        return self.cache_config.chadwick_dir / "names.csv"
+        return self.cache_config.raw_dir("chadwick", "names") / "names.csv"
 
     @property
     def links_file(self) -> Path:
         """Path for cached links.csv (external player links)."""
-        return self.cache_config.chadwick_dir / "links.csv"
+        return self.cache_config.raw_dir("chadwick", "links") / "links.csv"
 
     def get_latest_commit_sha(self) -> str | None:
         """Query the GitHub API for the latest commit SHA of the data directory.
@@ -107,14 +106,22 @@ class ChadwickExtractor:
         logger.info("Chadwick register changed upstream (%s); re-downloading", latest)
         return False
 
-    def _download(self, filename: str, target: Path, required: bool) -> bytes | None:
+    def _download(
+        self, filename: str, dataset: str, required: bool, source_ref: str
+    ) -> bytes | None:
         result = self.http.get_sync(
             f"{CHADWICK_DATA_BASE_URL}/{filename}", allow=(200,) if required else (200, 404)
         )
         if result.status == 404:
             return None
-        with atomic_write(target) as part_path:
-            part_path.write_bytes(result.content)
+        self.raw.put(
+            "chadwick",
+            dataset,
+            filename,
+            result.content,
+            source_ref=source_ref or None,
+            etag=result.etag or "",
+        )
         return result.content
 
     def extract(self, refresh: bool = False) -> dict[str, bytes]:
@@ -133,18 +140,16 @@ class ChadwickExtractor:
                 return self._read_cached_files()
 
             latest_sha = self.get_latest_commit_sha()
-            jobs: list[tuple[str, Path, bool]] = [
-                (shard, self.shards_dir / shard, True) for shard in HEX_SHARDS
-            ]
-            jobs.append(("names.csv", self.names_file, False))
-            jobs.append(("links.csv", self.links_file, False))
+            jobs: list[tuple[str, str, bool]] = [(shard, "register", True) for shard in HEX_SHARDS]
+            jobs.append(("names.csv", "names", False))
+            jobs.append(("links.csv", "links", False))
 
             results: dict[str, bytes] = {}
             workers = max(1, self.rate_limit_config.max_concurrency)
             with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
                 futures = {
-                    name: pool.submit(self._download, name, target, required)
-                    for name, target, required in jobs
+                    name: pool.submit(self._download, name, dataset, required, latest_sha or "")
+                    for name, dataset, required in jobs
                 }
                 for name, future in futures.items():
                     content = future.result()
