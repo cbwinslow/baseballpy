@@ -117,7 +117,7 @@ The `StatcastLeaderboard` enum has one member per supported slug (a test compare
 <!-- BEGIN GENERATED:statcast.description_sources -->
 ### Description sources
 
-No column descriptions have been written for this source yet.
+- `savant_csv_docs`: https://baseballsavant.mlb.com/csv-docs
 
 <!-- END GENERATED:statcast.description_sources -->
 
@@ -133,125 +133,125 @@ Pitch-level Statcast search results.
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `game_pk` | int32 | yes | — | TODO |
-| `game_date` | date32[day] | yes | — | TODO |
-| `game_year` | int16 | yes | — | TODO |
-| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `at_bat_number` | int16 | yes | — | TODO |
-| `pitch_number` | int16 | yes | — | TODO |
-| `pitcher` | int32 | yes | — | TODO |
-| `batter` | int32 | yes | — | TODO |
-| `player_name` | string | yes | — | TODO |
-| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `inning` | int8 | yes | — | TODO |
-| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `balls` | int8 | yes | — | TODO |
-| `strikes` | int8 | yes | — | TODO |
-| `outs_when_up` | int8 | yes | — | TODO |
-| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `release_speed` | float | yes | — | TODO |
-| `effective_speed` | float | yes | — | TODO |
+| `game_pk` | int32 | yes | — | Unique Id for Game. (src: savant_csv_docs) |
+| `game_date` | date32[day] | yes | — | Date of the Game. (src: savant_csv_docs) |
+| `game_year` | int16 | yes | — | Year game took place. (src: savant_csv_docs) |
+| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Type of Game. E = Exhibition, S = Spring Training, R = Regular Season, F = Wild Card, D = Divisional Series, L = League Championship Series, W = World Series (src: savant_csv_docs) |
+| `at_bat_number` | int16 | yes | — | Plate appearance number of the game. (src: savant_csv_docs) |
+| `pitch_number` | int16 | yes | — | Total pitch number of the plate appearance. (src: savant_csv_docs) |
+| `pitcher` | int32 | yes | — | MLB Player Id tied to the play event. (src: savant_csv_docs) |
+| `batter` | int32 | yes | — | MLB Player Id tied to the play event. (src: savant_csv_docs) |
+| `player_name` | string | yes | — | Player's name tied to the event of the search. (src: savant_csv_docs) |
+| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Abbreviation of home team. (src: savant_csv_docs) |
+| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Abbreviation of away team. (src: savant_csv_docs) |
+| `inning` | int8 | yes | — | Pre-pitch inning number. (src: savant_csv_docs) |
+| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Pre-pitch top or bottom of inning. (src: savant_csv_docs) |
+| `balls` | int8 | yes | — | Pre-pitch number of balls in count. (src: savant_csv_docs) |
+| `strikes` | int8 | yes | — | Pre-pitch number of strikes in count. (src: savant_csv_docs) |
+| `outs_when_up` | int8 | yes | — | Pre-pitch number of outs. (src: savant_csv_docs) |
+| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | The type of pitch derived from Statcast. (src: savant_csv_docs) |
+| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — | The name of the pitch derived from the Statcast Data. (src: savant_csv_docs) |
+| `release_speed` | float | yes | — | Pitch velocity in MPH. Values from 2008-16 are via PitchFX, and adjusted to roughly out-of-hand release point. All velocities from 2017 and beyond are Statcast, which are reported out-of-hand. All velocities are thus on the same scale. (src: savant_csv_docs) |
+| `effective_speed` | float | yes | — | Derived speed based on the the extension of the pitcher's release. (src: savant_csv_docs) |
 | `release_spin_rate` | float | yes | — | TODO |
-| `release_extension` | float | yes | — | TODO |
-| `spin_axis` | float | yes | — | TODO |
-| `release_pos_x` | float | yes | — | TODO |
-| `release_pos_y` | float | yes | — | TODO |
-| `release_pos_z` | float | yes | — | TODO |
-| `arm_angle` | float | yes | — | TODO |
-| `zone` | int8 | yes | — | TODO |
-| `plate_x` | float | yes | — | TODO |
-| `plate_z` | float | yes | — | TODO |
-| `sz_top` | float | yes | — | TODO |
-| `sz_bot` | float | yes | — | TODO |
-| `pfx_x` | float | yes | — | TODO |
-| `pfx_z` | float | yes | — | TODO |
-| `vx0` | float | yes | — | TODO |
-| `vy0` | float | yes | — | TODO |
+| `release_extension` | float | yes | — | Release extension of pitch in feet as tracked by Statcast. (src: savant_csv_docs) |
+| `spin_axis` | float | yes | — | The Spin Axis in the 2D X-Z plane in degrees from 0 to 360, such that 180 represents a pure backspin fastball and 0 degrees represents a pure topspin (12-6) curveball (src: savant_csv_docs) |
+| `release_pos_x` | float | yes | — | Horizontal Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `release_pos_y` | float | yes | — | Release position of pitch measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `release_pos_z` | float | yes | — | Vertical Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `arm_angle` | float | yes | — | The angle between a line parallel to the ground and a l line extending from the location of the pitcher's throwing shoulder and the location of the ball at the time of the pitch. (src: savant_csv_docs) |
+| `zone` | int8 | yes | — | Zone location of the ball when it crosses the plate from the catcher's perspective. (src: savant_csv_docs) |
+| `plate_x` | float | yes | — | Horizontal position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
+| `plate_z` | float | yes | — | Vertical position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
+| `sz_top` | float | yes | — | Top of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, top of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the top of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
+| `sz_bot` | float | yes | — | Bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the bottom of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
+| `pfx_x` | float | yes | — | Horizontal movement in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `pfx_z` | float | yes | — | Vertical movement in feet from the catcher's perpsective. (src: savant_csv_docs) |
+| `vx0` | float | yes | — | The velocity of the pitch, in feet per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `vy0` | float | yes | — | The velocity of the pitch, in feet per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
 | `vz0` | float | yes | — | TODO |
-| `ax` | float | yes | — | TODO |
-| `ay` | float | yes | — | TODO |
-| `az` | float | yes | — | TODO |
-| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `des` | string | yes | — | TODO |
-| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `hit_location` | int8 | yes | — | TODO |
-| `launch_speed` | float | yes | — | TODO |
-| `launch_angle` | float | yes | — | TODO |
-| `launch_speed_angle` | int8 | yes | — | TODO |
+| `ax` | float | yes | — | The acceleration of the pitch, in feet per second per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `ay` | float | yes | — | The acceleration of the pitch, in feet per second per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `az` | float | yes | — | The acceleration of the pitch, in feet per second per second, in z-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Side of the plate batter is standing. (src: savant_csv_docs) |
+| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Hand pitcher throws with. (src: savant_csv_docs) |
+| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Short hand of pitch result. B = ball, S = strike, X = in play. (src: savant_csv_docs) |
+| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Event of the resulting Plate Appearance. (src: savant_csv_docs) |
+| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Description of the resulting pitch. (src: savant_csv_docs) |
+| `des` | string | yes | — | Plate appearance description from game day. (src: savant_csv_docs) |
+| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Batted ball type, ground_ball, line_drive, fly_ball, popup. (src: savant_csv_docs) |
+| `hit_location` | int8 | yes | — | Position of first fielder to touch the ball. (src: savant_csv_docs) |
+| `launch_speed` | float | yes | — | Exit velocity of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
+| `launch_angle` | float | yes | — | Launch angle of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
+| `launch_speed_angle` | int8 | yes | — | Launch speed/angle zone based on launch angle and exit velocity. Weak Topped Under Flare/Burner Solid Contact Barrel (src: savant_csv_docs) |
 | `hit_distance_sc` | float | yes | — | TODO |
-| `hc_x` | float | yes | — | TODO |
-| `hc_y` | float | yes | — | TODO |
+| `hc_x` | float | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
+| `hc_y` | float | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
 | `bat_speed` | float | yes | — | TODO |
 | `swing_length` | float | yes | — | TODO |
-| `estimated_ba_using_speedangle` | float | yes | — | TODO |
-| `estimated_woba_using_speedangle` | float | yes | — | TODO |
-| `woba_value` | float | yes | — | TODO |
-| `woba_denom` | float | yes | — | TODO |
-| `babip_value` | float | yes | — | TODO |
-| `iso_value` | float | yes | — | TODO |
-| `delta_home_win_exp` | float | yes | — | TODO |
-| `delta_run_exp` | float | yes | — | TODO |
-| `on_1b` | int32 | yes | — | TODO |
-| `on_2b` | int32 | yes | — | TODO |
-| `on_3b` | int32 | yes | — | TODO |
-| `home_score` | int16 | yes | — | TODO |
-| `away_score` | int16 | yes | — | TODO |
-| `bat_score` | int16 | yes | — | TODO |
-| `fld_score` | int16 | yes | — | TODO |
-| `post_home_score` | int16 | yes | — | TODO |
-| `post_away_score` | int16 | yes | — | TODO |
-| `post_bat_score` | int16 | yes | — | TODO |
+| `estimated_ba_using_speedangle` | float | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
+| `estimated_woba_using_speedangle` | float | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
+| `woba_value` | float | yes | — | wOBA value based on result of play. (src: savant_csv_docs) |
+| `woba_denom` | float | yes | — | wOBA denominator based on result of play. (src: savant_csv_docs) |
+| `babip_value` | float | yes | — | BABIP value based on result of play. (src: savant_csv_docs) |
+| `iso_value` | float | yes | — | ISO value based on result of play. (src: savant_csv_docs) |
+| `delta_home_win_exp` | float | yes | — | The change in Win Expectancy before the Plate Appearance and after the Plate Appearance (src: savant_csv_docs) |
+| `delta_run_exp` | float | yes | — | The change in Run Expectancy before the Pitch and after the Pitch (src: savant_csv_docs) |
+| `on_1b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 1B. (src: savant_csv_docs) |
+| `on_2b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 2B. (src: savant_csv_docs) |
+| `on_3b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 3B. (src: savant_csv_docs) |
+| `home_score` | int16 | yes | — | Pre-pitch home score (src: savant_csv_docs) |
+| `away_score` | int16 | yes | — | Pre-pitch away score (src: savant_csv_docs) |
+| `bat_score` | int16 | yes | — | Pre-pitch bat team score (src: savant_csv_docs) |
+| `fld_score` | int16 | yes | — | Pre-pitch field team score (src: savant_csv_docs) |
+| `post_home_score` | int16 | yes | — | Post-pitch home score (src: savant_csv_docs) |
+| `post_away_score` | int16 | yes | — | Post-pitch away score (src: savant_csv_docs) |
+| `post_bat_score` | int16 | yes | — | Post-pitch bat team score (src: savant_csv_docs) |
 | `post_fld_score` | int16 | yes | — | TODO |
-| `fielder_2` | int32 | yes | — | TODO |
-| `fielder_3` | int32 | yes | — | TODO |
-| `fielder_4` | int32 | yes | — | TODO |
-| `fielder_5` | int32 | yes | — | TODO |
-| `fielder_6` | int32 | yes | — | TODO |
-| `fielder_7` | int32 | yes | — | TODO |
-| `fielder_8` | int32 | yes | — | TODO |
-| `fielder_9` | int32 | yes | — | TODO |
-| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `spin_dir` | string | yes | — | TODO |
-| `spin_rate_deprecated` | string | yes | — | TODO |
-| `break_angle_deprecated` | string | yes | — | TODO |
-| `break_length_deprecated` | string | yes | — | TODO |
-| `tfs_deprecated` | string | yes | — | TODO |
-| `tfs_zulu_deprecated` | string | yes | — | TODO |
-| `umpire` | string | yes | — | TODO |
-| `sv_id` | string | yes | — | TODO |
+| `fielder_2` | int32 | yes | — | Pre-pitch MLB Player Id of Catcher. (src: savant_csv_docs) |
+| `fielder_3` | int32 | yes | — | MLB Player Id for 1B. (src: savant_csv_docs) |
+| `fielder_4` | int32 | yes | — | MLB Player Id for 2B. (src: savant_csv_docs) |
+| `fielder_5` | int32 | yes | — | MLB Player Id for 3B. (src: savant_csv_docs) |
+| `fielder_6` | int32 | yes | — | MLB Player Id for SS. (src: savant_csv_docs) |
+| `fielder_7` | int32 | yes | — | MLB Player Id for LF. (src: savant_csv_docs) |
+| `fielder_8` | int32 | yes | — | MLB Player Id for CF. (src: savant_csv_docs) |
+| `fielder_9` | int32 | yes | — | MLB Player Id for RF. (src: savant_csv_docs) |
+| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Infield fielding alignment at the time of the pitch. (src: savant_csv_docs) |
+| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Outfield fielding alignment at the time of the pitch. (src: savant_csv_docs) |
+| `spin_dir` | string | yes | — | * Deprecated field from the old tracking system. (src: savant_csv_docs) |
+| `spin_rate_deprecated` | string | yes | — | * Deprecated field from the old tracking system. Replaced by release_spin (src: savant_csv_docs) |
+| `break_angle_deprecated` | string | yes | — | * Deprecated field from the old tracking system. (src: savant_csv_docs) |
+| `break_length_deprecated` | string | yes | — | * Deprecated field from the old tracking system. (src: savant_csv_docs) |
+| `tfs_deprecated` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
+| `tfs_zulu_deprecated` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
+| `umpire` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
+| `sv_id` | string | yes | — | Non-unique Id of play event per game. (src: savant_csv_docs) |
 | `miss_distance` | float | yes | — | TODO |
 | `estimated_slg_using_speedangle` | float | yes | — | TODO |
 | `delta_pitcher_run_exp` | float | yes | — | TODO |
-| `hyper_speed` | float | yes | — | TODO |
-| `home_score_diff` | int16 | yes | — | TODO |
-| `bat_score_diff` | int16 | yes | — | TODO |
-| `home_win_exp` | float | yes | — | TODO |
-| `bat_win_exp` | float | yes | — | TODO |
-| `age_pit_legacy` | int16 | yes | — | TODO |
-| `age_bat_legacy` | int16 | yes | — | TODO |
-| `age_pit` | int16 | yes | — | TODO |
-| `age_bat` | int16 | yes | — | TODO |
-| `n_thruorder_pitcher` | int16 | yes | — | TODO |
-| `n_priorpa_thisgame_player_at_bat` | int16 | yes | — | TODO |
-| `pitcher_days_since_prev_game` | int16 | yes | — | TODO |
-| `batter_days_since_prev_game` | int16 | yes | — | TODO |
-| `pitcher_days_until_next_game` | int16 | yes | — | TODO |
-| `batter_days_until_next_game` | int16 | yes | — | TODO |
-| `api_break_z_with_gravity` | float | yes | — | TODO |
-| `api_break_x_arm` | float | yes | — | TODO |
-| `api_break_x_batter_in` | float | yes | — | TODO |
-| `attack_angle` | float | yes | — | TODO |
-| `attack_direction` | float | yes | — | TODO |
-| `swing_path_tilt` | float | yes | — | TODO |
-| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — | TODO |
-| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — | TODO |
+| `hyper_speed` | float | yes | — | Savant display name: Adjusted EV. Adjusted Exit Velocity sets every batted ball hit below 88 mph as 88 mph, otherwise it uses the actual Exit Velocity (src: savant_csv_docs) |
+| `home_score_diff` | int16 | yes | — | Home score minus Away score (src: savant_csv_docs) |
+| `bat_score_diff` | int16 | yes | — | Batting team score less Pitching team score (src: savant_csv_docs) |
+| `home_win_exp` | float | yes | — | Home team win expectancy (src: savant_csv_docs) |
+| `bat_win_exp` | float | yes | — | Bat team win expectancy (src: savant_csv_docs) |
+| `age_pit_legacy` | int16 | yes | — | pitcher age on 6/30 (src: savant_csv_docs) |
+| `age_bat_legacy` | int16 | yes | — | batter age on 6/30 (src: savant_csv_docs) |
+| `age_pit` | int16 | yes | — | pitcher age on 12/31 (src: savant_csv_docs) |
+| `age_bat` | int16 | yes | — | batter age on 12/31 (src: savant_csv_docs) |
+| `n_thruorder_pitcher` | int16 | yes | — | pitcher times through the order (src: savant_csv_docs) |
+| `n_priorpa_thisgame_player_at_bat` | int16 | yes | — | number of prior PAs in this game for this batter (src: savant_csv_docs) |
+| `pitcher_days_since_prev_game` | int16 | yes | — | number of days since pitcher's last game (src: savant_csv_docs) |
+| `batter_days_since_prev_game` | int16 | yes | — | number of days since batter's last game (src: savant_csv_docs) |
+| `pitcher_days_until_next_game` | int16 | yes | — | number of days until the pitcher's next game (src: savant_csv_docs) |
+| `batter_days_until_next_game` | int16 | yes | — | number of days until the batter's next game (src: savant_csv_docs) |
+| `api_break_z_with_gravity` | float | yes | — | Vertical break with gravity included (src: savant_csv_docs) |
+| `api_break_x_arm` | float | yes | — | Break, in inches, of a pitch to the pitcher's arm side. (src: savant_csv_docs) |
+| `api_break_x_batter_in` | float | yes | — | Break, in inches, of a pitch toward the batter's side of plate. (src: savant_csv_docs) |
+| `attack_angle` | float | yes | — | Attack Angle measures the vertical angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to the ground. (src: savant_csv_docs) |
+| `attack_direction` | float | yes | — | Attack Direction measures the horizontal angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to a line from home plate to straightaway center field. (src: savant_csv_docs) |
+| `swing_path_tilt` | float | yes | — | The vertical angular orientation of the "plane" of the swing, as compared to the ground, defined by the path of the bat in the 40 ms prior to contact, which approximates a slice of a flat disc in shape. (src: savant_csv_docs) |
+| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the X (horizontal) direction. (src: savant_csv_docs) |
+| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the Y (mound-to-plate) direction. (src: savant_csv_docs) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.pitches -->
@@ -1483,125 +1483,125 @@ Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `game_pk` | int32 | yes | — | TODO |
-| `game_date` | date32[day] | yes | — | TODO |
-| `game_year` | int16 | yes | — | TODO |
-| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `at_bat_number` | int16 | yes | — | TODO |
-| `pitch_number` | int16 | yes | — | TODO |
-| `pitcher` | int32 | yes | — | TODO |
-| `batter` | int32 | yes | — | TODO |
-| `player_name` | string | yes | — | TODO |
-| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `inning` | int8 | yes | — | TODO |
-| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `balls` | int8 | yes | — | TODO |
-| `strikes` | int8 | yes | — | TODO |
-| `outs_when_up` | int8 | yes | — | TODO |
-| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `release_speed` | float | yes | — | TODO |
-| `effective_speed` | float | yes | — | TODO |
+| `game_pk` | int32 | yes | — | Unique Id for Game. (src: savant_csv_docs) |
+| `game_date` | date32[day] | yes | — | Date of the Game. (src: savant_csv_docs) |
+| `game_year` | int16 | yes | — | Year game took place. (src: savant_csv_docs) |
+| `game_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Type of Game. E = Exhibition, S = Spring Training, R = Regular Season, F = Wild Card, D = Divisional Series, L = League Championship Series, W = World Series (src: savant_csv_docs) |
+| `at_bat_number` | int16 | yes | — | Plate appearance number of the game. (src: savant_csv_docs) |
+| `pitch_number` | int16 | yes | — | Total pitch number of the plate appearance. (src: savant_csv_docs) |
+| `pitcher` | int32 | yes | — | MLB Player Id tied to the play event. (src: savant_csv_docs) |
+| `batter` | int32 | yes | — | MLB Player Id tied to the play event. (src: savant_csv_docs) |
+| `player_name` | string | yes | — | Player's name tied to the event of the search. (src: savant_csv_docs) |
+| `home_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Abbreviation of home team. (src: savant_csv_docs) |
+| `away_team` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Abbreviation of away team. (src: savant_csv_docs) |
+| `inning` | int8 | yes | — | Pre-pitch inning number. (src: savant_csv_docs) |
+| `inning_topbot` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Pre-pitch top or bottom of inning. (src: savant_csv_docs) |
+| `balls` | int8 | yes | — | Pre-pitch number of balls in count. (src: savant_csv_docs) |
+| `strikes` | int8 | yes | — | Pre-pitch number of strikes in count. (src: savant_csv_docs) |
+| `outs_when_up` | int8 | yes | — | Pre-pitch number of outs. (src: savant_csv_docs) |
+| `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | The type of pitch derived from Statcast. (src: savant_csv_docs) |
+| `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — | The name of the pitch derived from the Statcast Data. (src: savant_csv_docs) |
+| `release_speed` | float | yes | — | Pitch velocity in MPH. Values from 2008-16 are via PitchFX, and adjusted to roughly out-of-hand release point. All velocities from 2017 and beyond are Statcast, which are reported out-of-hand. All velocities are thus on the same scale. (src: savant_csv_docs) |
+| `effective_speed` | float | yes | — | Derived speed based on the the extension of the pitcher's release. (src: savant_csv_docs) |
 | `release_spin_rate` | float | yes | — | TODO |
-| `release_extension` | float | yes | — | TODO |
-| `spin_axis` | float | yes | — | TODO |
-| `release_pos_x` | float | yes | — | TODO |
-| `release_pos_y` | float | yes | — | TODO |
-| `release_pos_z` | float | yes | — | TODO |
-| `arm_angle` | float | yes | — | TODO |
-| `zone` | int8 | yes | — | TODO |
-| `plate_x` | float | yes | — | TODO |
-| `plate_z` | float | yes | — | TODO |
-| `sz_top` | float | yes | — | TODO |
-| `sz_bot` | float | yes | — | TODO |
-| `pfx_x` | float | yes | — | TODO |
-| `pfx_z` | float | yes | — | TODO |
-| `vx0` | float | yes | — | TODO |
-| `vy0` | float | yes | — | TODO |
+| `release_extension` | float | yes | — | Release extension of pitch in feet as tracked by Statcast. (src: savant_csv_docs) |
+| `spin_axis` | float | yes | — | The Spin Axis in the 2D X-Z plane in degrees from 0 to 360, such that 180 represents a pure backspin fastball and 0 degrees represents a pure topspin (12-6) curveball (src: savant_csv_docs) |
+| `release_pos_x` | float | yes | — | Horizontal Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `release_pos_y` | float | yes | — | Release position of pitch measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `release_pos_z` | float | yes | — | Vertical Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `arm_angle` | float | yes | — | The angle between a line parallel to the ground and a l line extending from the location of the pitcher's throwing shoulder and the location of the ball at the time of the pitch. (src: savant_csv_docs) |
+| `zone` | int8 | yes | — | Zone location of the ball when it crosses the plate from the catcher's perspective. (src: savant_csv_docs) |
+| `plate_x` | float | yes | — | Horizontal position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
+| `plate_z` | float | yes | — | Vertical position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
+| `sz_top` | float | yes | — | Top of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, top of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the top of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
+| `sz_bot` | float | yes | — | Bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the bottom of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
+| `pfx_x` | float | yes | — | Horizontal movement in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `pfx_z` | float | yes | — | Vertical movement in feet from the catcher's perpsective. (src: savant_csv_docs) |
+| `vx0` | float | yes | — | The velocity of the pitch, in feet per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `vy0` | float | yes | — | The velocity of the pitch, in feet per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
 | `vz0` | float | yes | — | TODO |
-| `ax` | float | yes | — | TODO |
-| `ay` | float | yes | — | TODO |
-| `az` | float | yes | — | TODO |
-| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `des` | string | yes | — | TODO |
-| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `hit_location` | int8 | yes | — | TODO |
-| `launch_speed` | float | yes | — | TODO |
-| `launch_angle` | float | yes | — | TODO |
-| `launch_speed_angle` | int8 | yes | — | TODO |
+| `ax` | float | yes | — | The acceleration of the pitch, in feet per second per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `ay` | float | yes | — | The acceleration of the pitch, in feet per second per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `az` | float | yes | — | The acceleration of the pitch, in feet per second per second, in z-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Side of the plate batter is standing. (src: savant_csv_docs) |
+| `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Hand pitcher throws with. (src: savant_csv_docs) |
+| `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Short hand of pitch result. B = ball, S = strike, X = in play. (src: savant_csv_docs) |
+| `events` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Event of the resulting Plate Appearance. (src: savant_csv_docs) |
+| `description` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Description of the resulting pitch. (src: savant_csv_docs) |
+| `des` | string | yes | — | Plate appearance description from game day. (src: savant_csv_docs) |
+| `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Batted ball type, ground_ball, line_drive, fly_ball, popup. (src: savant_csv_docs) |
+| `hit_location` | int8 | yes | — | Position of first fielder to touch the ball. (src: savant_csv_docs) |
+| `launch_speed` | float | yes | — | Exit velocity of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
+| `launch_angle` | float | yes | — | Launch angle of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
+| `launch_speed_angle` | int8 | yes | — | Launch speed/angle zone based on launch angle and exit velocity. Weak Topped Under Flare/Burner Solid Contact Barrel (src: savant_csv_docs) |
 | `hit_distance_sc` | float | yes | — | TODO |
-| `hc_x` | float | yes | — | TODO |
-| `hc_y` | float | yes | — | TODO |
+| `hc_x` | float | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
+| `hc_y` | float | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
 | `bat_speed` | float | yes | — | TODO |
 | `swing_length` | float | yes | — | TODO |
-| `estimated_ba_using_speedangle` | float | yes | — | TODO |
-| `estimated_woba_using_speedangle` | float | yes | — | TODO |
-| `woba_value` | float | yes | — | TODO |
-| `woba_denom` | float | yes | — | TODO |
-| `babip_value` | float | yes | — | TODO |
-| `iso_value` | float | yes | — | TODO |
-| `delta_home_win_exp` | float | yes | — | TODO |
-| `delta_run_exp` | float | yes | — | TODO |
-| `on_1b` | int32 | yes | — | TODO |
-| `on_2b` | int32 | yes | — | TODO |
-| `on_3b` | int32 | yes | — | TODO |
-| `home_score` | int16 | yes | — | TODO |
-| `away_score` | int16 | yes | — | TODO |
-| `bat_score` | int16 | yes | — | TODO |
-| `fld_score` | int16 | yes | — | TODO |
-| `post_home_score` | int16 | yes | — | TODO |
-| `post_away_score` | int16 | yes | — | TODO |
-| `post_bat_score` | int16 | yes | — | TODO |
+| `estimated_ba_using_speedangle` | float | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
+| `estimated_woba_using_speedangle` | float | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
+| `woba_value` | float | yes | — | wOBA value based on result of play. (src: savant_csv_docs) |
+| `woba_denom` | float | yes | — | wOBA denominator based on result of play. (src: savant_csv_docs) |
+| `babip_value` | float | yes | — | BABIP value based on result of play. (src: savant_csv_docs) |
+| `iso_value` | float | yes | — | ISO value based on result of play. (src: savant_csv_docs) |
+| `delta_home_win_exp` | float | yes | — | The change in Win Expectancy before the Plate Appearance and after the Plate Appearance (src: savant_csv_docs) |
+| `delta_run_exp` | float | yes | — | The change in Run Expectancy before the Pitch and after the Pitch (src: savant_csv_docs) |
+| `on_1b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 1B. (src: savant_csv_docs) |
+| `on_2b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 2B. (src: savant_csv_docs) |
+| `on_3b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 3B. (src: savant_csv_docs) |
+| `home_score` | int16 | yes | — | Pre-pitch home score (src: savant_csv_docs) |
+| `away_score` | int16 | yes | — | Pre-pitch away score (src: savant_csv_docs) |
+| `bat_score` | int16 | yes | — | Pre-pitch bat team score (src: savant_csv_docs) |
+| `fld_score` | int16 | yes | — | Pre-pitch field team score (src: savant_csv_docs) |
+| `post_home_score` | int16 | yes | — | Post-pitch home score (src: savant_csv_docs) |
+| `post_away_score` | int16 | yes | — | Post-pitch away score (src: savant_csv_docs) |
+| `post_bat_score` | int16 | yes | — | Post-pitch bat team score (src: savant_csv_docs) |
 | `post_fld_score` | int16 | yes | — | TODO |
-| `fielder_2` | int32 | yes | — | TODO |
-| `fielder_3` | int32 | yes | — | TODO |
-| `fielder_4` | int32 | yes | — | TODO |
-| `fielder_5` | int32 | yes | — | TODO |
-| `fielder_6` | int32 | yes | — | TODO |
-| `fielder_7` | int32 | yes | — | TODO |
-| `fielder_8` | int32 | yes | — | TODO |
-| `fielder_9` | int32 | yes | — | TODO |
-| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | TODO |
-| `spin_dir` | string | yes | — | TODO |
-| `spin_rate_deprecated` | string | yes | — | TODO |
-| `break_angle_deprecated` | string | yes | — | TODO |
-| `break_length_deprecated` | string | yes | — | TODO |
-| `tfs_deprecated` | string | yes | — | TODO |
-| `tfs_zulu_deprecated` | string | yes | — | TODO |
-| `umpire` | string | yes | — | TODO |
-| `sv_id` | string | yes | — | TODO |
+| `fielder_2` | int32 | yes | — | Pre-pitch MLB Player Id of Catcher. (src: savant_csv_docs) |
+| `fielder_3` | int32 | yes | — | MLB Player Id for 1B. (src: savant_csv_docs) |
+| `fielder_4` | int32 | yes | — | MLB Player Id for 2B. (src: savant_csv_docs) |
+| `fielder_5` | int32 | yes | — | MLB Player Id for 3B. (src: savant_csv_docs) |
+| `fielder_6` | int32 | yes | — | MLB Player Id for SS. (src: savant_csv_docs) |
+| `fielder_7` | int32 | yes | — | MLB Player Id for LF. (src: savant_csv_docs) |
+| `fielder_8` | int32 | yes | — | MLB Player Id for CF. (src: savant_csv_docs) |
+| `fielder_9` | int32 | yes | — | MLB Player Id for RF. (src: savant_csv_docs) |
+| `if_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Infield fielding alignment at the time of the pitch. (src: savant_csv_docs) |
+| `of_fielding_alignment` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Outfield fielding alignment at the time of the pitch. (src: savant_csv_docs) |
+| `spin_dir` | string | yes | — | * Deprecated field from the old tracking system. (src: savant_csv_docs) |
+| `spin_rate_deprecated` | string | yes | — | * Deprecated field from the old tracking system. Replaced by release_spin (src: savant_csv_docs) |
+| `break_angle_deprecated` | string | yes | — | * Deprecated field from the old tracking system. (src: savant_csv_docs) |
+| `break_length_deprecated` | string | yes | — | * Deprecated field from the old tracking system. (src: savant_csv_docs) |
+| `tfs_deprecated` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
+| `tfs_zulu_deprecated` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
+| `umpire` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
+| `sv_id` | string | yes | — | Non-unique Id of play event per game. (src: savant_csv_docs) |
 | `miss_distance` | float | yes | — | TODO |
 | `estimated_slg_using_speedangle` | float | yes | — | TODO |
 | `delta_pitcher_run_exp` | float | yes | — | TODO |
-| `hyper_speed` | float | yes | — | TODO |
-| `home_score_diff` | int16 | yes | — | TODO |
-| `bat_score_diff` | int16 | yes | — | TODO |
-| `home_win_exp` | float | yes | — | TODO |
-| `bat_win_exp` | float | yes | — | TODO |
-| `age_pit_legacy` | int16 | yes | — | TODO |
-| `age_bat_legacy` | int16 | yes | — | TODO |
-| `age_pit` | int16 | yes | — | TODO |
-| `age_bat` | int16 | yes | — | TODO |
-| `n_thruorder_pitcher` | int16 | yes | — | TODO |
-| `n_priorpa_thisgame_player_at_bat` | int16 | yes | — | TODO |
-| `pitcher_days_since_prev_game` | int16 | yes | — | TODO |
-| `batter_days_since_prev_game` | int16 | yes | — | TODO |
-| `pitcher_days_until_next_game` | int16 | yes | — | TODO |
-| `batter_days_until_next_game` | int16 | yes | — | TODO |
-| `api_break_z_with_gravity` | float | yes | — | TODO |
-| `api_break_x_arm` | float | yes | — | TODO |
-| `api_break_x_batter_in` | float | yes | — | TODO |
-| `attack_angle` | float | yes | — | TODO |
-| `attack_direction` | float | yes | — | TODO |
-| `swing_path_tilt` | float | yes | — | TODO |
-| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — | TODO |
-| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — | TODO |
+| `hyper_speed` | float | yes | — | Savant display name: Adjusted EV. Adjusted Exit Velocity sets every batted ball hit below 88 mph as 88 mph, otherwise it uses the actual Exit Velocity (src: savant_csv_docs) |
+| `home_score_diff` | int16 | yes | — | Home score minus Away score (src: savant_csv_docs) |
+| `bat_score_diff` | int16 | yes | — | Batting team score less Pitching team score (src: savant_csv_docs) |
+| `home_win_exp` | float | yes | — | Home team win expectancy (src: savant_csv_docs) |
+| `bat_win_exp` | float | yes | — | Bat team win expectancy (src: savant_csv_docs) |
+| `age_pit_legacy` | int16 | yes | — | pitcher age on 6/30 (src: savant_csv_docs) |
+| `age_bat_legacy` | int16 | yes | — | batter age on 6/30 (src: savant_csv_docs) |
+| `age_pit` | int16 | yes | — | pitcher age on 12/31 (src: savant_csv_docs) |
+| `age_bat` | int16 | yes | — | batter age on 12/31 (src: savant_csv_docs) |
+| `n_thruorder_pitcher` | int16 | yes | — | pitcher times through the order (src: savant_csv_docs) |
+| `n_priorpa_thisgame_player_at_bat` | int16 | yes | — | number of prior PAs in this game for this batter (src: savant_csv_docs) |
+| `pitcher_days_since_prev_game` | int16 | yes | — | number of days since pitcher's last game (src: savant_csv_docs) |
+| `batter_days_since_prev_game` | int16 | yes | — | number of days since batter's last game (src: savant_csv_docs) |
+| `pitcher_days_until_next_game` | int16 | yes | — | number of days until the pitcher's next game (src: savant_csv_docs) |
+| `batter_days_until_next_game` | int16 | yes | — | number of days until the batter's next game (src: savant_csv_docs) |
+| `api_break_z_with_gravity` | float | yes | — | Vertical break with gravity included (src: savant_csv_docs) |
+| `api_break_x_arm` | float | yes | — | Break, in inches, of a pitch to the pitcher's arm side. (src: savant_csv_docs) |
+| `api_break_x_batter_in` | float | yes | — | Break, in inches, of a pitch toward the batter's side of plate. (src: savant_csv_docs) |
+| `attack_angle` | float | yes | — | Attack Angle measures the vertical angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to the ground. (src: savant_csv_docs) |
+| `attack_direction` | float | yes | — | Attack Direction measures the horizontal angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to a line from home plate to straightaway center field. (src: savant_csv_docs) |
+| `swing_path_tilt` | float | yes | — | The vertical angular orientation of the "plane" of the swing, as compared to the ground, defined by the path of the bat in the 40 ms prior to contact, which approximates a slice of a flat disc in shape. (src: savant_csv_docs) |
+| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the X (horizontal) direction. (src: savant_csv_docs) |
+| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the Y (mound-to-plate) direction. (src: savant_csv_docs) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.pitches_minors -->

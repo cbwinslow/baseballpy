@@ -1,0 +1,2766 @@
+{
+ "*": {
+  "abstract_game_code": {
+   "authored": true,
+   "text": "Code of the abstract game."
+  },
+  "action_play_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the action play."
+  },
+  "all_plays_matchup_bat_side_code": {
+   "authored": true,
+   "text": "Code of the all plays matchup bat side."
+  },
+  "all_plays_matchup_batter_full_name": {
+   "authored": true,
+   "text": "Full name of the all plays matchup batter."
+  },
+  "all_plays_matchup_batter_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the all plays matchup batter."
+  },
+  "all_plays_matchup_batter_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the all plays matchup batter resource (prefix https://statsapi.mlb.com)."
+  },
+  "all_plays_matchup_pitch_hand_code": {
+   "authored": true,
+   "text": "Code of the all plays matchup pitch hand."
+  },
+  "all_plays_matchup_pitcher_full_name": {
+   "authored": true,
+   "text": "Full name of the all plays matchup pitcher."
+  },
+  "all_plays_matchup_pitcher_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the all plays matchup pitcher."
+  },
+  "all_plays_matchup_pitcher_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the all plays matchup pitcher resource (prefix https://statsapi.mlb.com)."
+  },
+  "all_plays_matchup_post_on_first_full_name": {
+   "authored": true,
+   "text": "Full name of the all plays matchup post on first."
+  },
+  "all_plays_matchup_post_on_first_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the all plays matchup post on first."
+  },
+  "all_plays_matchup_post_on_first_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the all plays matchup post on first resource (prefix https://statsapi.mlb.com)."
+  },
+  "all_plays_matchup_post_on_second_full_name": {
+   "authored": true,
+   "text": "Full name of the all plays matchup post on second."
+  },
+  "all_plays_matchup_post_on_second_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the all plays matchup post on second."
+  },
+  "all_plays_matchup_post_on_second_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the all plays matchup post on second resource (prefix https://statsapi.mlb.com)."
+  },
+  "all_plays_matchup_post_on_third_full_name": {
+   "authored": true,
+   "text": "Full name of the all plays matchup post on third."
+  },
+  "all_plays_matchup_post_on_third_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the all plays matchup post on third."
+  },
+  "all_plays_matchup_post_on_third_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the all plays matchup post on third resource (prefix https://statsapi.mlb.com)."
+  },
+  "all_plays_review_details_challenge_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the all plays review details challenge team."
+  },
+  "away_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the away team."
+  },
+  "away_team_name": {
+   "authored": true,
+   "text": "Name of the away team."
+  },
+  "bat_side_code": {
+   "authored": true,
+   "text": "Code of the bat side."
+  },
+  "batter_first_name": {
+   "authored": true,
+   "text": "Name of the batter first."
+  },
+  "batter_full_name": {
+   "authored": true,
+   "text": "Full name of the batter."
+  },
+  "batter_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the batter."
+  },
+  "batter_last_name": {
+   "authored": true,
+   "text": "Name of the batter last."
+  },
+  "batter_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the batter resource (prefix https://statsapi.mlb.com)."
+  },
+  "batting_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the batting team."
+  },
+  "batting_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the batting team resource (prefix https://statsapi.mlb.com)."
+  },
+  "batting_team_name": {
+   "authored": true,
+   "text": "Name of the batting team."
+  },
+  "bis_player_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the bis player."
+  },
+  "boxscore_name": {
+   "authored": true,
+   "text": "Name of the boxscore."
+  },
+  "calendar_event_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the calendar event."
+  },
+  "club_name": {
+   "authored": true,
+   "text": "Name of the club."
+  },
+  "content_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the content resource (prefix https://statsapi.mlb.com)."
+  },
+  "current_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the current team."
+  },
+  "current_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the current team resource (prefix https://statsapi.mlb.com)."
+  },
+  "current_team_name": {
+   "authored": true,
+   "text": "Name of the current team."
+  },
+  "decisions_loser_full_name": {
+   "authored": true,
+   "text": "Full name of the decisions loser."
+  },
+  "decisions_loser_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the decisions loser."
+  },
+  "decisions_loser_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the decisions loser resource (prefix https://statsapi.mlb.com)."
+  },
+  "decisions_save_full_name": {
+   "authored": true,
+   "text": "Full name of the decisions save."
+  },
+  "decisions_save_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the decisions save."
+  },
+  "decisions_save_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the decisions save resource (prefix https://statsapi.mlb.com)."
+  },
+  "decisions_winner_full_name": {
+   "authored": true,
+   "text": "Full name of the decisions winner."
+  },
+  "decisions_winner_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the decisions winner."
+  },
+  "decisions_winner_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the decisions winner resource (prefix https://statsapi.mlb.com)."
+  },
+  "details_call_code": {
+   "authored": true,
+   "text": "Code of the details call."
+  },
+  "details_code": {
+   "authored": true,
+   "text": "Code of the details."
+  },
+  "details_type_code": {
+   "source": "mlb_pitch_types",
+   "text": "Pitch type code: FA = Fastball, FF = Four-seam FB, FT = Two-seam FB, FC = Cutter, FS = Splitter, FO = Forkball, SI = Sinker, ST = Sweeper, SL = Slider, CU = Curveball, KC = Knuckle Curve, SC = Screwball, GY = Gyroball, SV = Slurve, CS = Slow Curve, CH = Changeup, KN = Knuckleball, EP = Eephus Pitch, UN = Unknown, IN = Intentional Ball, PO = Pitchout, AB = Automatic Ball, AS = Automatic Strike, NP = No Pitch."
+  },
+  "details_violation_player_full_name": {
+   "authored": true,
+   "text": "Full name of the details violation player."
+  },
+  "details_violation_player_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the details violation player."
+  },
+  "display_name": {
+   "authored": true,
+   "text": "Name of the display."
+  },
+  "division_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the division."
+  },
+  "division_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the division resource (prefix https://statsapi.mlb.com)."
+  },
+  "division_name": {
+   "authored": true,
+   "text": "Name of the division."
+  },
+  "draft_type_code": {
+   "authored": true,
+   "text": "Code of the draft type."
+  },
+  "fielding_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the fielding team."
+  },
+  "fielding_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the fielding team resource (prefix https://statsapi.mlb.com)."
+  },
+  "fielding_team_name": {
+   "authored": true,
+   "text": "Name of the fielding team."
+  },
+  "file_code": {
+   "authored": true,
+   "text": "Code of the file."
+  },
+  "first_last_name": {
+   "authored": true,
+   "text": "Name of the first last."
+  },
+  "first_name": {
+   "authored": true,
+   "text": "Name of the first."
+  },
+  "formal_name": {
+   "authored": true,
+   "text": "Name of the formal."
+  },
+  "franchise_name": {
+   "authored": true,
+   "text": "Name of the franchise."
+  },
+  "from_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the from team."
+  },
+  "from_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the from team resource (prefix https://statsapi.mlb.com)."
+  },
+  "from_team_name": {
+   "authored": true,
+   "text": "Name of the from team."
+  },
+  "full_fml_name": {
+   "authored": true,
+   "text": "Name of the full fml."
+  },
+  "full_lfm_name": {
+   "authored": true,
+   "text": "Name of the full lfm."
+  },
+  "full_name": {
+   "authored": true,
+   "text": "Name of the full."
+  },
+  "game_calendar_event_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the game calendar event."
+  },
+  "game_content_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the game content resource (prefix https://statsapi.mlb.com)."
+  },
+  "game_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the game resource (prefix https://statsapi.mlb.com)."
+  },
+  "game_status_abstract_game_code": {
+   "authored": true,
+   "text": "Code of the game status abstract game."
+  },
+  "game_status_status_code": {
+   "authored": true,
+   "text": "Code of the game status status."
+  },
+  "game_teams_away_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the game teams away team."
+  },
+  "game_teams_away_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the game teams away team resource (prefix https://statsapi.mlb.com)."
+  },
+  "game_teams_away_team_name": {
+   "authored": true,
+   "text": "Name of the game teams away team."
+  },
+  "game_teams_home_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the game teams home team."
+  },
+  "game_teams_home_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the game teams home team resource (prefix https://statsapi.mlb.com)."
+  },
+  "game_teams_home_team_name": {
+   "authored": true,
+   "text": "Name of the game teams home team."
+  },
+  "game_type": {
+   "source": "mlb_game_types",
+   "text": "Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition."
+  },
+  "game_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the game venue."
+  },
+  "game_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the game venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "game_venue_name": {
+   "authored": true,
+   "text": "Name of the game venue."
+  },
+  "headshot_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the headshot resource (prefix https://statsapi.mlb.com)."
+  },
+  "home_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the home team."
+  },
+  "home_team_name": {
+   "authored": true,
+   "text": "Name of the home team."
+  },
+  "init_last_name": {
+   "authored": true,
+   "text": "Name of the init last."
+  },
+  "job_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the job."
+  },
+  "language_code": {
+   "authored": true,
+   "text": "Code of the language."
+  },
+  "language_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the language."
+  },
+  "last_first_name": {
+   "authored": true,
+   "text": "Name of the last first."
+  },
+  "last_init_name": {
+   "authored": true,
+   "text": "Name of the last init."
+  },
+  "last_name": {
+   "authored": true,
+   "text": "Name of the last."
+  },
+  "league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the league."
+  },
+  "league_leaders_game_type_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the league leaders game type."
+  },
+  "league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com)."
+  },
+  "league_name": {
+   "authored": true,
+   "text": "Name of the league."
+  },
+  "linescore_defense_batter_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense batter."
+  },
+  "linescore_defense_batter_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense batter."
+  },
+  "linescore_defense_batter_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense batter resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_catcher_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense catcher."
+  },
+  "linescore_defense_catcher_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense catcher."
+  },
+  "linescore_defense_catcher_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense catcher resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_center_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense center."
+  },
+  "linescore_defense_center_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense center."
+  },
+  "linescore_defense_center_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense center resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_first_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense first."
+  },
+  "linescore_defense_first_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense first."
+  },
+  "linescore_defense_first_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense first resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_in_hole_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense in hole."
+  },
+  "linescore_defense_in_hole_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense in hole."
+  },
+  "linescore_defense_in_hole_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense in hole resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_left_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense left."
+  },
+  "linescore_defense_left_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense left."
+  },
+  "linescore_defense_left_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense left resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_on_deck_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense on deck."
+  },
+  "linescore_defense_on_deck_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense on deck."
+  },
+  "linescore_defense_on_deck_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense on deck resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_pitcher_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense pitcher."
+  },
+  "linescore_defense_pitcher_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense pitcher."
+  },
+  "linescore_defense_pitcher_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense pitcher resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_right_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense right."
+  },
+  "linescore_defense_right_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense right."
+  },
+  "linescore_defense_right_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense right resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_second_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense second."
+  },
+  "linescore_defense_second_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense second."
+  },
+  "linescore_defense_second_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense second resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_shortstop_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense shortstop."
+  },
+  "linescore_defense_shortstop_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense shortstop."
+  },
+  "linescore_defense_shortstop_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense shortstop resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense team."
+  },
+  "linescore_defense_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense team resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_defense_team_name": {
+   "authored": true,
+   "text": "Name of the linescore defense team."
+  },
+  "linescore_defense_third_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore defense third."
+  },
+  "linescore_defense_third_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore defense third."
+  },
+  "linescore_defense_third_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore defense third resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_offense_batter_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore offense batter."
+  },
+  "linescore_offense_batter_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore offense batter."
+  },
+  "linescore_offense_batter_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore offense batter resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_offense_first_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore offense first."
+  },
+  "linescore_offense_first_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore offense first."
+  },
+  "linescore_offense_first_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore offense first resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_offense_in_hole_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore offense in hole."
+  },
+  "linescore_offense_in_hole_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore offense in hole."
+  },
+  "linescore_offense_in_hole_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore offense in hole resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_offense_on_deck_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore offense on deck."
+  },
+  "linescore_offense_on_deck_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore offense on deck."
+  },
+  "linescore_offense_on_deck_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore offense on deck resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_offense_pitcher_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore offense pitcher."
+  },
+  "linescore_offense_pitcher_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore offense pitcher."
+  },
+  "linescore_offense_pitcher_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore offense pitcher resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_offense_second_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore offense second."
+  },
+  "linescore_offense_second_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore offense second."
+  },
+  "linescore_offense_second_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore offense second resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_offense_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore offense team."
+  },
+  "linescore_offense_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore offense team resource (prefix https://statsapi.mlb.com)."
+  },
+  "linescore_offense_team_name": {
+   "authored": true,
+   "text": "Name of the linescore offense team."
+  },
+  "linescore_offense_third_full_name": {
+   "authored": true,
+   "text": "Full name of the linescore offense third."
+  },
+  "linescore_offense_third_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the linescore offense third."
+  },
+  "linescore_offense_third_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the linescore offense third resource (prefix https://statsapi.mlb.com)."
+  },
+  "location_name": {
+   "authored": true,
+   "text": "Name of the location."
+  },
+  "location_postal_code": {
+   "authored": true,
+   "text": "Code of the location postal."
+  },
+  "lookup_name": {
+   "authored": true,
+   "text": "Name of the lookup."
+  },
+  "matchup_bat_side_code": {
+   "authored": true,
+   "text": "Code of the matchup bat side."
+  },
+  "matchup_batter_full_name": {
+   "authored": true,
+   "text": "Full name of the matchup batter."
+  },
+  "matchup_batter_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the matchup batter."
+  },
+  "matchup_batter_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the matchup batter resource (prefix https://statsapi.mlb.com)."
+  },
+  "matchup_pitch_hand_code": {
+   "authored": true,
+   "text": "Code of the matchup pitch hand."
+  },
+  "matchup_pitcher_full_name": {
+   "authored": true,
+   "text": "Full name of the matchup pitcher."
+  },
+  "matchup_pitcher_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the matchup pitcher."
+  },
+  "matchup_pitcher_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the matchup pitcher resource (prefix https://statsapi.mlb.com)."
+  },
+  "matchup_post_on_first_full_name": {
+   "authored": true,
+   "text": "Full name of the matchup post on first."
+  },
+  "matchup_post_on_first_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the matchup post on first."
+  },
+  "matchup_post_on_first_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the matchup post on first resource (prefix https://statsapi.mlb.com)."
+  },
+  "matchup_post_on_second_full_name": {
+   "authored": true,
+   "text": "Full name of the matchup post on second."
+  },
+  "matchup_post_on_second_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the matchup post on second."
+  },
+  "matchup_post_on_second_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the matchup post on second resource (prefix https://statsapi.mlb.com)."
+  },
+  "matchup_post_on_third_full_name": {
+   "authored": true,
+   "text": "Full name of the matchup post on third."
+  },
+  "matchup_post_on_third_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the matchup post on third."
+  },
+  "matchup_post_on_third_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the matchup post on third resource (prefix https://statsapi.mlb.com)."
+  },
+  "metric_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the metric."
+  },
+  "middle_name": {
+   "authored": true,
+   "text": "Name of the middle."
+  },
+  "new_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the new team."
+  },
+  "new_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the new team resource (prefix https://statsapi.mlb.com)."
+  },
+  "new_team_name": {
+   "authored": true,
+   "text": "Name of the new team."
+  },
+  "nick_name": {
+   "authored": true,
+   "text": "Name of the nick."
+  },
+  "official_full_name": {
+   "authored": true,
+   "text": "Full name of the official."
+  },
+  "official_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the official."
+  },
+  "official_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the official resource (prefix https://statsapi.mlb.com)."
+  },
+  "opponent_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the opponent."
+  },
+  "opponent_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the opponent resource (prefix https://statsapi.mlb.com)."
+  },
+  "opponent_name": {
+   "authored": true,
+   "text": "Name of the opponent."
+  },
+  "opposing_player_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the opposing player."
+  },
+  "opposing_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the opposing team."
+  },
+  "org_code": {
+   "authored": true,
+   "text": "Code of the org."
+  },
+  "original_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the original team."
+  },
+  "original_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the original team resource (prefix https://statsapi.mlb.com)."
+  },
+  "original_team_name": {
+   "authored": true,
+   "text": "Name of the original team."
+  },
+  "parent_org_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the parent org."
+  },
+  "parent_org_name": {
+   "authored": true,
+   "text": "Name of the parent org."
+  },
+  "parent_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the parent team."
+  },
+  "person_bat_side_code": {
+   "authored": true,
+   "text": "Code of the person bat side."
+  },
+  "person_boxscore_name": {
+   "authored": true,
+   "text": "Name of the person boxscore."
+  },
+  "person_first_last_name": {
+   "authored": true,
+   "text": "Name of the person first last."
+  },
+  "person_first_name": {
+   "authored": true,
+   "text": "Name of the person first."
+  },
+  "person_full_fml_name": {
+   "authored": true,
+   "text": "Name of the person full fml."
+  },
+  "person_full_lfm_name": {
+   "authored": true,
+   "text": "Name of the person full lfm."
+  },
+  "person_full_name": {
+   "authored": true,
+   "text": "Full name of the person."
+  },
+  "person_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the person."
+  },
+  "person_init_last_name": {
+   "authored": true,
+   "text": "Name of the person init last."
+  },
+  "person_last_first_name": {
+   "authored": true,
+   "text": "Name of the person last first."
+  },
+  "person_last_init_name": {
+   "authored": true,
+   "text": "Name of the person last init."
+  },
+  "person_last_name": {
+   "authored": true,
+   "text": "Name of the person last."
+  },
+  "person_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the person resource (prefix https://statsapi.mlb.com)."
+  },
+  "person_middle_name": {
+   "authored": true,
+   "text": "Name of the person middle."
+  },
+  "person_nick_name": {
+   "authored": true,
+   "text": "Name of the person nick."
+  },
+  "person_pitch_hand_code": {
+   "authored": true,
+   "text": "Code of the person pitch hand."
+  },
+  "person_primary_position_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the person primary position."
+  },
+  "person_primary_position_code": {
+   "authored": true,
+   "text": "Code of the person primary position."
+  },
+  "person_primary_position_name": {
+   "authored": true,
+   "text": "Name of the person primary position."
+  },
+  "person_use_last_name": {
+   "authored": true,
+   "text": "Name of the person use last."
+  },
+  "person_use_name": {
+   "authored": true,
+   "text": "Name of the person use."
+  },
+  "pfx_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the pfx."
+  },
+  "pitch_hand_code": {
+   "authored": true,
+   "text": "Code of the pitch hand."
+  },
+  "pitcher_first_name": {
+   "authored": true,
+   "text": "Name of the pitcher first."
+  },
+  "pitcher_full_name": {
+   "authored": true,
+   "text": "Full name of the pitcher."
+  },
+  "pitcher_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the pitcher."
+  },
+  "pitcher_last_name": {
+   "authored": true,
+   "text": "Name of the pitcher last."
+  },
+  "pitcher_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the pitcher resource (prefix https://statsapi.mlb.com)."
+  },
+  "platform_code": {
+   "authored": true,
+   "text": "Code of the platform."
+  },
+  "play_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the play."
+  },
+  "player_first_name": {
+   "authored": true,
+   "text": "Name of the player first."
+  },
+  "player_full_name": {
+   "authored": true,
+   "text": "Full name of the player."
+  },
+  "player_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the player."
+  },
+  "player_last_name": {
+   "authored": true,
+   "text": "Name of the player last."
+  },
+  "player_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com)."
+  },
+  "player_name": {
+   "authored": true,
+   "text": "Name of the player."
+  },
+  "player_parent_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the player parent team."
+  },
+  "player_person_boxscore_name": {
+   "authored": true,
+   "text": "Name of the player person boxscore."
+  },
+  "player_person_full_name": {
+   "authored": true,
+   "text": "Full name of the player person."
+  },
+  "player_person_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the player person."
+  },
+  "player_person_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the player person resource (prefix https://statsapi.mlb.com)."
+  },
+  "player_position_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the player position."
+  },
+  "player_position_code": {
+   "authored": true,
+   "text": "Code of the player position."
+  },
+  "player_position_name": {
+   "authored": true,
+   "text": "Name of the player position."
+  },
+  "player_primary_position_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the player primary position."
+  },
+  "player_primary_position_code": {
+   "authored": true,
+   "text": "Code of the player primary position."
+  },
+  "player_primary_position_name": {
+   "authored": true,
+   "text": "Name of the player primary position."
+  },
+  "player_status_code": {
+   "authored": true,
+   "text": "Code of the player status."
+  },
+  "players_parent_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the players parent team."
+  },
+  "players_person_boxscore_name": {
+   "authored": true,
+   "text": "Name of the players person boxscore."
+  },
+  "players_person_full_name": {
+   "authored": true,
+   "text": "Full name of the players person."
+  },
+  "players_person_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the players person."
+  },
+  "players_person_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the players person resource (prefix https://statsapi.mlb.com)."
+  },
+  "players_position_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the players position."
+  },
+  "players_position_code": {
+   "authored": true,
+   "text": "Code of the players position."
+  },
+  "players_position_name": {
+   "authored": true,
+   "text": "Name of the players position."
+  },
+  "players_status_code": {
+   "authored": true,
+   "text": "Code of the players status."
+  },
+  "position_abbreviation": {
+   "source": "mlb_positions",
+   "text": "Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third."
+  },
+  "position_code": {
+   "authored": true,
+   "text": "Code of the position."
+  },
+  "position_name": {
+   "authored": true,
+   "text": "Name of the position."
+  },
+  "primary_position_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the primary position."
+  },
+  "primary_position_code": {
+   "authored": true,
+   "text": "Code of the primary position."
+  },
+  "primary_position_name": {
+   "authored": true,
+   "text": "Name of the primary position."
+  },
+  "records_division_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the records division."
+  },
+  "records_division_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the records division resource (prefix https://statsapi.mlb.com)."
+  },
+  "records_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the records league."
+  },
+  "records_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the records league resource (prefix https://statsapi.mlb.com)."
+  },
+  "records_league_name": {
+   "authored": true,
+   "text": "Name of the records league."
+  },
+  "records_organization_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the records organization."
+  },
+  "records_organization_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the records organization resource (prefix https://statsapi.mlb.com)."
+  },
+  "records_organization_name": {
+   "authored": true,
+   "text": "Name of the records organization."
+  },
+  "records_sport_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the records sport."
+  },
+  "records_sport_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the records sport resource (prefix https://statsapi.mlb.com)."
+  },
+  "replaced_player_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the replaced player."
+  },
+  "replaced_player_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the replaced player resource (prefix https://statsapi.mlb.com)."
+  },
+  "request_award_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the request award."
+  },
+  "review_details_challenge_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the review details challenge team."
+  },
+  "school_name": {
+   "authored": true,
+   "text": "Name of the school."
+  },
+  "season_date_info_season_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the season date info season."
+  },
+  "season_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the season."
+  },
+  "series_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the series."
+  },
+  "short_name": {
+   "authored": true,
+   "text": "Name of the short."
+  },
+  "split_code": {
+   "authored": true,
+   "text": "Code of the split."
+  },
+  "sport_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the sport."
+  },
+  "sport_code": {
+   "authored": true,
+   "text": "Code of the sport."
+  },
+  "sport_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the sport."
+  },
+  "sport_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com)."
+  },
+  "sport_name": {
+   "authored": true,
+   "text": "Name of the sport."
+  },
+  "spring_league_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the spring league."
+  },
+  "spring_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the spring league."
+  },
+  "spring_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the spring league resource (prefix https://statsapi.mlb.com)."
+  },
+  "spring_league_name": {
+   "authored": true,
+   "text": "Name of the spring league."
+  },
+  "spring_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the spring venue."
+  },
+  "spring_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the spring venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "stat_acceleration": {
+   "source": "mlb_baseball_stats",
+   "text": "acceleration: rate or derived statistic (running); lookup parameter `acceleration`."
+  },
+  "stat_air_outs": {
+   "source": "mlb_baseball_stats",
+   "text": "Airouts: counting statistic (pitching); lookup parameter `ao`."
+  },
+  "stat_arm_strength": {
+   "source": "mlb_baseball_stats",
+   "text": "armStrength: rate or derived statistic (fielding); lookup parameter `armStrength`."
+  },
+  "stat_assists": {
+   "source": "mlb_baseball_stats",
+   "text": "Assist: counting statistic (fielding, catching); lookup parameter `a`."
+  },
+  "stat_at_bats": {
+   "source": "mlb_baseball_stats",
+   "text": "atBats: counting statistic (hitting, catching); lookup parameter `ab`."
+  },
+  "stat_at_bats_per_home_run": {
+   "source": "mlb_baseball_stats",
+   "text": "atBatsPerHomeRun: rate or derived statistic (hitting)."
+  },
+  "stat_attack_angle": {
+   "source": "mlb_baseball_stats",
+   "text": "attackAngle: rate or derived statistic (hitting, pitching); lookup parameter `attackAngle`."
+  },
+  "stat_attendance": {
+   "source": "mlb_baseball_stats",
+   "text": "attendance: counting statistic (game); lookup parameter `attendance`."
+  },
+  "stat_babip": {
+   "source": "mlb_baseball_stats",
+   "text": "babip: rate or derived statistic (hitting, pitching); lookup parameter `babip`."
+  },
+  "stat_balk": {
+   "source": "mlb_baseball_stats",
+   "text": "Balk: counting statistic (pitching); lookup parameter `bk`."
+  },
+  "stat_barrel_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "barrelPercentage: rate or derived statistic (hitting, pitching); lookup parameter `barrelPercentage`."
+  },
+  "stat_barrels": {
+   "source": "mlb_baseball_stats",
+   "text": "barrels: rate or derived statistic (hitting, pitching); lookup parameter `barrels`."
+  },
+  "stat_base_running": {
+   "source": "mlb_baseball_stats",
+   "text": "baseRunning: counting statistic (hitting)."
+  },
+  "stat_bat_speed": {
+   "source": "mlb_baseball_stats",
+   "text": "batSpeed: rate or derived statistic (hitting); lookup parameter `batSpeed`."
+  },
+  "stat_batted_ball_events": {
+   "source": "mlb_baseball_stats",
+   "text": "battedBallEvents: rate or derived statistic (hitting, pitching); lookup parameter `battedBallEvents`."
+  },
+  "stat_batter_depth_in_box": {
+   "source": "mlb_baseball_stats",
+   "text": "batterDepthInBox: rate or derived statistic (hitting); lookup parameter `batterDepthInBox`."
+  },
+  "stat_batter_distance_between_feet": {
+   "source": "mlb_baseball_stats",
+   "text": "batterDistanceBetweenFeet: rate or derived statistic (hitting); lookup parameter `batterDistanceBetweenFeet`."
+  },
+  "stat_batter_distance_off_plate": {
+   "source": "mlb_baseball_stats",
+   "text": "batterDistanceOffPlate: rate or derived statistic (hitting); lookup parameter `batterDistanceOffPlate`."
+  },
+  "stat_batter_stance_angle": {
+   "source": "mlb_baseball_stats",
+   "text": "batterStanceAngle: rate or derived statistic (hitting); lookup parameter `batterStanceAngle`."
+  },
+  "stat_batting": {
+   "source": "mlb_baseball_stats",
+   "text": "batting: counting statistic (hitting)."
+  },
+  "stat_batting_average": {
+   "source": "mlb_baseball_stats",
+   "text": "battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`."
+  },
+  "stat_bequeathed_runners": {
+   "source": "mlb_baseball_stats",
+   "text": "bequeathedRunners: counting statistic (pitching); lookup parameter `bq`."
+  },
+  "stat_bequeathed_runners_scored": {
+   "source": "mlb_baseball_stats",
+   "text": "bequeathedRunnersScored: counting statistic (pitching); lookup parameter `bqs`."
+  },
+  "stat_blown_saves": {
+   "source": "mlb_baseball_stats",
+   "text": "blownSaves: counting statistic (pitching); lookup parameter `bs`."
+  },
+  "stat_burst": {
+   "source": "mlb_baseball_stats",
+   "text": "burst: rate or derived statistic (running); lookup parameter `burst`."
+  },
+  "stat_burst_distance": {
+   "source": "mlb_baseball_stats",
+   "text": "burstDistance: rate or derived statistic (fielding); lookup parameter `burstDistance`."
+  },
+  "stat_catch_probability": {
+   "source": "mlb_baseball_stats",
+   "text": "catchProbability: rate or derived statistic (hitting, fielding); lookup parameter `catchProbability`."
+  },
+  "stat_catcher_earned_run_average": {
+   "source": "mlb_baseball_stats",
+   "text": "catcherEarnedRunAverage: rate or derived statistic (fielding); lookup parameter `cera`."
+  },
+  "stat_catchers_interference": {
+   "source": "mlb_baseball_stats",
+   "text": "Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`."
+  },
+  "stat_caught_stealing": {
+   "source": "mlb_baseball_stats",
+   "text": "CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`."
+  },
+  "stat_chances": {
+   "source": "mlb_baseball_stats",
+   "text": "Chances: counting statistic (fielding, catching); lookup parameter `tc`."
+  },
+  "stat_chase": {
+   "source": "mlb_baseball_stats",
+   "text": "chase: rate or derived statistic (hitting, pitching); lookup parameter `chase`."
+  },
+  "stat_chase_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "chasePercentage: rate or derived statistic (hitting, pitching); lookup parameter `chasePercentage`."
+  },
+  "stat_complete_games": {
+   "source": "mlb_baseball_stats",
+   "text": "Complete Game: counting statistic (pitching); lookup parameter `cg`."
+  },
+  "stat_distance_covered": {
+   "source": "mlb_baseball_stats",
+   "text": "distanceCovered: rate or derived statistic (fielding); lookup parameter `distanceCovered`."
+  },
+  "stat_double_plays": {
+   "source": "mlb_baseball_stats",
+   "text": "DP: counting statistic (fielding, catching); lookup parameter `dp`."
+  },
+  "stat_doubles": {
+   "source": "mlb_baseball_stats",
+   "text": "2B: counting statistic (hitting, pitching); lookup parameter `d`."
+  },
+  "stat_duration": {
+   "source": "mlb_baseball_stats",
+   "text": "duration: counting statistic (game); lookup parameter `duration`."
+  },
+  "stat_earned_run": {
+   "source": "mlb_baseball_stats",
+   "text": "earnedRun: counting statistic (pitching, catching); lookup parameter `er`."
+  },
+  "stat_earned_run_average": {
+   "source": "mlb_baseball_stats",
+   "text": "earnedRunAverage: rate or derived statistic (pitching, catching); lookup parameter `era`."
+  },
+  "stat_era_minus": {
+   "source": "mlb_baseball_stats",
+   "text": "eraMinus: rate or derived statistic (pitching)."
+  },
+  "stat_errors": {
+   "source": "mlb_baseball_stats",
+   "text": "E: counting statistic (fielding, catching); lookup parameter `e`."
+  },
+  "stat_event_details_type_code": {
+   "authored": true,
+   "text": "Code of the stat event details type."
+  },
+  "stat_event_play_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the stat event play."
+  },
+  "stat_exchange": {
+   "source": "mlb_baseball_stats",
+   "text": "exchange: rate or derived statistic (fielding); lookup parameter `exchange`."
+  },
+  "stat_exit_velocity": {
+   "source": "mlb_baseball_stats",
+   "text": "exitVelocity: rate or derived statistic (hitting, pitching); lookup parameter `exitVelo`."
+  },
+  "stat_exli": {
+   "source": "mlb_baseball_stats",
+   "text": "exli: rate or derived statistic (pitching)."
+  },
+  "stat_extra_base_hits": {
+   "source": "mlb_baseball_stats",
+   "text": "extraBaseHits: counting statistic (hitting); lookup parameter `xbh`."
+  },
+  "stat_fielder_burst_distance": {
+   "source": "mlb_baseball_stats",
+   "text": "fielderBurstDistance: rate or derived statistic (fielding); lookup parameter `fielderBurstDistance`."
+  },
+  "stat_fielder_jump_distance": {
+   "source": "mlb_baseball_stats",
+   "text": "fielderJumpDistance: rate or derived statistic (fielding); lookup parameter `fielderJumpDistance`."
+  },
+  "stat_fielder_reaction_distance": {
+   "source": "mlb_baseball_stats",
+   "text": "fielderReactionDistance: rate or derived statistic (fielding); lookup parameter `fielderReactionDistance`."
+  },
+  "stat_fielding": {
+   "source": "mlb_baseball_stats",
+   "text": "fielding: counting statistic (hitting)."
+  },
+  "stat_fielding_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "fieldingPercentage: rate or derived statistic (fielding, catching); lookup parameter `fpct`."
+  },
+  "stat_fielding_runs_prevented": {
+   "source": "mlb_baseball_stats",
+   "text": "fieldingRunsPrevented: rate or derived statistic (fielding)."
+  },
+  "stat_fip": {
+   "source": "mlb_baseball_stats",
+   "text": "FIP: rate or derived statistic (pitching)."
+  },
+  "stat_fip_minus": {
+   "source": "mlb_baseball_stats",
+   "text": "fipMinus: rate or derived statistic (pitching)."
+  },
+  "stat_first_step": {
+   "source": "mlb_baseball_stats",
+   "text": "firstStep: rate or derived statistic (fielding, running); lookup parameter `firstStep`."
+  },
+  "stat_first_step_efficiency": {
+   "source": "mlb_baseball_stats",
+   "text": "firstStepEfficiency: rate or derived statistic (fielding); lookup parameter `firstStepEfficiency`."
+  },
+  "stat_first_to_home": {
+   "source": "mlb_baseball_stats",
+   "text": "firstToHome: rate or derived statistic (running); lookup parameter `firstToHome`."
+  },
+  "stat_first_to_second": {
+   "source": "mlb_baseball_stats",
+   "text": "firstToSecond: rate or derived statistic (running); lookup parameter `firstToSecond`."
+  },
+  "stat_first_to_second_steal": {
+   "source": "mlb_baseball_stats",
+   "text": "firstToSecondSteal: rate or derived statistic (running); lookup parameter `stealFirstToSecondSteal`."
+  },
+  "stat_first_to_second_tag": {
+   "source": "mlb_baseball_stats",
+   "text": "firstToSecondTag: rate or derived statistic (running); lookup parameter `firstToSecondTag`."
+  },
+  "stat_first_to_third": {
+   "source": "mlb_baseball_stats",
+   "text": "firstToThird: rate or derived statistic (running); lookup parameter `firstToThird`."
+  },
+  "stat_flyouts": {
+   "source": "mlb_baseball_stats",
+   "text": "Flyouts: counting statistic (hitting); lookup parameter `ao`."
+  },
+  "stat_fmli": {
+   "source": "mlb_baseball_stats",
+   "text": "fmli: rate or derived statistic (pitching)."
+  },
+  "stat_game_date": {
+   "source": "mlb_baseball_stats",
+   "text": "gameDate: counting statistic (hitting, pitching, catching, fielding, running)."
+  },
+  "stat_games_finished": {
+   "source": "mlb_baseball_stats",
+   "text": "gamesFinished: counting statistic (pitching); lookup parameter `gf`."
+  },
+  "stat_games_played": {
+   "source": "mlb_baseball_stats",
+   "text": "gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`."
+  },
+  "stat_games_started": {
+   "source": "mlb_baseball_stats",
+   "text": "gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`."
+  },
+  "stat_ground_into_double_play_opportunities": {
+   "source": "mlb_baseball_stats",
+   "text": "groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`."
+  },
+  "stat_ground_into_double_plays": {
+   "source": "mlb_baseball_stats",
+   "text": "GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`."
+  },
+  "stat_ground_into_triple_plays": {
+   "source": "mlb_baseball_stats",
+   "text": "GITP: counting statistic (hitting, pitching); lookup parameter `gitp`."
+  },
+  "stat_ground_outs": {
+   "source": "mlb_baseball_stats",
+   "text": "Groundouts: counting statistic (hitting, pitching); lookup parameter `go`."
+  },
+  "stat_groundout_to_flyout_ratio": {
+   "source": "mlb_baseball_stats",
+   "text": "Groundouts-flyouts: rate or derived statistic (hitting, pitching); lookup parameter `go_ao`."
+  },
+  "stat_hang_time": {
+   "source": "mlb_baseball_stats",
+   "text": "hangTime: rate or derived statistic (hitting); lookup parameter `hangTime`."
+  },
+  "stat_hard_hit_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "hardHitPercentage: rate or derived statistic (hitting, pitching); lookup parameter `hardHitPercentage`."
+  },
+  "stat_hard_hits": {
+   "source": "mlb_baseball_stats",
+   "text": "hardHits: rate or derived statistic (hitting, pitching); lookup parameter `hardHits`."
+  },
+  "stat_hit_batsman": {
+   "source": "mlb_baseball_stats",
+   "text": "hitBatsman: counting statistic (pitching, catching); lookup parameter `hb`."
+  },
+  "stat_hit_by_pitches": {
+   "source": "mlb_baseball_stats",
+   "text": "HBP: counting statistic (hitting); lookup parameter `hbp`."
+  },
+  "stat_hit_distance": {
+   "source": "mlb_baseball_stats",
+   "text": "hitDistance: rate or derived statistic (hitting, pitching); lookup parameter `hitDistance`."
+  },
+  "stat_hit_probability": {
+   "source": "mlb_baseball_stats",
+   "text": "hitProbability: rate or derived statistic (hitting); lookup parameter `hitProbability`."
+  },
+  "stat_hits": {
+   "source": "mlb_baseball_stats",
+   "text": "hits: counting statistic (hitting, pitching, catching); lookup parameter `h`."
+  },
+  "stat_hits_per9_inn": {
+   "source": "mlb_baseball_stats",
+   "text": "hitsPer9Inn: rate or derived statistic (pitching, catching); lookup parameter `h_9`."
+  },
+  "stat_hits_risp": {
+   "source": "mlb_baseball_stats",
+   "text": "hitsRisp: counting statistic (pitching, hitting); lookup parameter `hits_risp`."
+  },
+  "stat_holds": {
+   "source": "mlb_baseball_stats",
+   "text": "Hold: counting statistic (pitching); lookup parameter `hld`."
+  },
+  "stat_home_run_distance": {
+   "source": "mlb_baseball_stats",
+   "text": "homeRunDistance: rate or derived statistic (hitting, pitching); lookup parameter `homeRunDistance`."
+  },
+  "stat_home_run_venue_ids": {
+   "source": "mlb_baseball_stats",
+   "text": "homeRunVenueIds: rate or derived statistic (hitting); lookup parameter `homeRunXBallparks`."
+  },
+  "stat_home_run_x_ballparks": {
+   "source": "mlb_baseball_stats",
+   "text": "homeRunXBallparks: rate or derived statistic (hitting); lookup parameter `homeRunXBallparks`."
+  },
+  "stat_home_runs": {
+   "source": "mlb_baseball_stats",
+   "text": "HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`."
+  },
+  "stat_home_runs_per_plate_appearance": {
+   "source": "mlb_baseball_stats",
+   "text": "homeRunsPerPlateAppearance: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_home_to_first": {
+   "source": "mlb_baseball_stats",
+   "text": "homeToFirst: rate or derived statistic (running, hitting); lookup parameter `homeToFirst`."
+  },
+  "stat_home_to_home": {
+   "source": "mlb_baseball_stats",
+   "text": "homeToHome: rate or derived statistic (running, hitting); lookup parameter `homeToHome`."
+  },
+  "stat_home_to_second": {
+   "source": "mlb_baseball_stats",
+   "text": "homeToSecond: rate or derived statistic (running, hitting); lookup parameter `homeToSecond`."
+  },
+  "stat_home_to_third": {
+   "source": "mlb_baseball_stats",
+   "text": "homeToThird: rate or derived statistic (running, hitting); lookup parameter `homeToThird`."
+  },
+  "stat_horizontal_break": {
+   "source": "mlb_baseball_stats",
+   "text": "horizontalBreak: rate or derived statistic (hitting, pitching); lookup parameter `horizontalBreak`."
+  },
+  "stat_inherited_runner": {
+   "source": "mlb_baseball_stats",
+   "text": "Inherited runners: counting statistic (pitching); lookup parameter `ir`."
+  },
+  "stat_inherited_runner_scored": {
+   "source": "mlb_baseball_stats",
+   "text": "Scored: counting statistic (pitching); lookup parameter `irs`."
+  },
+  "stat_inli": {
+   "source": "mlb_baseball_stats",
+   "text": "inli: rate or derived statistic (pitching)."
+  },
+  "stat_innings": {
+   "source": "mlb_baseball_stats",
+   "text": "Innings: counting statistic (fielding, catching, game); lookup parameter `inn`."
+  },
+  "stat_innings_pitched": {
+   "source": "mlb_baseball_stats",
+   "text": "Innings Pitched: counting statistic (pitching); lookup parameter `ip`."
+  },
+  "stat_intentional_walks": {
+   "source": "mlb_baseball_stats",
+   "text": "IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`."
+  },
+  "stat_iso": {
+   "source": "mlb_baseball_stats",
+   "text": "iso: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_jump_distance": {
+   "source": "mlb_baseball_stats",
+   "text": "jumpDistance: rate or derived statistic (fielding); lookup parameter `jumpDistance`."
+  },
+  "stat_launch_angle": {
+   "source": "mlb_baseball_stats",
+   "text": "launchAngle: rate or derived statistic (hitting, pitching); lookup parameter `launchAngle`."
+  },
+  "stat_left_on_base": {
+   "source": "mlb_baseball_stats",
+   "text": "leftOnBase: counting statistic (hitting); lookup parameter `lob`."
+  },
+  "stat_left_on_base_risp": {
+   "source": "mlb_baseball_stats",
+   "text": "leftOnBaseRisp: counting statistic (hitting); lookup parameter `lob_risp`."
+  },
+  "stat_loss_streak": {
+   "source": "mlb_baseball_stats",
+   "text": "lossStreak: counting statistic (game); lookup parameter `loss_streak`."
+  },
+  "stat_losses": {
+   "source": "mlb_baseball_stats",
+   "text": "losses: counting statistic (pitching); lookup parameter `l`."
+  },
+  "stat_max_height": {
+   "source": "mlb_baseball_stats",
+   "text": "maxHeight: rate or derived statistic (hitting); lookup parameter `maxHeight`."
+  },
+  "stat_md": {
+   "source": "mlb_baseball_stats",
+   "text": "md: counting statistic (pitching)."
+  },
+  "stat_metric_metric_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the stat metric metric."
+  },
+  "stat_metric_name": {
+   "authored": true,
+   "text": "Name of the stat metric."
+  },
+  "stat_metric_position_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the stat metric position."
+  },
+  "stat_name": {
+   "authored": true,
+   "text": "Name of the stat."
+  },
+  "stat_number_of_balls": {
+   "source": "mlb_baseball_stats",
+   "text": "Balls: counting statistic (pitching); lookup parameter `b`."
+  },
+  "stat_number_of_pitches": {
+   "source": "mlb_baseball_stats",
+   "text": "Pitches: counting statistic (hitting, pitching); lookup parameter `np`."
+  },
+  "stat_number_of_strikes": {
+   "source": "mlb_baseball_stats",
+   "text": "Strikes: counting statistic (pitching); lookup parameter `s`."
+  },
+  "stat_on_base_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "onBasePercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `obp`."
+  },
+  "stat_on_base_plus_slugging": {
+   "source": "mlb_baseball_stats",
+   "text": "onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`."
+  },
+  "stat_on_base_rate": {
+   "source": "mlb_baseball_stats",
+   "text": "onBaseRate: rate or derived statistic (hitting, pitching, catching); lookup parameter `obp`."
+  },
+  "stat_out_of_box": {
+   "source": "mlb_baseball_stats",
+   "text": "outOfBox: rate or derived statistic (running); lookup parameter `outOfBox`."
+  },
+  "stat_outfield_assists": {
+   "source": "mlb_baseball_stats",
+   "text": "Outfield assists: counting statistic (fielding); lookup parameter `ofa`."
+  },
+  "stat_outs_above_average": {
+   "source": "mlb_baseball_stats",
+   "text": "outsAboveAverage: rate or derived statistic (fielding)."
+  },
+  "stat_outs_pitched": {
+   "source": "mlb_baseball_stats",
+   "text": "Outs Pitched: counting statistic (pitching); lookup parameter `p_out`."
+  },
+  "stat_passed_balls": {
+   "source": "mlb_baseball_stats",
+   "text": "PB: counting statistic (fielding, catching); lookup parameter `pb`."
+  },
+  "stat_pickoffs": {
+   "source": "mlb_baseball_stats",
+   "text": "PO: counting statistic (hitting, pitching, catching); lookup parameter `po`."
+  },
+  "stat_pitch_outside_zone": {
+   "source": "mlb_baseball_stats",
+   "text": "pitchOutsideZone: rate or derived statistic (hitting, pitching); lookup parameter `pitchOutsideZone`."
+  },
+  "stat_pitcher_arm_angle": {
+   "source": "mlb_baseball_stats",
+   "text": "pitcherArmAngle: rate or derived statistic (pitching); lookup parameter `pitcherArmAngle`."
+  },
+  "stat_pitches_per_inning": {
+   "source": "mlb_baseball_stats",
+   "text": "pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`."
+  },
+  "stat_pitches_per_plate_appearance": {
+   "source": "mlb_baseball_stats",
+   "text": "pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_plate_location_z": {
+   "source": "mlb_baseball_stats",
+   "text": "plateLocationZ: rate or derived statistic (hitting, pitching); lookup parameter `plateLocationZ`."
+  },
+  "stat_play_details_bat_side_code": {
+   "authored": true,
+   "text": "Code of the stat play details bat side."
+  },
+  "stat_play_details_call_code": {
+   "authored": true,
+   "text": "Code of the stat play details call."
+  },
+  "stat_play_details_pitch_hand_code": {
+   "authored": true,
+   "text": "Code of the stat play details pitch hand."
+  },
+  "stat_play_details_type_code": {
+   "authored": true,
+   "text": "Code of the stat play details type."
+  },
+  "stat_play_play_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the stat play play."
+  },
+  "stat_pli": {
+   "source": "mlb_baseball_stats",
+   "text": "pli: rate or derived statistic (pitching)."
+  },
+  "stat_pop_time1b": {
+   "source": "mlb_baseball_stats",
+   "text": "popTime1b: rate or derived statistic (fielding); lookup parameter `popTime1b`."
+  },
+  "stat_pop_time2b": {
+   "source": "mlb_baseball_stats",
+   "text": "popTime2b: rate or derived statistic (fielding); lookup parameter `popTime2b`."
+  },
+  "stat_pop_time3b": {
+   "source": "mlb_baseball_stats",
+   "text": "popTime3b: rate or derived statistic (fielding); lookup parameter `popTime3b`."
+  },
+  "stat_position_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the stat position."
+  },
+  "stat_position_code": {
+   "authored": true,
+   "text": "Code of the stat position."
+  },
+  "stat_position_name": {
+   "authored": true,
+   "text": "Name of the stat position."
+  },
+  "stat_positional": {
+   "source": "mlb_baseball_stats",
+   "text": "positional: counting statistic (hitting)."
+  },
+  "stat_primary_lead": {
+   "source": "mlb_baseball_stats",
+   "text": "primaryLead: rate or derived statistic (running); lookup parameter `primaryLead`."
+  },
+  "stat_put_outs": {
+   "source": "mlb_baseball_stats",
+   "text": "Put Outs: counting statistic (fielding); lookup parameter `po`."
+  },
+  "stat_quality_starts": {
+   "source": "mlb_baseball_stats",
+   "text": "qualityStarts: counting statistic (pitching); lookup parameter `qs`."
+  },
+  "stat_ra9_war": {
+   "source": "mlb_baseball_stats",
+   "text": "ra9War: counting statistic (pitching)."
+  },
+  "stat_range_factor_per9_inn": {
+   "source": "mlb_baseball_stats",
+   "text": "Range Factor Per 9 Innings: rate or derived statistic (fielding); lookup parameter `rf_9`."
+  },
+  "stat_range_factor_per_game": {
+   "source": "mlb_baseball_stats",
+   "text": "Range Factor Per Game: rate or derived statistic (fielding, catching); lookup parameter `rf`."
+  },
+  "stat_rar": {
+   "source": "mlb_baseball_stats",
+   "text": "rar: counting statistic (hitting)."
+  },
+  "stat_reached_on_error": {
+   "source": "mlb_baseball_stats",
+   "text": "reachedOnError: counting statistic (hitting); lookup parameter `roe`."
+  },
+  "stat_release_extension": {
+   "source": "mlb_baseball_stats",
+   "text": "releaseExtension: rate or derived statistic (pitching); lookup parameter `releaseExtension`."
+  },
+  "stat_release_speed": {
+   "source": "mlb_baseball_stats",
+   "text": "releaseSpeed: rate or derived statistic (pitching); lookup parameter `releaseSpeed`."
+  },
+  "stat_release_spin_rate": {
+   "source": "mlb_baseball_stats",
+   "text": "releaseSpinRate: rate or derived statistic (pitching); lookup parameter `releaseSpinRate`."
+  },
+  "stat_replacement": {
+   "source": "mlb_baseball_stats",
+   "text": "replacement: counting statistic (hitting)."
+  },
+  "stat_route_efficiency": {
+   "source": "mlb_baseball_stats",
+   "text": "routeEfficiency: rate or derived statistic (fielding); lookup parameter `routeEfficiency`."
+  },
+  "stat_runs": {
+   "source": "mlb_baseball_stats",
+   "text": "runs: counting statistic (hitting, pitching, catching); lookup parameter `r`."
+  },
+  "stat_runs_batted_in": {
+   "source": "mlb_baseball_stats",
+   "text": "RBI: counting statistic (hitting); lookup parameter `rbi`."
+  },
+  "stat_sacrifice_bunts": {
+   "source": "mlb_baseball_stats",
+   "text": "SAC: counting statistic (hitting, catching); lookup parameter `sac`."
+  },
+  "stat_sacrifice_flies": {
+   "source": "mlb_baseball_stats",
+   "text": "SF: counting statistic (hitting, catching); lookup parameter `sf`."
+  },
+  "stat_save_opportunities": {
+   "source": "mlb_baseball_stats",
+   "text": "saveOpportunities: counting statistic (pitching); lookup parameter `svo`."
+  },
+  "stat_saves": {
+   "source": "mlb_baseball_stats",
+   "text": "saves: counting statistic (pitching); lookup parameter `sv`."
+  },
+  "stat_sd": {
+   "source": "mlb_baseball_stats",
+   "text": "sd: counting statistic (pitching)."
+  },
+  "stat_second_to_home": {
+   "source": "mlb_baseball_stats",
+   "text": "secondToHome: rate or derived statistic (running); lookup parameter `secondToHome`."
+  },
+  "stat_second_to_third": {
+   "source": "mlb_baseball_stats",
+   "text": "secondToThird: rate or derived statistic (running); lookup parameter `secondToThird`."
+  },
+  "stat_second_to_third_steal": {
+   "source": "mlb_baseball_stats",
+   "text": "secondToThirdSteal: rate or derived statistic (running); lookup parameter `secondToThirdSteal`."
+  },
+  "stat_second_to_third_tag": {
+   "source": "mlb_baseball_stats",
+   "text": "secondToThirdTag: rate or derived statistic (running); lookup parameter `secondToThirdTag`."
+  },
+  "stat_secondary_lead": {
+   "source": "mlb_baseball_stats",
+   "text": "secondaryLead: rate or derived statistic (running); lookup parameter `secondaryLead`."
+  },
+  "stat_shutouts": {
+   "source": "mlb_baseball_stats",
+   "text": "shutouts: counting statistic (pitching); lookup parameter `sho`."
+  },
+  "stat_slugging_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`."
+  },
+  "stat_spd": {
+   "source": "mlb_baseball_stats",
+   "text": "SPD: counting statistic (hitting)."
+  },
+  "stat_sprint_speed": {
+   "source": "mlb_baseball_stats",
+   "text": "sprintSpeed: rate or derived statistic (fielding, running); lookup parameter `sprintSpeed`."
+  },
+  "stat_squared_up_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "squaredUpPercentage: rate or derived statistic (hitting, pitching); lookup parameter `squaredUpPercentage`."
+  },
+  "stat_stolen_base_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`."
+  },
+  "stat_stolen_bases": {
+   "source": "mlb_baseball_stats",
+   "text": "SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`."
+  },
+  "stat_streak": {
+   "source": "mlb_baseball_stats",
+   "text": "streak: counting statistic (hitting, pitching, fielding); lookup parameter `streak`."
+  },
+  "stat_strikeout_walk_ratio": {
+   "source": "mlb_baseball_stats",
+   "text": "strikeoutWalkRatio: rate or derived statistic (pitching, catching); lookup parameter `k_bb`."
+  },
+  "stat_strikeouts": {
+   "source": "mlb_baseball_stats",
+   "text": "strikeouts: counting statistic (hitting, pitching, catching); lookup parameter `so`."
+  },
+  "stat_strikeouts_per9_inn": {
+   "source": "mlb_baseball_stats",
+   "text": "strikeoutsPer9Inn: rate or derived statistic (pitching, catching); lookup parameter `k_9`."
+  },
+  "stat_strikeouts_per_plate_appearance": {
+   "source": "mlb_baseball_stats",
+   "text": "strikeoutsPerPlateAppearance: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_swing_length": {
+   "source": "mlb_baseball_stats",
+   "text": "swingLength: rate or derived statistic (hitting, pitching); lookup parameter `swingLength`."
+  },
+  "stat_swinging_strike_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "Swinging Strike%: counting statistic (pitching); lookup parameter `swstr`."
+  },
+  "stat_sword": {
+   "source": "mlb_baseball_stats",
+   "text": "sword: rate or derived statistic (hitting, pitching); lookup parameter `sword`."
+  },
+  "stat_tag_first_step": {
+   "source": "mlb_baseball_stats",
+   "text": "tagFirstStep: rate or derived statistic (running); lookup parameter `tagFirstStep`."
+  },
+  "stat_third_to_home": {
+   "source": "mlb_baseball_stats",
+   "text": "thirdToHome: rate or derived statistic (running); lookup parameter `thirdToHome`."
+  },
+  "stat_third_to_home_steal": {
+   "source": "mlb_baseball_stats",
+   "text": "thirdToHomeSteal: rate or derived statistic (running); lookup parameter `thirdToHomeSteal`."
+  },
+  "stat_third_to_home_tag": {
+   "source": "mlb_baseball_stats",
+   "text": "thirdToHomeTag: rate or derived statistic (running); lookup parameter `thirdToHomeTag`."
+  },
+  "stat_throw_distance": {
+   "source": "mlb_baseball_stats",
+   "text": "throwDistance: rate or derived statistic (fielding); lookup parameter `throwDistance`."
+  },
+  "stat_throw_distance_with_bounces": {
+   "source": "mlb_baseball_stats",
+   "text": "throwDistanceWithBounces: rate or derived statistic (fielding); lookup parameter `throwDistanceWithBounces`."
+  },
+  "stat_throwing_accuracy": {
+   "source": "mlb_baseball_stats",
+   "text": "throwingAccuracy: rate or derived statistic (fielding); lookup parameter `throwingAccuracy`."
+  },
+  "stat_throwing_errors": {
+   "source": "mlb_baseball_stats",
+   "text": "Throwing Errors: counting statistic (fielding); lookup parameter `throwing_e`."
+  },
+  "stat_total_bases": {
+   "source": "mlb_baseball_stats",
+   "text": "TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`."
+  },
+  "stat_total_batters_faced": {
+   "source": "mlb_baseball_stats",
+   "text": "Batters faced: counting statistic (pitching, catching); lookup parameter `tbf`."
+  },
+  "stat_total_plate_appearances": {
+   "source": "mlb_baseball_stats",
+   "text": "totalPlateAppearances: counting statistic (hitting); lookup parameter `tpa`."
+  },
+  "stat_triple_plays": {
+   "source": "mlb_baseball_stats",
+   "text": "TP: counting statistic (fielding, catching); lookup parameter `tp`."
+  },
+  "stat_triples": {
+   "source": "mlb_baseball_stats",
+   "text": "3B: counting statistic (hitting, pitching); lookup parameter `t`."
+  },
+  "stat_type_code": {
+   "authored": true,
+   "text": "Code of the stat type."
+  },
+  "stat_ubr": {
+   "source": "mlb_baseball_stats",
+   "text": "UBR: counting statistic (hitting)."
+  },
+  "stat_uzr": {
+   "source": "mlb_baseball_stats",
+   "text": "UZR: rate or derived statistic (fielding); lookup parameter `uzr`."
+  },
+  "stat_vertical_break": {
+   "source": "mlb_baseball_stats",
+   "text": "verticalBreak: rate or derived statistic (hitting, pitching); lookup parameter `verticalBreak`."
+  },
+  "stat_w_gdp": {
+   "source": "mlb_baseball_stats",
+   "text": "wGDP: counting statistic (hitting)."
+  },
+  "stat_w_league": {
+   "source": "mlb_baseball_stats",
+   "text": "wLeague: counting statistic (hitting)."
+  },
+  "stat_w_raa": {
+   "source": "mlb_baseball_stats",
+   "text": "wRaa: counting statistic (hitting, pitching)."
+  },
+  "stat_w_rc": {
+   "source": "mlb_baseball_stats",
+   "text": "wRc: counting statistic (hitting)."
+  },
+  "stat_w_rc_plus": {
+   "source": "mlb_baseball_stats",
+   "text": "wRcPlus: rate or derived statistic (hitting)."
+  },
+  "stat_w_sb": {
+   "source": "mlb_baseball_stats",
+   "text": "wSb: counting statistic (hitting)."
+  },
+  "stat_walkoffs": {
+   "source": "mlb_baseball_stats",
+   "text": "walkoffs: counting statistic (hitting); lookup parameter `wo`."
+  },
+  "stat_walks": {
+   "source": "mlb_baseball_stats",
+   "text": "walks: counting statistic (hitting, pitching, catching); lookup parameter `bb`."
+  },
+  "stat_walks_and_hits_per_inning_pitched": {
+   "source": "mlb_baseball_stats",
+   "text": "walksAndHitsPerInningPitched: rate or derived statistic (pitching, catching); lookup parameter `whip`."
+  },
+  "stat_walks_per9_inn": {
+   "source": "mlb_baseball_stats",
+   "text": "walksPer9Inn: rate or derived statistic (pitching, catching); lookup parameter `bb_9`."
+  },
+  "stat_walks_per_plate_appearance": {
+   "source": "mlb_baseball_stats",
+   "text": "walksPerPlateAppearance: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_walks_per_strikeout": {
+   "source": "mlb_baseball_stats",
+   "text": "walksPerStrikeout: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_war": {
+   "source": "mlb_baseball_stats",
+   "text": "war: counting statistic (hitting, pitching)."
+  },
+  "stat_whiff_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "whiffPercentage: rate or derived statistic (pitching); lookup parameter `whiffPercentage`."
+  },
+  "stat_wild_pitch": {
+   "source": "mlb_baseball_stats",
+   "text": "WP: counting statistic (pitching, fielding, catching); lookup parameter `wp`."
+  },
+  "stat_win_percentage": {
+   "source": "mlb_baseball_stats",
+   "text": "winPercentage: rate or derived statistic (pitching); lookup parameter `wpct`."
+  },
+  "stat_win_streak": {
+   "source": "mlb_baseball_stats",
+   "text": "winStreak: counting statistic (game); lookup parameter `win_streak`."
+  },
+  "stat_wins": {
+   "source": "mlb_baseball_stats",
+   "text": "wins: counting statistic (pitching); lookup parameter `w`."
+  },
+  "stat_woba": {
+   "source": "mlb_baseball_stats",
+   "text": "woba: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_x_avg": {
+   "source": "mlb_baseball_stats",
+   "text": "xAvg: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_x_slg": {
+   "source": "mlb_baseball_stats",
+   "text": "xSlg: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_x_woba": {
+   "source": "mlb_baseball_stats",
+   "text": "xWoba: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_x_wobacon": {
+   "source": "mlb_baseball_stats",
+   "text": "xWobacon: rate or derived statistic (hitting, pitching)."
+  },
+  "stat_xfip": {
+   "source": "mlb_baseball_stats",
+   "text": "xfip: rate or derived statistic (pitching)."
+  },
+  "stats_group_display_name": {
+   "source": "mlb_stat_groups",
+   "text": "Stat group of the response (a value of /v1/statGroups)."
+  },
+  "stats_player_first_name": {
+   "authored": true,
+   "text": "Name of the stats player first."
+  },
+  "stats_player_full_name": {
+   "authored": true,
+   "text": "Full name of the stats player."
+  },
+  "stats_player_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the stats player."
+  },
+  "stats_player_last_name": {
+   "authored": true,
+   "text": "Name of the stats player last."
+  },
+  "stats_player_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the stats player resource (prefix https://statsapi.mlb.com)."
+  },
+  "stats_type_display_name": {
+   "source": "mlb_stat_types",
+   "text": "Stat type of the response (a value of /v1/statTypes)."
+  },
+  "status_abstract_game_code": {
+   "authored": true,
+   "text": "Code of the status abstract game."
+  },
+  "status_code": {
+   "authored": true,
+   "text": "Code of the status."
+  },
+  "status_status_code": {
+   "authored": true,
+   "text": "Code of the status status."
+  },
+  "streak_streak_code": {
+   "authored": true,
+   "text": "Code of the streak streak."
+  },
+  "team_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the team."
+  },
+  "team_club_name": {
+   "authored": true,
+   "text": "Name of the team club."
+  },
+  "team_code": {
+   "authored": true,
+   "text": "Code of the team."
+  },
+  "team_division_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the team division."
+  },
+  "team_division_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the team division resource (prefix https://statsapi.mlb.com)."
+  },
+  "team_division_name": {
+   "authored": true,
+   "text": "Name of the team division."
+  },
+  "team_file_code": {
+   "authored": true,
+   "text": "Code of the team file."
+  },
+  "team_franchise_name": {
+   "authored": true,
+   "text": "Name of the team franchise."
+  },
+  "team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the team."
+  },
+  "team_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the team league."
+  },
+  "team_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the team league resource (prefix https://statsapi.mlb.com)."
+  },
+  "team_league_name": {
+   "authored": true,
+   "text": "Name of the team league."
+  },
+  "team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com)."
+  },
+  "team_location_name": {
+   "authored": true,
+   "text": "Name of the team location."
+  },
+  "team_name": {
+   "authored": true,
+   "text": "Name of the team."
+  },
+  "team_parent_org_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the team parent org."
+  },
+  "team_parent_org_name": {
+   "authored": true,
+   "text": "Name of the team parent org."
+  },
+  "team_short_name": {
+   "authored": true,
+   "text": "Name of the team short."
+  },
+  "team_sport_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the team sport."
+  },
+  "team_sport_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the team sport resource (prefix https://statsapi.mlb.com)."
+  },
+  "team_sport_name": {
+   "authored": true,
+   "text": "Name of the team sport."
+  },
+  "team_spring_league_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the team spring league."
+  },
+  "team_spring_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the team spring league."
+  },
+  "team_spring_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the team spring league resource (prefix https://statsapi.mlb.com)."
+  },
+  "team_spring_league_name": {
+   "authored": true,
+   "text": "Name of the team spring league."
+  },
+  "team_spring_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the team spring venue."
+  },
+  "team_spring_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the team spring venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "team_team_code": {
+   "authored": true,
+   "text": "Code of the team team."
+  },
+  "team_team_name": {
+   "authored": true,
+   "text": "Name of the team team."
+  },
+  "team_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the team venue."
+  },
+  "team_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the team venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "team_venue_name": {
+   "authored": true,
+   "text": "Name of the team venue."
+  },
+  "teams_away_probable_pitcher_full_name": {
+   "authored": true,
+   "text": "Full name of the teams away probable pitcher."
+  },
+  "teams_away_probable_pitcher_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away probable pitcher."
+  },
+  "teams_away_probable_pitcher_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams away probable pitcher resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_away_spring_league_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the teams away spring league."
+  },
+  "teams_away_spring_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away spring league."
+  },
+  "teams_away_spring_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams away spring league resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_away_spring_league_name": {
+   "authored": true,
+   "text": "Name of the teams away spring league."
+  },
+  "teams_away_team_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the teams away team."
+  },
+  "teams_away_team_club_name": {
+   "authored": true,
+   "text": "Name of the teams away team club."
+  },
+  "teams_away_team_division_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away team division."
+  },
+  "teams_away_team_division_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams away team division resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_away_team_division_name": {
+   "authored": true,
+   "text": "Name of the teams away team division."
+  },
+  "teams_away_team_file_code": {
+   "authored": true,
+   "text": "Code of the teams away team file."
+  },
+  "teams_away_team_franchise_name": {
+   "authored": true,
+   "text": "Name of the teams away team franchise."
+  },
+  "teams_away_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away team."
+  },
+  "teams_away_team_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away team league."
+  },
+  "teams_away_team_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams away team league resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_away_team_league_name": {
+   "authored": true,
+   "text": "Name of the teams away team league."
+  },
+  "teams_away_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams away team resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_away_team_location_name": {
+   "authored": true,
+   "text": "Name of the teams away team location."
+  },
+  "teams_away_team_name": {
+   "authored": true,
+   "text": "Name of the teams away team."
+  },
+  "teams_away_team_parent_org_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away team parent org."
+  },
+  "teams_away_team_parent_org_name": {
+   "authored": true,
+   "text": "Name of the teams away team parent org."
+  },
+  "teams_away_team_short_name": {
+   "authored": true,
+   "text": "Name of the teams away team short."
+  },
+  "teams_away_team_sport_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away team sport."
+  },
+  "teams_away_team_sport_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams away team sport resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_away_team_sport_name": {
+   "authored": true,
+   "text": "Name of the teams away team sport."
+  },
+  "teams_away_team_spring_league_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the teams away team spring league."
+  },
+  "teams_away_team_spring_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away team spring league."
+  },
+  "teams_away_team_spring_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams away team spring league resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_away_team_spring_league_name": {
+   "authored": true,
+   "text": "Name of the teams away team spring league."
+  },
+  "teams_away_team_spring_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away team spring venue."
+  },
+  "teams_away_team_spring_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams away team spring venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_away_team_team_code": {
+   "authored": true,
+   "text": "Code of the teams away team team."
+  },
+  "teams_away_team_team_name": {
+   "authored": true,
+   "text": "Name of the teams away team team."
+  },
+  "teams_away_team_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams away team venue."
+  },
+  "teams_away_team_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams away team venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_away_team_venue_name": {
+   "authored": true,
+   "text": "Name of the teams away team venue."
+  },
+  "teams_home_probable_pitcher_full_name": {
+   "authored": true,
+   "text": "Full name of the teams home probable pitcher."
+  },
+  "teams_home_probable_pitcher_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home probable pitcher."
+  },
+  "teams_home_probable_pitcher_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home probable pitcher resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_spring_league_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the teams home spring league."
+  },
+  "teams_home_spring_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home spring league."
+  },
+  "teams_home_spring_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home spring league resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_spring_league_name": {
+   "authored": true,
+   "text": "Name of the teams home spring league."
+  },
+  "teams_home_team_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the teams home team."
+  },
+  "teams_home_team_club_name": {
+   "authored": true,
+   "text": "Name of the teams home team club."
+  },
+  "teams_home_team_conference_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home team conference."
+  },
+  "teams_home_team_conference_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home team conference resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_team_conference_name": {
+   "authored": true,
+   "text": "Name of the teams home team conference."
+  },
+  "teams_home_team_division_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home team division."
+  },
+  "teams_home_team_division_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home team division resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_team_division_name": {
+   "authored": true,
+   "text": "Name of the teams home team division."
+  },
+  "teams_home_team_file_code": {
+   "authored": true,
+   "text": "Code of the teams home team file."
+  },
+  "teams_home_team_franchise_name": {
+   "authored": true,
+   "text": "Name of the teams home team franchise."
+  },
+  "teams_home_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home team."
+  },
+  "teams_home_team_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home team league."
+  },
+  "teams_home_team_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home team league resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_team_league_name": {
+   "authored": true,
+   "text": "Name of the teams home team league."
+  },
+  "teams_home_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home team resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_team_location_name": {
+   "authored": true,
+   "text": "Name of the teams home team location."
+  },
+  "teams_home_team_name": {
+   "authored": true,
+   "text": "Name of the teams home team."
+  },
+  "teams_home_team_parent_org_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home team parent org."
+  },
+  "teams_home_team_parent_org_name": {
+   "authored": true,
+   "text": "Name of the teams home team parent org."
+  },
+  "teams_home_team_short_name": {
+   "authored": true,
+   "text": "Name of the teams home team short."
+  },
+  "teams_home_team_sport_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home team sport."
+  },
+  "teams_home_team_sport_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home team sport resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_team_sport_name": {
+   "authored": true,
+   "text": "Name of the teams home team sport."
+  },
+  "teams_home_team_spring_league_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the teams home team spring league."
+  },
+  "teams_home_team_spring_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home team spring league."
+  },
+  "teams_home_team_spring_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home team spring league resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_team_spring_league_name": {
+   "authored": true,
+   "text": "Name of the teams home team spring league."
+  },
+  "teams_home_team_spring_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home team spring venue."
+  },
+  "teams_home_team_spring_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home team spring venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_team_team_code": {
+   "authored": true,
+   "text": "Code of the teams home team team."
+  },
+  "teams_home_team_team_name": {
+   "authored": true,
+   "text": "Name of the teams home team team."
+  },
+  "teams_home_team_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams home team venue."
+  },
+  "teams_home_team_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams home team venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_home_team_venue_name": {
+   "authored": true,
+   "text": "Name of the teams home team venue."
+  },
+  "teams_team_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the teams team."
+  },
+  "teams_team_club_name": {
+   "authored": true,
+   "text": "Name of the teams team club."
+  },
+  "teams_team_division_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams team division."
+  },
+  "teams_team_division_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams team division resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_team_division_name": {
+   "authored": true,
+   "text": "Name of the teams team division."
+  },
+  "teams_team_file_code": {
+   "authored": true,
+   "text": "Code of the teams team file."
+  },
+  "teams_team_franchise_name": {
+   "authored": true,
+   "text": "Name of the teams team franchise."
+  },
+  "teams_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams team."
+  },
+  "teams_team_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams team league."
+  },
+  "teams_team_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams team league resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_team_league_name": {
+   "authored": true,
+   "text": "Name of the teams team league."
+  },
+  "teams_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams team resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_team_location_name": {
+   "authored": true,
+   "text": "Name of the teams team location."
+  },
+  "teams_team_name": {
+   "authored": true,
+   "text": "Name of the teams team."
+  },
+  "teams_team_short_name": {
+   "authored": true,
+   "text": "Name of the teams team short."
+  },
+  "teams_team_sport_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams team sport."
+  },
+  "teams_team_sport_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams team sport resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_team_sport_name": {
+   "authored": true,
+   "text": "Name of the teams team sport."
+  },
+  "teams_team_spring_league_abbreviation": {
+   "authored": true,
+   "text": "Abbreviation of the teams team spring league."
+  },
+  "teams_team_spring_league_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams team spring league."
+  },
+  "teams_team_spring_league_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams team spring league resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_team_spring_league_name": {
+   "authored": true,
+   "text": "Name of the teams team spring league."
+  },
+  "teams_team_spring_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams team spring venue."
+  },
+  "teams_team_spring_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams team spring venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_team_team_code": {
+   "authored": true,
+   "text": "Code of the teams team team."
+  },
+  "teams_team_team_name": {
+   "authored": true,
+   "text": "Name of the teams team team."
+  },
+  "teams_team_venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the teams team venue."
+  },
+  "teams_team_venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the teams team venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "teams_team_venue_name": {
+   "authored": true,
+   "text": "Name of the teams team venue."
+  },
+  "time_zone_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the time zone."
+  },
+  "to_team_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the to team."
+  },
+  "to_team_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the to team resource (prefix https://statsapi.mlb.com)."
+  },
+  "to_team_name": {
+   "authored": true,
+   "text": "Name of the to team."
+  },
+  "transaction_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the transaction."
+  },
+  "type_code": {
+   "authored": true,
+   "text": "Code of the type."
+  },
+  "umpire_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the umpire."
+  },
+  "umpire_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the umpire resource (prefix https://statsapi.mlb.com)."
+  },
+  "use_last_name": {
+   "authored": true,
+   "text": "Name of the use last."
+  },
+  "use_name": {
+   "authored": true,
+   "text": "Name of the use."
+  },
+  "venue_id": {
+   "authored": true,
+   "text": "MLBAM identifier of the venue."
+  },
+  "venue_link": {
+   "authored": true,
+   "text": "Relative MLB Stats API path of the venue resource (prefix https://statsapi.mlb.com)."
+  },
+  "venue_name": {
+   "authored": true,
+   "text": "Name of the venue."
+  }
+ },
+ "_sources": {
+  "mlb_baseball_stats": "https://statsapi.mlb.com/api/v1/baseballStats",
+  "mlb_game_types": "https://statsapi.mlb.com/api/v1/gameTypes",
+  "mlb_metrics": "https://statsapi.mlb.com/api/v1/metrics",
+  "mlb_pitch_types": "https://statsapi.mlb.com/api/v1/pitchTypes",
+  "mlb_positions": "https://statsapi.mlb.com/api/v1/positions",
+  "mlb_situation_codes": "https://statsapi.mlb.com/api/v1/situationCodes",
+  "mlb_stat_groups": "https://statsapi.mlb.com/api/v1/statGroups",
+  "mlb_stat_types": "https://statsapi.mlb.com/api/v1/statTypes"
+ }
+}

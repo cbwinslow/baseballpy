@@ -1,0 +1,889 @@
+{
+ "_sources": {
+  "savant_csv_docs": "https://baseballsavant.mlb.com/csv-docs"
+ },
+ "pitches": {
+  "age_bat": {
+   "source": "savant_csv_docs",
+   "text": "batter age on 12/31"
+  },
+  "age_bat_legacy": {
+   "source": "savant_csv_docs",
+   "text": "batter age on 6/30"
+  },
+  "age_pit": {
+   "source": "savant_csv_docs",
+   "text": "pitcher age on 12/31"
+  },
+  "age_pit_legacy": {
+   "source": "savant_csv_docs",
+   "text": "pitcher age on 6/30"
+  },
+  "api_break_x_arm": {
+   "source": "savant_csv_docs",
+   "text": "Break, in inches, of a pitch to the pitcher's arm side."
+  },
+  "api_break_x_batter_in": {
+   "source": "savant_csv_docs",
+   "text": "Break, in inches, of a pitch toward the batter's side of plate."
+  },
+  "api_break_z_with_gravity": {
+   "source": "savant_csv_docs",
+   "text": "Vertical break with gravity included"
+  },
+  "arm_angle": {
+   "source": "savant_csv_docs",
+   "text": "The angle between a line parallel to the ground and a l line extending from the location of the pitcher's throwing shoulder and the location of the ball at the time of the pitch."
+  },
+  "at_bat_number": {
+   "source": "savant_csv_docs",
+   "text": "Plate appearance number of the game."
+  },
+  "attack_angle": {
+   "source": "savant_csv_docs",
+   "text": "Attack Angle measures the vertical angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to the ground."
+  },
+  "attack_direction": {
+   "source": "savant_csv_docs",
+   "text": "Attack Direction measures the horizontal angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to a line from home plate to straightaway center field."
+  },
+  "away_score": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch away score"
+  },
+  "away_team": {
+   "source": "savant_csv_docs",
+   "text": "Abbreviation of away team."
+  },
+  "ax": {
+   "source": "savant_csv_docs",
+   "text": "The acceleration of the pitch, in feet per second per second, in x-dimension, determined at y=50 feet."
+  },
+  "ay": {
+   "source": "savant_csv_docs",
+   "text": "The acceleration of the pitch, in feet per second per second, in y-dimension, determined at y=50 feet."
+  },
+  "az": {
+   "source": "savant_csv_docs",
+   "text": "The acceleration of the pitch, in feet per second per second, in z-dimension, determined at y=50 feet."
+  },
+  "babip_value": {
+   "source": "savant_csv_docs",
+   "text": "BABIP value based on result of play."
+  },
+  "balls": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch number of balls in count."
+  },
+  "bat_score": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch bat team score"
+  },
+  "bat_score_diff": {
+   "source": "savant_csv_docs",
+   "text": "Batting team score less Pitching team score"
+  },
+  "bat_win_exp": {
+   "source": "savant_csv_docs",
+   "text": "Bat team win expectancy"
+  },
+  "batter": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id tied to the play event."
+  },
+  "batter_days_since_prev_game": {
+   "source": "savant_csv_docs",
+   "text": "number of days since batter's last game"
+  },
+  "batter_days_until_next_game": {
+   "source": "savant_csv_docs",
+   "text": "number of days until the batter's next game"
+  },
+  "bb_type": {
+   "source": "savant_csv_docs",
+   "text": "Batted ball type, ground_ball, line_drive, fly_ball, popup."
+  },
+  "break_angle_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from the old tracking system."
+  },
+  "break_length_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from the old tracking system."
+  },
+  "delta_home_win_exp": {
+   "source": "savant_csv_docs",
+   "text": "The change in Win Expectancy before the Plate Appearance and after the Plate Appearance"
+  },
+  "delta_run_exp": {
+   "source": "savant_csv_docs",
+   "text": "The change in Run Expectancy before the Pitch and after the Pitch"
+  },
+  "des": {
+   "source": "savant_csv_docs",
+   "text": "Plate appearance description from game day."
+  },
+  "description": {
+   "source": "savant_csv_docs",
+   "text": "Description of the resulting pitch."
+  },
+  "effective_speed": {
+   "source": "savant_csv_docs",
+   "text": "Derived speed based on the the extension of the pitcher's release."
+  },
+  "estimated_ba_using_speedangle": {
+   "source": "savant_csv_docs",
+   "text": "Estimated Batting Avg based on launch angle and exit velocity."
+  },
+  "estimated_woba_using_speedangle": {
+   "source": "savant_csv_docs",
+   "text": "Estimated wOBA based on launch angle and exit velocity."
+  },
+  "events": {
+   "source": "savant_csv_docs",
+   "text": "Event of the resulting Plate Appearance."
+  },
+  "fielder_2": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch MLB Player Id of Catcher."
+  },
+  "fielder_3": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for 1B."
+  },
+  "fielder_4": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for 2B."
+  },
+  "fielder_5": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for 3B."
+  },
+  "fielder_6": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for SS."
+  },
+  "fielder_7": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for LF."
+  },
+  "fielder_8": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for CF."
+  },
+  "fielder_9": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for RF."
+  },
+  "fld_score": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch field team score"
+  },
+  "game_date": {
+   "source": "savant_csv_docs",
+   "text": "Date of the Game."
+  },
+  "game_pk": {
+   "source": "savant_csv_docs",
+   "text": "Unique Id for Game."
+  },
+  "game_type": {
+   "source": "savant_csv_docs",
+   "text": "Type of Game. E = Exhibition, S = Spring Training, R = Regular Season, F = Wild Card, D = Divisional Series, L = League Championship Series, W = World Series"
+  },
+  "game_year": {
+   "source": "savant_csv_docs",
+   "text": "Year game took place."
+  },
+  "hc_x": {
+   "source": "savant_csv_docs",
+   "text": "Hit coordinate X of batted ball."
+  },
+  "hc_y": {
+   "source": "savant_csv_docs",
+   "text": "Hit coordinate Y of batted ball."
+  },
+  "hit_location": {
+   "source": "savant_csv_docs",
+   "text": "Position of first fielder to touch the ball."
+  },
+  "home_score": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch home score"
+  },
+  "home_score_diff": {
+   "source": "savant_csv_docs",
+   "text": "Home score minus Away score"
+  },
+  "home_team": {
+   "source": "savant_csv_docs",
+   "text": "Abbreviation of home team."
+  },
+  "home_win_exp": {
+   "source": "savant_csv_docs",
+   "text": "Home team win expectancy"
+  },
+  "hyper_speed": {
+   "source": "savant_csv_docs",
+   "text": "Savant display name: Adjusted EV. Adjusted Exit Velocity sets every batted ball hit below 88 mph as 88 mph, otherwise it uses the actual Exit Velocity"
+  },
+  "if_fielding_alignment": {
+   "source": "savant_csv_docs",
+   "text": "Infield fielding alignment at the time of the pitch."
+  },
+  "inning": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch inning number."
+  },
+  "inning_topbot": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch top or bottom of inning."
+  },
+  "intercept_ball_minus_batter_pos_x_inches": {
+   "source": "savant_csv_docs",
+   "text": "Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the X (horizontal) direction."
+  },
+  "intercept_ball_minus_batter_pos_y_inches": {
+   "source": "savant_csv_docs",
+   "text": "Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the Y (mound-to-plate) direction."
+  },
+  "iso_value": {
+   "source": "savant_csv_docs",
+   "text": "ISO value based on result of play."
+  },
+  "launch_angle": {
+   "source": "savant_csv_docs",
+   "text": "Launch angle of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here ."
+  },
+  "launch_speed": {
+   "source": "savant_csv_docs",
+   "text": "Exit velocity of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here ."
+  },
+  "launch_speed_angle": {
+   "source": "savant_csv_docs",
+   "text": "Launch speed/angle zone based on launch angle and exit velocity. Weak Topped Under Flare/Burner Solid Contact Barrel"
+  },
+  "n_priorpa_thisgame_player_at_bat": {
+   "source": "savant_csv_docs",
+   "text": "number of prior PAs in this game for this batter"
+  },
+  "n_thruorder_pitcher": {
+   "source": "savant_csv_docs",
+   "text": "pitcher times through the order"
+  },
+  "of_fielding_alignment": {
+   "source": "savant_csv_docs",
+   "text": "Outfield fielding alignment at the time of the pitch."
+  },
+  "on_1b": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch MLB Player Id of Runner on 1B."
+  },
+  "on_2b": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch MLB Player Id of Runner on 2B."
+  },
+  "on_3b": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch MLB Player Id of Runner on 3B."
+  },
+  "outs_when_up": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch number of outs."
+  },
+  "p_throws": {
+   "source": "savant_csv_docs",
+   "text": "Hand pitcher throws with."
+  },
+  "pfx_x": {
+   "source": "savant_csv_docs",
+   "text": "Horizontal movement in feet from the catcher's perspective."
+  },
+  "pfx_z": {
+   "source": "savant_csv_docs",
+   "text": "Vertical movement in feet from the catcher's perpsective."
+  },
+  "pitch_name": {
+   "source": "savant_csv_docs",
+   "text": "The name of the pitch derived from the Statcast Data."
+  },
+  "pitch_number": {
+   "source": "savant_csv_docs",
+   "text": "Total pitch number of the plate appearance."
+  },
+  "pitch_type": {
+   "source": "savant_csv_docs",
+   "text": "The type of pitch derived from Statcast."
+  },
+  "pitcher": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id tied to the play event."
+  },
+  "pitcher_days_since_prev_game": {
+   "source": "savant_csv_docs",
+   "text": "number of days since pitcher's last game"
+  },
+  "pitcher_days_until_next_game": {
+   "source": "savant_csv_docs",
+   "text": "number of days until the pitcher's next game"
+  },
+  "plate_x": {
+   "source": "savant_csv_docs",
+   "text": "Horizontal position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system."
+  },
+  "plate_z": {
+   "source": "savant_csv_docs",
+   "text": "Vertical position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system."
+  },
+  "player_name": {
+   "source": "savant_csv_docs",
+   "text": "Player's name tied to the event of the search."
+  },
+  "post_away_score": {
+   "source": "savant_csv_docs",
+   "text": "Post-pitch away score"
+  },
+  "post_bat_score": {
+   "source": "savant_csv_docs",
+   "text": "Post-pitch bat team score"
+  },
+  "post_home_score": {
+   "source": "savant_csv_docs",
+   "text": "Post-pitch home score"
+  },
+  "release_extension": {
+   "source": "savant_csv_docs",
+   "text": "Release extension of pitch in feet as tracked by Statcast."
+  },
+  "release_pos_x": {
+   "source": "savant_csv_docs",
+   "text": "Horizontal Release Position of the ball measured in feet from the catcher's perspective."
+  },
+  "release_pos_y": {
+   "source": "savant_csv_docs",
+   "text": "Release position of pitch measured in feet from the catcher's perspective."
+  },
+  "release_pos_z": {
+   "source": "savant_csv_docs",
+   "text": "Vertical Release Position of the ball measured in feet from the catcher's perspective."
+  },
+  "release_speed": {
+   "source": "savant_csv_docs",
+   "text": "Pitch velocity in MPH. Values from 2008-16 are via PitchFX, and adjusted to roughly out-of-hand release point. All velocities from 2017 and beyond are Statcast, which are reported out-of-hand. All velocities are thus on the same scale."
+  },
+  "spin_axis": {
+   "source": "savant_csv_docs",
+   "text": "The Spin Axis in the 2D X-Z plane in degrees from 0 to 360, such that 180 represents a pure backspin fastball and 0 degrees represents a pure topspin (12-6) curveball"
+  },
+  "spin_dir": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from the old tracking system."
+  },
+  "spin_rate_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from the old tracking system. Replaced by release_spin"
+  },
+  "stand": {
+   "source": "savant_csv_docs",
+   "text": "Side of the plate batter is standing."
+  },
+  "strikes": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch number of strikes in count."
+  },
+  "sv_id": {
+   "source": "savant_csv_docs",
+   "text": "Non-unique Id of play event per game."
+  },
+  "swing_path_tilt": {
+   "source": "savant_csv_docs",
+   "text": "The vertical angular orientation of the \"plane\" of the swing, as compared to the ground, defined by the path of the bat in the 40 ms prior to contact, which approximates a slice of a flat disc in shape."
+  },
+  "sz_bot": {
+   "source": "savant_csv_docs",
+   "text": "Bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the bottom of the batter's ABS-defined strike zone."
+  },
+  "sz_top": {
+   "source": "savant_csv_docs",
+   "text": "Top of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, top of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the top of the batter's ABS-defined strike zone."
+  },
+  "tfs_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from old tracking system."
+  },
+  "tfs_zulu_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from old tracking system."
+  },
+  "type": {
+   "source": "savant_csv_docs",
+   "text": "Short hand of pitch result. B = ball, S = strike, X = in play."
+  },
+  "umpire": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from old tracking system."
+  },
+  "vx0": {
+   "source": "savant_csv_docs",
+   "text": "The velocity of the pitch, in feet per second, in x-dimension, determined at y=50 feet."
+  },
+  "vy0": {
+   "source": "savant_csv_docs",
+   "text": "The velocity of the pitch, in feet per second, in y-dimension, determined at y=50 feet."
+  },
+  "woba_denom": {
+   "source": "savant_csv_docs",
+   "text": "wOBA denominator based on result of play."
+  },
+  "woba_value": {
+   "source": "savant_csv_docs",
+   "text": "wOBA value based on result of play."
+  },
+  "zone": {
+   "source": "savant_csv_docs",
+   "text": "Zone location of the ball when it crosses the plate from the catcher's perspective."
+  }
+ },
+ "pitches_minors": {
+  "age_bat": {
+   "source": "savant_csv_docs",
+   "text": "batter age on 12/31"
+  },
+  "age_bat_legacy": {
+   "source": "savant_csv_docs",
+   "text": "batter age on 6/30"
+  },
+  "age_pit": {
+   "source": "savant_csv_docs",
+   "text": "pitcher age on 12/31"
+  },
+  "age_pit_legacy": {
+   "source": "savant_csv_docs",
+   "text": "pitcher age on 6/30"
+  },
+  "api_break_x_arm": {
+   "source": "savant_csv_docs",
+   "text": "Break, in inches, of a pitch to the pitcher's arm side."
+  },
+  "api_break_x_batter_in": {
+   "source": "savant_csv_docs",
+   "text": "Break, in inches, of a pitch toward the batter's side of plate."
+  },
+  "api_break_z_with_gravity": {
+   "source": "savant_csv_docs",
+   "text": "Vertical break with gravity included"
+  },
+  "arm_angle": {
+   "source": "savant_csv_docs",
+   "text": "The angle between a line parallel to the ground and a l line extending from the location of the pitcher's throwing shoulder and the location of the ball at the time of the pitch."
+  },
+  "at_bat_number": {
+   "source": "savant_csv_docs",
+   "text": "Plate appearance number of the game."
+  },
+  "attack_angle": {
+   "source": "savant_csv_docs",
+   "text": "Attack Angle measures the vertical angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to the ground."
+  },
+  "attack_direction": {
+   "source": "savant_csv_docs",
+   "text": "Attack Direction measures the horizontal angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to a line from home plate to straightaway center field."
+  },
+  "away_score": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch away score"
+  },
+  "away_team": {
+   "source": "savant_csv_docs",
+   "text": "Abbreviation of away team."
+  },
+  "ax": {
+   "source": "savant_csv_docs",
+   "text": "The acceleration of the pitch, in feet per second per second, in x-dimension, determined at y=50 feet."
+  },
+  "ay": {
+   "source": "savant_csv_docs",
+   "text": "The acceleration of the pitch, in feet per second per second, in y-dimension, determined at y=50 feet."
+  },
+  "az": {
+   "source": "savant_csv_docs",
+   "text": "The acceleration of the pitch, in feet per second per second, in z-dimension, determined at y=50 feet."
+  },
+  "babip_value": {
+   "source": "savant_csv_docs",
+   "text": "BABIP value based on result of play."
+  },
+  "balls": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch number of balls in count."
+  },
+  "bat_score": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch bat team score"
+  },
+  "bat_score_diff": {
+   "source": "savant_csv_docs",
+   "text": "Batting team score less Pitching team score"
+  },
+  "bat_win_exp": {
+   "source": "savant_csv_docs",
+   "text": "Bat team win expectancy"
+  },
+  "batter": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id tied to the play event."
+  },
+  "batter_days_since_prev_game": {
+   "source": "savant_csv_docs",
+   "text": "number of days since batter's last game"
+  },
+  "batter_days_until_next_game": {
+   "source": "savant_csv_docs",
+   "text": "number of days until the batter's next game"
+  },
+  "bb_type": {
+   "source": "savant_csv_docs",
+   "text": "Batted ball type, ground_ball, line_drive, fly_ball, popup."
+  },
+  "break_angle_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from the old tracking system."
+  },
+  "break_length_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from the old tracking system."
+  },
+  "delta_home_win_exp": {
+   "source": "savant_csv_docs",
+   "text": "The change in Win Expectancy before the Plate Appearance and after the Plate Appearance"
+  },
+  "delta_run_exp": {
+   "source": "savant_csv_docs",
+   "text": "The change in Run Expectancy before the Pitch and after the Pitch"
+  },
+  "des": {
+   "source": "savant_csv_docs",
+   "text": "Plate appearance description from game day."
+  },
+  "description": {
+   "source": "savant_csv_docs",
+   "text": "Description of the resulting pitch."
+  },
+  "effective_speed": {
+   "source": "savant_csv_docs",
+   "text": "Derived speed based on the the extension of the pitcher's release."
+  },
+  "estimated_ba_using_speedangle": {
+   "source": "savant_csv_docs",
+   "text": "Estimated Batting Avg based on launch angle and exit velocity."
+  },
+  "estimated_woba_using_speedangle": {
+   "source": "savant_csv_docs",
+   "text": "Estimated wOBA based on launch angle and exit velocity."
+  },
+  "events": {
+   "source": "savant_csv_docs",
+   "text": "Event of the resulting Plate Appearance."
+  },
+  "fielder_2": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch MLB Player Id of Catcher."
+  },
+  "fielder_3": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for 1B."
+  },
+  "fielder_4": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for 2B."
+  },
+  "fielder_5": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for 3B."
+  },
+  "fielder_6": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for SS."
+  },
+  "fielder_7": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for LF."
+  },
+  "fielder_8": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for CF."
+  },
+  "fielder_9": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id for RF."
+  },
+  "fld_score": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch field team score"
+  },
+  "game_date": {
+   "source": "savant_csv_docs",
+   "text": "Date of the Game."
+  },
+  "game_pk": {
+   "source": "savant_csv_docs",
+   "text": "Unique Id for Game."
+  },
+  "game_type": {
+   "source": "savant_csv_docs",
+   "text": "Type of Game. E = Exhibition, S = Spring Training, R = Regular Season, F = Wild Card, D = Divisional Series, L = League Championship Series, W = World Series"
+  },
+  "game_year": {
+   "source": "savant_csv_docs",
+   "text": "Year game took place."
+  },
+  "hc_x": {
+   "source": "savant_csv_docs",
+   "text": "Hit coordinate X of batted ball."
+  },
+  "hc_y": {
+   "source": "savant_csv_docs",
+   "text": "Hit coordinate Y of batted ball."
+  },
+  "hit_location": {
+   "source": "savant_csv_docs",
+   "text": "Position of first fielder to touch the ball."
+  },
+  "home_score": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch home score"
+  },
+  "home_score_diff": {
+   "source": "savant_csv_docs",
+   "text": "Home score minus Away score"
+  },
+  "home_team": {
+   "source": "savant_csv_docs",
+   "text": "Abbreviation of home team."
+  },
+  "home_win_exp": {
+   "source": "savant_csv_docs",
+   "text": "Home team win expectancy"
+  },
+  "hyper_speed": {
+   "source": "savant_csv_docs",
+   "text": "Savant display name: Adjusted EV. Adjusted Exit Velocity sets every batted ball hit below 88 mph as 88 mph, otherwise it uses the actual Exit Velocity"
+  },
+  "if_fielding_alignment": {
+   "source": "savant_csv_docs",
+   "text": "Infield fielding alignment at the time of the pitch."
+  },
+  "inning": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch inning number."
+  },
+  "inning_topbot": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch top or bottom of inning."
+  },
+  "intercept_ball_minus_batter_pos_x_inches": {
+   "source": "savant_csv_docs",
+   "text": "Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the X (horizontal) direction."
+  },
+  "intercept_ball_minus_batter_pos_y_inches": {
+   "source": "savant_csv_docs",
+   "text": "Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the Y (mound-to-plate) direction."
+  },
+  "iso_value": {
+   "source": "savant_csv_docs",
+   "text": "ISO value based on result of play."
+  },
+  "launch_angle": {
+   "source": "savant_csv_docs",
+   "text": "Launch angle of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here ."
+  },
+  "launch_speed": {
+   "source": "savant_csv_docs",
+   "text": "Exit velocity of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here ."
+  },
+  "launch_speed_angle": {
+   "source": "savant_csv_docs",
+   "text": "Launch speed/angle zone based on launch angle and exit velocity. Weak Topped Under Flare/Burner Solid Contact Barrel"
+  },
+  "n_priorpa_thisgame_player_at_bat": {
+   "source": "savant_csv_docs",
+   "text": "number of prior PAs in this game for this batter"
+  },
+  "n_thruorder_pitcher": {
+   "source": "savant_csv_docs",
+   "text": "pitcher times through the order"
+  },
+  "of_fielding_alignment": {
+   "source": "savant_csv_docs",
+   "text": "Outfield fielding alignment at the time of the pitch."
+  },
+  "on_1b": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch MLB Player Id of Runner on 1B."
+  },
+  "on_2b": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch MLB Player Id of Runner on 2B."
+  },
+  "on_3b": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch MLB Player Id of Runner on 3B."
+  },
+  "outs_when_up": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch number of outs."
+  },
+  "p_throws": {
+   "source": "savant_csv_docs",
+   "text": "Hand pitcher throws with."
+  },
+  "pfx_x": {
+   "source": "savant_csv_docs",
+   "text": "Horizontal movement in feet from the catcher's perspective."
+  },
+  "pfx_z": {
+   "source": "savant_csv_docs",
+   "text": "Vertical movement in feet from the catcher's perpsective."
+  },
+  "pitch_name": {
+   "source": "savant_csv_docs",
+   "text": "The name of the pitch derived from the Statcast Data."
+  },
+  "pitch_number": {
+   "source": "savant_csv_docs",
+   "text": "Total pitch number of the plate appearance."
+  },
+  "pitch_type": {
+   "source": "savant_csv_docs",
+   "text": "The type of pitch derived from Statcast."
+  },
+  "pitcher": {
+   "source": "savant_csv_docs",
+   "text": "MLB Player Id tied to the play event."
+  },
+  "pitcher_days_since_prev_game": {
+   "source": "savant_csv_docs",
+   "text": "number of days since pitcher's last game"
+  },
+  "pitcher_days_until_next_game": {
+   "source": "savant_csv_docs",
+   "text": "number of days until the pitcher's next game"
+  },
+  "plate_x": {
+   "source": "savant_csv_docs",
+   "text": "Horizontal position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system."
+  },
+  "plate_z": {
+   "source": "savant_csv_docs",
+   "text": "Vertical position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system."
+  },
+  "player_name": {
+   "source": "savant_csv_docs",
+   "text": "Player's name tied to the event of the search."
+  },
+  "post_away_score": {
+   "source": "savant_csv_docs",
+   "text": "Post-pitch away score"
+  },
+  "post_bat_score": {
+   "source": "savant_csv_docs",
+   "text": "Post-pitch bat team score"
+  },
+  "post_home_score": {
+   "source": "savant_csv_docs",
+   "text": "Post-pitch home score"
+  },
+  "release_extension": {
+   "source": "savant_csv_docs",
+   "text": "Release extension of pitch in feet as tracked by Statcast."
+  },
+  "release_pos_x": {
+   "source": "savant_csv_docs",
+   "text": "Horizontal Release Position of the ball measured in feet from the catcher's perspective."
+  },
+  "release_pos_y": {
+   "source": "savant_csv_docs",
+   "text": "Release position of pitch measured in feet from the catcher's perspective."
+  },
+  "release_pos_z": {
+   "source": "savant_csv_docs",
+   "text": "Vertical Release Position of the ball measured in feet from the catcher's perspective."
+  },
+  "release_speed": {
+   "source": "savant_csv_docs",
+   "text": "Pitch velocity in MPH. Values from 2008-16 are via PitchFX, and adjusted to roughly out-of-hand release point. All velocities from 2017 and beyond are Statcast, which are reported out-of-hand. All velocities are thus on the same scale."
+  },
+  "spin_axis": {
+   "source": "savant_csv_docs",
+   "text": "The Spin Axis in the 2D X-Z plane in degrees from 0 to 360, such that 180 represents a pure backspin fastball and 0 degrees represents a pure topspin (12-6) curveball"
+  },
+  "spin_dir": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from the old tracking system."
+  },
+  "spin_rate_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from the old tracking system. Replaced by release_spin"
+  },
+  "stand": {
+   "source": "savant_csv_docs",
+   "text": "Side of the plate batter is standing."
+  },
+  "strikes": {
+   "source": "savant_csv_docs",
+   "text": "Pre-pitch number of strikes in count."
+  },
+  "sv_id": {
+   "source": "savant_csv_docs",
+   "text": "Non-unique Id of play event per game."
+  },
+  "swing_path_tilt": {
+   "source": "savant_csv_docs",
+   "text": "The vertical angular orientation of the \"plane\" of the swing, as compared to the ground, defined by the path of the bat in the 40 ms prior to contact, which approximates a slice of a flat disc in shape."
+  },
+  "sz_bot": {
+   "source": "savant_csv_docs",
+   "text": "Bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the bottom of the batter's ABS-defined strike zone."
+  },
+  "sz_top": {
+   "source": "savant_csv_docs",
+   "text": "Top of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, top of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the top of the batter's ABS-defined strike zone."
+  },
+  "tfs_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from old tracking system."
+  },
+  "tfs_zulu_deprecated": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from old tracking system."
+  },
+  "type": {
+   "source": "savant_csv_docs",
+   "text": "Short hand of pitch result. B = ball, S = strike, X = in play."
+  },
+  "umpire": {
+   "source": "savant_csv_docs",
+   "text": "* Deprecated field from old tracking system."
+  },
+  "vx0": {
+   "source": "savant_csv_docs",
+   "text": "The velocity of the pitch, in feet per second, in x-dimension, determined at y=50 feet."
+  },
+  "vy0": {
+   "source": "savant_csv_docs",
+   "text": "The velocity of the pitch, in feet per second, in y-dimension, determined at y=50 feet."
+  },
+  "woba_denom": {
+   "source": "savant_csv_docs",
+   "text": "wOBA denominator based on result of play."
+  },
+  "woba_value": {
+   "source": "savant_csv_docs",
+   "text": "wOBA value based on result of play."
+  },
+  "zone": {
+   "source": "savant_csv_docs",
+   "text": "Zone location of the ball when it crosses the plate from the catcher's perspective."
+  }
+ }
+}

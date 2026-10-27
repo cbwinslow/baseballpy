@@ -498,6 +498,13 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Consequences:** nothing is dropped (a test reconciles every line of real games with the four tables); live check of 1964 gives 1634 games, every one of the 1626 regular-season game-log games present, the 8 extra being the All-Star game and the 7 World Series games. Typing the remaining record kinds waits for `boxfile.txt`.
 - **Alternatives rejected:** guessing names for the unseen columns; skipping unrecognised lines.
 
+## ADR 34: Column Descriptions Come From Provider Metadata, With Cited Sources
+- **Status:** Accepted - partly implemented (OpenSpec change `column-descriptions-from-provider-metadata` stays open for Retrosheet, Lahman, Chadwick and leaderboards).
+- **Context:** generated column dictionaries had empty description cells.
+- **Decision:** `docs/columns/<source>.json` holds descriptions with a `_sources` map; each cell cites a source key or is flagged `authored`; missing ones render `TODO`; `baseballpy docs coverage` reports per-source counts and a ratchet test (`coverage_baseline.json`) stops regressions. `scripts/build_column_descriptions.py` builds MLB content from `/v1/baseballStats`, `gameTypes`, `pitchTypes`, `positions` (plus authored structural suffix meanings) and Statcast from Savant's `csv-docs` page. Where the provider's response key differs from its metadata name, nothing is guessed.
+- **Consequences:** coverage 2026-10-27: mlb_api 53.1%, statcast 26.4%, lahman 6.8%, chadwick 5.9%, retrosheet 1.1% (retrosheet.org refused connections, so its format documents were not read).
+- **Alternatives rejected:** inventing prose; matching metadata to response keys by similarity.
+
 ## ADR 37: The First Catalog Audit Found Wrong `unsupported` Verdicts; Probe Protocol
 - **Status:** Accepted - implemented (OpenSpec change `catalog-audit-first-run-fixes`; library and CLI from `catalog-completeness-audit`).
 - **Context:** `baseballpy catalog audit` compares provider lists with the registry and re-probes `unsupported` items. Its first run (2026-10-27) found: `active_spin` and `catch_probability` leaderboards wrongly marked unsupported (the first probe added a parameter the route rejects: `min=q`, `type=Fielder`), roster types `allTime`/`coach`/`gameday` and standings type `currentHalf` missing, the `GameType` enum covering 5 of 11 provider game types, and 30 stat types with no data in any generated combination.
