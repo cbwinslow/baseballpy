@@ -68,3 +68,7 @@ Sections 1-3 assumed `DatasetSpec.make_extractor/make_normalizer` hooks and one 
 - `baseballpy/ingest/runner.py`: `plan()` (dry run, zero network), `run_jobs()` (bounded concurrency, failures collected not swallowed, per-job audit event, cancellation -> `CANCELLED`, re-run skips what the orchestrators' manifests already mark complete).
 - CLI (`ingest`, `catalog status`, `doctor`) consumes only `ingest.*` and the dataset registry.
 Adding a source = one adapter module registered in `ADAPTERS`; nothing else changes. ADR 25 is updated when this lands.
+
+## 9. Protocol decision (2026-10-27, ADR 39)
+Section 5 (signature-level contract test for every extractor and normalizer) is superseded: the enforced source boundary is `IngestAdapter`, checked for every registered source by `tests/test_ingest_contract.py`; `ExtractorProtocol`/`NormalizerProtocol` stay as optional guides. Rationale and the measured gap (2 of 6 extractors and normalizers conform; nothing consumes them polymorphically) are in ADR 39.
+

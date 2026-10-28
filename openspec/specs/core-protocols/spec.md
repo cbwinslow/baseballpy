@@ -6,12 +6,12 @@ Defines the decoupled `typing.Protocol` interfaces governing data extraction, sc
 ## Requirements
 
 ### Requirement: Decoupled Protocol Hierarchy
-Extractors, normalizers and sinks MUST structurally satisfy their protocols including method signatures; a contract test MUST verify signatures (not only `isinstance`) for every registered source.
+The contracts that other code consumes MUST be enforced by tests: sinks satisfy `SinkProtocol`, the live streamer satisfies `StreamExtractorProtocol`, and every source registered in the dataset registry has an `IngestAdapter` (`source`, `all_seasons`, `plan`, `run`) registered in `baseballpy.ingest`; the ingest runner and the CLI MUST NOT import a concrete source. `ExtractorProtocol` and `NormalizerProtocol` are optional shape guides for single-dataset sources and are not enforced (ADR 39).
 
-#### Scenario: Custom Extractor with Standard Sink
-- **GIVEN** an extractor implementing `ExtractorProtocol` and a sink implementing `SinkProtocol`
-- **WHEN** data flows through `Pipeline.run(extractor, normalizer, sink)`
-- **THEN** the sink consumes `pyarrow.RecordBatch` streams without knowing the network protocol, URL, or caching layer used by the extractor.
+#### Scenario: Every registered source has an adapter
+- **GIVEN** the dataset registry and the registered adapters
+- **WHEN** the contract test runs
+- **THEN** each source that owns datasets has an adapter satisfying `IngestAdapter` whose planned jobs carry that source name.
 
 #### Scenario: Swapping Sinks without Re-Extracting
 - **GIVEN** an extracted and normalized `pyarrow.Table`

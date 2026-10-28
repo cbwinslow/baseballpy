@@ -43,14 +43,15 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 └────────────────────────────────┘
 ```
 
-1. **Protocol Boundaries:**
-   - Extractor, Normalizer, and Sink interact exclusively via strict `typing.Protocol` interfaces (`ExtractorProtocol`, `NormalizerProtocol`, `SinkProtocol`, `StreamExtractorProtocol`, `LiveEventConsumerProtocol`).
+1. **Protocol Boundaries (ADR 39):**
+   - The enforced contracts are those other code consumes: `SinkProtocol`, `StreamExtractorProtocol`, `LiveEventConsumerProtocol` and `baseballpy.ingest.IngestAdapter` (every registered source has an adapter; the runner and CLI never import a concrete source; `tests/test_ingest_contract.py`).
+   - `ExtractorProtocol` / `NormalizerProtocol` are optional shape guides for single-dataset sources; multi-dataset sources (Lahman, MLB endpoints, Statcast leaderboards) need not implement them.
    - Sinks MUST NOT import or depend on network libraries (`httpx`, `urllib`).
    - Extractors MUST NOT import or depend on database drivers (`duckdb`, `psycopg2`).
    - Normalizers are pure mathematical/coercion functions taking raw payloads and emitting Arrow/Narwhals structures.
 2. **No Monolithic Classes:**
    - Avoid monolithic manager classes that bundle fetching, parsing, and saving into single mega-methods.
-   - Compose workflows through functional pipelines: `Pipeline.run(extractor, normalizer, sink)`.
+   - Compose workflows through the ingest layer: adapters plan jobs, `run_jobs` executes them (`baseballpy.ingest`).
 
 ---
 

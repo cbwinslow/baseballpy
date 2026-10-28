@@ -15,7 +15,7 @@ Autonomous runs: use `docs/agents/GOAL_SEEK_PROMPT.md` (loop with verification, 
 
 ## Design philosophy: decoupled, reusable, dynamic
 
-Keep the codebase loosely coupled so a change in one place cannot break another: extract / parse / sink meet only at `typing.Protocol` boundaries; behavior comes from the dataset registry, generators and data, not from hard-coded dataset names or per-source special cases; prefer one small declarative table plus one generic function over several intertwined hand-written functions. When a fix seems to need a special case, look for the general mechanism that removes the case. `tests/test_architecture.py` enforces the import boundaries; do not weaken it.
+Keep the codebase loosely coupled so a change in one place cannot break another: sources meet the rest of the code only through `baseballpy.ingest.IngestAdapter` (and sinks through `SinkProtocol`), enforced by `tests/test_ingest_contract.py` and `tests/test_architecture.py` (ADR 39); behavior comes from the dataset registry, generators and data, not from hard-coded dataset names or per-source special cases; prefer one small declarative table plus one generic function over several intertwined hand-written functions. When a fix seems to need a special case, look for the general mechanism that removes the case. `tests/test_architecture.py` enforces the import boundaries; do not weaken it.
 
 ## Search the web before building a workaround
 

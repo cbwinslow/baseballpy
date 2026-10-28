@@ -1,4 +1,12 @@
-"""Core protocol interfaces separating Extract, Parse/Schema, and Sink stages."""
+"""Core protocol interfaces separating Extract, Parse/Schema, and Sink stages.
+
+Which of these are enforced (ADR 39): ``SinkProtocol``, ``StreamExtractorProtocol`` and
+``LiveEventConsumerProtocol`` are consumed by other code and tested; the per-source boundary the
+pipeline and CLI rely on is ``baseballpy.ingest.IngestAdapter``, checked for every registered source
+by ``tests/test_ingest_contract.py``. ``ExtractorProtocol`` and ``NormalizerProtocol`` are optional
+shape guides for single-dataset sources: nothing calls extractors or normalizers through them, so
+multi-dataset sources (Lahman, the MLB endpoints, the Statcast leaderboards) do not implement them.
+"""
 
 from collections.abc import AsyncIterator, Iterator
 from typing import Any, Protocol, runtime_checkable
@@ -8,7 +16,7 @@ import pyarrow as pa
 
 @runtime_checkable
 class ExtractorProtocol(Protocol):
-    """Protocol for fetching raw data from endpoints with caching and rate limiting."""
+    """Optional shape guide (not enforced, ADR 39) for fetching raw data with caching and rate limits."""
 
     def extract(self, *args: Any, **kwargs: Any) -> bytes | str | dict[str, Any] | list[Any]:
         """Synchronously extract raw payload."""
@@ -34,7 +42,7 @@ class StreamExtractorProtocol(Protocol):
 
 @runtime_checkable
 class NormalizerProtocol(Protocol):
-    """Protocol for coercing raw records into strongly-typed Arrow representations."""
+    """Optional shape guide (not enforced, ADR 39) for coercing raw records into typed Arrow tables."""
 
     @property
     def schema(self) -> pa.Schema:
