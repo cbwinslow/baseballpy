@@ -51,6 +51,16 @@ jobs:
       # Fails when the generated column dictionaries or docs/CLI.md are stale.
       - run: uv run baseballpy docs generate --check
 
+  specs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      # Every spec has Purpose/Requirements and a scenario per requirement.
+      - run: npx --yes @fission-ai/openspec@1.14.1 validate --specs
+
   build:
     runs-on: ubuntu-latest
     steps:

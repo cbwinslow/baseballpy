@@ -39,8 +39,24 @@ The system MUST provide a CLI tool under `baseballpy audit` allowing users to in
 ### Requirement: Cancellation Is Not Success
 `track`/`async_track` MUST record `CANCELLED` for `CancelledError`/`KeyboardInterrupt` and `FAILURE` for other exceptions, then re-raise.
 
+#### Scenario: Interrupt is recorded as CANCELLED
+- **WHEN** a tracked operation is interrupted by `KeyboardInterrupt` or cancelled
+- **THEN** the audit event has status `CANCELLED`, never `SUCCESS`, and the exception propagates
+- Verified by `tests/test_hardening.py::test_audit_records_cancellation_not_success and ::test_audit_keyboard_interrupt_is_cancelled`.
+
 ### Requirement: Cache Hit Accuracy
 Every source MUST set `cache_hit` true when no network request was made.
 
+#### Scenario: Cached read is audited as a hit
+- **GIVEN** the teams already fetched once
+- **WHEN** they are requested again
+- **THEN** an `mlb_api_cache_read` audit event has `cache_hit` true
+- Verified by `tests/test_sources_hardening.py::test_mlb_cache_hit_is_audited`.
+
 ### Requirement: Lazy Logger
 The default audit logger MUST be created on first use so `BASEBALLPY_HOME` set after import is honored.
+
+#### Scenario: Home set after import is honored
+- **WHEN** `BASEBALLPY_HOME` is set after the package is imported and the default audit logger is first used
+- **THEN** events are written under the new home
+- Verified by `tests/test_hardening.py::test_default_audit_logger_honors_late_home`.

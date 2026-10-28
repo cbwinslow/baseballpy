@@ -20,6 +20,11 @@ The system MUST route all HTTP requests through host-specific token bucket limit
 ### Requirement: Jittered Exponential Backoff
 The system MUST automatically retry failed requests on HTTP 408, 425, 429, 500, 502, 503, 504 and connect timeout errors using exponential backoff with randomized jitter up to `max_retries` (default 5).
 
+#### Scenario: Transient errors retry up to the limit
+- **WHEN** a request fails with a transport error or a retryable status
+- **THEN** it is retried, honoring `Retry-After`, and the client gives up after `max_retries`
+- Verified by `tests/test_hardening.py::test_http_retries_transport_errors, ::test_http_gives_up_after_max_retries and ::test_http_retries_429_with_retry_after_then_succeeds`.
+
 ### Requirement: Single Shared HTTP Client
 Every network fetch MUST go through `baseballpy.core.http.HttpClient`, applying a per-host token bucket, a global bounded semaphore, HTTP/2 pooling and jittered exponential retry.
 

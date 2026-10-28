@@ -25,11 +25,42 @@ All persisted data MUST live under `$BASEBALLPY_HOME` (default `~/.baseballpy/`)
 ### Requirement: Dataset Registry and Views
 Every dataset MUST be described by a `DatasetSpec` (schema, keys, partitioning, view name, documentation anchor) in the registry; the DuckDB catalog MUST create one view per dataset with data, reading only `processed/`, with a single `season` column for season-partitioned data. Read-only connections MUST NOT create views and MUST raise `DatabaseReadOnlyError` naming `baseballpy db sync` when views are missing.
 
+#### Scenario: Every dataset with data gets a view
+- **WHEN** `sync_database` runs on a lake holding registered datasets
+- **THEN** each dataset with data has one view over `processed/`
+- Verified by `tests/test_database.py::test_every_registered_dataset_with_data_gets_a_view`.
+
+#### Scenario: Read-only connections do not create views
+- **WHEN** a read-only connection is opened before views exist
+- **THEN** `DatabaseReadOnlyError` names `baseballpy db sync`, and after a sync the read-only connection works
+- Verified by `tests/test_database.py::test_read_only_requires_views_then_works and ::test_read_only_sync_is_refused`.
+
 ### Requirement: Layout Migration
 `baseballpy migrate-layout` MUST convert a v1 tree to v2 idempotently, verify checksums and row counts, carry v1 manifest entries over, report (never move) unknown files, never delete v1 data unless `--delete-old` is passed, and write `VERSION` last. A detected v1 tree MUST only produce a one-time warning; nothing is moved automatically.
 
+#### Scenario: Migration is idempotent and keeps v1
+- **WHEN** `migrate-layout` runs twice, without `--delete-old`
+- **THEN** the second run changes nothing and the v1 data is still present
+- Verified by `tests/test_migrate.py::test_migration_is_idempotent and ::test_v1_data_is_never_deleted_unless_requested`.
+
+#### Scenario: Corrupt copy aborts before the version stamp
+- **WHEN** a copied file fails the checksum or row-count check
+- **THEN** the migration aborts and `VERSION` is not written
+- Verified by `tests/test_migrate.py::test_corrupt_copy_aborts_without_version_stamp`.
+
 ### Requirement: Reproducible Source Refs
 GitHub-hosted sources MUST be fetched at a pinned commit SHA recorded in `core/sources_lock.json` (overridable per source by environment) and in each manifest entry's `source_ref`; a chunk recorded at a different ref MUST be refetched. `baseballpy refs update` MUST resolve the latest SHAs through the shared HTTP client.
+
+#### Scenario: Chunk fetched at another ref is refetched
+- **GIVEN** a chunk recorded at a different `source_ref` than the pinned one
+- **WHEN** it is requested
+- **THEN** it is fetched again at the pinned ref
+- Verified by `tests/test_sources_lock.py::test_lahman_chunk_fetched_at_other_ref_is_refetched`.
+
+#### Scenario: Refs update resolves latest SHAs
+- **WHEN** `baseballpy refs update` runs
+- **THEN** the latest SHAs are resolved through the shared client and written to the lake-level lock (`--dry-run` writes nothing)
+- Verified by `tests/test_sources_lock.py::test_update_lock_resolves_latest_shas_and_writes_lake_lock and ::test_cli_refs_update_dry_run`.
 
 ### Requirement: Two-Phase Atomic Writing (`.part` to Target)
 Every network download and columnar Parquet write MUST write to `{target_path}.part` and execute atomic `os.replace()` only after verifying record boundary and footer integrity.
@@ -74,3 +105,8 @@ Manifests MUST be safe under concurrent writers and MUST NOT silently discard co
 
 ### Requirement: Dead-Letter Quarantine
 Rows failing coercion MUST be written to `quarantine/<source>/<date>/` with reason and context, and a structured warning MUST be logged.
+
+#### Scenario: Bad cell is quarantined with its reason
+- **WHEN** a cell fails coercion
+- **THEN** a dead-letter file under `quarantine/<source>/<date>/` records the reason and context, and only the bad cell becomes NULL
+- Verified by `tests/test_hardening.py::test_quarantine_writes_dead_letters and ::test_checked_cast_nulls_only_bad_cells_and_quarantines`.

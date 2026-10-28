@@ -1,0 +1,36 @@
+"""Every spec scenario that cites a test names a test that exists."""
+
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+def _citations() -> list[tuple[str, str, str]]:
+    found: list[tuple[str, str, str]] = []
+    for spec in sorted((ROOT / "openspec" / "specs").glob("*/spec.md")):
+        for line in spec.read_text(encoding="utf-8").splitlines():
+            if not line.startswith("- Verified by "):
+                continue
+            current = ""
+            for match in re.finditer(r"(tests/\w+\.py)|::(\w+)", line):
+                if match.group(1):
+                    current = match.group(1)
+                else:
+                    found.append((spec.parent.name, current, match.group(2)))
+    return found
+
+
+def test_specs_cite_tests() -> None:
+    assert len(_citations()) >= 45
+
+
+def test_every_cited_test_exists() -> None:
+    missing = []
+    for spec, file, name in _citations():
+        path = ROOT / file
+        if not path.is_file() or not re.search(
+            rf"(?m)^(async )?def {re.escape(name)}\(", path.read_text(encoding="utf-8")
+        ):
+            missing.append(f"{spec}: {file}::{name}")
+    assert not missing, missing

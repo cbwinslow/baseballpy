@@ -31,5 +31,15 @@
 ### Requirement: Protocol Conformance
 All sinks MUST implement `write(table, destination, **kw) -> int` and `write_stream(reader, destination, **kw) -> int`.
 
+#### Scenario: Every sink has write and write_stream
+- **WHEN** the sinks are inspected
+- **THEN** each implements `write(table, destination, **kw)` and `write_stream(reader, destination, **kw)`
+- Verified by `tests/test_hardening.py::test_all_sinks_conform_to_protocol_signatures`.
+
 ### Requirement: Atomic Parquet
 `ParquetSink` MUST write via `.part` + atomic replace and support `partition_by`.
+
+#### Scenario: Parquet is written atomically and partitioned
+- **WHEN** `ParquetSink` writes with `partition_by`
+- **THEN** it writes through `.part` and an atomic replace, leaving no partial file
+- Verified by `tests/test_hardening.py::test_parquet_sink_atomic_and_partitioned`.

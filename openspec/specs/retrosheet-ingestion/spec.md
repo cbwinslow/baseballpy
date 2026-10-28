@@ -35,8 +35,18 @@ Raw event, roster, gamelog and reference files MUST be stored under `raw/retrosh
 ### Requirement: Tree-Driven Discovery
 Available seasons and files MUST be discovered from the upstream repository tree at the pinned ref, not hard-coded; file kinds map to datasets through a pattern registry and files no pattern covers MUST be reported.
 
+#### Scenario: Seasons and kinds come from the tree
+- **WHEN** seasons and files are discovered
+- **THEN** they come from the cached upstream tree at the pinned ref, every published file kind is classified, and unclassified files are reported
+- Verified by `tests/test_retrosheet_coverage.py::test_tree_is_cached_and_seasons_come_from_it and ::test_classify_covers_every_published_file_kind`.
+
 ### Requirement: Complete Dataset Set
 The system MUST ingest event files (regular `events`, `events_postseason`, `events_deduced`), rosters, regular and postseason game logs, schedules (including `schedule_original`), umpires, discrepancy files, every CSV under `reference/`, and the derived `boxscores_*`, `daily_splits` and `substitutions` tables. Box-score game accounts (`.EB*`) MUST be stored raw and parsed into the `box_*` datasets (see Box-Score Game Accounts).
+
+#### Scenario: A season produces every dataset
+- **WHEN** a season is ingested
+- **THEN** every Retrosheet dataset is produced and the box files are kept raw; the registry has every Retrosheet dataset, including `schedule_original`
+- Verified by `tests/test_retrosheet_coverage.py::test_ingest_season_produces_every_dataset_and_keeps_box_files_raw_only, ::test_registry_has_every_retrosheet_dataset and ::test_original_schedule_is_its_own_dataset`.
 
 ### Requirement: Honest Completion
 A season MUST be marked COMPLETED only if every file the tree lists for it is present and valid; a tree-listed file answering 404 is recorded `ABSENT`; a 404 is never success. Every raw file records its sha256 and the pinned `source_ref`.
@@ -49,8 +59,23 @@ A season MUST be marked COMPLETED only if every file the tree lists for it is pr
 ### Requirement: Streaming Parse
 Parsing MUST stream into Parquet row-group batches (one per source file) without accumulating whole-season Python lists; CPU-bound parsing MAY use a bounded process pool.
 
+#### Scenario: One row group per file, pool equals in-process
+- **WHEN** events are parsed
+- **THEN** they stream into one part with a row group per file, and process-pool parsing equals in-process parsing
+- Verified by `tests/test_retrosheet_coverage.py::test_events_are_streamed_into_one_part_with_a_row_group_per_file and ::test_process_pool_parsing_matches_in_process_parsing`.
+
 ### Requirement: GPL Boundary
 `chadwickpy` MUST be imported only from `sources/retrosheet/_chadwick_adapter.py`, which raises an `ImportError` naming the `retrosheet` extra when the package is missing.
 
+#### Scenario: Only the adapter imports chadwickpy
+- **WHEN** the package is scanned
+- **THEN** only `_chadwick_adapter.py` imports `chadwickpy`, and without it an `ImportError` explains how to install it
+- Verified by `tests/test_retrosheet_coverage.py::test_only_the_adapter_imports_chadwickpy and ::test_adapter_raises_a_helpful_error_when_chadwickpy_is_missing`.
+
 ### Requirement: Box-Score Game Accounts (interim)
 Every `.EB*` file MUST be parsed: `id`/`version`/`info` into `box_games` (typed, `unknown` as NULL, unknown keys in `_extras`), `start` into `box_starters`, `stat,bline` into `box_batting_lines`, and every other record (including unknown kinds) losslessly into `box_records` with its raw line; an unexpected field count for a typed kind MUST raise. Typed datasets for the remaining kinds follow once the official layout document is available.
+
+#### Scenario: Every line accounted for, unknown kinds kept, bad layouts raise
+- **WHEN** real box accounts are parsed
+- **THEN** every line is accounted for, unknown record kinds are preserved with their raw line, and an unexpected field count raises
+- Verified by `tests/test_retrosheet_box.py::test_every_line_of_real_games_is_accounted_for, ::test_unknown_record_kind_is_preserved_not_dropped and ::test_unexpected_layouts_raise_instead_of_guessing`.

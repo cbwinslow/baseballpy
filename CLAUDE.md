@@ -36,7 +36,7 @@ uv run mypy --strict src                         # use `uv run`: bare `uvx mypy`
 uv run baseballpy docs generate [--check]        # regenerates column dictionaries; tests fail on stale docs
 ```
 
-The four gates are `pytest`, `ruff check`, `ruff format --check`, `mypy --strict src`; `tests/test_docsgen.py` and `tests/test_lake.py` also enforce docs and registry consistency.
+The four gates are `pytest`, `ruff check`, `ruff format --check`, `mypy --strict src`; `tests/test_docsgen.py` and `tests/test_lake.py` also enforce docs and registry consistency. `openspec validate --specs` (CI job `specs`) checks that every spec requirement has a scenario; `tests/test_spec_scenarios.py` checks that every test a scenario cites exists.
 
 ## Architecture (needs several files to see)
 
