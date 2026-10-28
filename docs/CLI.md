@@ -296,6 +296,8 @@ Options:
   --dry-run                       Plan jobs and print them without executing.
   -c, --concurrency INTEGER RANGE
                                   Max concurrent worker threads (minimum 1).  [x>=1]
+  --limit INTEGER RANGE           Bound the per-game, per-player or per-game-feed fan-out of opt-in
+                                  datasets (default: all).  [x>=1]
   --stop-on-error                 Halt execution immediately when a job raises an error.
   --json                          Output results as newline-delimited JSON objects.
   --help                          Show this message and exit.

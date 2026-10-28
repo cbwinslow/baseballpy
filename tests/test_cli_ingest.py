@@ -402,3 +402,30 @@ def test_catalog_show_reports_the_ingest_mode() -> None:
     data = json.loads(res.output)
     assert data["ingest"] == "api_only"
     assert data["ingest_note"]
+
+
+def test_limit_option_reaches_the_planned_opt_in_jobs() -> None:
+    result = CliRunner().invoke(
+        main,
+        [
+            "ingest",
+            "mlb_api",
+            "--seasons",
+            "2023",
+            "--datasets",
+            "games,people_stats",
+            "--limit",
+            "5",
+            "--dry-run",
+            "--json",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    ids = [json.loads(line)["job_id"] for line in result.output.strip().splitlines()]
+    assert "mlb_api:people_stats:limit=5:season=2023" in ids
+    assert any(i.startswith("mlb_api:season:games=True:limit=5") for i in ids)
+
+
+def test_limit_must_be_positive() -> None:
+    result = CliRunner().invoke(main, ["ingest", "mlb_api", "--limit", "0", "--dry-run"])
+    assert result.exit_code == 2

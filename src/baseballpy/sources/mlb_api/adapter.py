@@ -8,7 +8,7 @@ from baseballpy.ingest.results import counts_to_result
 from baseballpy.ingest.types import Job, JobResult, Selection, make_job
 
 FIRST_SEASON = 1876
-KNOWN_DATASETS = {"reference", "season", "games", "history"}
+KNOWN_DATASETS = {"reference", "season", "games", "history", "people_stats"}
 DEFAULT_DATASETS = ("reference", "season")
 
 
@@ -52,9 +52,23 @@ class MlbApiAdapter:
                 if "season" in wanted:
                     jobs.append(make_job("mlb_api", "season", season=season))
                 if "games" in wanted:
-                    jobs.append(make_job("mlb_api", "season", games=True, season=season))
+                    jobs.append(
+                        make_job(
+                            "mlb_api",
+                            "season",
+                            games=True,
+                            season=season,
+                            **selection.limit_params(),
+                        )
+                    )
                 if "history" in wanted:
                     jobs.append(make_job("mlb_api", "history", season=season))
+                if "people_stats" in wanted:
+                    jobs.append(
+                        make_job(
+                            "mlb_api", "people_stats", season=season, **selection.limit_params()
+                        )
+                    )
         return jobs
 
     def run(self, job: Job, *, refresh: bool = False) -> JobResult:
@@ -72,7 +86,19 @@ class MlbApiAdapter:
                 raise ValueError(f"job {job.job_id} missing 'season' parameter")
             season = int(season_val)
             include_games = bool(job.param("games", False))
-            reports = source.ingest_season(season, include_games=include_games, refresh=refresh)
+            reports = source.ingest_season(
+                season, include_games=include_games, max_games=job.limit, refresh=refresh
+            )
+            counts = [None if r.requests == r.cached else r.rows for r in reports]
+            return counts_to_result(job, counts)
+
+        if job.task == "people_stats":
+            season_val = job.param("season")
+            if season_val is None:
+                raise ValueError(f"job {job.job_id} missing 'season' parameter")
+            reports = source.ingest_people_stats(
+                int(season_val), max_people=job.limit, refresh=refresh
+            )
             counts = [None if r.requests == r.cached else r.rows for r in reports]
             return counts_to_result(job, counts)
 

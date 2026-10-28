@@ -100,9 +100,9 @@ class MlbEndpoint:
     def ingest_mode(self) -> tuple[IngestMode, str]:
         """How ``ingest`` reaches this dataset, mirroring :class:`MlbApiSource` (mode, note)."""
         if self.scope == "game":
-            return "opt_in", "per-game: ingest mlb_api --datasets games"
+            return "opt_in", "per-game: ingest mlb_api --datasets games [--limit N]"
         if self.scope == "person_season":
-            return "opt_in", "per-player: MlbApiSource.ingest_people_stats"
+            return "opt_in", "per-player: ingest mlb_api --datasets people_stats [--limit N]"
         if self.heavy:
             return "opt_in", "all-time pool: ingest mlb_api --datasets history"
         if self.scope in ("since", "query"):

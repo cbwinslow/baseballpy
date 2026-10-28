@@ -178,11 +178,13 @@ class FakeStatcastLeaderboards:
 
 class FakeStatcastGameFeed:
     def __init__(self) -> None:
-        self.calls: list[tuple[int, bool]] = []
+        self.calls: list[tuple[int, int | None, bool]] = []
         self.report = FakeGameFeedReport(2023, games=10, fetched=2, cached=8)
 
-    def ingest_season(self, season: int, refresh: bool = False) -> FakeGameFeedReport:
-        self.calls.append((season, refresh))
+    def ingest_season(
+        self, season: int, max_games: int | None = None, refresh: bool = False
+    ) -> FakeGameFeedReport:
+        self.calls.append((season, max_games, refresh))
         return self.report
 
 
@@ -285,6 +287,9 @@ class FakeMlbApiSource:
         self.ref_reports = [FakeEndpointReport("teams", requests=2, rows=30, cached=0)]
         self.season_reports = [FakeEndpointReport("schedule", requests=5, rows=2430, cached=1)]
         self.history_reports = [FakeEndpointReport("career_stats", requests=1, rows=500, cached=0)]
+        self.people_reports = [FakeEndpointReport("people_stats_season_hitting", 25, 900, 0)]
+        self.people_calls: list[tuple[int, int | None]] = []
+        self.season_calls: list[tuple[int, bool, int | None]] = []
 
     def ingest_reference(self, refresh: bool = False) -> list[FakeEndpointReport]:
         return self.ref_reports
@@ -301,10 +306,17 @@ class FakeMlbApiSource:
         max_people: int | None = None,
         refresh: bool = False,
     ) -> list[FakeEndpointReport]:
+        self.season_calls.append((season, include_games, max_games))
         return self.season_reports
 
     def ingest_history(self, season: int, refresh: bool = False) -> list[FakeEndpointReport]:
         return self.history_reports
+
+    def ingest_people_stats(
+        self, season: int, max_people: int | None = None, refresh: bool = False
+    ) -> list[FakeEndpointReport]:
+        self.people_calls.append((season, max_people))
+        return self.people_reports
 
 
 def test_mlb_api_adapter_protocol_and_plan() -> None:
@@ -524,3 +536,34 @@ def test_retrosheet_adapter() -> None:
     # unknown task
     with pytest.raises(ValueError, match="unknown task"):
         adapter.run(make_job("retrosheet", "unknown"))
+
+
+def test_limit_bounds_the_opt_in_fan_out_of_mlb_and_statcast_jobs() -> None:
+    mlb_source = FakeMlbApiSource()
+    mlb = MlbApiAdapter(mlb_source)
+    selection = Selection(seasons=(2023,), datasets=("games", "people_stats", "season"), limit=7)
+    jobs = {(j.task, bool(j.param("games", False))): j for j in mlb.plan(selection)}
+    assert jobs[("season", True)].limit == 7
+    assert jobs[("people_stats", False)].limit == 7
+    assert jobs[("season", False)].limit is None  # the default season job is never bounded
+
+    mlb.run(jobs[("season", True)])
+    mlb.run(jobs[("people_stats", False)])
+    assert mlb_source.season_calls == [(2023, True, 7)]
+    assert mlb_source.people_calls == [(2023, 7)]
+
+    feed = FakeStatcastGameFeed()
+    statcast = StatcastAdapter(
+        extractor=FakeStatcastExtractor(), leaderboards=FakeStatcastLeaderboards(), game_feed=feed
+    )
+    (job,) = statcast.plan(Selection(seasons=(2023,), datasets=("game_feed",), limit=3))
+    statcast.run(job)
+    assert feed.calls == [(2023, 3, False)]
+
+
+def test_unbounded_selection_plans_jobs_without_a_limit() -> None:
+    jobs = MlbApiAdapter(FakeMlbApiSource()).plan(
+        Selection(seasons=(2023,), datasets=("games", "people_stats"))
+    )
+    assert jobs
+    assert all(job.limit is None and job.param("limit") is None for job in jobs)

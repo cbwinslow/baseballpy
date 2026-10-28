@@ -215,6 +215,12 @@ def split_datasets(tokens: Sequence[str], sources: Sequence[str]) -> dict[str, t
     help="Max concurrent worker threads (minimum 1).",
 )
 @click.option(
+    "--limit",
+    type=click.IntRange(min=1),
+    default=None,
+    help="Bound the per-game, per-player or per-game-feed fan-out of opt-in datasets (default: all).",
+)
+@click.option(
     "--stop-on-error",
     is_flag=True,
     help="Halt execution immediately when a job raises an error.",
@@ -234,6 +240,7 @@ def ingest_cmd(
     refresh: bool,
     dry_run: bool,
     concurrency: int,
+    limit: int | None,
     stop_on_error: bool,
     as_json: bool,
 ) -> None:
@@ -262,6 +269,7 @@ def ingest_cmd(
                 sources=(source,),
                 datasets=by_source.get(source, ()),
                 refresh=refresh,
+                limit=limit,
             )
             jobs = plan_jobs({source: adapter}, sel)
             planned_jobs.extend(jobs)

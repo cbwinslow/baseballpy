@@ -22,6 +22,12 @@ class Selection:
     sources: tuple[str, ...] = ()
     datasets: tuple[str, ...] = ()
     refresh: bool = False
+    #: bounds the per-subject fan-out of opt-in datasets (games, people, game feeds); ``None`` = all
+    limit: int | None = None
+
+    def limit_params(self) -> dict[str, int]:
+        """The fan-out bound as job parameters (empty when unbounded)."""
+        return {} if self.limit is None else {"limit": self.limit}
 
 
 @dataclass(frozen=True)
@@ -37,6 +43,12 @@ class Job:
         """Deterministic identifier: ``<source>:<task>[:<k>=<v>...]``."""
         suffix = "".join(f":{k}={v}" for k, v in self.params)
         return f"{self.source}:{self.task}{suffix}"
+
+    @property
+    def limit(self) -> int | None:
+        """The fan-out bound this job was planned with, if any."""
+        value = self.param("limit")
+        return None if value is None else int(value)
 
     def param(self, name: str, default: str | int | bool | None = None) -> str | int | bool | None:
         """Look up a parameter by name, returning ``default`` if absent."""

@@ -77,7 +77,9 @@ class StatcastAdapter:
             if "leaderboards" in wanted:
                 jobs.append(make_job("statcast", "leaderboards", season=season))
             if "game_feed" in wanted:
-                jobs.append(make_job("statcast", "game_feed", season=season))
+                jobs.append(
+                    make_job("statcast", "game_feed", season=season, **selection.limit_params())
+                )
         return jobs
 
     def run(self, job: Job, *, refresh: bool = False) -> JobResult:
@@ -122,7 +124,9 @@ class StatcastAdapter:
             if season_val is None:
                 raise ValueError(f"job {job.job_id} missing 'season' parameter")
             season = int(season_val)
-            report = self._get_game_feed().ingest_season(season, refresh=refresh)
+            report = self._get_game_feed().ingest_season(
+                season, max_games=job.limit, refresh=refresh
+            )
             if report.fetched == 0 and report.games > 0:
                 return JobResult(
                     job=job,
