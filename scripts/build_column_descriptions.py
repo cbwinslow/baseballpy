@@ -147,8 +147,47 @@ def structural(column: str) -> str | None:
     return None
 
 
+GLOSSARY = "https://www.mlb.com/glossary/statcast/"
+#: leaderboard columns whose name is exactly the metric's own abbreviation, with the MLB glossary
+#: page that defines the metric (the provider's text; a column not listed stays undescribed)
+GLOSSARY_COLUMNS = {
+    "xwoba": "expected-woba",
+    "xba": "expected-batting-average",
+    "xslg": "expected-slugging-percentage",
+    "xera": "expected-era",
+    "hard_hit_percent": "hard-hit-rate",
+    "sprint_speed": "sprint-speed",
+    "spin_rate": "spin-rate",
+    "arm_strength": "arm-strength",
+    "attack_angle": "attack-angle",
+    "attack_direction": "attack-direction",
+    "swing_length": "swing-length",
+    "swing_tilt": "swing-path-tilt",
+    "oaa": "outs-above-average",
+    "bolts": "bolt",
+    "anglesweetspotpercent": "sweet-spot",
+    "squared_up_rate": "squared-up",
+    "barrels": "barrel",
+}
+_GLOSSARY_PARAGRAPH = re.compile(r"\\u003cp\\u003e(.*?)\\u003c/p")
+_FIRST_SENTENCE = re.compile(r"^.*?[.!?](?=\s+[A-Z\"']|$)", re.DOTALL)
+
+
+def glossary_definition(page: str) -> str:
+    """First sentence of the first paragraph of an MLB glossary page (its JSON-embedded body)."""
+    backslash = chr(92)
+    for raw in _GLOSSARY_PARAGRAPH.findall(page):
+        text = raw.replace(backslash + "u003c", "<").replace(backslash + "u003e", ">")
+        text = text.replace(backslash + "u0026", "&").replace(backslash + '"', '"')
+        text = clean(text)
+        if len(text) > 30:
+            match = _FIRST_SENTENCE.match(text)
+            return match.group(0) if match else text
+    return ""
+
+
 def build_statcast(http: HttpClient) -> dict[str, Any]:
-    """Statcast descriptions from the provider's pitch CSV documentation page."""
+    """Statcast descriptions: the pitch CSV page, plus the MLB glossary for named leaderboard metrics."""
     page = http.get_sync(CSV_DOCS).content.decode("utf-8", "replace")
     docs = csv_docs(page)
     if not docs:
@@ -159,11 +198,17 @@ def build_statcast(http: HttpClient) -> dict[str, Any]:
         for col in sorted(pitch_columns)
         if col in docs
     }
-    return {
-        "_sources": {"savant_csv_docs": CSV_DOCS},
-        "pitches": entry,
-        "pitches_minors": entry,
-    }
+    sources = {"savant_csv_docs": CSV_DOCS}
+    star: dict[str, Any] = {}
+    for column, term in sorted(GLOSSARY_COLUMNS.items()):
+        url = f"{GLOSSARY}{term}"
+        text = glossary_definition(http.get_sync(url).content.decode("utf-8", "replace"))
+        if not text:
+            raise SystemExit(f"no definition found at {url}; the page layout changed")
+        key = f"mlb_glossary_{term.replace('-', '_')}"
+        sources[key] = url
+        star[column] = {"text": text, "source": key}
+    return {"_sources": sources, "*": star, "pitches": entry, "pitches_minors": entry}
 
 
 LAHMAN_README = (

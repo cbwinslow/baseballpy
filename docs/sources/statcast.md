@@ -117,6 +117,23 @@ The `StatcastLeaderboard` enum has one member per supported slug (a test compare
 <!-- BEGIN GENERATED:statcast.description_sources -->
 ### Description sources
 
+- `mlb_glossary_arm_strength`: https://www.mlb.com/glossary/statcast/arm-strength
+- `mlb_glossary_attack_angle`: https://www.mlb.com/glossary/statcast/attack-angle
+- `mlb_glossary_attack_direction`: https://www.mlb.com/glossary/statcast/attack-direction
+- `mlb_glossary_barrel`: https://www.mlb.com/glossary/statcast/barrel
+- `mlb_glossary_bolt`: https://www.mlb.com/glossary/statcast/bolt
+- `mlb_glossary_expected_batting_average`: https://www.mlb.com/glossary/statcast/expected-batting-average
+- `mlb_glossary_expected_era`: https://www.mlb.com/glossary/statcast/expected-era
+- `mlb_glossary_expected_slugging_percentage`: https://www.mlb.com/glossary/statcast/expected-slugging-percentage
+- `mlb_glossary_expected_woba`: https://www.mlb.com/glossary/statcast/expected-woba
+- `mlb_glossary_hard_hit_rate`: https://www.mlb.com/glossary/statcast/hard-hit-rate
+- `mlb_glossary_outs_above_average`: https://www.mlb.com/glossary/statcast/outs-above-average
+- `mlb_glossary_spin_rate`: https://www.mlb.com/glossary/statcast/spin-rate
+- `mlb_glossary_sprint_speed`: https://www.mlb.com/glossary/statcast/sprint-speed
+- `mlb_glossary_squared_up`: https://www.mlb.com/glossary/statcast/squared-up
+- `mlb_glossary_sweet_spot`: https://www.mlb.com/glossary/statcast/sweet-spot
+- `mlb_glossary_swing_length`: https://www.mlb.com/glossary/statcast/swing-length
+- `mlb_glossary_swing_path_tilt`: https://www.mlb.com/glossary/statcast/swing-path-tilt
 - `savant_csv_docs`: https://baseballsavant.mlb.com/csv-docs
 
 <!-- END GENERATED:statcast.description_sources -->
@@ -188,7 +205,7 @@ Pitch-level Statcast search results.
 | `hc_x` | float | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
 | `hc_y` | float | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
 | `bat_speed` | float | yes | — | TODO |
-| `swing_length` | float | yes | — | TODO |
+| `swing_length` | float | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
 | `estimated_ba_using_speedangle` | float | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
 | `estimated_woba_using_speedangle` | float | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
 | `woba_value` | float | yes | — | wOBA value based on result of play. (src: savant_csv_docs) |
@@ -503,7 +520,7 @@ Bat speed, swing length, squared-up and blast rates per batter-season (2023+).
 | `squared_up_per_swing` | double | yes | — | TODO |
 | `blast_per_bat_contact` | double | yes | — | TODO |
 | `blast_per_swing` | double | yes | — | TODO |
-| `swing_length` | double | yes | — | TODO |
+| `swing_length` | double | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
 | `swords` | int16 | yes | — | TODO |
 | `batter_run_value` | double | yes | — | TODO |
 | `whiffs` | int16 | yes | — | TODO |
@@ -634,7 +651,7 @@ Exit velocity, launch angle and barrels per batter-season (batted-ball events).
 | `player_id` | int32 | yes | — | TODO |
 | `attempts` | int16 | yes | — | TODO |
 | `avg_hit_angle` | double | yes | — | TODO |
-| `anglesweetspotpercent` | double | yes | — | TODO |
+| `anglesweetspotpercent` | double | yes | — | Colloquially, a player who hits the ball solidly is said to have gotten the "sweet spot" of the bat on the ball. (src: mlb_glossary_sweet_spot) |
 | `max_hit_speed` | double | yes | — | TODO |
 | `avg_hit_speed` | double | yes | — | TODO |
 | `ev50` | double | yes | — | TODO |
@@ -645,7 +662,7 @@ Exit velocity, launch angle and barrels per batter-season (batted-ball events).
 | `avg_hr_distance` | int16 | yes | — | TODO |
 | `ev95plus` | int16 | yes | — | TODO |
 | `ev95percent` | double | yes | — | TODO |
-| `barrels` | int16 | yes | — | TODO |
+| `barrels` | int16 | yes | — | The Barrel classification is assigned to batted-ball events whose comparable hit types (in terms of exit velocity and launch angle) have led to a minimum .500 batting average and 1.500 slugging percentage since Statcast was implemented Major League wide in 2015. (src: mlb_glossary_barrel) |
 | `brl_percent` | double | yes | — | TODO |
 | `brl_pa` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
@@ -668,7 +685,7 @@ Exit velocity and barrels per batting team-season.
 | `team_id` | string | yes | — | TODO |
 | `attempts` | int16 | yes | — | TODO |
 | `avg_hit_angle` | double | yes | — | TODO |
-| `anglesweetspotpercent` | double | yes | — | TODO |
+| `anglesweetspotpercent` | double | yes | — | Colloquially, a player who hits the ball solidly is said to have gotten the "sweet spot" of the bat on the ball. (src: mlb_glossary_sweet_spot) |
 | `max_hit_speed` | double | yes | — | TODO |
 | `avg_hit_speed` | double | yes | — | TODO |
 | `ev50` | double | yes | — | TODO |
@@ -679,7 +696,7 @@ Exit velocity and barrels per batting team-season.
 | `avg_hr_distance` | int16 | yes | — | TODO |
 | `ev95plus` | int16 | yes | — | TODO |
 | `ev95percent` | double | yes | — | TODO |
-| `barrels` | int16 | yes | — | TODO |
+| `barrels` | int16 | yes | — | The Barrel classification is assigned to batted-ball events whose comparable hit types (in terms of exit velocity and launch angle) have led to a minimum .500 batting average and 1.500 slugging percentage since Statcast was implemented Major League wide in 2015. (src: mlb_glossary_barrel) |
 | `brl_percent` | double | yes | — | TODO |
 | `brl_pa` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
@@ -702,7 +719,7 @@ Exit velocity, launch angle and barrels allowed per pitcher-season.
 | `player_id` | int32 | yes | — | TODO |
 | `attempts` | int16 | yes | — | TODO |
 | `avg_hit_angle` | double | yes | — | TODO |
-| `anglesweetspotpercent` | double | yes | — | TODO |
+| `anglesweetspotpercent` | double | yes | — | Colloquially, a player who hits the ball solidly is said to have gotten the "sweet spot" of the bat on the ball. (src: mlb_glossary_sweet_spot) |
 | `max_hit_speed` | double | yes | — | TODO |
 | `avg_hit_speed` | double | yes | — | TODO |
 | `ev50` | double | yes | — | TODO |
@@ -713,7 +730,7 @@ Exit velocity, launch angle and barrels allowed per pitcher-season.
 | `avg_hr_distance` | int16 | yes | — | TODO |
 | `ev95plus` | int16 | yes | — | TODO |
 | `ev95percent` | double | yes | — | TODO |
-| `barrels` | int16 | yes | — | TODO |
+| `barrels` | int16 | yes | — | The Barrel classification is assigned to batted-ball events whose comparable hit types (in terms of exit velocity and launch angle) have led to a minimum .500 batting average and 1.500 slugging percentage since Statcast was implemented Major League wide in 2015. (src: mlb_glossary_barrel) |
 | `brl_percent` | double | yes | — | TODO |
 | `brl_pa` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
@@ -736,7 +753,7 @@ Exit velocity and barrels allowed per pitching team-season.
 | `team_id` | string | yes | — | TODO |
 | `attempts` | int16 | yes | — | TODO |
 | `avg_hit_angle` | double | yes | — | TODO |
-| `anglesweetspotpercent` | double | yes | — | TODO |
+| `anglesweetspotpercent` | double | yes | — | Colloquially, a player who hits the ball solidly is said to have gotten the "sweet spot" of the bat on the ball. (src: mlb_glossary_sweet_spot) |
 | `max_hit_speed` | double | yes | — | TODO |
 | `avg_hit_speed` | double | yes | — | TODO |
 | `ev50` | double | yes | — | TODO |
@@ -747,7 +764,7 @@ Exit velocity and barrels allowed per pitching team-season.
 | `avg_hr_distance` | int16 | yes | — | TODO |
 | `ev95plus` | int16 | yes | — | TODO |
 | `ev95percent` | double | yes | — | TODO |
-| `barrels` | int16 | yes | — | TODO |
+| `barrels` | int16 | yes | — | The Barrel classification is assigned to batted-ball events whose comparable hit types (in terms of exit velocity and launch angle) have led to a minimum .500 batting average and 1.500 slugging percentage since Statcast was implemented Major League wide in 2015. (src: mlb_glossary_barrel) |
 | `brl_percent` | double | yes | — | TODO |
 | `brl_pa` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
@@ -811,7 +828,7 @@ Expected stats (xBA, xSLG, xwOBA, xERA) per pitcher-season.
 | `est_woba` | double | yes | — | TODO |
 | `est_woba_minus_woba_diff` | double | yes | — | TODO |
 | `era` | double | yes | — | TODO |
-| `xera` | double | yes | — | TODO |
+| `xera` | double | yes | — | Expected ERA, or xERA, is a simple 1:1 translation of Expected Weighted On-Base Average (xwOBA), converted to the ERA scale. xwOBA takes into account the amount of contact (strikeouts, walks, hit by pitch) and the quality of that contact (exit velocity and launch angle), in an attempt to credit the pitcher or hitter for the moment of contact, not for what might happen to that contact thanks to other factors like ballpark, weather, or defense. (src: mlb_glossary_expected_era) |
 | `era_minus_xera_diff` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -967,26 +984,26 @@ Statcast percentile inputs per batter-season.
 | `player_name` | string | yes | — | TODO |
 | `player_id` | int32 | yes | — | TODO |
 | `year` | int16 | yes | — | TODO |
-| `xwoba` | int16 | yes | — | TODO |
-| `xba` | int16 | yes | — | TODO |
-| `xslg` | int16 | yes | — | TODO |
+| `xwoba` | int16 | yes | — | Expected Weighted On-base Average (xwOBA) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_woba) |
+| `xba` | int16 | yes | — | Expected Batting Average (xBA) is a Statcast metric that measures the likelihood that a batted ball will become a hit. (src: mlb_glossary_expected_batting_average) |
+| `xslg` | int16 | yes | — | Expected Slugging Percentage (xSLG) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_slugging_percentage) |
 | `xiso` | int16 | yes | — | TODO |
 | `xobp` | int16 | yes | — | TODO |
 | `brl` | int16 | yes | — | TODO |
 | `brl_percent` | int16 | yes | — | TODO |
 | `exit_velocity` | int16 | yes | — | TODO |
 | `max_ev` | int16 | yes | — | TODO |
-| `hard_hit_percent` | int16 | yes | — | TODO |
+| `hard_hit_percent` | int16 | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
 | `k_percent` | int16 | yes | — | TODO |
 | `bb_percent` | int16 | yes | — | TODO |
 | `whiff_percent` | int16 | yes | — | TODO |
 | `chase_percent` | int16 | yes | — | TODO |
-| `arm_strength` | string | yes | — | TODO |
-| `sprint_speed` | int16 | yes | — | TODO |
-| `oaa` | string | yes | — | TODO |
+| `arm_strength` | string | yes | — | On an individual play, Arm Strength is defined as the maximum velocity of any throw made by a fielder -- with the max velocity always being at the release point, due to physics. (src: mlb_glossary_arm_strength) |
+| `sprint_speed` | int16 | yes | — | Introduced during the 2017 season, Sprint Speed is a Statcast metric that aims to more precisely quantify speed by measuring how many feet per second a player runs in his fastest one-second window. (src: mlb_glossary_sprint_speed) |
+| `oaa` | string | yes | — | Outs Above Average (OAA) is a range-based metric of skill that shows how many outs a player has saved. (src: mlb_glossary_outs_above_average) |
 | `bat_speed` | string | yes | — | TODO |
-| `squared_up_rate` | string | yes | — | TODO |
-| `swing_length` | string | yes | — | TODO |
+| `squared_up_rate` | string | yes | — | A swing’s squared-up rate tells us how much of the highest possible exit velocity available (based on the physics related to the swing speed and pitch speed) a batter was able to obtain – it is, at its simplest, how much exit velocity did you get as a share of how much exit velocity was possible based on your swing speed and the speed of the pitch. (src: mlb_glossary_squared_up) |
+| `swing_length` | string | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_percentile_rankings_batter -->
@@ -1006,22 +1023,22 @@ Statcast percentile inputs per pitcher-season.
 | `player_name` | string | yes | — | TODO |
 | `player_id` | int32 | yes | — | TODO |
 | `year` | int16 | yes | — | TODO |
-| `xwoba` | int16 | yes | — | TODO |
-| `xba` | int16 | yes | — | TODO |
-| `xslg` | int16 | yes | — | TODO |
+| `xwoba` | int16 | yes | — | Expected Weighted On-base Average (xwOBA) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_woba) |
+| `xba` | int16 | yes | — | Expected Batting Average (xBA) is a Statcast metric that measures the likelihood that a batted ball will become a hit. (src: mlb_glossary_expected_batting_average) |
+| `xslg` | int16 | yes | — | Expected Slugging Percentage (xSLG) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_slugging_percentage) |
 | `xiso` | int16 | yes | — | TODO |
 | `xobp` | int16 | yes | — | TODO |
 | `brl` | int16 | yes | — | TODO |
 | `brl_percent` | int16 | yes | — | TODO |
 | `exit_velocity` | int16 | yes | — | TODO |
 | `max_ev` | int16 | yes | — | TODO |
-| `hard_hit_percent` | int16 | yes | — | TODO |
+| `hard_hit_percent` | int16 | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
 | `k_percent` | int16 | yes | — | TODO |
 | `bb_percent` | int16 | yes | — | TODO |
 | `whiff_percent` | int16 | yes | — | TODO |
 | `chase_percent` | int16 | yes | — | TODO |
-| `arm_strength` | string | yes | — | TODO |
-| `xera` | int16 | yes | — | TODO |
+| `arm_strength` | string | yes | — | On an individual play, Arm Strength is defined as the maximum velocity of any throw made by a fielder -- with the max velocity always being at the release point, due to physics. (src: mlb_glossary_arm_strength) |
+| `xera` | int16 | yes | — | Expected ERA, or xERA, is a simple 1:1 translation of Expected Weighted On-Base Average (xwOBA), converted to the ERA scale. xwOBA takes into account the amount of contact (strikeouts, walks, hit by pitch) and the quality of that contact (exit velocity and launch angle), in an attempt to credit the pitcher or hitter for the moment of contact, not for what might happen to that contact thanks to other factors like ballpark, weather, or defense. (src: mlb_glossary_expected_era) |
 | `fb_velocity` | int16 | yes | — | TODO |
 | `fb_spin` | int16 | yes | — | TODO |
 | `curve_spin` | int16 | yes | — | TODO |
@@ -1060,7 +1077,7 @@ Results (run value, BA, SLG, wOBA, whiff%) per pitcher and pitch type.
 | `est_ba` | double | yes | — | TODO |
 | `est_slg` | double | yes | — | TODO |
 | `est_woba` | double | yes | — | TODO |
-| `hard_hit_percent` | double | yes | — | TODO |
+| `hard_hit_percent` | double | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_pitch_arsenal_stats -->
@@ -1279,7 +1296,7 @@ Measured vs inferred spin direction and active spin per pitcher and pitch type.
 | `api_pitch_type` | string | yes | — | TODO |
 | `n_pitches` | int16 | yes | — | TODO |
 | `release_speed` | double | yes | — | TODO |
-| `spin_rate` | int16 | yes | — | TODO |
+| `spin_rate` | int16 | yes | — | Spin Rate measures the spin on the baseball when the pitch is released. (src: mlb_glossary_spin_rate) |
 | `movement_inches` | double | yes | — | TODO |
 | `alan_active_spin_pct` | double | yes | — | TODO |
 | `active_spin` | double | yes | — | TODO |
@@ -1324,9 +1341,9 @@ Sprint speed (ft/s on competitive runs) per player-season.
 | `position` | string | yes | — | TODO |
 | `age` | int16 | yes | — | TODO |
 | `competitive_runs` | int16 | yes | — | TODO |
-| `bolts` | int16 | yes | — | TODO |
+| `bolts` | int16 | yes | — | A Bolt is any run where the Sprint Speed (defined as "feet per second in a player's fastest one-second window") of the runner is at least 30 ft/sec. (src: mlb_glossary_bolt) |
 | `hp_to_1b` | double | yes | — | TODO |
-| `sprint_speed` | double | yes | — | TODO |
+| `sprint_speed` | double | yes | — | Introduced during the 2017 season, Sprint Speed is a Statcast metric that aims to more precisely quantify speed by measuring how many feet per second a player runs in his fastest one-second window. (src: mlb_glossary_sprint_speed) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_sprint_speed -->
@@ -1347,9 +1364,9 @@ Swing path: attack angle, attack direction and swing tilt per batter-season (202
 | `name` | string | yes | — | TODO |
 | `side` | string | yes | — | TODO |
 | `avg_bat_speed` | double | yes | — | TODO |
-| `swing_tilt` | double | yes | — | TODO |
-| `attack_angle` | double | yes | — | TODO |
-| `attack_direction` | double | yes | — | TODO |
+| `swing_tilt` | double | yes | — | Swing path is a metric that tells you the shape of a hitter's swing on the way toward contact. (src: mlb_glossary_swing_path_tilt) |
+| `attack_angle` | double | yes | — | Attack angle measures the vertical direction that the sweet spot of the bat is traveling at the moment it hits the baseball. (src: mlb_glossary_attack_angle) |
+| `attack_direction` | double | yes | — | Attack direction measures the horizontal direction that the sweet spot of the bat is moving at the point of contact with the baseball (or the point the bat and ball cross paths on a swing-and-miss). (src: mlb_glossary_attack_direction) |
 | `ideal_attack_angle_rate` | double | yes | — | TODO |
 | `avg_intercept_y_vs_plate` | double | yes | — | TODO |
 | `avg_intercept_y_vs_batter` | double | yes | — | TODO |
@@ -1538,7 +1555,7 @@ Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
 | `hc_x` | float | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
 | `hc_y` | float | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
 | `bat_speed` | float | yes | — | TODO |
-| `swing_length` | float | yes | — | TODO |
+| `swing_length` | float | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
 | `estimated_ba_using_speedangle` | float | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
 | `estimated_woba_using_speedangle` | float | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
 | `woba_value` | float | yes | — | wOBA value based on result of play. (src: savant_csv_docs) |
@@ -1648,7 +1665,7 @@ Fielder catch probability by star bucket (2016 onwards). The `type` parameter em
 | --- | --- | --- | --- | --- |
 | `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
 | `player_id` | int32 | yes | — | TODO |
-| `oaa` | int16 | yes | — | TODO |
+| `oaa` | int16 | yes | — | Outs Above Average (OAA) is a range-based metric of skill that shows how many outs a player has saved. (src: mlb_glossary_outs_above_average) |
 | `n_fieldout_5stars` | int16 | yes | — | TODO |
 | `n_opp_5stars` | int16 | yes | — | TODO |
 | `n_5star_percent` | double | yes | — | TODO |

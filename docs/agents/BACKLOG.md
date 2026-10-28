@@ -63,7 +63,7 @@ numbers are in `verify-optin-paths/design.md`.
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-17 | `column-descriptions-retrosheet-and-leaderboards 2.1`: Savant leaderboard column definitions | READY | web search (Baseball Savant glossary and leaderboard pages, pybaseball and baseballr docs, the CSV "Download" headers), cited definitions added to `docs/columns/statcast.json` with the source URL per entry; undefined columns stay undescribed (never invented); the search trail is in `design.md`; `docs generate` run |
+| B-17 | column-descriptions-retrosheet-and-leaderboards 2.1: Savant leaderboard column definitions | DONE (17 exact-name columns; the rest stay undescribed) | web search (Baseball Savant glossary and leaderboard pages, pybaseball and baseballr docs, the CSV "Download" headers), cited definitions added to `docs/columns/statcast.json` with the source URL per entry; undefined columns stay undescribed (never invented); the search trail is in `design.md`; `docs generate` run |
 | B-18 | `column-descriptions-retrosheet-and-leaderboards 1.3`: schedule, rosters, reference tables, discrepancies, box accounts | EXTERNAL | the Retrosheet format documents are read from retrosheet.org (retry; also the `web.archive.org` copy and the R `retrosheet`/`baseballr` docs); only cited text is added; if none is citable the search trail is recorded and the task is closed as "no citable source" |
 | B-19 | `column-descriptions-retrosheet-and-leaderboards 3.1`: gates and baseline | DONE-WHEN-LAST | gates green, description coverage per source stated in the commit |
 

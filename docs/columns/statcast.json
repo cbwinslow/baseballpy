@@ -1,5 +1,92 @@
 {
+ "*": {
+  "anglesweetspotpercent": {
+   "source": "mlb_glossary_sweet_spot",
+   "text": "Colloquially, a player who hits the ball solidly is said to have gotten the \"sweet spot\" of the bat on the ball."
+  },
+  "arm_strength": {
+   "source": "mlb_glossary_arm_strength",
+   "text": "On an individual play, Arm Strength is defined as the maximum velocity of any throw made by a fielder -- with the max velocity always being at the release point, due to physics."
+  },
+  "attack_angle": {
+   "source": "mlb_glossary_attack_angle",
+   "text": "Attack angle measures the vertical direction that the sweet spot of the bat is traveling at the moment it hits the baseball."
+  },
+  "attack_direction": {
+   "source": "mlb_glossary_attack_direction",
+   "text": "Attack direction measures the horizontal direction that the sweet spot of the bat is moving at the point of contact with the baseball (or the point the bat and ball cross paths on a swing-and-miss)."
+  },
+  "barrels": {
+   "source": "mlb_glossary_barrel",
+   "text": "The Barrel classification is assigned to batted-ball events whose comparable hit types (in terms of exit velocity and launch angle) have led to a minimum .500 batting average and 1.500 slugging percentage since Statcast was implemented Major League wide in 2015."
+  },
+  "bolts": {
+   "source": "mlb_glossary_bolt",
+   "text": "A Bolt is any run where the Sprint Speed (defined as \"feet per second in a player's fastest one-second window\") of the runner is at least 30 ft/sec."
+  },
+  "hard_hit_percent": {
+   "source": "mlb_glossary_hard_hit_rate",
+   "text": "Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's \"hard-hit rate\" is simply showing the percentage of batted balls that were hit at 95 mph or more."
+  },
+  "oaa": {
+   "source": "mlb_glossary_outs_above_average",
+   "text": "Outs Above Average (OAA) is a range-based metric of skill that shows how many outs a player has saved."
+  },
+  "spin_rate": {
+   "source": "mlb_glossary_spin_rate",
+   "text": "Spin Rate measures the spin on the baseball when the pitch is released."
+  },
+  "sprint_speed": {
+   "source": "mlb_glossary_sprint_speed",
+   "text": "Introduced during the 2017 season, Sprint Speed is a Statcast metric that aims to more precisely quantify speed by measuring how many feet per second a player runs in his fastest one-second window."
+  },
+  "squared_up_rate": {
+   "source": "mlb_glossary_squared_up",
+   "text": "A swing’s squared-up rate tells us how much of the highest possible exit velocity available (based on the physics related to the swing speed and pitch speed) a batter was able to obtain – it is, at its simplest, how much exit velocity did you get as a share of how much exit velocity was possible based on your swing speed and the speed of the pitch."
+  },
+  "swing_length": {
+   "source": "mlb_glossary_swing_length",
+   "text": "Swing length is a metric intended to identify if a batter has a short or long swing."
+  },
+  "swing_tilt": {
+   "source": "mlb_glossary_swing_path_tilt",
+   "text": "Swing path is a metric that tells you the shape of a hitter's swing on the way toward contact."
+  },
+  "xba": {
+   "source": "mlb_glossary_expected_batting_average",
+   "text": "Expected Batting Average (xBA) is a Statcast metric that measures the likelihood that a batted ball will become a hit."
+  },
+  "xera": {
+   "source": "mlb_glossary_expected_era",
+   "text": "Expected ERA, or xERA, is a simple 1:1 translation of Expected Weighted On-Base Average (xwOBA), converted to the ERA scale. xwOBA takes into account the amount of contact (strikeouts, walks, hit by pitch) and the quality of that contact (exit velocity and launch angle), in an attempt to credit the pitcher or hitter for the moment of contact, not for what might happen to that contact thanks to other factors like ballpark, weather, or defense."
+  },
+  "xslg": {
+   "source": "mlb_glossary_expected_slugging_percentage",
+   "text": "Expected Slugging Percentage (xSLG) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed."
+  },
+  "xwoba": {
+   "source": "mlb_glossary_expected_woba",
+   "text": "Expected Weighted On-base Average (xwOBA) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed."
+  }
+ },
  "_sources": {
+  "mlb_glossary_arm_strength": "https://www.mlb.com/glossary/statcast/arm-strength",
+  "mlb_glossary_attack_angle": "https://www.mlb.com/glossary/statcast/attack-angle",
+  "mlb_glossary_attack_direction": "https://www.mlb.com/glossary/statcast/attack-direction",
+  "mlb_glossary_barrel": "https://www.mlb.com/glossary/statcast/barrel",
+  "mlb_glossary_bolt": "https://www.mlb.com/glossary/statcast/bolt",
+  "mlb_glossary_expected_batting_average": "https://www.mlb.com/glossary/statcast/expected-batting-average",
+  "mlb_glossary_expected_era": "https://www.mlb.com/glossary/statcast/expected-era",
+  "mlb_glossary_expected_slugging_percentage": "https://www.mlb.com/glossary/statcast/expected-slugging-percentage",
+  "mlb_glossary_expected_woba": "https://www.mlb.com/glossary/statcast/expected-woba",
+  "mlb_glossary_hard_hit_rate": "https://www.mlb.com/glossary/statcast/hard-hit-rate",
+  "mlb_glossary_outs_above_average": "https://www.mlb.com/glossary/statcast/outs-above-average",
+  "mlb_glossary_spin_rate": "https://www.mlb.com/glossary/statcast/spin-rate",
+  "mlb_glossary_sprint_speed": "https://www.mlb.com/glossary/statcast/sprint-speed",
+  "mlb_glossary_squared_up": "https://www.mlb.com/glossary/statcast/squared-up",
+  "mlb_glossary_sweet_spot": "https://www.mlb.com/glossary/statcast/sweet-spot",
+  "mlb_glossary_swing_length": "https://www.mlb.com/glossary/statcast/swing-length",
+  "mlb_glossary_swing_path_tilt": "https://www.mlb.com/glossary/statcast/swing-path-tilt",
   "savant_csv_docs": "https://baseballsavant.mlb.com/csv-docs"
  },
  "pitches": {
