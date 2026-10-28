@@ -76,7 +76,7 @@ from retrosheet.org only (owner rule); code as if no user is blocked.
 |---|---|---|---|
 | B-20 | `retrosheet-csv-bundles 0`: owner approval | OWNER | the owner says in chat to implement the change |
 | B-21 | `retrosheet-csv-bundles 1`: read the CSV overview and contents pages | EXTERNAL | pages read (retrosheet.org or an owner-supplied copy for exploration only); file names, columns, licence in `design.md` |
-| B-22 | `retrosheet-csv-bundles 2`: how others consume the bundles | READY | R `retrosheet`, `calestini/retrosheet`, `jerryword/retrosheet-csv`, Chadwick: findings and links in `design.md` |
+| B-22 | retrosheet-csv-bundles 2: how others consume the bundles | DONE | R `retrosheet`, `calestini/retrosheet`, `jerryword/retrosheet-csv`, Chadwick: findings and links in `design.md` |
 | B-23 | `retrosheet-csv-bundles 3`: generator and strict schemas | after B-20, B-21 | a `scripts/gen_*` script downloads one small season, widens types, writes schemas and registers datasets with keys |
 | B-24 | `retrosheet-csv-bundles 4`: adapter wiring | after B-23 | new task names through `IngestAdapter`, no change to existing ones; `unsupported` entries carry `tried` and `verified_on` |
 | B-25 | `retrosheet-csv-bundles 5`: tests, docs, descriptions, licence | after B-24 | no-network tests, docs section, official column descriptions, licence note |
