@@ -90,6 +90,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 - `docs/ROADMAP.md`
 - `docs/agents/AGY_DELEGATION.md`
 - `docs/agents/BACKLOG.md`
+- `docs/agents/FINAL_REPORT.md`
 - `docs/agents/GOAL_SEEK_PROMPT.md`
 - `docs/agents/NEXT_GOAL.md`
 - `docs/agents/PROJECT_MAP.md`
