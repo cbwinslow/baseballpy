@@ -17,6 +17,7 @@ Options:
 
 Commands:
   audit           Inspect and analyze pipeline execution logs, benchmarks, and audit telemetry.
+  backfill        Run a TOML plan of ingest stages (sources, seasons, datasets) into the lake.
   catalog         Inspect and audit what the registry covers.
   db              Manage the DuckDB catalog (views over processed/ Parquet).
   docs            Generate the per-dataset column dictionaries in docs/sources/*.md.
@@ -84,6 +85,28 @@ Options:
   --status TEXT        Only events with this status (e.g. FAILURE).
   --since TEXT         Only events at or after this ISO date/time.
   --help               Show this message and exit.
+```
+
+## `baseballpy backfill`
+
+```text
+Usage: baseballpy backfill [OPTIONS] PLAN_FILE
+
+  Run a TOML plan of ingest stages (sources, seasons, datasets) into the lake.
+
+  Re-running the same plan resumes: the adapters skip every chunk that is already complete.
+
+Options:
+  --max-gb FLOAT RANGE            Stop when the lake has grown by this many GB (measured as the drop
+                                  in free space).  [x>0]
+  --min-free-gb FLOAT RANGE       Refuse to start, and stop, when less than this much space would
+                                  stay free.  [default: 5.0; x>=0]
+  --refresh                       Bypass local cache and force fresh download.
+  --dry-run                       Plan the jobs and the disk check; run nothing.
+  -c, --concurrency INTEGER RANGE
+                                  Max concurrent worker threads (minimum 1).  [x>=1]
+  --json                          Print one JSON object per stage.
+  --help                          Show this message and exit.
 ```
 
 ## `baseballpy catalog`

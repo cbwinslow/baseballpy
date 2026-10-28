@@ -30,9 +30,9 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 3 | 6 | 1.3, 2.1, 3.1 |
-| `historical-backfill-plan` | 0 | 9 | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2 |
+| `historical-backfill-plan` | 3 | 6 | 1.1, 1.2, 3.1, 3.2 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
-| `retrosheet-box-accounts` | 7 | 7 | 1.1, 1.2, 2.3, 4.3 |
+| `retrosheet-box-accounts` | 8 | 6 | 1.1, 1.2, 2.3, 4 |
 | `retrosheet-csv-bundles` | 0 | 7 | 0, 1, 2, 3, 4, 5, 6 |
 | `spec-test-traceability` | 0 | 2 | 1, 2 |
 | `verify-optin-paths` | 5 | 3 | 3, 7, 8 |

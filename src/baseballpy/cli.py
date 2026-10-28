@@ -6,6 +6,7 @@ import click
 from rich.console import Console
 from rich.table import Table
 
+from baseballpy.cli_backfill import register_backfill_command
 from baseballpy.cli_catalog import register_catalog_commands
 from baseballpy.cli_db import register_db_commands
 from baseballpy.cli_ingest import register_commands
@@ -419,6 +420,7 @@ def audit_stats() -> None:
 
 
 register_commands(main, catalog)
+register_backfill_command(main)
 register_catalog_commands(catalog)
 register_db_commands(db)
 register_stream_command(main)

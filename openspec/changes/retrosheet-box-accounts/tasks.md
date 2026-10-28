@@ -12,7 +12,7 @@
   - [x] 3.2 Strict-layout and unknown-kind tests (Hypothesis deferred with the remaining typed kinds)
 - [ ] 4. Docs and verification <!-- id: 4 -->
   - [x] 4.1 Generated dictionaries; `docs/sources/retrosheet.md` section for box accounts
-  - [ ] 4.3 Live check of box accounts for the 2015-2024 lake (`ingest_season` ran there): every `gamelogs` game present in `box_games`, extras explained, quarantine empty; record counts
+  - [x] 4.3 Live check of box accounts for the 2015-2024 lake (`ingest_season` ran there): every `gamelogs` game present in `box_games`, extras explained, quarantine empty; record counts
   - [x] 4.2 Live (interim): 1964 ingested; all 1626 `gamelogs` games are present in `box_games` (1634 = + All-Star game + 7 World Series games). 1915 and 2023 not checked
 
 ## Status (2026-10-27)

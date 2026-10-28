@@ -15,3 +15,10 @@ Record kinds and field counts (leading token included): `id` 2, `version` 2 (alw
 
 ## Risks
 The official spec could differ from the inference above; task 1.1 fetches and stores it under `docs/sources/` (respecting Retrosheet's notice) and the schema generator is reconciled with it before any dataset is registered.
+
+## Live check on the 2015-2024 lake (2026-10-28, homelab `home_hist`, DuckDB over the processed Parquet)
+- `box_games` 23,165 games; `gamelogs` 22,763 regular-season games (2015: 2,429 ... 2020: 898 ... 2024: 2,429); `box_batting_lines` 679,552 rows over 23,165 games; `box_records` 1,125,976 rows (unknown kinds and events: `stat,dline`, `stat,pline`, `event,hrline`, `stat,phline`, `line`, `stat,tline`, `event,dpline`, `event,sbline`, `event,hpline`, `event,csline`, `stat,prline`, `com`, `event,tpline`).
+- Join key: `(hometeam, date, number)` of `box_games` against `(home_team, date, game_num)` of `gamelogs` (the game logs have no `game_id`). Regular-season game logs without a box game: 0. Box games with no game log in `gamelogs` or `gamelogs_postseason`: 0. Duplicate `game_id`: 0. Box games without any record: 0.
+- The 23,165 - 22,763 = 402 extra box games are all in `gamelogs_postseason` (the extras listed by date include a 14 July game with home team `NLS`, an All-Star game, so that file holds All-Star games as well as the postseason): 37, 36, 39, 34, 38, 53, 38, 41, 42 and 44 per season 2015-2024, 402 in all. Of the 1,973 postseason game logs in the file (1903 onward), the ones outside 2015-2024 have no box game here because only those seasons were ingested.
+- `quarantine/` does not exist in the lake: nothing was quarantined.
+- Not checked: field-level equality between box lines and the game logs' score and line-score columns (the typed box datasets for the remaining kinds wait for the official `boxfile.txt`).
