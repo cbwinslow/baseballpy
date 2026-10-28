@@ -13144,28 +13144,32 @@ Per-player pitching stats, type rankings (one request per person).
 | `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
 | `stat_games_pitched` | int32 | yes | `stat.gamesPitched` | TODO |
 | `stat_games_finished` | int32 | yes | `stat.gamesFinished` | gamesFinished: counting statistic (pitching); lookup parameter `gf`. (src: mlb_baseball_stats) |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
+| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` | TODO |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
+| `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
 | `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
-| `stat_strike_outs` | int32 | yes | `stat.strikeOuts` | TODO |
 | `stat_hits` | int32 | yes | `stat.hits` | hits: counting statistic (hitting, pitching, catching); lookup parameter `h`. (src: mlb_baseball_stats) |
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
 | `stat_at_bats` | int32 | yes | `stat.atBats` | atBats: counting statistic (hitting, catching); lookup parameter `ab`. (src: mlb_baseball_stats) |
-| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_innings_pitched` | string | yes | `stat.inningsPitched` | Innings Pitched: counting statistic (pitching); lookup parameter `ip`. (src: mlb_baseball_stats) |
 | `stat_outs_pitched` | int32 | yes | `stat.outsPitched` | Outs Pitched: counting statistic (pitching); lookup parameter `p_out`. (src: mlb_baseball_stats) |
-| `stat_wins` | int32 | yes | `stat.wins` | wins: counting statistic (pitching); lookup parameter `w`. (src: mlb_baseball_stats) |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
 | `stat_outs` | int32 | yes | `stat.outs` | TODO |
 | `stat_strikes` | int32 | yes | `stat.strikes` | TODO |
 | `stat_hit_batsmen` | int32 | yes | `stat.hitBatsmen` | TODO |
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
-| `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `stat_complete_games` | int32 | yes | `stat.completeGames` | Complete Game: counting statistic (pitching); lookup parameter `cg`. (src: mlb_baseball_stats) |
 | `stat_shutouts` | int32 | yes | `stat.shutouts` | shutouts: counting statistic (pitching); lookup parameter `sho`. (src: mlb_baseball_stats) |
+| `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
+| `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
+| `stat_losses` | int32 | yes | `stat.losses` | losses: counting statistic (pitching); lookup parameter `l`. (src: mlb_baseball_stats) |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.people_stats_rankings_pitching -->
@@ -14531,6 +14535,7 @@ Per-player pitching stats, type yearByYearAdvanced (one request per person).
 | `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `num_teams` | int32 | yes | `numTeams` | TODO |
+| `num_leagues` | int32 | yes | `numLeagues` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.people_stats_year_by_year_advanced_pitching -->
@@ -14598,6 +14603,7 @@ Per-player fielding stats, type yearByYear (one request per person).
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
 | `num_teams` | int32 | yes | `numTeams` | TODO |
+| `num_leagues` | int32 | yes | `numLeagues` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.people_stats_year_by_year_fielding -->
@@ -14764,6 +14770,7 @@ Per-player pitching stats, type yearByYear (one request per person).
 | `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `num_teams` | int32 | yes | `numTeams` | TODO |
+| `num_leagues` | int32 | yes | `numLeagues` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.people_stats_year_by_year_pitching -->
@@ -14831,6 +14838,7 @@ Per-player fielding stats, type yearByYearPlayoffs (one request per person).
 | `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
 | `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
 | `num_teams` | int32 | yes | `numTeams` | TODO |
+| `num_leagues` | int32 | yes | `numLeagues` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.people_stats_year_by_year_playoffs_fielding -->
@@ -14997,6 +15005,7 @@ Per-player pitching stats, type yearByYearPlayoffs (one request per person).
 | `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `num_teams` | int32 | yes | `numTeams` | TODO |
+| `num_leagues` | int32 | yes | `numLeagues` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.people_stats_year_by_year_playoffs_pitching -->
@@ -20323,6 +20332,7 @@ Per-player pitching stats, type vsPlayer, parameters {'season': '{season}', 'opp
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
+| `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
 | `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
@@ -20365,6 +20375,9 @@ Per-player pitching stats, type vsPlayer, parameters {'season': '{season}', 'opp
 | `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
+| `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
+| `team_name` | string | yes | `team.name` | Name of the team. (authored) |
+| `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
 | `opponent_id` | int32 | yes | `opponent.id` | MLBAM identifier of the opponent. (authored) |
 | `opponent_name` | string | yes | `opponent.name` | Name of the opponent. (authored) |
 | `opponent_link` | string | yes | `opponent.link` | Relative MLB Stats API path of the opponent resource (prefix https://statsapi.mlb.com). (authored) |
@@ -20375,10 +20388,6 @@ Per-player pitching stats, type vsPlayer, parameters {'season': '{season}', 'opp
 | `pitcher_link` | string | yes | `pitcher.link` | Relative MLB Stats API path of the pitcher resource (prefix https://statsapi.mlb.com). (authored) |
 | `pitcher_first_name` | string | yes | `pitcher.firstName` | Name of the pitcher first. (authored) |
 | `pitcher_last_name` | string | yes | `pitcher.lastName` | Name of the pitcher last. (authored) |
-| `season` | string | yes | — | TODO |
-| `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
-| `team_name` | string | yes | `team.name` | Name of the team. (authored) |
-| `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
 | `batter_id` | int32 | yes | `batter.id` | MLBAM identifier of the batter. (authored) |
 | `batter_full_name` | string | yes | `batter.fullName` | Full name of the batter. (authored) |
 | `batter_link` | string | yes | `batter.link` | Relative MLB Stats API path of the batter resource (prefix https://statsapi.mlb.com). (authored) |

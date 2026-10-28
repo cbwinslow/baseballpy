@@ -105,6 +105,10 @@ SAMPLE_PEOPLE = tuple(
         545361,  # Trout: multi-year career
         518692,  # Freeman
         665742,  # Soto
+        453286,  # Scherzer: both leagues (numLeagues)
+        434378,  # Verlander: both leagues
+        443558,  # Cruz: designated hitter, many teams
+        694973,  # Skenes: rookie with minor-league games
     )
 )
 SAMPLE_AWARDS = ("MLBHOF", "ALMVP", "NLCY", "ALROY", "WSMVP", "ALPNT", "ALGG")
