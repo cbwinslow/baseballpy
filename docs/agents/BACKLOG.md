@@ -25,7 +25,7 @@ host that is unreachable; retry, do not work around), DONE-WHEN-LAST (closes the
 | B-01 | `verify-optin-paths 3`: all-time pools | EXTERNAL (statsapi.mlb.com 403, B-29; retest with `curl -A` first, then resume on the homelab) | all 57 pools in the homelab scratch `home` are INGESTED or recorded failing with root cause and fix; `stats_stats_single_season_hitting` is re-run with the 180 s page timeout (fix in `0d9c59d`) and either ingests or has a new root cause; every `schema_drift` warning in `optin3.err` is regenerated (`scripts/gen_mlb_schemas.py --only NAME`) or recorded; results added to `design.md` |
 | B-02 | verify-optin-paths 6: CLI knobs | DONE (finished tasks are written without backticks so the test ignores them) | `ingest mlb_api --datasets games\|history\|people_stats` and `--limit` are in `docs/CLI.md`, covered by `CliRunner` tests, and `catalog status --gaps` notes name working commands (already built: confirm nothing else is missing, then tick) |
 | B-03 | `verify-optin-paths 8`: unique keys for the two `vs_player_*_opp_team` datasets | EXTERNAL (key probe and tests committed in f44be05; the real regeneration needs B-29) | the payload's split dimensions are identified from a real response, the key is extended in `endpoints.py`, schemas regenerated, `key_unique_per_request` is true for both in `docs/mlb_probe.json`, test added |
-| B-04 | `verify-optin-paths 7`: final report and archive | DONE-WHEN-LAST, blocked by B-01 and B-03 (EXTERNAL, B-29) | B-01..B-03 done; report lists verified / not verified / needs-owner; change archived under `openspec/changes/archive/<date>-verify-optin-paths/` with spec deltas merged |
+| B-04 | `verify-optin-paths 7`: final report and archive | after B-01 and B-03 (EXTERNAL, B-29) | B-01..B-03 done; report lists verified / not verified / needs-owner; change archived under `openspec/changes/archive/<date>-verify-optin-paths/` with spec deltas merged |
 | B-29 | MLB Stats API answers HTTP 403 to our User-Agent (new, found 2026-10-28) | OWNER / EXTERNAL | see section H item 6: until it is resolved B-01, B-03 and the MLB part of B-05 cannot finish; no workaround (such as a different User-Agent) is applied without the owner's decision |
 
 ## B. Historical depth and backfill (`historical-backfill-plan`)
@@ -47,7 +47,7 @@ numbers are in `verify-optin-paths/design.md`.
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-11 | catalog-completeness-audit 2.2: open an issue on audit findings | DONE (real GitHub run not verified) | `live.yml` step uses `gh issue create`/`gh issue comment` (permission `issues: write`, one open issue titled by a fixed marker so findings update it), written and YAML-parsed; a test checks the step exists; the first real run on GitHub is listed as not verified until the owner enables Actions |
-| B-12 | `repo-hygiene-and-docs-sync 6.4`: merge deltas and archive | DONE-WHEN-LAST, blocked: other changes are open on EXTERNAL/OWNER items (B-01, B-03, B-09, B-14, B-20) | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
+| B-12 | `repo-hygiene-and-docs-sync 6.4`: merge deltas and archive | after B-01, B-03 (EXTERNAL), B-09, B-14, B-20 (OWNER) | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
 | B-27 | spec-test-traceability 1: cite or write a test for each of the 39 uncited scenarios | DONE | per spec, every scenario ends with a `Verified by` line naming a test that asserts its THEN clause (write the missing mocked tests first; a claim nothing can check is removed from the spec); `uv run python scripts/project_map.py` shows the cited-test counts rising |
 | B-28 | spec-test-traceability 2: enforce it | DONE (change archived) | `tests/test_spec_scenarios.py` fails for any scenario without a citation; gates green; change archived |
 
@@ -58,7 +58,7 @@ numbers are in `verify-optin-paths/design.md`.
 | B-13 | retrosheet-box-accounts 4.3: live check on the 2015-2024 lake | DONE | on the homelab lake `home_hist`: every `gamelogs` game is in `box_games`, the extra rows (All-Star, postseason) are explained, no quarantine, counts in `design.md` |
 | B-14 | `retrosheet-box-accounts 1.1`: the official `boxfile.txt` | OWNER / EXTERNAL | the file is supplied by the owner or retrosheet.org becomes reachable (`curl -I https://www.retrosheet.org/` from the homelab; retry once per session); stored with the Retrosheet notice under `docs/sources/` and the layouts reconciled in `design.md` |
 | B-15 | `retrosheet-box-accounts 2.3`: typed datasets for the remaining kinds | after B-14 | one strict dataset per record kind still in `box_records`, layouts taken only from the document, generator or spec-driven, tests per kind, `box_records` keeps unknown kinds only |
-| B-16 | `retrosheet-box-accounts 1.2`: final ADR and spec merge | DONE-WHEN-LAST, blocked by B-14 and B-15 (OWNER / EXTERNAL) | ADR 33 updated for the final layout, spec delta merged, change archived |
+| B-16 | `retrosheet-box-accounts 1.2`: final ADR and spec merge | after B-14 and B-15 (OWNER / EXTERNAL) | ADR 33 updated for the final layout, spec delta merged, change archived |
 
 ## E. Column descriptions (`column-descriptions-retrosheet-and-leaderboards`)
 
@@ -66,7 +66,7 @@ numbers are in `verify-optin-paths/design.md`.
 |---|---|---|---|
 | B-17 | column-descriptions-retrosheet-and-leaderboards 2.1: Savant leaderboard column definitions | DONE (17 exact-name columns; the rest stay undescribed) | web search (Baseball Savant glossary and leaderboard pages, pybaseball and baseballr docs, the CSV "Download" headers), cited definitions added to `docs/columns/statcast.json` with the source URL per entry; undefined columns stay undescribed (never invented); the search trail is in `design.md`; `docs generate` run |
 | B-18 | `column-descriptions-retrosheet-and-leaderboards 1.3`: schedule, rosters, reference tables, discrepancies, box accounts | EXTERNAL | the Retrosheet format documents are read from retrosheet.org (retry; also the `web.archive.org` copy and the R `retrosheet`/`baseballr` docs); only cited text is added; if none is citable the search trail is recorded and the task is closed as "no citable source" |
-| B-19 | `column-descriptions-retrosheet-and-leaderboards 3.1`: gates and baseline | DONE-WHEN-LAST, blocked by B-14/B-15 (their columns still to describe) | gates green, description coverage per source stated in the commit |
+| B-19 | `column-descriptions-retrosheet-and-leaderboards 3.1`: gates and baseline | after B-14 and B-15 (OWNER / EXTERNAL; their columns are still to describe) | gates green, description coverage per source stated in the commit |
 
 ## F. Retrosheet CSV bundles (`retrosheet-csv-bundles`)
 
