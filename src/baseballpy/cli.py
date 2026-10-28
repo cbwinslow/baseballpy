@@ -7,7 +7,10 @@ from rich.console import Console
 from rich.table import Table
 
 from baseballpy.cli_catalog import register_catalog_commands
+from baseballpy.cli_db import register_db_commands
 from baseballpy.cli_ingest import register_commands
+from baseballpy.cli_quarantine import register_quarantine_commands
+from baseballpy.cli_stream import register_stream_command
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.migrate import migrate_layout
@@ -415,6 +418,9 @@ def audit_stats() -> None:
 
 register_commands(main, catalog)
 register_catalog_commands(catalog)
+register_db_commands(db)
+register_stream_command(main)
+register_quarantine_commands(main)
 
 
 if __name__ == "__main__":

@@ -72,3 +72,11 @@ Adding a source = one adapter module registered in `ADAPTERS`; nothing else chan
 ## 9. Protocol decision (2026-10-27, ADR 39)
 Section 5 (signature-level contract test for every extractor and normalizer) is superseded: the enforced source boundary is `IngestAdapter`, checked for every registered source by `tests/test_ingest_contract.py`; `ExtractorProtocol`/`NormalizerProtocol` stay as optional guides. Rationale and the measured gap (2 of 6 extractors and normalizers conform; nothing consumes them polymorphically) are in ADR 39.
 
+
+## 10. As-built: remaining command groups (2026-10-28)
+Evidence: dlt's CLI groups maintenance under the object it acts on (`dlt pipeline <name> info|trace|drop|failed-jobs|sync`, options before the subcommand; https://dlthub.com/docs/reference/command-line-interface). baseballpy follows the same shape: one group per object (`ingest`, `catalog`, `db`, `audit`, `quarantine`, `refs`), group options before the subcommand, one module per group (`cli_ingest.py`, `cli_catalog.py`, `cli_db.py`, `cli_stream.py`, `cli_quarantine.py`) that registers itself on the root group, so the flat `cli/` package split of section 4 was replaced by registration modules.
+- Config: `get_config()`/`reset_config()` existed; the change is that a dotenv file is read only when `BASEBALLPY_ENV_FILE` names one (`EnvSettings` base class); real environment variables win over the file.
+- `audit summary|tail` take `--source`, `--status`, `--since`; the filters run before `--limit`.
+- `db views|query|shell` open the database read-only (a write attempt fails in DuckDB, no keyword scanning); `shell` hands over to the `duckdb` executable.
+- `stream GAME_PK` persists to JSONL (append) and/or a DuckDB table by upsert on `(game_pk, at_bat_index, event_index)`, so running a replay twice is idempotent.
+- `quarantine list|show` only. A `replay` command was dropped: a quarantined record carries `context` but not the normalizer, endpoint or schema that rejected it, so a generic replay would be guesswork.
