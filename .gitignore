@@ -62,3 +62,4 @@ data/processed/
 .DS_Store
 Thumbs.db
 *.part
+site/

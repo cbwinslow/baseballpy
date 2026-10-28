@@ -47,9 +47,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - run: uv sync --all-extras
+      - run: uv sync --all-extras --group docs
       # Fails when the generated column dictionaries or docs/CLI.md are stale.
       - run: uv run baseballpy docs generate --check
+      - run: uv run mkdocs build --strict
+        env:
+          NO_MKDOCS_2_WARNING: "1"
 
   specs:
     runs-on: ubuntu-latest

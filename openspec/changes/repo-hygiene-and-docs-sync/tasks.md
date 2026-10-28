@@ -27,7 +27,7 @@ Can start immediately for items 1-3 and 5 (independent of other changes); items 
 - [ ] 5. CI and packaging (G-6, G-8) <!-- id: 5 -->
   - [x] 5.1 `.github/workflows/ci.yml` and `live.yml` per design §4; update `.pre-commit-config.yaml` <!-- written and YAML-parsed 2026-10-28; NOT run on GitHub (no remote run possible here); live.yml runs `catalog audit` weekly; pre-commit mypy/duckdb hooks not added -->
   - [x] 5.2 `py.typed`, hatch include, `CHANGELOG.md`, version `0.2.0`, classifiers <!-- py.typed ships in the wheel (checked), CHANGELOG added as Unreleased, classifiers already accurate; version left at 0.1.0 for the release step -->
-  - [ ] 5.3 `mkdocs.yml`, `docs/index.md`, `docs/ARCHITECTURE.md`, `docs/RELEASING.md`; `uv run mkdocs build --strict` passes
+  - [x] 5.3 `mkdocs.yml`, `docs/index.md`, `docs/ARCHITECTURE.md`, `docs/RELEASING.md`; `uv run mkdocs build --strict` passes <!-- 2026-10-28 built on the homelab (Python 3.12, mkdocs + material + mkdocstrings): `mkdocs build --strict` passed in 19 s with only INFO lines (the `../LICENSE` and `../NOTICE` links in DATA_LICENSES.md are left as is). Building found `baseballpy.core` was a namespace package (no `__init__.py`), invisible to mkdocstrings: fixed. CI `docs` job runs the build; not run on GitHub -->
 - [ ] 6. Documentation sync (G-2, G-3) <!-- id: 6 -->
   - [x] 6.1 Rewrite `AGENTS.md` (renumber, new mandates) and `CLAUDE.md` <!-- AGENTS.md: duplicate section 3 renamed 3A (references like section 5 / 9.4 kept stable), sections 11-12 added; CLAUDE.md rewritten with the init skill -->
   - [x] 6.2 Update README, QUICKSTART, ROADMAP to actual state (layout v2, CLI, coverage, counts generated not hand-typed) <!-- README/QUICKSTART/ROADMAP/ADR 20 stale numbers fixed; layout v2 described -->
