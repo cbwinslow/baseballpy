@@ -1,0 +1,37 @@
+site_name: baseballpy
+site_description: Typed baseball data ingestion (Statcast, MLB Stats API, Lahman, Chadwick, Retrosheet) into Parquet and DuckDB.
+repo_url: https://github.com/cbwinslow/baseballpy
+docs_dir: docs
+theme:
+  name: material
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: false
+nav:
+  - Home: index.md
+  - Quickstart: QUICKSTART.md
+  - Command-line reference: CLI.md
+  - Architecture: ARCHITECTURE.md
+  - Sources:
+      - Statcast: sources/statcast.md
+      - MLB Stats API: sources/mlb_api.md
+      - Lahman: sources/lahman.md
+      - Chadwick: sources/chadwick.md
+      - Retrosheet: sources/retrosheet.md
+  - Endpoint catalog: ENDPOINT_CATALOG.md
+  - API reference: API.md
+  - Design decisions: DECISIONS.md
+  - Data licenses: DATA_LICENSES.md
+  - Roadmap: ROADMAP.md
+  - Releasing: RELEASING.md
+# Notes for contributors: these files are guidance for agents, not site content.
+exclude_docs: |
+  agents/
+  columns/
+  examples/
+  *_probe.json
