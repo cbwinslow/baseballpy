@@ -568,3 +568,21 @@ def test_manifest_is_safe_across_processes(tmp_path: Path) -> None:
         p.join(timeout=120)
         assert p.exitcode == 0
     assert len(json.loads(Path(path).read_text(encoding="utf-8"))["chunks"]) == 24
+
+
+def test_csv_with_leading_blank_lines_uses_the_first_non_empty_line_as_header() -> None:
+    from baseballpy.core.schema_tools import read_csv_strings
+
+    table = read_csv_strings(b"\n\r\nname,value\na,1\nb,2\n")
+    assert table.column_names == ["name", "value"]
+    assert table.column("name").to_pylist() == ["a", "b"]
+
+
+def test_csv_with_invalid_utf8_in_the_header_does_not_crash() -> None:
+    # found by the Hypothesis property test: a blank first line left the table unnamed and the
+    # undecodable header cell raised UnicodeDecodeError when its name was read
+    from baseballpy.core.schema_tools import read_csv_strings
+
+    table = read_csv_strings(b"\n\x80\n")
+    assert table.num_rows == 0
+    assert all(isinstance(name, str) for name in table.column_names)

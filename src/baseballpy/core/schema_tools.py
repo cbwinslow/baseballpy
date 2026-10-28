@@ -172,6 +172,9 @@ def read_csv_strings(
     if not data.strip():
         return pa.table({})
     if header is None:
+        # the header is the first non-empty line: pyarrow ignores blank lines, so counting a leading
+        # blank line as the header row would skip the real header and leave the table unnamed
+        data = data.lstrip(b"\r\n")
         head = data.split(b"\n", 1)[0].decode("utf-8-sig", errors="replace")
         names = next(csv.reader(io.StringIO(head, newline=""), delimiter=delimiter), [])
         skip = 1
