@@ -34,6 +34,8 @@ uv add "baseballpy[retrosheet]"  # alias; chadwickpy is installed by default
 uv add "baseballpy[all]"
 ```
 
+**Older CPUs without AVX2** (for example a Xeon E5-2660 v2): the default Polars and DuckDB 2.x wheels die with an illegal-instruction error (exit code 132). Install `"polars[rtcompat]"` and `"duckdb<2"` (1.4.4 was tested) next to baseballpy; everything else is unchanged.
+
 ---
 
 ## Quick Start

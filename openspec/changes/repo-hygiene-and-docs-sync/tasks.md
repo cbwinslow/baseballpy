@@ -35,7 +35,7 @@ Can start immediately for items 1-3 and 5 (independent of other changes); items 
   - [ ] 6.4 Merge all change spec deltas into `openspec/specs/`, then move changes to `openspec/changes/archive/<date>-<name>/` with tasks checked
 - [ ] 7. Verification <!-- id: 7 -->
   - [ ] 7.1 `uv run pytest -m "not live"`, `uvx ruff check .`, `uvx ruff format --check .`, `uvx mypy --strict src`, `uv run mkdocs build --strict`, `uv build`
-  - [ ] 7.2 Manual: fresh clone -> `uv sync` -> `baseballpy doctor` -> `baseballpy ingest lahman --seasons all` works on a clean machine/home
+  - [x] 7.2 Manual: fresh clone -> `uv sync` -> `baseballpy doctor` -> `baseballpy ingest lahman --seasons all` works on a clean machine/home <!-- 2026-10-28 homelab, fresh `git clone` of the repo, `uv sync --all-extras` (4 s), clean BASEBALLPY_HOME: `doctor` crashed with exit 132 (illegal instruction: the default Polars/DuckDB 2.x wheels need AVX2, the server's Xeon E5-2660 v2 has none), so after `uv pip install "polars[rtcompat]" "duckdb==1.4.4"` (now in the README): `doctor` exit 0 (460 datasets, 5 adapters), `ingest lahman --seasons all` completed 27 tables in 17 s, `db sync` registered 28 views, `db query` returned 128,598 Batting rows for 1871-2025 -->
   - [x] 7.3 Manual: grep docs for stale numbers ("94", "11 leaderboards", "27 tables strongly typed") — all must be generated or removed <!-- stale numbers (94, 11 leaderboards) removed or replaced with generated references -->
 
 ## Status (2026-10-27)
