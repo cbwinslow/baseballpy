@@ -605,3 +605,16 @@ def test_csv_with_invalid_utf8_in_the_header_does_not_crash() -> None:
     table = read_csv_strings(b"\n\x80\n")
     assert table.num_rows == 0
     assert all(isinstance(name, str) for name in table.column_names)
+
+
+def test_user_agent_defaults_to_the_pybaseball_one_and_can_be_overridden(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from baseballpy.core.http import DEFAULT_USER_AGENT, USER_AGENT_ENV
+
+    monkeypatch.delenv(USER_AGENT_ENV, raising=False)
+    assert DEFAULT_USER_AGENT.startswith("python-requests/")
+    assert HttpClient()._user_agent == DEFAULT_USER_AGENT
+    monkeypatch.setenv(USER_AGENT_ENV, "custom/1")
+    assert HttpClient()._user_agent == "custom/1"
+    assert HttpClient(user_agent="explicit/2")._user_agent == "explicit/2"

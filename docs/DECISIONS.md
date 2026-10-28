@@ -528,3 +528,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Consequences:** no wrapper code written only to satisfy an unused Protocol. Limitation: adapters do not declare which datasets their tasks cover, so the test cannot prove each dataset is reachable from some job; that would need a declared task-to-dataset mapping (not invented here).
 - **Alternatives rejected:** multi-dataset extractor/normalizer Protocols plus adapting eight classes (new code and tests with no consumer and no breakage prevented).
 
+
+## ADR 40: The Default User-Agent Is the One pybaseball Sends; It Is Overridable
+- **Status:** Accepted (owner instruction, 2026-10-28).
+- **Context:** after about three hours of continuous requests `statsapi.mlb.com` answered HTTP 500 and then 403 to `baseballpy (+https://github.com/cbwinslow/baseballpy)` on every route, from this PC and from the homelab, while `python-requests/2.32.3`, `baseballpy/0.1`, `python-httpx/0.27` and `curl/8` got 200 for the same URLs and Savant was unaffected. The block lasted more than two hours of retests. Search found no statement from MLB.
+- **Decision:** the default agent of `HttpClient` is `python-requests/2.32.3`, what pybaseball (the most used client of these hosts) sends; `BASEBALLPY_USER_AGENT` or the `user_agent` argument override it.
+- **Consequences:** MLB can no longer tell this client apart from other `requests` users, so its politeness rests on the rate limits in `core/http.py`, which are unchanged. If MLB publishes an identification rule, set the variable to follow it. It is the owner's decision and risk; if the host blocks that string too, the override is the escape hatch.
+- **Alternatives rejected:** waiting (the block did not lift); a browser agent (impersonating a browser is a bigger step than reusing an API client's own string).

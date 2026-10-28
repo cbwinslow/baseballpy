@@ -7,6 +7,7 @@ private event loop owned by the client.
 
 import asyncio
 import concurrent.futures
+import os
 import threading
 import time
 from collections.abc import Awaitable, Mapping
@@ -88,6 +89,12 @@ def _parse_retry_after(value: str | None) -> float | None:
     return min(max(when.timestamp() - time.time(), 0.0), MAX_RETRY_AFTER_SECONDS)
 
 
+#: What pybaseball sends (the ``requests`` default). ``statsapi.mlb.com`` began answering HTTP 403
+#: to the earlier ``baseballpy (+https://github...)`` agent on 2026-10-28 (ADR 40).
+DEFAULT_USER_AGENT = "python-requests/2.32.3"
+USER_AGENT_ENV = "BASEBALLPY_USER_AGENT"
+
+
 class HttpClient:
     """Rate-limited, retrying, HTTP/2-capable client shared by sync and async callers."""
 
@@ -97,12 +104,12 @@ class HttpClient:
         *,
         http2: bool = True,
         transport: httpx.AsyncBaseTransport | None = None,
-        user_agent: str = "baseballpy (+https://github.com/cbwinslow/baseballpy)",
+        user_agent: str | None = None,
     ) -> None:
         self.rate = rate or RateLimitConfig()
         self._http2 = http2
         self._transport = transport
-        self._user_agent = user_agent
+        self._user_agent = user_agent or os.environ.get(USER_AGENT_ENV) or DEFAULT_USER_AGENT
         self._limiters: dict[str, AsyncLimiter] = {}
         self._loop: asyncio.AbstractEventLoop | None = None
         self._thread: threading.Thread | None = None

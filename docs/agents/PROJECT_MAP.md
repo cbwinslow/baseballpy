@@ -75,6 +75,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 - ADR 37: The First Catalog Audit Found Wrong `unsupported` Verdicts; Probe Protocol
 - ADR 38: Parameterized MLB Stat Types Are Registered as Fan-Out Dimensions
 - ADR 39: The IngestAdapter Is the Enforced Source Boundary; Extractor/Normalizer Protocols Are Optional
+- ADR 40: The Default User-Agent Is the One pybaseball Sends; It Is Overridable
 
 ## Documentation pages (`docs/`)
 
