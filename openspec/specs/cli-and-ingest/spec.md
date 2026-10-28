@@ -17,6 +17,11 @@ One command surface (`baseballpy`) plans and runs ingestion for every source thr
 - **WHEN** the same command runs again
 - **THEN** the finished chunks are not fetched again, the remaining ones are fetched and no `.part` file is left behind.
 
+#### Scenario: Ctrl-C
+- **GIVEN** a running `ingest` on a console
+- **WHEN** the user presses Ctrl-C
+- **THEN** the running job is interrupted promptly (sequential runs) or no new job starts (pool runs), unfinished jobs are reported `cancelled`, the audit event is `CANCELLED` and the exit code is 130.
+
 ### Requirement: Coverage Visibility
 `baseballpy catalog list|show|status` MUST list every registered dataset with its view, partition, keys and schema, and report per dataset whether it is `INGESTED` or `MISSING` with files, rows, seasons and newest file date, without network access.
 

@@ -3,13 +3,15 @@
 import concurrent.futures
 import logging
 import time
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 
 from baseballpy.core.audit import AuditLogger, default_audit_logger
 from baseballpy.ingest.adapters import IngestAdapter
 from baseballpy.ingest.types import Job, JobResult, JobStatus, RunReport, Selection
 
 logger = logging.getLogger(__name__)
+
+POLL_SECONDS = 0.2
 
 
 def plan_jobs(adapters: Mapping[str, IngestAdapter], selection: Selection) -> list[Job]:
@@ -102,35 +104,49 @@ def run_jobs(
             )
 
     results: list[JobResult | None] = [None] * len(jobs)
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=concurrency)
-    futures: list[concurrent.futures.Future[JobResult]] = []
-    future_to_index: dict[concurrent.futures.Future[JobResult], int] = {}
-
+    interrupted = False
     try:
-        for idx, job in enumerate(jobs):
-            fut = executor.submit(_run_single, job)
-            futures.append(fut)
-            future_to_index[fut] = idx
-
-        for fut in concurrent.futures.as_completed(futures):
-            idx = future_to_index[fut]
-            results[idx] = fut.result()
+        if concurrency == 1:
+            # In the calling thread, so Ctrl-C reaches the running job's blocking I/O directly.
+            for idx, job in enumerate(jobs):
+                results[idx] = _run_single(job)
+        else:
+            _run_pool(jobs, _run_single, concurrency, results)
     except KeyboardInterrupt:
-        for fut in futures:
-            fut.cancel()
-        executor.shutdown(wait=True, cancel_futures=True)
+        interrupted = True
+    if interrupted:
         for k, job in enumerate(jobs):
             if results[k] is None:
-                results[k] = JobResult(
-                    job=job,
-                    status=JobStatus.CANCELLED,
-                    detail="cancelled",
-                )
-        return RunReport(results=[r for r in results if r is not None])
-    finally:
-        executor.shutdown(wait=True, cancel_futures=True)
-
+                results[k] = JobResult(job=job, status=JobStatus.CANCELLED, detail="cancelled")
     return RunReport(results=[r for r in results if r is not None])
+
+
+def _run_pool(
+    jobs: Sequence[Job],
+    run_single: Callable[[Job], JobResult],
+    concurrency: int,
+    results: list[JobResult | None],
+) -> None:
+    """Run ``jobs`` on a thread pool, filling ``results`` by input index as they finish.
+
+    The main thread polls with a short timeout: on Windows a blocking wait on a lock is not
+    interrupted by Ctrl-C, a timed one is. On ``KeyboardInterrupt`` queued jobs are dropped and the
+    exception propagates; jobs already running finish their current call (threads cannot be killed)
+    before the interpreter exits.
+    """
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=concurrency)
+    pending = {executor.submit(run_single, job): idx for idx, job in enumerate(jobs)}
+    try:
+        while pending:
+            done, _ = concurrent.futures.wait(
+                pending, timeout=POLL_SECONDS, return_when=concurrent.futures.FIRST_COMPLETED
+            )
+            for fut in done:
+                results[pending.pop(fut)] = fut.result()
+    except BaseException:
+        executor.shutdown(wait=False, cancel_futures=True)
+        raise
+    executor.shutdown(wait=True)
 
 
 __all__ = ["plan_jobs", "run_jobs"]

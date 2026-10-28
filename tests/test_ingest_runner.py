@@ -253,3 +253,48 @@ def test_run_jobs_writes_audit_events(tmp_path: Path) -> None:
     assert events[0].operation == "ingest_job"
     assert events[0].source == "fake"
     assert events[0].endpoint == "fake:season:season=2023"
+
+
+def test_run_jobs_sequential_runs_in_the_calling_thread() -> None:
+    import threading
+
+    seen: list[int] = []
+
+    class ThreadAdapter(FakeAdapter):
+        def run(self, job: Job, *, refresh: bool = False) -> JobResult:
+            seen.append(threading.get_ident())
+            return JobResult(job=job, status=JobStatus.COMPLETED, rows=1)
+
+    run_jobs([make_job("t", "task", id=1)], {"t": ThreadAdapter("t")}, concurrency=1)
+    assert seen == [threading.get_ident()]
+
+
+def test_run_jobs_pool_interrupt_returns_while_a_job_is_still_running() -> None:
+    """The main thread polls, so an interrupt is not deferred until the running job ends."""
+    import threading
+
+    release = threading.Event()
+    started = threading.Event()
+
+    class SlowAdapter(FakeAdapter):
+        def run(self, job: Job, *, refresh: bool = False) -> JobResult:
+            started.set()
+            release.wait(timeout=30)
+            return JobResult(job=job, status=JobStatus.COMPLETED, rows=1)
+
+    def interrupt_main() -> None:
+        started.wait(timeout=10)
+        import _thread
+
+        _thread.interrupt_main()
+
+    threading.Thread(target=interrupt_main, daemon=True).start()
+    jobs = [make_job("s", "task", id=1), make_job("s", "task", id=2), make_job("s", "task", id=3)]
+    began = time.perf_counter()
+    try:
+        report = run_jobs(jobs, {"s": SlowAdapter("s")}, concurrency=2)
+    finally:
+        release.set()
+    assert time.perf_counter() - began < 10
+    assert report.exit_code == 130
+    assert {r.status for r in report.results} == {JobStatus.CANCELLED}
