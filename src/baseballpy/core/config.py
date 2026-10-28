@@ -16,6 +16,20 @@ if TYPE_CHECKING:
     from baseballpy.core.atomic import ManifestTracker
 
 
+ENV_FILE_VAR = "BASEBALLPY_ENV_FILE"
+
+
+class EnvSettings(BaseSettings):
+    """Settings base: reads ``BASEBALLPY_*`` variables, and a dotenv file only if ``BASEBALLPY_ENV_FILE`` names one.
+
+    Nothing is read implicitly from the working directory (a stray ``.env`` must not change a run).
+    """
+
+    def __init__(self, **values: Any) -> None:
+        values.setdefault("_env_file", os.environ.get(ENV_FILE_VAR))
+        super().__init__(**values)
+
+
 def get_default_base_dir() -> Path:
     """Resolve default base directory with environment variable overrides."""
     if env_home := os.getenv("BASEBALLPY_HOME"):
@@ -33,7 +47,7 @@ _LEGACY_ENV = {
 }
 
 
-class LakeConfig(BaseSettings):
+class LakeConfig(EnvSettings):
     """Layout and freshness settings for the local data lake, loadable via BASEBALLPY_* env.
 
     Layout v2 (``$BASEBALLPY_HOME``): ``raw/``, ``processed/``, ``quarantine/``,
@@ -44,7 +58,6 @@ class LakeConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="BASEBALLPY_",
         extra="ignore",
-        env_file=".env",
         env_file_encoding="utf-8",
         populate_by_name=True,
     )
@@ -221,13 +234,12 @@ class CacheConfig(LakeConfig):
         super().__init__(**values)
 
 
-class AuditConfig(BaseSettings):
+class AuditConfig(EnvSettings):
     """Audit logging and telemetry configuration, loadable via BASEBALLPY_AUDIT_* env."""
 
     model_config = SettingsConfigDict(
         env_prefix="BASEBALLPY_AUDIT_",
         extra="ignore",
-        env_file=".env",
         env_file_encoding="utf-8",
     )
 
@@ -251,13 +263,12 @@ class AuditConfig(BaseSettings):
         return self.log_dir / "audit.jsonl"
 
 
-class RateLimitConfig(BaseSettings):
+class RateLimitConfig(EnvSettings):
     """Rate limit, concurrency, and retry configuration for network extractors, loadable via BASEBALLPY_RATE_* env."""
 
     model_config = SettingsConfigDict(
         env_prefix="BASEBALLPY_RATE_",
         extra="ignore",
-        env_file=".env",
         env_file_encoding="utf-8",
     )
 
@@ -298,13 +309,12 @@ class RateLimitConfig(BaseSettings):
         return self
 
 
-class StreamingConfig(BaseSettings):
+class StreamingConfig(EnvSettings):
     """Configuration for real-time live game event streaming, loadable via BASEBALLPY_STREAM_* env."""
 
     model_config = SettingsConfigDict(
         env_prefix="BASEBALLPY_STREAM_",
         extra="ignore",
-        env_file=".env",
         env_file_encoding="utf-8",
     )
 
@@ -319,13 +329,12 @@ class StreamingConfig(BaseSettings):
     )
 
 
-class QuarantineConfig(BaseSettings):
+class QuarantineConfig(EnvSettings):
     """Configuration for dead-letter quarantine of corrupted records, loadable via BASEBALLPY_QUARANTINE_* env."""
 
     model_config = SettingsConfigDict(
         env_prefix="BASEBALLPY_QUARANTINE_",
         extra="ignore",
-        env_file=".env",
         env_file_encoding="utf-8",
     )
 
@@ -344,13 +353,12 @@ class QuarantineConfig(BaseSettings):
         return self.quarantine_dir_override or (self.base_dir / "quarantine")
 
 
-class PipelineConfig(BaseSettings):
+class PipelineConfig(EnvSettings):
     """Top-level pipeline configuration combining all subsystem settings."""
 
     model_config = SettingsConfigDict(
         env_prefix="BASEBALLPY_",
         extra="ignore",
-        env_file=".env",
         env_file_encoding="utf-8",
     )
 

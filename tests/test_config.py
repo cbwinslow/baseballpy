@@ -15,6 +15,7 @@ from baseballpy.core.config import (
     RateLimitConfig,
     StreamingConfig,
     get_config,
+    reset_config,
 )
 
 
@@ -161,3 +162,43 @@ def test_get_config_singleton() -> None:
     cfg1 = get_config()
     cfg2 = get_config()
     assert cfg1 is cfg2
+
+
+def test_dotenv_in_cwd_is_not_read_implicitly(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / ".env").write_text("BASEBALLPY_RATE_MAX_CONCURRENCY=7\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("BASEBALLPY_RATE_MAX_CONCURRENCY", raising=False)
+    monkeypatch.delenv("BASEBALLPY_ENV_FILE", raising=False)
+    assert RateLimitConfig().max_concurrency != 7
+
+
+def test_env_file_var_opts_in_and_real_env_wins(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    env_file = tmp_path / "custom.env"
+    env_file.write_text(
+        "BASEBALLPY_RATE_MAX_CONCURRENCY=7\nBASEBALLPY_STREAM_POLL_INTERVAL_SECONDS=2.5\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("BASEBALLPY_ENV_FILE", str(env_file))
+    monkeypatch.delenv("BASEBALLPY_RATE_MAX_CONCURRENCY", raising=False)
+    monkeypatch.delenv("BASEBALLPY_STREAM_POLL_INTERVAL_SECONDS", raising=False)
+    assert RateLimitConfig().max_concurrency == 7
+    monkeypatch.setenv("BASEBALLPY_RATE_MAX_CONCURRENCY", "3")
+    assert RateLimitConfig().max_concurrency == 3
+    assert StreamingConfig().poll_interval_seconds == 2.5
+
+
+def test_reset_config_rereads_the_environment(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("BASEBALLPY_HOME", str(tmp_path / "a"))
+    reset_config()
+    assert get_config().lake.home == (tmp_path / "a").resolve()
+    monkeypatch.setenv("BASEBALLPY_HOME", str(tmp_path / "b"))
+    assert get_config().lake.home == (tmp_path / "a").resolve()
+    reset_config()
+    assert get_config().lake.home == (tmp_path / "b").resolve()
+    reset_config()
