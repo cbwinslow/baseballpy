@@ -89,6 +89,10 @@ EXTRA_SEASONS = {
     "standings_first_half": (1981, 1994, 2020),
     "standings_second_half": (1981, 1994, 2020),
     "standings_postseason": (2020, 2008, 1995),
+    # recent alumni are alive: the death fields only appear in older rosters (found by a 1990 run)
+    "team_alumni": (1990, 1965),
+    # `notes` appears on some older awards (found by the same 1990 run)
+    "award_recipients": (1990, 1969),
 }
 SAMPLE_TEAMS = (147, 119)
 SAMPLE_GAMES = (745000, 775296)
@@ -155,14 +159,41 @@ def minimal_key(records: list[dict[str, Scalar]]) -> tuple[str, ...]:
         if unique(preferred[:size]):
             return tuple(preferred[:size])
     chosen = list(preferred)
-    while not unique(chosen) and len(chosen) < 8:
-        rest = [c for c in populated if c not in chosen]
-        if not rest:
-            return ()
-        chosen.append(
-            max(rest, key=lambda c: len({tuple(r.get(x) for x in [*chosen, c]) for r in records}))
-        )
-    return tuple(chosen) if unique(chosen) else ()
+    # A response can mix total rows (no season, pitcher or batter) with detail rows, so when no
+    # always-populated combination works, columns that are only sometimes populated join the key
+    # (a null is one more value of the dimension).
+    sometimes = [
+        k
+        for k in dict.fromkeys(k for r in records for k in r)
+        if any(r.get(k) is not None for r in records)
+        and all(not (isinstance(r.get(k), str) and len(str(r.get(k))) > 80) for r in records)
+    ]
+
+    def is_dimension(col: str) -> bool:
+        if col.startswith("stat.") or col in ("stats.totalSplits", "stats.exemptions"):
+            return False
+        return not col.endswith((".link", ".name", "Name", ".fullName"))
+
+    pools = (
+        [c for c in populated if is_dimension(c)],
+        [c for c in sometimes if is_dimension(c)],
+        populated,
+        sometimes,
+    )
+    for pool in pools:
+        while not unique(chosen) and len(chosen) < 10:
+            rest = [c for c in pool if c not in chosen]
+            if not rest:
+                break
+            chosen.append(
+                max(
+                    rest,
+                    key=lambda c: len({tuple(r.get(x) for x in [*chosen, c]) for r in records}),
+                )
+            )
+        if unique(chosen):
+            return tuple(chosen)
+    return ()
 
 
 def probe_combos(http: HttpClient, groups: list[str]) -> tuple[list[Any], list[Any]]:
@@ -608,7 +639,7 @@ def main() -> int:
         started = time.perf_counter()
         use = sample_contexts(ep, ctxs, all_sports)
         for year in EXTRA_SEASONS.get(ep.name, ()):
-            use = [*use, Context(season=year, sport_ids=(1,), **EXTRA_CTX)]
+            use = [*use, Context(season=year, sport_ids=(1,), team_ids=SAMPLE_TEAMS, **EXTRA_CTX)]
         result = profile(http, ep, use, requests_for)
         records = result["records"]
         status = "ok" if records else "empty"

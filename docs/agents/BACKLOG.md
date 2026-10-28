@@ -26,6 +26,7 @@ host that is unreachable; retry, do not work around), DONE-WHEN-LAST (closes the
 | B-02 | verify-optin-paths 6: CLI knobs | DONE (finished tasks are written without backticks so the test ignores them) | `ingest mlb_api --datasets games\|history\|people_stats` and `--limit` are in `docs/CLI.md`, covered by `CliRunner` tests, and `catalog status --gaps` notes name working commands (already built: confirm nothing else is missing, then tick) |
 | B-03 | `verify-optin-paths 8`: unique keys for the two `vs_player_*_opp_team` datasets | READY | the payload's split dimensions are identified from a real response, the key is extended in `endpoints.py`, schemas regenerated, `key_unique_per_request` is true for both in `docs/mlb_probe.json`, test added |
 | B-04 | `verify-optin-paths 7`: final report and archive | DONE-WHEN-LAST | B-01..B-03 done; report lists verified / not verified / needs-owner; change archived under `openspec/changes/archive/<date>-verify-optin-paths/` with spec deltas merged |
+| B-29 | MLB Stats API answers HTTP 403 to our User-Agent (new, found 2026-10-28) | OWNER / EXTERNAL | see section H item 6: until it is resolved B-01, B-03 and the MLB part of B-05 cannot finish; no workaround (such as a different User-Agent) is applied without the owner's decision |
 
 ## B. Historical depth and backfill (`historical-backfill-plan`)
 
@@ -96,3 +97,4 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 3. Name the permanent lake location and approve backfill ranges (B-09).
 4. Decide when to push and whether to tag a first release (nothing has been pushed; versioning is in `docs/RELEASING.md`).
 5. The host-key mismatch of `cbwdellr720-lan` (use `cbwdellr720` until fixed).
+6. Decide how to handle `statsapi.mlb.com` returning 403 to the User-Agent `baseballpy (+https://github.com/cbwinslow/baseballpy)` (B-29): from this PC and the homelab, the same URL answers 200 to `curl/8`, `baseballpy/0.1` and `python-httpx/0.27`, and Savant is unaffected. It began after about 3 h of continuous MLB API requests (first as 500s, then 403s), so it may be a temporary block on that client or a rule against it; I did not change the User-Agent, because that would sidestep a block MLB may have put there on purpose.
