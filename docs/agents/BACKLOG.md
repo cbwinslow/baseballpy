@@ -23,7 +23,7 @@ host that is unreachable; retry, do not work around), DONE-WHEN-LAST (closes the
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-01 | `verify-optin-paths 3`: all-time pools | LONG | all 57 pools in the homelab scratch `home` are INGESTED or recorded failing with root cause and fix; `stats_stats_single_season_hitting` is re-run with the 180 s page timeout (fix in `0d9c59d`) and either ingests or has a new root cause; every `schema_drift` warning in `optin3.err` is regenerated (`scripts/gen_mlb_schemas.py --only NAME`) or recorded; results added to `design.md` |
-| B-02 | `verify-optin-paths 6`: CLI knobs | READY | `ingest mlb_api --datasets games\|history\|people_stats` and `--limit` are in `docs/CLI.md`, covered by `CliRunner` tests, and `catalog status --gaps` notes name working commands (already built: confirm nothing else is missing, then tick) |
+| B-02 | verify-optin-paths 6: CLI knobs | DONE (finished tasks are written without backticks so the test ignores them) | `ingest mlb_api --datasets games\|history\|people_stats` and `--limit` are in `docs/CLI.md`, covered by `CliRunner` tests, and `catalog status --gaps` notes name working commands (already built: confirm nothing else is missing, then tick) |
 | B-03 | `verify-optin-paths 8`: unique keys for the two `vs_player_*_opp_team` datasets | READY | the payload's split dimensions are identified from a real response, the key is extended in `endpoints.py`, schemas regenerated, `key_unique_per_request` is true for both in `docs/mlb_probe.json`, test added |
 | B-04 | `verify-optin-paths 7`: final report and archive | DONE-WHEN-LAST | B-01..B-03 done; report lists verified / not verified / needs-owner; change archived under `openspec/changes/archive/<date>-verify-optin-paths/` with spec deltas merged |
 
@@ -45,7 +45,7 @@ numbers are in `verify-optin-paths/design.md`.
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-11 | `catalog-completeness-audit 2.2`: open an issue on audit findings | READY | `live.yml` step uses `gh issue create`/`gh issue comment` (permission `issues: write`, one open issue titled by a fixed marker so findings update it), written and YAML-parsed; a test checks the step exists; the first real run on GitHub is listed as not verified until the owner enables Actions |
+| B-11 | catalog-completeness-audit 2.2: open an issue on audit findings | DONE (real GitHub run not verified) | `live.yml` step uses `gh issue create`/`gh issue comment` (permission `issues: write`, one open issue titled by a fixed marker so findings update it), written and YAML-parsed; a test checks the step exists; the first real run on GitHub is listed as not verified until the owner enables Actions |
 | B-12 | `repo-hygiene-and-docs-sync 6.4`: merge deltas and archive | DONE-WHEN-LAST | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
 | B-27 | `spec-test-traceability 1`: cite or write a test for each of the 39 uncited scenarios | READY | per spec, every scenario ends with a `Verified by` line naming a test that asserts its THEN clause (write the missing mocked tests first; a claim nothing can check is removed from the spec); `uv run python scripts/project_map.py` shows the cited-test counts rising |
 | B-28 | `spec-test-traceability 2`: enforce it | after B-27 | `tests/test_spec_scenarios.py` fails for any scenario without a citation; gates green; change archived |
