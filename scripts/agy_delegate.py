@@ -98,7 +98,7 @@ def main() -> int:
         cmd += ["--agent", args.agent]
     result: dict[str, object] = {}
     for attempt in range(1, MAX_ATTEMPTS + 1):
-        done = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", check=False)
+        done = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", check=False)  # noqa: S603 - fixed argv, no shell
         try:
             result = json.loads(done.stdout)
         except json.JSONDecodeError:
@@ -126,7 +126,7 @@ def main() -> int:
         f"{usage.get('total_tokens', '?')} tokens, conversation {result.get('conversation_id')}]"
     )
     print("\n[git status after the run]", flush=True)
-    subprocess.run(["git", "status", "--short"], check=False)
+    subprocess.run(["git", "status", "--short"], check=False)  # noqa: S607 - git on PATH
     return 0 if result.get("status") == "SUCCESS" else 1
 
 

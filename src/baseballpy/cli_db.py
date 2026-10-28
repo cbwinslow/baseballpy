@@ -44,7 +44,7 @@ def exec_duckdb(executable: str, db_path: Path) -> None:
     """
     import os
 
-    os.execvp(executable, [executable, str(db_path)])
+    os.execvp(executable, [executable, str(db_path)])  # noqa: S606 - the duckdb executable replaces this process
 
 
 @click.command("views")
@@ -67,7 +67,7 @@ def db_views_cmd(ctx: click.Context, as_json: bool) -> None:
             view_data: list[tuple[str, int]] = []
             for (view_name,) in rows:
                 quoted = quote_ident(view_name)
-                counted = con.execute(f"SELECT count(*) FROM {quoted}").fetchone()
+                counted = con.execute(f"SELECT count(*) FROM {quoted}").fetchone()  # noqa: S608 - quoted view name from information_schema
                 if counted is None:
                     raise click.ClickException(f"count(*) returned no row for view {view_name}")
                 view_data.append((view_name, int(counted[0])))

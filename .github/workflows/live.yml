@@ -1,0 +1,26 @@
+name: Weekly upstream audit
+
+# Talks to the real upstreams (Baseball Savant, MLB Stats API, GitHub): never part of the PR gate.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-extras
+      # Provider-listed items vs the registry; exits 1 on MISSING/REVIVED/ERROR findings.
+      - run: uv run baseballpy catalog audit --json > catalog-audit.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: upstream-audit
+          path: catalog-audit.json

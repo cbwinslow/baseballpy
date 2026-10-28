@@ -99,7 +99,7 @@ def profile(http: HttpClient, defn: LeaderboardDef, years: tuple[int, ...]) -> d
         if data is None:
             per_year[year] = -1
             continue
-        digests.setdefault(hashlib.md5(data).hexdigest(), []).append(year)
+        digests.setdefault(hashlib.md5(data, usedforsecurity=False).hexdigest(), []).append(year)
         table = read_csv_strings(data)
         per_year[year] = table.num_rows
         snaked = [snake(h) for h in table.column_names]

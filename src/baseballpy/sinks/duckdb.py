@@ -33,8 +33,8 @@ class DuckDBSink:
     def _add_missing_columns(con: duckdb.DuckDBPyConnection, name: str, ident: str) -> None:
         existing = {row[0] for row in con.execute(f"DESCRIBE {ident}").fetchall()}  # noqa: S608
         for col_name, col_type, *_ in con.execute(
-            f"DESCRIBE SELECT * FROM {SOURCE_VIEW}"
-        ).fetchall():  # noqa: S608
+            f"DESCRIBE SELECT * FROM {SOURCE_VIEW}"  # noqa: S608
+        ).fetchall():
             if col_name not in existing:
                 logger.warning("schema drift: adding column %s to %s", col_name, name)
                 con.execute(

@@ -1,0 +1,19 @@
+# Changelog
+
+All notable changes. The version is bumped at release time (see `docs/RELEASING.md` once written); everything below is unreleased.
+
+## Unreleased
+
+### Added
+- One command surface: `baseballpy ingest` (plan, dry-run, bounded concurrency, resume), `catalog list|show|status|audit`, `db sync|views|query|shell`, `stream` (JSONL and idempotent DuckDB upsert), `quarantine list|show`, `audit summary|tail|stats` with `--source/--status/--since`, `doctor`, `docs generate|coverage`, `refs`, `migrate-layout`. Reference: `docs/CLI.md` (generated).
+- `baseballpy.ingest`: source-agnostic jobs, selection parser and runner; one `IngestAdapter` per source (ADR 25, ADR 39).
+- Complete upstream coverage for Statcast (pitches, minor-league pitches, 34 leaderboard variants), the MLB Stats API (declarative endpoint registry, parameterized stat types, live streamer), Lahman, Chadwick and Retrosheet (every file kind), with strict generated Arrow schemas and `_extras` for drift.
+- Column dictionaries with descriptions cited to provider metadata and a coverage ratchet (`docs/columns/`).
+- Lake layout v2 (`raw/`, `processed/`, `quarantine/`, `cache/http/`, DuckDB views), `migrate-layout`, pinned upstream refs.
+- CI workflows (lint, types, tests with a 90% coverage gate, docs freshness, build) and a weekly upstream audit; `py.typed`.
+
+### Changed
+- A dotenv file is read only when `BASEBALLPY_ENV_FILE` names one; nothing is picked up implicitly from the working directory.
+- MLB fan-out requests tolerate the provider's 404 for sports and teams without data.
+- Lint policy now includes bandit (`S`) and complexity ceilings (`PLR0912`, `PLR0915`).
+- License is GPL-3.0-or-later (ADR 26).

@@ -51,7 +51,7 @@ def _view_sql(files_glob: Path, partitioned: bool) -> str:
     options = "union_by_name = true"
     if partitioned:
         options = f"hive_partitioning = true, hive_types = {{'season': 'SMALLINT'}}, {options}"
-    return f"SELECT * FROM read_parquet({quote_literal(files_glob.as_posix())}, {options})"
+    return f"SELECT * FROM read_parquet({quote_literal(files_glob.as_posix())}, {options})"  # noqa: S608 - glob/options are quoted with quote_literal
 
 
 class BaseballDatabase:
@@ -190,7 +190,7 @@ class BaseballDatabase:
             for src, ds, season, n, files in rows
         )
         con.execute(
-            f"CREATE OR REPLACE VIEW {SEASON_CATALOG_VIEW} AS "
+            f"CREATE OR REPLACE VIEW {SEASON_CATALOG_VIEW} AS "  # noqa: S608 - constant view name
             f"SELECT source::VARCHAR AS source, dataset::VARCHAR AS dataset, "
             f"season::SMALLINT AS season, row_count::BIGINT AS row_count, files::BIGINT AS files "
             f"FROM (VALUES {values}) AS t(source, dataset, season, row_count, files)"
@@ -230,7 +230,7 @@ class BaseballDatabase:
                     wanted = [c for c in CROSSWALK_COLUMNS if c in columns]
                     if wanted:
                         con.execute(
-                            f"CREATE OR REPLACE VIEW {CROSSWALK_VIEW} AS "
+                            f"CREATE OR REPLACE VIEW {CROSSWALK_VIEW} AS "  # noqa: S608 - identifiers are quoted with quote_ident
                             f"SELECT {', '.join(quote_ident(c) for c in wanted)} "
                             "FROM chadwick_register"
                         )
