@@ -14,6 +14,7 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 - CI workflows (lint, types, tests with a 90% coverage gate, docs freshness, build) and a weekly upstream audit; `py.typed`.
 
 ### Changed
+- `teams_season` schema regenerated over every sport/level (the generator now samples per-sport endpoints with all of `ref_sports`, as the ingest fans out): typed `parent_org_id`, `parent_org_name` and `conference_*` columns instead of `_extras`.
 - A dotenv file is read only when `BASEBALLPY_ENV_FILE` names one; nothing is picked up implicitly from the working directory.
 - MLB fan-out requests tolerate the provider's 404 for sports and teams without data.
 - Lint policy now includes bandit (`S`) and complexity ceilings (`PLR0912`, `PLR0915`).

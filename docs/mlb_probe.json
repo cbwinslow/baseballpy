@@ -1,5 +1,5 @@
 {
- "probed_on": "2026-10-27",
+ "probed_on": "2026-10-28",
  "endpoints": {
   "stats_projected_hitting": {
    "status": "ok",
@@ -2403,10 +2403,10 @@
   },
   "teams_season": {
    "status": "ok",
-   "requests_ok": 2,
-   "requests_failed": 0,
-   "sample_rows": 60,
-   "columns": 34,
+   "requests_ok": 26,
+   "requests_failed": 14,
+   "sample_rows": 1435,
+   "columns": 39,
    "key_unique_per_request": true
   },
   "divisions_season": {

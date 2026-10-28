@@ -9402,6 +9402,11 @@ Teams of a season (sport 1 = MLB).
 | `franchise_name` | string | yes | `franchiseName` | Name of the franchise. (authored) |
 | `club_name` | string | yes | `clubName` | Name of the club. (authored) |
 | `active` | bool | yes | — | TODO |
+| `parent_org_name` | string | yes | `parentOrgName` | Name of the parent org. (authored) |
+| `parent_org_id` | int32 | yes | `parentOrgId` | MLBAM identifier of the parent org. (authored) |
+| `conference_id` | int32 | yes | `conference.id` | TODO |
+| `conference_name` | string | yes | `conference.name` | TODO |
+| `conference_link` | string | yes | `conference.link` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.teams_season -->

@@ -14101,6 +14101,11 @@ MLB_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {
         ("franchise_name", "string", "franchiseName"),
         ("club_name", "string", "clubName"),
         ("active", "bool", "active"),
+        ("parent_org_name", "string", "parentOrgName"),
+        ("parent_org_id", "int32", "parentOrgId"),
+        ("conference_id", "int32", "conference.id"),
+        ("conference_name", "string", "conference.name"),
+        ("conference_link", "string", "conference.link"),
     ),
     "divisions_season": (
         ("sport_id", "int32", "sport_id"),

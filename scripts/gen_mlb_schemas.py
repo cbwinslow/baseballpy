@@ -17,6 +17,7 @@ import importlib
 import json
 import sys
 import time
+from dataclasses import replace
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -35,6 +36,27 @@ def stat_groups(http: HttpClient) -> list[str]:
     if not groups:
         raise SystemExit("/v1/statGroups returned nothing; refusing to probe a guessed list")
     return groups
+
+
+def sport_ids(http: HttpClient) -> tuple[int, ...]:
+    """Every sport/level the provider lists (``/v1/sports``), as the real ingest fans out over."""
+    sports = (get_json(http, "v1/sports", {}) or {}).get("sports", [])
+    return tuple(int(sp["id"]) for sp in sports) or (1,)
+
+
+def sample_contexts(ep: Any, ctxs: list[Any], all_sports: tuple[int, ...]) -> list[Any]:
+    """The contexts an endpoint is sampled with.
+
+    A per-sport endpoint is sampled over every sport/level the real ingest fans out over
+    (``ref_sports``): minor-league records carry fields MLB ones lack (``teams_season`` has
+    ``parentOrgId``).
+    """
+    use = ctxs if ep.scope != "teams_season" else [ctxs[-1]]
+    if ep.scope == "season" and any(
+        "{sport_id}" in text for text in (ep.path, *map(str, ep.params.values()))
+    ):
+        use = [replace(c, sport_ids=all_sports) for c in use]
+    return use
 
 
 KEY_CANDIDATES = (
@@ -519,6 +541,7 @@ def main() -> int:
         t["id"]
         for t in (get_json(http, "v1/teams", {"sportId": 1, "season": 2024}) or {}).get("teams", [])
     )
+    all_sports = sport_ids(http)
     ctxs.append(
         Context(
             season=2024,
@@ -539,7 +562,7 @@ def main() -> int:
             probe[ep.name] = {"status": "unsupported", "reason": ep.unsupported}
             continue
         started = time.perf_counter()
-        use = ctxs if ep.scope != "teams_season" else [ctxs[-1]]
+        use = sample_contexts(ep, ctxs, all_sports)
         for year in EXTRA_SEASONS.get(ep.name, ()):
             use = [*use, Context(season=year, sport_ids=(1,), **EXTRA_CTX)]
         result = profile(http, ep, use, requests_for)
