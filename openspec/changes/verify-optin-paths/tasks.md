@@ -7,3 +7,4 @@
 - [x] 5. `StatcastGameFeed.ingest_season` with a small cap (`ingest statcast --datasets game_feed --limit 20`: 20 feeds, 50 MB raw, 25 s; see design, Findings)
 - [ ] 6. CLI knobs for opt-in paths where missing, generated from the registry, with tests and `docs generate`
 - [ ] 7. Final report; archive
+- [ ] 8. Unique keys for `people_stats_vs_player_hitting_opp_team` and `people_stats_vs_player_pitching_opp_team` (find the split dimensions in the payloads, extend the key, regenerate, test; documented non-unique today)

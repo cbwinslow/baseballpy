@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Never leave upstream data behind.** Every field, endpoint, group, level and file the provider offers is captured (typed column or `_extras`), even when another source has it. If something cannot be ingested, it stays registered as `unsupported` with probe evidence, or its raw bytes are kept; it is never silently skipped.
 - **Owner rules:** no Claude `Agent`/workflow subagents (work linearly in the session); the one allowed delegate is `agy` (see below); Lahman comes only from `cbwinslow/lahman-database-csv` or user-supplied data, never `chadwickbureau/baseballdatabank`; commit after every green slice with conventional messages, do not push; run the gates after every section; manual/live checks are really run and summarised in the commit.
 
-Autonomous runs: use `docs/agents/GOAL_SEEK_PROMPT.md` (loop with verification, audit and web-research protocol).
+Autonomous runs: use `docs/agents/GOAL_SEEK_PROMPT.md` (loop with verification, audit and web-research protocol). What is left to do is the ordered queue `docs/agents/BACKLOG.md` (every open task of every change is in it; a test enforces that), mapped by `docs/agents/PROJECT_MAP.md` (`uv run python scripts/project_map.py` regenerates it); `docs/agents/NEXT_GOAL.md` is the standing prompt that works the queue.
 
 ## Design philosophy: decoupled, reusable, dynamic
 
