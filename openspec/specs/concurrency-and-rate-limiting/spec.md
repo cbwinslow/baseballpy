@@ -18,7 +18,7 @@ The system MUST route all HTTP requests through host-specific token bucket limit
 - **THEN** requests are rate-limited to 2.5 requests/sec and bounded by an `asyncio.Semaphore(max_concurrency=4)`.
 
 ### Requirement: Jittered Exponential Backoff
-The system MUST automatically retry failed requests on HTTP 429, 500, 502, 503, 504, and connect timeout errors using exponential backoff with randomized jitter up to `max_retries` (default 5).
+The system MUST automatically retry failed requests on HTTP 408, 425, 429, 500, 502, 503, 504 and connect timeout errors using exponential backoff with randomized jitter up to `max_retries` (default 5).
 
 ### Requirement: Single Shared HTTP Client
 Every network fetch MUST go through `baseballpy.core.http.HttpClient`, applying a per-host token bucket, a global bounded semaphore, HTTP/2 pooling and jittered exponential retry.

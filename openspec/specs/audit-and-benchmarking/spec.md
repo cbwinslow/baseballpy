@@ -11,7 +11,7 @@ Every public ingestion command, extractor execution, and sink operation MUST rec
   - `timestamp_utc`: ISO 8601 string.
   - `operation`: Name of operation (e.g. `statcast_search`, `chadwick_register_sync`).
   - `source`: Source identifier (`statcast`, `mlb_api`, `chadwick`, `lahman`, `retrosheet`).
-  - `status`: One of `SUCCESS`, `FAILURE`, `RETRY`.
+  - `status`: One of `SUCCESS`, `FAILURE`, `CANCELLED`, `RETRY`.
   - `records_count`: Integer count of records retrieved or written.
   - `duration_seconds`: Float seconds taken.
   - `throughput_rps`: Float records processed per second.

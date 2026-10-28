@@ -1,6 +1,6 @@
 # Retrosheet Ingestion Specification
 
-## 1. Overview
+## Purpose
 The Retrosheet Ingestion Engine extracts, parses, caches, and normalizes historical play-by-play events, box scores, daily player lines, substitutions, game logs, and reference databases from the Chadwick Baseball Bureau GitHub mirror (`https://github.com/chadwickbureau/retrosheet`).
 
 All parsing is performed in memory via `chadwickpy` (pure Python port of the Chadwick C suite) with zero dependencies on external C binaries or scrapers.
@@ -31,12 +31,12 @@ Raw event, roster, gamelog and reference files MUST be stored under `raw/retrosh
 
 ---
 
-## 4. Discovery, Completeness and Streaming
+## Requirements
 ### Requirement: Tree-Driven Discovery
 Available seasons and files MUST be discovered from the upstream repository tree at the pinned ref, not hard-coded; file kinds map to datasets through a pattern registry and files no pattern covers MUST be reported.
 
 ### Requirement: Complete Dataset Set
-The system MUST ingest event files (regular `events`, `events_postseason`, `events_deduced`), rosters, regular and postseason game logs, schedules (including `schedule_original`), umpires, discrepancy files, every CSV under `reference/`, and the derived `boxscores_*`, `daily_splits` and `substitutions` tables. Box-score game accounts (`.EB*`) MUST be stored raw with a documented reason when they are not parsed.
+The system MUST ingest event files (regular `events`, `events_postseason`, `events_deduced`), rosters, regular and postseason game logs, schedules (including `schedule_original`), umpires, discrepancy files, every CSV under `reference/`, and the derived `boxscores_*`, `daily_splits` and `substitutions` tables. Box-score game accounts (`.EB*`) MUST be stored raw and parsed into the `box_*` datasets (see Box-Score Game Accounts).
 
 ### Requirement: Honest Completion
 A season MUST be marked COMPLETED only if every file the tree lists for it is present and valid; a tree-listed file answering 404 is recorded `ABSENT`; a 404 is never success. Every raw file records its sha256 and the pinned `source_ref`.

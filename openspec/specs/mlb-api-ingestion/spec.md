@@ -1,6 +1,6 @@
 # MLB Stats API Ingestion Specification
 
-## 1. Overview
+## Purpose
 The MLB Stats API Ingestion Engine extracts, parses, caches, and normalizes official Major League Baseball datasets from `https://statsapi.mlb.com/api` into strongly-typed PyArrow Tables and adaptive multi-target sinks.
 
 ---
@@ -25,9 +25,9 @@ The nine hand-written datasets below keep their selected-field schemas; every ot
 ---
 
 ## 3. Concurrency, Rate Limiting & Network Pooling
-- Host rate limit: 8.0 requests/second enforced via `aiolimiter.AsyncLimiter`.
-- Persistent connection pooling with HTTP/2 enabled (`httpx.AsyncClient(http2=True)`).
-- Exponential jitter backoff via `tenacity` on transient HTTP failures.
+- Host rate limit: 8.0 requests/second, enforced by the shared `HttpClient` (`core/http.py`).
+- Persistent connection pooling with HTTP/2 enabled.
+- Exponential jitter backoff on transient HTTP failures, by the same client.
 
 ---
 
@@ -36,7 +36,9 @@ The nine hand-written datasets below keep their selected-field schemas; every ot
 
 ---
 
-## Declarative Coverage (complete-source-coverage, verified live 2026-10-27)
+## Requirements
+
+Declarative coverage (complete-source-coverage, verified live 2026-10-27).
 
 ### Requirement: Endpoint Coverage
 Every MLB endpoint MUST be a `MlbEndpoint` (path/params template, record path, fan-out scope, key) with a strict schema generated from live responses (`scripts/gen_mlb_schemas.py`). Reference lists, seasons/sports/leagues/divisions/teams, team affiliates/history/coaches/personnel/alumni, rosters of every roster type, players, free agents, jobs, draft prospects, postseason schedules, hydrated schedules, standings of every standings type, league leaders, league-wide player and team stats for every stat type x group that returns data, and per-game linescore, win probability, play-by-play and live-feed plays/pitch events/linescore/officials MUST be ingestible. Routes that do not respond MUST stay registered as `unsupported` with the probe reason; routes that answer 200 with no records MUST be listed as `empty` in `docs/mlb_probe.json`.

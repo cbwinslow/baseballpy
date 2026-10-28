@@ -18,10 +18,10 @@ The contracts that other code consumes MUST be enforced by tests: sinks satisfy 
 - **WHEN** passed to `DuckDBSink`, `PolarsSink`, `ParquetSink`, or `DltSink`
 - **THEN** each sink writes the data to its respective destination using native zero-copy Arrow memory buffers where supported.
 
-### Requirement: Zero-Copy Arrow Stream Protocol
-Normalizers and Extractors MUST yield or emit data conforming to Apache Arrow PyCapsule protocol (`__arrow_c_stream__` or `pyarrow.RecordBatchReader`).
+### Requirement: Arrow Streaming
+Normalizers MUST produce `pyarrow` tables or batches per source chunk (a Statcast window, a Retrosheet file, an MLB request); the stores MUST append each chunk to its Parquet part through one `ParquetWriter` instead of building a whole-dataset table, and sinks MUST accept a `pyarrow.RecordBatchReader` through `write_stream`. No batch size is fixed: it is the size of the source chunk.
 
-#### Scenario: Streaming high-volume pitch data
-- **GIVEN** a multi-season Statcast query yielding 1,500,000 pitch records
-- **WHEN** processed by the pipeline
-- **THEN** data streams in bounded batches of 50,000 rows without accumulating full multi-gigabyte datasets in memory unless explicitly requested.
+#### Scenario: Streaming a multi-season query
+- **GIVEN** a multi-season Statcast query
+- **WHEN** it is ingested
+- **THEN** each window is written to its own Parquet part as it arrives, so memory holds one window rather than the whole result.

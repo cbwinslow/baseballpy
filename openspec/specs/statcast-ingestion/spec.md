@@ -1,6 +1,6 @@
 # Statcast Ingestion Specification
 
-## 1. Overview
+## Purpose
 The Statcast Ingestion Engine extracts, chunks, normalizes, and caches pitch-by-pitch tracking datasets, the registered Savant leaderboard variants (see section 5 and `docs/sources/statcast.md`) and, on demand, the per-game `/gf` feed from Baseball Savant (`https://baseballsavant.mlb.com`).
 
 ---
@@ -9,15 +9,15 @@ The Statcast Ingestion Engine extracts, chunks, normalizes, and caches pitch-by-
 1. **Granular Pitch Tracking (`/statcast_search/csv`):**
    - Ingests every column Savant exports (119 in every era from 2008; era-specific columns are empty before they existed) plus `_extras` for columns that appear later.
    - Splits date intervals into windows of at most 5 days (`split_date_range`) and bisects any window that reaches the 25,000-row cap.
-2. **Analytical Leaderboards (`/leaderboard/*`):** one registered dataset per variant (34 supported variants, e.g. `expected_statistics_batter`, `exit_velocity_batter_team`, `bat_tracking`, `outs_above_average`, `fielding_run_value`, `rolling`, `park_factors`); the authoritative list, routes, parameters, first seasons and unsupported routes are in `docs/sources/statcast.md` and `statcast/lb_catalog.py`.
+2. **Analytical Leaderboards (`/leaderboard/*`):** one registered dataset per variant (every supported variant, e.g. `expected_statistics_batter`, `exit_velocity_batter_team`, `bat_tracking`, `outs_above_average`, `fielding_run_value`, `rolling`, `park_factors`); the authoritative list, routes, parameters, first seasons and unsupported routes are in `docs/sources/statcast.md` and `statcast/lb_catalog.py`.
 3. **Game feed (`/gf?game_pk=`):** raw JSON per game, on demand or per season (`StatcastGameFeed.ingest_season`).
 
 ---
 
 ## 3. Rate Limiting & Concurrency
-- Outbound requests to `baseballsavant.mlb.com` route through an `aiolimiter.AsyncLimiter` strictly bounded to at most 2.5 requests/second.
-- Concurrency bounded via `asyncio.Semaphore` (default 4 workers).
-- Transient errors (HTTP 429, 500, 502, 503, 504, timeouts) wrapped in jittered exponential backoff via `tenacity`.
+- Outbound requests to `baseballsavant.mlb.com` go through the shared `HttpClient` (`core/http.py`), whose host limiter is bounded to at most 2.5 requests/second.
+- Concurrency is bounded by the client's semaphore (default 4).
+- Transient errors are retried with jittered exponential backoff by the same client (see `concurrency-and-rate-limiting`).
 
 ---
 
@@ -27,7 +27,7 @@ The Statcast Ingestion Engine extracts, chunks, normalizes, and caches pitch-by-
 
 ---
 
-## 5. Coverage (complete-source-coverage, verified live 2026-10-27)
+## Requirements
 
 ### Requirement: Pitch Search Completeness
 The pitch schema MUST cover every column Savant exports (119 in every era from 2008, era-specific ones nullable); columns that appear later MUST be preserved in a trailing `_extras` JSON column (never per-file inferred types), and uncastable cells MUST be quarantined. Windows hitting the 25,000-row cap MUST be bisected; a capped single day MUST raise `TruncatedResultError` and MUST NOT be cached.
@@ -47,7 +47,7 @@ Every supported leaderboard *variant* MUST be a registered dataset with a schema
 `ingest_season(year)` MUST cover spring training through the postseason using the MLB season calendar, resume via the manifest (empty windows included), and report surplus duplicate `(game_pk, at_bat_number, pitch_number)` keys. `ingest_all(start=2008)` iterates seasons.
 
 ### Requirement: Game Feed
-The per-game `/gf` JSON MAY be fetched on demand and stored raw (sha256); it MUST NOT be bulk-ingested and no typed table is derived from it.
+The per-game `/gf` JSON MAY be fetched on demand and stored raw (sha256); it is not part of the default `ingest` selection, and no typed table is derived from it. `StatcastGameFeed.ingest_season` is the explicit opt-in for a whole season (next requirement).
 
 ### Requirement: Embedded-Page Leaderboards and Snapshots
 Leaderboards without a CSV download MUST be ingested from the JSON value embedded in the page (`var/const/let <name>`, a list of rows or a dict of such lists) and a page without that value MUST raise. Pages that ignore the season parameter (`abs_challenges`, `rolling`) MUST be flat, unpartitioned snapshots of the current data.
