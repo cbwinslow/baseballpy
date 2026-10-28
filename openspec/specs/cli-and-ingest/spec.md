@@ -25,6 +25,13 @@ One command surface (`baseballpy`) plans and runs ingestion for every source thr
 ### Requirement: Coverage Visibility
 `baseballpy catalog list|show|status` MUST list every registered dataset with its view, partition, keys and schema, and report per dataset whether it is `INGESTED` or `MISSING` with files, rows, seasons and newest file date, without network access.
 
+### Requirement: Ingest Mode Visibility
+Every registered dataset MUST declare how `ingest` reaches it (`default`, `opt_in`, `on_demand` or `api_only`) and, for the last three or for a default dataset the provider publishes only for some seasons, a note saying what to do or why it can be empty. `catalog status` (table and `--json`) and `catalog show` MUST report it, and `catalog status --gaps` MUST list only MISSING datasets whose mode is `default`. The MLB endpoint modes are derived from the endpoint declaration, not from dataset names.
+
+#### Scenario: Gaps are the only unexpected MISSING rows
+- **WHEN** a full default `ingest all --seasons 2023` has completed
+- **THEN** `catalog status --gaps` lists only datasets whose note says the provider does not publish that season (real run 2026-10-28: `discrepancies`, `events_deduced`, `schedule_original`)
+
 ### Requirement: Read-Only Query Access
 `baseballpy db views|query|shell` MUST open the DuckDB catalog read-only: a write statement fails inside DuckDB, and a missing database or missing views produces an actionable error pointing to `db sync`.
 

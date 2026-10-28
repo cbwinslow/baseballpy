@@ -38,6 +38,9 @@ class DatasetStatus:
     rows: int
     seasons: tuple[int, ...]
     newest_mtime: str | None
+    #: how ``ingest`` reaches the dataset (``IngestMode`` of its spec) and the registry's note
+    ingest: str = "default"
+    note: str = ""
 
     @property
     def name(self) -> str:
@@ -83,6 +86,8 @@ def scan_lake(config: LakeConfig | None = None) -> list[DatasetStatus]:
                     rows=0,
                     seasons=(),
                     newest_mtime=None,
+                    ingest=spec.ingest,
+                    note=spec.ingest_note,
                 )
             )
             continue
@@ -107,6 +112,8 @@ def scan_lake(config: LakeConfig | None = None) -> list[DatasetStatus]:
                 rows=total_rows,
                 seasons=tuple(sorted(seasons_set)),
                 newest_mtime=newest_date_str,
+                ingest=spec.ingest,
+                note=spec.ingest_note,
             )
         )
 
@@ -367,6 +374,11 @@ def ingest_cmd(
     help="Show only MISSING datasets.",
 )
 @click.option(
+    "--gaps",
+    is_flag=True,
+    help="Show only MISSING datasets that the default ingest selection should have filled.",
+)
+@click.option(
     "--json",
     "as_json",
     is_flag=True,
@@ -377,16 +389,24 @@ def catalog_status_cmd(
     ctx: click.Context,
     sources: tuple[str, ...],
     missing: bool,
+    gaps: bool,
     as_json: bool,
 ) -> None:
-    """Inspect local lake processed Parquet datasets and reporting status."""
+    """Inspect local lake processed Parquet datasets and reporting status.
+
+    The Ingest column says why a dataset is not in the lake: opt_in and on_demand datasets need an
+    option or an input, api_only ones are filled by the Python API, and a default dataset can be
+    empty for a season the provider does not publish (its note says which).
+    """
     config = LakeConfig()
     statuses = scan_lake(config)
     if sources:
         source_set = set(sources)
         statuses = [s for s in statuses if s.source in source_set]
-    if missing:
+    if missing or gaps:
         statuses = [s for s in statuses if s.status == "MISSING"]
+    if gaps:
+        statuses = [s for s in statuses if s.ingest == "default"]
 
     if as_json:
         for s in statuses:
@@ -400,6 +420,8 @@ def catalog_status_cmd(
                         "rows": s.rows,
                         "seasons": list(s.seasons),
                         "newest_mtime": s.newest_mtime,
+                        "ingest": s.ingest,
+                        "note": s.note,
                     }
                 )
             )
@@ -407,11 +429,14 @@ def catalog_status_cmd(
         table = Table(title="Catalog Status")
         table.add_column("Source", style="cyan")
         table.add_column("Dataset")
-        table.add_column("Status")
+        table.add_column("Status", no_wrap=True)
         table.add_column("Files", justify="right")
         table.add_column("Rows", justify="right")
         table.add_column("Seasons")
         table.add_column("Newest", style="dim")
+        table.add_column("Ingest", style="dim", no_wrap=True)
+        if missing or gaps:
+            table.add_column("Note", style="dim", overflow="fold")
 
         for s in statuses:
             status_style = "bold green" if s.status == "INGESTED" else "dim red"
@@ -424,6 +449,8 @@ def catalog_status_cmd(
                 f"{s.rows:,}" if s.rows else "-",
                 seasons_str,
                 s.newest_mtime or "-",
+                s.ingest,
+                *([s.note or "-"] if missing or gaps else []),
             )
         console.print(table)
 

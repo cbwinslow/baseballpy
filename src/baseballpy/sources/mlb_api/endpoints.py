@@ -9,6 +9,7 @@ Routes that answer 4xx or carry no record list are kept with an ``unsupported`` 
 from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 
+from baseballpy.core.datasets import IngestMode
 from baseballpy.core.schema_tools import snake
 from baseballpy.sources.mlb_api.stat_combos import (
     PARAM_STAT_COMBOS,
@@ -94,6 +95,19 @@ class MlbEndpoint:
                 "team_stats_year_by_year",
             )
         )
+
+    @property
+    def ingest_mode(self) -> tuple[IngestMode, str]:
+        """How ``ingest`` reaches this dataset, mirroring :class:`MlbApiSource` (mode, note)."""
+        if self.scope == "game":
+            return "opt_in", "per-game: ingest mlb_api --datasets games"
+        if self.scope == "person_season":
+            return "opt_in", "per-player: MlbApiSource.ingest_people_stats"
+        if self.heavy:
+            return "opt_in", "all-time pool: ingest mlb_api --datasets history"
+        if self.scope in ("since", "query"):
+            return "on_demand", f"needs {'updated_since' if self.scope == 'since' else 'query'}"
+        return "default", ""
 
     @property
     def partitioned(self) -> bool:

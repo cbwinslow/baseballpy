@@ -173,6 +173,7 @@ One command surface runs the whole library. Every command and option is listed i
 baseballpy catalog list
 baseballpy catalog show statcast.pitches
 baseballpy catalog status --missing
+baseballpy catalog status --gaps    # MISSING datasets the default ingest should have filled
 
 # Plan, then run, ingestion for any mix of sources (re-runs skip what is complete)
 baseballpy ingest all --seasons 2023 --dry-run

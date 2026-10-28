@@ -11,6 +11,12 @@ import pyarrow as pa
 
 SOURCES = ("statcast", "mlb_api", "lahman", "chadwick", "retrosheet")
 
+#: how a dataset gets into the lake: ``default`` (the default ``ingest`` selection), ``opt_in``
+#: (needs an explicit option because it is large), ``on_demand`` (needs an input such as a query
+#: or a since-timestamp) or ``api_only`` (filled only by the Python API; a declarative twin is
+#: ingested by default)
+IngestMode = Literal["default", "opt_in", "on_demand", "api_only"]
+
 
 @dataclass(frozen=True)
 class DatasetSpec:
@@ -24,6 +30,9 @@ class DatasetSpec:
     keys: tuple[str, ...]
     description: str
     endpoint_doc: str
+    ingest: IngestMode = "default"
+    #: what to do for ``opt_in``/``on_demand``, or why a ``default`` dataset can be empty
+    ingest_note: str = ""
 
     @property
     def key(self) -> str:

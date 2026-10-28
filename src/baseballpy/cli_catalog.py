@@ -143,6 +143,8 @@ def catalog_show_cmd(
             rows=0,
             seasons=(),
             newest_mtime=None,
+            ingest=dataset_spec.ingest,
+            note=dataset_spec.ingest_note,
         )
 
     if as_json:
@@ -155,6 +157,8 @@ def catalog_show_cmd(
             "partition": dataset_spec.partition,
             "keys": list(dataset_spec.keys),
             "endpoint_doc": dataset_spec.endpoint_doc,
+            "ingest": dataset_spec.ingest,
+            "ingest_note": dataset_spec.ingest_note,
             "status": lake_status.status,
             "files": lake_status.files,
             "rows": lake_status.rows,
@@ -180,6 +184,12 @@ def catalog_show_cmd(
         meta_table.add_row("Partition", dataset_spec.partition)
         meta_table.add_row("Keys", ", ".join(dataset_spec.keys) if dataset_spec.keys else "-")
         meta_table.add_row("Endpoint Doc", dataset_spec.endpoint_doc)
+        meta_table.add_row(
+            "Ingest",
+            f"{dataset_spec.ingest}: {dataset_spec.ingest_note}"
+            if dataset_spec.ingest_note
+            else dataset_spec.ingest,
+        )
 
         status_style = "bold green" if lake_status.status == "INGESTED" else "dim red"
         meta_table.add_row("Status", f"[{status_style}]{lake_status.status}[/{status_style}]")

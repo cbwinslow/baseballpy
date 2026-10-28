@@ -149,9 +149,14 @@ Usage: baseballpy catalog status [OPTIONS]
 
   Inspect local lake processed Parquet datasets and reporting status.
 
+  The Ingest column says why a dataset is not in the lake: opt_in and on_demand datasets need an
+  option or an input, api_only ones are filled by the Python API, and a default dataset can be empty
+  for a season the provider does not publish (its note says which).
+
 Options:
   --source TEXT  Filter by source (repeatable).
   --missing      Show only MISSING datasets.
+  --gaps         Show only MISSING datasets that the default ingest selection should have filled.
   --json         Print status as JSON lines (one object per dataset).
   --help         Show this message and exit.
 ```

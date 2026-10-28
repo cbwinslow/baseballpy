@@ -8,7 +8,7 @@ from typing import Literal
 
 import pyarrow as pa
 
-from baseballpy.core.datasets import DATASETS, DatasetSpec, register
+from baseballpy.core.datasets import DATASETS, DatasetSpec, IngestMode, register
 from baseballpy.core.schema_tools import snake
 from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_SCHEMAS
 from baseballpy.sources.lahman.schema import LAHMAN_PRIMARY_KEYS, LAHMAN_SCHEMAS
@@ -24,6 +24,14 @@ from baseballpy.sources.statcast.schema import STATCAST_SCHEMA
 
 Partition = Literal["season", "none"]
 
+#: default-ingested Retrosheet datasets that upstream publishes for some seasons only (checked
+#: against the pinned ``chadwickbureau/retrosheet`` tree, 2026-10-28); an empty season is not a gap
+RETROSHEET_COVERAGE_NOTES = {
+    "events_deduced": "upstream has .ED* files for 1968 and earlier only",
+    "discrepancies": "upstream has *discs.csv files for 1988 and earlier only",
+    "schedule_original": "upstream has the original schedule for 2020 only",
+}
+
 
 def _add(
     source: str,
@@ -34,6 +42,8 @@ def _add(
     description: str,
     endpoint_doc: str,
     partition: str = "none",
+    ingest: IngestMode = "default",
+    ingest_note: str = "",
 ) -> None:
     part: Partition = "season" if partition == "season" else "none"
     register(
@@ -46,6 +56,8 @@ def _add(
             keys=keys,
             description=description,
             endpoint_doc=endpoint_doc,
+            ingest=ingest,
+            ingest_note=ingest_note,
         )
     )
 
@@ -172,11 +184,14 @@ def register_all() -> dict[str, DatasetSpec]:
             desc,
             f"{mlb_doc}#{anchor}",
             partition,
+            "api_only",
+            "hand-written; filled by MlbApiSource methods, its declarative twin is ingested",
         )
 
     for endpoint in MLB_ENDPOINTS:
         if endpoint.name not in MLB_SCHEMAS:
             continue  # no live data when the schemas were generated (see docs/mlb_probe.json)
+        mode, note = endpoint.ingest_mode
         _add(
             "mlb_api",
             endpoint.name,
@@ -186,6 +201,8 @@ def register_all() -> dict[str, DatasetSpec]:
             endpoint.description,
             "sources/mlb_api.md#declarative-endpoints",
             "season" if endpoint.partitioned else "none",
+            mode,
+            note,
         )
 
     for table, schema in LAHMAN_SCHEMAS.items():
@@ -311,6 +328,7 @@ def register_all() -> dict[str, DatasetSpec]:
             r_desc,
             f"{retro_doc}#{r_anchor}",
             r_part,
+            ingest_note=RETROSHEET_COVERAGE_NOTES.get(r_name, ""),
         )
 
     flat_descriptions = {
@@ -337,6 +355,7 @@ def register_all() -> dict[str, DatasetSpec]:
             flat_descriptions[flat_name],
             f"{retro_doc}#dataset-{flat_name}",
             "season" if flat_name in seasonal else "none",
+            ingest_note=RETROSHEET_COVERAGE_NOTES.get(flat_name, ""),
         )
 
     box_doc = f"{retro_doc}#3b-box-score-game-accounts-eba-ebn-ebe-ebr-ebf"

@@ -351,3 +351,54 @@ def test_split_datasets_needs_source_prefix_when_ambiguous() -> None:
         split_datasets(("People",), ("lahman", "retrosheet"))
     with pytest.raises(click.BadParameter, match="not selected"):
         split_datasets(("mlb_api:season",), ("lahman",))
+
+
+def _status_lines(*args: str) -> list[dict[str, object]]:
+    res = CliRunner().invoke(main, ["catalog", "status", "--json", *args])
+    assert res.exit_code == 0, res.output
+    return [json.loads(line) for line in res.output.strip().splitlines() if line.strip()]
+
+
+def test_catalog_status_labels_why_a_dataset_is_not_ingested() -> None:
+    rows = {(r["source"], r["dataset"]): r for r in _status_lines()}
+    assert rows[("mlb_api", "game_play_by_play")]["ingest"] == "opt_in"
+    assert rows[("mlb_api", "people_stats_season_hitting")]["ingest"] == "opt_in"
+    assert rows[("mlb_api", "people_changes")]["ingest"] == "on_demand"
+    assert rows[("mlb_api", "venues")]["ingest"] == "api_only"
+    assert rows[("mlb_api", "teams_season")]["ingest"] == "default"
+    assert "1968" in str(rows[("retrosheet", "events_deduced")]["note"])
+    for row in rows.values():
+        if row["ingest"] in ("opt_in", "on_demand", "api_only"):
+            assert row["note"], f"{row['source']}.{row['dataset']} has no ingest note"
+
+
+def test_catalog_status_gaps_only_lists_default_datasets() -> None:
+    gaps = _status_lines("--gaps")
+    assert gaps
+    assert {g["ingest"] for g in gaps} == {"default"}
+    assert {g["status"] for g in gaps} == {"MISSING"}
+    assert len(gaps) < len(_status_lines("--missing"))
+
+
+def test_catalog_status_gaps_shrinks_when_a_default_dataset_is_ingested() -> None:
+    before = {(g["source"], g["dataset"]) for g in _status_lines("--gaps")}
+    target = LakeConfig().processed_dir("chadwick", "register_names")
+    target.mkdir(parents=True, exist_ok=True)
+    pq.write_table(pa.table({"x": [1]}), target / "data.parquet")
+    after = {(g["source"], g["dataset"]) for g in _status_lines("--gaps")}
+    assert ("chadwick", "register_names") in before
+    assert after == before - {("chadwick", "register_names")}
+
+
+def test_catalog_status_table_shows_the_note_for_missing_rows() -> None:
+    res = CliRunner().invoke(main, ["catalog", "status", "--source", "retrosheet", "--missing"])
+    assert res.exit_code == 0, res.output
+    assert "1968" in res.output or "ED" in res.output
+
+
+def test_catalog_show_reports_the_ingest_mode() -> None:
+    res = CliRunner().invoke(main, ["catalog", "show", "mlb_api.venues", "--json"])
+    assert res.exit_code == 0, res.output
+    data = json.loads(res.output)
+    assert data["ingest"] == "api_only"
+    assert data["ingest_note"]

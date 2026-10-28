@@ -247,7 +247,8 @@ async def track_live_contest(game_pk: int):
 
 ### Ingest, Inspect and Query from the CLI
 ```bash
-baseballpy catalog status                       # which datasets are INGESTED or MISSING
+baseballpy catalog status                       # which datasets are INGESTED or MISSING, and why
+baseballpy catalog status --gaps                # only MISSING datasets the default ingest should fill
 baseballpy ingest all --seasons 2023 --dry-run  # plan only: no requests are made
 baseballpy ingest lahman chadwick               # season-less sources
 baseballpy db sync && baseballpy db views       # DuckDB views over processed/ Parquet
