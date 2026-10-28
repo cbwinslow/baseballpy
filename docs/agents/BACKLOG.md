@@ -35,8 +35,8 @@ numbers are in `verify-optin-paths/design.md`.
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-05 | `historical-backfill-plan 1.1`: throughput per source | READY | rows, bytes and seconds for one old and one modern season per source, taken from `hist.jsonl` / the audit log of the homelab lake (re-run an old season such as 1990 in a scratch home if the window has none), written to `docs/BACKFILL.md` |
-| B-06 | `historical-backfill-plan 1.2`: the plan | READY | `docs/BACKFILL.md` has the order, ranges, disk and time estimates for the full history (1871-today) per source, and a short list of owner decision points (permanent location, ranges, schedule) |
+| B-05 | `historical-backfill-plan 1.1`: throughput per source | EXTERNAL (done for 4 of 5 sources; MLB API modern season needs B-29) | rows, bytes and seconds for one old and one modern season per source, taken from `hist.jsonl` / the audit log of the homelab lake (re-run an old season such as 1990 in a scratch home if the window has none), written to `docs/BACKFILL.md` |
+| B-06 | historical-backfill-plan 1.2: the plan | DONE (`docs/BACKFILL.md`; the MLB API row is only a bound) | `docs/BACKFILL.md` has the order, ranges, disk and time estimates for the full history (1871-today) per source, and a short list of owner decision points (permanent location, ranges, schedule) |
 | B-07 | historical-backfill-plan 2.1: `baseballpy backfill` | DONE | command with a plan file, progress summary, `--max-gb` and free-space pre-flight, built on `run_jobs` (no source special cases), `docs/CLI.md` regenerated, tests with respx |
 | B-08 | historical-backfill-plan 2.2: interruption and resume test | DONE | respx test: interrupt mid-plan, re-run, only incomplete chunks fetched |
 | B-09 | `historical-backfill-plan 3.1`: run the backfill into the real home | OWNER | owner names the permanent lake location and approves the ranges; the run's summary is in `docs/BACKFILL.md` |

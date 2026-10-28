@@ -30,7 +30,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `historical-backfill-plan` | 3 | 6 | 1.1, 1.2, 3.1, 3.2 |
+| `historical-backfill-plan` | 4 | 5 | 1.1, 3.1, 3.2 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
 | `retrosheet-csv-bundles` | 1 | 6 | 0, 1, 3, 4, 5, 6 |
@@ -80,6 +80,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 - `docs/API.md`
 - `docs/ARCHITECTURE.md`
+- `docs/BACKFILL.md`
 - `docs/CLI.md`
 - `docs/DATA_LICENSES.md`
 - `docs/DECISIONS.md`

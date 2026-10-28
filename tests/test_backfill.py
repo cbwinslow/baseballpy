@@ -218,3 +218,14 @@ def test_the_cli_refuses_a_bad_plan(tmp_path: Path, monkeypatch: pytest.MonkeyPa
     result = CliRunner().invoke(main, ["backfill", str(path), "--dry-run"])
     assert result.exit_code != 0
     assert "nosuchsource" in result.output
+
+
+def test_the_example_plan_in_the_backfill_doc_parses() -> None:
+    import re
+    import tomllib
+
+    doc = (Path(__file__).parent.parent / "docs" / "BACKFILL.md").read_text(encoding="utf-8")
+    block = re.search(r"```toml\n(.*?)```", doc, re.S)
+    assert block is not None
+    plan = parse_plan(tomllib.loads(block.group(1)))
+    assert [s.name for s in plan.stages] == ["reference", "retrosheet-modern", "statcast"]
