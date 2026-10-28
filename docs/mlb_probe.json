@@ -2779,105 +2779,105 @@
   },
   "game_feed_plays": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 215,
-   "columns": 58,
+   "sample_rows": 1895,
+   "columns": 59,
    "key_unique_per_request": true
   },
   "game_feed_play_events": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 919,
-   "columns": 147,
+   "sample_rows": 8267,
+   "columns": 154,
    "key_unique_per_request": true
   },
   "game_feed_linescore_innings": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 27,
+   "sample_rows": 236,
    "columns": 11,
    "key_unique_per_request": true
   },
   "game_feed_officials": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 14,
+   "sample_rows": 89,
    "columns": 5,
    "key_unique_per_request": true
   },
   "game_boxscore_players": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 153,
-   "columns": 606,
+   "sample_rows": 1405,
+   "columns": 608,
    "key_unique_per_request": true
   },
   "game_boxscore_teams": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 6,
-   "columns": 298,
+   "sample_rows": 52,
+   "columns": 302,
    "key_unique_per_request": true
   },
   "game_boxscore_officials": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 14,
+   "sample_rows": 89,
    "columns": 5,
    "key_unique_per_request": true
   },
   "game_boxscore_info": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 42,
+   "sample_rows": 351,
    "columns": 3,
    "key_unique_per_request": true
   },
   "game_boxscore_pitching_notes": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 1,
+   "sample_rows": 4,
    "columns": 2,
    "key_unique_per_request": true
   },
   "game_boxscore_top_performers": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 9,
-   "columns": 232,
+   "sample_rows": 78,
+   "columns": 233,
    "key_unique_per_request": true
   },
   "game_linescore": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 27,
+   "sample_rows": 227,
    "columns": 11,
    "key_unique_per_request": true
   },
   "game_win_probability": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 215,
-   "columns": 65,
+   "sample_rows": 1895,
+   "columns": 66,
    "key_unique_per_request": true
   },
   "game_play_by_play": {
    "status": "ok",
-   "requests_ok": 3,
+   "requests_ok": 26,
    "requests_failed": 0,
-   "sample_rows": 215,
+   "sample_rows": 1895,
    "columns": 58,
    "key_unique_per_request": true
   },

@@ -381,11 +381,28 @@ def reprobe_unsupported(http: HttpClient) -> None:
     print(f"  re-verified {len(updated)} unsupported stat types")
 
 
+#: dates (and the sports sampled on them) that give the game endpoints their varied shapes: older era,
+#: replay-reviewed MLB games, and the minor-league levels whose teams carry ``parentOrg*``
+SAMPLE_GAME_DAYS = (
+    ("2015-06-15", (1,)),
+    ("2023-06-15", (1,)),
+    ("2024-06-15", (1, 11, 12, 13, 14)),
+    ("2024-08-10", (1,)),
+)
+#: games taken per sport and day (first, middle, last: a spread rather than three similar games)
+GAMES_PER_SPORT_DAY = 3
+
+
 def sample_games(http: HttpClient) -> tuple[int, ...]:
-    """Two fixed 2024 games plus the first game of 2015-06-15 (older-era shape)."""
-    data = get_json(http, "v1/schedule", {"sportId": 1, "date": "2015-06-15"})
-    older = [g["gamePk"] for g in next(iter_games(data), [])] if data else []
-    return (*SAMPLE_GAMES, *older[:1])
+    """Two fixed 2024 games plus a spread of games over eras and sport levels."""
+    picked: list[int] = list(SAMPLE_GAMES)
+    for day, sports in SAMPLE_GAME_DAYS:
+        for sport in sports:
+            data = get_json(http, "v1/schedule", {"sportId": sport, "date": day})
+            games = [g["gamePk"] for g in next(iter_games(data), [])] if data else []
+            spread = {games[i] for i in (0, len(games) // 2, len(games) - 1) if games}
+            picked.extend(sorted(spread)[:GAMES_PER_SPORT_DAY])
+    return tuple(dict.fromkeys(picked))
 
 
 def iter_games(data: Any) -> Any:

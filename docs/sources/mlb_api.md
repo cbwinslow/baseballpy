@@ -864,6 +864,7 @@ Win probability after every play.
 | `review_details_in_progress` | bool | yes | `reviewDetails.inProgress` | TODO |
 | `review_details_review_type` | string | yes | `reviewDetails.reviewType` | TODO |
 | `review_details_challenge_team_id` | int32 | yes | `reviewDetails.challengeTeamId` | MLBAM identifier of the review details challenge team. (authored) |
+| `matchup_batter_hot_cold_zone_stats_stats` | string | yes | `matchup.batterHotColdZoneStats.stats` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.game_win_probability -->
@@ -9616,8 +9617,15 @@ Every pitch/action event of a final game (pitchData, hitData, details, count) wi
 | `details_violation_player_id` | int32 | yes | `details.violation.player.id` | MLBAM identifier of the details violation player. (authored) |
 | `details_violation_player_full_name` | string | yes | `details.violation.player.fullName` | Full name of the details violation player. (authored) |
 | `pfx_id` | string | yes | `pfxId` | MLBAM identifier of the pfx. (authored) |
+| `review_details_is_overturned` | bool | yes | `reviewDetails.isOverturned` | TODO |
+| `review_details_in_progress` | bool | yes | `reviewDetails.inProgress` | TODO |
+| `review_details_review_type` | string | yes | `reviewDetails.reviewType` | TODO |
 | `umpire_id` | int32 | yes | `umpire.id` | MLBAM identifier of the umpire. (authored) |
 | `umpire_link` | string | yes | `umpire.link` | Relative MLB Stats API path of the umpire resource (prefix https://statsapi.mlb.com). (authored) |
+| `all_plays_matchup_batter_hot_cold_zone_stats_stats` | string | yes | `allPlays.matchup.batterHotColdZoneStats.stats` | TODO |
+| `review_details_challenge_team_id` | int32 | yes | `reviewDetails.challengeTeamId` | MLBAM identifier of the review details challenge team. (authored) |
+| `pitch_data_strike_zone_width` | double | yes | `pitchData.strikeZoneWidth` | TODO |
+| `pitch_data_strike_zone_depth` | double | yes | `pitchData.strikeZoneDepth` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.game_feed_play_events -->
@@ -9692,6 +9700,7 @@ Every plate appearance of a final game from the live feed (result, about, count,
 | `review_details_in_progress` | bool | yes | `reviewDetails.inProgress` | TODO |
 | `review_details_review_type` | string | yes | `reviewDetails.reviewType` | TODO |
 | `review_details_challenge_team_id` | int32 | yes | `reviewDetails.challengeTeamId` | MLBAM identifier of the review details challenge team. (authored) |
+| `matchup_batter_hot_cold_zone_stats_stats` | string | yes | `matchup.batterHotColdZoneStats.stats` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.game_feed_plays -->
@@ -15768,6 +15777,8 @@ Every player line of a game boxscore (person, position, batting/pitching/fieldin
 | `stats_pitching_note` | string | yes | `stats.pitching.note` | TODO |
 | `players_stats_batting_note` | string | yes | `players.stats.batting.note` | TODO |
 | `stats_batting_note` | string | yes | `stats.batting.note` | TODO |
+| `teams_team_parent_org_name` | string | yes | `teams.team.parentOrgName` | TODO |
+| `teams_team_parent_org_id` | int32 | yes | `teams.team.parentOrgId` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.game_boxscore_players -->
@@ -16082,6 +16093,10 @@ Team totals of a game boxscore (team, teamStats, batters/pitchers/bench/bullpen 
 | `batting_order` | string | yes | `battingOrder` | TODO |
 | `info` | string | yes | — | TODO |
 | `note` | string | yes | — | TODO |
+| `teams_team_parent_org_name` | string | yes | `teams.team.parentOrgName` | TODO |
+| `teams_team_parent_org_id` | int32 | yes | `teams.team.parentOrgId` | TODO |
+| `team_parent_org_name` | string | yes | `team.parentOrgName` | Name of the team parent org. (authored) |
+| `team_parent_org_id` | int32 | yes | `team.parentOrgId` | MLBAM identifier of the team parent org. (authored) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.game_boxscore_teams -->
@@ -16330,6 +16345,7 @@ Top performers of a game from the boxscore.
 | `player_stats_batting_pop_outs` | int32 | yes | `player.stats.batting.popOuts` | TODO |
 | `player_stats_batting_line_outs` | int32 | yes | `player.stats.batting.lineOuts` | TODO |
 | `hitting_game_score` | int32 | yes | `hittingGameScore` | TODO |
+| `player_stats_batting_note` | string | yes | `player.stats.batting.note` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.game_boxscore_top_performers -->

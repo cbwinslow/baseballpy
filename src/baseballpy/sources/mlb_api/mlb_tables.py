@@ -16219,6 +16219,11 @@ MLB_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {
         ("review_details_in_progress", "bool", "reviewDetails.inProgress"),
         ("review_details_review_type", "string", "reviewDetails.reviewType"),
         ("review_details_challenge_team_id", "int32", "reviewDetails.challengeTeamId"),
+        (
+            "matchup_batter_hot_cold_zone_stats_stats",
+            "string",
+            "matchup.batterHotColdZoneStats.stats",
+        ),
     ),
     "game_feed_play_events": (
         ("game_pk", "int32", "game_pk"),
@@ -16402,8 +16407,19 @@ MLB_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {
         ("details_violation_player_id", "int32", "details.violation.player.id"),
         ("details_violation_player_full_name", "string", "details.violation.player.fullName"),
         ("pfx_id", "string", "pfxId"),
+        ("review_details_is_overturned", "bool", "reviewDetails.isOverturned"),
+        ("review_details_in_progress", "bool", "reviewDetails.inProgress"),
+        ("review_details_review_type", "string", "reviewDetails.reviewType"),
         ("umpire_id", "int32", "umpire.id"),
         ("umpire_link", "string", "umpire.link"),
+        (
+            "all_plays_matchup_batter_hot_cold_zone_stats_stats",
+            "string",
+            "allPlays.matchup.batterHotColdZoneStats.stats",
+        ),
+        ("review_details_challenge_team_id", "int32", "reviewDetails.challengeTeamId"),
+        ("pitch_data_strike_zone_width", "float64", "pitchData.strikeZoneWidth"),
+        ("pitch_data_strike_zone_depth", "float64", "pitchData.strikeZoneDepth"),
     ),
     "game_feed_linescore_innings": (
         ("game_pk", "int32", "game_pk"),
@@ -17620,6 +17636,8 @@ MLB_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {
         ("stats_pitching_note", "string", "stats.pitching.note"),
         ("players_stats_batting_note", "string", "players.stats.batting.note"),
         ("stats_batting_note", "string", "stats.batting.note"),
+        ("teams_team_parent_org_name", "string", "teams.team.parentOrgName"),
+        ("teams_team_parent_org_id", "int32", "teams.team.parentOrgId"),
     ),
     "game_boxscore_teams": (
         ("game_pk", "int32", "game_pk"),
@@ -18096,6 +18114,10 @@ MLB_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {
         ("batting_order", "string", "battingOrder"),
         ("info", "string", "info"),
         ("note", "string", "note"),
+        ("teams_team_parent_org_name", "string", "teams.team.parentOrgName"),
+        ("teams_team_parent_org_id", "int32", "teams.team.parentOrgId"),
+        ("team_parent_org_name", "string", "team.parentOrgName"),
+        ("team_parent_org_id", "int32", "team.parentOrgId"),
     ),
     "game_boxscore_officials": (
         ("game_pk", "int32", "game_pk"),
@@ -18662,6 +18684,7 @@ MLB_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {
         ("player_stats_batting_pop_outs", "int32", "player.stats.batting.popOuts"),
         ("player_stats_batting_line_outs", "int32", "player.stats.batting.lineOuts"),
         ("hitting_game_score", "int32", "hittingGameScore"),
+        ("player_stats_batting_note", "string", "player.stats.batting.note"),
     ),
     "game_linescore": (
         ("game_pk", "int32", "game_pk"),
@@ -18742,6 +18765,11 @@ MLB_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {
         ("review_details_in_progress", "bool", "reviewDetails.inProgress"),
         ("review_details_review_type", "string", "reviewDetails.reviewType"),
         ("review_details_challenge_team_id", "int32", "reviewDetails.challengeTeamId"),
+        (
+            "matchup_batter_hot_cold_zone_stats_stats",
+            "string",
+            "matchup.batterHotColdZoneStats.stats",
+        ),
     ),
     "game_play_by_play": (
         ("game_pk", "int32", "game_pk"),
