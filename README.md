@@ -165,17 +165,35 @@ dlt_sink.write(table, destination="statcast_pitches")
 
 ## CLI Utilities
 
-`baseballpy` includes built-in inspection commands:
+One command surface runs the whole library. Every command and option is listed in the generated
+[`docs/CLI.md`](docs/CLI.md).
 
 ```bash
-# Review ingestion audits and performance metrics
-baseballpy audit summary
-baseballpy audit tail -n 20
-baseballpy audit stats
+# What does the registry cover, and what is in the lake?
+baseballpy catalog list
+baseballpy catalog show statcast.pitches
+baseballpy catalog status --missing
 
-# Download Statcast pitch batches directly from terminal
-baseballpy statcast --start 2024-05-01 --end 2024-05-05 --output pitches.parquet
+# Plan, then run, ingestion for any mix of sources (re-runs skip what is complete)
+baseballpy ingest all --seasons 2023 --dry-run
+baseballpy ingest statcast mlb_api --seasons 2022-2023 --concurrency 2
+baseballpy ingest lahman chadwick                  # season-less sources
+baseballpy ingest retrosheet --seasons 1964 --datasets gamelogs
+
+# Query what you ingested
+baseballpy db sync
+baseballpy db views
+baseballpy db query "SELECT count(*) FROM statcast_pitches"
+
+# Live games, dead letters and housekeeping
+baseballpy stream 745789 --duckdb live.duckdb      # --replay re-emits a finished game
+baseballpy quarantine list
+baseballpy audit summary --status FAILURE --since 2026-10-01
+baseballpy doctor
 ```
+
+A dotenv file is read only when `BASEBALLPY_ENV_FILE` points at one; nothing is picked up implicitly
+from the working directory.
 
 ---
 

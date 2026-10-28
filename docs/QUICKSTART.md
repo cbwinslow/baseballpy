@@ -33,7 +33,8 @@ export BASEBALLPY_RATE_SAVANT_RPS=2.5
 export BASEBALLPY_AUDIT_ENABLED=true
 ```
 
-Or configure dynamically in Python:
+A dotenv file is loaded only when `BASEBALLPY_ENV_FILE` names it (real environment variables win over
+the file); a stray `.env` in the working directory is ignored. Or configure dynamically in Python:
 ```python
 from pathlib import Path
 from baseballpy.core.config import LakeConfig, PipelineConfig
@@ -244,9 +245,20 @@ async def track_live_contest(game_pk: int):
 # asyncio.run(track_live_contest(745789))
 ```
 
+### Ingest, Inspect and Query from the CLI
+```bash
+baseballpy catalog status                       # which datasets are INGESTED or MISSING
+baseballpy ingest all --seasons 2023 --dry-run  # plan only: no requests are made
+baseballpy ingest lahman chadwick               # season-less sources
+baseballpy db sync && baseballpy db views       # DuckDB views over processed/ Parquet
+baseballpy db query "SELECT count(*) FROM lahman_batting" --json
+baseballpy doctor                               # layout, disk, versions, orphan .part files
+```
+The full command reference is [`CLI.md`](CLI.md) (generated from the click help).
+
 ### Inspecting Audit Telemetry via CLI
 ```bash
-# View summary of all operations
+# View summary of all operations (filters: --source, --status, --since)
 baseballpy audit summary
 
 # Tail recent execution logs
