@@ -14889,6 +14889,10 @@ MLB_COLUMNS: dict[str, tuple[tuple[str, str, str], ...]] = {
         ("death_state_province", "string", "deathStateProvince"),
         ("death_country", "string", "deathCountry"),
         ("last_played_date", "date32", "lastPlayedDate"),
+        ("pronunciation", "string", "pronunciation"),
+        ("name_title", "string", "nameTitle"),
+        ("name_suffix", "string", "nameSuffix"),
+        ("name_matrilineal", "string", "nameMatrilineal"),
     ),
     "jobs_umpires": (
         ("person_id", "int32", "person.id"),

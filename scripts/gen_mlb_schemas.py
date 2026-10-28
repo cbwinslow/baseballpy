@@ -409,6 +409,9 @@ def sample_games(http: HttpClient) -> tuple[int, ...]:
     return tuple(dict.fromkeys(picked))
 
 
+#: extra ``people_search`` queries (a common surname, a long list, a one-person match)
+SAMPLE_SEARCH_NAMES = ("Smith", "Garcia", "Ohtani")
+
 #: offsets of the extra 50-row samples taken from paginated endpoints
 DEEP_PAGE_OFFSETS = (500, 5_000, 40_000)
 
@@ -576,15 +579,22 @@ def main() -> int:
         for t in (get_json(http, "v1/teams", {"sportId": 1, "season": 2024}) or {}).get("teams", [])
     )
     all_sports = sport_ids(http)
-    ctxs.append(
-        Context(
-            season=2024,
-            sport_ids=(1,),
-            team_ids=all_teams,
-            game_pks=games,
-            leader_categories=leaders,
-            **EXTRA_CTX,
-        )
+    # people_search: the fields differ by person (Judge has no pronunciation), so sample more names
+    ctxs.extend(
+        [
+            Context(
+                season=2024,
+                sport_ids=(1,),
+                team_ids=all_teams,
+                game_pks=games,
+                leader_categories=leaders,
+                **EXTRA_CTX,
+            ),
+            *(
+                Context(season=2024, sport_ids=(1,), **{**EXTRA_CTX, "query": name})
+                for name in SAMPLE_SEARCH_NAMES
+            ),
+        ]
     )
     tables: dict[str, list[tuple[str, str, str]]] = {}
     probe: dict[str, Any] = {}

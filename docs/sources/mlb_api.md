@@ -9971,6 +9971,10 @@ People matching a name query (on demand).
 | `death_state_province` | string | yes | `deathStateProvince` | TODO |
 | `death_country` | string | yes | `deathCountry` | TODO |
 | `last_played_date` | date32[day] | yes | `lastPlayedDate` | TODO |
+| `pronunciation` | string | yes | — | TODO |
+| `name_title` | string | yes | `nameTitle` | TODO |
+| `name_suffix` | string | yes | `nameSuffix` | TODO |
+| `name_matrilineal` | string | yes | `nameMatrilineal` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.people_search -->

@@ -2603,10 +2603,10 @@
   },
   "people_search": {
    "status": "ok",
-   "requests_ok": 1,
+   "requests_ok": 4,
    "requests_failed": 0,
-   "sample_rows": 5,
-   "columns": 47,
+   "sample_rows": 106,
+   "columns": 51,
    "key_unique_per_request": true
   },
   "jobs_umpires": {
