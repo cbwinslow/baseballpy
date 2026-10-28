@@ -30,7 +30,8 @@ Every network fetch MUST go through `baseballpy.core.http.HttpClient`, applying 
 
 #### Scenario: Sync and async callers share limits
 - **GIVEN** sync and async callers hitting `statsapi.mlb.com` concurrently at a configured 8 req/s
-- **THEN** no more than 8 requests start in any one-second window across all callers.
+- **THEN** they share one limiter: after an initial burst of up to 8 requests (the bucket holds one second), the requests of all callers together are paced at 8 per second, and no more than `max_concurrency` are in flight at once.
+- Verified by `tests/test_concurrency.py::test_sync_threads_and_async_callers_share_one_host_limiter` and `::test_concurrency_bound_holds_across_sync_and_async_callers`.
 
 #### Scenario: Retry policy
 - **WHEN** the server returns 429 with `Retry-After: 2`

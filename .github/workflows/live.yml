@@ -24,3 +24,5 @@ jobs:
         with:
           name: upstream-audit
           path: catalog-audit.json
+      # One small real request per provider (tests/live): proves the fixtures still match.
+      - run: uv run pytest tests/live -m live --force-enable-socket

@@ -74,3 +74,17 @@ class RetroRepo:
 def retro_repo() -> RetroRepo:
     """Empty fake Retrosheet repo; ``add`` files then ``mount()`` inside a ``@respx.mock`` test."""
     return RetroRepo()
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    """Skip the live provider tests (``tests/live``) unless the marker expression selects them."""
+    expression = str(config.getoption("markexpr") or "")
+    selected = (
+        bool(expression) and not expression.lstrip().startswith("not ") and "live" in expression
+    )
+    if selected:
+        return
+    skip = pytest.mark.skip(reason="live provider test: run with `pytest tests/live -m live`")
+    for item in items:
+        if "live" in item.keywords:
+            item.add_marker(skip)

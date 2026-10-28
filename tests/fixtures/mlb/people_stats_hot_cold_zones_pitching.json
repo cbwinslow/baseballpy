@@ -9,170 +9,144 @@
    "splits": [
     {
      "stat": {
-      "name": "battingAverage",
+      "name": "numberOfStrikes",
       "zones": [
        {
         "zone": "01",
-        "color": "rgba(255, 255, 255, 0.55)",
-        "temp": "lukewarm",
-        "value": ".242"
+        "value": "77.00"
        },
        {
         "zone": "02",
-        "color": "rgba(150, 188, 255, .55)",
-        "temp": "cool",
-        "value": ".219"
+        "value": "67.00"
        },
        {
         "zone": "03",
-        "color": "rgba(6, 90, 238, .55)",
-        "temp": "cold",
-        "value": ".167"
+        "value": "34.00"
        },
        {
         "zone": "04",
-        "color": "rgba(255, 255, 255, 0.55)",
-        "temp": "lukewarm",
-        "value": ".229"
+        "value": "70.00"
        },
        {
         "zone": "05",
-        "color": "rgba(234, 147, 153, .55)",
-        "temp": "warm",
-        "value": ".265"
+        "value": "80.00"
        },
        {
         "zone": "06",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": ".385"
+        "value": "59.00"
        },
        {
         "zone": "07",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": ".583"
+        "value": "31.00"
        },
        {
         "zone": "08",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": ".333"
+        "value": "65.00"
        },
        {
         "zone": "09",
-        "color": "rgba(6, 90, 238, .55)",
-        "temp": "cold",
-        "value": ".094"
+        "value": "66.00"
        },
        {
         "zone": "11",
-        "color": "rgba(6, 90, 238, .55)",
-        "temp": "cold",
-        "value": ".148"
+        "value": "61.00"
        },
        {
         "zone": "12",
-        "color": "rgba(6, 90, 238, .55)",
-        "temp": "cold",
-        "value": ".050"
+        "value": "38.00"
        },
        {
         "zone": "13",
-        "color": "rgba(150, 188, 255, .55)",
-        "temp": "cool",
-        "value": ".200"
+        "value": "22.00"
        },
        {
         "zone": "14",
-        "color": "rgba(6, 90, 238, .55)",
-        "temp": "cold",
-        "value": ".038"
+        "value": "72.00"
        }
       ]
      }
     },
     {
      "stat": {
-      "name": "sluggingPercentage",
+      "name": "onBasePlusSlugging",
       "zones": [
        {
         "zone": "01",
-        "color": "rgba(255, 255, 255, 0.55)",
-        "temp": "lukewarm",
-        "value": ".394"
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".647"
        },
        {
         "zone": "02",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": ".531"
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".750"
        },
        {
         "zone": "03",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": ".500"
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".667"
        },
        {
         "zone": "04",
         "color": "rgba(6, 90, 238, .55)",
         "temp": "cold",
-        "value": ".286"
+        "value": ".514"
        },
        {
         "zone": "05",
-        "color": "rgba(255, 255, 255, 0.55)",
-        "temp": "lukewarm",
-        "value": ".408"
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".673"
        },
        {
         "zone": "06",
         "color": "rgba(214, 41, 52, .55)",
         "temp": "hot",
-        "value": ".615"
+        "value": "1.000"
        },
        {
         "zone": "07",
         "color": "rgba(214, 41, 52, .55)",
         "temp": "hot",
-        "value": "1.083"
+        "value": "1.667"
        },
        {
         "zone": "08",
         "color": "rgba(255, 255, 255, 0.55)",
         "temp": "lukewarm",
-        "value": ".400"
+        "value": ".742"
        },
        {
         "zone": "09",
         "color": "rgba(6, 90, 238, .55)",
         "temp": "cold",
-        "value": ".094"
+        "value": ".188"
        },
        {
         "zone": "11",
-        "color": "rgba(6, 90, 238, .55)",
-        "temp": "cold",
-        "value": ".296"
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".659"
        },
        {
         "zone": "12",
         "color": "rgba(6, 90, 238, .55)",
         "temp": "cold",
-        "value": ".050"
+        "value": ".308"
        },
        {
         "zone": "13",
         "color": "rgba(6, 90, 238, .55)",
         "temp": "cold",
-        "value": ".267"
+        "value": ".500"
        },
        {
         "zone": "14",
         "color": "rgba(6, 90, 238, .55)",
         "temp": "cold",
-        "value": ".038"
+        "value": ".273"
        }
       ]
      }
