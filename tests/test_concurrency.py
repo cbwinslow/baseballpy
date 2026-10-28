@@ -97,3 +97,17 @@ def test_concurrency_bound_holds_across_sync_and_async_callers() -> None:
     finally:
         client.close()
     assert 1 <= peak <= bound
+
+
+@respx.mock
+def test_a_per_call_timeout_overrides_the_configured_one() -> None:
+    route = respx.get(URL).mock(return_value=httpx.Response(200, content=b"x"))
+    client = HttpClient(RateLimitConfig(timeout_seconds=30.0), http2=False)
+    try:
+        client.get_sync(URL)
+        client.get_sync(URL, timeout=180.0)
+    finally:
+        client.close()
+    default, override = (call.request.extensions["timeout"] for call in route.calls)
+    assert default["read"] == 30.0
+    assert override["read"] == 180.0

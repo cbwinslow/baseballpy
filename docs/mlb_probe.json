@@ -75,10 +75,10 @@
   },
   "stats_career_fielding": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 42,
+   "sample_rows": 4000,
+   "columns": 54,
    "key_unique_per_request": true
   },
   "stats_career_catching": {
@@ -107,10 +107,10 @@
   },
   "stats_career_advanced_fielding": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 42,
+   "sample_rows": 4000,
+   "columns": 54,
    "key_unique_per_request": true
   },
   "stats_career_advanced_catching": {

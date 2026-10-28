@@ -184,6 +184,7 @@ class HttpClient:
         headers: Mapping[str, str] | None,
         etag: str | None,
         allow: tuple[int, ...],
+        timeout: float | None = None,
     ) -> HttpResult:
         client, semaphore = self._ensure_client()
         host = urlparse(url).hostname or ""
@@ -203,7 +204,12 @@ class HttpClient:
         async def _once() -> HttpResult:
             async with semaphore, limiter:
                 started = time.perf_counter()
-                resp = await client.get(url, params=params, headers=req_headers)
+                resp = await client.get(
+                    url,
+                    params=params,
+                    headers=req_headers,
+                    timeout=httpx.USE_CLIENT_DEFAULT if timeout is None else timeout,
+                )
             elapsed = time.perf_counter() - started
             status = resp.status_code
             if status in RETRYABLE_STATUSES and status not in allow:
@@ -233,9 +239,13 @@ class HttpClient:
         headers: Mapping[str, str] | None = None,
         etag: str | None = None,
         allow: tuple[int, ...] = (200,),
+        timeout: float | None = None,
     ) -> HttpResult:
-        """GET ``url`` (async). Statuses in ``allow`` are returned; others raise."""
-        return await self._submit(self._get_on_loop(url, params, headers, etag, allow))
+        """GET ``url`` (async). Statuses in ``allow`` are returned; others raise.
+
+        ``timeout`` overrides the configured request timeout for this call only.
+        """
+        return await self._submit(self._get_on_loop(url, params, headers, etag, allow, timeout))
 
     def get_sync(
         self,
@@ -245,11 +255,12 @@ class HttpClient:
         headers: Mapping[str, str] | None = None,
         etag: str | None = None,
         allow: tuple[int, ...] = (200,),
+        timeout: float | None = None,
     ) -> HttpResult:
         """Synchronous GET sharing the same limiter, semaphore and pool as async callers."""
         loop = self._ensure_loop()
         future = asyncio.run_coroutine_threadsafe(
-            self._get_on_loop(url, params, headers, etag, allow), loop
+            self._get_on_loop(url, params, headers, etag, allow, timeout), loop
         )
         return future.result()
 

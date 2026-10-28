@@ -409,6 +409,10 @@ def sample_games(http: HttpClient) -> tuple[int, ...]:
     return tuple(dict.fromkeys(picked))
 
 
+#: offsets of the extra 50-row samples taken from paginated endpoints
+DEEP_PAGE_OFFSETS = (500, 5_000, 40_000)
+
+
 def iter_games(data: Any) -> Any:
     """Yield the game list of each schedule date."""
     for day in data.get("dates", []):
@@ -446,6 +450,15 @@ def profile(http: HttpClient, ep: Any, ctxs: list[Any], requests_for: Any) -> di
                 keep = REF_FIXTURE_KEEP if ep.name.startswith("ref_") else FIXTURE_KEEP
                 fixture = trim_payload(data, ep.records, keep)
             records.extend(got)
+            if ep.paginated:
+                # fields that only some rows carry (a catcher's stats inside the fielding pools)
+                # may sit beyond the first page: sample deeper pages as well
+                for offset in DEEP_PAGE_OFFSETS:
+                    deep = get_json(http, request.path, {**params, "offset": offset})
+                    if deep:
+                        records.extend(
+                            {**request.extra, **r} for r in iter_records(deep, ep.records)
+                        )
     return {
         "records": records,
         "fixture": fixture,

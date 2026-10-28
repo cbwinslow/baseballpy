@@ -2900,6 +2900,18 @@ League-wide fielding stats, type careerAdvanced (player pool ALL).
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
 | `stat_passed_ball` | int32 | yes | `stat.passedBall` | TODO |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` | TODO |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
+| `stat_position_code` | string | yes | `stat.position.code` | Code of the stat position. (authored) |
+| `stat_position_name` | string | yes | `stat.position.name` | Name of the stat position. (authored) |
+| `stat_position_type` | string | yes | `stat.position.type` | TODO |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` | Abbreviation of the stat position. (authored) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.stats_career_advanced_fielding -->
@@ -3210,6 +3222,18 @@ League-wide fielding stats, type career (player pool ALL).
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
 | `stat_passed_ball` | int32 | yes | `stat.passedBall` | TODO |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` | TODO |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
+| `stat_position_code` | string | yes | `stat.position.code` | Code of the stat position. (authored) |
+| `stat_position_name` | string | yes | `stat.position.name` | Name of the stat position. (authored) |
+| `stat_position_type` | string | yes | `stat.position.type` | TODO |
+| `stat_position_abbreviation` | string | yes | `stat.position.abbreviation` | Abbreviation of the stat position. (authored) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.stats_career_fielding -->

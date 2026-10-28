@@ -54,6 +54,11 @@ def _total_splits(payload: Any) -> int | None:
 MAX_SPLITS = 20_000
 
 
+#: seconds a page of an all-time pool may take: deep offsets into a ~190k-row pool exceed the
+#: default 30 s request timeout upstream (a real run of ``stats_single_season_hitting`` timed out)
+HEAVY_PAGE_TIMEOUT = 180.0
+
+
 class HeavyEndpointError(RuntimeError):
     """A paginated request would download an unexpectedly huge result (all-time stat pools)."""
 
@@ -211,7 +216,9 @@ class MlbEndpointExtractor:
         offset = 0
         while True:
             params = {**request.params, "limit": PAGE_SIZE, "offset": offset}
-            result = self.http.get_sync(url, params=params)
+            result = self.http.get_sync(
+                url, params=params, timeout=HEAVY_PAGE_TIMEOUT if allow_heavy else None
+            )
             pages.append((f"{request.ident}.p{len(pages)}.json", result))
             payload = result.json()
             got = sum(1 for _ in iter_records(payload, endpoint.records))
