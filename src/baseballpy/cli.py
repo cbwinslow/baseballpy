@@ -11,6 +11,7 @@ from baseballpy.cli_db import register_db_commands
 from baseballpy.cli_ingest import register_commands
 from baseballpy.cli_quarantine import register_quarantine_commands
 from baseballpy.cli_stream import register_stream_command
+from baseballpy.clidocs import CLI_DOC_NAME, generate_cli_doc
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.migrate import migrate_layout
@@ -241,6 +242,7 @@ def docs_coverage(docs_dir: Path, write_baseline: bool) -> None:
 def docs_generate(docs_dir: Path, check: bool) -> None:
     """Render a column dictionary for every registered dataset between GENERATED markers."""
     changed = generate_docs(docs_dir, write=not check)
+    changed[str(docs_dir / CLI_DOC_NAME)] = generate_cli_doc(main, docs_dir, write=not check)
     stale = [name for name, was in changed.items() if was]
     for name in stale:
         console.print(("[yellow]stale:[/yellow] " if check else "[green]updated:[/green] ") + name)
