@@ -206,8 +206,20 @@ class AuditLogger:
             # shield so a cancelled caller still persists its CANCELLED event
             await asyncio.shield(asyncio.to_thread(self.log, event))
 
-    def read_events(self, limit: int | None = None) -> list[AuditEvent]:
-        """Read and decode historical audit events from the JSONL log file."""
+    def read_events(
+        self,
+        limit: int | None = None,
+        *,
+        source: str | None = None,
+        status: str | None = None,
+        since: str | None = None,
+    ) -> list[AuditEvent]:
+        """Read and decode audit events from the JSONL log, optionally filtered.
+
+        ``source`` and ``status`` match exactly (status case-insensitively); ``since`` is an ISO
+        date or timestamp compared with the event's ``timestamp_utc``. The filters apply before
+        ``limit``, which keeps the most recent matches.
+        """
         if not self.log_path.exists():
             return []
         events: list[AuditEvent] = []
@@ -223,6 +235,12 @@ class AuditLogger:
                     skipped += 1
         if skipped:
             logger.warning("skipped %d corrupt audit line(s) in %s", skipped, self.log_path)
+        if source is not None:
+            events = [e for e in events if e.source == source]
+        if status is not None:
+            events = [e for e in events if e.status.upper() == status.upper()]
+        if since is not None:
+            events = [e for e in events if e.timestamp_utc >= since]
         if limit is not None and limit > 0:
             return events[-limit:]
         return events

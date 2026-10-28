@@ -299,9 +299,16 @@ def audit() -> None:
 
 @audit.command("summary")
 @click.option("--limit", "-n", type=int, default=15, help="Number of recent events to display")
-def audit_summary(limit: int) -> None:
+@click.option("--source", "source", default=None, help="Only events of this source.")
+@click.option(
+    "--status", "status", default=None, help="Only events with this status (e.g. FAILURE)."
+)
+@click.option("--since", "since", default=None, help="Only events at or after this ISO date/time.")
+def audit_summary(limit: int, source: str | None, status: str | None, since: str | None) -> None:
     """Display a formatted summary table of recent operations."""
-    events = default_audit_logger.read_events(limit=limit)
+    events = default_audit_logger.read_events(
+        limit=limit, source=source, status=status, since=since
+    )
     if not events:
         console.print(
             "[dim]No audit log records found at:[/dim]", str(default_audit_logger.log_path)
@@ -344,9 +351,16 @@ def audit_summary(limit: int) -> None:
 @click.option(
     "--limit", "-n", type=int, default=5, help="Number of recent events to inspect in detail"
 )
-def audit_tail(limit: int) -> None:
+@click.option("--source", "source", default=None, help="Only events of this source.")
+@click.option(
+    "--status", "status", default=None, help="Only events with this status (e.g. FAILURE)."
+)
+@click.option("--since", "since", default=None, help="Only events at or after this ISO date/time.")
+def audit_tail(limit: int, source: str | None, status: str | None, since: str | None) -> None:
     """Print detailed telemetry records for the most recent operations."""
-    events = default_audit_logger.read_events(limit=limit)
+    events = default_audit_logger.read_events(
+        limit=limit, source=source, status=status, since=since
+    )
     if not events:
         console.print("[dim]No audit log records found.[/dim]")
         return
