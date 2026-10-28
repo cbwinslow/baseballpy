@@ -46,6 +46,7 @@ Every Lahman table MUST have an explicit PyArrow schema generated from the real 
 #### Scenario: New upstream column
 - **WHEN** a release adds a column `foo` to `Batting.csv`
 - **THEN** ingestion succeeds, `foo` is stored in `_extras`, and a drift warning is logged.
+- Verified by `tests/test_lahman_coverage.py::test_extra_and_missing_columns_never_drop_data` and `tests/test_sources_hardening.py::test_lahman_normalizer_preserves_unknown_columns_and_quarantines_bad_cells`.
 
 ### Requirement: Permitted Sources Only
 Lahman data MUST come only from the configured remote repo (default `cbwinslow/lahman-database-csv`, pinned ref) or from user-supplied data via `import_archive`. `chadwickbureau/baseballdatabank` MUST NOT be used, and there is no automatic fallback to any other repository. The manifest MUST record the source (`<repo>@<sha>` or `local-import`) per table.
@@ -54,10 +55,12 @@ Lahman data MUST come only from the configured remote repo (default `cbwinslow/l
 - **WHEN** the configured remote returns 404/5xx after retries
 - **THEN** an error is raised that names `import_archive` as the alternative
 - **AND** no other repository is contacted.
+- Verified by `tests/test_lahman_coverage.py::test_remote_failure_names_import_archive_and_contacts_no_other_repo`.
 
 #### Scenario: Stale data warning
 - **WHEN** the newest `yearID` in `Batting` is more than one season behind the last completed MLB season
 - **THEN** a warning is logged and kept in the processed manifest.
+- Verified by `tests/test_lahman_coverage.py::test_import_flags_stale_data_in_the_manifest and ::test_quality_checks_report_duplicates_orphans_and_stale_data`.
 
 ### Requirement: Safe Archive Import
 `import_archive` MUST reject zip members containing path traversal and members or archives beyond the size limits, and MUST write raw files atomically.

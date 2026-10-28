@@ -55,6 +55,7 @@ A season MUST be marked COMPLETED only if every file the tree lists for it is pr
 - **GIVEN** an `ingest_all(2000, 2005)` killed during 2003
 - **WHEN** re-run
 - **THEN** 2000-2002 are skipped, 2003's `.part` files are discarded, and 2003-2005 complete.
+- Verified by `tests/test_retrosheet_coverage.py::test_ingest_all_resumes_after_an_interruption and ::test_stale_part_files_are_discarded_at_startup`.
 
 ### Requirement: Streaming Parse
 Parsing MUST stream into Parquet row-group batches (one per source file) without accumulating whole-season Python lists; CPU-bound parsing MAY use a bounded process pool.

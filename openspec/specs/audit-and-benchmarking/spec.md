@@ -24,6 +24,7 @@ Every public ingestion command, extractor execution, and sink operation MUST rec
 - **GIVEN** an extractor completes fetching 10,000 pitch records in 2.5 seconds
 - **WHEN** the operation finishes
 - **THEN** an entry is appended to `audit.jsonl` with `status="SUCCESS"`, `records_count=10000`, `duration_seconds=2.5`, `throughput_rps=4000.0`.
+- Verified by `tests/test_hardening.py::test_audit_success_event_has_records_duration_and_throughput`.
 
 ### Requirement: Interactive CLI Reviewer Tool
 The system MUST provide a CLI tool under `baseballpy audit` allowing users to inspect telemetry logs:
@@ -35,6 +36,7 @@ The system MUST provide a CLI tool under `baseballpy audit` allowing users to in
 - **GIVEN** an `audit.jsonl` containing historical operations
 - **WHEN** user executes `baseballpy audit summary --limit 10`
 - **THEN** a colorized `rich` table prints the last 10 operations with clear visual status flags.
+- Verified by `tests/test_audit_filters.py::test_cli_summary_and_tail_accept_the_filters`.
 
 ### Requirement: Cancellation Is Not Success
 `track`/`async_track` MUST record `CANCELLED` for `CancelledError`/`KeyboardInterrupt` and `FAILURE` for other exceptions, then re-raise.

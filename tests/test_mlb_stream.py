@@ -423,6 +423,27 @@ async def test_to_arrow_shares_the_historical_schema_and_flattening(
 
 @respx.mock
 @pytest.mark.asyncio
+async def test_pitch_events_of_a_final_game_carry_pitch_and_hit_data(
+    tmp_path: Path, http: HttpClient
+) -> None:
+    doc = copy.deepcopy(json.loads(FIXTURE.read_text("utf-8")))
+    doc["metaData"] = {"timeStamp": "t1"}
+    doc["gameData"] = {"status": {"abstractGameState": "Final", "detailedState": "Final"}}
+    respx.get(FEED.format(pk=745000)).mock(return_value=httpx.Response(200, json=doc))
+    events = [
+        e async for e in _streamer(tmp_path, http, use_diff_patch=False).stream_live_events(745000)
+    ]
+    table = to_arrow([e for e in events if isinstance(e, LiveEvent)])
+    pitches = table.filter(table.column("is_pitch"))
+    assert pitches.num_rows > 0
+    assert pitches.column("pitch_data_start_speed").null_count < pitches.num_rows
+    assert pitches.column("pitch_data_coordinates_p_x").null_count < pitches.num_rows
+    assert table.column("hit_data_launch_speed").null_count < table.num_rows, "batted balls"
+    assert set(pitches.column("game_pk").to_pylist()) == {745000}
+
+
+@respx.mock
+@pytest.mark.asyncio
 async def test_wide_window_answered_with_the_full_feed_is_accepted(
     tmp_path: Path, http: HttpClient
 ) -> None:

@@ -7,6 +7,7 @@ import threading
 import time
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 
 import duckdb
 import httpx
@@ -139,6 +140,24 @@ def test_audit_records_cancellation_not_success(tmp_path: Path) -> None:
     asyncio.run(run())
     events = logger.read_events()
     assert [e.status for e in events] == ["CANCELLED"]
+
+
+def test_audit_success_event_has_records_duration_and_throughput(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [0.0]
+    monkeypatch.setattr(
+        "baseballpy.core.audit.time", SimpleNamespace(perf_counter=lambda: clock[0])
+    )
+    logger = AuditLogger(AuditConfig(base_dir=tmp_path))
+    with logger.track("extract", "statcast") as tracker:
+        tracker.set_records(10_000)
+        clock[0] = 2.5
+    (event,) = logger.read_events()
+    assert event.status == "SUCCESS"
+    assert event.records_count == 10_000
+    assert event.duration_seconds == 2.5
+    assert event.throughput_rps == 4000.0
 
 
 def test_audit_keyboard_interrupt_is_cancelled(tmp_path: Path) -> None:

@@ -11,16 +11,19 @@ One command surface (`baseballpy`) plans and runs ingestion for every source thr
 #### Scenario: Dry run
 - **WHEN** `ingest all --seasons 2023 --dry-run` runs
 - **THEN** the planned jobs are printed, zero requests are made and the exit code is 0.
+- Verified by `tests/test_cli_ingest.py::test_dry_run_makes_zero_run_calls`.
 
 #### Scenario: Resume after interruption
 - **GIVEN** a run that was killed after some Statcast chunks were written
 - **WHEN** the same command runs again
 - **THEN** the finished chunks are not fetched again, the remaining ones are fetched and no `.part` file is left behind.
+- Verified by `tests/test_statcast_pitches.py::test_ingest_season_is_resumable_and_checks_pitch_keys` and `tests/test_retrosheet_coverage.py::test_ingest_all_resumes_after_an_interruption` and `tests/test_hardening.py::test_cleanup_stale_parts`.
 
 #### Scenario: Ctrl-C
 - **GIVEN** a running `ingest` on a console
 - **WHEN** the user presses Ctrl-C
 - **THEN** the running job is interrupted promptly (sequential runs) or no new job starts (pool runs), unfinished jobs are reported `cancelled`, the audit event is `CANCELLED` and the exit code is 130.
+- Verified by `tests/test_ingest_runner.py::test_run_jobs_keyboard_interrupt_marks_cancelled and ::test_run_jobs_pool_interrupt_returns_while_a_job_is_still_running` and `tests/test_hardening.py::test_audit_keyboard_interrupt_is_cancelled`.
 
 ### Requirement: Coverage Visibility
 `baseballpy catalog list|show|status` MUST list every registered dataset with its view, partition, keys and schema, and report per dataset whether it is `INGESTED` or `MISSING` with files, rows, seasons and newest file date, without network access.
@@ -37,6 +40,7 @@ Every registered dataset MUST declare how `ingest` reaches it (`default`, `opt_i
 #### Scenario: Gaps are the only unexpected MISSING rows
 - **WHEN** a full default `ingest all --seasons 2023` has completed
 - **THEN** `catalog status --gaps` lists only datasets whose note says the provider does not publish that season (real run 2026-10-28: `discrepancies`, `events_deduced`, `schedule_original`)
+- Verified by `tests/test_cli_ingest.py::test_catalog_status_gaps_only_lists_default_datasets and ::test_catalog_status_gaps_shrinks_when_a_default_dataset_is_ingested`.
 
 ### Requirement: Read-Only Query Access
 `baseballpy db views|query|shell` MUST open the DuckDB catalog read-only: a write statement fails inside DuckDB, and a missing database or missing views produces an actionable error pointing to `db sync`.

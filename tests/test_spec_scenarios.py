@@ -34,3 +34,14 @@ def test_every_cited_test_exists() -> None:
         ):
             missing.append(f"{spec}: {file}::{name}")
     assert not missing, missing
+
+
+def test_every_scenario_cites_a_test() -> None:
+    uncited = []
+    for spec in sorted((ROOT / "openspec" / "specs").glob("*/spec.md")):
+        text = spec.read_text(encoding="utf-8")
+        for block in re.split(r"(?m)^(?=####\s+Scenario:)", text)[1:]:
+            body = re.split(r"(?m)^(?=#{1,3}\s)", block)[0]
+            if not re.search(r"^- Verified by .*tests/\w+\.py::\w+", body, re.M):
+                uncited.append(f"{spec.parent.name}: {body.splitlines()[0]}")
+    assert not uncited, f"scenarios without a `- Verified by` line naming a test: {uncited}"

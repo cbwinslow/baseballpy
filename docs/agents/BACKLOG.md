@@ -47,8 +47,8 @@ numbers are in `verify-optin-paths/design.md`.
 |---|---|---|---|
 | B-11 | catalog-completeness-audit 2.2: open an issue on audit findings | DONE (real GitHub run not verified) | `live.yml` step uses `gh issue create`/`gh issue comment` (permission `issues: write`, one open issue titled by a fixed marker so findings update it), written and YAML-parsed; a test checks the step exists; the first real run on GitHub is listed as not verified until the owner enables Actions |
 | B-12 | `repo-hygiene-and-docs-sync 6.4`: merge deltas and archive | DONE-WHEN-LAST | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
-| B-27 | `spec-test-traceability 1`: cite or write a test for each of the 39 uncited scenarios | READY | per spec, every scenario ends with a `Verified by` line naming a test that asserts its THEN clause (write the missing mocked tests first; a claim nothing can check is removed from the spec); `uv run python scripts/project_map.py` shows the cited-test counts rising |
-| B-28 | `spec-test-traceability 2`: enforce it | after B-27 | `tests/test_spec_scenarios.py` fails for any scenario without a citation; gates green; change archived |
+| B-27 | spec-test-traceability 1: cite or write a test for each of the 39 uncited scenarios | DONE | per spec, every scenario ends with a `Verified by` line naming a test that asserts its THEN clause (write the missing mocked tests first; a claim nothing can check is removed from the spec); `uv run python scripts/project_map.py` shows the cited-test counts rising |
+| B-28 | spec-test-traceability 2: enforce it | DONE (change archived) | `tests/test_spec_scenarios.py` fails for any scenario without a citation; gates green; change archived |
 
 ## D. Retrosheet box accounts (`retrosheet-box-accounts`)
 

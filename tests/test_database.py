@@ -1,5 +1,6 @@
 """Unit tests for the registry-driven DuckDB catalog over the processed/ tier."""
 
+import shutil
 from pathlib import Path
 
 import duckdb
@@ -157,6 +158,9 @@ def test_events_and_postseason_are_separate_views(lake: LakeConfig) -> None:
         chunk_id="events",
         season=2023,
     )
+    regular = lake.processed_dir("retrosheet", "events") / "season=2023"
+    postseason = lake.processed_dir("retrosheet", "events_postseason") / "season=2023"
+    assert regular.is_dir() and postseason.is_dir() and regular != postseason
     con = BaseballDatabase(db_path=":memory:", cache_config=lake).connect()
     assert con.execute("SELECT count(*) FROM retrosheet_events").fetchone() == (2,)
     assert con.execute("SELECT count(*) FROM retrosheet_events_postseason").fetchone() == (1,)
@@ -238,3 +242,19 @@ def test_view_paths_with_quotes_are_escaped(tmp_path: Path) -> None:
     ProcessedStore(cfg).put(get_dataset("chadwick", "register"), pa.table({"key_person": ["a"]}))
     con = BaseballDatabase(db_path=":memory:", cache_config=cfg).connect()
     assert con.execute("SELECT count(*) FROM chadwick_register").fetchone() == (1,)
+
+
+def test_deleting_the_cache_loses_no_dataset_and_every_view_still_resolves(
+    lake: LakeConfig,
+) -> None:
+    cache = lake.http_cache_root
+    cache.mkdir(parents=True)
+    (cache / "response.bin").write_bytes(b"cached")
+    con = BaseballDatabase(db_path=":memory:", cache_config=lake).connect()
+    before = con.execute("SELECT count(*) FROM statcast_pitches").fetchone()
+    shutil.rmtree(cache)
+    after_db = BaseballDatabase(db_path=":memory:", cache_config=lake).connect()
+    assert not cache.exists()
+    assert after_db.execute("SELECT count(*) FROM statcast_pitches").fetchone() == before == (4,)
+    assert after_db.execute("SELECT count(*) FROM chadwick_register").fetchone() == (3,)
+    assert after_db.execute("SELECT count(*) FROM lahman_people").fetchone() == (3,)

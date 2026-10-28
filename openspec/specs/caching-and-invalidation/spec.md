@@ -12,15 +12,18 @@ All persisted data MUST live under `$BASEBALLPY_HOME` (default `~/.baseballpy/`)
 - **GIVEN** a populated lake
 - **WHEN** `cache/` is deleted
 - **THEN** no dataset is lost and all DuckDB views still resolve.
+- Verified by `tests/test_database.py::test_deleting_the_cache_loses_no_dataset_and_every_view_still_resolves`.
 
 #### Scenario: Datasets do not share partitions
 - **GIVEN** Retrosheet regular-season and postseason events for 2023
 - **THEN** they are stored in `processed/retrosheet/events/season=2023/` and `processed/retrosheet/events_postseason/season=2023/` respectively
 - **AND** `SELECT count(*) FROM retrosheet_events` equals the regular-season row count only.
+- Verified by `tests/test_database.py::test_events_and_postseason_are_separate_views` and `tests/test_lake.py::test_regular_and_postseason_events_are_distinct_datasets`.
 
 #### Scenario: Path helpers are read-only
 - **WHEN** `LakeConfig.raw_dir(...)`/`processed_dir(...)` are evaluated on an empty home
 - **THEN** no directory is created.
+- Verified by `tests/test_config.py::test_lake_config_never_creates_directories_on_read`.
 
 ### Requirement: Dataset Registry and Views
 Every dataset MUST be described by a `DatasetSpec` (schema, keys, partitioning, view name, documentation anchor) in the registry; the DuckDB catalog MUST create one view per dataset with data, reading only `processed/`, with a single `season` column for season-partitioned data. Read-only connections MUST NOT create views and MUST raise `DatabaseReadOnlyError` naming `baseballpy db sync` when views are missing.
@@ -70,6 +73,7 @@ If an operation is interrupted or raises an exception, the `.part` file MUST be 
 - **GIVEN** an active download that fails or is terminated midway
 - **WHEN** the exception occurs
 - **THEN** the `.part` file is deleted and the target cache file is not created or altered.
+- Verified by `tests/test_hardening.py::test_atomic_write_cleans_up_on_keyboard_interrupt` and `tests/test_lake.py::test_put_stream_failure_leaves_no_part_or_final_file`.
 
 ### Requirement: Manifest Checkpoint Tracking
 Every partitioned source MUST maintain a `manifest.json` tracking chunk completion status (`COMPLETED`, `FAILED`), record counts, and remote ETags.
@@ -78,6 +82,7 @@ Every partitioned source MUST maintain a `manifest.json` tracking chunk completi
 - **GIVEN** a multi-season or multi-week query
 - **WHEN** scheduled for execution
 - **THEN** chunks marked `COMPLETED` in the manifest are read directly from local Parquet cache without outbound HTTP requests.
+- Verified by `tests/test_statcast_pitches.py::test_ingest_season_is_resumable_and_checks_pitch_keys and ::test_empty_windows_are_recorded_and_not_refetched`.
 
 ### Requirement: Freshness Policy
 Cached datasets MUST be revalidated per a `CachePolicy`. Completed historical seasons are immutable; current-season and reference datasets expire by TTL.
@@ -86,11 +91,13 @@ Cached datasets MUST be revalidated per a `CachePolicy`. Completed historical se
 - **GIVEN** a current-season schedule cached 20 minutes ago with TTL 15 minutes
 - **WHEN** requested without `refresh`
 - **THEN** it is re-fetched.
+- Verified by `tests/test_sources_hardening.py::test_mlb_current_season_schedule_expires_but_past_season_does_not`.
 
 #### Scenario: In-progress boxscore not frozen
 - **GIVEN** a boxscore cached while the game was in progress
 - **WHEN** requested later
 - **THEN** it is re-fetched; once the game is final it is cached as immutable.
+- Verified by `tests/test_sources_hardening.py::test_mlb_boxscore_cached_forever_only_after_final`.
 
 ### Requirement: Manifest Integrity
 Manifests MUST be safe under concurrent writers and MUST NOT silently discard corrupt state.
@@ -98,10 +105,12 @@ Manifests MUST be safe under concurrent writers and MUST NOT silently discard co
 #### Scenario: Concurrent writers
 - **GIVEN** two writers completing different chunks of one manifest
 - **THEN** both chunks are present after both save.
+- Verified by `tests/test_hardening.py::test_manifest_concurrent_writers_do_not_lose_chunks`.
 
 #### Scenario: Corrupt manifest
 - **WHEN** `manifest.json` is invalid JSON
 - **THEN** it is preserved as `manifest.json.corrupt-<ts>` and an error is logged.
+- Verified by `tests/test_hardening.py::test_corrupt_manifest_is_preserved_and_logged`.
 
 ### Requirement: Dead-Letter Quarantine
 Rows failing coercion MUST be written to `quarantine/<source>/<date>/` with reason and context, and a structured warning MUST be logged.

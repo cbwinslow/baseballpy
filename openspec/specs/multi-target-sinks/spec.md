@@ -22,11 +22,13 @@
 #### Scenario: Injection attempt
 - **WHEN** `table_name="x; DROP TABLE y"`
 - **THEN** `ValueError` is raised and nothing executes.
+- Verified by `tests/test_hardening.py::test_quote_ident_rejects_injection and ::test_duckdb_sink_rejects_injection`.
 
 #### Scenario: Idempotent re-ingest
 - **GIVEN** pitches keyed `(game_pk, at_bat_number, pitch_number)`
 - **WHEN** the same table is upserted twice
 - **THEN** the row count is unchanged.
+- Verified by `tests/test_hardening.py::test_duckdb_upsert_is_idempotent`.
 
 ### Requirement: Protocol Conformance
 All sinks MUST implement `write(table, destination, **kw) -> int` and `write_stream(reader, destination, **kw) -> int`.

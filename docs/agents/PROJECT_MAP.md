@@ -8,23 +8,23 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | Spec | Requirements | Scenarios | Tests cited |
 |---|---|---|---|
 | `agent-runbooks` | 1 | 1 | 1 |
-| `audit-and-benchmarking` | 5 | 5 | 3 |
-| `caching-and-invalidation` | 9 | 16 | 7 |
-| `chadwick-register` | 4 | 5 | 5 |
-| `cli-and-ingest` | 9 | 11 | 8 |
-| `concurrency-and-rate-limiting` | 3 | 5 | 2 |
-| `core-protocols` | 2 | 3 | 0 |
+| `audit-and-benchmarking` | 5 | 5 | 5 |
+| `caching-and-invalidation` | 9 | 16 | 18 |
+| `chadwick-register` | 4 | 5 | 7 |
+| `cli-and-ingest` | 9 | 11 | 15 |
+| `concurrency-and-rate-limiting` | 3 | 5 | 6 |
+| `core-protocols` | 2 | 3 | 5 |
 | `docs-generation` | 1 | 1 | 1 |
-| `lahman-database` | 6 | 7 | 5 |
-| `mlb-api-ingestion` | 11 | 11 | 10 |
-| `multi-target-sinks` | 3 | 4 | 2 |
-| `real-time-streaming` | 3 | 5 | 0 |
-| `retrosheet-ingestion` | 6 | 6 | 5 |
-| `statcast-ingestion` | 9 | 9 | 7 |
+| `lahman-database` | 6 | 7 | 9 |
+| `mlb-api-ingestion` | 11 | 11 | 13 |
+| `multi-target-sinks` | 3 | 4 | 4 |
+| `real-time-streaming` | 3 | 5 | 5 |
+| `retrosheet-ingestion` | 6 | 6 | 6 |
+| `statcast-ingestion` | 9 | 9 | 10 |
 
 ## Active changes (`openspec/changes/`)
 
-24 changes are archived under `openspec/changes/archive/`.
+25 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -34,7 +34,6 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
 | `retrosheet-csv-bundles` | 1 | 6 | 0, 1, 3, 4, 5, 6 |
-| `spec-test-traceability` | 0 | 2 | 1, 2 |
 | `verify-optin-paths` | 5 | 3 | 3, 7, 8 |
 
 ## Decisions (`docs/DECISIONS.md`)

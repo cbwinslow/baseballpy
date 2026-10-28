@@ -47,6 +47,7 @@ Every MLB endpoint MUST be a `MlbEndpoint` (path/params template, record path, f
 - **GIVEN** a final `game_pk`
 - **WHEN** `game_feed_play_events` is ingested
 - **THEN** each event row carries its plate appearance's context plus `pitch_data_*` (speed, coordinates, breaks, spin, zone) and, for batted balls, `hit_data_*`.
+- Verified by `tests/test_mlb_stream.py::test_pitch_events_of_a_final_game_carry_pitch_and_hit_data`.
 
 ### Requirement: No Field Loss
 Nested objects MUST be flattened to dotted keys, arrays kept as JSON text, unknown fields preserved in `_extras` with a one-time drift warning, uncastable cells quarantined, and a payload whose shape contradicts the record path MUST raise.
@@ -79,6 +80,7 @@ The streamer MUST implement `StreamExtractorProtocol` (`stream_events(game_pk, .
 - **WHEN** the game status becomes `Suspended`
 - **THEN** a `game_status` event is emitted and the stream ends
 - **AND** a later stream for the same `game_pk` emits only events beyond the stored watermark.
+- Verified by `tests/test_mlb_stream.py::test_suspended_game_is_emitted_ends_and_resumes_from_the_watermark`.
 
 ### Requirement: People, Awards and Incremental Endpoints
 Per-person stats (`people_stats_<type>_<group>`), award recipients (a 404 for one award MUST be recorded as an empty part and counted, never retried forever and never hidden), `people_changes`/`game_changes` (append-only `updatedSince` logs) and `people_search` MUST be ingestible through the declarative registry.
@@ -126,3 +128,4 @@ Every stat type listed by `/v1/statTypes` MUST either have registered stat combi
 #### Scenario: metric fan-out skips a known provider error
 - **WHEN** requests are built for `people_stats_metric_averages_pitching` with metrics `barreledBall` and `launchSpeed`
 - **THEN** only `launchSpeed` is requested
+- Verified by `tests/test_mlb_param.py::test_metric_the_provider_answers_with_500_is_never_requested`.

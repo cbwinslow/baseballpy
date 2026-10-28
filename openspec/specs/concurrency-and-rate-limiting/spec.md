@@ -16,6 +16,7 @@ The system MUST route all HTTP requests through host-specific token bucket limit
 - **GIVEN** a request to fetch 30 weeks of Statcast pitch data
 - **WHEN** scheduled across async worker tasks
 - **THEN** requests are rate-limited to 2.5 requests/sec and bounded by an `asyncio.Semaphore(max_concurrency=4)`.
+- Verified by `tests/test_hardening.py::test_http_rate_limit_spaces_requests and ::test_http_semaphore_bounds_concurrency` and `tests/test_concurrency.py::test_concurrency_bound_holds_across_sync_and_async_callers`.
 
 ### Requirement: Jittered Exponential Backoff
 The system MUST automatically retry failed requests on HTTP 408, 425, 429, 500, 502, 503, 504 and connect timeout errors using exponential backoff with randomized jitter up to `max_retries` (default 5).
@@ -37,7 +38,9 @@ Every network fetch MUST go through `baseballpy.core.http.HttpClient`, applying 
 - **WHEN** the server returns 429 with `Retry-After: 2`
 - **THEN** the client waits at least 2 seconds and retries up to `max_retries`
 - **AND** a 404 is never retried.
+- Verified by `tests/test_hardening.py::test_http_retries_429_with_retry_after_then_succeeds and ::test_http_does_not_retry_404 and ::test_http_gives_up_after_max_retries`.
 
 #### Scenario: Conditional request
 - **GIVEN** a stored ETag and a 304 response
 - **THEN** `HttpResult.not_modified` is true and no body is parsed.
+- Verified by `tests/test_hardening.py::test_http_conditional_304`.

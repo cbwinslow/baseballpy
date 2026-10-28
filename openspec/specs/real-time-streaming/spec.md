@@ -18,10 +18,12 @@ The streamer MUST poll as follows.
 - **GIVEN** a diff patch whose result does not reach the newest announced timestamp
 - **WHEN** the stream applies it
 - **THEN** the full feed is fetched instead and no event is lost or repeated.
+- Verified by `tests/test_mlb_stream.py::test_patch_that_misses_the_announced_timestamp_falls_back_to_the_full_feed`.
 
 #### Scenario: Missing diffPatch endpoint
 - **WHEN** `feed/live/diffPatch` is unavailable
 - **THEN** the stream falls back to the full feed.
+- Verified by `tests/test_mlb_stream.py::test_missing_diff_patch_endpoint_falls_back`.
 
 ---
 
@@ -35,6 +37,7 @@ The streamer MUST emit events and persist the watermark as follows.
 #### Scenario: Third out
 - **WHEN** a plate appearance records the third out
 - **THEN** exactly one `half_inning_end` event is emitted for it.
+- Verified by `tests/test_mlb_stream.py::test_third_out_emits_a_half_inning_end_once`.
 
 ---
 
@@ -47,7 +50,9 @@ The streamer MUST follow the game status as follows.
 - **WHEN** the game status becomes `Suspended`
 - **THEN** a `game_status` event is emitted and the stream ends
 - **AND** a later stream of the same game emits only events beyond the stored watermark.
+- Verified by `tests/test_mlb_stream.py::test_suspended_game_is_emitted_ends_and_resumes_from_the_watermark`.
 
 #### Scenario: Delayed game
 - **WHEN** the status is `Delayed`
 - **THEN** polling backs off to 30 seconds.
+- Verified by `tests/test_mlb_stream.py::test_delayed_game_backs_off_and_waiting_states_are_bounded`.
