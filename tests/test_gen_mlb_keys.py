@@ -38,3 +38,13 @@ def test_statistics_and_split_counts_are_never_part_of_a_key() -> None:
     key = gen.minimal_key(records)
     assert "opponent.id" in key
     assert not [c for c in key if c.startswith("stat.") or c == "stats.totalSplits"]
+
+
+def test_the_key_check_maps_names_over_every_record_not_the_first() -> None:
+    chunk = [
+        {"batter.id": 1, "gameType": "R", "numTeams": 1},
+        {"batter.id": 1, "pitcher.id": 10, "season": "2024", "gameType": "R"},
+        {"batter.id": 1, "pitcher.id": 11, "season": "2024", "gameType": "R"},
+    ]
+    assert gen.key_unique_per_request([chunk], ("batter_id", "pitcher_id", "season", "game_type"))
+    assert not gen.key_unique_per_request([chunk], ("batter_id",))

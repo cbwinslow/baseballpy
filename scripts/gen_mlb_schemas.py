@@ -537,6 +537,23 @@ def render_tables(tables: dict[str, list[tuple[str, str, str]]]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def key_unique_per_request(
+    per_request: list[list[dict[str, Any]]], declared: tuple[str, ...]
+) -> bool:
+    """Whether the declared key is unique inside every request's rows.
+
+    The snake_case key names map back to the flattened column names over every pooled record, not
+    just the first: a response can open with a totals row that lacks ``pitcher.id`` or ``season``,
+    and a lookup built from it alone silently turned those key columns into constants.
+    """
+    pooled = [r for chunk in per_request for r in chunk]
+    lookup = {snake(k): k for r in pooled for k in r}
+    keys = [lookup.get(snake(k), k) for k in declared]
+    return all(
+        len({tuple(r.get(k) for k in keys) for r in chunk}) == len(chunk) for chunk in per_request
+    )
+
+
 def main() -> int:
     """CLI entry point."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -645,13 +662,7 @@ def main() -> int:
         status = "ok" if records else "empty"
         key_ok = None
         if records and ep.keys:
-            cols = [snake(k) for k in ep.keys]
-            lookup = {snake(k): k for r in records[:1] for k in r}
-            keys = [lookup.get(c, c) for c in cols]
-            key_ok = all(
-                len({tuple(r.get(k) for k in keys) for r in chunk}) == len(chunk)
-                for chunk in result["per_request"]
-            )
+            key_ok = key_unique_per_request(result["per_request"], ep.keys)
         probe[ep.name] = {
             "status": status,
             "requests_ok": result["ok"],
