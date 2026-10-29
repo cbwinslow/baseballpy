@@ -335,3 +335,64 @@ def test_property_every_id_pair_round_trips(mlbam: list[int], retro: list[str]) 
         assert (
             register.resolve_id(f"p{n:07d}", PlayerIdType.PERSON, PlayerIdType.UUID) == f"u{n:07d}"
         )
+
+
+def test_player_record_covers_every_register_column() -> None:
+    from dataclasses import fields
+
+    from baseballpy.sources.chadwick.register import PlayerRecord
+    from baseballpy.sources.chadwick.schema import CHADWICK_SCHEMAS
+
+    columns = [n for n in CHADWICK_SCHEMAS["register"].names if n != "_extras"]
+    assert [f.name for f in fields(PlayerRecord)] == columns
+
+
+def test_record_carries_death_dates_and_career_spans() -> None:
+    csv = (
+        "key_person,key_uuid,key_mlbam,name_last,name_first,death_year,death_month,death_day,"
+        "pro_played_first,pro_played_last,mlb_managed_first,mlb_umpired_last,key_sr_nba\n"
+        "p1,u1,5,Ruth,Babe,1948,8,16,1914,1935,1930,1940,abc01\n"
+    )
+    register = ChadwickRegister(ChadwickNormalizer().normalize(csv.encode()))
+    record = register.resolve(mlbam=5)
+    assert record is not None
+    assert (record.death_year, record.death_month, record.death_day) == (1948, 8, 16)
+    assert (record.pro_played_first, record.pro_played_last) == (1914, 1935)
+    assert record.mlb_managed_first == 1930 and record.mlb_umpired_last == 1940
+    assert record.key_sr_nba == "abc01" and record.key_sr_nfl is None
+
+
+def _all_four_register() -> ChadwickRegister:
+    normalizer = ChadwickNormalizer()
+    people = normalizer.normalize(_FULL_IDS_CSV.encode())
+    names = normalizer.normalize_names(
+        b"key_person,name_last,name_first,altname_type,altname_last,altname_first\n"
+        b"270bfa31,Ohtani,Shohei,alias,Otani,Shohei\n"
+        b"zzzzzzzz,Nobody,No,legal,Nobody,No\n"
+    )
+    links = normalizer.normalize_links(
+        b"key_person,source,value\n270bfa31,tsncards,123\n270bfa31,findagrave,987\na1b2c3d4,tsncards,5\n"
+    )
+    countries = normalizer.normalize_countries(
+        b"key_iso_alpha2,key_iso_alpha3,key_ioc,key_fifa,name_full_en\n"
+        b"JP,JPN,JPN,JPN,Japan\nNA,NAM,NAM,NAM,Namibia\nUS,USA,USA,USA,United States\n"
+    )
+    return ChadwickRegister(people, names_table=names, links_table=links, countries_table=countries)
+
+
+def test_names_links_and_countries_are_reachable_from_python() -> None:
+    register = _all_four_register()
+    ohtani = register.resolve(mlbam=660271)
+    assert ohtani is not None
+    assert [r["source"] for r in register.links_for(ohtani)] == ["tsncards", "findagrave"]
+    assert register.links_for("a1b2c3d4")[0]["value"] == "5"
+    assert register.links_for("nobody00") == []
+    assert register.names_for(ohtani)[0]["altname_last"] == "Otani"
+    assert register.countries_table is not None and register.countries_table.num_rows == 3
+    assert register.country("jpn")["name_full_en"] == "Japan"
+    assert register.country("NA")["name_full_en"] == "Namibia"  # a code, not a missing value
+    assert register.country("xx") is None and register.country("") is None
+    # a register built without the optional datasets answers with nothing, not an error
+    bare = _register_from_rows([{"name_last": "A", "name_first": "B", "name_given": "B"}])
+    assert bare.links_for("p0000000") == [] and bare.names_for("p0000000") == []
+    assert bare.country("US") is None and bare.links_table is None

@@ -9,7 +9,7 @@ datasets are registered (`register`, `register_names`, `register_links`, `regist
 upstream repository is `chadwickbureau/register`, files under `data/` at a pinned SHA
 (`core/sources_lock.json`).
 
-Status 2026-10-29 (final): ALL cards C-01 to C-14 are done and the change is archived (openspec/changes/archive/2026-10-29-chadwick-source-review). Earlier status: C-01 to C-04 were done (evidence in the change's `design.md`). Results:
+Status 2026-10-29 (final, incl. the audit change chadwick-complete-access): ALL cards C-01 to C-14 are done and the change is archived (openspec/changes/archive/2026-10-29-chadwick-source-review). Earlier status: C-01 to C-04 were done (evidence in the change's `design.md`). Results:
 - CONFIRMED: `ChadwickAdapter.KNOWN_DATASETS = {"register"}` rejects `register_names`, `register_links`
   and `register_countries`; the job also builds a 9.6 s Python index just to count rows (C-09, C-10).
 - CONFIRMED bug: `resolve_id` returns the `key_bbref` value for `BBREF_MINORS` and cannot start from

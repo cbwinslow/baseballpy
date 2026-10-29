@@ -151,3 +151,4 @@ touches a source under review, do it inside that source's track.
 | B-72 | `data-workflow-standard 2.6`: Retrosheet records fingerprints and decides with is_current() | in the Retrosheet review | same as B-71 for Retrosheet |
 | B-73 | `data-workflow-standard 2.7`: Statcast records fingerprints and decides with is_current() | in the Statcast review | content or ETag fingerprints recorded, time-to-live kept for how often to ask |
 | B-74 | `data-workflow-standard 2.8`: MLB API records fingerprints and decides with is_current() | in the MLB API review | same as B-73 for the MLB API |
+| B-75 | chadwick-complete-access 1.1-3.1: process-wide register cache, full PlayerRecord, access to all four datasets, cited descriptions, docs, spec merge | DONE (archived 2026-10-29) | Chadwick has no open tasks; remaining Chadwick-adjacent work is only B-43 (export command, CSV/PostgreSQL) and the Retrosheet use of the Chadwick software tools |

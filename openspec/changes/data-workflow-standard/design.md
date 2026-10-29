@@ -36,3 +36,4 @@ of this change lands. The lookup index (5.4) reads the cached Parquet; it never 
 - `JobResult.cache_hit` (default false): the runner sets the audit `cache_hit`; Chadwick reports true when nothing had to be typed. Real rerun: audit shows `cache_hit=True`, 0.04 s.
 - `docs/DATA_WORKFLOW.md` written (corrects the loose description the owner pasted: real folder layout, no "2 ms" claim, current rule per source) and added to the site nav.
 - Not yet: Lahman, Retrosheet, Statcast and MLB API still use their older rules and store no fingerprints (tasks 2.5 to 2.8, inside their own source reviews); `cache check --upstream` reports their files as "no fingerprint".
+- 2026-10-29: the `caching-and-invalidation` spec delta was merged into `openspec/specs/caching-and-invalidation/spec.md` because the behavior is built and tested; tasks 2.5 to 2.8 (other sources) stay open and need no further spec text.

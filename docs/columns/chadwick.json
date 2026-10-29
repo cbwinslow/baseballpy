@@ -158,6 +158,43 @@
   }
  },
  "_sources": {
-  "chadwick_readme": "https://raw.githubusercontent.com/chadwickbureau/register/master/README.md"
+  "chadwick_readme": "https://raw.githubusercontent.com/chadwickbureau/register/master/README.md",
+  "fifa_codes": "https://en.wikipedia.org/wiki/List_of_FIFA_country_codes",
+  "ioc_codes": "https://en.wikipedia.org/wiki/List_of_IOC_country_codes",
+  "iso_3166_1": "https://en.wikipedia.org/wiki/ISO_3166-1"
+ },
+ "register_countries": {
+  "key_fifa": {
+   "source": "fifa_codes",
+   "text": "Country code used by FIFA."
+  },
+  "key_ioc": {
+   "source": "ioc_codes",
+   "text": "Country code of the International Olympic Committee."
+  },
+  "key_iso_alpha2": {
+   "source": "iso_3166_1",
+   "text": "Two-letter country code of ISO 3166-1 (alpha-2)."
+  },
+  "key_iso_alpha3": {
+   "source": "iso_3166_1",
+   "text": "Three-letter country code of ISO 3166-1 (alpha-3)."
+  }
+ },
+ "register_links": {
+  "source": {
+   "source": "chadwick_readme",
+   "text": "The external system the link comes from (README: the public version publishes tsncards and findagrave)."
+  },
+  "value": {
+   "source": "chadwick_readme",
+   "text": "The person's identifier in that system (README: the Sporting News contract card number for tsncards, a memorial ID for findagrave)."
+  }
+ },
+ "register_names": {
+  "altname_type": {
+   "source": "chadwick_readme",
+   "text": "Kind of alternate name (README: aliases/assumed names, legal names, birth names, or anglicizations/abbreviations of names)."
+  }
  }
 }

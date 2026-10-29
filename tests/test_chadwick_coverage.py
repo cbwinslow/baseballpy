@@ -340,3 +340,71 @@ def test_downloaded_files_record_their_git_blob_fingerprint(tmp_path: Path) -> N
         cfg.dataset_manifest("chadwick", "register", "raw").chunks()["commit_sha"]
     )
     assert commit is not None and commit.kind == GIT_COMMIT and commit.value == ref
+
+
+@pytest.fixture
+def counted_ingest(monkeypatch: pytest.MonkeyPatch) -> list[bool]:
+    """Record every ``ingest`` call that ``ChadwickRegister.load`` makes."""
+    from baseballpy.sources.chadwick import register as register_module
+
+    ChadwickRegister.clear_cache()
+    calls: list[bool] = []
+    real = register_module.ingest
+
+    def counting(*args: object, **kwargs: object):  # type: ignore[no-untyped-def]
+        calls.append(bool(kwargs.get("refresh")))
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(register_module, "ingest", counting)
+    yield calls
+    ChadwickRegister.clear_cache()
+
+
+@respx.mock
+def test_load_keeps_the_register_for_the_process_until_refresh_ttl_or_clear(
+    tmp_path: Path, counted_ingest: list[bool], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _serve_everything()
+    cfg = LakeConfig(home=tmp_path)
+    first = ChadwickRegister.load(cache_config=cfg)
+    assert ChadwickRegister.load(cache_config=cfg) is first  # reused: no second ingest
+    assert counted_ingest == [False]
+    # all four datasets are loaded and reachable
+    assert first.names_table is not None and first.links_table is not None
+    assert first.countries_table is not None and first.countries_table.num_rows > 0
+    # refresh re-runs the ingest, which rewrites the lake; the new register replaces the kept one
+    refreshed = ChadwickRegister.load(refresh=True, cache_config=cfg)
+    assert refreshed is not first and counted_ingest == [False, True]
+    assert ChadwickRegister.load(cache_config=cfg) is refreshed  # the new stamp is the key
+    # a different lake is a different register
+    other = ChadwickRegister.load(cache_config=LakeConfig(home=tmp_path / "other"))
+    assert other is not refreshed
+    # after the time-to-live the register is checked (and re-read) again
+    import time as time_module
+
+    real_monotonic = time_module.monotonic
+    monkeypatch.setattr(
+        "baseballpy.sources.chadwick.register.time.monotonic",
+        lambda: real_monotonic() + 10**7,
+    )
+    again = ChadwickRegister.load(cache_config=cfg)
+    assert again is not refreshed
+    ChadwickRegister.clear_cache()
+    assert ChadwickRegister.load(cache_config=cfg) is not again
+
+
+@respx.mock
+def test_crosswalk_and_resolve_player_reuse_the_loaded_register(
+    tmp_path: Path, counted_ingest: list[bool], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import baseballpy as bb
+    from baseballpy.sources.chadwick import crosswalk
+    from baseballpy.sources.chadwick.schema import PlayerIdType
+
+    monkeypatch.setenv("BASEBALLPY_HOME", str(tmp_path))
+    _serve_everything()
+    first = crosswalk(1, PlayerIdType.MLBAM, PlayerIdType.RETRO)
+    for _ in range(5):
+        assert crosswalk(1, PlayerIdType.MLBAM, PlayerIdType.RETRO) == first
+    bb.resolve_player(name="nobody here")
+    assert counted_ingest == [False]  # one ingest for six crosswalks and a search

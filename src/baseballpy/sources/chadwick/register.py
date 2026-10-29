@@ -1,6 +1,7 @@
 """Chadwick Bureau Player Register: the typed table with lazy id indexes, crosswalk and name search."""
 
 import logging
+import time
 from dataclasses import dataclass, fields
 from typing import Any
 
@@ -36,6 +37,18 @@ _CASEFOLDED_IDS = frozenset(
 _ID_TYPES = {id_type.value: id_type for id_type in PlayerIdType}
 
 _REQUIRED = frozenset({"key_person", "key_uuid"})
+
+#: registers kept for the process: ``(lake home, register manifest stamp) -> (loaded at, register)``
+_LOADED: dict[tuple[str, int], tuple[float, "ChadwickRegister"]] = {}
+
+
+def _lake_stamp(config: LakeConfig) -> int:
+    """Changes whenever the processed register is rewritten (0 when it does not exist yet)."""
+    try:
+        return (config.processed_dir("chadwick", "register") / "manifest.json").stat().st_mtime_ns
+    except OSError:
+        return 0
+
 
 #: how many matches a fuzzy search returns
 FUZZY_LIMIT = 10
@@ -75,23 +88,44 @@ class PlayerRecord:
 
     key_person: str
     key_uuid: str
-    key_mlbam: int | None
-    key_retro: str | None
-    key_bbref: str | None
+    key_mlbam: int | None = None
+    key_retro: str | None = None
+    key_bbref: str | None = None
     key_bbref_minors: str | None = None
     key_fangraphs: int | None = None
     key_npb: int | None = None
+    key_sr_nfl: str | None = None
+    key_sr_nba: str | None = None
+    key_sr_nhl: str | None = None
     key_wikidata: str | None = None
     name_last: str | None = None
     name_first: str | None = None
     name_given: str | None = None
     name_suffix: str | None = None
+    name_matrilineal: str | None = None
     name_nick: str | None = None
     birth_year: int | None = None
     birth_month: int | None = None
     birth_day: int | None = None
+    death_year: int | None = None
+    death_month: int | None = None
+    death_day: int | None = None
+    pro_played_first: int | None = None
+    pro_played_last: int | None = None
     mlb_played_first: int | None = None
     mlb_played_last: int | None = None
+    col_played_first: int | None = None
+    col_played_last: int | None = None
+    pro_managed_first: int | None = None
+    pro_managed_last: int | None = None
+    mlb_managed_first: int | None = None
+    mlb_managed_last: int | None = None
+    col_managed_first: int | None = None
+    col_managed_last: int | None = None
+    pro_umpired_first: int | None = None
+    pro_umpired_last: int | None = None
+    mlb_umpired_first: int | None = None
+    mlb_umpired_last: int | None = None
 
     @property
     def full_name(self) -> str:
@@ -119,9 +153,13 @@ class ChadwickRegister:
         self,
         table: pa.Table,
         names_table: pa.Table | None = None,
+        links_table: pa.Table | None = None,
+        countries_table: pa.Table | None = None,
     ) -> None:
         self._table = table
         self._names_table = names_table
+        self._links_table = links_table
+        self._countries_table = countries_table
         self._polars: pl.DataFrame | None = None
         self._id_index: dict[PlayerIdType, dict[Any, int]] = {}
         self._lower_names: pl.Series | None = None
@@ -145,6 +183,62 @@ class ChadwickRegister:
     def to_dataframe(self) -> nw.DataFrame[Any]:
         """Return as a Narwhals DataFrame for multi-engine compatibility."""
         return nw.from_native(self.to_polars())
+
+    @property
+    def names_table(self) -> pa.Table | None:
+        """The ``register_names`` dataset (alternate spellings and nicknames), if loaded."""
+        return self._names_table
+
+    @property
+    def links_table(self) -> pa.Table | None:
+        """The ``register_links`` dataset (external source links per person), if loaded."""
+        return self._links_table
+
+    @property
+    def countries_table(self) -> pa.Table | None:
+        """The ``register_countries`` dataset (ISO, IOC and FIFA codes), if loaded."""
+        return self._countries_table
+
+    @staticmethod
+    def _person_key(person: "str | PlayerRecord") -> str:
+        return person.key_person if isinstance(person, PlayerRecord) else str(person)
+
+    @staticmethod
+    def _rows_where(table: pa.Table | None, column: str, value: str) -> list[dict[str, Any]]:
+        if table is None or column not in table.column_names:
+            return []
+        mask = pc.equal(table.column(column), pa.scalar(value, table.schema.field(column).type))
+        rows: list[dict[str, Any]] = table.filter(pc.fill_null(mask, False)).to_pylist()
+        return rows
+
+    def names_for(self, person: "str | PlayerRecord") -> list[dict[str, Any]]:
+        """``register_names`` rows of a person (a ``key_person`` or a record), possibly none.
+
+        Upstream may re-use a ``key_person`` for another identity in a later release; these rows
+        belong to the register of the same release.
+        """
+        return self._rows_where(self._names_table, "key_person", self._person_key(person))
+
+    def links_for(self, person: "str | PlayerRecord") -> list[dict[str, Any]]:
+        """``register_links`` rows (``source``, ``value``) of a person, possibly none."""
+        return self._rows_where(self._links_table, "key_person", self._person_key(person))
+
+    def country(self, code: str) -> dict[str, Any] | None:
+        """The ``register_countries`` row whose ISO alpha-2/alpha-3, IOC or FIFA code is ``code``.
+
+        Matching ignores case; ``NA`` is Namibia (data, not a missing value).
+        """
+        wanted = code.strip().upper()
+        table = self._countries_table
+        if table is None or not wanted:
+            return None
+        for column in ("key_iso_alpha2", "key_iso_alpha3", "key_ioc", "key_fifa"):
+            if column in table.column_names:
+                upper = pc.utf8_upper(table.column(column))
+                hit = table.filter(pc.fill_null(pc.equal(upper, wanted), False))
+                if hit.num_rows:
+                    return dict(hit.to_pylist()[0])
+        return None
 
     # -- id indexes -------------------------------------------------------------------------
 
@@ -331,24 +425,48 @@ class ChadwickRegister:
         return len(self._table)
 
     @classmethod
+    def clear_cache(cls) -> None:
+        """Forget the registers kept for this process (tests, or after changing the lake)."""
+        _LOADED.clear()
+
+    @classmethod
     def load(
         cls,
         refresh: bool = False,
         cache_config: LakeConfig | None = None,
     ) -> "ChadwickRegister":
-        """Load register from local Parquet cache or extract from GitHub shards."""
+        """Load the register, downloading and typing it first if the lake does not have it.
+
+        The loaded register is kept for the process and reused until the Chadwick time-to-live has
+        passed, the lake changes (a new ingest) or ``refresh=True``; so calling this (or
+        ``crosswalk`` and ``resolve_player``) in a loop costs nothing after the first call.
+        """
         catalog.register_all()
         config = cache_config or LakeConfig()
+        key = (str(config.home), _lake_stamp(config))
+        kept = _LOADED.get(key)
+        ttl = config.ttl_for("chadwick")
+        if not refresh and kept is not None and (ttl is None or time.monotonic() - kept[0] < ttl):
+            return kept[1]
         store = ProcessedStore(config)
         outcome = ingest(
             refresh=refresh, config=config, extractor=ChadwickExtractor(cache_config=config)
         )
-        register_spec = get_dataset("chadwick", "register")
-        names_spec = get_dataset("chadwick", "register_names")
-        table = outcome.tables.get("register")
-        if table is None:
-            table = store.read_part(register_spec)
-        names_table = outcome.tables.get("register_names")
-        if names_table is None and store.is_cached(names_spec):
-            names_table = store.read_part(names_spec)
-        return cls(table, names_table=names_table)
+        tables: dict[str, pa.Table | None] = {}
+        for name in ("register", "register_names", "register_links", "register_countries"):
+            spec = get_dataset("chadwick", name)
+            table = outcome.tables.get(name)
+            if table is None and (name == "register" or store.is_cached(spec)):
+                table = store.read_part(spec)
+            tables[name] = table
+        register_table = tables["register"]
+        if register_table is None:
+            raise RuntimeError("the Chadwick register dataset could not be loaded")
+        register = cls(
+            register_table,
+            names_table=tables["register_names"],
+            links_table=tables["register_links"],
+            countries_table=tables["register_countries"],
+        )
+        _LOADED[(str(config.home), _lake_stamp(config))] = (time.monotonic(), register)
+        return register

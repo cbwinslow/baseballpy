@@ -72,7 +72,8 @@ config = PipelineConfig(
 | **Retrosheet** | Ejections Database | `retro.reference("ejections")` | `pa.Table` | Umpire ejection logs and reasons |
 | **Retrosheet** | Personnel (Coaches/Bio) | `retro.reference("coaches")` | `pa.Table` | Coaching staff and biological registry |
 | **Chadwick** | Player ID Crosswalk | `crosswalk(id, from_type, to_type)` | `Any` | Fast system-to-system translation |
-| **Chadwick** | Player Register Search | `get_register().search_name("Pete Alonso")`| `list[PlayerRecord]` | 16-shard index with nickname & fuzzy resolution |
+| **Chadwick** | Player Register Search | `get_register().search_name("Michael Trout")`| `list[PlayerRecord]` | Nickname (learned from the data) and fuzzy resolution, all 40 register columns on the record |
+| **Chadwick** | Links, alternate names, countries | `reg.links_for(p)`, `reg.names_for(p)`, `reg.country(code)` | `list[dict]` / `dict` | `links.csv`, `names.csv`, `countries.csv`; the tables are `reg.links_table` etc. |
 | **Lahman** | Regular Season Batting (1871-2025) | `lahman.batting()` | `pa.Table` | 22 fields: G, AB, R, H, 2B, 3B, HR, RBI, SB |
 | **Lahman** | Regular Season Pitching (1871-2025)| `lahman.pitching()` | `pa.Table` | 30 fields: W, L, G, GS, CG, SHO, SV, IPouts, ERA |
 | **Lahman** | Master Biographical Directory | `lahman.people()` | `pa.Table` | 24 fields: names, birth/death, bats/throws |
@@ -102,10 +103,16 @@ import baseballpy as bp
 retro_id = bp.crosswalk(660271, from_type=bp.PlayerIdType.MLBAM, to_type=bp.PlayerIdType.RETRO)
 print(retro_id)  # "ohtas001"
 
-# 2. Nickname-aware search (resolves Pete -> Peter)
-reg = bp.get_register()
-players = reg.search_name("Pete Alonso")
-print(players[0].full_name)  # "Peter Alonso"
+# 2. Nickname-aware search ("Michael Trout" finds Mike Trout; typos need fuzzy=True)
+reg = bp.get_register()  # loaded once per process, then reused
+players = reg.search_name("Michael Trout")
+print(players[0].full_name)  # "Mike Trout"
+
+# 3. Everything about a person: the full record, source links and alternate names
+ohtani = reg.resolve(mlbam=660271)
+print(ohtani.death_year, ohtani.pro_played_first, ohtani.key_wikidata)
+print(reg.links_for(ohtani), reg.names_for(ohtani))
+print(reg.country("JPN")["name_full_en"])  # ISO, IOC or FIFA code
 ```
 
 ### Querying Lahman Historical Statistics (1871-2025)

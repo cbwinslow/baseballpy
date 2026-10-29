@@ -9,8 +9,8 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `agent-runbooks` | 3 | 4 | 7 |
 | `audit-and-benchmarking` | 5 | 5 | 5 |
-| `caching-and-invalidation` | 9 | 16 | 18 |
-| `chadwick-register` | 6 | 13 | 21 |
+| `caching-and-invalidation` | 13 | 23 | 30 |
+| `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 9 | 11 | 15 |
 | `concurrency-and-rate-limiting` | 3 | 5 | 6 |
 | `core-protocols` | 2 | 3 | 5 |
@@ -24,7 +24,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 ## Active changes (`openspec/changes/`)
 
-28 changes are archived under `openspec/changes/archive/`.
+29 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|

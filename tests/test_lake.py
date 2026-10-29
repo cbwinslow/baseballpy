@@ -202,3 +202,20 @@ def test_put_stream_failure_leaves_no_part_or_final_file(tmp_path: Path) -> None
         store.put_stream(spec, gen())
     assert not store.part_path(spec, "data").exists()
     assert list(tmp_path.rglob("*.part")) == []
+
+
+def test_register_all_is_cheap_after_the_first_pass_and_recovers_a_cleared_registry(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import time
+
+    from baseballpy.core import datasets
+    from baseballpy.sources import catalog
+
+    first = catalog.register_all()
+    start = time.perf_counter()
+    for _ in range(50):
+        assert catalog.register_all() is first
+    assert (time.perf_counter() - start) / 50 < 0.001  # was about 5 ms per call
+    monkeypatch.setattr(datasets, "DATASETS", {})  # a replaced, empty registry is refilled
+    assert len(catalog.register_all()) == len(first)

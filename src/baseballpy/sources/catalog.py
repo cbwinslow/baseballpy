@@ -8,7 +8,8 @@ from typing import Literal
 
 import pyarrow as pa
 
-from baseballpy.core.datasets import DATASETS, DatasetSpec, IngestMode, register
+from baseballpy.core import datasets as _datasets_module
+from baseballpy.core.datasets import DatasetSpec, IngestMode, register
 from baseballpy.core.schema_tools import snake
 from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_SCHEMAS
 from baseballpy.sources.lahman.schema import LAHMAN_PRIMARY_KEYS, LAHMAN_SCHEMAS
@@ -62,8 +63,20 @@ def _add(
     )
 
 
+#: dataset keys registered by the last full pass (empty before the first one)
+_REGISTERED_KEYS: frozenset[str] = frozenset()
+
+
 def register_all() -> dict[str, DatasetSpec]:
-    """Idempotently register every known dataset and return the registry."""
+    """Idempotently register every known dataset and return the registry.
+
+    The full pass derives hundreds of definitions (about 5 ms), and callers invoke this on every
+    load, so once a pass has completed it returns at once while the registry still holds all of its
+    datasets; it runs again if the registry was replaced or cleared.
+    """
+    global _REGISTERED_KEYS
+    if _REGISTERED_KEYS and _datasets_module.DATASETS.keys() >= _REGISTERED_KEYS:
+        return _datasets_module.DATASETS
     _add(
         "statcast",
         "pitches",
@@ -389,7 +402,8 @@ def register_all() -> dict[str, DatasetSpec]:
             "season",
         )
 
-    return DATASETS
+    _REGISTERED_KEYS = frozenset(_datasets_module.DATASETS)
+    return _datasets_module.DATASETS
 
 
 register_all()

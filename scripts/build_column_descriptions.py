@@ -303,7 +303,46 @@ def build_chadwick(http: HttpClient) -> dict[str, Any]:
             "text": "Basic name component or date of birth/death (README: People files).",
             "source": "chadwick_readme",
         }
-    return {"_sources": {"chadwick_readme": CHADWICK_README}, "*": star}
+    if "tsncards" not in page or "findagrave" not in page:
+        raise SystemExit(f"links sources no longer documented in {CHADWICK_README}")
+    if "alias" not in page or "legal names" not in page:
+        raise SystemExit(f"names kinds no longer documented in {CHADWICK_README}")
+    links = {
+        "source": "The external system the link comes from (README: the public version publishes "
+        "tsncards and findagrave).",
+        "value": "The person's identifier in that system (README: the Sporting News contract card "
+        "number for tsncards, a memorial ID for findagrave).",
+    }
+    names = {
+        "altname_type": "Kind of alternate name (README: aliases/assumed names, legal names, birth "
+        "names, or anglicizations/abbreviations of names).",
+    }
+    # countries.csv is not documented in the README; its columns are the code systems they name
+    countries = {
+        "key_iso_alpha2": ("Two-letter country code of ISO 3166-1 (alpha-2).", "iso_3166_1"),
+        "key_iso_alpha3": ("Three-letter country code of ISO 3166-1 (alpha-3).", "iso_3166_1"),
+        "key_ioc": ("Country code of the International Olympic Committee.", "ioc_codes"),
+        "key_fifa": ("Country code used by FIFA.", "fifa_codes"),
+    }
+    out: dict[str, Any] = {
+        "_sources": {
+            "chadwick_readme": CHADWICK_README,
+            "iso_3166_1": "https://en.wikipedia.org/wiki/ISO_3166-1",
+            "ioc_codes": "https://en.wikipedia.org/wiki/List_of_IOC_country_codes",
+            "fifa_codes": "https://en.wikipedia.org/wiki/List_of_FIFA_country_codes",
+        },
+        "*": star,
+        "register_links": {
+            c: {"text": text, "source": "chadwick_readme"} for c, text in links.items()
+        },
+        "register_names": {
+            c: {"text": text, "source": "chadwick_readme"} for c, text in names.items()
+        },
+        "register_countries": {
+            c: {"text": text, "source": source} for c, (text, source) in countries.items()
+        },
+    }
+    return out
 
 
 CHADWICK_DOCS = "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/"
