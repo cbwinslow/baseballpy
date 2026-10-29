@@ -108,14 +108,21 @@ def test_quality_checks_report_duplicates_orphans_and_stale_data() -> None:
             "stint": [1, 1, 1],
         }
     )
+    people = pa.table({"playerID": ["a", "b"]})
     report = quality.quality_report(
-        "Batting", batting, people_ids=pa.array(["a", "b"]), today=date(2026, 6, 1)
+        "Batting",
+        batting,
+        parents=lambda parent: people if parent == "People" else None,
+        today=date(2026, 6, 1),
     )
     assert report["duplicate_key_rows"] == 1
-    assert report["orphan_player_rows"] == 1
+    assert report["orphan_rows:playerID->People"] == 1
     assert "stale" in report and "2000" in str(report["stale"])
     current = pa.table({"playerID": ["a"], "yearID": [2025], "stint": [1]})
-    assert quality.quality_report("Batting", current, people_ids=None, today=date(2026, 6, 1)) == {}
+    assert (
+        quality.quality_report("Batting", current, parents=lambda _: None, today=date(2026, 6, 1))
+        == {}
+    )
 
 
 def test_last_completed_season_rolls_over_in_november() -> None:

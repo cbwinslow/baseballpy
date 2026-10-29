@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+import pyarrow as pa
 import pytest
 import respx
 
@@ -315,3 +316,74 @@ def test_cache_check_compares_mirror_files_and_leaves_supplied_files_unchecked(
     assert results["Batting.csv"] == CURRENT
     assert results["Salaries.csv"] == NOT_CHECKED  # supplied: there is no upstream to compare with
     assert results["LICENSE"] == "removed"  # not in the fake latest listing, still reported
+
+
+# -- data quality: relationships between tables, in any load order ----------------------------------
+
+BATTING_ROWS = (
+    "playerID,yearID,stint,teamID,lgID,G\n"
+    "known01,2025,1,BOS,AL,10\n"
+    "ghost01,2025,1,BOS,AL,10\n"
+    "known01,2024,1,ZZZ,AL,10\n"
+)
+
+
+def _csv(header: str, *rows: str) -> bytes:
+    return (header + "\n" + "\n".join(rows) + "\n").encode()
+
+
+def test_findings_do_not_depend_on_the_order_tables_are_stored_in(tmp_path: Path) -> None:
+    cfg = LakeConfig(home=tmp_path)
+    source = LahmanSource(cfg)
+    source._import_csv("Batting.csv", BATTING_ROWS.encode())  # stored BEFORE its parents exist
+    manifest = cfg.dataset_manifest("lahman", "Batting")
+    assert "quality" not in (manifest.get_chunk("data") or {})  # nothing to compare with yet
+
+    source._import_csv("People.csv", _csv("playerID", "known01"))
+    quality = manifest.get_chunk("data")["quality"]  # type: ignore[index]
+    assert quality == {"orphan_rows:playerID->People": 1}
+
+    source._import_csv("Teams.csv", _csv("yearID,teamID,lgID", "2025,BOS,AL"))
+    quality = manifest.get_chunk("data")["quality"]  # type: ignore[index]
+    assert quality == {"orphan_rows:playerID->People": 1, "orphan_rows:yearID+teamID->Teams": 1}
+
+    source._import_csv("People.csv", _csv("playerID", "known01", "ghost01"))  # the parent grows
+    assert manifest.get_chunk("data")["quality"] == {"orphan_rows:yearID+teamID->Teams": 1}  # type: ignore[index]
+    source._import_csv("Teams.csv", _csv("yearID,teamID,lgID", "2025,BOS,AL", "2024,ZZZ,AL"))
+    assert "quality" not in manifest.get_chunk("data")  # type: ignore[operator]
+
+
+def test_empty_ids_are_not_orphans_and_other_relationships_are_checked(tmp_path: Path) -> None:
+    from baseballpy.sources.lahman import quality
+
+    child = pa.table({"schoolID": ["a", None, "zzz"]})
+    parent = pa.table({"schoolID": ["a", "b"]})
+    assert quality.orphan_rows(child, ("schoolID",), parent, ("schoolID",)) == 1
+    findings = quality.foreign_key_findings(
+        "CollegePlaying", child, lambda name: parent if name == "Schools" else None
+    )
+    assert findings == {"orphan_rows:schoolID->Schools": 1}
+    assert quality.foreign_key_findings("Parks", child, lambda _: parent) == {}  # not a child
+
+
+def test_catalog_status_shows_the_findings(tmp_path: Path) -> None:
+    import json
+
+    from click.testing import CliRunner
+
+    from baseballpy.cli import main
+    from baseballpy.cli_ingest import scan_lake
+
+    source = LahmanSource(LakeConfig())
+    source._import_csv("People.csv", _csv("playerID", "known01"))
+    source._import_csv("Batting.csv", BATTING_ROWS.encode())
+    status = {s.dataset: s for s in scan_lake(LakeConfig())}
+    assert status["Batting"].quality == {"orphan_rows:playerID->People": 1}
+    assert status["People"].quality == {}
+    out = CliRunner().invoke(main, ["catalog", "status", "--source", "lahman", "--json"])
+    rows = {r["dataset"]: r for r in map(json.loads, out.output.splitlines()) if "dataset" in r}
+    assert rows["Batting"]["quality"] == {"orphan_rows:playerID->People": 1}
+    table = CliRunner().invoke(main, ["catalog", "status", "--source", "lahman"])
+    assert "data quality lahman.Batting: orphan_rows:playerID->People=1" in " ".join(
+        table.output.split()
+    )

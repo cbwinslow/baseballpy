@@ -6,7 +6,7 @@ import os
 import shutil
 import sys
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -41,11 +41,29 @@ class DatasetStatus:
     #: how ``ingest`` reaches the dataset (``IngestMode`` of its spec) and the registry's note
     ingest: str = "default"
     note: str = ""
+    #: data-quality findings recorded in the processed manifest (finding -> count or message)
+    quality: dict[str, object] = field(default_factory=dict)
 
     @property
     def name(self) -> str:
         """Alias for dataset name."""
         return self.dataset
+
+
+def _quality_findings(config: LakeConfig, source: str, dataset: str) -> dict[str, object]:
+    """The ``quality`` findings stored in a dataset's processed manifest (counts add up)."""
+    findings: dict[str, object] = {}
+    for entry in config.dataset_manifest(source, dataset).chunks().values():
+        stored = entry.get("quality")
+        if not isinstance(stored, dict):
+            continue
+        for key, value in stored.items():
+            previous = findings.get(key)
+            if isinstance(value, int) and isinstance(previous, int):
+                findings[key] = previous + value
+            else:
+                findings[key] = value
+    return findings
 
 
 def scan_lake(config: LakeConfig | None = None) -> list[DatasetStatus]:
@@ -114,6 +132,7 @@ def scan_lake(config: LakeConfig | None = None) -> list[DatasetStatus]:
                 newest_mtime=newest_date_str,
                 ingest=spec.ingest,
                 note=spec.ingest_note,
+                quality=_quality_findings(cfg, spec.source, spec.name),
             )
         )
 
@@ -430,6 +449,7 @@ def catalog_status_cmd(
                         "newest_mtime": s.newest_mtime,
                         "ingest": s.ingest,
                         "note": s.note,
+                        "quality": s.quality,
                     }
                 )
             )
@@ -461,6 +481,13 @@ def catalog_status_cmd(
                 *([s.note or "-"] if missing or gaps else []),
             )
         console.print(table)
+        for s in statuses:
+            if s.quality:
+                findings = "; ".join(f"{k}={v}" for k, v in s.quality.items())
+                console.print(
+                    f"  [yellow]data quality[/yellow] {s.source}.{s.dataset}: {findings}",
+                    soft_wrap=True,
+                )
 
     ctx.exit(0)
 

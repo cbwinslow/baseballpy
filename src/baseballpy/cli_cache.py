@@ -10,9 +10,9 @@ from rich.table import Table
 from baseballpy.cache_check import (
     CHANGED,
     CORRUPT,
+    CURRENT,
     MISSING,
     NO_FINGERPRINT,
-    NOT_CHECKED,
     OK,
     REMOVED,
     UNREACHABLE,
@@ -50,7 +50,7 @@ def cache_check_cmd(sources: tuple[str, ...], upstream: bool, as_json: bool) -> 
             click.echo(json.dumps(r.__dict__))
     else:
         _print_summary(results, upstream)
-        _print_problems(results)
+        _print_problems(results, upstream)
     raise SystemExit(1 if broken else 0)
 
 
@@ -80,7 +80,7 @@ def _print_summary(results: list[FileCheck], upstream: bool) -> None:
     console.print(table)
 
 
-def _print_problems(results: list[FileCheck]) -> None:
+def _print_problems(results: list[FileCheck], upstream: bool) -> None:
     problems = [
         r for r in results if r.integrity != OK or r.upstream in (CHANGED, REMOVED, UNREACHABLE)
     ]
@@ -93,8 +93,15 @@ def _print_problems(results: list[FileCheck]) -> None:
         console.print(
             "[yellow]Some files changed upstream; refresh with `ingest --refresh`.[/yellow]"
         )
-    if all(r.upstream == NOT_CHECKED for r in results):
-        console.print("[dim]Upstream was not checked (add --upstream).[/dim]")
+    compared = any(r.upstream in (CURRENT, CHANGED, REMOVED, UNREACHABLE) for r in results)
+    if results and not compared:
+        if upstream:
+            console.print(
+                "[dim]Nothing could be compared with upstream: no file has a git fingerprint "
+                "(files you supplied yourself and files without one are not compared).[/dim]"
+            )
+        else:
+            console.print("[dim]Upstream was not checked (add --upstream).[/dim]")
 
 
 def register_cache_commands(main: click.Group) -> None:

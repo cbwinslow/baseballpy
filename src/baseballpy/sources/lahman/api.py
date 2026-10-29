@@ -4,6 +4,7 @@ import hashlib
 import logging
 import time
 import zipfile
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -23,8 +24,13 @@ from baseballpy.sources.lahman.extractor import (
     data_rows,
 )
 from baseballpy.sources.lahman.normalizer import LahmanNormalizer
-from baseballpy.sources.lahman.quality import quality_report
-from baseballpy.sources.lahman.schema import LahmanTable, canonical_table_name
+from baseballpy.sources.lahman.quality import (
+    FOREIGN_KEYS,
+    PARENT_TABLES,
+    foreign_key_findings,
+    quality_report,
+)
+from baseballpy.sources.lahman.schema import LAHMAN_SCHEMAS, LahmanTable, canonical_table_name
 
 logger = logging.getLogger(__name__)
 
@@ -135,6 +141,7 @@ class LahmanSource:
             source_ref=LOCAL_IMPORT,
             metadata={**self._quality(table_name, table), "upstream": fingerprint.to_dict()},
         )
+        self._recheck_children(table_name)
         return "table"
 
     def _import_document(self, filename: str, data: bytes) -> None:
@@ -160,21 +167,71 @@ class LahmanSource:
             self._import_document(filename, data)
             self.last_import.documents.append(Path(filename).name)
 
-    def _people_ids(self) -> pa.ChunkedArray | None:
-        """``People.playerID`` from the processed store if already present (never fetches)."""
-        people = self.store.part_path(lahman_spec("People"), "data")
-        if not people.exists():
-            return None
-        return pq.read_table(people, columns=["playerID"])["playerID"]
+    def _parents(self) -> Callable[[str], pa.Table | None]:
+        """Loader of stored parent tables for the relationship checks (read once per pass)."""
+        loaded: dict[str, pa.Table | None] = {}
+
+        def parent(name: str) -> pa.Table | None:
+            if name not in loaded:
+                path = self.store.part_path(lahman_spec(name), "data")
+                loaded[name] = pq.read_table(path) if path.exists() else None
+            return loaded[name]
+
+        return parent
 
     def _quality(self, name: str, table: pa.Table) -> dict[str, object]:
         """Run data-quality checks; findings are logged as warnings and kept in the manifest."""
         findings = quality_report(
-            name, table, people_ids=self._people_ids(), today=self.cache_config.today_or_now()
+            name, table, parents=self._parents(), today=self.cache_config.today_or_now()
         )
         for key, value in findings.items():
             logger.warning("lahman data quality: %s %s=%s", name, key, value)
         return {"quality": findings} if findings else {}
+
+    def _recheck_children(self, parent_name: str) -> None:
+        """A parent table was stored: recheck the tables that point into it.
+
+        Without this, a table stored before ``People`` (or ``Teams``, ...) would never be checked
+        against it, because the result would depend on the order the tables were loaded in.
+        """
+        if parent_name not in PARENT_TABLES:
+            return
+        parents = self._parents()
+        for child in sorted(LAHMAN_SCHEMAS):
+            relations = [
+                fk
+                for fk in FOREIGN_KEYS
+                if fk.parent == parent_name and fk.applies_to(child, LAHMAN_SCHEMAS[child].names)
+            ]
+            path = self.store.part_path(lahman_spec(child), "data")
+            if not relations or not path.exists():
+                continue
+            columns = sorted({c for fk in relations for c in fk.columns})
+            table = pq.read_table(path, columns=columns)
+            fresh = {
+                key: count
+                for key, count in foreign_key_findings(child, table, parents).items()
+                if any(key == fk.label for fk in relations)
+            }
+            self._write_orphan_findings(child, {fk.label for fk in relations}, fresh)
+
+    def _write_orphan_findings(self, child: str, labels: set[str], fresh: dict[str, int]) -> None:
+        """Replace the stored findings of the given relationships in the child's manifest."""
+        manifest = self.cache_config.dataset_manifest("lahman", child)
+        entry = manifest.get_chunk("data")
+        if entry is None:
+            return
+        stored = dict(entry.get("quality") or {})
+        if {k: v for k, v in stored.items() if k in labels} == fresh:
+            return
+        stored = {k: v for k, v in stored.items() if k not in labels}
+        stored.update(fresh)
+        updated = {k: v for k, v in entry.items() if k != "quality"}
+        if stored:
+            updated["quality"] = stored
+        manifest.put_entry("data", updated)
+        for key, count in fresh.items():
+            logger.warning("lahman data quality: %s %s=%s", child, key, count)
 
     @staticmethod
     def _check_zip_safety(members: list[zipfile.ZipInfo]) -> None:
@@ -298,6 +355,7 @@ class LahmanSource:
                         **({"upstream": fingerprint.to_dict()} if fingerprint else {}),
                     },
                 )
+                self._recheck_children(name)
                 self._remember(name, parquet, table)
             tracker.set_cache_hit(False)
             tracker.set_records(len(table))

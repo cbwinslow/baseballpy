@@ -113,3 +113,16 @@ def test_cli_exit_codes_and_output(lake: LakeConfig) -> None:
     rows = [json.loads(line) for line in as_json.output.splitlines()]
     assert {r["name"]: r["integrity"] for r in rows}["a.csv"] == CORRUPT
     assert {r["source"] for r in rows} == {"alpha"}
+
+
+def test_upstream_run_with_nothing_comparable_says_so(lake: LakeConfig) -> None:
+    only_unfingerprinted = CliRunner().invoke(
+        main, ["cache", "check", "--upstream", "--source", "beta"]
+    )
+    assert only_unfingerprinted.exit_code == 0
+    text = " ".join(only_unfingerprinted.output.split())
+    assert "Nothing could be compared with upstream" in text and "add --upstream" not in text
+    offline = " ".join(
+        CliRunner().invoke(main, ["cache", "check", "--source", "beta"]).output.split()
+    )
+    assert "add --upstream" in offline
