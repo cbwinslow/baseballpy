@@ -97,6 +97,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 - `docs/agents/BACKLOG.md`
 - `docs/agents/FINAL_REPORT.md`
 - `docs/agents/GOAL_SEEK_PROMPT.md`
+- `docs/agents/HANDOFF_B43.md`
 - `docs/agents/NEXT_GOAL.md`
 - `docs/agents/PROJECT_MAP.md`
 - `docs/index.md`

@@ -6,6 +6,6 @@
   - [x] 1.3 Record in design.md what dlt replaced and what it could not (raw bytes, quarantine, rate limit, strict types)
 - [x] 2. Decision
   - [x] 2.1 ADR 42, adopt or reject, citing the spike numbers
-- [ ] 3. Adoption (only if ADR 42 adopts)
+- [ ] 3. Adoption: REDESIGN REQUIRED (owner rejected the first design on 2026-10-29; see docs/agents/HANDOFF_B43.md)
   - [ ] 3.1 `DltAdapter` behind `IngestAdapter`, resources generated from the dataset registry, `HttpClient` passed as dlt's session so rate limits and the User-Agent stay in one place
   - [ ] 3.2 Retire the flatten, `_extras` and drift paths that schema contracts replace; tests; docs

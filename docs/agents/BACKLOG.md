@@ -110,6 +110,6 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 | B-40 | dlt-pipeline-core 1.2: load into DuckDB and Parquet and compare | DONE: three endpoints, 5 live requests, compared | columns, types, row counts and code size compared with the current path, about 20 requests |
 | B-41 | dlt-pipeline-core 1.3: record what dlt replaced and what it could not | DONE: findings in design.md | findings in design.md |
 | B-42 | dlt-pipeline-core 2.1: ADR 42 adopt or reject | DONE: ADR 42 | ADR 42 cites the numbers |
-| B-43 | `dlt-pipeline-core 3.1`: DltAdapter behind IngestAdapter | READY (ADR 42 adopted it; agy drafts, Claude reviews) | registry-generated resources, HttpClient as dlt's session, tests |
-| B-44 | `dlt-pipeline-core 3.2`: retire flatten, _extras and drift paths replaced by contracts | after B-43 | tests, docs generate, gates green |
+DltAdapter design REJECTED by the owner, redesign first (see docs/agents/HANDOFF_B43.md) | NEEDS REDESIGN (owner brainstorm) | registry-generated resources, HttpClient as dlt's session, tests |
+after B-43 is redesigned and done | tests, docs generate, gates green |
 | B-45 | `reference-docs 3`: cross-check endpoints and column types against the reference docs | READY (agy can extract the endpoint and type tables from the cloned docs, Claude verifies against live data) | `docs/references/ENDPOINT_CROSSCHECK.md` lists every registry endpoint with its documented route and types in each reference and any disagreement with the live-probed schema |
