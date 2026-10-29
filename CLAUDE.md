@@ -4,6 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `baseballpy` ingests Statcast (Baseball Savant), the MLB Stats API, Lahman, the Chadwick Register and Retrosheet into typed Parquet (queried through DuckDB views). GPL-3.0-or-later (ADR 26; upstream data licenses in `docs/DATA_LICENSES.md`).
 
+## How to talk to the owner (every reply, no exceptions)
+
+The owner is not a full-time programmer and gets confused by jargon. Every reply MUST:
+
+1. **Use simple words.** Short sentences, everyday language. Explain a technical term the first time in plain words, or skip it. Say what something *means for the project*, not only what it is.
+2. **Open with a short summary** (2 to 4 sentences): what happened, what is true now, what is not done.
+3. **Say what is next** in plain steps, and what you need from the owner (if anything).
+4. **Ask your questions clearly.** One decision per question. For each question give: the options, the **pros and cons** of each (short bullets), and **your recommendation with the reason**. Never leave the owner to guess which option you prefer.
+5. **Keep detail separate.** Put file names, commands and numbers under a "Details" heading at the end, so the top of the reply is readable without them.
+6. **Never hide problems.** Failures, things not verified and things you are unsure about go in the summary, in plain words.
+
+Suggested shape: *Summary*, *What I found / did*, *What happens next*, *Questions for you (options, pros, cons, my pick)*, *Details*.
+
 ## Hard rules (every task, every agent; full text is `AGENTS.md` section 14)
 
 1. **Preflight first:** find the task in `docs/agents/BACKLOG.md` (and its card in `docs/agents/tracks/`), read its OpenSpec change, list the files you will touch. No row, no change: open the change first.
