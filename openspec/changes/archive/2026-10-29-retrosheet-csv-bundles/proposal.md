@@ -1,5 +1,7 @@
 # Proposal: Retrosheet CSV bundles
 
+> **REJECTED by the owner on 2026-10-29 (ADR 41); archived without implementation.** Reason: a lot of extra code for the same games the git-tree ingest already covers, and the bundles are only worth it if they come from the GitHub repository, which they do not (retrosheet.org, unreachable from the development hosts).
+
 ## Why
 Retrosheet publishes its whole corpus as seven master CSV files (plus a simplified set and per-season files for `plays`) on its downloads pages. Source: https://www.retrosheet.org/downloads/csvoverview.html and https://www.retrosheet.org/downloads/csvdownloads.html (found 2026-10-28; the pages describe games 1898-2025, 224,877 games, box scores for 221,443 and event files for 205,886, and a `stattype` column where `value` is the main estimate and `lower`/`upper` flag uncertain rows).
 

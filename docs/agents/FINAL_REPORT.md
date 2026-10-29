@@ -21,8 +21,8 @@ needs the owner or an external host.
 ## Needs the owner (docs/agents/BACKLOG.md section H)
 
 1. `statsapi.mlb.com` answers 403 to our User-Agent since 2026-10-28 21:57 UTC (B-29): wait and retry, or use a plain `baseballpy/<version>` agent.
-2. Approve or reject `retrosheet-csv-bundles` (B-20).
-3. Supply `boxfile.txt` or retrosheet.org access (B-14, B-18, B-21).
+2. (Rejected by the owner on 2026-10-29: `retrosheet-csv-bundles`, ADR 41.)
+3. Supply `boxfile.txt` or retrosheet.org access (B-14, B-18).
 4. Permanent lake location and backfill ranges (B-09).
 5. When to push (about 55 unpushed commits) and whether to tag a release.
 6. The `cbwdellr720-lan` host-key mismatch.

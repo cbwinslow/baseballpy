@@ -48,7 +48,7 @@ numbers are in `verify-optin-paths/design.md`.
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-11 | catalog-completeness-audit 2.2: open an issue on audit findings | DONE in code and tests; the real GitHub run is OWNER (needs a push and Actions enabled, section H item 4) | `live.yml` step uses `gh issue create`/`gh issue comment` (permission `issues: write`, one open issue titled by a fixed marker so findings update it), written and YAML-parsed; a test checks the step exists; the first real run on GitHub is listed as not verified until the owner enables Actions |
-| B-12 | `repo-hygiene-and-docs-sync 6.4`: merge deltas and archive | after B-01, B-03 (EXTERNAL), B-09, B-14, B-20 (OWNER) | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
+| B-12 | `repo-hygiene-and-docs-sync 6.4`: merge deltas and archive | after B-01, B-03 (EXTERNAL), B-09, B-14 (OWNER) | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
 | B-27 | spec-test-traceability 1: cite or write a test for each of the 39 uncited scenarios | DONE | per spec, every scenario ends with a `Verified by` line naming a test that asserts its THEN clause (write the missing mocked tests first; a claim nothing can check is removed from the spec); `uv run python scripts/project_map.py` shows the cited-test counts rising |
 | B-28 | spec-test-traceability 2: enforce it | DONE (change archived) | `tests/test_spec_scenarios.py` fails for any scenario without a citation; gates green; change archived |
 
@@ -69,20 +69,10 @@ numbers are in `verify-optin-paths/design.md`.
 | B-18 | `column-descriptions-retrosheet-and-leaderboards 1.3`: schedule, rosters, reference tables, discrepancies, box accounts | EXTERNAL | the Retrosheet format documents are read from retrosheet.org (retry; also the `web.archive.org` copy and the R `retrosheet`/`baseballr` docs); only cited text is added; if none is citable the search trail is recorded and the task is closed as "no citable source" |
 | B-19 | `column-descriptions-retrosheet-and-leaderboards 3.1`: gates and baseline | after B-14 and B-15 (OWNER / EXTERNAL; their columns are still to describe) | gates green, description coverage per source stated in the commit |
 
-## F. Retrosheet CSV bundles (`retrosheet-csv-bundles`)
+## F. Retrosheet CSV bundles (rejected)
 
-Proposal and reachability evidence exist; nothing is implemented. The Retrosheet ingest keeps pulling
-from retrosheet.org only (owner rule); code as if no user is blocked.
-
-| ID | Task | Status | Done when |
-|---|---|---|---|
-| B-20 | `retrosheet-csv-bundles 0`: owner approval | OWNER | the owner says in chat to implement the change |
-| B-21 | `retrosheet-csv-bundles 1`: read the CSV overview and contents pages | EXTERNAL | pages read (retrosheet.org or an owner-supplied copy for exploration only); file names, columns, licence in `design.md` |
-| B-22 | retrosheet-csv-bundles 2: how others consume the bundles | DONE | R `retrosheet`, `calestini/retrosheet`, `jerryword/retrosheet-csv`, Chadwick: findings and links in `design.md` |
-| B-23 | `retrosheet-csv-bundles 3`: generator and strict schemas | after B-20, B-21 | a `scripts/gen_*` script downloads one small season, widens types, writes schemas and registers datasets with keys |
-| B-24 | `retrosheet-csv-bundles 4`: adapter wiring | after B-23 | new task names through `IngestAdapter`, no change to existing ones; `unsupported` entries carry `tried` and `verified_on` |
-| B-25 | `retrosheet-csv-bundles 5`: tests, docs, descriptions, licence | after B-24 | no-network tests, docs section, official column descriptions, licence note |
-| B-26 | `retrosheet-csv-bundles 6`: live check, gates, archive | after B-25 | one season ingested, gates green, change archived |
+The owner rejected `retrosheet-csv-bundles` on 2026-10-29 (ADR 41): extra code for data the Retrosheet
+event-file ingest already covers. Archived without implementation; nothing to do here.
 
 ## G. Standing stewardship (repeat; not tasks)
 
@@ -93,8 +83,7 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 
 ## H. Owner decisions pending (ask once, then continue with everything else)
 
-1. Approve or reject `retrosheet-csv-bundles` (B-20).
-2. Supply `boxfile.txt`, or say retrosheet.org is reachable from a machine you can use (B-14, B-18, B-21).
+2. Supply `boxfile.txt`, or say retrosheet.org is reachable from a machine you can use (B-14, B-18).
 3. Name the permanent lake location and approve backfill ranges (B-09).
 4. Decide when to push and whether to tag a first release (nothing has been pushed; versioning is in `docs/RELEASING.md`).
 5. The host-key mismatch of `cbwdellr720-lan` (use `cbwdellr720` until fixed).

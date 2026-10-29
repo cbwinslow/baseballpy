@@ -24,7 +24,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 ## Active changes (`openspec/changes/`)
 
-25 changes are archived under `openspec/changes/archive/`.
+26 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -33,7 +33,6 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `historical-backfill-plan` | 6 | 3 | 3.1, 3.2 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
-| `retrosheet-csv-bundles` | 1 | 6 | 0, 1, 3, 4, 5, 6 |
 | `verify-optin-paths` | 7 | 1 | 7 |
 
 ## Decisions (`docs/DECISIONS.md`)
@@ -76,6 +75,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 - ADR 38: Parameterized MLB Stat Types Are Registered as Fan-Out Dimensions
 - ADR 39: The IngestAdapter Is the Enforced Source Boundary; Extractor/Normalizer Protocols Are Optional
 - ADR 40: The Default User-Agent Is the One pybaseball Sends; It Is Overridable
+- ADR 41: The Retrosheet CSV Bundles Are Not Ingested
 
 ## Documentation pages (`docs/`)
 
