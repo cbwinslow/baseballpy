@@ -30,7 +30,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 1 | 4.2 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `dlt-pipeline-core` | 0 | 9 | 1.1, 1.2, 1.3, 2.1, 3.1, 3.2 |
+| `dlt-pipeline-core` | 6 | 3 | 3.1, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `mlb-stats-route-406-and-deep-pools` | 0 | 9 | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
@@ -78,6 +78,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 - ADR 39: The IngestAdapter Is the Enforced Source Boundary; Extractor/Normalizer Protocols Are Optional
 - ADR 40: The Default User-Agent Is the One pybaseball Sends; It Is Overridable
 - ADR 41: The Retrosheet CSV Bundles Are Not Ingested
+- ADR 42: dlt Is the Load and Normalize Layer, Introduced Behind IngestAdapter, MLB API First
 
 ## Documentation pages (`docs/`)
 
@@ -98,6 +99,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 - `docs/agents/NEXT_GOAL.md`
 - `docs/agents/PROJECT_MAP.md`
 - `docs/index.md`
+- `docs/references/README.md`
 - `docs/sources/chadwick.md`
 - `docs/sources/lahman.md`
 - `docs/sources/mlb_api.md`

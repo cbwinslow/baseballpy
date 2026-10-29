@@ -1,0 +1,8170 @@
+# narwhals: documentation excerpt
+
+- Source: Context7 `/narwhals-dev/narwhals` (https://context7.com/narwhals-dev/narwhals)
+- Fetched: 2026-10-29; excerpt only (the service caps a response at about 500 KB), not the complete manual. Upstream licences apply; see the upstream repository.
+
+<!-- topic: generic extract -->
+### Verify Narwhals installation
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Starts the Python REPL and prints the installed Narwhals version to confirm the installation succeeded.
+
+```python
+import narwhals
+
+print(narwhals.__version__)
+```
+
+--------------------------------
+
+### Create example dataframes in various formats
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe_conversion.md
+
+Creates Polars, pandas, and DuckDB dataframes from the same data to illustrate conversion. Requires duckdb, polars, and pandas installed.
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrame
+from typing import Any
+
+import duckdb
+import polars as pl
+import pandas as pd
+
+df_polars = pl.DataFrame(
+    {
+        "A": [1, 2, 3, 4, 5],
+        "fruits": ["banana", "banana", "apple", "apple", "banana"],
+        "B": [5, 4, 3, 2, 1],
+        "cars": ["beetle", "audi", "beetle", "beetle", "beetle"],
+    }
+)
+df_pandas = df_polars.to_pandas()
+df_duckdb = duckdb.sql("SELECT * FROM df_polars")
+```
+
+--------------------------------
+
+### Type Hints Usage Example
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/typing.md
+
+Example demonstrating how to use type hints from narwhals.typing with nw.from_native and nw.narwhalify, and the resulting type inference behavior.
+
+```APIDOC
+## Type Hints Usage Example
+
+### Description
+Demonstrates the use of type hints from `narwhals.typing` with `nw.from_native` and `nw.narwhalify`, showing how type inference differs between the two approaches.
+
+### Code Example
+```py
+import polars as pl
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, DataFrameT
+
+df = pl.DataFrame({"a": [1, 2, 3]})
+
+
+def func(df_native: IntoDataFrameT) -> IntoDataFrameT:
+    df = nw.from_native(df_native, eager_only=True)
+    return df.select(b=nw.col("a")).to_native()
+
+
+reveal_type(func(df))
+
+
+@nw.narwhalify(strict=True)
+def func_2(df: DataFrameT) -> DataFrameT:
+    return df.select(b=nw.col("a"))
+
+
+reveal_type(func_2(df))
+```
+
+### Expected mypy Output
+```console
+$ mypy t.py
+t.py:13: note: Revealed type is "polars.dataframe.frame.DataFrame"
+t.py:21: note: Revealed type is "Any"
+Success: no issues found in 1 source file
+```
+
+### Notes
+- `nw.from_native` preserves type hints better than `nw.narwhalify`.
+- Type hints are respected inside the function body when arguments are typed.
+```
+
+--------------------------------
+
+### Install Narwhals with pip
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/README.md
+
+Recommended installation method, as it is the most up-to-date. Run this command in your terminal.
+
+```bash
+pip install narwhals
+```
+
+--------------------------------
+
+### Docstring example using PyArrow and Narwhals
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Shows a typical docstring example that imports one dataframe library (PyArrow), creates a dataframe, and demonstrates a Narwhals method (estimated_size). The output is 32.
+
+```python
+>>> import pyarrow as pa
+>>> import narwhals as nw
+>>> df_native = pa.table({"foo": [1, 2], "bar": [6.0, 7.0]})
+>>> df = nw.from_native(df_native)
+>>> df.estimated_size()
+32
+```
+
+--------------------------------
+
+### Run comparison example with PyArrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/boolean.md
+
+Creates a PyArrow table from the shared data and prints the result of the comparison function.
+
+```python
+import pyarrow as pa
+
+table = pa.table(data)
+print(comparison(table))
+```
+
+--------------------------------
+
+### Clone and set up Narwhals repository
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Commands to clone the repository, rename the remote, add your fork, and install development dependencies.
+
+```terminal
+git clone git@github.com:narwhals-dev/narwhals.git narwhals-dev
+```
+
+```terminal
+cd narwhals-dev/
+```
+
+```terminal
+git remote rename origin upstream
+```
+
+```terminal
+git remote add origin <your fork goes here>
+```
+
+```terminal
+uv sync --group local-dev
+```
+
+```terminal
+uv run prek install
+```
+
+--------------------------------
+
+### starts_with
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Checks if a string starts with a specified prefix.
+
+```APIDOC
+## starts_with
+
+### Description
+Checks if a string starts with a specified prefix.
+
+### Method
+starts_with
+
+### Parameters
+- **prefix** (str) - The prefix to check for.
+
+### Returns
+- Series of boolean values indicating whether the string starts with the prefix.
+```
+
+--------------------------------
+
+### Install Narwhals into existing virtual environment with uv
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Installs Narwhals into an existing virtual environment without modifying pyproject.toml.
+
+```terminal
+uv pip install narwhals
+```
+
+--------------------------------
+
+### Sync project with uv (local-dev group)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Creates a .venv and installs the project with the local-dev dependency group. The --group local-dev flag pulls in dev dependencies.
+
+```terminal
+uv sync --group local-dev
+```
+
+--------------------------------
+
+### Install Narwhals with extras using pip
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Installs Narwhals with the polars and pyarrow extras using pip.
+
+```terminal
+python -m pip install "narwhals[polars,pyarrow]"
+```
+
+--------------------------------
+
+### Run comparison example with pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/boolean.md
+
+Creates a pandas DataFrame from the shared data and prints the result of the comparison function.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame(data)
+print(comparison(df))
+```
+
+--------------------------------
+
+### Generate pretty SQL with pretty=True
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/generating_sql.md
+
+Prints the SQL with pretty formatting. Requires sqlparse to be installed.
+
+```python
+print(result.to_sql(pretty=True))
+```
+
+--------------------------------
+
+### pad_start
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Pads the start of each string with a specified character to a given length.
+
+```APIDOC
+## pad_start
+
+### Description
+Pads the start of each string with a specified character to a given length.
+
+### Method
+pad_start
+
+### Parameters
+- **length** (int) - The total length of the resulting string.
+- **fillchar** (str) - The character to pad with. Default is a space.
+
+### Returns
+- Series of padded strings.
+```
+
+--------------------------------
+
+### Run multiplication example with PyArrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/boolean.md
+
+Creates a PyArrow table from the shared data and prints the result of the multiplication function.
+
+```python
+import pyarrow as pa
+
+table = pa.table(data)
+print(multiplication(table))
+```
+
+--------------------------------
+
+### Install Narwhals with pip
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Installs Narwhals using pip. Requires an activated Python 3.10+ virtual environment. Does not modify pyproject.toml.
+
+```terminal
+python -m pip install narwhals
+```
+
+--------------------------------
+
+### Install Narwhals with conda-forge
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/README.md
+
+Alternative installation method via conda-forge. The latest version may take longer to appear compared to pip.
+
+```bash
+conda install -c conda-forge narwhals
+```
+
+--------------------------------
+
+### Check git version
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Run this command to verify git is installed. A successful output looks like 'git version 2.34.1'.
+
+```bash
+git --version
+```
+
+--------------------------------
+
+### Example: Using nw.from_native vs nw.narwhalify for type hints
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/typing.md
+
+This example shows two functions: one using `nw.from_native` and one using `@nw.narwhalify`. The mypy output reveals that `nw.from_native` preserves the concrete type (`polars.DataFrame`) while `nw.narwhalify` results in `Any`. Use `nw.from_native` and `nw.to_native` to preserve type hints as much as possible.
+
+```python
+import polars as pl
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, DataFrameT
+
+df = pl.DataFrame({"a": [1, 2, 3]})
+
+
+def func(df_native: IntoDataFrameT) -> IntoDataFrameT:
+    df = nw.from_native(df_native, eager_only=True)
+    return df.select(b=nw.col("a")).to_native()
+
+
+reveal_type(func(df))
+
+
+@nw.narwhalify(strict=True)
+def func_2(df: DataFrameT) -> DataFrameT:
+    return df.select(b=nw.col("a"))
+
+
+reveal_type(func_2(df))
+```
+
+```console
+$ mypy t.py
+t.py:13: note: Revealed type is "polars.dataframe.frame.DataFrame"
+t.py:21: note: Revealed type is "Any"
+Success: no issues found in 1 source file
+```
+
+--------------------------------
+
+### Create PandasLikeNamespace and run Narwhals select
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Sets up a `PandasLikeNamespace` with the pandas implementation and main version, creates a pandas DataFrame, wraps it with Narwhals, and runs the example select. This is the first step in the walkthrough.
+
+```python
+import narwhals as nw
+from narwhals._pandas_like.namespace import PandasLikeNamespace
+from narwhals.utils import Implementation, Version
+import pandas as pd
+
+pn = PandasLikeNamespace(implementation=Implementation.PANDAS, version=Version.MAIN)
+
+df_pd = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+df = nw.from_native(df_pd)
+df.select(nw.col("a") + 1)
+```
+
+--------------------------------
+
+### Run comparison example with Polars (eager)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/boolean.md
+
+Creates a Polars eager DataFrame from the shared data and prints the result of the comparison function.
+
+```python
+import polars as pl
+
+df = pl.DataFrame(data)
+print(comparison(df))
+```
+
+--------------------------------
+
+### Run tests for all CPU constructors
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Runs tests for all CPU constructors, installing modin and pyspark extras as needed.
+
+```console
+uv run --extra modin --extra pyspark pytest --all-cpu-constructors
+```
+
+--------------------------------
+
+### Run multiplication example with pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/boolean.md
+
+Creates a pandas DataFrame from the shared data and prints the result of the multiplication function.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame(data)
+print(multiplication(df))
+```
+
+--------------------------------
+
+### get_ibis
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Returns the ibis module if it is installed, otherwise returns None.
+
+```APIDOC
+## get_ibis
+
+### Description
+Returns the ibis module if it is installed, otherwise returns None.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+None
+
+### Returns
+- **module or None** - The ibis module if available, else None.
+
+```
+
+--------------------------------
+
+### Generate SQL from DuckDB using narwhals.sql
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/generating_sql.md
+
+Creates a table named 'prices' with date and price columns, applies the same aggregation, and prints the generated SQL. Requires DuckDB to be installed.
+
+```python
+import narwhals as nw
+from narwhals.sql import table
+
+prices = table("prices", {"date": nw.Date, "price": nw.Float64})
+
+result = (
+    prices.group_by(nw.col("date").dt.truncate("1mo"))
+    .agg(nw.col("price").mean())
+    .sort("date")
+)
+print(result.to_sql())
+```
+
+--------------------------------
+
+### Run multiplication example with Polars (eager)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/boolean.md
+
+Creates a Polars eager DataFrame from the shared data and prints the result of the multiplication function.
+
+```python
+import polars as pl
+
+df = pl.DataFrame(data)
+print(multiplication(df))
+```
+
+--------------------------------
+
+### get_pyarrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Returns the pyarrow module if it is installed, otherwise returns None.
+
+```APIDOC
+## get_pyarrow
+
+### Description
+Returns the pyarrow module if it is installed, otherwise returns None.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+None
+
+### Returns
+- **module or None** - The pyarrow module if available, else None.
+
+```
+
+--------------------------------
+
+### Update uv to latest version
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Run this command to update your uv installation to the latest version.
+
+```terminal
+uv self update
+```
+
+--------------------------------
+
+### get_pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Returns the pandas module if it is installed, otherwise returns None.
+
+```APIDOC
+## get_pandas
+
+### Description
+Returns the pandas module if it is installed, otherwise returns None.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+None
+
+### Returns
+- **module or None** - The pandas module if available, else None.
+
+```
+
+--------------------------------
+
+### when
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Starts a conditional expression.
+
+```APIDOC
+## when
+
+### Description
+Starts a conditional expression.
+
+### Method
+Function
+
+### Signature
+`when(condition)`
+
+### Parameters
+- **condition** (Expr) - Required - Condition expression.
+
+### Returns
+- **When** - Conditional expression builder.
+```
+
+--------------------------------
+
+### get_modin
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Returns the modin module if it is installed, otherwise returns None.
+
+```APIDOC
+## get_modin
+
+### Description
+Returns the modin module if it is installed, otherwise returns None.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+None
+
+### Returns
+- **module or None** - The modin module if available, else None.
+
+```
+
+--------------------------------
+
+### Example Narwhals expression
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+A simple Narwhals expression that selects column 'a' and adds 1. This is the motivating example used throughout the page to illustrate the mapping process.
+
+```python
+df.select(nw.col("a") + 1)
+```
+
+--------------------------------
+
+### Run group-by mean with pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Creates a pandas DataFrame with columns 'a' and 'b', then calls the previously defined func to print the result. This example uses the pandas backend.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
+print(func(df))
+```
+
+--------------------------------
+
+### Simple dataframe-agnostic function example (t.py)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Creates a Python file t.py with a function that returns column names from a native dataframe. It imports pandas, Polars, PyArrow, and Narwhals, and prints outputs for each library. Run with `python t.py`.
+
+```python
+from __future__ import annotations
+
+import pandas as pd
+import polars as pl
+import pyarrow as pa
+import narwhals as nw
+from narwhals.typing import IntoFrame
+
+
+def agnostic_get_columns(df_native: IntoFrame) -> list[str]:
+    df = nw.from_native(df_native)
+    column_names = df.columns
+    return column_names
+
+
+data = {"a": [1, 2, 3], "b": [4, 5, 6]}
+df_pandas = pd.DataFrame(data)
+df_polars = pl.DataFrame(data)
+table_pa = pa.table(data)
+
+print("pandas output")
+print(agnostic_get_columns(df_pandas))
+
+print("Polars output")
+print(agnostic_get_columns(df_polars))
+
+print("PyArrow output")
+print(agnostic_get_columns(table_pa))
+```
+
+--------------------------------
+
+### Try it out with PyArrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Creates a PyArrow table and chunked array, then calls the decorated function to print the number of rows after filtering. This is the PyArrow variant of the example.
+
+```python
+import pyarrow as pa
+
+table = pa.table({"a": [1, 1, 2, 2, 3], "b": [4, 5, 6, 7, 8]})
+a = pa.chunked_array([[1, 3]])
+print(func(table, a, "a"))
+```
+
+--------------------------------
+
+### Try it out with pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Creates a pandas DataFrame and Series, then calls the decorated function to print the number of rows after filtering. This is the pandas variant of the example.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({"a": [1, 1, 2, 2, 3], "b": [4, 5, 6, 7, 8]})
+s = pd.Series([1, 3])
+print(func(df, s, "a"))
+```
+
+--------------------------------
+
+### get_polars
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Returns the polars module if it is installed, otherwise returns None.
+
+```APIDOC
+## get_polars
+
+### Description
+Returns the polars module if it is installed, otherwise returns None.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+None
+
+### Returns
+- **module or None** - The polars module if available, else None.
+
+```
+
+--------------------------------
+
+### Sync dev dependencies with Dask and Modin extras
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Installs Dask and Modin extras to run their tests locally. These are excluded from default dev dependencies to keep local test times down.
+
+```terminal
+uv sync --group local-dev --extra dask --extra modin
+```
+
+--------------------------------
+
+### Define multiplication function for null preservation example
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/boolean.md
+
+Defines a function that multiplies column 'a' by 2, preserving nulls. Used in the null preservation example across pandas, Polars, and PyArrow.
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+data = {"a": [1.4, None, 4.2]}
+
+
+def multiplication(
+    df: IntoDataFrameT | IntoLazyFrameT,
+) -> IntoDataFrameT | IntoLazyFrameT:
+    return nw.from_native(df).with_columns((nw.col("a") * 2).alias("a*2")).to_native()
+```
+
+--------------------------------
+
+### get_cudf
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Returns the cudf module if it is installed, otherwise returns None.
+
+```APIDOC
+## get_cudf
+
+### Description
+Returns the cudf module if it is installed, otherwise returns None.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+None
+
+### Returns
+- **module or None** - The cudf module if available, else None.
+
+```
+
+--------------------------------
+
+### Polars group-by aggregation example
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Shows a Polars group-by aggregation that is a significant innovation over pandas. This is the syntax that Narwhals aims to support.
+
+```python
+df: pl.DataFrame
+df.group_by("a").agg((pl.col("c") > pl.col("b").mean()).max())
+```
+
+--------------------------------
+
+### Try it out with Polars (eager)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Creates a Polars DataFrame and Series, then calls the decorated function to print the number of rows after filtering. This is the Polars (eager) variant of the example.
+
+```python
+import polars as pl
+
+df = pl.DataFrame({"a": [1, 1, 2, 2, 3], "b": [4, 5, 6, 7, 8]})
+s = pl.Series([1, 3])
+print(func(df, s, "a"))
+```
+
+--------------------------------
+
+### narwhals.Expr.list.get
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Gets the element at a specified index from each list in the expression.
+
+```APIDOC
+## narwhals.Expr.list.get
+
+### Description
+Gets the element at a specified index from each list in the expression.
+
+### Method
+get
+
+### Signature
+`get(index)`
+
+### Parameters
+- **index** (int) - The index of the element to retrieve. Negative indices are supported.
+
+### Returns
+- An expression that evaluates to the element at the given index.
+```
+
+--------------------------------
+
+### Run StandardScaler with Polars
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/complete_example.md
+
+Example of using the StandardScaler with Polars. The transform method is called on a LazyFrame and collected to produce the result, demonstrating that transform can stay lazy.
+
+```python
+import polars as pl
+
+df_train = pl.DataFrame({"a": [1, 2, 3], "b": [4, 5, 7]})
+df_test = pl.LazyFrame({"a": [1, 2, 3], "b": [4, 5, 7]})
+scaler = StandardScaler()
+scaler.fit(df_train)
+print(scaler.transform(df_test).collect())
+```
+
+--------------------------------
+
+### Run StandardScaler with pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/complete_example.md
+
+Example of using the StandardScaler with pandas DataFrames. The transform method is called on a pandas DataFrame and prints the result.
+
+```python
+import pandas as pd
+
+df_train = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 7]})
+df_test = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 7]})
+scaler = StandardScaler()
+scaler.fit(df_train)
+print(scaler.transform(df_test))
+```
+
+--------------------------------
+
+### Serve docs locally with make docs-serve
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Command to serve the documentation locally. Open the link provided in a browser. The docs should refresh on changes.
+
+```terminal
+make docs-serve
+```
+
+--------------------------------
+
+### Print expression metadata for pandas implementation
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Shows how to print the metadata of various Narwhals expressions using the internal _to_compliant_expr method. The example uses a pandas implementation object (pn) and prints metadata for a simple column, a mean, and a mean over a group.
+
+```python
+import narwhals as nw
+
+print(nw.col("a")._to_compliant_expr(pn)._metadata)
+print(nw.col("a").mean()._to_compliant_expr(pn)._metadata)
+print(nw.col("a").mean().over("b")._to_compliant_expr(pn)._metadata)
+```
+
+--------------------------------
+
+### pandas index alignment example
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/pandas_index.md
+
+Demonstrates pandas' automatic index alignment: assigning a sorted Series to a DataFrame column does not produce the expected sorted values because pandas aligns by index.
+
+```python
+import pandas as pd
+
+df_pd = pd.DataFrame({"a": [2, 1, 3], "b": [4, 5, 6]})
+s_pd = df_pd["a"].sort_values()
+df_pd["a_sorted"] = s_pd
+```
+
+```python
+print(df_pd)
+```
+
+--------------------------------
+
+### Version-checking workaround for API changes
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/backcompat.md
+
+Shows the typical workaround of checking package versions to handle API changes, which Narwhals aims to eliminate. The example checks pdx.__version__ against multiple version thresholds to call different methods.
+
+```python
+if parse_version(pdx.__version__) < parse_version("1.3.0"):
+    df = df.brewbeer()
+elif parse_version("1.3.0") <= parse_version(pdx.__version__) < parse_version("1.5.0"):
+    df = df.brew_beer()
+else:
+    df = df.brew_drink("beer")
+```
+
+--------------------------------
+
+### uv inline script dependencies for Narwhals
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Declares inline script dependencies for Narwhals with pandas, Polars, and PyArrow support. Add this to the top of t.py and run with `uv run t.py` to skip environment setup.
+
+```python
+# /// script
+# dependencies = ["narwhals[pandas,polars,pyarrow]"]
+# ///
+```
+
+--------------------------------
+
+### Define a dataframe-agnostic function avg_monthly_price
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/generating_sql.md
+
+Defines a function that groups by month, computes the mean price, and sorts by date. This function is used in later examples to generate SQL.
+
+```python
+import narwhals as nw
+from narwhals.typing import FrameT
+
+
+def avg_monthly_price(df: FrameT) -> FrameT:
+    return (
+        df.group_by(nw.col("date").dt.truncate("1mo"))
+        .agg(nw.col("price").mean())
+        .sort("date")
+    )
+```
+
+--------------------------------
+
+### Sync project with uv (dask and pyspark extras)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Adds the dask and pyspark extras to the local-dev sync. Use this if you want to test those libraries.
+
+```terminal
+uv sync --group local-dev --extra dask --extra pyspark
+```
+
+--------------------------------
+
+### Rebuild docs from clean state with make docs-clean-serve
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Command to rebuild everything from a clean state (via make docs-build) before serving, useful when docs don't refresh automatically.
+
+```terminal
+make docs-clean-serve
+```
+
+--------------------------------
+
+### Apply expression to PandasLikeDataFrame
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Creates a PandasLikeDataFrame from a pandas DataFrame, builds an expression (col('a') + 1), and calls its _call method to get a sequence of series. Shows the native series of the first result.
+
+```python
+import narwhals as nw
+from narwhals._pandas_like.namespace import PandasLikeNamespace
+from narwhals._pandas_like.dataframe import PandasLikeDataFrame
+from narwhals.utils import Implementation, Version
+import pandas as pd
+
+pn = PandasLikeNamespace(implementation=Implementation.PANDAS, version=Version.MAIN)
+
+df_pd = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+df = PandasLikeDataFrame(
+    df_pd,
+    implementation=Implementation.PANDAS,
+    version=Version.MAIN,
+    validate_column_names=True,
+)
+expression = pn.col("a") + 1
+result = expression._call(df)
+print(f"length of result: {len(result)}\n")
+print("native series of first value of result: ")
+print([x.native for x in result][0])
+```
+
+--------------------------------
+
+### Convert any supported dataframe to pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe_conversion.md
+
+Defines a function that ingests any Narwhals-supported dataframe and converts it to a pandas DataFrame using nw.from_native(df).to_pandas(). The example prints the result for the Polars dataframe.
+
+```python
+def df_to_pandas(df: IntoDataFrame) -> pd.DataFrame:
+    return nw.from_native(df).to_pandas()
+
+
+print(df_to_pandas(df_polars))
+```
+
+--------------------------------
+
+### Fit method using from/to_native with eager_only=True
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/complete_example.md
+
+Implements the fit method using nw.from_native with eager_only=True to compute means and standard deviations. This approach is necessary because fit cannot stay lazy. The method stores means, standard deviations, and column names as instance attributes.
+
+```python
+from typing import Self
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT
+
+
+class StandardScaler:
+    def fit(self, df: IntoDataFrameT) -> Self:
+        df_nw = nw.from_native(df, eager_only=True)
+        self._means = {col: df_nw[col].mean() for col in df_nw.columns}
+        self._std_devs = {col: df_nw[col].std() for col in df_nw.columns}
+        self._columns = df_nw.columns
+        return self
+```
+
+--------------------------------
+
+### Convert any dataframe to Polars via PyCapsule Interface
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe_conversion.md
+
+Defines a function that converts a user-supplied dataframe to Polars if it implements __arrow_c_stream__, using nw.from_arrow(df_native, backend=pl).to_native(). Raises a TypeError otherwise. The example prints the result for the DuckDB dataframe.
+
+```python
+def df_to_polars(df_native: Any) -> pl.DataFrame:
+    if hasattr(df_native, "__arrow_c_stream__"):
+        return nw.from_arrow(df_native, backend=pl).to_native()
+    msg = f"Expected object which implements '__arrow_c_stream__' got: {type(df_native)}"
+    raise TypeError(msg)
+
+
+print(df_to_polars(df_duckdb))
+```
+
+--------------------------------
+
+### Polars and DuckDB NaN comparison
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/null_handling.md
+
+Shows that Polars and DuckDB treat NaN as equal to itself, contrary to IEEE-754. The example creates a Polars DataFrame and uses DuckDB SQL to compare a column with itself, printing the results.
+
+```python
+import polars as pl
+import duckdb
+
+print("Polars result")
+df = pl.DataFrame({"a": [float("nan"), 0.0]})
+print(df.with_columns(a_equals_a=pl.col("a") == pl.col("a")))
+print()
+print("DuckDB result")
+print(duckdb.sql("from df select a, a == a as a_equals_a"))
+```
+
+--------------------------------
+
+### Navigate to the cloned directory
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Change into the directory created by the clone command.
+
+```bash
+cd narwhals-dev
+```
+
+--------------------------------
+
+### pyproject.toml entrypoint for Narwhals plugin
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/extending.md
+
+Defines the entrypoint in pyproject.toml that Narwhals uses to detect plugins. The section name must be 'narwhals.plugins' and the value should be 'narwhals_<library name>'.
+
+```toml
+[project.entry-points.'narwhals.plugins']
+narwhals-<library name> = 'narwhals_<library name>'
+```
+
+--------------------------------
+
+### Python and PyArrow NaN comparison
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/null_handling.md
+
+Shows that Python and PyArrow follow IEEE-754, where NaN is not equal to itself. The example prints results for float('nan') == float('nan') and 0.0 == 0.0, and uses pyarrow.compute.equal on an array containing NaN and 0.0.
+
+```python
+import pyarrow as pa
+import pyarrow.compute as pc
+
+print("Python result:")
+print(float("nan") == float("nan"), 0.0 == 0.0)
+print()
+print("PyArrow result:")
+arr = pa.array([float("nan"), 0.0])
+print(pc.equal(arr, arr))
+```
+
+--------------------------------
+
+### Run PySpark tests
+
+Source: https://github.com/narwhals-dev/narwhals/wiki/Home
+
+Run the test suite with the PySpark constructor to verify PySpark compatibility before release.
+
+```bash
+pytest --constructors=pyspark
+```
+
+--------------------------------
+
+### Define check_null_behavior function to test null/NaN handling
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/null_handling.md
+
+Defines a reusable function that divides a column by itself and then adds columns indicating null and NaN status. This function is used by the subsequent examples to compare behavior across different dataframe libraries.
+
+```python
+import narwhals as nw
+import numpy as np
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+data = {"a": [1.0, 0.0, None]}
+
+
+def check_null_behavior(
+    df: IntoDataFrameT | IntoLazyFrameT,
+) -> IntoDataFrameT | IntoLazyFrameT:
+    return (
+        nw.from_native(df)
+        .with_columns(a=nw.col("a") / nw.col("a"))
+        .with_columns(a_is_null=nw.col("a").is_null(), a_is_nan=nw.col("a").is_nan())
+    ).to_native()
+```
+
+--------------------------------
+
+### Useful uv workflows for dependency management
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Common uv commands for adding, removing, and updating dependencies.
+
+```terminal
+uv add --group local-dev <package>
+```
+
+```terminal
+uv add --optional dask <package>
+```
+
+```terminal
+uv remove <package>
+```
+
+```terminal
+uv lock
+```
+
+```terminal
+uv lock --upgrade
+```
+
+--------------------------------
+
+### Run a given query for all backends
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/tpch/README.md
+
+Runs a specific query (e.g., q1) for all backends. The dash after the query number prevents matching q11, q12, etc.
+
+```bash
+pytest -k "q1-"
+```
+
+--------------------------------
+
+### show_versions
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Prints version information for Narwhals and its dependencies.
+
+```APIDOC
+## show_versions
+
+### Description
+Prints version information for Narwhals and its dependencies.
+
+### Method
+Function
+
+### Signature
+`show_versions()`
+
+### Parameters
+None
+
+### Returns
+None
+```
+
+--------------------------------
+
+### Complete StandardScaler using from/to_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/complete_example.md
+
+Full implementation of the StandardScaler class with fit and transform methods using nw.from_native and to_native. The fit method uses eager_only=True to compute means and standard deviations.
+
+```python
+from typing import Self
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT
+from narwhals.typing import IntoLazyFrameT
+
+
+class StandardScaler:
+    def fit(self, df: IntoDataFrameT) -> Self:
+        df_nw = nw.from_native(df, eager_only=True)
+        self._means = {col: df_nw[col].mean() for col in df_nw.columns}
+        self._std_devs = {col: df_nw[col].std() for col in df_nw.columns}
+        self._columns = df_nw.columns
+        return self
+
+    def transform(
+        self, df: IntoDataFrameT | IntoLazyFrameT
+    ) -> IntoDataFrameT | IntoLazyFrameT:
+        df_nw = nw.from_native(df)
+        return df_nw.with_columns(
+            (nw.col(col) - self._means[col]) / self._std_devs[col]
+            for col in self._columns
+        ).to_native()
+```
+
+--------------------------------
+
+### Run tests, linting, and type checks
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Commands to run tests, linting, pre-commit checks, and static type checking.
+
+```terminal
+uv run pytest
+```
+
+```terminal
+make lint
+```
+
+```terminal
+uv run prek run --all-files
+```
+
+```terminal
+make typing
+```
+
+--------------------------------
+
+### Run a given query for a specific backend
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/tpch/README.md
+
+Runs a specific query (e.g., q1) for a specific backend (e.g., pandas with pyarrow engine).
+
+```bash
+pytest -k "q1-pandas[pyarrow]"
+```
+
+--------------------------------
+
+### Run all queries for a given backend
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/tpch/README.md
+
+Runs all TPC-H queries for the specified backend. Replace 'polars' with the desired backend name.
+
+```bash
+pytest -k "polars"
+```
+
+--------------------------------
+
+### Run unit tests and doctests together
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Runs both unit tests and doctests in one command, with coverage.
+
+```console
+uv run pytest src tests --cov=src --doctest-modules
+```
+
+--------------------------------
+
+### Re-expose backends as optional extras in pyproject.toml
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Alternative for library authors: re-expose backends as your library's own optional extras so consumers opt in explicitly.
+
+```toml
+[project.optional-dependencies]
+polars = ["narwhals[polars]"]
+pyarrow = ["narwhals[pyarrow]"]
+```
+
+--------------------------------
+
+### Use stable API with from_native/to_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/backcompat.md
+
+Shows how to write a function using the stable v2 namespace with from_native and to_native. This ensures compatibility with future Polars versions even if method names change.
+
+```python
+import narwhals.stable.v2 as nw
+from narwhals.stable.v2.typing import IntoDataFrameT, IntoLazyFrameT
+
+
+def func(df: IntoDataFrameT | IntoLazyFrameT) -> IntoDataFrameT | IntoLazyFrameT:
+    return nw.from_native(df).with_columns(nw.col("a").cum_sum()).to_native()
+```
+
+--------------------------------
+
+### Add Narwhals and dev extras with uv
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+For library authors: adds Narwhals as a runtime dependency and the polars/pyarrow extras as dev dependencies using uv. Dev groups are not shipped in distribution metadata.
+
+```terminal
+uv add narwhals
+```
+
+```terminal
+uv add --group dev "narwhals[polars,pyarrow]"
+```
+
+--------------------------------
+
+### Bump version with utils/bump_version.py
+
+Source: https://github.com/narwhals-dev/narwhals/wiki/Home
+
+Run the version bump script with the appropriate release type: 'patch', 'minor', or 'major'. For a scheduled Monday release use 'minor', for an emergency patch use 'patch'.
+
+```bash
+python utils/bump_version.py patch
+```
+
+--------------------------------
+
+### Descriptive statistics with from/to_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Shows the explicit pattern: wrap a native dataframe with nw.from_native, select sum/mean/std expressions, and return with nw.to_native. Use when you need full control over conversion.
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+
+def func(df: IntoDataFrameT | IntoLazyFrameT) -> IntoDataFrameT | IntoLazyFrameT:
+    return (
+        nw.from_native(df)
+        .select(
+            a_sum=nw.col("a").sum(), a_mean=nw.col("a").mean(), a_std=nw.col("a").std()
+        )
+        .to_native()
+    )
+```
+
+--------------------------------
+
+### Run static type checks
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Runs mypy, pyright, and pyrefly via the make typing target.
+
+```console
+make typing
+```
+
+--------------------------------
+
+### Faster Testing Commands
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/AGENTS.md
+
+Commands to run specific test files or subsets of constructors while iterating. Default constructors are pandas,pandas[pyarrow],polars[eager],pyarrow,duckdb,sqlframe,ibis, overridable via NARWHALS_DEFAULT_CONSTRUCTORS. Hypothesis tests are skipped unless --runslow is passed. Dask and Modin require --extra dask --extra modin.
+
+```bash
+uv run pytest tests/path/to/test_file.py            # one file
+uv run pytest tests --constructors=pandas,polars[eager],pyarrow
+uv run pytest tests --all-cpu-constructors          # needs --extra modin --extra pyspark
+```
+
+--------------------------------
+
+### Run all tests with coverage
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Runs all tests with coverage using the make target test-full-coverage.
+
+```console
+make test-full-coverage
+```
+
+--------------------------------
+
+### Run group-by mean with PyArrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Creates a PyArrow table with the same data and calls func to print the result. Demonstrates usage with PyArrow backend.
+
+```python
+import pyarrow as pa
+
+table = pa.table({"a": [1, 1, 2], "b": [4, 5, 6]})
+print(func(table))
+```
+
+--------------------------------
+
+### head
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Returns the first n characters of each string.
+
+```APIDOC
+## head
+
+### Description
+Returns the first n characters of each string.
+
+### Method
+head
+
+### Parameters
+- **n** (int) - The number of characters to return.
+
+### Returns
+- Series of strings containing the first n characters.
+```
+
+--------------------------------
+
+### Run tests with cudf.pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Runs tests using cudf.pandas by setting the NARWHALS_DEFAULT_CONSTRUCTORS environment variable and passing the cudf extra.
+
+```console
+NARWHALS_DEFAULT_CONSTRUCTORS=pandas uv run --extra cudf --module cudf.pandas --module pytest
+```
+
+--------------------------------
+
+### Clone the Narwhals repository
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/tpch/README.md
+
+Clone the repository to your local machine. Replace YOUR-GITHUB-USERNAME with your actual GitHub username.
+
+```bash
+git clone git@github.com:YOUR-GITHUB-USERNAME/narwhals.git
+```
+
+--------------------------------
+
+### Run tests with polars[gpu]
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Runs tests using polars[gpu] by setting the NARWHALS_POLARS_GPU environment variable and specifying the polars[lazy] constructor.
+
+```console
+NARWHALS_POLARS_GPU=1 uv run pytest --constructors="polars[lazy]"
+```
+
+--------------------------------
+
+### zfill
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Pads each string with zeros on the left to a specified width.
+
+```APIDOC
+## zfill
+
+### Description
+Pads each string with zeros on the left to a specified width.
+
+### Method
+zfill
+
+### Parameters
+- **width** (int) - The total width of the resulting string.
+
+### Returns
+- Series of zero-padded strings.
+```
+
+--------------------------------
+
+### Approach 2: Efficient group-by with precomputed column
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/improve_group_by_operation.md
+
+This approach computes the new column first, then performs a simple aggregation, avoiding the UserWarning and improving performance.
+
+```python
+import narwhals as nw
+import pandas as pd
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+data = {"a": [1, 2, 3, 4, 5], "b": [5, 4, 3, 2, 1], "c": [10, 20, 30, 40, 50]}
+
+df_pd = pd.DataFrame(data)
+
+
+def approach_2(
+    df_native: IntoDataFrameT | IntoLazyFrameT,
+) -> IntoDataFrameT | IntoLazyFrameT:
+    df = nw.from_native(df_native)
+    df = df.with_columns(d=nw.col("b") + nw.col("c")).group_by("a").agg(nw.sum("d"))
+    return df.to_native()
+
+
+print(approach_2(df_pd))
+```
+
+--------------------------------
+
+### Create bump-version branch
+
+Source: https://github.com/narwhals-dev/narwhals/wiki/Home
+
+Create a new branch named `bump-version` for the version bump.
+
+```bash
+git checkout -b bump-version
+```
+
+--------------------------------
+
+### to_titlecase
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Converts each string to title case.
+
+```APIDOC
+## to_titlecase
+
+### Description
+Converts each string to title case.
+
+### Method
+to_titlecase
+
+### Returns
+- Series of title-cased strings.
+```
+
+--------------------------------
+
+### Add Narwhals with extras using uv
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Adds Narwhals with the polars and pyarrow extras using uv. This adds the extras to [project.dependencies].
+
+```terminal
+uv add "narwhals[polars,pyarrow]"
+```
+
+--------------------------------
+
+### Run tests for specific backends
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Runs tests only for the specified backends using the --constructors flag.
+
+```console
+uv run pytest --constructors="pandas,pyarrow,polars[eager]"
+```
+
+--------------------------------
+
+### Generate SQL via SQLFrame
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/generating_sql.md
+
+Uses SQLFrame's standalone session to create a table and generate SQL for the DuckDB dialect.
+
+```python
+from sqlframe.standalone import StandaloneSession
+
+session = StandaloneSession.builder.getOrCreate()
+session.catalog.add_table("prices", column_mapping={"date": "date", "price": "float"})
+df = nw.from_native(session.read.table("prices"))
+
+print(avg_monthly_price(df).to_native().sql(dialect="duckdb"))
+```
+
+--------------------------------
+
+### Fit method using @narwhalify with eager_only=True
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/complete_example.md
+
+Implements the fit method using the @nw.narwhalify decorator with eager_only=True. The decorator propagates eager_only to nw.from_native, allowing the method to work with eager-only operations. The method stores means, standard deviations, and column names as instance attributes.
+
+```python
+from typing import Self
+import narwhals as nw
+from narwhals.typing import DataFrameT
+
+
+class StandardScaler:
+    @nw.narwhalify(eager_only=True)
+    def fit(self, df: DataFrameT) -> Self:
+        self._means = {col: df[col].mean() for col in df.columns}
+        self._std_devs = {col: df[col].std() for col in df.columns}
+        self._columns = df.columns
+        return self
+```
+
+--------------------------------
+
+### Fetch latest changes from upstream
+
+Source: https://github.com/narwhals-dev/narwhals/wiki/Home
+
+Update the local main branch to match upstream/main by checking out main, fetching upstream, and resetting hard.
+
+```bash
+git checkout main
+git fetch upstream
+git reset --hard upstream/main
+```
+
+--------------------------------
+
+### format
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Formats a string with placeholders using expressions.
+
+```APIDOC
+## format
+
+### Description
+Formats a string with placeholders using expressions.
+
+### Method
+Function
+
+### Signature
+`format(fmt, *args)`
+
+### Parameters
+- **fmt** (str) - Required - Format string with placeholders.
+- **args** (Expr) - Required - Expressions to fill placeholders.
+
+### Returns
+- **Expr** - Expression representing the formatted string.
+```
+
+--------------------------------
+
+### Add Narwhals and dev extras with Poetry
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+For library authors: adds Narwhals as a runtime dependency and the polars/pyarrow extras as dev dependencies using Poetry. Dev groups are not shipped in distribution metadata.
+
+```terminal
+poetry add narwhals
+```
+
+```terminal
+poetry add --group dev "narwhals[polars,pyarrow]"
+```
+
+--------------------------------
+
+### Call my_func with PyArrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Creates a PyArrow Table and calls my_func, printing the filtered result. Demonstrates usage with an eager backend.
+
+```python
+import pyarrow as pa
+
+table = pa.table({"a": [-1, 1, 3], "b": [3, 5, -3]})
+print(my_func(table))
+```
+
+--------------------------------
+
+### Call my_func with pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Creates a pandas DataFrame and calls my_func, printing the filtered result. Demonstrates usage with an eager backend.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({"a": [-1, 1, 3], "b": [3, 5, -3]})
+print(my_func(df))
+```
+
+--------------------------------
+
+### Generate SQL via Ibis
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/generating_sql.md
+
+Uses Ibis to create a table and convert the dataframe-agnostic function to SQL. Requires Ibis.
+
+```python
+import ibis
+
+df = nw.from_native(ibis.table({"date": "date", "price": "double"}, name="prices"))
+print(ibis.to_sql(avg_monthly_price(df).to_native()))
+```
+
+--------------------------------
+
+### Check null/NaN behavior with PyArrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/null_handling.md
+
+Creates a PyArrow table from the sample data and calls check_null_behavior to show that PyArrow distinguishes between null and NaN.
+
+```python
+import pyarrow as pa
+
+df = pa.table(data)
+print(check_null_behavior(df))
+```
+
+--------------------------------
+
+### Schema.from_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Creates a Schema instance from a native schema object.
+
+```APIDOC
+## Schema.from_native
+
+### Description
+Creates a Schema instance from a native schema object.
+
+### Method
+Static method
+
+### Parameters
+- **schema** (object) - Required - The native schema object to convert.
+```
+
+--------------------------------
+
+### Add Narwhals with extras using Poetry
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Adds Narwhals with the polars and pyarrow extras using Poetry.
+
+```terminal
+poetry add "narwhals[polars,pyarrow]"
+```
+
+--------------------------------
+
+### Test with pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Calls the previously defined func with a pandas DataFrame and prints the result.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({"a": [1, 1, 2]})
+print(func(df))
+```
+
+--------------------------------
+
+### Create DataFrame with custom index and call my_func
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/pandas_index.md
+
+Creates a pandas DataFrame with index [7, 8, 9] and calls the previously defined my_func, printing the result. The output shows the original index is preserved.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({"a": [2, 1, 3], "b": [3, 5, -3]}, index=[7, 8, 9])
+print(my_func(df))
+```
+
+--------------------------------
+
+### Define function with nw.from_native(eager_only=True)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Defines my_func that extracts column 'a' as a Series and computes its mean. eager_only=True forces eager execution so the result is a Python scalar.
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT
+
+
+def my_func(df: IntoDataFrameT) -> float | None:
+    return nw.from_native(df, eager_only=True)["a"].mean()
+```
+
+--------------------------------
+
+### Test with PyArrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Calls the previously defined func with a PyArrow table and prints the result.
+
+```python
+import pyarrow as pa
+
+table = pa.table({"a": [1, 1, 2]})
+print(func(table))
+```
+
+--------------------------------
+
+### Complete StandardScaler using @narwhalify
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/complete_example.md
+
+Full implementation of the StandardScaler class using @nw.narwhalify decorators. The fit method uses eager_only=True, while transform does not, allowing lazy dataframes to stay lazy.
+
+```python
+from typing import Self
+import narwhals as nw
+from narwhals.typing import DataFrameT
+from narwhals.typing import FrameT
+
+
+class StandardScaler:
+    @nw.narwhalify(eager_only=True)
+    def fit(self, df: DataFrameT) -> Self:
+        self._means = {col: df[col].mean() for col in df.columns}
+        self._std_devs = {col: df[col].std() for col in df.columns}
+        self._columns = df.columns
+        return self
+
+    @nw.narwhalify
+    def transform(self, df: FrameT) -> FrameT:
+        return df.with_columns(
+            (nw.col(col) - self._means[col]) / self._std_devs[col]
+            for col in self._columns
+        )
+```
+
+--------------------------------
+
+### Add Narwhals with uv
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Adds Narwhals to a new or existing project using uv. Creates a virtual environment if needed, updates pyproject.toml and uv.lock.
+
+```terminal
+uv add narwhals
+```
+
+--------------------------------
+
+### Run doctests with pytest
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Runs doctests in the src directory using pytest's --doctest-modules flag.
+
+```console
+uv run pytest src --doctest-modules
+```
+
+--------------------------------
+
+### Run group-by mean with Polars (lazy)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Creates a Polars LazyFrame and calls func, then collects the result before printing. Demonstrates usage with Polars lazy mode.
+
+```python
+import polars as pl
+
+df = pl.LazyFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
+print(func(df).collect())
+```
+
+--------------------------------
+
+### Run group-by mean with Polars (eager)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Creates a Polars eager DataFrame with the same data and calls func to print the result. Demonstrates usage with Polars eager mode.
+
+```python
+import polars as pl
+
+df = pl.DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
+print(func(df))
+```
+
+--------------------------------
+
+### Schema.from_arrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Creates a Schema instance from an Arrow schema.
+
+```APIDOC
+## Schema.from_arrow
+
+### Description
+Creates a Schema instance from an Arrow schema.
+
+### Method
+Static method
+
+### Parameters
+- **schema** (Arrow Schema) - Required - The Arrow schema to convert.
+```
+
+--------------------------------
+
+### Schema.from_pandas_like
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Creates a Schema instance from a pandas-like schema.
+
+```APIDOC
+## Schema.from_pandas_like
+
+### Description
+Creates a Schema instance from a pandas-like schema.
+
+### Method
+Static method
+
+### Parameters
+- **schema** (pandas-like) - Required - The pandas-like schema to convert.
+```
+
+--------------------------------
+
+### narwhals.selectors.string
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/selectors.md
+
+Selector for string columns.
+
+```APIDOC
+## narwhals.selectors.string
+
+### Description
+Selects columns of string data type.
+
+### Usage
+```python
+import narwhals.selectors as ncs
+
+# Select string columns
+selector = ncs.string()
+```
+
+### Supported Operations
+- Set intersection: `&`
+- Set union: `|`
+- Set difference: `-`
+- Complement: `~`
+```
+
+--------------------------------
+
+### LazyFrame Methods
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/lazyframe.md
+
+Documentation for all public methods of the narwhals.LazyFrame class.
+
+```APIDOC
+# narwhals.LazyFrame API Reference
+
+## cast
+
+### Description
+Cast LazyFrame columns to the specified dtypes.
+
+### Method
+cast
+
+### Signature
+`cast(dtypes)`
+
+### Parameters
+- **dtypes** (mapping) - Required - Mapping of column names to dtypes.
+
+## collect
+
+### Description
+Materialize this LazyFrame into a DataFrame.
+
+### Method
+collect
+
+### Signature
+`collect()`
+
+## collect_schema
+
+### Description
+Collect the schema of this LazyFrame.
+
+### Method
+collect_schema
+
+### Signature
+`collect_schema()`
+
+## columns
+
+### Description
+Get the column names of this LazyFrame.
+
+### Method
+columns
+
+### Signature
+`columns`
+
+## drop
+
+### Description
+Drop the given columns from this LazyFrame.
+
+### Method
+drop
+
+### Signature
+`drop(columns)`
+
+### Parameters
+- **columns** (list[str]) - Required - Column names to drop.
+
+## drop_nulls
+
+### Description
+Drop rows that contain null values.
+
+### Method
+drop_nulls
+
+### Signature
+`drop_nulls(subset=None)`
+
+### Parameters
+- **subset** (list[str] | None) - Optional - Column names to consider for null check.
+
+## explode
+
+### Description
+Explode the given columns, converting each element in a list to a separate row.
+
+### Method
+explode
+
+### Signature
+`explode(columns)`
+
+### Parameters
+- **columns** (list[str]) - Required - Column names to explode.
+
+## filter
+
+### Description
+Filter rows based on a predicate.
+
+### Method
+filter
+
+### Signature
+`filter(predicate)`
+
+### Parameters
+- **predicate** (expression) - Required - Filtering condition.
+
+## gather_every
+
+### Description
+Take every nth row of this LazyFrame.
+
+### Method
+gather_every
+
+### Signature
+`gather_every(n, offset=0)`
+
+### Parameters
+- **n** (int) - Required - Gather every n-th row.
+- **offset** (int) - Optional - Starting offset.
+
+## group_by
+
+### Description
+Group this LazyFrame by the given columns.
+
+### Method
+group_by
+
+### Signature
+`group_by(by)`
+
+### Parameters
+- **by** (list[str]) - Required - Column names to group by.
+
+## head
+
+### Description
+Get the first n rows.
+
+### Method
+head
+
+### Signature
+`head(n=5)`
+
+### Parameters
+- **n** (int) - Optional - Number of rows to return.
+
+## implementation
+
+### Description
+Get the underlying implementation name.
+
+### Method
+implementation
+
+### Signature
+`implementation`
+
+## join
+
+### Description
+Join this LazyFrame with another LazyFrame.
+
+### Method
+join
+
+### Signature
+`join(other, on=None, how='inner')`
+
+### Parameters
+- **other** (LazyFrame) - Required - The other LazyFrame to join with.
+- **on** (str | list[str] | None) - Optional - Join keys.
+- **how** (str) - Optional - Join method ('inner', 'left', etc.).
+
+## join_asof
+
+### Description
+Perform an asof join with another LazyFrame.
+
+### Method
+join_asof
+
+### Signature
+`join_asof(other, left_on=None, right_on=None, by=None, strategy='backward')`
+
+### Parameters
+- **other** (LazyFrame) - Required - The other LazyFrame.
+- **left_on** (str | None) - Optional - Left join key.
+- **right_on** (str | None) - Optional - Right join key.
+- **by** (str | list[str] | None) - Optional - Additional join keys.
+- **strategy** (str) - Optional - Asof join strategy.
+
+## lazy
+
+### Description
+Return a lazy representation of this LazyFrame.
+
+### Method
+lazy
+
+### Signature
+`lazy()`
+
+## pipe
+
+### Description
+Apply a function to this LazyFrame.
+
+### Method
+pipe
+
+### Signature
+`pipe(func, *args, **kwargs)`
+
+### Parameters
+- **func** (callable) - Required - Function to apply.
+- **args** - Optional - Positional arguments.
+- **kwargs** - Optional - Keyword arguments.
+
+## rename
+
+### Description
+Rename columns of this LazyFrame.
+
+### Method
+rename
+
+### Signature
+`rename(mapping)`
+
+### Parameters
+- **mapping** (dict) - Required - Mapping of old column names to new names.
+
+## schema
+
+### Description
+Get the schema of this LazyFrame.
+
+### Method
+schema
+
+### Signature
+`schema`
+
+## select
+
+### Description
+Select columns from this LazyFrame.
+
+### Method
+select
+
+### Signature
+`select(*exprs)`
+
+### Parameters
+- **exprs** - Required - Expressions or column names to select.
+
+## sink_parquet
+
+### Description
+Write this LazyFrame to a Parquet file.
+
+### Method
+sink_parquet
+
+### Signature
+`sink_parquet(path)`
+
+### Parameters
+- **path** (str) - Required - File path to write to.
+
+## sort
+
+### Description
+Sort this LazyFrame by the given columns.
+
+### Method
+sort
+
+### Signature
+`sort(by, descending=False)`
+
+### Parameters
+- **by** (str | list[str]) - Required - Column(s) to sort by.
+- **descending** (bool | list[bool]) - Optional - Sort order.
+
+## tail
+
+### Description
+Get the last n rows.
+
+### Method
+tail
+
+### Signature
+`tail(n=5)`
+
+### Parameters
+- **n** (int) - Optional - Number of rows to return.
+
+## to_native
+
+### Description
+Convert this LazyFrame to the native dataframe object.
+
+### Method
+to_native
+
+### Signature
+`to_native()`
+
+## top_k
+
+### Description
+Return the top k rows.
+
+### Method
+top_k
+
+### Signature
+`top_k(k, by=None)`
+
+### Parameters
+- **k** (int) - Required - Number of rows to return.
+- **by** (str | list[str] | None) - Optional - Columns to order by.
+
+## unique
+
+### Description
+Drop duplicate rows.
+
+### Method
+unique
+
+### Signature
+`unique(subset=None, keep='any')`
+
+### Parameters
+- **subset** (list[str] | None) - Optional - Columns to consider for uniqueness.
+- **keep** (str) - Optional - Which duplicates to keep.
+
+## unpivot
+
+### Description
+Unpivot this LazyFrame from wide to long format.
+
+### Method
+unpivot
+
+### Signature
+`unpivot(on=None, index=None, variable_name=None, value_name=None)`
+
+### Parameters
+- **on** (list[str] | None) - Optional - Columns to unpivot.
+- **index** (list[str] | None) - Optional - Columns to keep as identifier.
+- **variable_name** (str | None) - Optional - Name for the variable column.
+- **value_name** (str | None) - Optional - Name for the value column.
+
+## with_columns
+
+### Description
+Add or replace columns in this LazyFrame.
+
+### Method
+with_columns
+
+### Signature
+`with_columns(*exprs)`
+
+### Parameters
+- **exprs** - Required - Expressions or column assignments.
+
+## with_row_index
+
+### Description
+Add a row index column to this LazyFrame.
+
+### Method
+with_row_index
+
+### Signature
+`with_row_index(name)`
+
+### Parameters
+- **name** (str) - Required - Name of the row index column.
+```
+
+--------------------------------
+
+### narwhals.sql.table
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/sql.md
+
+Creates a SQL table object from a SQLAlchemy table.
+
+```APIDOC
+## narwhals.sql.table
+
+### Description
+Creates a SQL table object from a SQLAlchemy table.
+
+### Method
+`table`
+
+### Parameters
+- **table** (SQLAlchemy Table) - Required - The SQLAlchemy table to wrap.
+
+### Returns
+- **SQLTable** - A SQLTable object representing the SQL table.
+```
+
+--------------------------------
+
+### narwhals.selectors.matches
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/selectors.md
+
+Selector for columns by name pattern.
+
+```APIDOC
+## narwhals.selectors.matches
+
+### Description
+Selects columns whose names match a given pattern.
+
+### Usage
+```python
+import narwhals.selectors as ncs
+
+# Select columns matching a pattern
+selector = ncs.matches(pattern)
+```
+
+### Supported Operations
+- Set intersection: `&`
+- Set union: `|`
+- Set difference: `-`
+- Complement: `~`
+```
+
+--------------------------------
+
+### Elementwise push-down with multiple arguments
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Shows the expression `(nw.col("a").sum() + nw.col("b").sum()).over("c")` and its rewritten form where the `over` operation is applied to each argument of the elementwise `+` operation.
+
+```python
+(nw.col("a").sum() + nw.col("b").sum()).over("c")
+```
+
+```python
+nw.col("a").sum().over("c") + nw.col("b").sum().over("c")
+```
+
+--------------------------------
+
+### Generate TPC-H data
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/tpch/README.md
+
+Run this command to generate the data required for TPC-H queries. This action is required only the first time you want to run the queries.
+
+```bash
+python generate_data.py
+```
+
+--------------------------------
+
+### Run tests with pytest
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Runs the test suite using pytest. Use --cov=src to check coverage.
+
+```console
+uv run pytest
+```
+
+```console
+uv run pytest --cov=src
+```
+
+--------------------------------
+
+### Clone the forked repository
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Clone your forked Narwhals repository using the URL copied from GitHub. Replace the URL with your own fork's URL.
+
+```bash
+git clone <url you just copied>
+```
+
+```bash
+git clone git@github.com:YOUR-GITHUB-USERNAME/narwhals.git narwhals-dev
+```
+
+--------------------------------
+
+### Call my_func with Polars (lazy)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Creates a Polars LazyFrame and calls my_func, collecting the result before printing. Demonstrates usage with a lazy backend.
+
+```python
+import polars as pl
+
+df = pl.LazyFrame({"a": [-1, 1, 3], "b": [3, 5, -3]})
+print(my_func(df).collect())
+```
+
+--------------------------------
+
+### Inspect the fourth node with as_dict
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Prints the dictionary representation of the fourth node (addition) to see how it holds sub-expressions and parameters like str_as_lit and allow_multi_output.
+
+```python
+print(expr._nodes[3].as_dict())
+```
+
+--------------------------------
+
+### strip_chars_start
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Removes leading characters from each string.
+
+```APIDOC
+## strip_chars_start
+
+### Description
+Removes leading characters from each string.
+
+### Method
+strip_chars_start
+
+### Parameters
+- **chars** (str) - The characters to strip. If None, whitespace is stripped.
+
+### Returns
+- Series of strings with leading characters removed.
+```
+
+--------------------------------
+
+### Use stable API with @narwhalify decorator
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/backcompat.md
+
+Shows how to use the stable v2 namespace with the @narwhalify decorator, which automatically converts the input and output frames. This approach simplifies the function signature.
+
+```python
+import narwhals.stable.v2 as nw
+from narwhals.stable.v2.typing import FrameT
+
+
+@nw.narwhalify
+def func(df: FrameT) -> FrameT:
+    return df.with_columns(nw.col("a").cum_sum())
+```
+
+--------------------------------
+
+### Call my_func with Polars (eager)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Creates a Polars DataFrame and calls my_func, printing the filtered result. Demonstrates usage with an eager backend.
+
+```python
+import polars as pl
+
+df = pl.DataFrame({"a": [-1, 1, 3], "b": [3, 5, -3]})
+print(my_func(df))
+```
+
+--------------------------------
+
+### struct
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates a struct expression from multiple columns.
+
+```APIDOC
+## struct
+
+### Description
+Creates a struct expression from multiple columns.
+
+### Method
+Function
+
+### Signature
+`struct(*exprs)`
+
+### Parameters
+- **exprs** (Expr) - Required - Expressions to combine into a struct.
+
+### Returns
+- **Expr** - Expression representing the struct.
+```
+
+--------------------------------
+
+### new_series
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates a new Narwhals Series.
+
+```APIDOC
+## new_series
+
+### Description
+Creates a new Narwhals Series.
+
+### Method
+Function
+
+### Signature
+`new_series(name, values, dtype=None)`
+
+### Parameters
+- **name** (str) - Required - Name of the series.
+- **values** (list) - Required - Values for the series.
+- **dtype** (dtype) - Optional - Data type of the series.
+
+### Returns
+- **Series** - New Narwhals Series.
+```
+
+--------------------------------
+
+### Add upstream remote and fetch
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Add the upstream Narwhals repository as a remote and fetch its branches. This allows you to keep your fork up to date.
+
+```bash
+git remote add upstream git@github.com:narwhals-dev/narwhals.git
+git fetch upstream
+```
+
+--------------------------------
+
+### Verify upstream remote URL
+
+Source: https://github.com/narwhals-dev/narwhals/wiki/Home
+
+Run `git remote get-url upstream` to confirm the upstream remote points to the Narwhals GitHub repository via SSH. The expected output is shown.
+
+```console
+$ git remote get-url upstream
+git@github.com:narwhals-dev/narwhals.git
+```
+
+--------------------------------
+
+### to_uppercase
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Converts each string to uppercase.
+
+```APIDOC
+## to_uppercase
+
+### Description
+Converts each string to uppercase.
+
+### Method
+to_uppercase
+
+### Returns
+- Series of uppercase strings.
+```
+
+--------------------------------
+
+### Check null/NaN behavior with pandas (pyarrow-backed)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/null_handling.md
+
+Creates a pandas DataFrame with pyarrow-backed dtypes and calls check_null_behavior to show that this backend does distinguish between null and NaN.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame(data).convert_dtypes(dtype_backend="pyarrow")
+print(check_null_behavior(df))
+```
+
+--------------------------------
+
+### to_date
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Converts strings to date objects.
+
+```APIDOC
+## to_date
+
+### Description
+Converts strings to date objects.
+
+### Method
+to_date
+
+### Parameters
+- **format** (str) - The date format string.
+
+### Returns
+- Series of date objects.
+```
+
+--------------------------------
+
+### Literal pandas translation of Approach 1
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/improve_group_by_operation.md
+
+Shows the inefficient pandas translation using apply, which is the cause of the UserWarning.
+
+```python
+df.groupby("a").apply(
+    lambda df: pd.Series([(df["b"] + df["c"]).sum()], index=["d"]), include_groups=False
+)
+```
+
+--------------------------------
+
+### Namespace contract for IO functions
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/extending.md
+
+Shows the method signatures a compliant namespace must implement to support Narwhals IO functions. Includes read_csv, scan_csv, read_parquet, and scan_parquet with their parameters and return types.
+
+```python
+from narwhals.typing import NormalizedSource
+
+
+def read_csv(
+    self, source: NormalizedSource, *, separator: str = ",", **kwds: Any
+) -> CompliantDataFrame: ...
+
+
+def scan_csv(
+    self, source: NormalizedSource, *, separator: str = ",", **kwds: Any
+) -> CompliantFrame: ...
+
+
+def read_parquet(self, source: NormalizedSource, **kwds: Any) -> CompliantDataFrame: ...
+
+
+def scan_parquet(self, source: NormalizedSource, **kwds: Any) -> CompliantFrame: ...
+```
+
+--------------------------------
+
+### to_lowercase
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Converts each string to lowercase.
+
+```APIDOC
+## to_lowercase
+
+### Description
+Converts each string to lowercase.
+
+### Method
+to_lowercase
+
+### Returns
+- Series of lowercase strings.
+```
+
+--------------------------------
+
+### list
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates a list expression from a column.
+
+```APIDOC
+## list
+
+### Description
+Creates a list expression from a column.
+
+### Method
+Function
+
+### Signature
+`list(name)`
+
+### Parameters
+- **name** (str) - Required - Name of the column.
+
+### Returns
+- **Expr** - Expression representing the list.
+```
+
+--------------------------------
+
+### Verify remotes with git remote -v
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Check that the remotes have been added correctly. The output should show both origin and upstream remotes.
+
+```bash
+git remote -v
+origin   git@github.com:YOUR-GITHUB-USERNAME/narwhals.git (fetch)
+origin   git@github.com:YOUR-GITHUB-USERNAME/narwhals.git (push)
+upstream git@github.com:narwhals-dev/narwhals.git (fetch)
+upstream git@github.com:narwhals-dev/narwhals.git (push)
+```
+
+--------------------------------
+
+### Check null/NaN behavior with Polars (eager)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/null_handling.md
+
+Creates a Polars eager DataFrame from the sample data and calls check_null_behavior to show that Polars distinguishes between null and NaN.
+
+```python
+import polars as pl
+
+df = pl.DataFrame(data)
+print(check_null_behavior(df))
+```
+
+--------------------------------
+
+### StandardScaler transform using from/to_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/complete_example.md
+
+Implements the transform method using nw.from_native and to_native to accept either eager or lazy dataframes. The method computes standardized columns using precomputed means and standard deviations.
+
+```python
+from typing import Self
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+
+class StandardScaler:
+    ...
+
+    def transform(
+        self, df: IntoDataFrameT | IntoLazyFrameT
+    ) -> IntoDataFrameT | IntoLazyFrameT:
+        df_nw = nw.from_native(df)
+        return df_nw.with_columns(
+            (nw.col(col) - self._means[col]) / self._std_devs[col]
+            for col in self._columns
+        ).to_native()
+```
+
+--------------------------------
+
+### Use request.applymarker(pytest.mark.xfail) for planned features
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Marks a test as expected to fail for features that are planned but not yet supported. The test will be reported as xfailed instead of failing the suite.
+
+```python
+def test_future_feature(request):
+    request.applymarker(pytest.mark.xfail)
+    # Test implementation for planned feature
+```
+
+--------------------------------
+
+### Add Narwhals with Poetry
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/installation.md
+
+Adds Narwhals to a Poetry project, updating pyproject.toml and poetry.lock.
+
+```terminal
+poetry add narwhals
+```
+
+--------------------------------
+
+### narwhals.sql.SQLTable.to_sql
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/sql.md
+
+Converts the SQL table to a SQL query string.
+
+```APIDOC
+## narwhals.sql.SQLTable.to_sql
+
+### Description
+Converts the SQL table to a SQL query string.
+
+### Method
+`to_sql`
+
+### Parameters
+- None
+
+### Returns
+- **str** - The SQL query string.
+```
+
+--------------------------------
+
+### min
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the minimum value of a column.
+
+```APIDOC
+## min
+
+### Description
+Computes the minimum value of a column.
+
+### Method
+Function
+
+### Signature
+`min(name)`
+
+### Parameters
+- **name** (str) - Required - Name of the column.
+
+### Returns
+- **Expr** - Expression representing the minimum.
+```
+
+--------------------------------
+
+### split
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Splits each string by a delimiter.
+
+```APIDOC
+## split
+
+### Description
+Splits each string by a delimiter.
+
+### Method
+split
+
+### Parameters
+- **by** (str) - The delimiter string.
+
+### Returns
+- Series of lists of strings.
+```
+
+--------------------------------
+
+### Move into the tpch folder
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/tpch/README.md
+
+Change the current working directory to the tpch folder within the narwhals repository.
+
+```bash
+cd tpch
+```
+
+--------------------------------
+
+### Schema.names
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Returns the column names of the schema.
+
+```APIDOC
+## Schema.names
+
+### Description
+Returns the column names of the schema.
+
+### Method
+Method
+
+### Returns
+- **list** - A list of column names.
+```
+
+--------------------------------
+
+### Check null/NaN behavior with pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/null_handling.md
+
+Creates a pandas DataFrame from the sample data and calls check_null_behavior to show that classic pandas dtypes do not distinguish between null and NaN.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame(data)
+print(check_null_behavior(df))
+```
+
+--------------------------------
+
+### Direct Narwhals API result
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Prints the result of using the Narwhals API directly with `nw.to_native`, showing it matches the previous output.
+
+```python
+print(nw.to_native(df.select(nw.col("a") + 1)))
+```
+
+--------------------------------
+
+### Descriptive statistics with @narwhalify
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Uses the @nw.narwhalify decorator to automatically handle from_native and to_native, so the function only contains the select logic. Requires the FrameT type hint.
+
+```python
+import narwhals as nw
+from narwhals.typing import FrameT
+
+
+@nw.narwhalify
+def func(df: FrameT) -> FrameT:
+    return df.select(
+        a_sum=nw.col("a").sum(), a_mean=nw.col("a").mean(), a_std=nw.col("a").std()
+    )
+```
+
+--------------------------------
+
+### Literal pandas translation of Approach 2
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/improve_group_by_operation.md
+
+Shows the efficient pandas translation using assign and agg, which avoids apply and is preferred.
+
+```python
+df.assign(d=lambda df: df["b"] + df["c"]).groupby("a").agg({"d": "sum"})
+```
+
+--------------------------------
+
+### narwhals.selectors.datetime
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/selectors.md
+
+Selector for datetime columns.
+
+```APIDOC
+## narwhals.selectors.datetime
+
+### Description
+Selects columns of datetime data type.
+
+### Usage
+```python
+import narwhals.selectors as ncs
+
+# Select datetime columns
+selector = ncs.datetime()
+```
+
+### Supported Operations
+- Set intersection: `&`
+- Set union: `|`
+- Set difference: `-`
+- Complement: `~`
+```
+
+--------------------------------
+
+### Test with Polars (eager)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Calls the previously defined func with an eager Polars DataFrame and prints the result.
+
+```python
+import polars as pl
+
+df = pl.DataFrame({"a": [1, 1, 2]})
+print(func(df))
+```
+
+--------------------------------
+
+### Schema.len
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Returns the number of columns in the schema.
+
+```APIDOC
+## Schema.len
+
+### Description
+Returns the number of columns in the schema.
+
+### Method
+Method
+
+### Returns
+- **int** - The number of columns in the schema.
+```
+
+--------------------------------
+
+### Schema.to_pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Converts the schema to a pandas-like schema.
+
+```APIDOC
+## Schema.to_pandas
+
+### Description
+Converts the schema to a pandas-like schema.
+
+### Method
+Method
+
+### Returns
+- **pandas-like** - The pandas-like representation of the schema.
+```
+
+--------------------------------
+
+### to_datetime
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Converts strings to datetime objects.
+
+```APIDOC
+## to_datetime
+
+### Description
+Converts strings to datetime objects.
+
+### Method
+to_datetime
+
+### Parameters
+- **format** (str) - The datetime format string.
+
+### Returns
+- Series of datetime objects.
+```
+
+--------------------------------
+
+### nth
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates an expression for the nth column.
+
+```APIDOC
+## nth
+
+### Description
+Creates an expression for the nth column.
+
+### Method
+Function
+
+### Signature
+`nth(index)`
+
+### Parameters
+- **index** (int) - Required - Index of the column.
+
+### Returns
+- **Expr** - Expression representing the column.
+```
+
+--------------------------------
+
+### to_time
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Converts strings to time objects.
+
+```APIDOC
+## to_time
+
+### Description
+Converts strings to time objects.
+
+### Method
+to_time
+
+### Parameters
+- **format** (str) - The time format string.
+
+### Returns
+- Series of time objects.
+```
+
+--------------------------------
+
+### Print Narwhals expression with over push-down
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Prints the Narwhals expression for `nw.col("a").sum().abs().over("b")` to show how Narwhals automatically inserts the `over` operation before the `abs` operation, making it valid for SQL engines.
+
+```python
+import narwhals as nw
+
+print(nw.col("a").sum().abs().over("b"))
+```
+
+--------------------------------
+
+### narwhals.selectors.by_dtype
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/selectors.md
+
+Selector for columns by data type.
+
+```APIDOC
+## narwhals.selectors.by_dtype
+
+### Description
+Selects columns based on their data type.
+
+### Usage
+```python
+import narwhals.selectors as ncs
+
+# Select columns by data type
+selector = ncs.by_dtype(dtypes)
+```
+
+### Supported Operations
+- Set intersection: `&`
+- Set union: `|`
+- Set difference: `-`
+- Complement: `~`
+```
+
+--------------------------------
+
+### Pandas simple group-by aggregation translation
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Shows how Narwhals translates a simple group-by aggregation to a native pandas GroupBy aggregation. This is the fast path used when the aggregation is simple.
+
+```python
+df: pd.DataFrame
+df.groupby("a")["b"].mean()
+```
+
+--------------------------------
+
+### Schema.from_polars
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Creates a Schema instance from a Polars schema.
+
+```APIDOC
+## Schema.from_polars
+
+### Description
+Creates a Schema instance from a Polars schema.
+
+### Method
+Static method
+
+### Parameters
+- **schema** (Polars Schema) - Required - The Polars schema to convert.
+```
+
+--------------------------------
+
+### Test with Polars (lazy)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Calls the previously defined func with a lazy Polars LazyFrame, collects the result, and prints it.
+
+```python
+import polars as pl
+
+df = pl.LazyFrame({"a": [1, 1, 2]})
+print(func(df).collect())
+```
+
+--------------------------------
+
+### Expr.name.prefix
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_name.md
+
+Add a prefix to each column name in the expression.
+
+```APIDOC
+## Expr.name.prefix
+
+### Description
+Add a prefix to each column name in the expression.
+
+### Method
+prefix
+
+### Parameters
+- **prefix** (str) - Required - The prefix to add to each column name.
+
+### Returns
+- Expr - The expression with prefixed column names.
+```
+
+--------------------------------
+
+### Add upstream remote
+
+Source: https://github.com/narwhals-dev/narwhals/wiki/Home
+
+If the upstream remote is not set correctly, add it with this command.
+
+```bash
+git remote add upstream git@github.com:narwhals-dev/narwhals.git
+```
+
+--------------------------------
+
+### Cumulative sum on a LazyFrame with over(order_by)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/order_dependence.md
+
+Demonstrates making `cum_sum` well-defined for a LazyFrame by using `over(order_by="i")`. Uses polars as the backend.
+
+```python
+import polars as pl
+
+lf = nw.from_native(pl.LazyFrame(data))
+result = lf.with_columns(a_cum_sum=nw.col("a").cum_sum().over(order_by="i"))
+print(result.collect())
+```
+
+--------------------------------
+
+### Define function with @nw.narwhalify(eager_only=True)
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Defines the same my_func using the @nw.narwhalify decorator with eager_only=True. The decorator handles conversion, so the function directly accesses df["a"].mean().
+
+```python
+import narwhals as nw
+from narwhals.typing import DataFrameT
+
+
+@nw.narwhalify(eager_only=True)
+def my_func(df: DataFrameT) -> float | None:
+    return df["a"].mean()
+```
+
+--------------------------------
+
+### len_chars
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Returns the number of characters in each string.
+
+```APIDOC
+## len_chars
+
+### Description
+Returns the number of characters in each string.
+
+### Method
+len_chars
+
+### Returns
+- Series of integer values representing the character count.
+```
+
+--------------------------------
+
+### Schema.to_arrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Converts the schema to an Arrow schema.
+
+```APIDOC
+## Schema.to_arrow
+
+### Description
+Converts the schema to an Arrow schema.
+
+### Method
+Method
+
+### Returns
+- **Arrow Schema** - The Arrow representation of the schema.
+```
+
+--------------------------------
+
+### Pandas translation of nw.col('a')
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Shows how nw.col('a') translates to a pandas function that returns a list containing the 'a' column.
+
+```python
+def col_a(df):
+    return [df.loc[:, "a"]]
+```
+
+--------------------------------
+
+### Define horizontal sum function with @narwhalify
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Defines the same function using the @nw.narwhalify decorator, which automatically converts the input and output, so the function body only needs to call .with_columns with nw.sum_horizontal.
+
+```python
+import narwhals as nw
+from narwhals.typing import FrameT
+
+
+@nw.narwhalify
+def func(df: FrameT) -> FrameT:
+    return df.with_columns(a_plus_b=nw.sum_horizontal("a", "b"))
+```
+
+--------------------------------
+
+### narwhals.Series Class Reference
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series.md
+
+Lists all public methods and attributes of the narwhals.Series class. This is a reference of the available API surface.
+
+```APIDOC
+# narwhals.Series
+
+## Overview
+
+The `narwhals.Series` class provides a unified interface for series operations across different dataframe libraries.
+
+## Methods and Attributes
+
+### __arrow_c_stream__
+Returns the Arrow C stream representation of the series.
+
+### __contains__
+Checks if a value is contained in the series.
+
+### __getitem__
+Gets an item or slice from the series.
+
+### __iter__
+Returns an iterator over the series elements.
+
+### abs
+Computes the absolute values of the series.
+
+### alias
+Renames the series.
+
+### all
+Returns True if all elements are truthy.
+
+### any
+Returns True if any element is truthy.
+
+### any_value
+Returns the first non-null value.
+
+### arg_max
+Returns the index of the maximum value.
+
+### arg_min
+Returns the index of the minimum value.
+
+### arg_true
+Returns the indices where the series is True.
+
+### cast
+Casts the series to a different dtype.
+
+### ceil
+Rounds up to the nearest integer.
+
+### clip
+Clips values to a given range.
+
+### cos
+Computes the cosine of the series.
+
+### count
+Counts the number of non-null values.
+
+### cum_count
+Computes the cumulative count of non-null values.
+
+### cum_max
+Computes the cumulative maximum.
+
+### cum_min
+Computes the cumulative minimum.
+
+### cum_prod
+Computes the cumulative product.
+
+### cum_sum
+Computes the cumulative sum.
+
+### diff
+Computes the difference between consecutive elements.
+
+### drop_nulls
+Drops null values from the series.
+
+### dtype
+Returns the data type of the series.
+
+### ewm_mean
+Computes the exponentially weighted moving average.
+
+### exp
+Computes the exponential of the series.
+
+### fill_nan
+Fills NaN values with a given value.
+
+### fill_null
+Fills null values with a given value or strategy.
+
+### filter
+Filters the series based on a condition.
+
+### first
+Returns the first element.
+
+### floor
+Rounds down to the nearest integer.
+
+### from_iterable
+Creates a Series from an iterable.
+
+### from_numpy
+Creates a Series from a numpy array.
+
+### gather_every
+Gathers every nth element.
+
+### head
+Returns the first n elements.
+
+### hist
+Computes a histogram of the series.
+
+### implementation
+Returns the underlying implementation name.
+
+### is_between
+Checks if values are between a lower and upper bound.
+
+### is_close
+Checks if values are close to a target.
+
+### is_duplicated
+Checks if values are duplicated.
+
+### is_empty
+Checks if the series is empty.
+
+### is_finite
+Checks if values are finite.
+
+### is_first_distinct
+Checks if values are the first distinct occurrence.
+
+### is_in
+Checks if values are in a given set.
+
+### is_last_distinct
+Checks if values are the last distinct occurrence.
+
+### is_nan
+Checks if values are NaN.
+
+### is_null
+Checks if values are null.
+
+### is_sorted
+Checks if the series is sorted.
+
+### is_unique
+Checks if values are unique.
+
+### item
+Returns the single element of the series.
+
+### kurtosis
+Computes the kurtosis.
+
+### last
+Returns the last element.
+
+### len
+Returns the length of the series.
+
+### log
+Computes the natural logarithm.
+
+### max
+Returns the maximum value.
+
+### mean
+Returns the mean value.
+
+### median
+Returns the median value.
+
+### min
+Returns the minimum value.
+
+### mode
+Returns the mode(s).
+
+### n_unique
+Returns the number of unique values.
+
+### name
+Returns the name of the series.
+
+### null_count
+Returns the number of null values.
+
+### pipe
+Applies a callable to the series.
+
+### quantile
+Computes the quantile.
+
+### rank
+Computes the rank of values.
+
+### rename
+Renames the series.
+
+### replace_strict
+Replaces values using a strict mapping.
+
+### rolling_mean
+Computes the rolling mean.
+
+### rolling_std
+Computes the rolling standard deviation.
+
+### rolling_sum
+Computes the rolling sum.
+
+### rolling_var
+Computes the rolling variance.
+
+### round
+Rounds values to a given number of decimals.
+
+### sample
+Samples elements from the series.
+
+### scatter
+Sets values at given indices.
+
+### shape
+Returns the shape of the series.
+
+### shift
+Shifts the series by a given number of positions.
+
+### sin
+Computes the sine of the series.
+
+### skew
+Computes the skewness.
+
+### sort
+Sorts the series.
+
+### sqrt
+Computes the square root.
+
+### std
+Computes the standard deviation.
+
+### sum
+Returns the sum of the series.
+
+### tail
+Returns the last n elements.
+
+### to_arrow
+Converts the series to an Arrow array.
+
+### to_dummies
+Converts the series to dummy variables.
+
+### to_frame
+Converts the series to a DataFrame.
+
+### to_list
+Converts the series to a Python list.
+
+### to_native
+Converts the series to the native library representation.
+
+### to_numpy
+Converts the series to a numpy array.
+
+### to_pandas
+Converts the series to a pandas Series.
+
+### to_polars
+Converts the series to a polars Series.
+
+### unique
+Returns unique values.
+
+### value_counts
+Counts the occurrences of each value.
+
+### var
+Computes the variance.
+
+### zip_with
+Combines the series with another series using a combiner function.
+```
+
+--------------------------------
+
+### Define dataframe-agnostic function with from/to_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Defines `my_func` that multiplies column 'a' by 2 using `nw.from_native` and `nw.to_native`. Works with both eager and lazy dataframes.
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+
+def my_func(df: IntoDataFrameT | IntoLazyFrameT) -> IntoDataFrameT | IntoLazyFrameT:
+    return nw.from_native(df).with_columns(nw.col("a") * 2).to_native()
+```
+
+--------------------------------
+
+### narwhalify
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Decorator to convert a function to accept and return Narwhals objects.
+
+```APIDOC
+## narwhalify
+
+### Description
+Decorator to convert a function to accept and return Narwhals objects.
+
+### Method
+Function
+
+### Signature
+`narwhalify(func)`
+
+### Parameters
+- **func** (callable) - Required - Function to wrap.
+
+### Returns
+- **callable** - Wrapped function.
+```
+
+--------------------------------
+
+### Inspect a specific node with as_dict
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Prints the dictionary representation of the third node (std operation) to see its attributes like function name and keyword arguments.
+
+```python
+print(expr._nodes[2].as_dict())
+```
+
+--------------------------------
+
+### narwhals.selectors.categorical
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/selectors.md
+
+Selector for categorical columns.
+
+```APIDOC
+## narwhals.selectors.categorical
+
+### Description
+Selects columns of categorical data type.
+
+### Usage
+```python
+import narwhals.selectors as ncs
+
+# Select categorical columns
+selector = ncs.categorical()
+```
+
+### Supported Operations
+- Set intersection: `&`
+- Set union: `|`
+- Set difference: `-`
+- Complement: `~`
+```
+
+--------------------------------
+
+### scan_parquet
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Scans a Parquet file lazily into a Narwhals LazyFrame.
+
+```APIDOC
+## scan_parquet
+
+### Description
+Scans a Parquet file lazily into a Narwhals LazyFrame.
+
+### Method
+Function
+
+### Signature
+`scan_parquet(source)`
+
+### Parameters
+- **source** (str) - Required - Path to Parquet file.
+
+### Returns
+- **LazyFrame** - Narwhals LazyFrame.
+```
+
+--------------------------------
+
+### Create PandasLikeNamespace and convert column expression
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Creates a PandasLikeNamespace for pandas and converts a column expression to a compliant expression. The result is a PandasLikeExpr object.
+
+```python
+import narwhals as nw
+from narwhals._pandas_like.namespace import PandasLikeNamespace
+from narwhals.utils import Implementation, Version
+
+pn = PandasLikeNamespace(implementation=Implementation.PANDAS, version=Version.MAIN)
+print(nw.col("a")._to_compliant_expr(pn))
+```
+
+--------------------------------
+
+### Define a dataframe-agnostic function with Narwhals
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/README.md
+
+Shows how to wrap a native dataframe with from_native, use the Polars API subset (with_columns, when, col, lit), and convert back with to_native. The function accepts any supported dataframe type and returns the same type.
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+
+def agnostic_function(
+    df_native: IntoDataFrameT | IntoLazyFrameT,
+) -> IntoDataFrameT | IntoLazyFrameT:
+    return (
+        nw.from_native(df_native)
+        .with_columns(
+            category=nw.when(nw.col("animal").str.contains("whale"))
+            .then(nw.lit("whale"))
+            .otherwise(nw.lit("other"))
+        )
+        .to_native()
+    )
+```
+
+--------------------------------
+
+### from_dict
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates a Narwhals DataFrame from a dictionary of columns.
+
+```APIDOC
+## from_dict
+
+### Description
+Creates a Narwhals DataFrame from a dictionary of columns.
+
+### Method
+Function
+
+### Signature
+`from_dict(data)`
+
+### Parameters
+- **data** (dict) - Required - Dictionary mapping column names to lists of values.
+
+### Returns
+- **DataFrame** - Narwhals DataFrame.
+```
+
+--------------------------------
+
+### narwhals.selectors.enum
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/selectors.md
+
+Selector for enum columns.
+
+```APIDOC
+## narwhals.selectors.enum
+
+### Description
+Selects columns of enum data type.
+
+### Usage
+```python
+import narwhals.selectors as ncs
+
+# Select enum columns
+selector = ncs.enum()
+```
+
+### Supported Operations
+- Set intersection: `&`
+- Set union: `|`
+- Set difference: `-`
+- Complement: `~`
+```
+
+--------------------------------
+
+### Inspect expression nodes with _nodes
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Creates a Narwhals expression and prints its internal nodes. This is used to understand how expressions are decomposed into operations.
+
+```python
+import narwhals as nw
+
+expr = nw.col("a").abs().std(ddof=1) + nw.col("b")
+print(expr._nodes)
+```
+
+--------------------------------
+
+### Approach 1: Complex group-by expression causing UserWarning
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/improve_group_by_operation.md
+
+This approach uses a complex expression inside agg, which translates to pandas apply and triggers the UserWarning. It is inefficient and should be avoided.
+
+```python
+import narwhals as nw
+import pandas as pd
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+data = {"a": [1, 2, 3, 4, 5], "b": [5, 4, 3, 2, 1], "c": [10, 20, 30, 40, 50]}
+
+df_pd = pd.DataFrame(data)
+
+
+def approach_1(
+    df_native: IntoDataFrameT | IntoLazyFrameT,
+) -> IntoDataFrameT | IntoLazyFrameT:
+    df = nw.from_native(df_native)
+    df = df.group_by("a").agg(d=(nw.col("b") + nw.col("c")).sum())
+    return df.to_native()
+
+
+print(approach_1(df_pd))
+```
+
+--------------------------------
+
+### Narwhals left-hand-rule alignment
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/pandas_index.md
+
+Shows how Narwhals preserves the left-hand-side index and inserts values positionally, avoiding pandas' alignment behavior. The result is the sorted values as expected.
+
+```python
+import narwhals as nw
+
+df = nw.from_native(df_pd)
+s = nw.from_native(s_pd, allow_series=True)
+df = df.with_columns(a_sorted=s.sort())
+print(nw.to_native(df))
+```
+
+--------------------------------
+
+### narwhals.selectors.numeric
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/selectors.md
+
+Selector for numeric columns.
+
+```APIDOC
+## narwhals.selectors.numeric
+
+### Description
+Selects columns of numeric data type.
+
+### Usage
+```python
+import narwhals.selectors as ncs
+
+# Select numeric columns
+selector = ncs.numeric()
+```
+
+### Supported Operations
+- Set intersection: `&`
+- Set union: `|`
+- Set difference: `-`
+- Complement: `~`
+```
+
+--------------------------------
+
+### lit
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates a literal expression.
+
+```APIDOC
+## lit
+
+### Description
+Creates a literal expression.
+
+### Method
+Function
+
+### Signature
+`lit(value)`
+
+### Parameters
+- **value** (any) - Required - Literal value.
+
+### Returns
+- **Expr** - Expression representing the literal.
+```
+
+--------------------------------
+
+### pad_end
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Pads the end of each string with a specified character to a given length.
+
+```APIDOC
+## pad_end
+
+### Description
+Pads the end of each string with a specified character to a given length.
+
+### Method
+pad_end
+
+### Parameters
+- **length** (int) - The total length of the resulting string.
+- **fillchar** (str) - The character to pad with. Default is a space.
+
+### Returns
+- Series of padded strings.
+```
+
+--------------------------------
+
+### Define group-by mean function with from/to_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Defines a function that accepts any Narwhals-compatible dataframe (eager or lazy) and returns the native object after grouping by 'a', aggregating the mean of 'b', and sorting by 'a'. Uses nw.from_native and to_native.
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+
+def func(df: IntoDataFrameT | IntoLazyFrameT) -> IntoDataFrameT | IntoLazyFrameT:
+    return nw.from_native(df).group_by("a").agg(nw.col("b").mean()).sort("a").to_native()
+```
+
+--------------------------------
+
+### slice
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Extracts a substring from each string.
+
+```APIDOC
+## slice
+
+### Description
+Extracts a substring from each string.
+
+### Method
+slice
+
+### Parameters
+- **start** (int) - The starting index.
+- **stop** (int) - The ending index (exclusive).
+- **step** (int) - The step size.
+
+### Returns
+- Series of substrings.
+```
+
+--------------------------------
+
+### Define comparison function for boolean null preservation
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/boolean.md
+
+Defines a function that compares column 'a' to 2, producing a boolean column. Used to illustrate backend-dependent null handling.
+
+```python
+from narwhals.typing import FrameT
+
+
+def comparison(df: FrameT) -> FrameT:
+    return nw.from_native(df).with_columns((nw.col("a") > 2).alias("a>2")).to_native()
+```
+
+--------------------------------
+
+### Pandas translation of nw.col('a', 'b')
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Shows how nw.col('a', 'b') translates to a pandas function that returns a list containing both the 'a' and 'b' columns.
+
+```python
+def col_a_b(df):
+    return [df.loc[:, "a"], df.loc[:, "b"]]
+```
+
+--------------------------------
+
+### Join column naming difference between pandas and Polars
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/why.md
+
+Demonstrates that after a left join on columns 'b' and 'c', pandas and Polars produce different column names in the result. This highlights another subtle difference that Narwhals aims to unify.
+
+```python
+pd_df_left = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+pd_df_right = pd.DataFrame({"a": [1, 2, 3], "c": [4, 5, 6]})
+pd_left_merge = pd_df_left.merge(pd_df_right, left_on="b", right_on="c", how="left")
+
+pl_df_left = pl.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+pl_df_right = pl.DataFrame({"a": [1, 2, 3], "c": [4, 5, 6]})
+pl_left_merge = pl_df_left.join(pl_df_right, left_on="b", right_on="c", how="left")
+
+print(pd_left_merge.columns)
+print(pl_left_merge.columns)
+```
+
+--------------------------------
+
+### scan_csv
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Scans a CSV file lazily into a Narwhals LazyFrame.
+
+```APIDOC
+## scan_csv
+
+### Description
+Scans a CSV file lazily into a Narwhals LazyFrame.
+
+### Method
+Function
+
+### Signature
+`scan_csv(source)`
+
+### Parameters
+- **source** (str) - Required - Path to CSV file.
+
+### Returns
+- **LazyFrame** - Narwhals LazyFrame.
+```
+
+--------------------------------
+
+### Expr.name.map
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_name.md
+
+Rename columns by applying a function to each column name.
+
+```APIDOC
+## Expr.name.map
+
+### Description
+Rename columns by applying a function to each column name.
+
+### Method
+map
+
+### Parameters
+- **function** (callable) - Required - A function that takes a column name and returns a new name.
+
+### Returns
+- Expr - The expression with renamed columns.
+```
+
+--------------------------------
+
+### narwhals.Expr.dt namespace
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_dt.md
+
+The `narwhals.Expr.dt` namespace provides datetime-related methods for expressions. The following methods are available: convert_time_zone, date, day, hour, microsecond, millisecond, minute, month, nanosecond, offset_by, ordinal_day, replace_time_zone, second, timestamp, to_string, total_microseconds, total_milliseconds, total_minutes, total_nanoseconds, total_seconds, truncate, weekday, and year.
+
+```APIDOC
+## narwhals.Expr.dt
+
+### Description
+The `narwhals.Expr.dt` namespace provides datetime-related operations for expressions. It includes methods for time zone conversion, extracting date/time components, offsetting dates, formatting, and calculating durations.
+
+### Methods
+
+#### convert_time_zone
+Converts the time zone of a datetime expression.
+
+#### date
+Extracts the date component from a datetime expression.
+
+#### day
+Extracts the day component from a datetime expression.
+
+#### hour
+Extracts the hour component from a datetime expression.
+
+#### microsecond
+Extracts the microsecond component from a datetime expression.
+
+#### millisecond
+Extracts the millisecond component from a datetime expression.
+
+#### minute
+Extracts the minute component from a datetime expression.
+
+#### month
+Extracts the month component from a datetime expression.
+
+#### nanosecond
+Extracts the nanosecond component from a datetime expression.
+
+#### offset_by
+Offsets a datetime expression by a specified duration.
+
+#### ordinal_day
+Extracts the ordinal day (day of year) from a datetime expression.
+
+#### replace_time_zone
+Replaces the time zone of a datetime expression.
+
+#### second
+Extracts the second component from a datetime expression.
+
+#### timestamp
+Converts a datetime expression to a timestamp.
+
+#### to_string
+Converts a datetime expression to a string representation.
+
+#### total_microseconds
+Calculates the total number of microseconds in a duration expression.
+
+#### total_milliseconds
+Calculates the total number of milliseconds in a duration expression.
+
+#### total_minutes
+Calculates the total number of minutes in a duration expression.
+
+#### total_nanoseconds
+Calculates the total number of nanoseconds in a duration expression.
+
+#### total_seconds
+Calculates the total number of seconds in a duration expression.
+
+#### truncate
+Truncates a datetime expression to a specified precision.
+
+#### weekday
+Extracts the weekday component from a datetime expression.
+
+#### year
+Extracts the year component from a datetime expression.
+```
+
+--------------------------------
+
+### second
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the second from a datetime Series.
+
+```APIDOC
+## second
+
+### Description
+Extracts the second from a datetime Series.
+
+### Method
+second
+
+### Returns
+The Series containing the second.
+```
+
+--------------------------------
+
+### Define horizontal sum function with from/to_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Defines a function that accepts a dataframe or lazyframe, uses nw.from_native to wrap it, adds a column 'a_plus_b' via nw.sum_horizontal("a", "b"), and converts back with .to_native().
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+
+def func(df: IntoDataFrameT | IntoLazyFrameT) -> IntoDataFrameT | IntoLazyFrameT:
+    return (
+        nw.from_native(df).with_columns(a_plus_b=nw.sum_horizontal("a", "b")).to_native()
+    )
+```
+
+--------------------------------
+
+### tail
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Returns the last n characters of each string.
+
+```APIDOC
+## tail
+
+### Description
+Returns the last n characters of each string.
+
+### Method
+tail
+
+### Parameters
+- **n** (int) - The number of characters to return.
+
+### Returns
+- Series of strings containing the last n characters.
+```
+
+--------------------------------
+
+### all
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Returns a boolean expression indicating whether all values in a column are true.
+
+```APIDOC
+## all
+
+### Description
+Returns a boolean expression indicating whether all values in a column are true.
+
+### Method
+Function
+
+### Signature
+`all()`
+
+### Parameters
+None
+
+### Returns
+- **Expr** - Expression representing the all operation.
+```
+
+--------------------------------
+
+### narwhals.selectors.boolean
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/selectors.md
+
+Selector for boolean columns.
+
+```APIDOC
+## narwhals.selectors.boolean
+
+### Description
+Selects columns of boolean data type.
+
+### Usage
+```python
+import narwhals.selectors as ncs
+
+# Select boolean columns
+selector = ncs.boolean()
+```
+
+### Supported Operations
+- Set intersection: `&`
+- Set union: `|`
+- Set difference: `-`
+- Complement: `~`
+```
+
+--------------------------------
+
+### replace
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Replaces occurrences of a pattern with a replacement string.
+
+```APIDOC
+## replace
+
+### Description
+Replaces occurrences of a pattern with a replacement string.
+
+### Method
+replace
+
+### Parameters
+- **pattern** (str) - The pattern to search for.
+- **value** (str) - The replacement string.
+
+### Returns
+- Series of strings with replacements applied.
+```
+
+--------------------------------
+
+### Inspect nested expression nodes
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Prints the nodes of the sub-expression inside the fourth node, showing that expressions can be nested recursively.
+
+```python
+print(expr._nodes[3].exprs[0]._nodes)
+```
+
+--------------------------------
+
+### Recommended dtype equality check using ==
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/backcompat.md
+
+To check if a dtype is a datetime regardless of time_unit or time_zone, use == instead of set membership, as it works consistently across namespaces.
+
+```python
+# Recommended
+assert nw.Datetime("us") == nw.Datetime
+assert nw_v1.Datetime("us") == nw_v1.Datetime
+```
+
+--------------------------------
+
+### to_string
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Converts a datetime Series to a string representation.
+
+```APIDOC
+## to_string
+
+### Description
+Converts a datetime Series to a string representation.
+
+### Method
+to_string
+
+### Parameters
+- **format** (str) - Optional - The format string to use for conversion.
+
+### Returns
+The Series containing the string representations.
+```
+
+--------------------------------
+
+### Add new column with Expr.alias
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Defines `my_func` using `@nw.narwhalify` that adds a new column 'c' containing column 'a' multiplied by 2, using `Expr.alias`.
+
+```python
+import narwhals as nw
+from narwhals.typing import FrameT
+
+
+@nw.narwhalify
+def my_func(df: FrameT) -> FrameT:
+    return df.with_columns((nw.col("a") * 2).alias("c"))
+```
+
+--------------------------------
+
+### day
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the day of the month from a datetime Series.
+
+```APIDOC
+## day
+
+### Description
+Extracts the day of the month from a datetime Series.
+
+### Method
+day
+
+### Returns
+The Series containing the day of the month.
+```
+
+--------------------------------
+
+### Run agnostic_function on Polars, DuckDB, and pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/README.md
+
+Demonstrates passing Polars DataFrame, DuckDB relation, and pandas DataFrame to the agnostic_function defined earlier. The output shows the resulting dataframes with the added 'category' column.
+
+```python
+import duckdb
+import polars as pl
+import pandas as pd
+
+data = {
+    "animal": ["blue whale", "orca", "dolphin", "humpback whale", "seal"],
+    "length_m": [30.0, 8, 2.5, 17, 2.2],
+    "weight_kg": [150000, 4000, 200, 30000, 85],
+}
+
+print("Polars result")
+df_pl = pl.DataFrame(data)
+print(agnostic_function(df_pl))
+
+print("DuckDB result")
+print(agnostic_function(duckdb.sql("select * from df_pl")))
+
+print("pandas result")
+df_pd = pd.DataFrame(data)
+print(agnostic_function(df_pd))
+```
+
+--------------------------------
+
+### Create pandas DataFrame with non-string column name
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/column_names.md
+
+Shows that pandas allows creating a DataFrame with a column named 0 and even two such columns. This motivates Narwhals' support for non-string column names and its ban on duplicates.
+
+```python
+import pandas as pd
+
+df = pd.concat([pd.Series([1, 2], name=0), pd.Series([1, 3], name=0)], axis=1)
+print(df)
+```
+
+--------------------------------
+
+### Schema.to_polars
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Converts the schema to a Polars schema.
+
+```APIDOC
+## Schema.to_polars
+
+### Description
+Converts the schema to a Polars schema.
+
+### Method
+Method
+
+### Returns
+- **Polars Schema** - The Polars representation of the schema.
+```
+
+--------------------------------
+
+### Filter with expressions using from/to_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Defines a dataframe-agnostic function that filters rows where column 'a' is greater than 0. Uses nw.from_native and nw.col, and returns the native object. Works with both eager and lazy dataframes.
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+
+def my_func(df: IntoDataFrameT | IntoLazyFrameT) -> IntoDataFrameT | IntoLazyFrameT:
+    return nw.from_native(df).filter(nw.col("a") > 0).to_native()
+```
+
+--------------------------------
+
+### Expr.name.to_uppercase
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_name.md
+
+Convert all column names in the expression to uppercase.
+
+```APIDOC
+## Expr.name.to_uppercase
+
+### Description
+Convert all column names in the expression to uppercase.
+
+### Method
+to_uppercase
+
+### Parameters
+None
+
+### Returns
+- Expr - The expression with uppercase column names.
+```
+
+--------------------------------
+
+### Pandas translation of nw.col('a')+1
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Shows how nw.col('a')+1 translates to a pandas function that adds 1 to each element of the 'a' column.
+
+```python
+def col_a(df):
+    return [df.loc[:, "a"]]
+
+
+def col_a_plus_1(df):
+    return [x + 1 for x in col_a(df)]
+```
+
+--------------------------------
+
+### minute
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the minute from a datetime Series.
+
+```APIDOC
+## minute
+
+### Description
+Extracts the minute from a datetime Series.
+
+### Method
+minute
+
+### Returns
+The Series containing the minute.
+```
+
+--------------------------------
+
+### View native pandas DataFrame
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Prints the underlying pandas DataFrame produced by the compliant select, accessed via the `.native` attribute.
+
+```python
+print(result.native)
+```
+
+--------------------------------
+
+### Pandas translation of nw.sum_horizontal('a', 'b')
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Shows how nw.sum_horizontal('a', 'b') translates to a pandas function that returns a list containing the element-wise sum of the 'a' and 'b' columns.
+
+```python
+def sum_horizontal_a_b(df):
+    return [df.loc[:, "a"] + df.loc[:, "b"]]
+```
+
+--------------------------------
+
+### col
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates an expression representing a column by name.
+
+```APIDOC
+## col
+
+### Description
+Creates an expression representing a column by name.
+
+### Method
+Function
+
+### Signature
+`col(name)`
+
+### Parameters
+- **name** (str) - Required - Name of the column.
+
+### Returns
+- **Expr** - Expression representing the column.
+```
+
+--------------------------------
+
+### len
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Returns the length of a dataframe or series.
+
+```APIDOC
+## len
+
+### Description
+Returns the length of a dataframe or series.
+
+### Method
+Function
+
+### Signature
+`len(obj)`
+
+### Parameters
+- **obj** (object) - Required - Dataframe or series.
+
+### Returns
+- **int** - Number of rows.
+```
+
+--------------------------------
+
+### narwhals.Expr.list.min
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Computes the minimum value of each list in the expression.
+
+```APIDOC
+## narwhals.Expr.list.min
+
+### Description
+Computes the minimum value of each list in the expression.
+
+### Method
+min
+
+### Signature
+`min()`
+
+### Returns
+- An expression that evaluates to the minimum value of each list.
+```
+
+--------------------------------
+
+### offset_by
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Offsets the datetime values in a Series by a specified duration.
+
+```APIDOC
+## offset_by
+
+### Description
+Offsets the datetime values in a Series by a specified duration.
+
+### Method
+offset_by
+
+### Parameters
+- **offset** (str) - Required - The offset duration to apply.
+
+### Returns
+The Series with the offset applied.
+```
+
+--------------------------------
+
+### get_native_namespace
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Returns the native namespace of a Narwhals object.
+
+```APIDOC
+## get_native_namespace
+
+### Description
+Returns the native namespace of a Narwhals object.
+
+### Method
+Function
+
+### Signature
+`get_native_namespace(obj)`
+
+### Parameters
+- **obj** (object) - Required - Narwhals object.
+
+### Returns
+- **module** - The native module (e.g., pandas, polars).
+```
+
+--------------------------------
+
+### StandardScaler transform using @narwhalify
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/complete_example.md
+
+Implements the transform method using the @nw.narwhalify decorator, which automatically converts the input and output dataframes. The method operates directly on the Narwhals dataframe.
+
+```python
+from typing import Self
+import narwhals as nw
+from narwhals.typing import FrameT
+
+
+class StandardScaler:
+    ...
+
+    @nw.narwhalify
+    def transform(self, df: FrameT) -> FrameT:
+        return df.with_columns(
+            (nw.col(col) - self._means[col]) / self._std_devs[col]
+            for col in self._columns
+        )
+```
+
+--------------------------------
+
+### total_minutes
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Returns the total number of minutes in a duration Series.
+
+```APIDOC
+## total_minutes
+
+### Description
+Returns the total number of minutes in a duration Series.
+
+### Method
+total_minutes
+
+### Returns
+The Series containing the total minutes.
+```
+
+--------------------------------
+
+### sum
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the sum of a column.
+
+```APIDOC
+## sum
+
+### Description
+Computes the sum of a column.
+
+### Method
+Function
+
+### Signature
+`sum(name)`
+
+### Parameters
+- **name** (str) - Required - Name of the column.
+
+### Returns
+- **Expr** - Expression representing the sum.
+```
+
+--------------------------------
+
+### from_arrow
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates a Narwhals DataFrame or Series from an Arrow object.
+
+```APIDOC
+## from_arrow
+
+### Description
+Creates a Narwhals DataFrame or Series from an Arrow object.
+
+### Method
+Function
+
+### Signature
+`from_arrow(data)`
+
+### Parameters
+- **data** (object) - Required - Arrow table or array.
+
+### Returns
+- **DataFrame** or **Series** - Narwhals object.
+```
+
+--------------------------------
+
+### narwhals.Series.list namespace
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_list.md
+
+The `narwhals.Series.list` namespace provides list-specific operations on Series objects. It includes methods for element access, containment checks, length calculation, sorting, and various aggregations.
+
+```APIDOC
+# narwhals.Series.list
+
+## Overview
+
+The `narwhals.Series.list` namespace provides methods to operate on Series containing list values. These methods allow you to inspect, manipulate, and aggregate list elements.
+
+## Methods
+
+### contains
+
+Checks if a given value is contained in each list element of the Series.
+
+### get
+
+Extracts an element from each list at a specified index.
+
+### len
+
+Returns the length of each list in the Series.
+
+### max
+
+Computes the maximum value of each list in the Series.
+
+### mean
+
+Computes the mean of each list in the Series.
+
+### median
+
+Computes the median of each list in the Series.
+
+### min
+
+Computes the minimum value of each list in the Series.
+
+### sort
+
+Sorts each list in the Series.
+
+### sum
+
+Computes the sum of each list in the Series.
+
+### unique
+
+Returns the unique elements of each list in the Series.
+```
+
+--------------------------------
+
+### mean
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the mean value of a column.
+
+```APIDOC
+## mean
+
+### Description
+Computes the mean value of a column.
+
+### Method
+Function
+
+### Signature
+`mean(name)`
+
+### Parameters
+- **name** (str) - Required - Name of the column.
+
+### Returns
+- **Expr** - Expression representing the mean.
+```
+
+--------------------------------
+
+### from_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Converts a native dataframe or series to a Narwhals object.
+
+```APIDOC
+## from_native
+
+### Description
+Converts a native dataframe or series to a Narwhals object.
+
+### Method
+Function
+
+### Signature
+`from_native(data)`
+
+### Parameters
+- **data** (object) - Required - Native dataframe or series.
+
+### Returns
+- **DataFrame** or **Series** - Narwhals object.
+```
+
+--------------------------------
+
+### month
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the month from a datetime Series.
+
+```APIDOC
+## month
+
+### Description
+Extracts the month from a datetime Series.
+
+### Method
+month
+
+### Returns
+The Series containing the month.
+```
+
+--------------------------------
+
+### Output of agnostic_function for Polars, DuckDB, and pandas
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/README.md
+
+Terminal output showing the results of running agnostic_function on Polars, DuckDB, and pandas inputs. The category column correctly identifies whales.
+
+```terminal
+Polars result
+shape: (5, 4)
+┌────────────────┬──────────┬───────────┬──────────┐
+│ animal         ┆ length_m ┆ weight_kg ┆ category │
+│ ---            ┆ ---      ┆ ---       ┆ ---      │
+│ str            ┆ f64      ┆ i64       ┆ str      │
+╞════════════════╪══════════╪═══════════╪══════════╡
+│ blue whale     ┆ 30.0     ┆ 150000    ┆ whale    │
+│ orca           ┆ 8.0      ┆ 4000      ┆ other    │
+│ dolphin        ┆ 2.5      ┆ 200       ┆ other    │
+│ humpback whale ┆ 17.0     ┆ 30000     ┆ whale    │
+│ seal           ┆ 2.2      ┆ 85        ┆ other    │
+└────────────────┴──────────┴───────────┴──────────┘
+DuckDB result
+┌────────────────┬──────────┬───────────┬──────────┐
+│     animal     │ length_m │ weight_kg │ category │
+│    varchar     │  double  │   int64   │ varchar  │
+├────────────────┼──────────┼───────────┼──────────┤
+│ blue whale     │     30.0 │    150000 │ whale    │
+│ orca           │      8.0 │      4000 │ other    │
+│ dolphin        │      2.5 │       200 │ other    │
+│ humpback whale │     17.0 │     30000 │ whale    │
+│ seal           │      2.2 │        85 │ other    │
+└────────────────┴──────────┴───────────┴──────────┘
+
+pandas result
+           animal  length_m  weight_kg category
+0      blue whale      30.0     150000    whale
+1            orca       8.0       4000    other
+2         dolphin       2.5        200    other
+3  humpback whale      17.0      30000    whale
+4            seal       2.2        85    other
+```
+
+--------------------------------
+
+### to_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Converts a Narwhals object back to its native representation.
+
+```APIDOC
+## to_native
+
+### Description
+Converts a Narwhals object back to its native representation.
+
+### Method
+Function
+
+### Signature
+`to_native(obj)`
+
+### Parameters
+- **obj** (object) - Required - Narwhals object.
+
+### Returns
+- **object** - Native dataframe or series.
+```
+
+--------------------------------
+
+### from_dicts
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates a Narwhals DataFrame from a list of dictionaries.
+
+```APIDOC
+## from_dicts
+
+### Description
+Creates a Narwhals DataFrame from a list of dictionaries.
+
+### Method
+Function
+
+### Signature
+`from_dicts(data)`
+
+### Parameters
+- **data** (list) - Required - List of dictionaries, each representing a row.
+
+### Returns
+- **DataFrame** - Narwhals DataFrame.
+```
+
+--------------------------------
+
+### replace_all
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Replaces all occurrences of a pattern with a replacement string.
+
+```APIDOC
+## replace_all
+
+### Description
+Replaces all occurrences of a pattern with a replacement string.
+
+### Method
+replace_all
+
+### Parameters
+- **pattern** (str) - The pattern to search for.
+- **value** (str) - The replacement string.
+
+### Returns
+- Series of strings with all replacements applied.
+```
+
+--------------------------------
+
+### Schema.dtypes
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/schema.md
+
+Returns the dtypes of the schema as a dictionary mapping column names to dtype objects.
+
+```APIDOC
+## Schema.dtypes
+
+### Description
+Returns the dtypes of the schema as a dictionary mapping column names to dtype objects.
+
+### Method
+Property
+
+### Returns
+- **dict** - A dictionary mapping column names to their corresponding dtype objects.
+```
+
+--------------------------------
+
+### narwhals.Expr.list.sort
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Sorts each list in the expression.
+
+```APIDOC
+## narwhals.Expr.list.sort
+
+### Description
+Sorts each list in the expression.
+
+### Method
+sort
+
+### Signature
+`sort(descending=False)`
+
+### Parameters
+- **descending** (bool) - If True, sort in descending order. Defaults to False.
+
+### Returns
+- An expression that evaluates to the sorted list.
+```
+
+--------------------------------
+
+### timestamp
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Returns the timestamp of each datetime value in a Series.
+
+```APIDOC
+## timestamp
+
+### Description
+Returns the timestamp of each datetime value in a Series.
+
+### Method
+timestamp
+
+### Parameters
+- **time_unit** (str) - Optional - The time unit for the timestamp (e.g., 'ns', 'us', 'ms').
+
+### Returns
+The Series containing the timestamps.
+```
+
+--------------------------------
+
+### max
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the maximum value of a column.
+
+```APIDOC
+## max
+
+### Description
+Computes the maximum value of a column.
+
+### Method
+Function
+
+### Signature
+`max(name)`
+
+### Parameters
+- **name** (str) - Required - Name of the column.
+
+### Returns
+- **Expr** - Expression representing the maximum.
+```
+
+--------------------------------
+
+### total_seconds
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Returns the total number of seconds in a duration Series.
+
+```APIDOC
+## total_seconds
+
+### Description
+Returns the total number of seconds in a duration Series.
+
+### Method
+total_seconds
+
+### Returns
+The Series containing the total seconds.
+```
+
+--------------------------------
+
+### Expr.name.to_lowercase
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_name.md
+
+Convert all column names in the expression to lowercase.
+
+```APIDOC
+## Expr.name.to_lowercase
+
+### Description
+Convert all column names in the expression to lowercase.
+
+### Method
+to_lowercase
+
+### Parameters
+None
+
+### Returns
+- Expr - The expression with lowercase column names.
+```
+
+--------------------------------
+
+### Extract compliant frame and select
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Extracts the `PandasLikeDataFrame` from the Narwhals DataFrame using `._compliant_frame` and passes the compliant expression to its `select` method.
+
+```python
+df_compliant = df._compliant_frame
+result = df_compliant.select(expr)
+```
+
+--------------------------------
+
+### date
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the date component from a datetime Series.
+
+```APIDOC
+## date
+
+### Description
+Extracts the date component from a datetime Series.
+
+### Method
+date
+
+### Returns
+The Series containing the date component.
+```
+
+--------------------------------
+
+### Use pytest.raises for expected exceptions
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Asserts that the code block raises a specific exception with a matching message. Useful for testing invalid input handling.
+
+```python
+def test_invalid_input():
+    with pytest.raises(ValueError, match="expected error message"):
+        # Code that should raise the error
+```
+
+--------------------------------
+
+### narwhals.DataFrame
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dataframe.md
+
+The narwhals.DataFrame class provides a dataframe abstraction with methods for data manipulation, conversion, and interoperability across multiple dataframe libraries. This snippet lists all documented public methods.
+
+```APIDOC
+## narwhals.DataFrame
+
+### Description
+The `narwhals.DataFrame` class is a dataframe abstraction that provides a unified API for data manipulation and conversion across multiple dataframe libraries. It supports operations such as selecting, filtering, grouping, joining, reshaping, and converting data to various formats.
+
+### Methods
+- `__arrow_c_stream__`
+- `__getitem__`
+- `cast`
+- `clone`
+- `collect_schema`
+- `columns`
+- `drop`
+- `drop_nulls`
+- `estimated_size`
+- `explode`
+- `filter`
+- `from_arrow`
+- `from_dict`
+- `from_dicts`
+- `from_numpy`
+- `gather_every`
+- `get_column`
+- `group_by`
+- `head`
+- `implementation`
+- `is_duplicated`
+- `is_empty`
+- `is_unique`
+- `item`
+- `iter_columns`
+- `iter_rows`
+- `join`
+- `join_asof`
+- `lazy`
+- `null_count`
+- `pipe`
+- `pivot`
+- `rename`
+- `row`
+- `rows`
+- `sample`
+- `schema`
+- `select`
+- `shape`
+- `sort`
+- `tail`
+- `to_arrow`
+- `to_dict`
+- `to_native`
+- `to_numpy`
+- `to_pandas`
+- `to_polars`
+- `top_k`
+- `unique`
+- `unpivot`
+- `with_columns`
+- `with_row_index`
+- `write_csv`
+- `write_parquet`
+
+### Usage
+This class is part of the narwhals library and is intended to be used as a dataframe interface. The methods listed above are callable directly on instances of `narwhals.DataFrame`.
+```
+
+--------------------------------
+
+### Convert expression to compliant expression
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/how_it_works.md
+
+Converts a Narwhals expression to a compliant expression by passing a `PandasLikeNamespace` to `_to_compliant_expr`. The output is printed, showing the internal representation.
+
+```python
+pn = PandasLikeNamespace(implementation=Implementation.PANDAS, version=Version.MAIN)
+expr = (nw.col("a") + 1)._to_compliant_expr(pn)
+print(expr)
+```
+
+--------------------------------
+
+### read_csv
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Reads a CSV file into a Narwhals DataFrame.
+
+```APIDOC
+## read_csv
+
+### Description
+Reads a CSV file into a Narwhals DataFrame.
+
+### Method
+Function
+
+### Signature
+`read_csv(source)`
+
+### Parameters
+- **source** (str) - Required - Path to CSV file.
+
+### Returns
+- **DataFrame** - Narwhals DataFrame.
+```
+
+--------------------------------
+
+### weekday
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the weekday from a datetime Series.
+
+```APIDOC
+## weekday
+
+### Description
+Extracts the weekday from a datetime Series.
+
+### Method
+weekday
+
+### Returns
+The Series containing the weekday.
+```
+
+--------------------------------
+
+### Define dataframe-agnostic function with @narwhalify
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Defines `my_func` using the `@nw.narwhalify` decorator. The function operates on a `FrameT` and multiplies column 'a' by 2.
+
+```python
+import narwhals as nw
+from narwhals.typing import FrameT
+
+
+@nw.narwhalify
+def my_func(df: FrameT) -> FrameT:
+    return df.with_columns(nw.col("a") * 2)
+```
+
+--------------------------------
+
+### min_horizontal
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the minimum value across multiple columns horizontally.
+
+```APIDOC
+## min_horizontal
+
+### Description
+Computes the minimum value across multiple columns horizontally.
+
+### Method
+Function
+
+### Signature
+`min_horizontal(*exprs)`
+
+### Parameters
+- **exprs** (Expr) - Required - Expressions to evaluate.
+
+### Returns
+- **Expr** - Expression representing the horizontal minimum.
+```
+
+--------------------------------
+
+### read_parquet
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Reads a Parquet file into a Narwhals DataFrame.
+
+```APIDOC
+## read_parquet
+
+### Description
+Reads a Parquet file into a Narwhals DataFrame.
+
+### Method
+Function
+
+### Signature
+`read_parquet(source)`
+
+### Parameters
+- **source** (str) - Required - Path to Parquet file.
+
+### Returns
+- **DataFrame** - Narwhals DataFrame.
+```
+
+--------------------------------
+
+### GroupBy.agg
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/group_by.md
+
+The agg method of the narwhals.GroupBy class is used to perform aggregations on grouped data. It is the only documented member of the class.
+
+```APIDOC
+## GroupBy.agg
+
+### Description
+Performs aggregation on grouped data.
+
+### Method
+agg
+
+### Signature
+`agg(*aggs)`
+
+### Parameters
+- **aggs** (tuple) - Aggregations to apply to the grouped data.
+
+### Returns
+- The result of the aggregation.
+
+```
+
+--------------------------------
+
+### from_numpy
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates a Narwhals DataFrame from a NumPy array.
+
+```APIDOC
+## from_numpy
+
+### Description
+Creates a Narwhals DataFrame from a NumPy array.
+
+### Method
+Function
+
+### Signature
+`from_numpy(data)`
+
+### Parameters
+- **data** (ndarray) - Required - NumPy array.
+
+### Returns
+- **DataFrame** - Narwhals DataFrame.
+```
+
+--------------------------------
+
+### year
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the year from a datetime Series.
+
+```APIDOC
+## year
+
+### Description
+Extracts the year from a datetime Series.
+
+### Method
+year
+
+### Returns
+The Series containing the year.
+```
+
+--------------------------------
+
+### narwhals.Expr.list.sum
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Computes the sum of each list in the expression.
+
+```APIDOC
+## narwhals.Expr.list.sum
+
+### Description
+Computes the sum of each list in the expression.
+
+### Method
+sum
+
+### Signature
+`sum()`
+
+### Returns
+- An expression that evaluates to the sum of each list.
+```
+
+--------------------------------
+
+### Expr.name.suffix
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_name.md
+
+Add a suffix to each column name in the expression.
+
+```APIDOC
+## Expr.name.suffix
+
+### Description
+Add a suffix to each column name in the expression.
+
+### Method
+suffix
+
+### Parameters
+- **suffix** (str) - Required - The suffix to add to each column name.
+
+### Returns
+- Expr - The expression with suffixed column names.
+```
+
+--------------------------------
+
+### Preserve index with with_columns
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/pandas_index.md
+
+Shows a generic function that uses Narwhals to add a column while preserving the original index. The function accepts either a dataframe or lazyframe and returns the native object.
+
+```python
+import narwhals as nw
+from narwhals.typing import IntoDataFrameT, IntoLazyFrameT
+
+
+def my_func(df: IntoDataFrameT | IntoLazyFrameT) -> IntoDataFrameT | IntoLazyFrameT:
+    df = nw.from_native(df)
+    df = df.with_columns(a_plus_one=nw.col("a") + 1)
+    return nw.to_native(df)
+```
+
+--------------------------------
+
+### median
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the median value of a column.
+
+```APIDOC
+## median
+
+### Description
+Computes the median value of a column.
+
+### Method
+Function
+
+### Signature
+`median(name)`
+
+### Parameters
+- **name** (str) - Required - Name of the column.
+
+### Returns
+- **Expr** - Expression representing the median.
+```
+
+--------------------------------
+
+### narwhals.Expr.str
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_str.md
+
+The string namespace for Narwhals expressions, providing methods for string manipulation and conversion.
+
+```APIDOC
+# narwhals.Expr.str
+
+Namespace for string operations on expressions.
+
+## Methods
+
+### contains
+Checks if the string contains a substring.
+
+### ends_with
+Checks if the string ends with a suffix.
+
+### head
+Returns the first n characters of the string.
+
+### len_chars
+Returns the number of characters in the string.
+
+### pad_end
+Pads the string to a specified length by appending characters to the end.
+
+### pad_start
+Pads the string to a specified length by prepending characters to the start.
+
+### replace
+Replaces a substring with another substring.
+
+### replace_all
+Replaces all occurrences of a substring with another substring.
+
+### slice
+Extracts a substring starting at a given position and with a given length.
+
+### split
+Splits the string by a delimiter.
+
+### starts_with
+Checks if the string starts with a prefix.
+
+### strip_chars
+Removes leading and trailing characters.
+
+### strip_chars_end
+Removes trailing characters.
+
+### strip_chars_start
+Removes leading characters.
+
+### tail
+Returns the last n characters of the string.
+
+### to_date
+Converts the string to a date.
+
+### to_datetime
+Converts the string to a datetime.
+
+### to_lowercase
+Converts the string to lowercase.
+
+### to_time
+Converts the string to a time.
+
+### to_titlecase
+Converts the string to title case.
+
+### to_uppercase
+Converts the string to uppercase.
+
+### zfill
+Pads the string with zeros on the left to a specified length.
+```
+
+--------------------------------
+
+### coalesce
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Returns the first non-null value from a list of expressions.
+
+```APIDOC
+## coalesce
+
+### Description
+Returns the first non-null value from a list of expressions.
+
+### Method
+Function
+
+### Signature
+`coalesce(*exprs)`
+
+### Parameters
+- **exprs** (Expr) - Required - Expressions to coalesce.
+
+### Returns
+- **Expr** - Expression representing the coalesce operation.
+```
+
+--------------------------------
+
+### strip_chars
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Removes leading and trailing characters from each string.
+
+```APIDOC
+## strip_chars
+
+### Description
+Removes leading and trailing characters from each string.
+
+### Method
+strip_chars
+
+### Parameters
+- **chars** (str) - The characters to strip. If None, whitespace is stripped.
+
+### Returns
+- Series of stripped strings.
+```
+
+--------------------------------
+
+### concat_str
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Concatenates string columns or expressions into a single string column.
+
+```APIDOC
+## concat_str
+
+### Description
+Concatenates string columns or expressions into a single string column.
+
+### Method
+Function
+
+### Signature
+`concat_str(*exprs, separator='')`
+
+### Parameters
+- **exprs** (Expr) - Required - Expressions to concatenate.
+- **separator** (str) - Optional - Separator between strings. Default is ''.
+
+### Returns
+- **Expr** - Expression representing the concatenated string.
+```
+
+--------------------------------
+
+### exclude
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Creates an expression that excludes specified columns.
+
+```APIDOC
+## exclude
+
+### Description
+Creates an expression that excludes specified columns.
+
+### Method
+Function
+
+### Signature
+`exclude(*names)`
+
+### Parameters
+- **names** (str) - Required - Names of columns to exclude.
+
+### Returns
+- **Expr** - Expression representing the exclusion.
+```
+
+--------------------------------
+
+### Define group-by mean function with @narwhalify
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Defines the same function using the @narwhalify decorator, which automatically converts the input and output to native types. The function operates directly on the dataframe, grouping by 'a', aggregating the mean of 'b', and sorting by 'a'.
+
+```python
+import narwhals as nw
+from narwhals.typing import FrameT
+
+
+@nw.narwhalify
+def func(df: FrameT) -> FrameT:
+    return df.group_by("a").agg(nw.col("b").mean()).sort("a")
+```
+
+--------------------------------
+
+### narwhals.Expr.list.median
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Computes the median of each list in the expression.
+
+```APIDOC
+## narwhals.Expr.list.median
+
+### Description
+Computes the median of each list in the expression.
+
+### Method
+median
+
+### Signature
+`median()`
+
+### Returns
+- An expression that evaluates to the median of each list.
+```
+
+--------------------------------
+
+### nanosecond
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the nanosecond component from a datetime Series.
+
+```APIDOC
+## nanosecond
+
+### Description
+Extracts the nanosecond component from a datetime Series.
+
+### Method
+nanosecond
+
+### Returns
+The Series containing the nanosecond component.
+```
+
+--------------------------------
+
+### narwhals.Expr.list.len
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Computes the length of each list in the expression.
+
+```APIDOC
+## narwhals.Expr.list.len
+
+### Description
+Computes the length of each list in the expression.
+
+### Method
+len
+
+### Signature
+`len()`
+
+### Returns
+- An expression that evaluates to the length of each list.
+```
+
+--------------------------------
+
+### strict vs pass_through parameter in from_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/backcompat.md
+
+Since Narwhals 1.13.0, the strict parameter is deprecated in favor of pass_through. The v1 syntax uses strict=False, while the main namespace (and v2) uses pass_through=True.
+
+```python
+# v1 syntax:
+nw.from_native(df, strict=False)
+```
+
+```python
+# main namespace (and, when we get there, v2) syntax:
+nw.from_native(df, pass_through=True)
+```
+
+--------------------------------
+
+### millisecond
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the millisecond component from a datetime Series.
+
+```APIDOC
+## millisecond
+
+### Description
+Extracts the millisecond component from a datetime Series.
+
+### Method
+millisecond
+
+### Returns
+The Series containing the millisecond component.
+```
+
+--------------------------------
+
+### contains
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Checks if a string contains a specified pattern.
+
+```APIDOC
+## contains
+
+### Description
+Checks if a string contains a specified pattern.
+
+### Method
+contains
+
+### Parameters
+- **pattern** (str) - The pattern to search for.
+
+### Returns
+- Series of boolean values indicating whether the pattern was found.
+```
+
+--------------------------------
+
+### strip_chars_end
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Removes trailing characters from each string.
+
+```APIDOC
+## strip_chars_end
+
+### Description
+Removes trailing characters from each string.
+
+### Method
+strip_chars_end
+
+### Parameters
+- **chars** (str) - The characters to strip. If None, whitespace is stripped.
+
+### Returns
+- Series of strings with trailing characters removed.
+```
+
+--------------------------------
+
+### Generic Series type inference with from_native
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/backcompat.md
+
+Since Narwhals 1.15, Series is generic in the native Series, so mypy infers the native type from s.to_native(). Previously it was inferred as Any.
+
+```python
+import narwhals as nw
+import polars as pl
+
+s_pl = pl.Series([1, 2, 3])
+s = nw.from_native(s_pl, series_only=True)
+# mypy infers `s.to_native()` to be `polars.Series`
+reveal_type(s.to_native())
+```
+
+--------------------------------
+
+### Cumulative sum on a DataFrame with defined row order
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/concepts/order_dependence.md
+
+Shows that order-dependent operations like `cum_sum` work directly on a DataFrame because row order is defined. Uses pandas as the backend.
+
+```python
+import narwhals as nw
+import pandas as pd
+
+data = {"a": [1, 3, 4], "i": [0, 1, 2]}
+df = nw.from_native(pd.DataFrame(data))
+print(df.with_columns(a_cum_sum=nw.col("a").cum_sum()))
+```
+
+--------------------------------
+
+### is_pandas_like_index
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a pandas-like Index (e.g., pandas, modin, cudf).
+
+```APIDOC
+## is_pandas_like_index
+
+### Description
+Checks if the given object is a pandas-like Index (e.g., pandas, modin, cudf).
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a pandas-like Index, False otherwise.
+
+```
+
+--------------------------------
+
+### total_nanoseconds
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Returns the total number of nanoseconds in a duration Series.
+
+```APIDOC
+## total_nanoseconds
+
+### Description
+Returns the total number of nanoseconds in a duration Series.
+
+### Method
+total_nanoseconds
+
+### Returns
+The Series containing the total nanoseconds.
+```
+
+--------------------------------
+
+### microsecond
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the microsecond component from a datetime Series.
+
+```APIDOC
+## microsecond
+
+### Description
+Extracts the microsecond component from a datetime Series.
+
+### Method
+microsecond
+
+### Returns
+The Series containing the microsecond component.
+```
+
+--------------------------------
+
+### all_horizontal
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Combines multiple expressions horizontally and returns a boolean expression that is true if all expressions are true.
+
+```APIDOC
+## all_horizontal
+
+### Description
+Combines multiple expressions horizontally and returns a boolean expression that is true if all expressions are true.
+
+### Method
+Function
+
+### Signature
+`all_horizontal(*exprs)`
+
+### Parameters
+- **exprs** (Expr) - Required - Expressions to combine.
+
+### Returns
+- **Expr** - Expression representing the horizontal all operation.
+```
+
+--------------------------------
+
+### maybe_convert_dtypes
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Converts dataframe columns to the best possible dtypes.
+
+```APIDOC
+## maybe_convert_dtypes
+
+### Description
+Converts dataframe columns to the best possible dtypes.
+
+### Method
+Function
+
+### Signature
+`maybe_convert_dtypes(df)`
+
+### Parameters
+- **df** (DataFrame) - Required - Dataframe to convert.
+
+### Returns
+- **DataFrame** - Dataframe with converted dtypes.
+```
+
+--------------------------------
+
+### narwhals.Expr.list.mean
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Computes the mean (average) of each list in the expression.
+
+```APIDOC
+## narwhals.Expr.list.mean
+
+### Description
+Computes the mean (average) of each list in the expression.
+
+### Method
+mean
+
+### Signature
+`mean()`
+
+### Returns
+- An expression that evaluates to the mean of each list.
+```
+
+--------------------------------
+
+### Define decorated function with nw.narwhalify
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/dataframe.md
+
+Decorates a function that takes a dataframe, a series, and a column name, filters the dataframe by whether the column values are in the series, and returns the number of rows. Requires eager_only=True because lazyframe doesn't support .shape.
+
+```python
+import narwhals as nw
+from narwhals.typing import DataFrameT
+
+
+@nw.narwhalify(eager_only=True)
+def func(df: DataFrameT, s: nw.Series, col_name: str) -> int:
+    return df.filter(nw.col(col_name).is_in(s)).shape[0]
+```
+
+--------------------------------
+
+### ends_with
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_str.md
+
+Checks if a string ends with a specified suffix.
+
+```APIDOC
+## ends_with
+
+### Description
+Checks if a string ends with a specified suffix.
+
+### Method
+ends_with
+
+### Parameters
+- **suffix** (str) - The suffix to check for.
+
+### Returns
+- Series of boolean values indicating whether the string ends with the suffix.
+```
+
+--------------------------------
+
+### hour
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the hour from a datetime Series.
+
+```APIDOC
+## hour
+
+### Description
+Extracts the hour from a datetime Series.
+
+### Method
+hour
+
+### Returns
+The Series containing the hour.
+```
+
+--------------------------------
+
+### Filter with expressions using @narwhalify
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/basics/series.md
+
+Defines the same filtering function using the @nw.narwhalify decorator, which automatically wraps the input and unwraps the output. The function operates directly on the dataframe object.
+
+```python
+import narwhals as nw
+from narwhals.typing import FrameT
+
+
+@nw.narwhalify
+def my_func(df: FrameT) -> FrameT:
+    return df.filter(nw.col("a") > 0)
+```
+
+--------------------------------
+
+### max_horizontal
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the maximum value across multiple columns horizontally.
+
+```APIDOC
+## max_horizontal
+
+### Description
+Computes the maximum value across multiple columns horizontally.
+
+### Method
+Function
+
+### Signature
+`max_horizontal(*exprs)`
+
+### Parameters
+- **exprs** (Expr) - Required - Expressions to evaluate.
+
+### Returns
+- **Expr** - Expression representing the horizontal maximum.
+```
+
+--------------------------------
+
+### sum_horizontal
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the sum across multiple columns horizontally.
+
+```APIDOC
+## sum_horizontal
+
+### Description
+Computes the sum across multiple columns horizontally.
+
+### Method
+Function
+
+### Signature
+`sum_horizontal(*exprs)`
+
+### Parameters
+- **exprs** (Expr) - Required - Expressions to evaluate.
+
+### Returns
+- **Expr** - Expression representing the horizontal sum.
+```
+
+--------------------------------
+
+### narwhals.Expr.list.unique
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Returns the unique elements of each list in the expression.
+
+```APIDOC
+## narwhals.Expr.list.unique
+
+### Description
+Returns the unique elements of each list in the expression.
+
+### Method
+unique
+
+### Signature
+`unique()`
+
+### Returns
+- An expression that evaluates to a list containing only the unique elements of each original list.
+```
+
+--------------------------------
+
+### any_horizontal
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Combines multiple expressions horizontally and returns a boolean expression that is true if any expression is true.
+
+```APIDOC
+## any_horizontal
+
+### Description
+Combines multiple expressions horizontally and returns a boolean expression that is true if any expression is true.
+
+### Method
+Function
+
+### Signature
+`any_horizontal(*exprs)`
+
+### Parameters
+- **exprs** (Expr) - Required - Expressions to combine.
+
+### Returns
+- **Expr** - Expression representing the horizontal any operation.
+```
+
+--------------------------------
+
+### is_into_dataframe
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object can be converted into a Narwhals DataFrame.
+
+```APIDOC
+## is_into_dataframe
+
+### Description
+Checks if the given object can be converted into a Narwhals DataFrame.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object can be converted into a Narwhals DataFrame, False otherwise.
+
+```
+
+--------------------------------
+
+### corr
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the Pearson correlation between two columns.
+
+```APIDOC
+## corr
+
+### Description
+Computes the Pearson correlation between two columns.
+
+### Method
+Function
+
+### Signature
+`corr(a, b)`
+
+### Parameters
+- **a** (str) - Required - Name of the first column.
+- **b** (str) - Required - Name of the second column.
+
+### Returns
+- **float** - Correlation coefficient.
+```
+
+--------------------------------
+
+### Membership check difference between pandas and Polars
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/why.md
+
+Shows that `3 in pd.Series([1, 2, 3])` returns True because pandas checks the index, while `3 in pl.Series([1, 2, 3])` returns False because Polars checks the values. This illustrates a subtle behavioral difference between the libraries.
+
+```python
+import pandas as pd
+import polars as pl
+
+print(3 in pd.Series([1, 2, 3]))
+print(3 in pl.Series([1, 2, 3]))
+```
+
+--------------------------------
+
+### to_py_scalar
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Converts a Narwhals scalar to a Python scalar.
+
+```APIDOC
+## to_py_scalar
+
+### Description
+Converts a Narwhals scalar to a Python scalar.
+
+### Method
+Function
+
+### Signature
+`to_py_scalar(value)`
+
+### Parameters
+- **value** (scalar) - Required - Narwhals scalar value.
+
+### Returns
+- **scalar** - Python scalar.
+```
+
+--------------------------------
+
+### is_into_series
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object can be converted into a Narwhals Series.
+
+```APIDOC
+## is_into_series
+
+### Description
+Checks if the given object can be converted into a Narwhals Series.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object can be converted into a Narwhals Series, False otherwise.
+
+```
+
+--------------------------------
+
+### get_categories
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_cat.md
+
+Returns the categories of a categorical series. This method is part of the `narwhals.Series.cat` namespace and is used to retrieve the unique categories present in the series.
+
+```APIDOC
+## get_categories
+
+### Description
+Returns the categories of a categorical series.
+
+### Method
+`get_categories()`
+
+### Parameters
+None
+
+### Returns
+- **Series** - A series containing the categories of the original categorical series.
+
+### Example
+```python
+import narwhals as nw
+
+s = nw.Series(["a", "b", "a"], dtype=nw.Categorical)
+result = s.cat.get_categories()
+```
+```
+
+--------------------------------
+
+### total_milliseconds
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Returns the total number of milliseconds in a duration Series.
+
+```APIDOC
+## total_milliseconds
+
+### Description
+Returns the total number of milliseconds in a duration Series.
+
+### Method
+total_milliseconds
+
+### Returns
+The Series containing the total milliseconds.
+```
+
+--------------------------------
+
+### is_ordered_categorical
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Checks if a column is an ordered categorical.
+
+```APIDOC
+## is_ordered_categorical
+
+### Description
+Checks if a column is an ordered categorical.
+
+### Method
+Function
+
+### Signature
+`is_ordered_categorical(series)`
+
+### Parameters
+- **series** (Series) - Required - Series to check.
+
+### Returns
+- **bool** - True if the series is an ordered categorical.
+```
+
+--------------------------------
+
+### maybe_get_index
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Returns the index of a dataframe.
+
+```APIDOC
+## maybe_get_index
+
+### Description
+Returns the index of a dataframe.
+
+### Method
+Function
+
+### Signature
+`maybe_get_index(df)`
+
+### Parameters
+- **df** (DataFrame) - Required - Dataframe.
+
+### Returns
+- **Index** - The index of the dataframe.
+```
+
+--------------------------------
+
+### narwhals.Expr.list.max
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Computes the maximum value of each list in the expression.
+
+```APIDOC
+## narwhals.Expr.list.max
+
+### Description
+Computes the maximum value of each list in the expression.
+
+### Method
+max
+
+### Signature
+`max()`
+
+### Returns
+- An expression that evaluates to the maximum value of each list.
+```
+
+--------------------------------
+
+### narwhals.Expr
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr.md
+
+The Expr class represents an expression that can be used for lazy and eager computation on dataframe columns. It provides a wide range of methods for data transformation, aggregation, and window operations.
+
+```APIDOC
+# narwhals.Expr
+
+## Overview
+
+The `narwhals.Expr` class represents an expression in the Narwhals dataframe library. Expressions are used to define computations on dataframe columns, supporting both lazy and eager evaluation. This class provides methods for arithmetic, aggregation, window functions, and data cleaning.
+
+## Methods
+
+### abs
+Returns the absolute value of each element.
+
+### alias
+Renames the expression to a new name.
+
+### all
+Returns True if all elements are True.
+
+### any
+Returns True if any element is True.
+
+### any_value
+Returns the first non-null value.
+
+### cast
+Casts the expression to a different data type.
+
+### ceil
+Rounds up each element to the nearest integer.
+
+### clip
+Clips values to a given min and max bound.
+
+### cos
+Computes the cosine of each element.
+
+### count
+Counts the number of non-null elements.
+
+### cum_count
+Computes the cumulative count of non-null elements.
+
+### cum_max
+Computes the cumulative maximum.
+
+### cum_min
+Computes the cumulative minimum.
+
+### cum_prod
+Computes the cumulative product.
+
+### cum_sum
+Computes the cumulative sum.
+
+### diff
+Computes the difference between consecutive elements.
+
+### drop_nulls
+Drops null values from the expression.
+
+### ewm_mean
+Computes the exponentially weighted moving average.
+
+### exp
+Computes the exponential of each element.
+
+### fill_nan
+Fills NaN values with a specified value.
+
+### fill_null
+Fills null values with a specified value.
+
+### filter
+Filters elements based on a predicate.
+
+### first
+Returns the first element.
+
+### floor
+Rounds down each element to the nearest integer.
+
+### is_between
+Checks if elements are between a lower and upper bound.
+
+### is_close
+Checks if elements are close to a target value.
+
+### is_duplicated
+Checks if elements are duplicated.
+
+### is_finite
+Checks if elements are finite.
+
+### is_first_distinct
+Checks if elements are the first distinct value.
+
+### is_in
+Checks if elements are in a given set.
+
+### is_last_distinct
+Checks if elements are the last distinct value.
+
+### is_nan
+Checks if elements are NaN.
+
+### is_null
+Checks if elements are null.
+
+### is_unique
+Checks if elements are unique.
+
+### kurtosis
+Computes the kurtosis of the expression.
+
+### last
+Returns the last element.
+
+### len
+Returns the length of the expression.
+
+### log
+Computes the natural logarithm of each element.
+
+### map_batches
+Applies a function to batches of the expression.
+
+### max
+Returns the maximum value.
+
+### mean
+Returns the mean value.
+
+### median
+Returns the median value.
+
+### min
+Returns the minimum value.
+
+### mode
+Returns the mode (most frequent value).
+
+### n_unique
+Returns the number of unique values.
+
+### null_count
+Returns the number of null values.
+
+### over
+Defines a window operation over specified columns.
+
+### pipe
+Pipes the expression through a function.
+
+### quantile
+Computes the quantile of the expression.
+
+### rank
+Ranks the elements.
+
+### replace_strict
+Replaces values using a strict mapping.
+
+### rolling_mean
+Computes the rolling mean.
+
+### rolling_std
+Computes the rolling standard deviation.
+
+### rolling_sum
+Computes the rolling sum.
+
+### rolling_var
+Computes the rolling variance.
+
+### round
+Rounds elements to a specified number of decimals.
+
+### shift
+Shifts the elements by a given number of positions.
+
+### sin
+Computes the sine of each element.
+
+### skew
+Computes the skewness of the expression.
+
+### sqrt
+Computes the square root of each element.
+
+### std
+Returns the standard deviation.
+
+### sum
+Returns the sum of all elements.
+
+### unique
+Returns the unique values.
+
+### var
+Returns the variance.
+```
+
+--------------------------------
+
+### Expr.name.keep
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_name.md
+
+Keep only the specified column names in the expression.
+
+```APIDOC
+## Expr.name.keep
+
+### Description
+Keep only the specified column names in the expression.
+
+### Method
+keep
+
+### Parameters
+- **names** (list[str]) - Required - The column names to keep.
+
+### Returns
+- Expr - The expression with only the specified columns.
+```
+
+--------------------------------
+
+### is_pandas_like_dataframe
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a pandas-like DataFrame (e.g., pandas, modin, cudf).
+
+```APIDOC
+## is_pandas_like_dataframe
+
+### Description
+Checks if the given object is a pandas-like DataFrame (e.g., pandas, modin, cudf).
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a pandas-like DataFrame, False otherwise.
+
+```
+
+--------------------------------
+
+### total_microseconds
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Returns the total number of microseconds in a duration Series.
+
+```APIDOC
+## total_microseconds
+
+### Description
+Returns the total number of microseconds in a duration Series.
+
+### Method
+total_microseconds
+
+### Returns
+The Series containing the total microseconds.
+```
+
+--------------------------------
+
+### is_pandas_like_series
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a pandas-like Series (e.g., pandas, modin, cudf).
+
+```APIDOC
+## is_pandas_like_series
+
+### Description
+Checks if the given object is a pandas-like Series (e.g., pandas, modin, cudf).
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a pandas-like Series, False otherwise.
+
+```
+
+--------------------------------
+
+### LazyGroupBy.agg
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/lazy_group_by.md
+
+The agg method is used to define aggregations on a LazyGroupBy object. It accepts one or more expressions or strings specifying the aggregations to compute.
+
+```APIDOC
+## LazyGroupBy.agg
+
+### Description
+Defines aggregations to apply to the grouped data in a lazy group-by operation.
+
+### Method
+agg
+
+### Signature
+agg(*exprs)
+
+### Parameters
+- **exprs** (expression or str) - Required - One or more expressions or column names specifying the aggregations to compute.
+
+### Returns
+- LazyFrame - A new LazyFrame with the aggregated results.
+
+### Example
+```python
+import narwhals as nw
+
+df = nw.from_dict({"a": [1, 1, 2], "b": [4, 5, 6]})
+result = df.group_by("a").agg(nw.col("b").sum())
+```
+```
+
+--------------------------------
+
+### generate_temporary_column_name
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Generates a temporary column name that does not conflict with existing columns.
+
+```APIDOC
+## generate_temporary_column_name
+
+### Description
+Generates a temporary column name that does not conflict with existing columns.
+
+### Method
+Function
+
+### Signature
+`generate_temporary_column_name(n_seen, columns)`
+
+### Parameters
+- **n_seen** (int) - Required - Number of temporary columns already generated.
+- **columns** (list) - Required - List of existing column names.
+
+### Returns
+- **str** - A unique temporary column name.
+```
+
+--------------------------------
+
+### is_pyarrow_table
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a PyArrow Table.
+
+```APIDOC
+## is_pyarrow_table
+
+### Description
+Checks if the given object is a PyArrow Table.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a PyArrow Table, False otherwise.
+
+```
+
+--------------------------------
+
+### convert_time_zone
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Converts the time zone of a datetime Series to a specified target time zone.
+
+```APIDOC
+## convert_time_zone
+
+### Description
+Converts the time zone of a datetime Series to a specified target time zone.
+
+### Method
+convert_time_zone
+
+### Parameters
+- **time_zone** (str) - Required - The target time zone to convert to.
+
+### Returns
+The Series with the converted time zone.
+```
+
+--------------------------------
+
+### truncate
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Truncates the datetime values in a Series to a specified frequency.
+
+```APIDOC
+## truncate
+
+### Description
+Truncates the datetime values in a Series to a specified frequency.
+
+### Method
+truncate
+
+### Parameters
+- **freq** (str) - Required - The frequency to truncate to (e.g., '1h', '1d').
+
+### Returns
+The Series with truncated datetime values.
+```
+
+--------------------------------
+
+### field
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_struct.md
+
+Extracts a field from a struct column. This method is part of the ExprStructNamespace and is called on an expression that represents a struct column.
+
+```APIDOC
+## field
+
+### Description
+Extracts a field from a struct column. This method is part of the ExprStructNamespace and is called on an expression that represents a struct column.
+
+### Method
+field
+
+### Parameters
+- **name** (str) - Required - The name of the field to extract.
+
+### Returns
+- **Expr** - An expression representing the extracted field.
+
+### Example
+```python
+import narwhals as nw
+
+df = nw.from_native(...)
+df.select(nw.col('struct_col').struct.field('field_name'))
+```
+```
+
+--------------------------------
+
+### maybe_set_index
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Sets the index of a dataframe to a given column.
+
+```APIDOC
+## maybe_set_index
+
+### Description
+Sets the index of a dataframe to a given column.
+
+### Method
+Function
+
+### Signature
+`maybe_set_index(df, column)`
+
+### Parameters
+- **df** (DataFrame) - Required - Dataframe.
+- **column** (str) - Required - Column to use as index.
+
+### Returns
+- **DataFrame** - Dataframe with new index.
+```
+
+--------------------------------
+
+### get_categories
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_cat.md
+
+Returns the unique categories of a categorical expression. This method is part of the `narwhals.Expr.cat` namespace and is called on an expression that has a categorical data type.
+
+```APIDOC
+## get_categories
+
+### Description
+Returns the unique categories of a categorical expression.
+
+### Method
+`get_categories`
+
+### Endpoint
+`narwhals.Expr.cat.get_categories()`
+
+### Parameters
+None
+
+### Returns
+- **Expr** - An expression representing the unique categories of the categorical input.
+```
+
+--------------------------------
+
+### is_ibis_table
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is an Ibis Table.
+
+```APIDOC
+## is_ibis_table
+
+### Description
+Checks if the given object is an Ibis Table.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is an Ibis Table, False otherwise.
+
+```
+
+--------------------------------
+
+### maybe_align_index
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Aligns the index of a dataframe to a reference dataframe.
+
+```APIDOC
+## maybe_align_index
+
+### Description
+Aligns the index of a dataframe to a reference dataframe.
+
+### Method
+Function
+
+### Signature
+`maybe_align_index(df, ref)`
+
+### Parameters
+- **df** (DataFrame) - Required - Dataframe to align.
+- **ref** (DataFrame) - Required - Reference dataframe.
+
+### Returns
+- **DataFrame** - Aligned dataframe.
+```
+
+--------------------------------
+
+### cov
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the covariance between two columns.
+
+```APIDOC
+## cov
+
+### Description
+Computes the covariance between two columns.
+
+### Method
+Function
+
+### Signature
+`cov(a, b)`
+
+### Parameters
+- **a** (str) - Required - Name of the first column.
+- **b** (str) - Required - Name of the second column.
+
+### Returns
+- **float** - Covariance value.
+```
+
+--------------------------------
+
+### is_modin_index
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a Modin Index.
+
+```APIDOC
+## is_modin_index
+
+### Description
+Checks if the given object is a Modin Index.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a Modin Index, False otherwise.
+
+```
+
+--------------------------------
+
+### mean_horizontal
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Computes the mean value across multiple columns horizontally.
+
+```APIDOC
+## mean_horizontal
+
+### Description
+Computes the mean value across multiple columns horizontally.
+
+### Method
+Function
+
+### Signature
+`mean_horizontal(*exprs)`
+
+### Parameters
+- **exprs** (Expr) - Required - Expressions to evaluate.
+
+### Returns
+- **Expr** - Expression representing the horizontal mean.
+```
+
+--------------------------------
+
+### ordinal_day
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Extracts the ordinal day of the year from a datetime Series.
+
+```APIDOC
+## ordinal_day
+
+### Description
+Extracts the ordinal day of the year from a datetime Series.
+
+### Method
+ordinal_day
+
+### Returns
+The Series containing the ordinal day.
+```
+
+--------------------------------
+
+### Use pytest.mark.skipif for conditional skips
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/CONTRIBUTING.md
+
+Skips the test when a condition is true, such as an unsupported pandas version. The reason parameter explains why the test is skipped.
+
+```python
+@pytest.mark.skipif(PANDAS_VERSION < (2, 0), reason="requires pandas 2.0+")
+def test_version_dependent():
+    # Test implementation
+```
+
+--------------------------------
+
+### concat
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Concatenates multiple dataframes or series along a given axis.
+
+```APIDOC
+## concat
+
+### Description
+Concatenates multiple dataframes or series along a given axis.
+
+### Method
+Function
+
+### Signature
+`concat(items, *, how='vertical')`
+
+### Parameters
+- **items** (list) - Required - List of dataframes or series to concatenate.
+- **how** (str) - Optional - Type of concatenation: 'vertical' or 'horizontal'. Default is 'vertical'.
+
+### Returns
+- **DataFrame** or **Series** - Concatenated result.
+```
+
+--------------------------------
+
+### maybe_reset_index
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/narwhals.md
+
+Resets the index of a dataframe.
+
+```APIDOC
+## maybe_reset_index
+
+### Description
+Resets the index of a dataframe.
+
+### Method
+Function
+
+### Signature
+`maybe_reset_index(df)`
+
+### Parameters
+- **df** (DataFrame) - Required - Dataframe.
+
+### Returns
+- **DataFrame** - Dataframe with reset index.
+```
+
+--------------------------------
+
+### field
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_struct.md
+
+Extracts a field from a struct-typed series. This method is part of the SeriesStructNamespace and is called on a Series.struct accessor.
+
+```APIDOC
+## field
+
+### Description
+Extracts a field from a struct-typed series.
+
+### Method
+field
+
+### Endpoint
+narwhals.Series.struct.field
+
+### Parameters
+- **name** (str) - Required - The name of the field to extract.
+
+### Returns
+- A new Series containing the extracted field values.
+
+### Example
+```python
+series.struct.field("field_name")
+```
+```
+
+--------------------------------
+
+### Datetime and Duration dtype hashing behavior
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/backcompat.md
+
+Since Narwhals 1.9.0, Datetime and Duration dtypes hash using both time_unit and time_zone. The v1 behavior treats Datetime("us") as equal to Datetime, while the main namespace does not.
+
+```python
+import narwhals.stable.v1 as nw_v1
+import narwhals as nw
+
+# v1 behaviour:
+assert nw_v1.Datetime("us") in {nw_v1.Datetime}
+
+# main namespace (and, when we get there, v2) behaviour:
+assert nw.Datetime("us") not in {nw.Datetime}
+assert nw.Datetime("us") in {nw.Datetime("us")}
+```
+
+--------------------------------
+
+### is_pandas_index
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a pandas Index.
+
+```APIDOC
+## is_pandas_index
+
+### Description
+Checks if the given object is a pandas Index.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a pandas Index, False otherwise.
+
+```
+
+--------------------------------
+
+### is_dask_dataframe
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a Dask DataFrame.
+
+```APIDOC
+## is_dask_dataframe
+
+### Description
+Checks if the given object is a Dask DataFrame.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a Dask DataFrame, False otherwise.
+
+```
+
+--------------------------------
+
+### is_pyarrow_chunked_array
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a PyArrow ChunkedArray.
+
+```APIDOC
+## is_pyarrow_chunked_array
+
+### Description
+Checks if the given object is a PyArrow ChunkedArray.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a PyArrow ChunkedArray, False otherwise.
+
+```
+
+--------------------------------
+
+### is_pandas_dataframe
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a pandas DataFrame.
+
+```APIDOC
+## is_pandas_dataframe
+
+### Description
+Checks if the given object is a pandas DataFrame.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a pandas DataFrame, False otherwise.
+
+```
+
+--------------------------------
+
+### narwhals.Expr.list.contains
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/expr_list.md
+
+Checks if a list expression contains a given value.
+
+```APIDOC
+## narwhals.Expr.list.contains
+
+### Description
+Checks if a list expression contains a given value.
+
+### Method
+contains
+
+### Signature
+`contains(item)`
+
+### Parameters
+- **item** (Any) - The value to check for in the list.
+
+### Returns
+- An expression that evaluates to a boolean indicating whether the list contains the item.
+```
+
+--------------------------------
+
+### replace_time_zone
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/series_dt.md
+
+Replaces the time zone of a datetime Series without changing the underlying UTC values.
+
+```APIDOC
+## replace_time_zone
+
+### Description
+Replaces the time zone of a datetime Series without changing the underlying UTC values.
+
+### Method
+replace_time_zone
+
+### Parameters
+- **time_zone** (str) - Required - The new time zone to assign.
+
+### Returns
+The Series with the replaced time zone.
+```
+
+--------------------------------
+
+### is_modin_series
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a Modin Series.
+
+```APIDOC
+## is_modin_series
+
+### Description
+Checks if the given object is a Modin Series.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a Modin Series, False otherwise.
+
+```
+
+--------------------------------
+
+### is_modin_dataframe
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a Modin DataFrame.
+
+```APIDOC
+## is_modin_dataframe
+
+### Description
+Checks if the given object is a Modin DataFrame.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a Modin DataFrame, False otherwise.
+
+```
+
+--------------------------------
+
+### is_cudf_index
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a cudf Index.
+
+```APIDOC
+## is_cudf_index
+
+### Description
+Checks if the given object is a cudf Index.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a cudf Index, False otherwise.
+
+```
+
+--------------------------------
+
+### is_pandas_series
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a pandas Series.
+
+```APIDOC
+## is_pandas_series
+
+### Description
+Checks if the given object is a pandas Series.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a pandas Series, False otherwise.
+
+```
+
+--------------------------------
+
+### is_numpy_array
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a NumPy array.
+
+```APIDOC
+## is_numpy_array
+
+### Description
+Checks if the given object is a NumPy array.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a NumPy array, False otherwise.
+
+```
+
+--------------------------------
+
+### is_cudf_dataframe
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a cudf DataFrame.
+
+```APIDOC
+## is_cudf_dataframe
+
+### Description
+Checks if the given object is a cudf DataFrame.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a cudf DataFrame, False otherwise.
+
+```
+
+--------------------------------
+
+### is_cudf_series
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a cudf Series.
+
+```APIDOC
+## is_cudf_series
+
+### Description
+Checks if the given object is a cudf Series.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a cudf Series, False otherwise.
+
+```
+
+--------------------------------
+
+### is_polars_series
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a Polars Series.
+
+```APIDOC
+## is_polars_series
+
+### Description
+Checks if the given object is a Polars Series.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a Polars Series, False otherwise.
+
+```
+
+--------------------------------
+
+### is_polars_lazyframe
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a Polars LazyFrame.
+
+```APIDOC
+## is_polars_lazyframe
+
+### Description
+Checks if the given object is a Polars LazyFrame.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a Polars LazyFrame, False otherwise.
+
+```
+
+--------------------------------
+
+### is_polars_dataframe
+
+Source: https://github.com/narwhals-dev/narwhals/blob/main/docs/api-reference/dependencies.md
+
+Checks if the given object is a Polars DataFrame.
+
+```APIDOC
+## is_polars_dataframe
+
+### Description
+Checks if the given object is a Polars DataFrame.
+
+### Method
+N/A (Python function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **data** (object) - The object to check.
+
+### Returns
+- **bool** - True if the object is a Polars DataFrame, False otherwise.
+
+```

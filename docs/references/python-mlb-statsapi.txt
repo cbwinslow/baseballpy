@@ -1,0 +1,5214 @@
+# python-mlb-statsapi: documentation excerpt
+
+- Source: Context7 `/zero-sum-seattle/python-mlb-statsapi` (https://context7.com/zero-sum-seattle/python-mlb-statsapi)
+- Fetched: 2026-10-29; excerpt only (the service caps a response at about 500 KB), not the complete manual. Upstream licences apply; see the upstream repository.
+
+<!-- topic: generic extract -->
+### Get Gamepace Metrics (HTTP Request)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Gamepace
+
+Example HTTP GET request to the MLB Stats API endpoint for retrieving pace of game metrics for a given season.
+
+```http
+https://statsapi.mlb.com/api/v1/gamePace?season=2018
+```
+
+--------------------------------
+
+### Install and Initialize Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+This snippet shows how to install the python-mlb-statsapi library using pip and how to initialize the main MLB API object for use.
+
+```python
+import mlbstatsapi
+
+# Install the library:
+# python3 -m pip install python-mlb-statsapi
+
+# Initialize the MLB API object:
+mlb = mlbstatsapi.Mlb()
+```
+
+--------------------------------
+
+### Install Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Home
+
+Installs the python-mlb-statsapi package from the test PyPI repository. This command is used to set up the library for use in a Python environment.
+
+```python
+python3 -m pip install -i https://test.pypi.org/simple/ python-mlb-statsapi
+```
+
+--------------------------------
+
+### Get Game
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Retrieves general information about a specific game.
+
+```APIDOC
+## GET /api/v1.1/game/{game_id}
+
+### Description
+Returns general information about a specific game. This endpoint can also return a snapshot of data at a specific timecode and allow filtering of returned fields.
+
+### Method
+GET
+
+### Endpoint
+`/api/v1.1/game/{game_id}`
+
+### Parameters
+#### Path Parameters
+- **game_id** (string/int) - Required - Game id number
+
+#### Query Parameters
+- **timecode** (string) - Optional - Use this parameter to return a snapshot of the data at the specified time. Format: YYYYMMDD_HHMMSS
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```https
+https://statsapi.mlb.com/api/v1.1/game/534196?fields=game.status
+```
+
+### Response
+#### Success Response (200)
+- **gameData** (object) - Contains detailed information about the game.
+
+#### Response Example
+```json
+{
+  "gameData": {
+    "game": {
+      "pk": 534196,
+      "status": {
+        "abstractGameState": "Final",
+        "detailedState": "Final"
+      }
+    }
+  }
+}
+```
+```
+
+--------------------------------
+
+### Get MLB Schedule Data with Python
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Schedule
+
+Retrieves MLB schedule information for a given date using the python-mlb-statsapi library. This function takes a date string as input and returns a Schedule object containing details about games played on that date. It requires the mlbstatsapi library to be installed. The output includes the total number of items, events, games, and games in progress, along with a list of dates, each containing its own game information.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+schedule = mlb.get_schedule('2022-10-13')
+
+print(schedule)
+
+dates = schedule.dates
+for date in dates:
+    for game in date.games:
+            print(game.teams.home)
+            print(game.teams.away)
+```
+
+--------------------------------
+
+### Get Game Play By Play
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Retrieves the play-by-play data for a specific game.
+
+```APIDOC
+## GET /api/v1.1/game/{game_id}/playByPlay
+
+### Description
+Returns the play-by-play data for a specific game. This endpoint can also return a snapshot of data at a specific timecode and allow filtering of returned fields.
+
+### Method
+GET
+
+### Endpoint
+`/api/v1.1/game/{game_id}/playByPlay`
+
+### Parameters
+#### Path Parameters
+- **game_id** (string/int) - Required - Game id number
+
+#### Query Parameters
+- **timecode** (string) - Optional - Use this parameter to return a snapshot of the data at the specified time. Format: YYYYMMDD_HHMMSS
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```https
+https://statsapi.mlb.com/api/v1.1/game/534196/playByPlay?timecode=20230101_120000
+```
+
+### Response
+#### Success Response (200)
+- **playByPlay** (object) - Contains the play-by-play data for the game.
+
+#### Response Example
+```json
+{
+  "playByPlay": {
+    "gameId": "534196",
+    "plays": []
+  }
+}
+```
+```
+
+--------------------------------
+
+### Get Player and Team IDs and Stats (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Demonstrates how to retrieve player and team IDs by name, and then fetch their respective statistics. It covers getting hitting stats for a player and pitching stats for a team for a specific season.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+# Get Player ID and Stats
+player_id = mlb.get_people_id("Ty France")
+print(f"Ty France ID: {player_id}")
+
+stats = ['season', 'seasonAdvanced']
+groups = ['hitting']
+params = {'season': 2022}
+player_stats = mlb.get_player_stats(player_id[0], stats, groups, **params)
+print(f"Ty France Stats (2022): {player_stats}")
+
+# Get Team ID and Stats
+team_id = mlb.get_team_id("Oakland Athletics")
+print(f"Oakland Athletics ID: {team_id}")
+
+stats = ['season', 'seasonAdvanced']
+groups = ['pitching']
+params = {'season': 2022}
+team_stats = mlb.get_team_stats(team_id[0], stats, groups, **params)
+print(f"Oakland Athletics Pitching Stats (2022): {team_stats}")
+```
+
+--------------------------------
+
+### MLB Stats API Endpoint Example
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Season
+
+An example of a direct API query to the MLB stats API to retrieve season data. This URL fetches all seasons for a specified sport ID (1 for MLB).
+
+```http
+https://statsapi.mlb.com/api/v1/seasons?sportId=1
+```
+
+--------------------------------
+
+### Get Venues
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Venue
+
+Retrieves venue information based on specified IDs, sports, season, or fields.
+
+```APIDOC
+## GET /api/v1/venues
+
+### Description
+Return all venues or filter by venueIds, sportIds, season, or specific fields.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/venues
+
+### Parameters
+#### Query Parameters
+- **venueIds** (int/list) - Optional - Insert venueId to return venue directorial information based venueId.
+- **sportIds** (string/int) - Optional - Insert sportIds to return venue directorial information based a given sport(s). For a list of all sports: https://statsapi.mlb.com/api/v1/sports
+- **season** (string/int) - Optional - Insert year to return venue directorial information for a given season.
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```json
+{
+  "venueIds": [15]
+}
+```
+
+### Response
+#### Success Response (200)
+- **id** (int) - The unique identifier for the venue.
+- **link** (string) - A relative link to the venue resource.
+- **name** (string) - The name of the venue.
+- **fieldInfo** (object) - Information about the field dimensions and characteristics.
+- **active** (boolean) - Indicates if the venue is currently active.
+
+#### Response Example
+```json
+{
+  "venues": [
+    {
+      "id": 31,
+      "link": "/api/v1/venues/31",
+      "name": "PNC Park",
+      "fieldInfo": {
+        "capacity": 38753,
+        "turfType": "Grass",
+        "roofType": "Open",
+        "leftLine": 325,
+        "left": 389,
+        "leftCenter": 410,
+        "center": 399,
+        "rightCenter": 375,
+        "rightLine": 320
+      },
+      "active": true
+    }
+  ]
+}
+```
+```
+
+--------------------------------
+
+### GET /api/v1.1/game/{game_id}/feed/live
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Retrieves live feed data for a specific game, including play-by-play and other game details.
+
+```APIDOC
+## GET /api/v1.1/game/{game_id}/feed/live
+
+### Description
+Returns live feed data for a specific game, including play-by-play and other game details. This endpoint can also return a snapshot of data at a specific timecode and allow filtering of returned fields.
+
+### Method
+GET
+
+### Endpoint
+`/api/v1.1/game/{game_id}/feed/live`
+
+### Parameters
+#### Path Parameters
+- **game_id** (string/int) - Required - Game id number
+
+#### Query Parameters
+- **timecode** (string) - Optional - Use this parameter to return a snapshot of the data at the specified time. Format: YYYYMMDD_HHMMSS
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```https
+https://statsapi.mlb.com/api/v1.1/game/534196/feed/live?timecode=20230101_120000&fields=game.teams
+```
+
+### Response
+#### Success Response (200)
+- **gameData** (object) - Contains detailed information about the game.
+- **liveData** (object) - Contains live statistics and status of the game.
+
+#### Response Example
+```json
+{
+  "gameData": {
+    "game": {
+      "pk": 534196
+    }
+  },
+  "liveData": {
+    "plays": {
+      "allPlays": []
+    }
+  }
+}
+```
+```
+
+--------------------------------
+
+### Get Venue ID
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Venue
+
+Retrieves the venue ID based on the venue name.
+
+```APIDOC
+## POST /api/v1/venues/getVenueId
+
+### Description
+Return venue id based on venue name.
+
+### Method
+POST
+
+### Endpoint
+/api/v1/venues/getVenueId
+
+### Parameters
+#### Request Body
+- **venue_name** (string) - Required - The name of the venue.
+- **search_key** (string) - Optional - The key to use for searching the venue name.
+
+### Request Example
+```json
+{
+  "venue_name": "PNC Park"
+}
+```
+
+### Response
+#### Success Response (200)
+- **venue_ids** (list) - A list of venue IDs matching the provided name.
+
+#### Response Example
+```json
+{
+  "venue_ids": [31]
+}
+```
+```
+
+--------------------------------
+
+### Get Specific MLB Season Details using Python mlbstatsapi
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Season
+
+This example shows how to retrieve detailed information for a specific MLB season using its ID. After initializing the mlbstatsapi client, it fetches the season data for the year 2022 and prints the comprehensive Season object, which includes start and end dates for various parts of the season, wildcard status, and other relevant details.
+
+```python
+>>> import mlbstatsapi
+>>> 
+>>> mlb = mlbstatsapi.Mlb()
+>>> 
+>>> season = mlb.get_season(season_id=2022)
+>>> 
+>>> print(season)
+Season(seasonid=2022, haswildcard=True, preseasonstartdate=2022-01-01, preseasonenddate=2022-03-16, seasonstartdate=2022-03-17, springstartdate=2022-03-17, springenddate=2022-04-06, regularseasonstartdate=2022-04-07, lastdate1sthalf=2022-07-17, allstardate=2022-07-19, firstdate2ndhalf=2022-07-21, regularseasonenddate=2022-10-05, postseasonstartdate=2022-10-07, postseasonenddate=2022-11-05, seasonenddate=2022-11-05, offseasonstartdate=2022-11-06, offseasonenddate=2022-12-31, seasonlevelgamedaytype=P, gamelevelgamedaytype=P, qualifierplateappearances=3.1, qualifieroutspitched=6000.0)
+```
+
+--------------------------------
+
+### Get Team ID and Details using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+This snippet demonstrates how to get a team's ID and then retrieve detailed team information using the `mlbstatsapi` library. It requires initializing the `Mlb` client and then calling `get_team_id` followed by `get_team`.
+
+```python
+>>> import mlbstatsapi
+>>> 
+>>> mlb = mlbstatsapi.Mlb()
+>>> 
+>>> team_id = mlb.get_team_id("Seattle Mariners")
+>>> print(team_id)
+[136]
+>>>
+>>> team = mlb.get_team(team_ids[0])
+>>> print(team)
+Team(id=136, link=/api/v1/teams/136, name=Seattle Mariners, springleague=League(id=114, link=/api/v1/league/114, name=Cactus League), allstarstatus=N, season=2022, venue=Venue(id=680, link=/api/v1/venues/680, name=T-Mobile Park), springvenue=Venue(id=2530, link=/api/v1/venues/2530, name=None), teamcode=sea, filecode=sea, abbreviation=SEA, teamname=Mariners, locationname=Seattle, firstyearofplay=1977, league=League(id=103, link=/api/v1/league/103, name=American League), division=Division(id=200, link='/api/v1/divisions/200', name='American League West', season=None, nameshort=None, abbreviation=None, league=None, sport=None, haswildcard=None, sortorder=None, numplayoffteams=None, active=None), sport=Sport(id=1, link=/api/v1/sports/1), shortname=Seattle, franchisename=Seattle, clubname=Mariners, active=True)
+>>>
+```
+
+--------------------------------
+
+### Initialize and Use Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Home
+
+Demonstrates how to import the mlbstatsapi library, create an MLB instance, and use it to retrieve a team ID. This is a basic example of interacting with the API.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+oak_id = mlb.get_team_id("Oakland Athletics")
+print (oak_id)
+
+>>>[133]
+```
+
+--------------------------------
+
+### Get Game Box Score
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Retrieves the box score for a specific game.
+
+```APIDOC
+## GET /api/v1.1/game/{game_id}/boxscore
+
+### Description
+Returns the box score for a specific game. This endpoint can also return a snapshot of data at a specific timecode and allow filtering of returned fields.
+
+### Method
+GET
+
+### Endpoint
+`/api/v1.1/game/{game_id}/boxscore`
+
+### Parameters
+#### Path Parameters
+- **game_id** (string/int) - Required - Game id number
+
+#### Query Parameters
+- **timecode** (string) - Optional - Use this parameter to return a snapshot of the data at the specified time. Format: YYYYMMDD_HHMMSS
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```https
+https://statsapi.mlb.com/api/v1.1/game/534196/boxscore?timecode=20230101_120000
+```
+
+### Response
+#### Success Response (200)
+- **boxScore** (object) - Contains the box score data for the game.
+
+#### Response Example
+```json
+{
+  "boxScore": {
+    "teams": {
+      "home": {
+        "players": [],
+        "batters": [],
+        "pitchers": [],
+        "coaches": []
+      },
+      "away": {
+        "players": [],
+        "batters": [],
+        "pitchers": [],
+        "coaches": []
+      }
+    }
+  }
+}
+```
+```
+
+--------------------------------
+
+### Get Gamepace Metrics (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Gamepace
+
+Retrieves pace of game metrics for a specified season. Supports filtering by team, league, sport, date, and other criteria. Requires the mlbstatsapi library.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+mlb.get_gamepace(season = 2018)
+```
+
+--------------------------------
+
+### GET /api/v1/gamePace
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Gamepace
+
+Retrieves pace of game metrics for a specified season and optionally filters by team, league, date, and other criteria.
+
+```APIDOC
+## GET /api/v1/gamePace
+
+### Description
+Returns a Gamepace. This endpoint allows you to fetch pace of game metrics for a given season and apply various filters.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/gamePace
+
+### Parameters
+#### Query Parameters
+- **season** (int) - Required - Insert year to return a directory of pace of game metrics for a given season.
+- **teamIds** (int) - Optional - Insert a teamIds to return directory of pace of game metrics for a given team. Format '110' or '110,147'.
+- **leagueId** (int) - Optional - Insert leagueIds to return a directory of pace of game metrics for a given league. Format '103' or '103,104'.
+- **leagueListId** (string) - Optional - Insert a unique League List Identifier to return a directory of pace of game metrics for a specific league listId.
+- **sportId** (int) - Optional - Insert a sportId to return a directory of pace of game metrics for a specific sport. Format '11' or '1,11'.
+- **gameType** (string) - Optional - Insert gameType(s) to return a directory of pace of game metrics for a specific gameType. For a list of all gameTypes, refer to the API documentation.
+- **date** (string) - Optional - Insert date to return a directory of pace of game metrics for a particular date range. Format: MM/DD/YYYY. Must be coupled with endDate.
+- **endDate** (string) - Optional - Insert date to return a directory of pace of game metrics for a particular date range. Format: MM/DD/YYYY. Must be coupled with startDate.
+- **venueIds** (int) - Optional - Insert venueId to return a directory of pace of game metrics for a particular venueId.
+- **orgType** (string) - Optional - Insert an orgType to return a directory of pace of game metrics based on team, league or sport. Available values : T- TEAM, L- LEAGUE, S- SPORT.
+- **includeChildren** (bool) - Optional - Insert includeChildren to return a directory of pace of game metrics for all child teams in a given parent sport.
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attr.
+
+### Request Example
+```https
+https://statsapi.mlb.com/api/v1/gamePace?season=2018&teamIds=110
+```
+
+### Response
+#### Success Response (200)
+- **gamePace** (array) - An array of game pace objects, each containing metrics like gameDuration, pitchDuration, and more.
+
+#### Response Example
+```json
+{
+  "gamePace": [
+    {
+      "gameDuration": "3:05:15",
+      "pitchDuration": "0:03:10",
+      "teamId": 110,
+      "teamName": "New York Yankees",
+      "season": "2018"
+    }
+  ]
+}
+```
+```
+
+--------------------------------
+
+### Get Venue by Name (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Fetches venue details using the venue's name. It first gets the venue ID and then uses that ID to retrieve the venue object. The output includes the venue's ID and name. Requires `mlbstatsapi`.
+
+```python
+>>> mlb = mlbstatsapi.Mlb()
+>>> vevue_ids = mlb.get_venue_id('PNC Park')
+>>> venue_id = venue_ids[0]
+>>> venue = mlb.get_team(venue.id)
+>>> print(venue.id)
+>>> print(venue.name)
+```
+
+--------------------------------
+
+### Get Team Information
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves detailed information about a specific MLB team using its ID. The process involves first getting the team's ID by its name, then using that ID to fetch the full team object. The example prints the team's ID and name.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+team_ids = mlb.get_team_id("Seattle Mariners")
+team_id = team_ids[0].id
+team = mlb.get_team(team_id)
+
+print(team.id)
+print(team.name)
+```
+
+--------------------------------
+
+### Get Schedule
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Schedule
+
+Retrieves schedule objects for a specified date or date range, with options to filter by sport, team, league, game Pks, venue IDs, and game types.
+
+```APIDOC
+## GET /api/v1/schedule
+
+### Description
+Returns a schedule object for a given date or date range.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/schedule
+
+### Parameters
+#### Query Parameters
+- **date** (string) - Required - The specific date for which to retrieve the schedule (e.g., 'YYYY-MM-DD').
+- **start_date** (string) - Required - The start date for the schedule range (e.g., 'YYYY-MM-DD').
+- **end_date** (string) - Required - The end date for the schedule range (e.g., 'YYYY-MM-DD').
+- **sport_id** (string/int) - Required - The ID of the sport for which to retrieve the schedule. Defaults to 1.
+- **team_id** (string/int) - Optional - The ID of the team for which to retrieve the schedule.
+- **leagueId** (string) - Required - The ID of the league to filter schedules.
+- **gamePks** (string) - Required - Comma-separated game primary keys to filter schedules.
+- **venueIds** (string) - Required - Comma-separated venue IDs to filter schedules.
+- **gameTypes** (string) - Required - Comma-separated game types to filter schedules. For a list of game types, see: https://statsapi.mlb.com/api/v1/gameTypes
+
+### Request Example
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+schedule = mlb.get_schedule('2022-10-13', sportId=1)
+
+print(schedule)
+```
+
+### Response
+#### Success Response (200)
+- **totalItems** (int) - The total number of items in the schedule.
+- **totalEvents** (int) - The total number of events in the schedule.
+- **totalGames** (int) - The total number of games in the schedule.
+- **totalGamesInProgress** (int) - The total number of games currently in progress.
+- **dates** (array) - An array of date objects, each containing schedule information for that date.
+  - **date** (string) - The date of the schedule information.
+  - **totalGames** (int) - The total number of games on this date.
+  - **games** (array) - An array of game objects for the date.
+    - **gamePk** (int) - The primary key for the game.
+    - **link** (string) - The API link to the game details.
+    - **teams** (object) - Contains home and away team information.
+      - **home** (object) - Home team details.
+        - **team** (object) - Team information.
+          - **id** (int) - Team ID.
+          - **link** (string) - API link to the team.
+          - **name** (string) - Team name.
+        - **leagueRecord** (object) - Team's league record.
+          - **wins** (int) - Number of wins.
+          - **losses** (int) - Number of losses.
+          - **pct** (string) - Winning percentage.
+      - **away** (object) - Away team details (similar structure to home team).
+
+#### Response Example
+```json
+{
+  "totalItems": 2,
+  "totalEvents": 0,
+  "totalGames": 2,
+  "totalGamesInProgress": 0,
+  "dates": [
+    {
+      "date": "2022-10-13",
+      "totalGames": 2,
+      "games": [
+        {
+          "gamePk": 660829,
+          "link": "/api/v1/game/660829/feed/live",
+          "teams": {
+            "away": {
+              "leagueRecord": {
+                "wins": 0,
+                "losses": 2,
+                "pct": ".000",
+                "ties": null
+              },
+              "score": 0,
+              "team": {
+                "id": 136,
+                "name": "Seattle Mariners",
+                "link": "/api/v1/teams/136"
+              }
+            },
+            "home": {
+              "leagueRecord": {
+                "wins": 2,
+                "losses": 0,
+                "pct": "1.000",
+                "ties": null
+              },
+              "score": 3,
+              "team": {
+                "id": 117,
+                "name": "Houston Astros",
+                "link": "/api/v1/teams/117"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+```
+
+--------------------------------
+
+### Get Game Pace Metrics
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves game pace metrics for a specified season. This function helps in understanding the tempo of games within a particular MLB season. It requires the `mlbstatsapi` library to be installed and configured.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+season = 2021
+gamepace = mlb.get_gamepace(season)
+```
+
+--------------------------------
+
+### Get Standings API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Standings
+
+Retrieves standings information for a specified league and season. Additional parameters can filter by standings type and date.
+
+```APIDOC
+## GET /api/v1/standings
+
+### Description
+Retrieves standings information for a specified league and season. This endpoint allows fetching standings based on league ID, season, standings type, and a specific date.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/standings
+
+### Parameters
+#### Query Parameters
+- **leagueId** (string/int) - Required - Insert leagueId to return all standings based on a particular standingType for a specific league.
+- **season** (string) - Required - Insert year to return all standings based on a particular year.
+- **standingsTypes** (string) - Optional - Insert standingType to return all standings based on a particular year. Find standingTypes at https://statsapi.mlb.com/api/v1/standingsTypes
+- **date** (string) - Required - Insert date to return standing information for on a particular date. Format: MM/DD/YYYY
+
+### Request Example
+```json
+{
+  "example": "https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=2018&date=09/20/2023"
+}
+```
+
+### Response
+#### Success Response (200)
+- **eliminationnumber** (str) - The number of games the team needs to win or the number of games their opponents need to lose in order to be eliminated from playoff contention.
+- **wildcardeliminationnumber** (str) - The number of games the team needs to win or the number of games their opponents need to lose in order to be eliminated from wild card contention.
+- **wins** (int) - The number of wins of the team.
+- **losses** (int) - The number of losses of the team.
+- **rundifferential** (int) - The run differential of the team (runs scored minus runs allowed).
+- **winningpercentage** (str) - The winning percentage of the team.
+- **wildcardrank** (str) - The rank of the team in the wild card race.
+- **wildcardleader** (bool) - A flag indicating whether the team is the leader in the wild card race.
+- **magicnumber** (str) - The number of games the team needs to win or the number of games their opponents need to lose in order to clinch a spot in the playoffs.
+- **clinchindicator** (str) - Clinch indicator.
+
+#### Response Example
+```json
+{
+  "example": "[Actual JSON response containing standings data]"
+}
+```
+```
+
+--------------------------------
+
+### Get Play-by-Play Data using Python MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Fetches the play-by-play data for a given MLB game ID. This function allows filtering by timecode and specific fields.
+
+```Python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+# Example: Get play-by-play for game ID 534196
+play_by_play = mlb.get_game_play_by_play(game_id=534196)
+
+# Example: Get play-by-play at a specific timecode
+# play_by_play_at_time = mlb.get_game_play_by_play(game_id=534196, timecode='20230101_120000')
+
+# Example: Get specific fields
+# play_by_play_specific_fields = mlb.get_game_play_by_play(game_id=534196, fields='game,plays,result')
+
+```
+
+--------------------------------
+
+### Get All Leagues
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-League
+
+Retrieves a list of all available leagues, with options to filter by league ID, sport ID, or season.
+
+```APIDOC
+## GET /api/v1/leagues
+
+### Description
+Returns a list of all available leagues. This endpoint allows filtering by specific league IDs, sport IDs, and seasons.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/leagues
+
+### Parameters
+#### Query Parameters
+- **leagueId** (string) - Optional - leagueId(s) to return league information for specific leagues. Format '103,104'
+- **sportId** (string) - Optional - Insert sportId to return league information for a specific sport. For a list of all sportIds: http://statsapi.mlb.com/api/v1/sports
+- **season** (string) - Optional - Insert year(s) to return league information for a specific season.
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```json
+{
+  "leagueId": "103,104",
+  "sportId": "1",
+  "season": "2022"
+}
+```
+
+### Response
+#### Success Response (200)
+- **Leagues** (array) - A list of league objects, each containing information about a specific league.
+
+#### Response Example
+```json
+[
+  {
+    "id": 103,
+    "link": "/api/v1/league/103",
+    "name": "American League",
+    "abbreviation": "AL",
+    "nameShort": "American",
+    "seasonState": "postseason",
+    "hasWildcard": true,
+    "hasSplitSeason": false,
+    "numGames": 162,
+    "hasPlayoffPoints": false,
+    "numTeams": 15,
+    "numWildcardTeams": 2,
+    "sport": {
+      "id": 1,
+      "link": "/api/v1/sports/1"
+    },
+    "sortOrder": 21,
+    "active": true
+  }
+]
+```
+```
+
+--------------------------------
+
+### Get Team Season Hitting Stats using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves season and advanced hitting statistics for a specific team. It first gets the team ID, then sets the desired stats and groups, and finally fetches and displays the data. Requires the mlbstatsapi library.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+t# Get Team Id
+team_id = mlb.get_team_id('Seattle Mariners')[0]
+
+# Set stat types and groups
+stats = ['season', 'seasonAdvanced']
+groups = ['hitting']
+params = {'season': 2022}
+
+# Get team stats
+stats = mlb.get_team_stats(team_id, stats=stats, groups=groups, **params)
+season_hitting = stats['hitting']['season']
+advanced_hitting = stats['hitting']['seasonadvanced']
+
+# Print season hitting stats
+print("--- Season Hitting Stats ---")
+for split in season_hitting.splits:
+    for k, v in split.stat.__dict__.items():
+        print(f"{k} {v}")
+
+# Print advanced hitting stats
+print("\n--- Advanced Hitting Stats ---")
+for split in advanced_hitting.splits:
+    for k, v in split.stat.__dict__.items():
+        print(f"{k} {v}")
+```
+
+--------------------------------
+
+### Get All Divisions
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Division
+
+Retrieves a list of all divisions, with options to filter by division ID, league ID, or sport ID.
+
+```APIDOC
+## GET /divisions
+
+### Description
+Retrieves a list of all divisions, with options to filter by division ID, league ID, or sport ID.
+
+### Method
+GET
+
+### Endpoint
+`/divisions`
+
+### Parameters
+#### Query Parameters
+- **divisionId** (string/int) - Optional - Comma-separated list of division IDs to filter by.
+- **leagueId** (string/int) - Optional - Filters divisions by league ID.
+- **sportId** (string/int) - Optional - Filters divisions by sport ID.
+
+### Request Example
+```json
+{
+  "example": "Not applicable for GET requests with query parameters"
+}
+```
+
+### Response
+#### Success Response (200)
+- Returns a list of division objects, each with the following attributes:
+  - **id** (int) - The unique identifier for the division.
+  - **link** (str) - A link to the division's resource.
+  - **name** (str) - The full name of the division.
+  - **season** (str) - The current season associated with the division.
+  - **nameshort** (str) - A shortened name for the division.
+  - **abbreviation** (str) - An abbreviation for the division name.
+  - **league** (object) - Information about the league the division belongs to.
+    - **id** (int) - The league's ID.
+    - **link** (str) - A link to the league's resource.
+  - **sport** (object) - Information about the sport the division belongs to.
+    - **id** (int) - The sport's ID.
+    - **link** (str) - A link to the sport's resource.
+  - **hasWildcard** (bool) - Indicates if the division has a wildcard spot.
+  - **sortOrder** (int) - The sort order for the division.
+  - **numPlayoffTeams** (int) - The number of playoff teams in the division.
+  - **active** (bool) - Indicates if the division is currently active.
+
+#### Response Example
+```json
+{
+  "example": "[{\"id\": 200, \"link\": \"/api/v1/divisions/200\", \"name\": \"American League West\", \"season\": \"2022\", \"nameshort\": \"AL West\", \"abbreviation\": \"ALW\", \"league\": {\"id\": 103, \"link\": \"/api/v1/league/103\"}, \"sport\": {\"id\": 1, \"link\": \"/api/v1/sports/1\"}, \"hasWildcard\": false, \"sortOrder\": 24, \"numPlayoffTeams\": 1, \"active\": true}]"
+}
+```
+```
+
+--------------------------------
+
+### Get Game Data using Python MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Retrieves general information for a specific MLB game using its unique ID. Supports optional parameters for specific timecodes and fields to be returned.
+
+```Python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+mlb.get_game(game_id = 534196)
+```
+
+--------------------------------
+
+### Get Game Line Score
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Retrieves the line score for a specific game.
+
+```APIDOC
+## GET /api/v1.1/game/{game_id}/linescore
+
+### Description
+Returns the line score for a specific game. This endpoint can also return a snapshot of data at a specific timecode and allow filtering of returned fields.
+
+### Method
+GET
+
+### Endpoint
+`/api/v1.1/game/{game_id}/linescore`
+
+### Parameters
+#### Path Parameters
+- **game_id** (string/int) - Required - Game id number
+
+#### Query Parameters
+- **timecode** (string) - Optional - Use this parameter to return a snapshot of the data at the specified time. Format: YYYYMMDD_HHMMSS
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```https
+https://statsapi.mlb.com/api/v1.1/game/534196/linescore?fields=teams.home.runs
+```
+
+### Response
+#### Success Response (200)
+- **lineScore** (object) - Contains the line score data for the game.
+
+#### Response Example
+```json
+{
+  "lineScore": {
+    "currentInning": 9,
+    "teams": {
+      "home": {
+        "runs": 5,
+        "hits": 10,
+        "errors": 1
+      },
+      "away": {
+        "runs": 3,
+        "hits": 8,
+        "errors": 0
+      }
+    }
+  }
+}
+```
+```
+
+--------------------------------
+
+### Get Player Expected Stats using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves expected statistics for a player for a given season. This involves getting the player's ID, specifying 'expectedStatistics' as the stat type and 'hitting' as the group, and then processing the output. Requires the mlbstatsapi library.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+# Get Player Id
+player_id = mlb.get_people_id('Ty France')[0]
+
+# Set stat type and group
+stats = ['expectedStatistics']
+group = ['hitting']
+params = {'season': 2022}
+
+# Get Player Stats
+stats = mlb.get_player_stats(player_id, stats=stats, groups=group, **params)
+expectedstats = stats['hitting']['expectedstatistics']
+
+# Print expected stats
+print("--- Expected Stats ---")
+for split in expectedstats.splits:
+    for k, v in split.stat.__dict__.items():
+        print(f"{k} {v}")
+```
+
+--------------------------------
+
+### GET /teams/{team_id}/roster
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+Retrieves the roster for a specific team ID, with options to filter by roster type and season.
+
+```APIDOC
+## GET /teams/{team_id}/roster
+
+### Description
+Return all Player Objects from team_id.
+
+### Method
+GET
+
+### Endpoint
+`/teams/{team_id}/roster`
+
+### Parameters
+#### Path Parameters
+- **team_id** (string/int) - Required - unique team id of team
+
+#### Query Parameters
+- **rosterType** (string) - Required - Insert `teamId` to return a directory of players based on roster status for a particular club. `rosterType`'s include 40Man, fullSeason, fullRoster, nonRosterInvitees, active, allTime, depthChart, and gameday.
+- **season** (string/int) - Required - Insert year to return a directory of players based on roster status for a particular club in a specific season.
+- **date** (string) - Required - unique team id of team
+- **fields** (string/int) - Required - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+team_id = mlb.get_team_id("Seattle Mariners")
+roster = mlb.get_team_roster(team_id[0], rosterType="fullSeason", season=2022)
+print(roster)
+```
+
+### Response
+#### Success Response (200)
+- **roster** (list) - A list of player objects.
+
+#### Response Example
+```json
+[
+  {
+    "person": {
+      "id": 456,
+      "fullName": "Jane Doe"
+    },
+    "jerseyNumber": "10",
+    "status": {
+      "statusCode": "A"
+    }
+  }
+]
+```
+```
+
+--------------------------------
+
+### Get Division IDs
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Division
+
+Retrieves the IDs of divisions based on their names.
+
+```APIDOC
+## GET /division_ids
+
+### Description
+Retrieves the IDs of divisions based on their names.
+
+### Method
+GET
+
+### Endpoint
+`/division_ids`
+
+### Parameters
+#### Query Parameters
+- **division_name** (string) - Required - The name of the division to search for.
+- **search_key** (string) - Optional - The key to use for searching (defaults to 'name').
+
+### Request Example
+```json
+{
+  "example": "Not applicable for GET requests with query parameters"
+}
+```
+
+### Response
+#### Success Response (200)
+- **divisionIds** (array) - An array of division IDs that match the search criteria.
+
+#### Response Example
+```json
+{
+  "example": "[200]"
+}
+```
+```
+
+--------------------------------
+
+### Get Division by ID
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Division
+
+Retrieves detailed information for a specific division using its ID.
+
+```APIDOC
+## GET /divisions/{divisionId}
+
+### Description
+Retrieves detailed information for a specific division using its ID.
+
+### Method
+GET
+
+### Endpoint
+`/divisions/{divisionId}`
+
+### Parameters
+#### Path Parameters
+- **divisionId** (string/int) - Required - The ID of the division to retrieve.
+
+#### Query Parameters
+- **leagueId** (string/int) - Optional - Filters divisions by league ID.
+- **sportId** (string/int) - Optional - Filters divisions by sport ID.
+
+### Request Example
+```json
+{
+  "example": "Not applicable for GET requests with path parameters"
+}
+```
+
+### Response
+#### Success Response (200)
+- **id** (int) - The unique identifier for the division.
+- **link** (str) - A link to the division's resource.
+- **name** (str) - The full name of the division.
+- **season** (str) - The current season associated with the division.
+- **nameshort** (str) - A shortened name for the division.
+- **abbreviation** (str) - An abbreviation for the division name.
+- **league** (object) - Information about the league the division belongs to.
+  - **id** (int) - The league's ID.
+  - **link** (str) - A link to the league's resource.
+- **sport** (object) - Information about the sport the division belongs to.
+  - **id** (int) - The sport's ID.
+  - **link** (str) - A link to the sport's resource.
+- **hasWildcard** (bool) - Indicates if the division has a wildcard spot.
+- **sortOrder** (int) - The sort order for the division.
+- **numPlayoffTeams** (int) - The number of playoff teams in the division.
+- **active** (bool) - Indicates if the division is currently active.
+
+#### Response Example
+```json
+{
+  "example": "{\"id\": 200, \"link\": \"/api/v1/divisions/200\", \"name\": \"American League West\", \"season\": \"2022\", \"nameshort\": \"AL West\", \"abbreviation\": \"ALW\", \"league\": {\"id\": 103, \"link\": \"/api/v1/league/103\"}, \"sport\": {\"id\": 1, \"link\": \"/api/v1/sports/1\"}, \"hasWildcard\": false, \"sortOrder\": 24, \"numPlayoffTeams\": 1, \"active\": true}"
+}
+```
+```
+
+--------------------------------
+
+### GET /teams/{team_id}/coaches
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+Retrieves all coaches associated with a specific team ID.
+
+```APIDOC
+## GET /teams/{team_id}/coaches
+
+### Description
+Return all Coaches from team_id.
+
+### Method
+GET
+
+### Endpoint
+`/teams/{team_id}/coaches`
+
+### Parameters
+#### Path Parameters
+- **team_id** (string/int) - Required - unique team id of team
+
+#### Query Parameters
+- **season** (string/int) - Required - Insert year to return a directory of players based on roster status for a particular club in a specific season.
+- **date** (string) - Required - unique team id of team
+- **fields** (string/int) - Required - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+team_id = mlb.get_team_id("Seattle Mariners")
+coaches = mlb.get_team_coaches(team_id[0], season=2022, date="2022-01-01")
+print(coaches)
+```
+
+### Response
+#### Success Response (200)
+- **coaches** (list) - A list of coach objects.
+
+#### Response Example
+```json
+[
+  {
+    "person": {
+      "id": 123,
+      "fullName": "John Smith"
+    },
+    "jobTitle": "Head Coach"
+  }
+]
+```
+```
+
+--------------------------------
+
+### Get Standings by League and Season (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves the standings for a specific league and season. This function requires the league ID and the season year as input. The `mlbstatsapi` library is necessary for this operation.
+
+```python
+>>> mlb = mlbstatsapi.Mlb()
+>>> standings = mlb.get_standings(103, 2018)
+```
+
+--------------------------------
+
+### Get List of Seasons with Python MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Season
+
+Fetches a list of MLB seasons for a given sport ID. Allows filtering by division and league, and includes options to retrieve game type dates and specific fields. Requires the 'mlbstatsapi' library. Returns a list of 'Season' objects.
+
+```python
+import mlbstatsapi
+
+mlb_data = mlbstatsapi.Mlb()
+
+# Get all seasons for MLB (sportId=1)
+all_mlb_seasons = mlb_data.get_seasons(sport_id=1)
+print(all_mlb_seasons)
+
+# Get seasons for a specific league (e.g., '0' for MLB)
+seasons_by_league = mlb_data.get_seasons(sport_id=1, leagueId='0')
+print(seasons_by_league)
+
+# Get seasons with game type dates and specific fields
+seasons_detailed = mlb_data.get_seasons(sport_id=1, withGameTypeDates=True, fields="seasonId,seasonStartDate,seasonEndDate")
+print(seasons_detailed)
+```
+
+--------------------------------
+
+### GET /teams/teamName/{team_name}
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+Retrieves Team ID(s) based on the team name. Allows specifying a search key for more precise searching.
+
+```APIDOC
+## GET /teams/teamName/{team_name}
+
+### Description
+Return Team Id(s) from team_name. Allows specifying a search key for more precise searching.
+
+### Method
+GET
+
+### Endpoint
+/teams/teamName/{team_name}
+
+### Parameters
+#### Path Parameters
+- **team_name** (string) - Required - Search team name
+
+#### Query Parameters
+- **search_key** (string) - Optional - Search key. Defaults to 'name'.
+- **sportId** (string/int) - Optional - Sport id number for team search.
+
+### Response
+#### Success Response (200)
+- **teamId** (string/int) - The unique identifier for the team.
+
+#### Response Example
+```json
+{
+  "teamId": "111"
+}
+```
+```
+
+--------------------------------
+
+### Get Season by Year (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Fetches season details for a given year. It retrieves the season object and then prints its ID. This requires the `mlbstatsapi` library.
+
+```python
+>>> mlb = mlbstatsapi.Mlb()
+>>> season = mlb.get_season(2018)
+>>> print(season.seasonid)
+```
+
+--------------------------------
+
+### Get Coach Roster for a Team
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves the list of coaches for a specific team, identified by the team ID. The code iterates through the coaching staff and prints the title of each coach.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+team_id = 133
+coaches = mlb.get_team_coaches(team_id)
+
+for coach in coaches:
+    print(coach.title)
+```
+
+--------------------------------
+
+### GET /api/v1/awards/recipients
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Awards
+
+Retrieves a list of awards, with options to filter by award ID, sport, league, and season.
+
+```APIDOC
+## GET /api/v1/awards/recipients
+
+### Description
+
+This endpoint retrieves a list of awards. You can specify filters to narrow down the results.
+
+### Method
+
+GET
+
+### Endpoint
+
+`/api/v1/awards/recipients`
+
+### Parameters
+
+#### Query Parameters
+
+- **award_id** (string) - Required - The ID of the award to retrieve.
+- **sportId** (string/int) - Optional - The ID of the sport to filter by.
+- **leagueId** (string/int) - Optional - The ID(s) of the league(s) to filter by. Format: '103,104'.
+- **season** (string/int) - Optional - The year(s) of the season to filter by. Format: '2016,2017'.
+
+### Request Example
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+awards = mlb.get_awards(award_id='MLBHOF', sportId=1, season=2017, leagueId=103)
+print(awards)
+```
+
+### Response
+
+#### Success Response (200)
+
+- **Award** (object) - A list of Award objects.
+  - **id** (str) - Award ID
+  - **name** (str) - Name of the award
+  - **date** (str) - Date the award was given
+  - **season** (str) - Season the award is for
+  - **team** (Team) - Team associated with the award.
+  - **player** (Person) - Player associated with the award.
+  - **votes** (int, optional) - Number of votes for the award
+
+#### Response Example
+
+```json
+[
+  {
+    "id": "MLBHOF",
+    "name": "Hall Of Fame",
+    "date": "2017-01-18",
+    "season": "2017",
+    "team": {
+      "id": 140,
+      "link": "/api/v1/teams/140"
+    },
+    "player": {
+      "id": 121358,
+      "link": "/api/v1/people/121358",
+      "primaryPosition": {
+        "code": "2",
+        "name": "Catcher",
+        "type": "Catcher",
+        "abbreviation": "C"
+      },
+      "namefirstlast": "Ivan Rodriguez"
+    },
+    "votes": 336
+  }
+  // ... more award objects
+]
+```
+```
+
+--------------------------------
+
+### Get MLB Standings using python-mlb-statsapi
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Standings
+
+Retrieves MLB standings for a specified league and season. Requires league ID and season year. Optional parameters include 'standingsTypes' for specific standing types and 'date' for historical data. The function returns detailed standings information.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+mlb.get_standings(league_id = 103, season = 2018)
+```
+
+--------------------------------
+
+### Get League Information
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-League
+
+Retrieves detailed information about a specific league using its ID and optionally filters by season.
+
+```APIDOC
+## GET /api/v1/league
+
+### Description
+Returns information for a specific league based on its ID. You can also specify the season to get league data for that particular year.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/league
+
+### Parameters
+#### Query Parameters
+- **league_id** (string) - Required - leagueId to return league information for a specific league
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+- **season** (string) - Optional - Insert year(s) to return league information for a specific season.
+
+### Request Example
+```json
+{
+  "league_id": "103",
+  "season": "2018"
+}
+```
+
+### Response
+#### Success Response (200)
+- **League** (object) - Contains detailed league information including ID, name, abbreviation, season details, etc.
+
+#### Response Example
+```json
+{
+  "id": 103,
+  "link": "/api/v1/league/103",
+  "name": "American League",
+  "abbreviation": "AL",
+  "nameShort": "American",
+  "seasonState": "offseason",
+  "hasWildcard": true,
+  "hasSplitSeason": false,
+  "numGames": 162,
+  "hasPlayoffPoints": false,
+  "numTeams": 15,
+  "numWildcardTeams": 2,
+  "seasonDateInfo": {
+    "seasonId": 2018,
+    "preseasonStartDate": "2018-02-21",
+    "preseasonEndDate": "2018-03-27",
+    "seasonStartDate": "2018-02-23",
+    "springStartDate": "2018-02-23",
+    "springEndDate": "2018-03-27",
+    "regularSeasonStartDate": "2018-03-29",
+    "lastDate1stHalf": "2018-07-15",
+    "allStarDate": "2018-07-17",
+    "firstDate2ndHalf": "2018-07-19",
+    "regularSeasonEndDate": "2018-10-01",
+    "postSeasonStartDate": "2018-10-03",
+    "postSeasonEndDate": "2018-10-28",
+    "seasonEndDate": "2018-10-28",
+    "offseasonStartDate": "2018-10-29",
+    "offseasonEndDate": "2019-02-20",
+    "seasonLevelGamedayType": "P",
+    "gameLevelGamedayType": "P",
+    "qualifierPlateAppearances": 3.1,
+    "qualifierOutsPitched": 6000.0
+  },
+  "season": "2018",
+  "orgCode": "AL",
+  "conferencesInUse": false,
+  "divisionsInUse": true,
+  "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+  },
+  "sortOrder": 21,
+  "active": true
+}
+```
+```
+
+--------------------------------
+
+### Get League ID by Name
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-League
+
+Retrieves the league ID for a given league name.
+
+```APIDOC
+## GET /api/v1/league_id
+
+### Description
+Returns the league ID corresponding to a provided league name.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/league_id
+
+### Parameters
+#### Query Parameters
+- **league_name** (string) - Required - The name of the league to find the ID for.
+
+### Request Example
+```json
+{
+  "league_name": "American League"
+}
+```
+
+### Response
+#### Success Response (200)
+- **League ID** (string) - The ID of the league (e.g., "103").
+
+#### Response Example
+```json
+[
+  "103"
+]
+```
+```
+
+--------------------------------
+
+### GET /teams
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+Retrieves all Team objects for a given sport ID. Supports filtering by sport, season, league, active status, all-star status, and game type.
+
+```APIDOC
+## GET /teams
+
+### Description
+Return all Team Objects from sportId. This endpoint supports filtering by sport, season, league, active status, all-star status, and game type.
+
+### Method
+GET
+
+### Endpoint
+/teams
+
+### Parameters
+#### Query Parameters
+- **sport_id** (string/int) - Required - unique sport id of teams
+- **sportId** (string/int) - Optional - Insert a sportId to return a directory of team information for a particular club in a sport.
+- **season** (string/int) - Optional - Insert year to return a directory of team information for a particular club in a specific season.
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+- **leagueIds** (string/int) - Optional - Insert leagueId to return team information for a particular league.
+- **activeStatus** (string) - Optional - Insert activeStatus to populate a teams based on active/inactive status for a given season. There are three status types: Y, N, B
+- **allStarStatuses** (string) - Optional - Insert allStarStatuses to populate a teams based on Allstar status for a given season. There are two status types: Y and N
+- **gameType** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Response
+#### Success Response (200)
+- **divisiongamesback** (str) - Number of games back in division
+- **conferencegamesback** (str) - Number of games back in conference
+- **leaguerecord** (Dict) - Record in league
+- **records** (Dict) - Records
+- **divisionleader** (bool) - Is this team a division leader
+- **wins** (int) - Number of wins
+- **losses** (int) - Number of losses
+- **winningpercentage** (str) - Winning percentage
+- **franchisename** (str) - The franchisename of the team
+- **clubname** (str) - The clubname of the team
+- **active** (str) - Active status of the team
+- **parentorgname** (str) - The name of the parent team or org
+- **parentorgid** (str) - The id of the parent team or org
+
+#### Response Example
+```json
+[
+  {
+    "divisiongamesback": "5",
+    "conferencegamesback": "5",
+    "leaguerecord": {},
+    "records": {},
+    "divisionleader": false,
+    "wins": 10,
+    "losses": 5,
+    "winningpercentage": ".667",
+    "franchisename": "Seattle Mariners",
+    "clubname": "Mariners",
+    "active": "Y",
+    "parentorgname": "Major League Baseball",
+    "parentorgid": "1"
+  }
+]
+```
+```
+
+--------------------------------
+
+### Get Player Statistics
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Stats
+
+Retrieves standard baseball statistics for players based on specified stat types and groups. Supports filtering by season, sport, game type, player pool, position, team, league, and opposing player/team.
+
+```APIDOC
+## GET /api/v1/stats
+
+### Description
+Retrieves standard statistics for players based on specified stat types and groups. Supports filtering by season, sport, game type, player pool, position, team, league, and opposing player/team.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/stats
+
+### Parameters
+#### Query Parameters
+- **stats** (list) - Required - Insert statType to return statistics for a player for a given sportId. Find available stat types at https://statsapi.mlb.com/api/v1/statTypes
+- **groups** (list) - Required - Insert statGroup to return statistics for a given player based on group. Find available stat types at https://statsapi.mlb.com/api/v1/statGroup
+- **season** (string) - Optional - Insert year to return player stats for a particular season.
+- **sportIds** (string) - Optional - Insert sportId to return player stats for a particular sportId.
+- **gameType** (string) - Optional - Insert gameType to return player stats for a particular gameType.
+- **playerPool** (string) - Optional - There are 4 different types of playerPools to return statistics for a particular playerPool across a sport. e.g All, Qualified, Rookies
+- **position** (string) - Optional - Insert position to return statistics for a given position. Default to "Qualified" playerPool. Find available positions at https://statsapi.mlb.com/api/v1/positions
+- **teamId** (string) - Optional - Insert teamId to return statistics for a given team. Default to "Qualified" playerPool.
+- **leagueId** (string) - Optional - Insert leagueId to return statistics for a given team. Default to "Qualified" playerPool.
+- **opposingTeamId** (string) - Optional - Insert team id to return stats against a team. Used with vsTeam stat type.
+- **opposingPlayerId** (string) - Optional - Insert person id to return player stats for against a player. Used with vsPlayer stat type.
+
+### Response
+#### Success Response (200)
+- **stats** (list) - List of statistics objects for the requested player.
+- **metadata** (object) - Metadata related to the request.
+
+#### Response Example
+```json
+{
+  "copyright": "2023 MLB Advanced Media, LP. All rights reserved.",
+  "stats": [
+    {
+      "type": "season",
+      "group": "hitting",
+      "splits": [
+        {
+          "season": "2023",
+          "stat": {
+            "atBats": 500,
+            "runs": 100,
+            "hits": 150,
+            "homeRuns": 30,
+            "runsBattedIn": 90
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "timestamp": "2023-10-27T10:00:00Z"
+  }
+}
+```
+```
+
+--------------------------------
+
+### Get Player Stats - Python
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves player statistics (season and career hitting/pitching) using the MLB StatsAPI. Requires player ID, desired stat types, groups, and optional parameters like season year. Returns a dictionary containing structured stat data.
+
+```python
+mlb = mlbstatsapi.Mlb()
+player_id = mlb.get_people_id("Ty France")[0]
+stats = ['season', 'career']
+groups = ['hitting', 'pitching']
+params = {'season': 2022}
+
+stat_dict = mlb.get_player_stats(player_id, stats=stats, groups=groups, **params)
+season_hitting_stat = stat_dict['hitting']['season']
+career_pitching_stat = stat_dict['pitching']['career']
+
+for split in season_hitting_stat.splits:
+    for k, v in split.stat.__dict__.items():
+            print(k, v)
+
+for split in career_pitching_stat.splits:
+    for k, v in split.stat.__dict__.items():
+            print(k, v)
+```
+
+--------------------------------
+
+### Get Venue Information by ID using Python MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Venue
+
+Retrieves detailed information about one or more MLB venues using their IDs. This function can also filter venues by sport or season, and specify which fields to return. It requires an initialized MLBApi object.
+
+```python
+>>> import mlbstatsapi
+>>> 
+>>> mlb = mlbstatsapi.Mlb()
+>>> 
+>>> venue_ids = mlb.get_venue_id("PNC Park")
+[31]
+>>>
+>>> venue = mlb.get_venue(venue_ids[0])
+>>>
+>>> print(venue)
+Venue(id=31, link=/api/v1/venues/31, name=PNC Park, fieldinfo=FieldInfo(capacity=38753, turftype=Grass, rooftype=Open, leftline=325, left=389, leftcenter=410, center=399, rightcenter=375, rightline=320), active=True)
+```
+
+--------------------------------
+
+### Get Box Score Data using Python MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Fetches the box score for a given MLB game ID. This function allows for specifying a timecode and selecting specific fields to be returned.
+
+```Python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+# Example: Get box score for game ID 534196
+box_score = mlb.get_game_box_score(game_id=534196)
+
+# Example: Get box score at a specific timecode
+# box_score_at_time = mlb.get_game_box_score(game_id=534196, timecode='20230101_120000')
+
+# Example: Get specific fields for box score
+# box_score_specific_fields = mlb.get_game_box_score(game_id=534196, fields='teams,players,stats')
+
+```
+
+--------------------------------
+
+### Get Sport by Name (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves sport information based on the sport's name. It first obtains the sport ID and then fetches the sport object using that ID. Requires `mlbstatsapi`.
+
+```python
+>>> mlb = mlbstatsapi.Mlb()
+>>> sport_ids = mlb.get_sport_id('Major League Baseball')
+>>> sport_id = sport_ids[0]
+>>> sport = mlb.get_sport(sport_id)
+```
+
+--------------------------------
+
+### Get Division by ID (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Fetches division details using a provided division ID. It then prints the name of the division. This functionality requires the `mlbstatsapi` library.
+
+```python
+>>> mlb = mlbstatsapi.Mlb()
+>>> division = mlb.get_division(200)
+>>> print(division.name)
+```
+
+--------------------------------
+
+### Get Season Information
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Season
+
+Retrieves detailed information for a specific MLB season based on the season ID. Supports filtering by sport and requesting specific fields.
+
+```APIDOC
+## GET /api/v1/seasons
+
+### Description
+Retrieves detailed information for a specific MLB season based on the season ID. Supports filtering by sport and requesting specific fields.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/seasons
+
+### Parameters
+#### Query Parameters
+- **season_id** (string/int) - Required - Insert year to return season information for a particular season.
+- **sport_id** (string/int) - Optional - Insert a sportId to return a directory of seasons for a specific sport. Default: 1
+- **withGameTypeDates** (bool) - Optional - Insert a withGameTypeDates to return season information for all gameTypes.
+- **fields** (string/int) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```json
+{
+  "example": "/api/v1/seasons?seasonId=2023&sportId=1"
+}
+```
+
+### Response
+#### Success Response (200)
+- **seasonid** (str) - The ID of the season.
+- **haswildcard** (bool) - Indicates if the season has a wildcard.
+- **preseasonstartdate** (str) - The start date of the preseason.
+- **preseasonenddate** (str) - The end date of the preseason.
+- **seasonstartdate** (str) - The start date of the regular season.
+- **springstartdate** (str) - The start date of spring training.
+- **springenddate** (str) - The end date of spring training.
+- **regularseasonstartdate** (str) - The start date of the regular season.
+- **lastdate1sthalf** (str) - The last date of the first half of the season.
+- **allstardate** (str) - The date of the All-Star game.
+- **firstdate2ndhalf** (str) - The first date of the second half of the season.
+- **regularseasonenddate** (str) - The end date of the regular season.
+- **postseasonstartdate** (str) - The start date of the postseason.
+- **postseasonenddate** (str) - The end date of the postseason.
+- **seasonenddate** (str) - The end date of the season.
+- **offseasonstartdate** (str) - The start date of the offseason.
+- **offseasonenddate** (str) - The end date of the offseason.
+- **seasonlevelgamedaytype** (str) - The game day type at the season level.
+- **gamelevelgamedaytype** (str) - The game day type at the game level.
+- **qualifierplateappearances** (float) - Qualifier for plate appearances.
+- **qualifieroutspitched** (int) - Qualifier for outs pitched.
+
+#### Response Example
+```json
+{
+  "example": "{\"seasonId\":\"2023\", \"hasWildcard\":true, \"preseasonStartDate\":\"2023-02-23\", \"preseasonEndDate\":\"2023-03-28\", \"seasonStartDate\":\"2023-03-30\", \"springStartDate\":\"2023-02-23\", \"springEndDate\":\"2023-03-28\", \"regularSeasonStartDate\":\"2023-03-30\", \"lastDate1stHalf\":\"2023-07-16\", \"allStarDate\":\"2023-07-11\", \"firstDate2ndHalf\":\"2023-07-14\", \"regularSeasonEndDate\":\"2023-10-01\", \"postSeasonStartDate\":\"2023-10-03\", \"postSeasonEndDate\":\"2023-11-02\", \"seasonEndDate\":\"2023-11-02\", \"offSeasonStartDate\":\"2023-11-02\", \"offSeasonEndDate\":\"2024-02-22\", \"seasonLevelGameDayType\":\"REGULAR_SEASON\", \"gameLevelGameDayType\":\"REGULAR_SEASON\", \"qualifierPlateAppearances\":502, \"qualifierOutsPitched\":150}"
+}
+```
+```
+
+--------------------------------
+
+### Get MLB Seasons using Python mlbstatsapi
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Season
+
+This snippet demonstrates how to initialize the mlbstatsapi client and retrieve a list of all available MLB seasons. It fetches seasons by sport ID (1 for MLB) and prints the resulting list of Season objects. The output shows a range of season IDs.
+
+```python
+>>> import mlbstatsapi
+>>> 
+>>> mlb = mlbstatsapi.Mlb()
+>>> 
+>>> seasons = mlb.get_seasons(sport_id=1)
+>>> 
+>>> print(seasons)
+[Season(seasonid=1876), Season(seasonid=1877), Season(seasonid=1878), ..., Season(seasonid=2022)]
+```
+
+--------------------------------
+
+### Get League by ID (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves league information using a specific league ID. The code then prints the name of the league. This operation depends on the `mlbstatsapi` library.
+
+```python
+>>> mlb = mlbstatsapi.Mlb()
+>>> league = mlb.get_league(103)
+>>> print(league.name)
+```
+
+--------------------------------
+
+### Get List of Seasons
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Season
+
+Retrieves a list of MLB seasons based on the sport ID. Supports filtering by division and league, and requesting specific fields.
+
+```APIDOC
+## GET /api/v1/seasons
+
+### Description
+Retrieves a list of MLB seasons based on the sport ID. Supports filtering by division and league, and requesting specific fields.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/seasons
+
+### Parameters
+#### Query Parameters
+- **sport_id** (string/int) - Required - Insert a sportId to return a directory of seasons for a specific sport.
+- **divisionId** (string/int) - Optional - Insert divisionId to return a directory of seasons for a specific division.
+- **leagueId** (string/int) - Optional - Insert leagueId to return a directory of seasons in a specific league.
+- **withGameTypeDates** (bool) - Optional - Insert a withGameTypeDates to return season information for all gameTypes.
+- **fields** (string/int) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Request Example
+```json
+{
+  "example": "https://statsapi.mlb.com/api/v1/seasons?sportId=1"
+}
+```
+
+### Response
+#### Success Response (200)
+- **seasonid** (str) - The ID of the season.
+- **haswildcard** (bool) - Indicates if the season has a wildcard.
+- **preseasonstartdate** (str) - The start date of the preseason.
+- **preseasonenddate** (str) - The end date of the preseason.
+- **seasonstartdate** (str) - The start date of the regular season.
+- **springstartdate** (str) - The start date of spring training.
+- **springenddate** (str) - The end date of spring training.
+- **regularseasonstartdate** (str) - The start date of the regular season.
+- **lastdate1sthalf** (str) - The last date of the first half of the season.
+- **allstardate** (str) - The date of the All-Star game.
+- **firstdate2ndhalf** (str) - The first date of the second half of the season.
+- **regularseasonenddate** (str) - The end date of the regular season.
+- **postseasonstartdate** (str) - The start date of the postseason.
+- **postseasonenddate** (str) - The end date of the postseason.
+- **seasonenddate** (str) - The end date of the season.
+- **offseasonstartdate** (str) - The start date of the offseason.
+- **offseasonenddate** (str) - The end date of the offseason.
+- **seasonlevelgamedaytype** (str) - The game day type at the season level.
+- **gamelevelgamedaytype** (str) - The game day type at the game level.
+- **qualifierplateappearances** (float) - Qualifier for plate appearances.
+- **qualifieroutspitched** (int) - Qualifier for outs pitched.
+
+#### Response Example
+```json
+{
+  "example": "{\"seasons\":[{\"seasonId\":\"2023\", \"hasWildcard\":true, \"preseasonStartDate\":\"2023-02-23\", \"preseasonEndDate\":\"2023-03-28\", \"seasonStartDate\":\"2023-03-30\", \"springStartDate\":\"2023-02-23\", \"springEndDate\":\"2023-03-28\", \"regularSeasonStartDate\":\"2023-03-30\", \"lastDate1stHalf\":\"2023-07-16\", \"allStarDate\":\"2023-07-11\", \"firstDate2ndHalf\":\"2023-07-14\", \"regularSeasonEndDate\":\"2023-10-01\", \"postSeasonStartDate\":\"2023-10-03\", \"postSeasonEndDate\":\"2023-11-02\", \"seasonEndDate\":\"2023-11-02\", \"offSeasonStartDate\":\"2023-11-02\", \"offSeasonEndDate\":\"2024-02-22\", \"seasonLevelGameDayType\":\"REGULAR_SEASON\", \"gameLevelGameDayType\":\"REGULAR_SEASON\", \"qualifierPlateAppearances\":502, \"qualifierOutsPitched\":150}]}"
+}
+```
+```
+
+--------------------------------
+
+### Get Individual Season Data with Python MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Season
+
+Retrieves detailed information for a specific MLB season using its ID. Supports filtering by sport and requesting specific fields. Requires the 'mlbstatsapi' library. Returns a 'Season' object.
+
+```python
+import mlbstatsapi
+
+mlb_data = mlbstatsapi.Mlb()
+
+# Get season data for a specific year (e.g., 2023)
+season_2023 = mlb_data.get_season(season_id=2023)
+print(season_2023)
+
+# Get season data for a specific sport (e.g., MLB with sportId=1)
+seasons_mlb = mlb_data.get_season(sport_id=1)
+print(seasons_mlb)
+
+# Get season data with game type dates and specific fields
+season_data_detailed = mlb_data.get_season(season_id=2023, sport_id=1, withGameTypeDates=True, fields="seasonId,regularSeasonStartDate,regularSeasonEndDate")
+print(season_data_detailed)
+```
+
+--------------------------------
+
+### Get Game Details by Game ID
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Fetches comprehensive data for a specific MLB game using its unique ID. This includes game data, live data such as play-by-play, line scores, and box scores, as well as weather information. It requires the `mlbstatsapi` library.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+game_id = 662242
+
+# Get general game object
+game = mlb.get_game(game_id)
+
+# Get weather information
+weather = game.gamedata.weather
+print(f"Weather Condition: {weather.condition}")
+print(f"Temperature: {weather.temp}")
+print(f"Wind: {weather.wind}")
+
+# Get current status and team info
+linescore = game.livedata.linescore
+hometeaminfo = game.gamedata.teams.home
+awayteaminfo = game.gamedata.teams.away
+hometeamstatus = linescore.teams.home
+awayteamstatus = linescore.teams.away
+
+print(f"Home Team: {hometeaminfo.franchisename} {hometeaminfo.clubname}")
+print(f"  Runs: {hometeamstatus.runs}, Hits: {hometeamstatus.hits}, Errors: {hometeamstatus.errors}")
+print(f"Away Team: {awayteaminfo.franchisename} {awayteaminfo.clubname}")
+print(f"  Runs: {awayteamstatus.runs}, Hits: {awayteamstatus.hits}, Errors: {awayteamstatus.errors}")
+print(f"Current Inning: {linescore.inninghalf} {linescore.currentinningordinal}")
+print(f"Balls: {linescore.balls}, Strikes: {linescore.strikes}, Outs: {linescore.outs}")
+
+# Get play-by-play, line score, and box score objects
+play_by_play = game.livedata.plays
+line_score = game.livedata.linescore
+box_score = game.livedata.boxscore
+```
+
+--------------------------------
+
+### Get Player Hot/Cold Zones using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves hot and cold zone data for a player, for both hitting and pitching perspectives. This function requires specifying 'hotColdZones' as the stat type and 'hitting' or 'pitching' as the group, and works by accessing the 'stats' dictionary key in the returned data. Requires the mlbstatsapi library.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+# Get player IDs
+ty_france_id = mlb.get_people_id('Ty France')[0]
+shohei_ohtani_id = mlb.get_people_id('Shohei Ohtani')[0]
+
+# Set the stat types and groups
+stats = ['hotColdZones']
+hitting_group = ['hitting']
+pitching_group = ['pitching']
+params = {'season': 2022}
+
+# Get hotColdZones for hitter and pitcher
+hitting_hotcoldzones = mlb.get_player_stats(ty_france_id, stats=stats, groups=hitting_group, **params)
+pitching_hotcoldzones = mlb.get_player_stats(shohei_ohtani_id, stats=stats, groups=pitching_group, **params)
+
+# Access hotColdZones data
+ty_france_hotcoldzones = hitting_hotcoldzones['stats']['hotcoldzones']
+shohei_ohtani_hotcoldzones = pitching_hotcoldzones['stats']['hotcoldzones']
+
+# Print zone information for Ty France's OBP
+print("--- Ty France Hot/Cold Zones (On-Base Percentage) ---")
+for split in ty_france_hotcoldzones.splits:
+    if split.stat.name == 'onBasePercentage':
+            for zone in split.stat.zones:
+                print(f"zone: {zone.zone}\nvalue: {zone.value}")
+
+# Print zone names for Shohei Ohtani's pitching stats
+print("\n--- Shohei Ohtani Hot/Cold Zones (Pitching Stat Names) ---")
+for split in shohei_ohtani_hotcoldzones.splits:
+    print(split.stat.name)
+```
+
+--------------------------------
+
+### Get Awards Data using python-mlb-statsapi
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Awards
+
+This Python code snippet demonstrates how to use the `mlbstatsapi` library to fetch award data. It initializes the MLB API client and calls the `get_awards` method with specific award, sport, season, and league IDs. The output is a list of Award objects, each containing detailed information about the award recipient.
+
+```python
+>>> import mlbstatsapi
+>>> 
+>>> mlb = mlbstatsapi.Mlb()
+>>> 
+>>> awards = mlb.get_awards(award_id = 'MLBHOF', sportId = 1, season = 2017, leagueId = 103)
+>>> 
+>>> print(awards)
+[Award(id=MLBHOF, name=Hall Of Fame, date=2017-01-18, season=2017, team=Team(id=140, link=/api/v1/teams/140), player=Person(id=121358, link=/api/v1/people/121358, primaryposition=Position(code='2', name='Catcher', type='Catcher', abbreviation='C'), namefirstlast=Ivan Rodriguez), votes=336), Award(id=MLBHOF, name=Hall Of Fame, date=2017-01-18, season=2017, team=Team(id=117, link=/api/v1/teams/117), player=Person(id=110432, link=/api/v1/people/110432, primaryposition=Position(code='3', name='First Base', type='Infielder', abbreviation='1B'), namefirstlast=Jeff Bagwell), votes=381), Award(id=MLBHOF, name=Hall Of Fame, date=2017-01-18, season=2017, team=Team(id=120, link=/api/v1/teams/120), player=Person(id=120891, link=/api/v1/people/120891, primaryposition=Position(code='7', name='Outfielder', type='Outfielder', abbreviation='LF'), namefirstlast=Tim Raines), votes=380)]
+```
+
+--------------------------------
+
+### GET /teams/{team_id}
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+Retrieves a specific Team object using its unique ID. This endpoint allows filtering by sport, season, and specific fields.
+
+```APIDOC
+## GET /teams/{team_id}
+
+### Description
+Return Team Object from Id. This endpoint allows for filtering by sport, season, and specific fields.
+
+### Method
+GET
+
+### Endpoint
+/teams/{team_id}
+
+### Parameters
+#### Path Parameters
+- **team_id** (string/int) - Required - unique team id
+
+#### Query Parameters
+- **sportId** (string/int) - Optional - Insert a sportId to return a directory of team information for a particular club in a sport.
+- **season** (string/int) - Optional - Insert year to return a directory of team information for a particular club in a specific season.
+- **fields** (string) - Optional - Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute
+
+### Response
+#### Success Response (200)
+- **divisiongamesback** (str) - Number of games back in division
+- **conferencegamesback** (str) - Number of games back in conference
+- **leaguerecord** (Dict) - Record in league
+- **records** (Dict) - Records
+- **divisionleader** (bool) - Is this team a division leader
+- **wins** (int) - Number of wins
+- **losses** (int) - Number of losses
+- **winningpercentage** (str) - Winning percentage
+- **franchisename** (str) - The franchisename of the team
+- **clubname** (str) - The clubname of the team
+- **active** (str) - Active status of the team
+- **parentorgname** (str) - The name of the parent team or org
+- **parentorgid** (str) - The id of the parent team or org
+
+#### Response Example
+```json
+{
+  "divisiongamesback": "5",
+  "conferencegamesback": "5",
+  "leaguerecord": {},
+  "records": {},
+  "divisionleader": false,
+  "wins": 10,
+  "losses": 5,
+  "winningpercentage": ".667",
+  "franchisename": "Seattle Mariners",
+  "clubname": "Mariners",
+  "active": "Y",
+  "parentorgname": "Major League Baseball",
+  "parentorgid": "1"
+}
+```
+```
+
+--------------------------------
+
+### Get Attendance Data
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Attendance
+
+Retrieves attendance data based on team ID, league ID, or league list ID. You must provide at least one of these parameters.
+
+```APIDOC
+## GET /api/v1/attendance
+
+### Description
+Retrieves attendance data based on team ID, league ID, or league list ID. At least one of these parameters is required.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/attendance
+
+### Parameters
+#### Query Parameters
+- **team_id** (int) - Required - Insert a teamId to return directory of attendance for a given team.
+- **league_id** (int or List[int]) - Required - Insert leagueId(s) to return a directory of attendance for a specific league. Format '103,104'.
+- **league_list_id** (str) - Required - Insert a unique League List Identifier to return a directory of attendance for a specific league listId. [List of Options](https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/ef5c8bd1d59a30345ab6a70fa0aa6f5910489a9a/mlbstatsapi/mlb_api.py#L1875)
+- **season** (int) - Optional - Insert year(s) to return a directory of attendance for a given season. Season year number format yyyy.
+- **date** (string) - Optional - Insert date to return information for attendance on a particular date. Format: MM/DD/YYYY.
+- **gameType** (string) - Optional - Insert gameType(s) for a directory of attendance for a given gameType. For a list of all gameTypes: https://statsapi.mlb.com/api/v1/gameTypes
+
+### Request Example
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+attendance = mlb.get_attendance(team_id = 110, league_id = 103, league_list_id = 'mlb', season = 2021)
+
+print(attendance)
+```
+
+### Response
+#### Success Response (200)
+- **aggregatetotals** (object) - Summary of attendance totals and averages.
+- **records** (array) - Array of attendance records for each game or season segment.
+
+#### Response Example
+```json
+{
+  "aggregatetotals": {
+    "openingstotalaway": 80,
+    "openingstotalhome": 78,
+    "openingstotallost": 3,
+    "attendanceaverageytd": 13319,
+    "attendancehigh": 30898,
+    "attendancehighdate": "2021-07-24T00:00:00",
+    "attendancetotal": 2104458,
+    "attendancetotalaway": 1311229,
+    "attendancetotalhome": 793229,
+    "attendanceaverageaway": 16390,
+    "attendanceaveragehome": 10170
+  },
+  "records": [
+    {
+      "openingstotal": 158,
+      "openingstotalaway": 80,
+      "openingstotalhome": 78,
+      "openingstotallost": 3,
+      "gamestotal": 167,
+      "gamesawaytotal": 83,
+      "gameshometotal": 84,
+      "year": 2021,
+      "attendanceaverageytd": 13319,
+      "attendancetotal": 2104458,
+      "gametype": {
+        "id": "R",
+        "description": "Regular Season"
+      },
+      "team": {
+        "id": 110,
+        "link": "/api/v1/teams/110",
+        "name": "Baltimore Orioles"
+      },
+      "attendanceaverageaway": 16390,
+      "attendanceaveragehome": 10170,
+      "attendancehigh": 30898,
+      "attendancehighdate": "2021-07-24T00:00:00",
+      "attendancehighgame": {
+        "gamepk": 633195,
+        "link": "/api/v1.1/game/633195/feed/live",
+        "content": {
+          "link": "/api/v1/game/633195/content"
+        },
+        "daynight": "day"
+      },
+      "attendancelow": 4147,
+      "attendancelowdate": "2021-04-15T00:00:00",
+      "attendancelowgame": {
+        "gamepk": 634571,
+        "link": "/api/v1.1/game/634571/feed/live",
+        "content": {
+          "link": "/api/v1/game/634571/content"
+        },
+        "daynight": "day"
+      },
+      "attendancetotalaway": 1311229,
+      "attendancetotalhome": 793229,
+      "attendanceopeningaverage": 9921,
+      "gameType": {
+        "id": "R",
+        "description": "Regular Season"
+      }
+    }
+  ]
+}
+```
+```
+
+--------------------------------
+
+### Get Player vs. Player Stats using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Fetches head-to-head hitting statistics for a batter against a specific opposing pitcher. It requires obtaining IDs for both players, setting the 'vsPlayer' stat type and 'hitting' group, and providing the opposing player's ID in the parameters. Requires the mlbstatsapi library.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+# Get player IDs
+ty_france_id = mlb.get_people_id('Ty France')[0]
+shohei_ohtani_id = mlb.get_people_id('Shohei Ohtani')[0]
+
+# Set stat type, stat groups, and params
+stats = ['vsPlayer']
+group = ['hitting']
+params = {'opposingPlayerId': shohei_ohtani_id, 'season': 2022}
+
+# Get stats
+stats = mlb.get_player_stats(ty_france_id, stats=stats, groups=group, **params)
+vs_player_total = stats['hitting']['vsplayertotal']
+vs_player = stats['hitting']['vsplayer']
+
+# Print vsPlayer total stats
+print("--- vsPlayer Total Stats ---")
+for split in vs_player_total.splits:
+    for k, v in split.stat.__dict__.items():
+            print(f"{k} {v}")
+
+# Print vsPlayer stats
+print("\n--- vsPlayer Stats ---")
+for split in vs_player.splits:
+    for k, v in split.stat.__dict__.items():
+            print(f"{k} {v}")
+```
+
+--------------------------------
+
+### Get Line Score Data using Python MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Retrieves the line score for a specified MLB game ID. The function accepts optional timecode and fields parameters for data filtering.
+
+```Python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+# Example: Get line score for game ID 534196
+line_score = mlb.get_game_line_score(game_id=534196)
+
+# Example: Get line score at a specific timecode
+# line_score_at_time = mlb.get_game_line_score(game_id=534196, timecode='20230101_120000')
+
+# Example: Get specific fields for line score
+# line_score_specific_fields = mlb.get_game_line_score(game_id=534196, fields='linescore,innings')
+
+```
+
+--------------------------------
+
+### Get All Players for a Sport
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves a list of all players associated with a given sport ID. This function first fetches the sport ID and then uses it to query the API for player information. It iterates through the players and prints their IDs.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+sport_id = mlb.get_sport_id()
+players = mlb.get_players(sport_id=sport_id)
+
+for player in players:
+    print(player.id)
+```
+
+--------------------------------
+
+### Get Player Roster for a Team
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves the list of players on a specific team's roster, identified by the team ID. The code iterates through the roster and prints the jersey number for each player.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+team_id = 133
+players = mlb.get_team_roster(team_id)
+
+for player in players:
+    print(player.jerseynumber)
+```
+
+--------------------------------
+
+### Fetch Player Stats with python-mlb-statsapi
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Stats
+
+This Python code demonstrates how to fetch player statistics using the python-mlb-statsapi library. It retrieves both season and career hitting and pitching stats for a given player ID and iterates through the splits to print stat details. Dependencies include the 'mlbstatsapi' library.
+
+```python
+>>> mlb = mlbstatsapi.Mlb()
+>>>
+>>> player_id = mlb.get_people_id("Ty France")[0]
+>>>
+>>> stats = ['season', 'career']
+>>> groups = ['hitting', 'pitching']
+>>>
+>>> stat_dict = mlb.get_player_stats(player_id, stats=stats, groups=groups )
+>>> season_hitting_stat = stat_dict['hitting']['season']
+>>> career_pitching_stat = stat_dict['pitching']['career']
+>>>
+>>> for split in season_hitting_stat.splits:
+...     for k, v in split.stat.__dict__.items():
+...             print(k, v)
+...
+>>> for split in career_pitching_stat.splits:
+...     for k, v in split.stat.__dict__.items():
+...             print(k, v)
+...
+```
+
+--------------------------------
+
+### Get Team IDs using mlbstatsapi
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves the unique identifier for a given MLB team. This is often a prerequisite for fetching more detailed team-specific data. It uses the `mlbstatsapi` library to connect to the API.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+team_id = mlb.get_team_id('Seattle Mariners')[0]
+```
+
+--------------------------------
+
+### League Statistics
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Gamepace
+
+Provides aggregate statistics for the league, including game counts, time metrics, and performance indicators.
+
+```APIDOC
+## League Statistics
+
+### Description
+Retrieves aggregate statistics for the league, such as total games played, time metrics per game/pitch, and various performance ratios.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/stats/league
+
+### Query Parameters
+- **season** (str) - Optional - The season for which to retrieve stats (e.g., '2023').
+
+### Response
+#### Success Response (200)
+- **totalPitches** (int) - The total number of pitches thrown in the league.
+- **totalGames** (int) - The total number of games played in the league.
+- **total7InningGames** (int) - The total number of 7-inning games played in the league.
+- **total9InningGames** (int) - The total number of 9-inning games played in the league.
+- **totalExtraInningGames** (int) - The total number of extra inning games played in the league.
+- **timePerGame** (str) - The average time spent per game in the league.
+- **timePerPitch** (str) - The average time spent per pitch in the league.
+- **timePerHit** (str) - The average time spent per hit in the league.
+- **timePerRun** (str) - The average time spent per run scored in the league.
+- **timePerPlateAppearance** (str) - The average time spent per plate appearance in the league.
+- **timePer9Innings** (str) - The average time spent per 9 innings played in the league.
+- **timePer77PlateAppearances** (str) - The average time spent per 7-7 plate appearances in the league.
+- **totalExtraInningTime** (str) - The total amount of time spent on extra inning games in the league.
+- **timePer7InningGame** (str) - The average time spent per 7-inning game in the league.
+- **total7InningGamesCompletedEarly** (int) - The total number of 7-inning games completed early in the league.
+- **timePer7InningGameWithoutExtraInnings** (str) - The average time spent per 7-inning game without extra innings in the league.
+- **total7InningGamesScheduled** (int) - The total number of 7-inning games scheduled in the league.
+- **total7InningGamesWithoutExtraInnings** (int) - The total number of 7-inning games played without extra innings in the league.
+- **total9InningGamesCompletedEarly** (int) - The total number of 9-inning games completed early in the league.
+- **total9InningGamesWithoutExtraInnings** (int) - The total number of 9-inning games played without extra innings.
+- **total9InningGamesScheduled** (int) - The total number of 9 inning games scheduled.
+- **hitsPerRun** (float) - The number of hits per run.
+- **pitchesPerPitcher** (float) - The number of pitches thrown per pitcher.
+- **season** (str) - The season number.
+- **team** (object) - Information about the team.
+  - **id** (int) - The ID number of the team.
+  - **name** (str) - The name of the team.
+  - **link** (str) - The API link of the team.
+- **league** (object) - Information about the league.
+  - **id** (int) - The ID number of the league.
+  - **name** (str) - The name of the league.
+  - **link** (str) - The link of the league.
+- **sport** (object) - Information about the sport.
+  - **id** (int) - The ID number of the sport.
+  - **code** (str) - The sport code.
+  - **link** (str) - The link of the sport.
+- **prportalcalculatedfields** (object) - Calculated fields for a league.
+  - **total7InningGames** (int) - The total number of 7-inning games played.
+  - **total9InningGames** (int) - The total number of 9-inning games played.
+  - **totalExtraInningGames** (int) - The total number of extra-inning games played.
+
+### Response Example
+```json
+{
+  "totalPitches": 123456,
+  "totalGames": 2430,
+  "total7InningGames": 50,
+  "total9InningGames": 2380,
+  "totalExtraInningGames": 100,
+  "timePerGame": "02:45:00",
+  "timePerPitch": "00:00:04",
+  "timePerHit": "00:05:30",
+  "timePerRun": "00:15:00",
+  "timePerPlateAppearance": "00:04:00",
+  "timePer9Innings": "02:40:00",
+  "timePer77PlateAppearances": "00:03:50",
+  "totalExtraInningTime": "100:00:00",
+  "timePer7InningGame": "02:15:00",
+  "total7InningGamesCompletedEarly": 5,
+  "timePer7InningGameWithoutExtraInnings": "02:10:00",
+  "total7InningGamesScheduled": 55,
+  "total7InningGamesWithoutExtraInnings": 45,
+  "total9InningGamesCompletedEarly": 10,
+  "total9InningGamesWithoutExtraInnings": 2370,
+  "total9InningGamesScheduled": 2380,
+  "hitsPerRun": 1.5,
+  "pitchesPerPitcher": 100.5,
+  "season": "2023",
+  "team": {
+    "id": 15,
+    "name": "Seattle Mariners",
+    "link": "/api/v1/teams/15"
+  },
+  "league": {
+    "id": 1,
+    "name": "MLB",
+    "link": "/api/v1/league/1"
+  },
+  "sport": {
+    "id": 1,
+    "code": "mlb",
+    "link": "/api/v1/sports/1"
+  },
+  "prportalcalculatedfields": {
+    "total7InningGames": 50,
+    "total9InningGames": 2380,
+    "totalExtraInningGames": 100
+  }
+}
+```
+```
+
+--------------------------------
+
+### Stats Reference
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Stats
+
+Provides a reference for available stat types and their descriptions. These can be used in conjunction with the `get_stats` endpoint.
+
+```APIDOC
+## Stats Reference
+
+### Description
+This section details the available stat types that can be requested using the `get_stats` endpoint. Each stat type supports specific stat groups and may have associated parameter requirements.
+
+### Stat Types
+- **season** (string) - A season stat, supports stat groups hitting, pitching, fielding, and catching. Requires use of season param.
+- **seasonAdvanced** (string) - A seasonAdvanced stat, supports stat groups hitting, pitching, fielding, and catching.
+- **career** (string) - A career stat, supports stat groups hitting, pitching, fielding, and catching.
+- **careerAdvanced** (string) - A career advanced stat, supports stat groups hitting, pitching, fielding, and catching.
+- **winLoss** (string) - A winLoss stat, supports stat groups hitting, pitching.
+- **winLossPlayoffs** (string) - A winloss playoff stat, supports stat groups hitting, pitching.
+- **homeAndAway** (string) - A homeandaway stat, supports stat groups hitting, pitching.
+- **homeAndAwayPlayoffs** (string) - A winLoss stat, supports stat groups hitting, pitching.
+- **careerRegularSeason** (string) - A homeandaway playoffs stat, supports stat groups hitting, pitching.
+- **careerPlayoffs** (string) - A career playoff stat, supports stat groups hitting, pitching.
+- **statsSingleSeason** (string) - A season stat, supports stat groups hitting, pitching, fielding, and catching.
+- **yearByYear** (string) - A yearbyyear stat, supports stat groups hitting, pitching, fielding, and catching.
+- **yearByYearPlayoffs** (string) - A yearByYearPlayoffs stat, supports stat groups hitting, pitching, fielding, and catching.
+- **opponentsFaced** (string) - A opponentsFaced stat, supports stat groups hitting, pitching.
+- **sabermetrics** (string) - A sabermetrics stat, supports stat groups hitting, pitching.
+- **gameLog** (string) - A gameLog stat, supports stat groups hitting, pitching.
+- **pitchLog** (string) - A pitchLog stat, supports stat groups hitting, pitching.
+- **playLog** (string) - A playLog stat, supports stat groups hitting, pitching.
+- **vsPlayer** (string) - A vsPlayer stat, supports stat groups hitting, pitching. Requires use of opposingPlayerId param.
+- **vsTeam** (string) - A vsTeam stat, supports stat groups hitting, pitching. Requires use of opposingTeamId param.
+
+### Stat Groups
+- **hitting** (string) - Hitting stat group.
+- **pitching** (string) - Pitching stat group.
+- **fielding** (string) - Fielding stat group.
+- **catching** (string) - Catching stat group.
+```
+
+--------------------------------
+
+### Get Awards by ID (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves awards associated with a specific award ID. It iterates through the recipients, printing player name, award name, and date. This function requires the `mlbstatsapi` library.
+
+```python
+>>> mlb = mlbstatsapi.Mlb()
+>>> retiredjersy = self.mlb.get_awards(award_id='RETIREDUNI_108')
+>>> for recipient in retiredjersy.awards:
+...     print (recipient.player.nameFirstLast, recipient.name, recipient.date)
+```
+
+--------------------------------
+
+### Team Information API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Retrieve detailed information about MLB teams, including their records, league, division, and venue details.
+
+```APIDOC
+## GET /teams
+
+### Description
+Retrieves a list of all MLB teams with their associated details.
+
+### Method
+GET
+
+### Endpoint
+/teams
+
+### Parameters
+#### Query Parameters
+- **season** (str) - Optional - The season to filter teams by.
+
+### Request Example
+```json
+{
+  "example": "/teams?season=2023"
+}
+```
+
+### Response
+#### Success Response (200)
+- **teams** (list) - A list of team objects.
+  - **records** (dict) - Team's records.
+  - **divisionleader** (bool) - Indicates if the team is a division leader.
+  - **wins** (int) - Number of wins.
+  - **losses** (int) - Number of losses.
+  - **winningpercentage** (str) - Winning percentage.
+  - **franchisename** (str) - The franchise name of the team.
+  - **clubname** (str) - The club name of the team.
+  - **active** (str) - Active status of the team.
+  - **home** (object) - Home team details.
+    - **springleague** (object) - Spring league details.
+      - **id** (int) - ID number of the league.
+      - **name** (str) - Name of the league.
+      - **link** (str) - Link to the league.
+      - **abbreviation** (str) - Abbreviation of the league.
+    - **allstarstatus** (str) - All-star status of the team.
+    - **id** (int) - ID number of the team.
+    - **name** (str) - Name of the team.
+    - **link** (str) - API link for the team.
+    - **season** (str) - The team's current season.
+    - **venue** (object) - Home venue details.
+      - **id** (int) - ID for this venue.
+      - **name** (str) - Name for this venue.
+      - **link** (str) - Link to venues endpoint.
+    - **springvenue** (object) - Spring venue details.
+      - **id** (int) - ID for this venue.
+      - **link** (str) - Link to venues endpoint.
+    - **teamcode** (str) - Team code.
+    - **filecode** (str) - File code name of the team.
+    - **abbreviation** (str) - The abbreviation of the team name.
+    - **teamname** (str) - The team name.
+    - **locationname** (str) - The location of the team.
+    - **firstyearofplay** (str) - The first year the team began play.
+    - **league** (object) - League details.
+      - **id** (int) - ID number of the league.
+      - **name** (str) - Name of the league.
+      - **link** (str) - Link of the league.
+    - **division** (object) - Division details.
+      - **id** (int) - ID number of the division.
+      - **name** (str) - Name of the division.
+      - **link** (str) - Link of the division.
+    - **sport** (object) - Sport details.
+      - **id** (int) - ID number of the sport.
+      - **name** (str) - Name of the sport.
+      - **link** (str) - Link of the sport.
+    - **shortname** (str) - The short name of the team.
+    - **record** (object) - Team record object.
+
+#### Response Example
+```json
+{
+  "teams": [
+    {
+      "records": {
+        "splitRecords": [],
+        "overallRecords": [
+          {
+            "record": {
+              "wins": 90,
+              "losses": 72,
+              "percentage": ".556"
+            },
+            "season": "2023"
+          }
+        ]
+      },
+      "divisionleader": false,
+      "wins": 90,
+      "losses": 72,
+      "winningpercentage": ".556",
+      "franchisename": "New York Yankees",
+      "clubname": "New York Yankees",
+      "active": "Y",
+      "home": {
+        "springleague": {
+          "id": "SC2",
+          "name": "Spring Training",
+          "link": "/api/v1/league/2022/spring"
+        },
+        "allstarstatus": "NONE",
+        "id": 147,
+        "name": "New York Yankees",
+        "link": "/api/v1/teams/147",
+        "season": "2023",
+        "venue": {
+          "id": 101,
+          "name": "Yankee Stadium",
+          "link": "/api/v1/venues/101"
+        },
+        "springvenue": {
+          "id": 218,
+          "link": "/api/v1/venues/218"
+        },
+        "teamcode": "NYY",
+        "filecode": "nyy",
+        "abbreviation": "NYY",
+        "teamname": "Yankees",
+        "locationname": "New York",
+        "firstyearofplay": "1903",
+        "league": {
+          "id": "103",
+          "name": "American League",
+          "link": "/api/v1/league/103"
+        },
+        "division": {
+          "id": "202",
+          "name": "American League East",
+          "link": "/api/v1/divisions/202"
+        },
+        "sport": {
+          "id": "1",
+          "name": "Major League Baseball",
+          "link": "/api/v1/sports/1"
+        },
+        "shortname": "Yankees",
+        "record": {
+          "splitRecords": [],
+          "overallRecords": [
+            {
+              "record": {
+                "wins": 90,
+                "losses": 72,
+                "percentage": ".556"
+              },
+              "season": "2023"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+```
+
+--------------------------------
+
+### Python - Get Sport ID by Name
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Sports
+
+Obtains the ID for a sport given its name. This is a utility function to map sport names to their corresponding IDs, which can then be used to fetch detailed sport information. It supports an optional search key.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+sport_id = mlb.get_sport_id("Major League Baseball")
+print(sport_id)
+```
+
+--------------------------------
+
+### Get Division IDs with Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Division
+
+Fetches division IDs based on the division name. This function can also use a 'search_key' parameter to specify how the division name should be searched. It returns a list of division IDs.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+division_ids = mlb.get_division_id("American League West")
+
+print(division_ids)
+```
+
+--------------------------------
+
+### Get Person Data by ID using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-People
+
+Retrieves detailed information for a specific MLB person (player, coach, umpire) using their unique ID. This function is useful for fetching comprehensive player profiles.
+
+```python
+>>> import mlbstatsapi
+>>>
+>>> mlb = mlbstatsapi.Mlb()
+>>>
+>>> player = mlb.get_person(player_id = 605151)
+>>>
+>>> print(player)
+Person(id=605151, link=/api/v1/people/605151, primaryposition=Position(code='1', name='Pitcher', type='Pitcher', abbreviation='P'), pitchhand=PitchHand(code='R', description='Right'), batside=BatSide(code='R', description='Right'), fullname=Archie Bradley, firstname=Archie, lastname=Bradley, primarynumber=23, birthdate=1992-08-10, currentage=30, birthcity=Muskogee, birthstateprovince=OK, height="6' 4", weight=215, active=True, usename=Archie, middlename=N., boxscorename=Bradley, nickname=Crash Landing, draftyear=2011, mlbdebutdate=2015-04-11, namefirstlast=Archie Bradley, nameslug=archie-bradley-605151, firstlastname=Archie Bradley, lastfirstname=Bradley, Archie, lastinitname=Bradley, A, initlastname=A Bradley, fullfmlname=Archie N. Bradley, fulllfmname=Bradley, Archie N., birthcountry=USA, pronunciation=BRAD-lee, strikezonetop=3.549, strikezonebottom=1.627, gender=M, isplayer=True, isverified=True, uselastname=Bradley)
+```
+
+--------------------------------
+
+### Get MLB Team ID by Name (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+Retrieves the team ID(s) associated with a given team name. Allows for searching by a specific team name and optionally using a 'search_key' for more precise matching. A 'sportId' can also be provided to narrow down the search within a particular sport.
+
+```python
+def get_team_id(team_name: str, search_key: str = 'name', sportId: str | int = None):
+    """Return Team Id(s) from team_name
+
+    Args:
+        team_name (str): Search team name
+        search_key (str, optional): Search key. Defaults to 'name'.
+        sportId (str | int, optional): sport id number for team search. Defaults to None.
+    """
+    pass
+```
+
+--------------------------------
+
+### Get Homerun Derby Data using Python MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Homerunderby
+
+This function retrieves Homerun Derby data for a specific game. It requires a game ID and can optionally filter fields to be returned. The output is a Homerun Derby object.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+mlb.get_homerunderby(game_id = 511101)
+```
+
+--------------------------------
+
+### Get Player ID by Name
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Fetches the unique player ID for a given player's name. This is useful for looking up specific players in the API when only their name is known. The function returns a list of IDs, and the first one is typically used.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+player_id = mlb.get_people_id("Ty France")
+print(player_id[0])
+```
+
+--------------------------------
+
+### Get MLB Team Data by ID (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+Retrieves a Team Object from the MLB StatsAPI using a unique team ID. Optional parameters allow filtering by sport, season, and specific fields. This function is essential for accessing detailed information about a specific team.
+
+```python
+def get_team(team_id: str | int, sportId: str | int = None, season: str | int = None, fields: str = None):
+    """Return Team Object from Id
+
+    Args:
+        team_id (str | int): unique team id
+        sportId (str | int, optional): Insert a sportId to return a directory of team information for a particular club in a sport. Defaults to None.
+        season (str | int, optional): Insert year to return a directory of team information for a particular club in a specific season. Defaults to None.
+        fields (str, optional): Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute. Defaults to None.
+    """
+    pass
+```
+
+--------------------------------
+
+### GET /api/v1/draft/{yearId}
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Draft(Round)
+
+Retrieves draft information for a specified year. Additional parameters can filter the results by round, player name, school, state, country, position, team ID, player ID, or bis Player ID.
+
+```APIDOC
+## GET /api/v1/draft/{yearId}
+
+### Description
+Retrieves draft information for a specified year. Additional parameters can filter the results by round, player name, school, state, country, position, team ID, player ID, or bis Player ID.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/draft/{yearId}
+
+### Parameters
+#### Path Parameters
+- **yearId** (string/int) - Required - Insert a year_id to return a directory of seasons for a specific sport.
+
+#### Query Parameters
+- **round** (string) - Optional - Insert a round to return biographical and financial data for a specific round in a Rule 4 draft.
+- **name** (string) - Optional - Insert the first letter of a draftees last name to return their Rule 4 biographical and financial data.
+- **school** (string) - Optional - Insert the first letter of a draftees school to return their Rule 4 biographical and financial data.
+- **state** (string) - Optional - Insert state to return a list of Rule 4 draftees from that given state.
+- **country** (string) - Optional - Insert state to return a list of Rule 4 draftees from that given country.
+- **position** (string) - Optional - Insert the position to return Rule 4 biographical and financial data for a players drafted at that position.
+- **teamId** (string/int) - Optional - Insert teamId to return Rule 4 biographical and financial data for all picks made by a specific team.
+- **playerId** (string/int) - Optional - Insert MLB playerId to return a player's Rule 4 biographical and financial data a specific Rule 4 draft.
+- **bisPlayerId** (string/int) - Optional - Insert bisPlayerId to return a player's Rule 4 biographical and financial data a specific Rule 4 draft.
+
+### Request Example
+```http
+GET https://statsapi.mlb.com/api/v1/draft/2018?round=1&name=M&school=A&position=P&teamId=116&playerId=663554&bisPlayerId=759143
+```
+
+### Response
+#### Success Response (200)
+- **ispass** (boolean) - Whether or not the team passed on making a pick in this round.
+- **year** (string) - The year in which the draft took place.
+
+#### Response Example
+```json
+{
+  "ispass": false,
+  "year": "2018"
+}
+```
+```
+
+--------------------------------
+
+### Get Person IDs by Full Name using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-People
+
+Retrieves a list of person IDs based on a full name. This function is useful for finding a player's ID when only their name is known, facilitating further data retrieval.
+
+```python
+>>> player_id = mlb.get_people_id("Ty France")
+>>> print(player_id)
+[664034]
+```
+
+--------------------------------
+
+### Get League Information using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-League
+
+Fetches detailed information for a specific league, identified by its ID and optionally filtered by season. This function is useful for retrieving comprehensive data about a league's structure, dates, and other attributes for a given year.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+league_id = mlb.get_league_id("American League")
+
+print(league_id)
+
+league = mlb.get_league(league_id = 103, season = 2018)
+
+print(league)
+```
+
+--------------------------------
+
+### Get All MLB Teams by Sport ID (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+Fetches all Team Objects for a given sport ID. This function allows for extensive filtering based on sport, season, league, active status, all-star status, and game type. It's useful for obtaining a comprehensive list of teams within specific criteria.
+
+```python
+def get_teams(sport_id: str | int, sportId: str | int = None, season: str | int = None, fields: str = None, leagueIds: str | int = None, activeStatus: str = None, allStarStatuses: str = None, gameType: str = None):
+    """Return all Team Objects from sportId
+
+    Args:
+        sport_id (str | int): unique sport id of teams
+        sportId (str | int, optional): Insert a sportId to return a directory of team information for a particular club in a sport. Defaults to None.
+        season (str | int, optional): Insert year to return a directory of team information for a particular club in a specific season. Defaults to None.
+        fields (str, optional): Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute. Defaults to None.
+        leagueIds (str | int, optional): Insert leagueId to return team information for particular league. Defaults to None.
+        activeStatus (str, optional): Insert activeStatus to populate a teams based on active/inactive status for a given season. There are three status types: Y, N, B. Defaults to None.
+        allStarStatuses (str, optional): Insert allStarStatuses to populate a teams based on Allstar status for a given season. There are two status types: Y and N. Defaults to None.
+        gameType (str, optional): Comma delimited list of specific fields to be returned. Format: topLevelNode, childNode, attribute. Defaults to None.
+    """
+    pass
+```
+
+--------------------------------
+
+### Get League ID by Name using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-League
+
+Retrieves the unique league ID for a given league name. This is a precursor step to fetching specific league data when only the league's common name (e.g., 'American League') is known.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+league_id = mlb.get_league_id("American League")
+
+print(league_id)
+```
+
+--------------------------------
+
+### Fetch Team Stats with python-mlb-statsapi
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Stats
+
+This Python code snippet shows how to retrieve team statistics using the python-mlb-statsapi library. It fetches season and advanced hitting stats for a specified team ID and then iterates through the splits to display the stat attributes. Requires the 'mlbstatsapi' library.
+
+```python
+>>> team_id = mlb.get_team_id('Seattle Mariners')[0]
+>>>
+>>> stats = ['season', 'seasonAdvanced']
+>>> groups = ['hitting']
+>>>
+>>> stats = mlb.get_team_stats(team_id, stats=stats, groups=groups)
+>>> season_hitting = stats['hitting']['season']
+>>> advanced_hitting = stats['hitting']['seasonadvanced']
+>>>
+>>>
+>>> for split in season_hitting.splits:
+...     for k, v in split.stat.__dict__.items():
+...         print(k, v)
+...
+>>> for split in advanced_hitting.splits:
+...     for k, v in split.stat.__dict__.items():
+...         print(k, v)
+...
+```
+
+--------------------------------
+
+### Get MLB Draft Data by Year and Round (Python)
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Draft(Round)
+
+Retrieves MLB draft data for a specific year and optionally filters by round. This function interacts with the MLB stats API to fetch draft picks and associated round information. It returns a list of Round objects, each containing draft picks.
+
+```python
+>>> import mlbstatsapi
+>>>
+>>> mlb = mlbstatsapi.Mlb()
+>>>
+>>> draft_year = mlb.get_draft(year_id = 2018)
+>>> 
+>>> print(draft_year)
+[Round(round=1, picks=[DraftPick(), DraftPick(), DraftPick()], Round(round=2, picks=[DraftPick(), DraftPick(), DraftPick()])]
+>>>
+>>> draft = mlb.get_graft(year_id = 2021, round = 2)
+[Round(round=2, picks=[DraftPick(), DraftPick(), DraftPick()])]
+```
+
+--------------------------------
+
+### Player Stats Endpoint
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Endpoint for retrieving player statistics.
+
+```APIDOC
+## GET /people/{personId}/stats
+
+### Description
+Retrieves statistics for a specific player. Requires player ID and can be filtered by stats types, groups, and season parameters.
+
+### Method
+GET
+
+### Endpoint
+/people/{personId}/stats
+
+### Parameters
+#### Path Parameters
+- **personId** (int) - Required - The ID of the player.
+#### Query Parameters
+- **stats** (list) - Required - A list of stat types (e.g., ['season', 'career']).
+- **groups** (list) - Required - A list of stat groups (e.g., ['hitting', 'pitching']).
+- **season** (int) - Optional - The season year to filter stats (e.g., 2022).
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **statDict** (object) - A dictionary containing player statistics, categorized by stat type and group.
+
+#### Response Example
+{
+  "example": "{\"hitting\": {\"season\": {\"splits\": [{\"stat\": {\"gamesPlayed\": 140, \"runs\": 65, ...}}]}, \"career\": {\"stat\": {...}}}, \"pitching\": {...}}"
+}
+
+## GET /people/id
+
+### Description
+Retrieves the ID(s) of player(s) based on their name.
+
+### Method
+GET
+
+### Endpoint
+/people/id
+
+### Parameters
+#### Query Parameters
+- **player_name** (str) - Required - The name of the player to search for.
+- **search_key** (str) - Optional - The key to use for searching (default: 'fullName').
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **personIds** (list) - A list of player IDs matching the search criteria.
+
+#### Response Example
+{
+  "example": "[123456, 789012]"
+}
+
+```
+
+--------------------------------
+
+### Retrieve Team Roster using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+This snippet shows how to fetch a team's roster using the `get_team_roster` function from the `mlbstatsapi` library. It requires a valid `team_id` as input. The output is a list of player objects.
+
+```python
+>>> roster = mlb.get_team_roster(team_ids[0])
+>>> print(roster)
+[Player(), Player(), Player()]
+>>>
+```
+
+--------------------------------
+
+### Fetch Team Stats with Parameters
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Fetches hitting statistics for a specific team and season. It demonstrates how to define stat types, groups, and pass a season parameter to the `get_team_stats` function. The output includes season and advanced hitting data, allowing iteration through splits for detailed insights.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+team_id = mlb.get_team_id('Seattle Mariners')[0]
+
+stats = ['season', 'seasonAdvanced']
+groups = ['hitting']
+params = {'season': 2022}
+
+stats_data = mlb.get_team_stats(team_id, stats=stats, groups=groups, **params)
+season_hitting = stats_data['hitting']['season']
+advanced_hitting = stats_data['hitting']['seasonadvanced']
+
+print('--- Season Hitting ---')
+for split in season_hitting.splits:
+    print('Season: ', split.season)
+    for k, v in split.stat.__dict__.items():
+        print(k, v)
+
+print('\n--- Advanced Hitting ---')
+for split in advanced_hitting.splits:
+    print('Season: ', split.season)
+    for k, v in split.stat.__dict__.items():
+        print(k, v)
+```
+
+--------------------------------
+
+### Season Endpoints
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Endpoints for retrieving season information.
+
+```APIDOC
+## GET /seasons
+
+### Description
+Retrieves a list of all available seasons, optionally filtered by sport ID.
+
+### Method
+GET
+
+### Endpoint
+/seasons
+
+### Parameters
+#### Query Parameters
+- **sportid** (int) - Optional - Filter seasons by sport ID.
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **seasons** (list) - A list of season objects.
+
+#### Response Example
+{
+  "example": "[\n  {\"seasonId\": \"2023\", \"hasPlayoffs\": true, ...},\n  {\"seasonId\": \"2022\", \"hasPlayoffs\": true, ...}\n]"
+}
+
+## GET /seasons/{seasonId}
+
+### Description
+Retrieves detailed information for a specific season using its ID, optionally filtered by sport ID.
+
+### Method
+GET
+
+### Endpoint
+/seasons/{seasonId}
+
+### Parameters
+#### Path Parameters
+- **seasonId** (str) - Required - The ID of the season to retrieve (e.g., '2023').
+#### Query Parameters
+- **sport_id** (int) - Optional - Filter season details by sport ID.
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **season** (object) - A season object with detailed information.
+
+#### Response Example
+{
+  "example": "{\"seasonId\": \"2023\", \"regularSeasonStartDate\": \"2023-03-30\", \"regularSeasonEndDate\": \"2023-10-01\", ...}"
+}
+
+```
+
+--------------------------------
+
+### Schedule Structure API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Schedule
+
+This section details the structure of the schedule data returned by the API. It includes overall schedule statistics and a breakdown by date, encompassing game information, team details, and game status.
+
+```APIDOC
+## Schedule Structure
+
+This API endpoint provides comprehensive schedule data for MLB games.
+
+### Description
+Returns the schedule for a specified date or date range, including details about each game, teams involved, and their current status.
+
+### Method
+GET
+
+### Endpoint
+`/api/v1/schedule`
+
+### Parameters
+#### Query Parameters
+- **sportId** (int) - Optional - Filter schedule by sport ID.
+- **date** (str) - Optional - Filter schedule by a specific date (e.g., YYYY-MM-DD).
+- **startDate** (str) - Optional - Filter schedule by start date (e.g., YYYY-MM-DD).
+- **endDate** (str) - Optional - Filter schedule by end date (e.g., YYYY-MM-DD).
+
+### Response
+#### Success Response (200)
+- **totalItems** (int) - Total number of items in the schedule.
+- **totalEvents** (int) - Total number of events in the schedule.
+- **totalGames** (int) - Total number of games in the schedule.
+- **totalGamesInProgress** (int) - Total number of games currently in progress.
+- **dates** (Array<Object>) - A list of dates, each containing game details for that day.
+  - **date** (str) - The date for the group of games.
+  - **totalItems** (int) - Total items for this date.
+  - **totalEvents** (int) - The number of events for this date.
+  - **totalGames** (int) - The number of games for this date.
+  - **totalGamesInProgress** (int) - The number of games currently in progress for this date.
+  - **games** (Array<Object>) - A list of games for this date.
+    - **gamePk** (int) - The unique ID number for the game.
+    - **link** (str) - The API link to the specific game's details.
+    - **gameType** (str) - The type of game (e.g., 'R' for Regular Season).
+    - **season** (str) - The season the game takes place in.
+    - **gameDate** (str) - The date the game is scheduled for.
+    - **officialDate** (str) - The official date of the game.
+    - **status** (Object) - The status of the game.
+      - **abstractGameState** (str) - The abstract game state (e.g., 'Preview', 'Live', 'Final').
+      - **codedGameState** (str) - The coded game state.
+      - **detailedState** (str) - A more detailed description of the game state.
+      - **statusCode** (str) - The status code for the game.
+      - **startTimeTbd** (bool) - Indicates if the start time is yet to be determined.
+      - **abstractGameCode** (str) - The abstract code for the game state.
+      - **reason** (str) - Reason for the current state (e.g., delay, cancellation).
+    - **teams** (Object) - Contains home and away team information for the game.
+      - **home** (Object) - Home team details.
+        - **leagueRecord** (Object) - The league record for the home team.
+          - **wins** (int) - Number of wins.
+          - **losses** (int) - Number of losses.
+          - **ties** (int) - Number of ties.
+          - **pct** (str) - Winning percentage.
+        - **score** (int) - Current score for the home team in this game.
+        - **team** (Object) - Basic team information.
+          - **id** (int) - Team ID.
+          - **name** (str) - Team name.
+          - **link** (str) - Link to the team's details page.
+        - **isWinner** (bool) - Indicates if the home team is the winner.
+        - **splitSquad** (bool) - Indicates if the team is part of a split squad.
+      - **away** (Object) - Away team details (same structure as 'home' team).
+
+### Request Example
+```json
+{
+  "totalItems": 15,
+  "totalEvents": 15,
+  "totalGames": 14,
+  "totalGamesInProgress": 3,
+  "dates": [
+    {
+      "date": "2023-10-27",
+      "totalItems": 15,
+      "totalEvents": 15,
+      "totalGames": 14,
+      "totalGamesInProgress": 3,
+      "games": [
+        {
+          "gamePk": 745678,
+          "link": "/api/v1/game/745678/feed/live",
+          "gameType": "W",
+          "season": "2023",
+          "gameDate": "2023-10-27",
+          "officialDate": "2023-10-27",
+          "status": {
+            "abstractGameState": "Live",
+            "codedGameState": "L",
+            "detailedState": "In Progress",
+            "statusCode": "1",
+            "startTimeTbd": false,
+            "abstractGameCode": "G"
+          },
+          "teams": {
+            "home": {
+              "leagueRecord": {
+                "wins": 90,
+                "losses": 72,
+                "ties": 0,
+                "pct": ".556"
+              },
+              "score": 5,
+              "team": {
+                "id": 111,
+                "name": "Home Team",
+                "link": "/api/v1/teams/111"
+              },
+              "isWinner": true,
+              "splitSquad": false
+            },
+            "away": {
+              "leagueRecord": {
+                "wins": 88,
+                "losses": 74,
+                "ties": 0,
+                "pct": ".543"
+              },
+              "score": 3,
+              "team": {
+                "id": 112,
+                "name": "Away Team",
+                "link": "/api/v1/teams/112"
+              },
+              "isWinner": false,
+              "splitSquad": false
+            }
+          }
+        }
+        // ... more games
+      ]
+    }
+    // ... more dates
+  ]
+}
+```
+
+### Response
+#### Success Response (200)
+Returns a JSON object containing schedule information as described above.
+
+#### Response Example
+```json
+{
+  "totalItems": 15,
+  "totalEvents": 15,
+  "totalGames": 14,
+  "totalGamesInProgress": 3,
+  "dates": [
+    {
+      "date": "2023-10-27",
+      "totalItems": 15,
+      "totalEvents": 15,
+      "totalGames": 14,
+      "totalGamesInProgress": 3,
+      "games": [
+        {
+          "gamePk": 745678,
+          "link": "/api/v1/game/745678/feed/live",
+          "gameType": "W",
+          "season": "2023",
+          "gameDate": "2023-10-27",
+          "officialDate": "2023-10-27",
+          "status": {
+            "abstractGameState": "Live",
+            "codedGameState": "L",
+            "detailedState": "In Progress",
+            "statusCode": "1",
+            "startTimeTbd": false,
+            "abstractGameCode": "G"
+          },
+          "teams": {
+            "home": {
+              "leagueRecord": {
+                "wins": 90,
+                "losses": 72,
+                "ties": 0,
+                "pct": ".556"
+              },
+              "score": 5,
+              "team": {
+                "id": 111,
+                "name": "Home Team",
+                "link": "/api/v1/teams/111"
+              },
+              "isWinner": true,
+              "splitSquad": false
+            },
+            "away": {
+              "leagueRecord": {
+                "wins": 88,
+                "losses": 74,
+                "ties": 0,
+                "pct": ".543"
+              },
+              "score": 3,
+              "team": {
+                "id": 112,
+                "name": "Away Team",
+                "link": "/api/v1/teams/112"
+              },
+              "isWinner": false,
+              "splitSquad": false
+            }
+          }
+        }
+        // ... more games
+      ]
+    }
+    // ... more dates
+  ]
+}
+```
+```
+
+--------------------------------
+
+### Venue Information API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Venue
+
+Retrieve venue directorial information for all available venues using a venue ID. You can also specify which fields to return.
+
+```APIDOC
+## GET /venues
+
+### Description
+Retrieves venue directorial information for all available venues in the Stats API based on a provided venue ID. Allows for specifying exact fields to be returned.
+
+### Method
+GET
+
+### Endpoint
+`/venues`
+
+### Parameters
+#### Query Parameters
+- **venue_id** (string/int) - Required - The ID of the venue for which to retrieve information.
+- **fields** (string) - Required - A comma-delimited list of specific fields to be returned. Format: `topLevelNode, childNode, attribute`.
+
+### Request Example
+```json
+{
+  "query": {
+    "venue_id": "123",
+    "fields": "name,location.city,fieldinfo.capacity"
+  }
+}
+```
+
+### Response
+#### Success Response (200)
+- **id** (int) - The unique identifier for the venue.
+- **name** (str) - The name of the venue.
+- **link** (str) - A link to the venue's endpoint.
+- **location** (Location) - An object containing the venue's location details.
+  - **address1** (str) - The first line of the venue's address.
+  - **address2** (str) - The second line of the venue's address.
+  - **city** (str) - The city where the venue is located.
+  - **state** (str) - The state where the venue is located.
+  - **stateAbbrev** (str) - The abbreviation of the state.
+  - **postalCode** (str) - The postal code of the venue.
+  - **defaultCoordinates** (VenueDefaultCoordinates) - Coordinates for the venue.
+    - **latitude** (float) - The latitude of the venue.
+    - **longitude** (float) - The longitude of the venue.
+  - **country** (str) - The country where the venue is located.
+  - **phone** (str) - The phone number for the venue.
+- **timezone** (TimeZone) - An object containing the venue's timezone information.
+  - **id** (str) - The ID string for the venue's timezone.
+  - **offset** (int) - The timezone offset from UTC.
+  - **tz** (str) - The timezone string.
+- **fieldinfo** (FieldInfo) - An object containing details about the venue's field.
+  - **capacity** (int) - The seating capacity of the venue.
+  - **turfType** (str) - The type of turf in the venue.
+  - **roofType** (str) - The type of roof on the venue.
+  - **leftLine** (int) - The distance down the left foul line.
+  - **left** (int) - The distance to left field.
+  - **leftCenter** (int) - The distance to left-center field.
+  - **center** (int) - The distance to center field.
+  - **rightCenter** (int) - The distance to right-center field.
+  - **right** (int) - The distance to right field.
+  - **rightLine** (int) - The distance down the right foul line.
+- **active** (bool) - Indicates if the venue is currently active.
+
+#### Response Example
+```json
+{
+  "id": 123,
+  "name": "Example Stadium",
+  "link": "/api/v1/venues/123",
+  "location": {
+    "address1": "123 Stadium Way",
+    "city": "Exampleville",
+    "state": "EX",
+    "postalCode": "12345",
+    "defaultCoordinates": {
+      "latitude": 34.0522,
+      "longitude": -118.2437
+    },
+    "country": "USA",
+    "phone": "555-123-4567"
+  },
+  "timezone": {
+    "id": "America/Los_Angeles",
+    "offset": -7,
+    "tz": "PST"
+  },
+  "fieldinfo": {
+    "capacity": 50000,
+    "turfType": "grass",
+    "roofType": "open",
+    "leftLine": 320,
+    "left": 380,
+    "leftCenter": 400,
+    "center": 410,
+    "rightCenter": 405,
+    "right": 375,
+    "rightLine": 315
+  },
+  "active": true
+}
+```
+```
+
+--------------------------------
+
+### Schedule Endpoints
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Endpoints for retrieving schedule information for games.
+
+```APIDOC
+## GET /schedule
+
+### Description
+Retrieves schedule information for games based on specified dates, sport, and team.
+
+### Method
+GET
+
+### Endpoint
+/schedule
+
+### Parameters
+#### Query Parameters
+- **date** (str) - Optional - The specific date for the schedule (YYYY-MM-DD).
+- **start_date** (str) - Optional - The start date for the schedule range (YYYY-MM-DD).
+- **end_date** (str) - Optional - The end date for the schedule range (YYYY-MM-DD).
+- **sport_id** (int) - Optional - The ID of the sport (default: 1 for Baseball).
+- **team_id** (int) - Optional - The ID of the team.
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **schedule** (object) - An object containing schedule data for the requested period.
+
+#### Response Example
+{
+  "example": "{\"dates\": [{\"date\": \"2023-10-27\", \"games\":[{\"gamePk\": 712345, ...}]}] }"
+}
+
+## GET /schedule/games
+
+### Description
+Retrieves game IDs for scheduled games within a specified date range or on a specific date.
+
+### Method
+GET
+
+### Endpoint
+/schedule/games
+
+### Parameters
+#### Query Parameters
+- **date** (str) - Optional - The specific date for the games (YYYY-MM-DD).
+- **start_date** (str) - Optional - The start date for the game range (YYYY-MM-DD).
+- **end_date** (str) - Optional - The end date for the game range (YYYY-MM-DD).
+- **sport_id** (int) - Optional - The ID of the sport (default: 1 for Baseball).
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **dates** (list) - A list of dates, each containing a list of game IDs.
+
+#### Response Example
+{
+  "example": "{\"dates\": [{\"date\": \"2023-10-27\", \"games\":[{\"gamePk\": 712345}, {\"gamePk\": 712346}]}] }"
+}
+
+```
+
+--------------------------------
+
+### Venue Endpoints
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Endpoints for retrieving venue information, including IDs, specific venue details, and a list of all venues.
+
+```APIDOC
+## GET /venues
+
+### Description
+Retrieves a list of all available venues.
+
+### Method
+GET
+
+### Endpoint
+/venues
+
+### Parameters
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **venues** (list) - A list of venue objects.
+
+#### Response Example
+{
+  "example": "[\n  {\"venueId\": \"1\", \"name\": \"T-Mobile Park\", ...},\n  {\"venueId\": \"2\", \"name\": \"Oracle Park\", ...}\n]"
+}
+
+## GET /venues/{venueId}
+
+### Description
+Retrieves detailed information for a specific venue using its ID.
+
+### Method
+GET
+
+### Endpoint
+/venues/{venueId}
+
+### Parameters
+#### Path Parameters
+- **venueId** (int) - Required - The ID of the venue to retrieve.
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **venue** (object) - A venue object with detailed information.
+
+#### Response Example
+{
+  "example": "{\"venueId\": \"1\", \"name\": \"T-Mobile Park\", \"city\": \"Seattle\", ...}"
+}
+
+## GET /venues/id
+
+### Description
+Retrieves the ID(s) of venue(s) based on the provided venue name.
+
+### Method
+GET
+
+### Endpoint
+/venues/id
+
+### Parameters
+#### Query Parameters
+- **venue_name** (str) - Required - The name of the venue to search for.
+- **search_key** (str) - Optional - The key to use for searching (default: 'name').
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **venueIds** (list) - A list of venue IDs matching the search criteria.
+
+#### Response Example
+{
+  "example": "[1, 5, 10]"
+}
+
+```
+
+--------------------------------
+
+### League Endpoints
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Endpoints for retrieving league information, including IDs, specific league details, and a list of all leagues.
+
+```APIDOC
+## GET /leagues
+
+### Description
+Retrieves a list of all available leagues.
+
+### Method
+GET
+
+### Endpoint
+/leagues
+
+### Parameters
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **leagues** (list) - A list of league objects.
+
+#### Response Example
+{
+  "example": "[\n  {\"leagueId\": \"103\", \"name\": \"American League\", ...},\n  {\"leagueId\": \"104\", \"name\": \"National League\", ...}\n]"
+}
+
+## GET /leagues/{leagueId}
+
+### Description
+Retrieves detailed information for a specific league using its ID.
+
+### Method
+GET
+
+### Endpoint
+/leagues/{leagueId}
+
+### Parameters
+#### Path Parameters
+- **leagueId** (int) - Required - The ID of the league to retrieve.
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **league** (object) - A league object with detailed information.
+
+#### Response Example
+{
+  "example": "{\"leagueId\": \"103\", \"name\": \"American League\", \"abbreviation\": \"AL\"}"
+}
+
+## GET /leagues/id
+
+### Description
+Retrieves the ID(s) of league(s) based on the provided league name.
+
+### Method
+GET
+
+### Endpoint
+/leagues/id
+
+### Parameters
+#### Query Parameters
+- **league_name** (str) - Required - The name of the league to search for.
+- **search_key** (str) - Optional - The key to use for searching (default: 'name').
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **leagueIds** (list) - A list of league IDs matching the search criteria.
+
+#### Response Example
+{
+  "example": "[103, 104, 201]"
+}
+
+```
+
+--------------------------------
+
+### PitchData Dataclass for MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+The PitchData dataclass encapsulates all statistical information related to a single pitch. It includes speeds, strike zone dimensions, and detailed coordinate data. This is fundamental for analyzing pitch effectiveness and pitcher performance.
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class PitchData:
+    startspeed: float
+    endspeed: float
+    strikezonetop: float
+    strikezonebottom: float
+    coordinates: PitchCoordinates
+```
+
+--------------------------------
+
+### Retrieve Team Coaches using Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team
+
+This snippet demonstrates how to retrieve a list of coaches for a given team using the `get_team_coaches` function from the `mlbstatsapi` library. It takes a `team_id` as a parameter and returns a list of coach objects.
+
+```python
+>>> coaches = mlb.get_team_coaches(team_ids[0])
+>>> print(coaches)
+[Coach(), Coach(), Coach()]
+>>>
+```
+
+--------------------------------
+
+### Standings Endpoint
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Endpoint for retrieving league standings for a specific season.
+
+```APIDOC
+## GET /standings
+
+### Description
+Retrieves league standings for a given league ID and season.
+
+### Method
+GET
+
+### Endpoint
+/standings
+
+### Parameters
+#### Query Parameters
+- **league_id** (int) - Required - The ID of the league for which to retrieve standings.
+- **season** (str) - Required - The season for which to retrieve standings (e.g., '2023').
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **standings** (object) - An object containing the standings data.
+
+#### Response Example
+{
+  "example": "{\"leagueId\": \"103\", \"seasonId\": \"2023\", \"standingsRows\": [{\"teamRank\": 1, \"team\": {\"name\": \"Baltimore Orioles\", ...}, \"leagueRecord\": {\"wins\": 101, \"losses\": 61, ...}, ...}]}"
+}
+
+```
+
+--------------------------------
+
+### Standings Structure API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Standings
+
+Details the structure of the 'Standings' object, including its attributes and nested data for leagues, divisions, sports, and team records.
+
+```APIDOC
+## Standings Structure
+
+### Description
+This section details the 'Standings' object, its attributes, and nested dataclasses that provide comprehensive data about MLB standings.
+
+### Method
+GET (Implied)
+
+### Endpoint
+/standings (Implied)
+
+### Parameters
+#### Path Parameters
+None
+
+#### Query Parameters
+None
+
+#### Request Body
+None
+
+### Response
+#### Success Response (200)
+- **standingstype** (str) - A string indicating the type of standings.
+- **league** (object) - An object containing information about the league. It includes:
+    - **id** (int) - The ID number of the league.
+    - **link** (str) - The API link for the league.
+- **division** (object) - An object containing information about the division. It includes:
+    - **id** (int) - The ID number of the division.
+    - **link** (str) - The API link for the division.
+- **sport** (object) - An object containing information about the sport. It includes:
+    - **id** (int) - The ID number of the sport.
+    - **link** (str) - The API link for the sport.
+- **lastupdated** (str) - A string indicating the last time the standing was updated.
+- **teamrecords** (List[object]) - A list of objects containing the data for the teams standings. Each object includes:
+    - **team** (object) - The team for which the data belongs to. It includes:
+        - **id** (int) - The ID number of the team.
+        - **name** (str) - The name of the team.
+        - **link** (str) - The API link for the team.
+    - **season** (int) - The season for which the data belongs to.
+    - **streak** (object) - The streak of the team. It includes:
+        - **streaktype** (str) - The type of streak.
+        - **streaknumber** (int) - The number of games in the streak.
+        - **streakcode** (str) - The code representing the streak.
+    - **divisionrank** (str) - The rank of the team in their division.
+    - **leaguerank** (str) - The rank of the team in their league.
+    - **sportrank** (str) - The rank of the team in their sport.
+    - **gamesplayed** (int) - The number of games played by the team.
+    - **gamesback** (str) - The number of games behind the leader in the division.
+    - **wildcardgamesback** (str) - The number of games behind the leader in the wild card race.
+    - **leaguegamesback** (str) - The number of games behind the leader in the league.
+    - **springleaguegamesback** (str) - The number of games behind the leader in the spring league.
+    - **sportgamesback** (str) - The number of games behind the leader in the sport.
+    - **divisiongamesback** (str) - The number of games behind the leader in the division.
+    - **conferencegamesback** (str) - The number of games behind the leader in the conference.
+    - **leaguerecord** (object) - The overall league record of the team. It includes:
+        - **wins** (int) - Overall number of wins in the league.
+        - **losses** (int) - Overall number of losses in the league.
+        - **pct** (str) - The winning percentage.
+
+### Request Example
+None
+
+### Response Example
+```json
+{
+  "standingstype": "regular",
+  "league": {
+    "id": 104,
+    "link": "/api/v1/leagues/104"
+  },
+  "division": {
+    "id": 200,
+    "link": "/api/v1/divisions/200"
+  },
+  "sport": {
+    "id": 1,
+    "link": "/api/v1/sports/1"
+  },
+  "lastupdated": "2023-10-27T10:00:00Z",
+  "teamrecords": [
+    {
+      "team": {
+        "id": 111,
+        "name": "Example Team",
+        "link": "/api/v1/teams/111"
+      },
+      "season": 2023,
+      "streak": {
+        "streaktype": "wins",
+        "streaknumber": 3,
+        "streakcode": "W3"
+      },
+      "divisionrank": "1",
+      "leaguerank": "1",
+      "sportrank": "1",
+      "gamesplayed": 162,
+      "gamesback": "0",
+      "wildcardgamesback": "0",
+      "leaguegamesback": "0",
+      "springleaguegamesback": "-",
+      "sportgamesback": "-",
+      "divisiongamesback": "0",
+      "conferencegamesback": "-",
+      "leaguerecord": {
+        "wins": 98,
+        "losses": 64,
+        "pct": ".605"
+      }
+    }
+  ]
+}
+```
+```
+
+--------------------------------
+
+### Game Endpoints
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Endpoints for retrieving detailed game information, including play-by-play, line scores, and box scores.
+
+```APIDOC
+## GET /games/{gameId}
+
+### Description
+Retrieves the overall game data for a specific game ID.
+
+### Method
+GET
+
+### Endpoint
+/games/{gameId}
+
+### Parameters
+#### Path Parameters
+- **gameId** (int) - Required - The ID of the game to retrieve.
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **game** (object) - A game object with detailed information.
+
+#### Response Example
+{
+  "example": "{\"gamePk\": 712345, \"gameType\": \"WWS\", \"gameDate\": \"2023-10-27T23:00:00Z\", ...}"
+}
+
+## GET /games/{gameId}/play
+
+### Description
+Retrieves play-by-play data for a specific game ID.
+
+### Method
+GET
+
+### Endpoint
+/games/{gameId}/play
+
+### Parameters
+#### Path Parameters
+- **gameId** (int) - Required - The ID of the game to retrieve play-by-play data for.
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **playByPlay** (object) - An object containing the play-by-play data.
+
+#### Response Example
+{
+  "example": "{\"gamePk\": 712345, \"allPlays\": [{\"about\": {\"atBatNumber\": 1, ...}, \"result\": {\"event\": \"Strikeout\", ...}, ...}]}"
+}
+
+## GET /games/{gameId}/linescore
+
+### Description
+Retrieves the line score for a specific game ID.
+
+### Method
+GET
+
+### Endpoint
+/games/{gameId}/linescore
+
+### Parameters
+#### Path Parameters
+- **gameId** (int) - Required - The ID of the game to retrieve the line score for.
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **lineScore** (object) - An object containing the line score data.
+
+#### Response Example
+{
+  "example": "{\"gamePk\": 712345, \"innings\": [{\"num\": 1, \"ordinalAltText\": \"1st\", \"away\": {\"runs\": 0, \"hits\": 1, \"errors\": 0, \"leftOnBase\": 1}, \"home\": {\"runs\": 0, \"hits\": 0, \"errors\": 0, \"leftOnBase\": 1}}, ...]}]}"
+}
+
+## GET /games/{gameId}/boxscore
+
+### Description
+Retrieves the box score for a specific game ID.
+
+### Method
+GET
+
+### Endpoint
+/games/{gameId}/boxscore
+
+### Parameters
+#### Path Parameters
+- **gameId** (int) - Required - The ID of the game to retrieve the box score for.
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **boxScore** (object) - An object containing the box score data.
+
+#### Response Example
+{
+  "example": "{\"gamePk\": 712345, \"teams\": {\"away\": {\"team\": {\"name\": \"Arizona Diamondbacks\"}, \"batting\": [...], \"pitching\": [...], \"teamStats\": {...}}, \"home\": {...}}}"
+}
+
+```
+
+--------------------------------
+
+### Python Dataclass: GameStatus Model
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Details the current game status of a player, indicating if they are the batter, pitcher, on the bench, or a substitute. This is crucial for real-time game tracking.
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class GameStatus:
+    iscurrentbatter: bool
+    iscurrentpitcher: bool
+    isonbench: bool
+    issubstitute: bool
+```
+
+--------------------------------
+
+### Python Dataclass: BoxScoreTeamInfo Model
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Encapsulates team-specific information for a box score, including a title and a list of field values. This model structures informational entries for teams.
+
+```python
+from dataclasses import dataclass
+from typing import List
+
+@dataclass
+class BoxScoreTeamInfo:
+    title: str
+    fieldlist: List[BoxScoreVL]
+```
+
+--------------------------------
+
+### Sport Endpoints
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Endpoints for retrieving sport information, including IDs, specific sport details, and a list of all sports.
+
+```APIDOC
+## GET /sports
+
+### Description
+Retrieves a list of all available sports.
+
+### Method
+GET
+
+### Endpoint
+/sports
+
+### Parameters
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **sports** (list) - A list of sport objects.
+
+#### Response Example
+{
+  "example": "[\n  {\"sportId\": \"1\", \"name\": \"Baseball\", ...},\n  {\"sportId\": \"2\", \"name\": \"Football\", ...}\n]"
+}
+
+## GET /sports/{sportId}
+
+### Description
+Retrieves detailed information for a specific sport using its ID.
+
+### Method
+GET
+
+### Endpoint
+/sports/{sportId}
+
+### Parameters
+#### Path Parameters
+- **sportId** (int) - Required - The ID of the sport to retrieve.
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **sport** (object) - A sport object with detailed information.
+
+#### Response Example
+{
+  "example": "{\"sportId\": \"1\", \"name\": \"Baseball\", \"link\": \"/api/v1/sports/1\"}"
+}
+
+## GET /sports/id
+
+### Description
+Retrieves the ID(s) of sport(s) based on the provided sport name.
+
+### Method
+GET
+
+### Endpoint
+/sports/id
+
+### Parameters
+#### Query Parameters
+- **sport_name** (str) - Required - The name of the sport to search for.
+- **search_key** (str) - Optional - The key to use for searching (default: 'name').
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **sportIds** (list) - A list of sport IDs matching the search criteria.
+
+#### Response Example
+{
+  "example": "[1, 7]"
+}
+
+```
+
+--------------------------------
+
+### Person API Endpoints
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-People
+
+Endpoints for retrieving information about individual people (players, coaches, umpires) within the MLB.
+
+```APIDOC
+## GET /people/{person_id}
+
+### Description
+Retrieves a specific Person object using their unique ID.
+
+### Method
+GET
+
+### Endpoint
+`/api/v1/people/{person_id}`
+
+### Parameters
+#### Path Parameters
+- **person_id** (string/int) - Required - The unique identifier for the person.
+
+### Request Example
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+player = mlb.get_person(player_id=605151)
+print(player)
+```
+
+### Response
+#### Success Response (200)
+- **Person** (object) - Detailed information about the person, including their ID, name, position, stats, and more.
+
+#### Response Example
+```json
+{
+  "id": 605151,
+  "link": "/api/v1/people/605151",
+  "primaryPosition": {"code": "1", "name": "Pitcher", "type": "Pitcher", "abbreviation": "P"},
+  "pitchhand": {"code": "R", "description": "Right"},
+  "batside": {"code": "R", "description": "Right"},
+  "fullname": "Archie Bradley",
+  "firstname": "Archie",
+  "lastname": "Bradley",
+  "primarynumber": "23",
+  "birthdate": "1992-08-10",
+  "currentage": 30,
+  "birthcity": "Muskogee",
+  "birthstateprovince": "OK",
+  "height": "6' 4",
+  "weight": 215,
+  "active": true,
+  "usename": "Archie",
+  "middlename": "N.",
+  "boxscorename": "Bradley",
+  "nickname": "Crash Landing",
+  "draftyear": 2011,
+  "mlbdebutdate": "2015-04-11",
+  "namefirstlast": "Archie Bradley",
+  "nameslug": "archie-bradley-605151",
+  "firstlastname": "Archie Bradley",
+  "lastfirstname": "Bradley, Archie",
+  "lastinitname": "Bradley, A",
+  "initlastname": "A. Bradley",
+  "fullfmlname": "Archie N. Bradley",
+  "fulllfmname": "Bradley, Archie N.",
+  "birthcountry": "USA",
+  "pronunciation": "BRAD-lee",
+  "strikezonetop": 3.549,
+  "strikezonebottom": 1.627,
+  "gender": "M",
+  "isplayer": true,
+  "isverified": true,
+  "uselastname": "Bradley"
+}
+```
+```
+
+```APIDOC
+## GET /people
+
+### Description
+Retrieves a list of people based on sport, season, and game type.
+
+### Method
+GET
+
+### Endpoint
+`/api/v1/people`
+
+### Parameters
+#### Query Parameters
+- **sport_id** (string/int) - Required - The ID of the sport to filter by. Use `/api/v1/sports` for a list of IDs.
+- **season** (string/int) - Required - The year of the season to filter by.
+- **gameType** (string) - Required - The type of game to filter by. Use `https://statsapi.mlb.com/api/v1/gameTypes` for available types.
+
+### Request Example
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+people = mlb.get_people(sport_id=1, season='2023', gameType='regular')
+print(people)
+```
+
+### Response
+#### Success Response (200)
+- **People** (array) - A list of Person objects matching the specified criteria.
+
+#### Response Example
+```json
+[
+  {
+    "id": 605151,
+    "link": "/api/v1/people/605151",
+    "primaryPosition": {"code": "1", "name": "Pitcher", "type": "Pitcher", "abbreviation": "P"},
+    "pitchhand": {"code": "R", "description": "Right"},
+    "batside": {"code": "R", "description": "Right"},
+    "fullname": "Archie Bradley",
+    "firstname": "Archie",
+    "lastname": "Bradley"
+    // ... other person details
+  }
+  // ... more person objects
+]
+```
+```
+
+```APIDOC
+## GET /people/ids
+
+### Description
+Retrieves a list of person IDs based on their full name and other filtering criteria.
+
+### Method
+GET
+
+### Endpoint
+`/api/v1/people/ids`
+
+### Parameters
+#### Query Parameters
+- **sport_id** (string/int) - Required - The ID of the sport to filter by. Use `/api/v1/sports` for a list of IDs.
+- **fullname** (string) - Required - The full name of the person to search for.
+- **search_key** (string) - Optional - The key to use for searching (default is 'fullname').
+- **season** (string/int) - Required - The year of the season to filter by.
+- **gameType** (string) - Required - The type of game to filter by. Use `https://statsapi.mlb.com/api/v1/gameTypes` for available types.
+
+### Request Example
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+player_ids = mlb.get_people_id(fullname='Ty France', sport_id=1, season='2023', gameType='regular')
+print(player_ids)
+```
+
+### Response
+#### Success Response (200)
+- **Person IDs** (array) - A list of person IDs that match the search criteria.
+
+#### Response Example
+```json
+[
+  664034
+]
+```
+```
+
+--------------------------------
+
+### Python Dataclass: Team Model
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Defines the basic attributes of a baseball team, including its ID, name, and an API link. This is a fundamental model for representing teams in the API.
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Team:
+    id: int
+    name: str
+    link: str
+```
+
+--------------------------------
+
+### Attendance Structure
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Attendance
+
+This section details the structure of attendance data, including aggregated totals and yearly records. It outlines the various attributes available for each category.
+
+```APIDOC
+## Attendance Structure
+
+This API endpoint provides detailed information about baseball game attendance.
+
+### Method
+GET
+
+### Endpoint
+/attendance
+
+### Parameters
+No path or query parameters are directly associated with this base endpoint. Specific data points are nested within the response body.
+
+### Response
+#### Success Response (200)
+- **aggregatetotals** (AttendanceTotals) - Contains aggregated attendance statistics across all records.
+  - **openingstotalaway** (int) - Total attendance for opening away games.
+  - **openingstotalhome** (int) - Total attendance for opening home games.
+  - **openingstotallost** (int) - Total number of opening games lost.
+  - **openingstotalytd** (int) - Total attendance for opening games year-to-date.
+  - **attendanceaverageaway** (int) - Average attendance for away games.
+  - **attendanceaveragehome** (int) - Average attendance for home games.
+  - **attendanceaverageytd** (int) - Average attendance year-to-date.
+  - **attendancehigh** (int) - The highest attendance recorded.
+  - **attendancehighdate** (str) - The date of the highest attendance.
+  - **attendancetotal** (int) - The overall total attendance.
+  - **attendancetotalaway** (int) - The total attendance for away games.
+  - **attendancetotalhome** (int) - The total attendance for home games.
+- **records** (List[AttendanceRecords]) - A list of attendance records, typically per year.
+  - **openingstotal** (int) - Total number of opening games.
+  - **openingstotalaway** (int) - Total number of opening away games.
+  - **openingstotalhome** (int) - Total number of opening home games.
+  - **openingstotallost** (int) - Total number of opening games lost.
+  - **gamestotal** (int) - Total number of games played.
+  - **gamesawaytotal** (int) - Total number of away games played.
+  - **gameshometotal** (int) - Total number of home games played.
+  - **year** (str) - The year for the attendance record.
+  - **attendanceaverageaway** (int) - Average attendance for away games in this record.
+  - **attendanceaveragehome** (int) - Average attendance for home games in this record.
+  - **attendanceaverageytd** (int) - Average attendance year-to-date for this record.
+  - **attendancehigh** (int) - The highest attendance recorded for this record.
+  - **attendancehighdate** (str) - The date of the highest attendance for this record.
+  - **attendancehighgame** (AttendanceHighLowGame) - Details of the game with the highest attendance.
+    - **gamepk** (int) - The unique identifier for the game.
+    - **link** (str) - The API endpoint link for the game details.
+    - **content** (AttendanceHighLowGameContent)
+      - **link** (str) - The API endpoint link for the game content.
+    - **daynight** (str) - Indicates if the game was during the day or night.
+  - **attendancelow** (int) - The lowest attendance recorded for this record.
+  - **attendancelowdate** (str) - The date of the lowest attendance for this record.
+  - **attendancelowgame** (AttendanceHighLowGame) - Details of the game with the lowest attendance.
+    - **gamepk** (int) - The unique identifier for the game.
+    - **link** (str) - The API endpoint link for the game details.
+    - **content** (AttendanceHighLowGameContent)
+      - **link** (str) - The API endpoint link for the game content.
+
+### Response Example
+```json
+{
+  "aggregatetotals": {
+    "openingstotalaway": 15000,
+    "openingstotalhome": 20000,
+    "openingstotallost": 5,
+    "openingstotalytd": 35000,
+    "attendanceaverageaway": 18000,
+    "attendanceaveragehome": 22000,
+    "attendanceaverageytd": 20000,
+    "attendancehigh": 50000,
+    "attendancehighdate": "2023-07-15",
+    "attendancetotal": 1200000,
+    "attendancetotalaway": 600000,
+    "attendancetotalhome": 600000
+  },
+  "records": [
+    {
+      "openingstotal": 10,
+      "openingstotalaway": 5,
+      "openingstotalhome": 5,
+      "openingstotallost": 2,
+      "gamestotal": 81,
+      "gamesawaytotal": 40,
+      "gameshometotal": 41,
+      "year": "2023",
+      "attendanceaverageaway": 17500,
+      "attendanceaveragehome": 21000,
+      "attendanceaverageytd": 19500,
+      "attendancehigh": 48000,
+      "attendancehighdate": "2023-07-15",
+      "attendancehighgame": {
+        "gamepk": 664202,
+        "link": "/api/v1/game/664202/feed/live",
+        "content": {
+          "link": "/api/v1/game/664202/content"
+        },
+        "daynight": "day"
+      },
+      "attendancelow": 5000,
+      "attendancelowdate": "2023-04-10",
+      "attendancelowgame": {
+        "gamepk": 663500,
+        "link": "/api/v1/game/663500/feed/live",
+        "content": {
+          "link": "/api/v1/game/663500/content"
+        }
+      }
+    }
+  ]
+}
+```
+```
+
+--------------------------------
+
+### Division Endpoints
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Endpoints for retrieving division information, including IDs, specific division details, and a list of all divisions.
+
+```APIDOC
+## GET /divisions
+
+### Description
+Retrieves a list of all available divisions.
+
+### Method
+GET
+
+### Endpoint
+/divisions
+
+### Parameters
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **divisions** (list) - A list of division objects.
+
+#### Response Example
+{
+  "example": "[\n  {\"divisionId\": \"1\", \"name\": \"American League East\", ...},\n  {\"divisionId\": \"2\", \"name\": \"National League West\", ...}\n]"
+}
+
+## GET /divisions/{divisionId}
+
+### Description
+Retrieves detailed information for a specific division using its ID.
+
+### Method
+GET
+
+### Endpoint
+/divisions/{divisionId}
+
+### Parameters
+#### Path Parameters
+- **divisionId** (int) - Required - The ID of the division to retrieve.
+#### Query Parameters
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **division** (object) - A division object with detailed information.
+
+#### Response Example
+{
+  "example": "{\"divisionId\": \"1\", \"name\": \"American League East\", \"leagueId\": \"103\"}"
+}
+
+## GET /divisions/id
+
+### Description
+Retrieves the ID(s) of division(s) based on the provided division name.
+
+### Method
+GET
+
+### Endpoint
+/divisions/id
+
+### Parameters
+#### Query Parameters
+- **division_name** (str) - Required - The name of the division to search for.
+- **search_key** (str) - Optional - The key to use for searching (default: 'name').
+- **params** (dict) - Optional - Additional parameters for filtering or customization.
+
+### Response
+#### Success Response (200)
+- **divisionIds** (list) - A list of division IDs matching the search criteria.
+
+#### Response Example
+{
+  "example": "[1, 5, 12]"
+}
+
+```
+
+--------------------------------
+
+### Python Dataclass: Position Model
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Defines the structure for player position data, including code, name, type, and abbreviation. This dataclass is used to represent various positions a player might hold in baseball.
+
+```python
+from dataclasses import dataclass
+from typing import List
+
+@dataclass
+class Position:
+    code: str
+    name: str
+    type: str
+    abbreviation: str
+```
+
+--------------------------------
+
+### Python Dataclass: BoxScoreTeam Model
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Represents the box score information for a specific team (either away or home). It contains the team object itself and other relevant box score details.
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class BoxScoreTeam:
+    team: Team
+```
+
+--------------------------------
+
+### Fetch Draft Information for a Year
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves information about the MLB draft for a specified year. The function returns a list of draft objects, from which specific details like draft picks can be accessed.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+draft_year = '2019'
+draft = mlb.get_draft(draft_year)
+
+draftpicks = draft[0].picks
+for draftpick in draftpicks:
+    print(draftpick.id)
+    print(draftpick.pickround)
+```
+
+--------------------------------
+
+### Fetch Play-by-Play Data for a Game
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves only the play-by-play information for a specific MLB game identified by its game ID. This is useful for detailed game recaps and analysis of individual plays.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+game_id = 662242
+playbyplay = mlb.get_play_by_play(game_id)
+```
+
+--------------------------------
+
+### Python - Retrieve All Sports
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Sports
+
+Retrieves a list of all available sports. This function is useful for obtaining a comprehensive overview of the sports supported by the API. It allows for field selection to customize the output.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+sports = mlb.get_sports()
+print(sports)
+```
+
+--------------------------------
+
+### Fetch MLB Attendance Data using Python
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Attendance
+
+This Python function retrieves MLB attendance data. It requires at least one of `team_id`, `league_id`, or `league_list_id`. Optional parameters include `season`, `date`, and `gametype` for more specific data retrieval. The function returns an Attendance object containing aggregated totals and detailed records.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+attendance = mlb.get_attendance(team_id = 110, league_id = 103, league_list_id = 'mlb', season = 2021)
+
+print(attendance)
+```
+
+--------------------------------
+
+### Python Dataclass: BoxScoreVL Model
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+Represents a single line of information within a box score, containing a label and its corresponding value. Used for various team statistics and notes.
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class BoxScoreVL:
+    label: str
+    value: str
+```
+
+--------------------------------
+
+### Fetch Box Score for a Game
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves only the box score data for a specific MLB game using its game ID. This provides detailed statistics for each player on both teams, including batting, pitching, and fielding stats.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+game_id = 662242
+boxscore = mlb.get_box_score(game_id)
+```
+
+--------------------------------
+
+### Find Venue ID by Name using Python MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Venue
+
+This function searches for a venue by its name and returns its corresponding ID. It can optionally use a search key for more specific matching. This is useful for obtaining the venue ID needed for other API calls.
+
+```python
+>>> import mlbstatsapi
+>>> 
+>>> mlb = mlbstatsapi.Mlb()
+>>>
+>>> venue_ids = mlb.get_venue_id("PNC Park")
+[31]
+```
+
+--------------------------------
+
+### PlayCount Dataclass for MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+The PlayCount dataclass models the count of balls, strikes, and outs for a given play. This is essential for tracking the game state during at-bats and pitches. It includes integer fields for balls, strikes, and outs.
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class PlayCount:
+    balls: int
+    strikes: int
+    outs: int
+```
+
+--------------------------------
+
+### Fetch Game Schedule by Date
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves the schedule of MLB games for a specific date. The function returns a schedule object which contains a list of dates, and each date object contains a list of games played on that day. This is useful for tracking upcoming or past games.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+schedule = mlb.get_schedule_date('2022-10-13')
+
+dates = schedule.dates
+
+for date in dates:
+    for game in date.games:
+            print(game.status)
+            print(game.teams.home)
+            print(game.teams.away)
+```
+
+--------------------------------
+
+### Homerun Derby API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Homerunderby
+
+Retrieve Homerun Derby data for a specific game or a list of specified fields.
+
+```APIDOC
+## GET /api/v1/homeRunDerby
+
+### Description
+Retrieve Homerun Derby data. This endpoint can be used to get data for a specific game or to specify which fields to return.
+
+### Method
+GET
+
+### Endpoint
+/api/v1/homeRunDerby
+
+### Parameters
+#### Query Parameters
+- **gamePk** (string) - Required - The game's unique identifier.
+- **fields** (string) - Optional - A comma-delimited list of specific fields to be returned. Format: `topLevelNode, childNode, attribute`.
+
+### Request Example
+```http
+https://statsapi.mlb.com/api/v1/homeRunDerby?gamePk=511101
+```
+
+### Response
+#### Success Response (200)
+- **homeRunDerby** (object) - Contains Homerun Derby data for the specified game.
+  - **gamePk** (integer) - The game's unique identifier.
+  - **allStarYear** (string) - The year of the All-Star game.
+  - **events** (array) - An array of Homerun Derby events.
+    - **name** (string) - The name of the event.
+    - **rounds** (array) - An array of rounds within the event.
+      - **roundName** (string) - The name of the round.
+      - **atBats** (array) - An array of at-bats within the round.
+        - **batter** (object) - Information about the batter.
+          - **id** (integer) - The batter's ID.
+          - **fullName** (string) - The batter's full name.
+          - **link** (string) - A link to the batter's profile.
+        - **pitcher** (object) - Information about the pitcher.
+          - **id** (integer) - The pitcher's ID.
+          - **fullName** (string) - The pitcher's full name.
+          - **link** (string) - A link to the pitcher's profile.
+        - **result** (object) - The result of the at-bat.
+          - **run** (integer) - The number of runs scored.
+          - **homeRun** (integer) - The number of home runs hit.
+        - **count** (object) - The count of balls and strikes.
+          - **balls** (integer) - The number of balls.
+          - **strikes** (integer) - The number of strikes.
+      - **homeRuns** (integer) - The total number of home runs in the round.
+      - **totalOuts** (integer) - The total number of outs in the round.
+
+#### Response Example
+```json
+{
+  "homeRunDerby": {
+    "gamePk": 511101,
+    "allStarYear": "2014",
+    "events": [
+      {
+        "name": "Home Run Derby",
+        "rounds": [
+          {
+            "roundName": "Round 1",
+            "atBats": [
+              {
+                "batter": {
+                  "id": 518595,
+                  "fullName": "Jose Bautista",
+                  "link": "/api/v1/people/518595"
+                },
+                "pitcher": {
+                  "id": 455117,
+                  "fullName": "Mark Buehrle",
+                  "link": "/api/v1/people/455117"
+                },
+                "result": {
+                  "run": 0,
+                  "homeRun": 1
+                },
+                "count": {
+                  "balls": 3,
+                  "strikes": 2
+                }
+              }
+            ],
+            "homeRuns": 10,
+            "totalOuts": 3
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+```
+
+--------------------------------
+
+### CodeDesc Dataclass for MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+The CodeDesc dataclass is used to represent a code and its corresponding description. It is utilized for various fields such as pitch type, bat side, and pitch hand. This structure helps in providing a clear mapping between categorical codes and their human-readable explanations.
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class CodeDesc:
+    code: str
+    description: str
+```
+
+--------------------------------
+
+### Award Structure
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Awards
+
+Details the structure of award objects, including attributes like id, name, date, season, team, player, notes, and votes.
+
+```APIDOC
+## Award Structure
+
+### Attributes
+
+- **id** (str) - Award ID
+- **name** (str) - Name of the award
+- **date** (str) - Date the award was given
+- **season** (str) - Season the award is for
+- **team** (Team) - Team associated with the award. Refer to [Team Data Type](https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Team) for details.
+  - **id** (int) - Team ID
+  - **link** (str) - API link for the team
+- **player** (Person) - Player associated with the award. Refer to [Person Data Type](https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-People) for details.
+  - **id** (int) - Person ID
+  - **link** (str) - API link for the person
+  - **primaryPosition** (Position) - Player's primary position.
+    - **code** (str) - Position code
+    - **name** (str) - Position name
+    - **type** (str) - Position type
+    - **abbreviation** (str) - Position abbreviation
+  - **namefirstlast** (str) - Player's first and last name
+- **notes** (str, optional) - Any notes associated with the award
+- **votes** (int, optional) - Number of votes for the award
+```
+
+--------------------------------
+
+### Fetch Line Score for a Game
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/blob/main/README.md
+
+Retrieves only the line score data for a specific MLB game using its game ID. This includes runs scored by each team in each inning, providing a concise summary of the game's scoring.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+game_id = 662242
+linescore = mlb.get_line_score(game_id)
+```
+
+--------------------------------
+
+### Python - Retrieve Sport Object by ID
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Sports
+
+Fetches a specific sport object using its unique ID. This method allows for targeted retrieval of sport details. It takes the sport ID as input and can optionally filter the returned fields.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+sport_id = mlb.get_sport_id("Major League Baseball")
+sport = mlb.get_sport(sport_id[0])
+
+print(sport)
+```
+
+--------------------------------
+
+### PitchCoordinates Dataclass for MLB StatsAPI
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Game
+
+The PitchCoordinates dataclass captures the three-dimensional trajectory and velocity of a pitch. It includes acceleration, movement, position, and velocity data points, crucial for analyzing pitch mechanics and outcome. The coordinates are typically measured in feet and inches.
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class PitchCoordinates:
+    ay: float
+    az: float
+    pfxx: float
+    pfxz: float
+    px: float
+    pz: float
+    vx0: float
+    vy0: float
+    vz0: float
+    x0: float
+    y0: float
+```
+
+--------------------------------
+
+### Fetch Division by ID with Python MLB Stats API
+
+Source: https://github.com/zero-sum-seattle/python-mlb-statsapi/wiki/Data-Types:-Division
+
+Retrieves a specific division's data using its ID. This function requires the division ID and optionally accepts league and sport IDs for more targeted results. It returns a Division object.
+
+```python
+import mlbstatsapi
+
+mlb = mlbstatsapi.Mlb()
+
+division = mlb.get_division(division_id = 200, leagueId = 103, sportId = 1)
+
+print(division)
+```
+
+=== COMPLETE CONTENT === This response contains all available snippets from this library. No additional content exists. Do not make further requests.

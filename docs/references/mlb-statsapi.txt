@@ -1,0 +1,4824 @@
+# mlb-statsapi: documentation excerpt
+
+- Source: Context7 `/toddrob99/mlb-statsapi` (https://context7.com/toddrob99/mlb-statsapi)
+- Fetched: 2026-10-29; excerpt only (the service caps a response at about 500 KB), not the complete manual. Upstream licences apply; see the upstream repository.
+
+<!-- topic: generic extract -->
+### Print Phillies 40-man roster on opening day of 2018 season using statsapi.get() and statsapi.roster()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Gets the 2018 season opening day date and passes it to statsapi.roster() for the Phillies.
+
+```python
+print('Phillies 40-man roster on opening day of the 2018 season:\n%s' % statsapi.roster(143,'40Man',date=statsapi.get('season',{'seasonId':2018,'sportId':1})['seasons'][0]['regularSeasonStartDate']))
+```
+
+--------------------------------
+
+### Install MLB-StatsAPI from PyPI
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Home
+
+Install the package using pip. Use either pip or python -m pip.
+
+```bash
+pip install MLB-StatsAPI
+```
+
+```bash
+python -m pip install MLB-StatsAPI
+```
+
+--------------------------------
+
+### Output of statsapi.team_leaders example
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-team_leaders
+
+Shows the formatted output from the example call, listing the top 5 team leaders in walks for the 2008 Phillies with rank, name, and value columns.
+
+```text
+Rank Name                 Value
+    1   Pat Burrell           102
+    2   Ryan Howard           81
+    3   Chase Utley           64
+    4   Jimmy Rollins         58
+    5   Jayson Werth          57
+```
+
+--------------------------------
+
+### Print Chase Utley's career hitting stats using statsapi.get() and statsapi.player_stats()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Gets the 2008 World Series players, finds Chase Utley's ID, and prints his career hitting stats.
+
+```python
+print( statsapi.player_stats(next(x['id'] for x in statsapi.get('sports_players',{'season':2008,'gameType':'W'})['people'] if x['fullName']=='Chase Utley'), 'hitting', 'career') )
+```
+
+--------------------------------
+
+### Get latest season for MLB (sportId=1)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-latest_season
+
+Retrieves data about the latest season for the given sportId, defaulting to MLB (sportId=1). The returned dictionary includes a 'seasonId' key, which is printed in the example.
+
+```python
+season_data = statsapi.latest_season()
+print(season_data['seasonId'])
+```
+
+--------------------------------
+
+### Import MLB-StatsAPI
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Home
+
+Import the package to access its functions.
+
+```python
+import statsapi
+```
+
+--------------------------------
+
+### Print game decisions (winning and losing pitchers)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-schedule
+
+Iterates over the games list and prints each game's date, game number, winning pitcher, and losing pitcher. The output shows the decisions for the four games from the previous example.
+
+```python
+for x in games:
+    print("%s Game %s - WP: %s, LP: %s" % (x['game_date'],x['game_num'],x['winning_pitcher'],x['losing_pitcher']))
+```
+
+```text
+2018-07-09 Game 1 - WP: Tim Peterson, LP: Victor Arano
+2018-07-09 Game 2 - WP: Aaron Nola, LP: Corey Oswalt
+2018-07-10 Game 1 - WP: Enyel De Los Santos, LP: Drew Gagnon
+2018-07-11 Game 1 - WP: Robert Gsellman, LP: Mark Leiter Jr.
+```
+
+--------------------------------
+
+### Output of statsapi.game_pace(2008)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_pace
+
+Example output showing the text-formatted pace of game stats for 2008, including total games, extra inning games, and average times.
+
+```text
+    2008 Game Pace Stats
+    hitsPer9Inn: 18.26
+    runsPer9Inn: 9.38
+    pitchesPer9Inn: 297.72
+    plateAppearancesPer9Inn: 77.89
+    hitsPerGame: 18.11
+    runsPerGame: 9.3
+    inningsPlayedPerGame: 8.96
+    pitchesPerGame: 295.36
+    pitchersPerGame: 7.83
+    plateAppearancesPerGame: 77.28
+    totalGameTime: 7086:06:00
+    totalInningsPlayed: 21748.0
+    totalHits: 43972
+    totalRuns: 22585
+    totalPlateAppearances: 187630
+    totalPitchers: 19012
+    totalPitches: 717131
+    totalGames: 2428
+    total9InnGames: 2428
+    totalExtraInnGames: 208
+    timePerGame: 02:55:07
+    timePerPitch: 00:00:36
+    timePerHit: 00:09:40
+    timePerRun: 00:18:50
+    timePerPlateAppearance: 00:02:16
+    timePer9Inn: 02:56:30
+    timePer77PlateAppearances: 02:54:29
+    totalExtraInnTime: 775:10:00
+    timePer7InnGameWithoutExtraInn: 00:00:00
+    total9InnGamesCompletedEarly: 3
+    total9InnGamesWithoutExtraInn: 2217
+    total9InnGamesScheduled: 2428
+    hitsPerRun: 1.947
+    pitchesPerPitcher: 37.72
+    total7InnGames: 3
+    total9InnGames: 2217
+    totalExtraInnGames: 208
+    timePer7InnGame: 01:54:40
+    timePer9InnGame: 02:50:38
+    timePerExtraInnGame: 03:43:36
+```
+
+--------------------------------
+
+### Get games between Phillies and Mets in July 2018
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-schedule
+
+Calls statsapi.schedule() with start_date, end_date, team, and opponent to retrieve games between the Phillies (team=143) and Mets (opponent=121) in July 2018. The returned list contains a dict per game.
+
+```python
+games = statsapi.schedule(start_date='07/01/2018',end_date='07/31/2018',team=143,opponent=121)
+```
+
+--------------------------------
+
+### Output of game_scoring_plays (truncated)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_scoring_plays
+
+Shows the first and last records of the output from the example call. Each record includes a play description and the score after the play, e.g., 'Bottom 1 - Miami Marlins: 0, Philadelphia Phillies: 1'.
+
+```text
+Rhys Hoskins doubles (6) on a sharp line drive to left fielder Isaac Galloway.   Bryce Harper scores.
+Bottom 1 - Miami Marlins: 0, Philadelphia Phillies: 1
+
+Rhys Hoskins walks.   Andrew McCutchen scores.    Jean Segura to 3rd.  Wild pitch by pitcher Tayron Guerrero.
+Bottom 8 - Miami Marlins: 1, Philadelphia Phillies: 5
+```
+
+--------------------------------
+
+### statsapi.lookup_player(lookup_value, gameType='R', season=None, sportId=1)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-lookup_player
+
+Get data about players based on first, last, or full name. This function returns a list of player dictionaries containing player information such as id, fullName, and primaryPosition.
+
+```APIDOC
+## statsapi.lookup_player(lookup_value, gameType='R', season=None, sportId=1)
+
+### Description
+Get data about players based on first, last, or full name.
+
+### Method
+Function call
+
+### Endpoint
+statsapi.lookup_player
+
+### Parameters
+- **lookup_value** (string) - Required - The player name to search for (first, last, or full name). For last names that could be part of another last name (e.g., 'Nola' is part of 'Nolan'), append a comma to match on the `initLastName` field (e.g., 'Nola,').
+- **gameType** (string) - Optional - Game type to filter by (default 'R').
+- **season** (int) - Optional - Season to filter by (default None).
+- **sportId** (int) - Optional - Sport ID to filter by (default 1).
+
+### Request Example
+```python
+player = statsapi.lookup_player('nola,')
+print(player[0]['id']) #assume only 1 record returned for demo purposes
+```
+
+### Response
+#### Success Response
+Returns a list of player dictionaries. Each dictionary contains fields such as `id`, `fullName`, and `primaryPosition` (with `abbreviation`).
+
+#### Response Example
+```
+605400
+```
+
+For multiple players:
+```python
+for player in statsapi.lookup_player('Harper'):
+    print('Full name: {}, Position: {}'.format(player['fullName'], player['primaryPosition']['abbreviation']))
+```
+
+Output:
+```
+Full name: Bryce Harper, Position: RF
+Full name: Ryne Harper, Position: P
+```
+```
+
+--------------------------------
+
+### Print standings from July 4, 2018 using statsapi.standings()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Prints standings for the specified date.
+
+```python
+print(statsapi.standings(date='07/04/2018'))
+```
+
+--------------------------------
+
+### Upgrade MLB-StatsAPI from PyPI
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Home
+
+Upgrade the package using pip. Use either pip or python -m pip.
+
+```bash
+pip install --upgrade MLB-StatsAPI
+```
+
+```bash
+python -m pip install --upgrade MLB-StatsAPI
+```
+
+--------------------------------
+
+### Call statsapi.game_pace with season and sportId
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_pace
+
+Returns a text-formatted list about pace of game for a given season (back to 1999). The season parameter defaults to the current calendar year, which may cause unexpected results before the season starts; include it explicitly.
+
+```python
+statsapi.game_pace(season=datetime.now().year, sportId=1)
+```
+
+--------------------------------
+
+### Configure logging for MLB-StatsAPI
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Home
+
+Set up Python logging to see MLB-StatsAPI logs. Attach a handler to the 'statsapi' logger and set the appropriate log levels.
+
+```python
+import logging
+logger = logging.getLogger('statsapi')
+logger.setLevel(logging.DEBUG)
+rootLogger = logging.getLogger()
+rootLogger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter("%(asctime)s - %(levelname)8s - %(name)s(%(thread)s) - %(message)s")
+ch.setFormatter(formatter)
+rootLogger.addHandler(ch)
+```
+
+--------------------------------
+
+### Example output of game_highlights
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_highlights
+
+Truncated output showing the first two highlights, each with a title, duration, description, and video URL.
+
+```text
+Hoskins' RBI double (00:00:16)
+Rhys Hoskins belts a double off the left-center-field wall to score Bryce Harper and give the Phillies a 1-0 lead in the bottom of the 1st
+https://cuts.diamond.mlb.com/FORGE/2019/2019-04/28/b1117503-3df11d8d-6df0dd65-csvm-diamondx64-asset_1280x720_59_4000K.mp4
+
+Phanatic has birthday party (00:01:15)
+Kids and fellow mascots were at Citizens Bank Park to celebrate the Phillie Phanatic's birthday before the game against the Marlins
+https://cuts.diamond.mlb.com/FORGE/2019/2019-04/28/7d978385-db13f22d-f68c304f-csvm-diamondx64-asset_1280x720_59_4000K.mp4
+```
+
+--------------------------------
+
+### statsapi.game_pace(season, sportId)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_pace
+
+Returns a text-formatted list about pace of game for a given season (back to 1999). The season parameter defaults to the current calendar year, but it is recommended to specify it explicitly to avoid unexpected results before the season starts.
+
+```APIDOC
+## statsapi.game_pace(season, sportId)
+
+### Description
+Returns a text-formatted list about pace of game for a given season (back to 1999). The season parameter defaults to the current calendar year, but it is recommended to specify it explicitly to avoid unexpected results before the season starts.
+
+### Method
+Function call
+
+### Endpoint
+`statsapi.game_pace(season=datetime.now().year, sportId=1)`
+
+### Parameters
+- **season** (int) - Optional - The season year (defaults to current calendar year).
+- **sportId** (int) - Optional - The sport ID (defaults to 1).
+
+### Request Example
+```python
+statsapi.game_pace(2008)
+```
+
+### Response
+Returns a formatted text string with pace of game statistics for the specified season.
+
+#### Response Example
+```
+    2008 Game Pace Stats
+    hitsPer9Inn: 18.26
+    runsPer9Inn: 9.38
+    pitchesPer9Inn: 297.72
+    plateAppearancesPer9Inn: 77.89
+    hitsPerGame: 18.11
+    runsPerGame: 9.3
+    inningsPlayedPerGame: 8.96
+    pitchesPerGame: 295.36
+    pitchersPerGame: 7.83
+    plateAppearancesPerGame: 77.28
+    totalGameTime: 7086:06:00
+    totalInningsPlayed: 21748.0
+    totalHits: 43972
+    totalRuns: 22585
+    totalPlateAppearances: 187630
+    totalPitchers: 19012
+    totalPitches: 717131
+    totalGames: 2428
+    total9InnGames: 2428
+    totalExtraInnGames: 208
+    timePerGame: 02:55:07
+    timePerPitch: 00:00:36
+    timePerHit: 00:09:40
+    timePerRun: 00:18:50
+    timePerPlateAppearance: 00:02:16
+    timePer9Inn: 02:56:30
+    timePer77PlateAppearances: 02:54:29
+    totalExtraInnTime: 775:10:00
+    timePer7InnGameWithoutExtraInn: 00:00:00
+    total9InnGamesCompletedEarly: 3
+    total9InnGamesWithoutExtraInn: 2217
+    total9InnGamesScheduled: 2428
+    hitsPerRun: 1.947
+    pitchesPerPitcher: 37.72
+    total7InnGames: 3
+    total9InnGames: 2217
+    totalExtraInnGames: 208
+    timePer7InnGame: 01:54:40
+    timePer9InnGame: 02:50:38
+    timePerExtraInnGame: 03:43:36
+```
+
+```
+
+--------------------------------
+
+### Print linescore for all games Phillies won in July 2008 using statsapi.schedule() and statsapi.linescore()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Retrieves all games for July 2008, filters for Phillies wins, and prints linescore for each game.
+
+```python
+for x in [y for y in statsapi.schedule(team=143,start_date='07/01/2008',end_date='07/31/2008') if y.get('winning_team','')=='Philadelphia Phillies']:
+    print('%s\nWinner: %s, Loser: %s\n%s\n\n' % (x['game_date'], x['winning_team'], x['losing_team'], statsapi.linescore(x['game_id'])))
+```
+
+--------------------------------
+
+### Print top 5 team leaders in walks for 2008 Phillies using statsapi.team_leaders()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Prints top 5 team leaders in walks for the 2008 Phillies.
+
+```python
+print(statsapi.team_leaders(143,'walks',limit=5,season=2008))
+```
+
+--------------------------------
+
+### GET /api/{ver}/standings
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves standings for a league.
+
+```APIDOC
+## [GET] /api/{ver}/standings
+
+### Description
+Retrieves standings for a league.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/standings
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+
+#### Query Parameters
+- **leagueId** (integer) - Required - League ID
+- **season** (string) - Optional - Season year
+- **standingsTypes** (string) - Optional - Standings type (e.g., byDivision, byLeague, etc.)
+- **date** (string) - Optional - Date in YYYY-MM-DD format
+- **hydrate** (string) - Optional - Hydration property
+- **fields** (string) - Optional - Comma-separated list of fields to return
+
+### Response
+#### Success Response (200)
+- **records** (array) - List of standings records
+
+#### Response Example
+{
+  "records": []
+}
+```
+
+--------------------------------
+
+### Print list of scoring plays from 4/28/2019 Marlins @ Phillies game using statsapi.game_scoring_plays()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Prints scoring plays for the specified game ID.
+
+```python
+print( statsapi.game_scoring_plays(567074) )
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/history
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves team history information. Requires teamIds parameter; optional parameters allow filtering by start and end seasons and fields.
+
+```APIDOC
+## [GET] /api/{ver}/teams/history
+
+### Description
+Retrieves team history information. Requires teamIds parameter; optional parameters allow filtering by start and end seasons and fields.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/history
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+
+#### Query Parameters
+- **teamIds** (string) - Required - Comma-separated list of team IDs
+- **startSeason** (string) - Optional - Start season year
+- **endSeason** (string) - Optional - End season year
+- **fields** (string) - Optional - Fields to include in response
+```
+
+--------------------------------
+
+### Print top 10 all time career leaders in doubles using statsapi.league_leaders()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Prints top 10 career leaders in doubles. Note: extra 8949 records come back in the data from MLB.
+
+```python
+print(statsapi.league_leaders('doubles',statGroup='hitting',statType='career',limit=10))
+```
+
+--------------------------------
+
+### Example output of roster call
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-roster
+
+Sample output from the roster call for team 143, listing players with number, position, and name.
+
+```text
+#23  CF  Aaron Altherr
+#27  P   Aaron Nola
+#46  P   Adam Morgan
+#15  C   Andrew Knapp
+#22  RF  Andrew McCutchen
+#3   RF  Bryce Harper
+#16  2B  Cesar Hernandez
+#25  RF  Dylan Cozens
+#61  P   Edubray Ramos
+#51  P   Enyel De Los Santos
+#50  P   Hector Neris
+#10  C   J.T. Realmuto
+#49  P   Jake Arrieta
+#48  P   Jerad Eickhoff
+#52  P   Jose Alvarez
+#12  P   Juan Nicasio
+#7   3B  Maikel Franco
+#5   RF  Nick Williams
+#93  P   Pat Neshek
+#9   2B  Phil Gosselin
+#17  1B  Rhys Hoskins
+#13  2B  Sean Rodriguez
+#58  P   Seranthony Dominguez
+#21  P   Vince Velasquez
+#56  P   Zach Eflin
+```
+
+--------------------------------
+
+### GET /api/{ver}/jobs/datacasters
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a list of datacaster jobs. No required parameters.
+
+```APIDOC
+## [GET] /api/{ver}/jobs/datacasters
+
+### Description
+Retrieves a list of datacaster jobs.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/jobs/datacasters
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+
+#### Query Parameters
+- **sportId** (integer) - Optional - Sport ID.
+- **date** (string) - Optional - Date filter.
+- **fields** (string) - Optional - Comma-delimited list of fields to return.
+
+### Response
+#### Success Response (200)
+- **jobs** (array) - List of datacaster jobs.
+
+#### Response Example
+{
+  "jobs": []
+}
+```
+
+--------------------------------
+
+### Print number of games won by Oakland Athletics in 2018 using statsapi.schedule()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Retrieves all A's games for 2018 and counts records where the A's were the winning team.
+
+```python
+print('The A\'s won %s games in 2018.' % sum(1 for x in statsapi.schedule(team=133,start_date='01/01/2018',end_date='12/31/2018') if x.get('winning_team','')=='Oakland Athletics'))
+```
+
+--------------------------------
+
+### GET /api/{ver}/divisions
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves division information. Call with no parameters to get a list of divisions.
+
+```APIDOC
+## [GET] /api/{ver}/divisions
+
+### Description
+Retrieves division information. Call with no parameters to get a list of divisions.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/divisions
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **divisionId** (integer) - Optional - Division ID
+- **leagueId** (integer) - Optional - League ID
+- **sportId** (integer) - Optional - Sport ID
+- **season** (string) - Optional - Season year
+
+```
+
+--------------------------------
+
+### Print full name and position for all players named Harper
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-lookup_player
+
+Iterates over all players matching the lookup value 'Harper' and prints each player's full name and primary position abbreviation. Output shows two players: Bryce Harper (RF) and Ryne Harper (P).
+
+```python
+for player in statsapi.lookup_player('Harper'):
+    print('Full name: {}, Position: {}'.format(player['fullName'], player['primaryPosition']['abbreviation']))
+```
+
+```text
+Full name: Bryce Harper, Position: RF
+Full name: Ryne Harper, Position: P
+```
+
+--------------------------------
+
+### statsapi.lookup_team
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Gets a list of teams' info based on the team name, city, abbreviation, or file code.
+
+```APIDOC
+## statsapi.lookup_team
+
+### Description
+Gets a list of teams' info based on the team name, city, abbreviation, or file code.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI team lookup endpoint
+
+### Parameters
+- **name** (string) - Optional - Team name.
+- **city** (string) - Optional - Team city.
+- **abbreviation** (string) - Optional - Team abbreviation.
+- **file_code** (string) - Optional - Team file code.
+
+### Response
+Returns a list of team info.
+```
+
+--------------------------------
+
+### Look up player ID for Aaron Nola with comma suffix
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-lookup_player
+
+Searches for a player by last name. Append a comma to the lookup value (e.g., 'nola,') to match the initLastName field and avoid partial matches like 'Nolan'. Prints the first returned player's ID.
+
+```python
+player = statsapi.lookup_player('nola,')
+print(player[0]['id']) #assume only 1 record returned for demo purposes
+```
+
+```text
+605400
+```
+
+--------------------------------
+
+### Print boxscore and linescore from A's most recent game using statsapi.last_game()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Retrieves the most recent A's game and prints its boxscore and linescore.
+
+```python
+most_recent_game_id = statsapi.last_game(133)
+print(statsapi.boxscore(most_recent_game_id))
+print(statsapi.linescore(most_recent_game_id))
+```
+
+--------------------------------
+
+### GET /api/{ver}/jobs
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a list of jobs. Requires a job type.
+
+```APIDOC
+## [GET] /api/{ver}/jobs
+
+### Description
+Retrieves a list of jobs.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/jobs
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+
+#### Query Parameters
+- **jobType** (string) - Required - Type of job.
+- **sportId** (integer) - Optional - Sport ID.
+- **date** (string) - Optional - Date filter.
+- **fields** (string) - Optional - Comma-delimited list of fields to return.
+
+### Response
+#### Success Response (200)
+- **jobs** (array) - List of jobs.
+
+#### Response Example
+{
+  "jobs": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/venues
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves venue information. Requires venueIds parameter.
+
+```APIDOC
+## [GET] /api/{ver}/venues
+
+### Description
+Retrieves venue information. Requires venueIds parameter.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/venues
+
+### Parameters
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **venueIds** (string) - Required - Comma-separated venue identifiers.
+- **season** (string) - Optional - Season year.
+- **hydrate** (string) - Optional - Hydration properties.
+- **fields** (string) - Optional - Fields to return.
+
+### Response
+#### Success Response (200)
+- **venues** (array) - List of venue data.
+
+#### Response Example
+{
+  "venues": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/awards{awardId}{recipients}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves award information. Call with no parameters to get a list of award IDs.
+
+```APIDOC
+## [GET] /api/{ver}/awards{awardId}{recipients}
+
+### Description
+Retrieves award information. Call with no parameters to get a list of award IDs.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/awards{awardId}{recipients}
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **awardId** (string) - Optional - Award ID
+- **recipients** (string) - Optional - Recipients flag
+
+#### Query Parameters
+- **sportId** (integer) - Optional - Sport ID
+- **leagueId** (integer) - Optional - League ID
+- **season** (string) - Optional - Season year
+- **hydrate** (string) - Optional - Hydrate property
+- **fields** (string) - Optional - Fields to return
+
+```
+
+--------------------------------
+
+### Find team with longest name using statsapi.get('teams')
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Examples
+
+Retrieves all active team names and finds the longest one.
+
+```python
+longest_team_name = max([x['name'] for x in statsapi.get('teams',{'sportIds':1,'activeStatus':'Yes','fields':'teams,name'})['teams']],key=len)
+print('The team with the longest name is %s, at %s characters.' % (longest_team_name, len(longest_team_name)))
+```
+
+--------------------------------
+
+### statsapi.next_game
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Gets the game id for the given team's next game.
+
+```APIDOC
+## statsapi.next_game
+
+### Description
+Gets the game id for the given team's next game.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI schedule endpoint
+
+### Parameters
+- **team_id** (int) - Required - The team ID.
+
+### Response
+Returns the game ID of the team's next game.
+```
+
+--------------------------------
+
+### GET /api/{ver}/sports
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a list of MLB sports.
+
+```APIDOC
+## [GET] /api/{ver}/sports
+
+### Description
+Retrieves a list of MLB sports.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/sports
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+
+#### Query Parameters
+- **sportId** (integer) - Optional - Sport ID
+- **fields** (string) - Optional - Comma-separated list of fields to return
+
+### Response
+#### Success Response (200)
+- **sports** (array) - List of sport objects
+
+#### Response Example
+{
+  "sports": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/schedule/postseason
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves the postseason schedule. No required parameters are needed.
+
+```APIDOC
+## [GET] /api/{ver}/schedule/postseason
+
+### Description
+Retrieves the postseason schedule.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/schedule/postseason
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **gameTypes** (string) - Optional - Game types
+- **seriesNumber** (integer) - Optional - Series number
+- **teamId** (integer) - Optional - Team ID
+- **sportId** (integer) - Optional - Sport ID
+- **season** (string) - Optional - Season
+- **hydrate** (string) - Optional - Hydration properties
+- **fields** (string) - Optional - Fields to return
+
+### Response
+#### Success Response (200)
+- **dates** (array) - List of schedule dates
+
+#### Response Example
+{
+  "dates": []
+}
+```
+
+--------------------------------
+
+### Print game summaries with final score or status
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-schedule
+
+Iterates over the games list and prints each game's summary, which includes the date, teams, scores (if final or in progress), and game status. The output shows four games between the Phillies and Mets in July 2018.
+
+```python
+for x in games:
+    print(x['summary'])
+```
+
+```text
+2018-07-09 - Philadelphia Phillies (3) @ New York Mets (4) (Final)
+2018-07-09 - Philadelphia Phillies (3) @ New York Mets (1) (Final)
+2018-07-10 - Philadelphia Phillies (7) @ New York Mets (3) (Final)
+2018-07-11 - Philadelphia Phillies (0) @ New York Mets (3) (Final)
+```
+
+--------------------------------
+
+### GET /api/{ver}/jobs/umpires
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a list of umpire jobs. No required parameters.
+
+```APIDOC
+## [GET] /api/{ver}/jobs/umpires
+
+### Description
+Retrieves a list of umpire jobs.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/jobs/umpires
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+
+#### Query Parameters
+- **sportId** (integer) - Optional - Sport ID.
+- **date** (string) - Optional - Date filter.
+- **fields** (string) - Optional - Comma-delimited list of fields to return.
+
+### Response
+#### Success Response (200)
+- **jobs** (array) - List of umpire jobs.
+
+#### Response Example
+{
+  "jobs": []
+}
+```
+
+--------------------------------
+
+### Get game timestamps for timecode parameter
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-boxscore
+
+Retrieves a list of timestamps for game events, which can be used with the timecode parameter of boxscore to get the boxscore as it existed at a specific time. The timecode format is YYYYMMDD_HHMMSS in UTC.
+
+```python
+statsapi.get('game_timestamps',{'gamePk':565997})
+```
+
+--------------------------------
+
+### GET /api/{ver}/game/{gamePk}/feed/live
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves live game feed data for a specific game.
+
+```APIDOC
+## [GET] /api/{ver}/game/{gamePk}/feed/live
+
+### Description
+Retrieves live game feed data for a specific game.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/feed/live
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **gamePk** (integer) - Required - Game primary key
+
+#### Query Parameters
+- **timecode** (string) - Optional - Timecode
+- **hydrate** (string) - Optional - Hydrate property
+- **fields** (string) - Optional - Fields to return
+
+```
+
+--------------------------------
+
+### GET /api/{ver}/conferences
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves conference information.
+
+```APIDOC
+## [GET] /api/{ver}/conferences
+
+### Description
+Retrieves conference information.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/conferences
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **conferenceId** (integer) - Optional - Conference ID
+- **season** (string) - Optional - Season year
+- **fields** (string) - Optional - Fields to return
+
+```
+
+--------------------------------
+
+### GET /api/{ver}/people/changes
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a list of people changes. No required parameters.
+
+```APIDOC
+## [GET] /api/{ver}/people/changes
+
+### Description
+Retrieves a list of people changes.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/people/changes
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+
+#### Query Parameters
+- **updatedSince** (string) - Optional - Filter changes updated since a specific date.
+- **fields** (string) - Optional - Comma-delimited list of fields to return.
+
+### Response
+#### Success Response (200)
+- **people** (array) - List of people changes.
+
+#### Response Example
+{
+  "people": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/people/freeAgents
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a list of free agents for a given league. Requires a league ID.
+
+```APIDOC
+## [GET] /api/{ver}/people/freeAgents
+
+### Description
+Retrieves a list of free agents for a given league.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/people/freeAgents
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+
+#### Query Parameters
+- **leagueId** (integer) - Required - League ID.
+- **order** (string) - Optional - Sort order.
+- **hydrate** (string) - Optional - Hydration property.
+- **fields** (string) - Optional - Comma-delimited list of fields to return.
+
+### Response
+#### Success Response (200)
+- **people** (array) - List of free agents.
+
+#### Response Example
+{
+  "people": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/league
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves league information. Requires sportId and leagueIds parameters.
+
+```APIDOC
+## GET /api/{ver}/league
+
+### Description
+Retrieves league information.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/league
+
+### Parameters
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **sportId** (string) - Required - Sport ID.
+- **leagueIds** (string) - Required - League IDs.
+- **seasons** (string) - Optional - Seasons.
+- **fields** (string) - Optional - Fields to return.
+
+```
+
+--------------------------------
+
+### Print pace of game stats for 2008
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_pace
+
+Prints the pace of game stats for 2008 to determine the number and average time of extra inning games.
+
+```python
+print(statsapi.game_pace(2008))
+```
+
+--------------------------------
+
+### GET /api/{ver}/schedule/postseason/series
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves postseason series information. No required parameters are needed.
+
+```APIDOC
+## [GET] /api/{ver}/schedule/postseason/series
+
+### Description
+Retrieves postseason series information.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/schedule/postseason/series
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **gameTypes** (string) - Optional - Game types
+- **seriesNumber** (integer) - Optional - Series number
+- **teamId** (integer) - Optional - Team ID
+- **sportId** (integer) - Optional - Sport ID
+- **season** (string) - Optional - Season
+- **fields** (string) - Optional - Fields to return
+
+### Response
+#### Success Response (200)
+- **series** (array) - List of postseason series
+
+#### Response Example
+{
+  "series": []
+}
+```
+
+--------------------------------
+
+### Print linescore for a game using statsapi.linescore
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-linescore
+
+Call statsapi.linescore with a gamePk to get a formatted linescore. The function uses the game endpoint instead of game_linescore to include team names and game status in one call. Optionally pass a timecode in YYYYMMDD_HHMMSS UTC format to get the linescore at a specific time.
+
+```python
+print( statsapi.linescore(565997) )
+```
+
+--------------------------------
+
+### GET /api/{ver}/schedule/postseason/tuneIn
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves postseason tune-in information. No required parameters are needed. Note: This endpoint appears to return no data.
+
+```APIDOC
+## [GET] /api/{ver}/schedule/postseason/tuneIn
+
+### Description
+Retrieves postseason tune-in information. Note: This endpoint appears to return no data.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/schedule/postseason/tuneIn
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **teamId** (integer) - Optional - Team ID
+- **sportId** (integer) - Optional - Sport ID
+- **season** (string) - Optional - Season
+- **hydrate** (string) - Optional - Hydration properties
+- **fields** (string) - Optional - Fields to return
+
+### Response
+#### Success Response (200)
+- **dates** (array) - List of schedule dates
+
+#### Response Example
+{
+  "dates": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/affiliates
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves affiliate teams for specified team IDs. Requires the teamIds parameter.
+
+```APIDOC
+## [GET] /api/{ver}/teams/affiliates
+
+### Description
+Retrieves affiliate teams for specified team IDs.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/affiliates
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **teamIds** (string) - Required - Comma-separated team IDs
+- **sportId** (integer) - Optional - Sport ID
+- **season** (string) - Optional - Season year
+- **hydrate** (string) - Optional - Hydration properties
+- **fields** (string) - Optional - Fields to return
+```
+
+--------------------------------
+
+### GET /api/{ver}/uniforms/team
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves team uniform information. Requires teamIds parameter.
+
+```APIDOC
+## [GET] /api/{ver}/uniforms/team
+
+### Description
+Retrieves team uniform information. Requires teamIds parameter.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/uniforms/team
+
+### Parameters
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **teamIds** (string) - Required - Comma-separated team identifiers.
+- **season** (string) - Optional - Season year.
+- **fields** (string) - Optional - Fields to return.
+
+### Response
+#### Success Response (200)
+- **uniforms** (array) - List of uniform data.
+
+#### Response Example
+{
+  "uniforms": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/stats
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves statistics for players or teams. Requires both 'stats' and 'group' parameters.
+
+```APIDOC
+## [GET] /api/{ver}/stats
+
+### Description
+Retrieves statistics for players or teams. Requires both 'stats' and 'group' parameters.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/stats
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+
+#### Query Parameters
+- **stats** (string) - Required - Stat type (e.g., season, career, etc.)
+- **group** (string) - Required - Stat group (e.g., hitting, pitching, fielding)
+- **playerPool** (string) - Optional - Player pool (e.g., all, qualified)
+- **position** (string) - Optional - Position
+- **teamId** (integer) - Optional - Team ID
+- **leagueId** (integer) - Optional - League ID
+- **limit** (integer) - Optional - Number of records to return (default 50)
+- **offset** (integer) - Optional - Offset for pagination
+- **gameType** (string) - Optional - Game type
+- **season** (string) - Optional - Season year
+- **sportIds** (string) - Optional - Comma-separated list of sport IDs
+- **sortStat** (string) - Optional - Stat to sort by
+- **order** (string) - Optional - Sort order (asc/desc)
+- **hydrate** (string) - Optional - Hydration property
+- **fields** (string) - Optional - Comma-separated list of fields to return
+- **personId** (integer) - Optional - Person ID
+- **metrics** (string) - Optional - Metrics
+- **startDate** (string) - Optional - Start date (YYYY-MM-DD)
+- **endDate** (string) - Optional - End date (YYYY-MM-DD)
+
+### Response
+#### Success Response (200)
+- **stats** (array) - List of stat objects
+
+#### Response Example
+{
+  "stats": []
+}
+```
+
+--------------------------------
+
+### statsapi.lookup_player
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Gets a list of player data based on first, last, or full name, jersey number, current team Id, position, etc.
+
+```APIDOC
+## statsapi.lookup_player
+
+### Description
+Gets a list of player data based on first, last, or full name, jersey number, current team Id, position, etc.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI player lookup endpoint
+
+### Parameters
+- **name** (string) - Optional - Player's first, last, or full name.
+- **jersey_number** (int) - Optional - Player's jersey number.
+- **team_id** (int) - Optional - Player's current team ID.
+- **position** (string) - Optional - Player's position.
+
+### Response
+Returns a list of player data.
+```
+
+--------------------------------
+
+### GET /api/{ver}/schedule
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves the MLB schedule. Requires at least one of sportId, gamePk, or gamePks.
+
+```APIDOC
+## [GET] /api/{ver}/schedule
+
+### Description
+Retrieves the MLB schedule.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/schedule
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **sportId** (integer) - Required - Sport ID
+- **gamePk** (integer) - Required - Game primary key
+- **gamePks** (string) - Required - Comma-separated list of game primary keys
+- **scheduleType** (string) - Optional - Schedule type
+- **eventTypes** (string) - Optional - Event types
+- **hydrate** (string) - Optional - Hydration properties
+- **teamId** (integer) - Optional - Team ID
+- **leagueId** (integer) - Optional - League ID
+- **venueIds** (string) - Optional - Venue IDs
+- **gameTypes** (string) - Optional - Game types
+- **date** (string) - Optional - Date
+- **startDate** (string) - Optional - Start date
+- **endDate** (string) - Optional - End date
+- **opponentId** (integer) - Optional - Opponent team ID
+- **fields** (string) - Optional - Fields to return
+- **season** (string) - Optional - Season
+
+### Response
+#### Success Response (200)
+- **dates** (array) - List of schedule dates
+
+#### Response Example
+{
+  "dates": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/sports/{sportId}/players
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves players for a specific sport and season.
+
+```APIDOC
+## [GET] /api/{ver}/sports/{sportId}/players
+
+### Description
+Retrieves players for a specific sport and season.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/sports/{sportId}/players
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+- **sportId** (integer) - Required - Sport ID
+
+#### Query Parameters
+- **season** (string) - Required - Season year
+- **gameType** (string) - Optional - Game type (e.g., R, P, etc.)
+- **fields** (string) - Optional - Comma-separated list of fields to return
+
+### Response
+#### Success Response (200)
+- **people** (array) - List of player objects
+
+#### Response Example
+{
+  "people": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/schedule/games/tied
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves tied games for a given season. Requires the season parameter.
+
+```APIDOC
+## [GET] /api/{ver}/schedule/games/tied
+
+### Description
+Retrieves tied games for a given season.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/schedule/games/tied
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **season** (string) - Required - Season
+- **gameTypes** (string) - Optional - Game types
+- **hydrate** (string) - Optional - Hydration properties
+- **fields** (string) - Optional - Fields to return
+
+### Response
+#### Success Response (200)
+- **dates** (array) - List of schedule dates
+
+#### Response Example
+{
+  "dates": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/people
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves information about people (players, etc.). Requires personIds parameter.
+
+```APIDOC
+## GET /api/{ver}/people
+
+### Description
+Retrieves information about people (players, etc.).
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/people
+
+### Parameters
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **personIds** (string) - Required - Person IDs.
+- **hydrate** (string) - Optional - Hydrate.
+- **fields** (string) - Optional - Fields to return.
+
+```
+
+--------------------------------
+
+### Print National League standings from 09/27/2008
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-standings
+
+Example call to print standings for leagueId 104 (National League) for the date 09/27/2008. The output is a formatted table showing division standings with rank, team, wins, losses, games back, elimination number, wildcard rank, wildcard games back, and wildcard elimination number.
+
+```python
+print( statsapi.standings(leagueId=104,date='09/27/2008') )
+```
+
+```text
+National League Central
+Rank Team                   W   L   GB  (E#) WC Rank WC GB (E#)
+    1   Chicago Cubs          97  63   -    -      -      -    -
+    2   Milwaukee Brewers     89  72  8.5   E      1      -    -
+    3   Houston Astros        85  75  12.0  E      3     3.5   E
+    4   St. Louis Cardinals   85  76  12.5  E      4     4.0   E
+    5   Cincinnati Reds       74  87  23.5  E      7    15.0   E
+    6   Pittsburgh Pirates    66  95  31.5  E     11    23.0   E
+
+National League West
+Rank Team                   W   L   GB  (E#) WC Rank WC GB (E#)
+    1   Los Angeles Dodgers   84  77   -    -      -      -    -
+    2   Arizona Diamondbacks  81  80  3.0   E      6     8.0   E
+    3   Colorado Rockies      74  87  10.0  E      8    15.0   E
+    4   San Francisco Giants  71  90  13.0  E     10    18.0   E
+    5   San Diego Padres      63  98  21.0  E     12    26.0   E
+
+National League East
+Rank Team                   W   L   GB  (E#) WC Rank WC GB (E#)
+    1   Philadelphia Phillies 91  70   -    -      -      -    -
+    2   New York Mets         89  72  2.0   E      2      -    -
+    3   Florida Marlins       83  77  7.5   E      5     5.5   E
+    4   Atlanta Braves        72  89  19.0  E      9    17.0   E
+    5   Washington Nationals  59  101 31.5  E     13    29.5   E
+```
+
+--------------------------------
+
+### statsapi.last_game
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Gets the game id for the given team's most recent game.
+
+```APIDOC
+## statsapi.last_game
+
+### Description
+Gets the game id for the given team's most recent game.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI schedule endpoint
+
+### Parameters
+- **team_id** (int) - Required - The team ID.
+
+### Response
+Returns the game ID of the team's most recent game.
+```
+
+--------------------------------
+
+### statsapi.game_scoring_plays(gamePk)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_scoring_plays
+
+Returns a text-formatted list of scoring plays for a given game. Note: This method is broken as of 7/25/2020 due to a change in the data returned by the schedule endpoint; update to v0.1.9 for the fix.
+
+```APIDOC
+## statsapi.game_scoring_plays(gamePk)
+
+### Description
+Returns a text-formatted list of scoring plays for a given game. Note: This method is broken as of 7/25/2020 due to a change in the data returned by the schedule endpoint; update to v0.1.9 for the fix.
+
+### Method
+Function call
+
+### Endpoint
+statsapi.game_scoring_plays(gamePk)
+
+### Parameters
+- **gamePk** (integer) - Required - The unique identifier for the game.
+
+### Example
+Print a list of scoring plays from the 4/28/2019 Marlins @ Phillies game
+
+```python
+print( statsapi.game_scoring_plays(567074) )
+```
+
+### Output (truncated to show only the first and last records)
+```
+Rhys Hoskins doubles (6) on a sharp line drive to left fielder Isaac Galloway.   Bryce Harper scores.
+Bottom 1 - Miami Marlins: 0, Philadelphia Phillies: 1
+
+Rhys Hoskins walks.   Andrew McCutchen scores.    Jean Segura to 3rd.  Wild pitch by pitcher Tayron Guerrero.
+Bottom 8 - Miami Marlins: 1, Philadelphia Phillies: 5
+```
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/{teamId}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves information for a specific team. Requires the teamId parameter.
+
+```APIDOC
+## [GET] /api/{ver}/teams/{teamId}
+
+### Description
+Retrieves information for a specific team.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/{teamId}
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **teamId** (integer) - Required - Team ID
+
+#### Query Parameters
+- **season** (string) - Optional - Season year
+- **sportId** (integer) - Optional - Sport ID
+- **hydrate** (string) - Optional - Hydration properties
+- **fields** (string) - Optional - Fields to return
+```
+
+--------------------------------
+
+### GET /api/{ver}/seasons/{seasonId}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves details for a specific MLB season by its season ID.
+
+```APIDOC
+## [GET] /api/{ver}/seasons/{seasonId}
+
+### Description
+Retrieves details for a specific MLB season by its season ID.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/seasons/{seasonId}
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+- **seasonId** (integer) - Required - Season ID
+
+#### Query Parameters
+- **sportId** (integer) - Required - Sport ID
+- **fields** (string) - Optional - Comma-separated list of fields to return
+
+### Response
+#### Success Response (200)
+- **season** (object) - Season details
+
+#### Response Example
+{
+  "season": {}
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/{teamId}/coaches
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves coaches for a specific team. Requires the teamId parameter.
+
+```APIDOC
+## [GET] /api/{ver}/teams/{teamId}/coaches
+
+### Description
+Retrieves coaches for a specific team.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/{teamId}/coaches
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **teamId** (integer) - Required - Team ID
+
+#### Query Parameters
+- **season** (string) - Optional - Season year
+- **date** (string) - Optional - Date (YYYY-MM-DD)
+- **fields** (string) - Optional - Fields to return
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/{teamId}/personnel
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves personnel for a specific team. Requires the teamId parameter.
+
+```APIDOC
+## [GET] /api/{ver}/teams/{teamId}/personnel
+
+### Description
+Retrieves personnel for a specific team.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/{teamId}/personnel
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **teamId** (integer) - Required - Team ID
+
+#### Query Parameters
+- **date** (string) - Optional - Date (YYYY-MM-DD)
+- **fields** (string) - Optional - Fields to return
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/{teamId}/roster
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves the roster for a specific team. Requires the teamId parameter.
+
+```APIDOC
+## [GET] /api/{ver}/teams/{teamId}/roster
+
+### Description
+Retrieves the roster for a specific team.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/{teamId}/roster
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **teamId** (integer) - Required - Team ID
+
+#### Query Parameters
+- **rosterType** (string) - Optional - Roster type
+- **season** (string) - Optional - Season year
+- **date** (string) - Optional - Date (YYYY-MM-DD)
+- **hydrate** (string) - Optional - Hydration properties
+- **fields** (string) - Optional - Fields to return
+```
+
+--------------------------------
+
+### statsapi.get(endpoint, params, force=False, request_kwargs={})
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-get
+
+Calls the MLB StatsAPI and returns JSON data. This function is for advanced querying of the MLB StatsAPI and is used by other functions in the library. It accepts an endpoint key, a dictionary of parameters, an optional force flag to bypass parameter requirements, and optional request keyword arguments.
+
+```APIDOC
+## statsapi.get(endpoint, params, force=False, request_kwargs={})
+
+### Description
+Calls the MLB StatsAPI and returns JSON data. This function is for advanced querying of the MLB StatsAPI, and is used by the functions in this library.
+
+### Method
+GET
+
+### Endpoint
+`statsapi.get(endpoint, params, force=False, request_kwargs={})`
+
+### Parameters
+- **endpoint** (string) - Required - One of the keys in the ENDPOINT dict.
+- **params** (dict) - Optional - A dict of parameters, as defined in the ENDPOINT dict for each endpoint. Defaults to empty dict (`{}`) as of v1.8.
+- **force** (boolean) - Optional - If `True`, will force unrecognized parameters into the query string and ignore parameter requirements. Note: results from Stats API may not be as expected when forcing.
+- **request_kwargs** (dict) - Optional - A dict of additional parameters to pass to the underlying `requests.get` call. Defaults to `{}`. Of particular interest is `request_kwargs={"headers":{"Accept-Encoding": "gzip"}}`, which is recommended by MLB for some larger endpoints like `game`.
+
+### Request Example
+```python
+statsapi.get('team', {'teamId':143})
+```
+
+### Response
+Returns the raw response from MLB Stats API in JSON format.
+```
+
+--------------------------------
+
+### GET /api/{ver}/draft{prospects}{year}{latest}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves draft information. Note: No query parameters are honored when 'latest' endpoint is queried (year is still required). Prospects and Latest cannot be used together.
+
+```APIDOC
+## [GET] /api/{ver}/draft{prospects}{year}{latest}
+
+### Description
+Retrieves draft information. Note: No query parameters are honored when 'latest' endpoint is queried (year is still required). Prospects and Latest cannot be used together.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/draft{prospects}{year}{latest}
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **prospects** (string) - Optional - Prospects flag
+- **year** (string) - Optional - Draft year
+- **latest** (string) - Optional - Latest flag
+
+#### Query Parameters
+- **limit** (integer) - Optional - Limit
+- **fields** (string) - Optional - Fields to return
+- **round** (string) - Optional - Round
+- **name** (string) - Optional - Player name
+- **school** (string) - Optional - School
+- **state** (string) - Optional - State
+- **country** (string) - Optional - Country
+- **position** (string) - Optional - Position
+- **teamId** (integer) - Optional - Team ID
+- **playerId** (integer) - Optional - Player ID
+- **bisPlayerId** (integer) - Optional - BIS player ID
+
+```
+
+--------------------------------
+
+### GET /api/{ver}/{type}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves metadata values for use in other API calls. Requires type parameter.
+
+```APIDOC
+## [GET] /api/{ver}/{type}
+
+### Description
+Retrieves metadata values for use in other API calls. Requires type parameter.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/{type}
+
+### Parameters
+#### Path Parameters
+- **type** (string) - Required - Metadata type. Available types: awards, baseballStats, eventTypes, gameStatus, gameTypes, hitTrajectories, jobTypes, languages, leagueLeaderTypes, logicalEvents, metrics, pitchCodes, pitchTypes, platforms, positions, reviewReasons, rosterTypes, scheduleEventTypes, situationCodes, sky, standingsTypes, statGroups, statTypes, windDirection.
+
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+
+### Response
+#### Success Response (200)
+- **meta** (object) - Metadata values.
+
+#### Response Example
+{
+  "meta": {}
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/transactions
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves transactions. Requires at least one of teamId, playerId, date, or startDate+endDate.
+
+```APIDOC
+## [GET] /api/{ver}/transactions
+
+### Description
+Retrieves transactions. Requires at least one of teamId, playerId, date, or startDate+endDate.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/transactions
+
+### Parameters
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **teamId** (integer) - Optional - Team identifier.
+- **playerId** (integer) - Optional - Player identifier.
+- **date** (string) - Optional - Specific date.
+- **startDate** (string) - Optional - Start date (must be used with endDate).
+- **endDate** (string) - Optional - End date (must be used with startDate).
+- **sportId** (integer) - Optional - Sport identifier.
+- **fields** (string) - Optional - Fields to return.
+
+### Response
+#### Success Response (200)
+- **transactions** (array) - List of transactions.
+
+#### Response Example
+{
+  "transactions": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/jobs/officialScorers
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves the list of official scorers. No required parameters are needed for this endpoint.
+
+```APIDOC
+## [GET] /api/{ver}/jobs/officialScorers
+
+### Description
+Retrieves the list of official scorers.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/jobs/officialScorers
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **timecode** (string) - Optional - Timecode parameter
+- **fields** (string) - Optional - Fields to return
+
+### Response
+#### Success Response (200)
+- **officialScorers** (array) - List of official scorers
+
+#### Response Example
+{
+  "officialScorers": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/people/{personId}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves information for a specific person by ID. Requires a person ID.
+
+```APIDOC
+## [GET] /api/{ver}/people/{personId}
+
+### Description
+Retrieves information for a specific person.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/people/{personId}
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+- **personId** (integer) - Required - Person ID.
+
+#### Query Parameters
+- **hydrate** (string) - Optional - Hydration property.
+- **fields** (string) - Optional - Comma-delimited list of fields to return.
+
+### Response
+#### Success Response (200)
+- **people** (array) - Person information.
+
+#### Response Example
+{
+  "people": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/jobs/umpires/games/{umpireId}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves games for a specific umpire. Requires umpire ID and season.
+
+```APIDOC
+## [GET] /api/{ver}/jobs/umpires/games/{umpireId}
+
+### Description
+Retrieves games for a specific umpire.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/jobs/umpires/games/{umpireId}
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+- **umpireId** (integer) - Required - Umpire ID.
+
+#### Query Parameters
+- **season** (string) - Required - Season year.
+- **fields** (string) - Optional - Comma-delimited list of fields to return.
+
+### Response
+#### Success Response (200)
+- **games** (array) - List of games.
+
+#### Response Example
+{
+  "games": []
+}
+```
+
+--------------------------------
+
+### statsapi.team_leader_data(teamId, leaderCategories, season, leaderGameTypes, limit)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-team_leader_data
+
+Returns a Python list of stat leader data for a given team. Use the meta endpoint with type=leagueLeaderTypes to get available leader categories.
+
+```APIDOC
+## statsapi.team_leader_data(teamId, leaderCategories, season=datetime.now().year, leaderGameTypes="R", limit=10)
+
+### Description
+Returns a Python list of stat leader data for a given team.
+
+### Method
+Function call
+
+### Endpoint
+statsapi.team_leader_data
+
+### Parameters
+- **teamId** (int) - Required - The team ID.
+- **leaderCategories** (list) - Required - List of leader categories. Get available categories by calling the meta endpoint with type=leagueLeaderTypes.
+- **season** (int) - Optional - Season year. Defaults to current year.
+- **leaderGameTypes** (str) - Optional - Game type for leaders. Defaults to "R" (regular season).
+- **limit** (int) - Optional - Maximum number of leaders to return. Defaults to 10.
+
+### Response
+Returns a Python list of stat leader data.
+```
+
+--------------------------------
+
+### GET /api/{ver}/league/{leagueId}/allStarBallot
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves All-Star ballot data for a specific league. Requires leagueId and season parameters.
+
+```APIDOC
+## GET /api/{ver}/league/{leagueId}/allStarBallot
+
+### Description
+Retrieves All-Star ballot data for a specific league.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/league/{leagueId}/allStarBallot
+
+### Parameters
+#### Path Parameters
+- **leagueId** (string) - Required - League ID.
+
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **season** (string) - Required - Season.
+- **fields** (string) - Optional - Fields to return.
+
+```
+
+--------------------------------
+
+### GET /api/{ver}/people/{personId}/stats/game/{gamePk}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves game stats for a specific person in a specific game. Requires person ID and game PK.
+
+```APIDOC
+## [GET] /api/{ver}/people/{personId}/stats/game/{gamePk}
+
+### Description
+Retrieves game stats for a specific person in a specific game. Use "current" instead of a gamePk for a player's current game stats.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/people/{personId}/stats/game/{gamePk}
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+- **personId** (integer) - Required - Person ID.
+- **gamePk** (integer) - Required - Game primary key. Use "current" for current game stats.
+
+#### Query Parameters
+- **fields** (string) - Optional - Comma-delimited list of fields to return.
+
+### Response
+#### Success Response (200)
+- **stats** (array) - Game stats.
+
+#### Response Example
+{
+  "stats": []
+}
+```
+
+--------------------------------
+
+### GET /api/{ver}/stats/streaks
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves statistical streaks for players. Requires streakType, streakSpan, season, sportId, and limit parameters; optional parameters allow filtering by game type and hydration.
+
+```APIDOC
+## [GET] /api/{ver}/stats/streaks
+
+### Description
+Retrieves statistical streaks for players. Requires streakType, streakSpan, season, sportId, and limit parameters; optional parameters allow filtering by game type and hydration.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/stats/streaks
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+
+#### Query Parameters
+- **streakType** (string) - Required - Type of streak (valid values: "hittingStreakOverall", "hittingStreakHome", "hittingStreakAway", "onBaseOverall", "onBaseHome", "onBaseAway")
+- **streakSpan** (string) - Required - Span of streak (valid values: "career", "season", "currentStreak", "currentStreakInSeason", "notable", "notableInSeason")
+- **season** (string) - Required - Season year
+- **sportId** (string) - Required - Sport ID
+- **limit** (string) - Required - Number of results
+- **gameType** (string) - Optional - Game type filter
+- **hydrate** (string) - Optional - Hydration properties
+- **fields** (string) - Optional - Fields to include in response
+
+### Note
+Valid streakType values: "hittingStreakOverall" "hittingStreakHome" "hittingStreakAway" "onBaseOverall" "onBaseHome" "onBaseAway". Valid streakSpan values: "career" "season" "currentStreak" "currentStreakInSeason" "notable" "notableInSeason".
+```
+
+--------------------------------
+
+### GET /api/{ver}/homeRunDerby/{gamePk}{bracket}{pool}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves Home Run Derby data for a specific game. Requires gamePk parameter.
+
+```APIDOC
+## GET /api/{ver}/homeRunDerby/{gamePk}{bracket}{pool}
+
+### Description
+Retrieves Home Run Derby data for a specific game.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/homeRunDerby/{gamePk}{bracket}{pool}
+
+### Parameters
+#### Path Parameters
+- **gamePk** (string) - Required - Game primary key.
+- **bracket** (string) - Optional - Bracket.
+- **pool** (string) - Optional - Pool.
+
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **fields** (string) - Optional - Fields to return.
+
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves team information. No required parameters; optional parameters allow filtering by season, active status, league, sport, game type, and more.
+
+```APIDOC
+## [GET] /api/{ver}/teams
+
+### Description
+Retrieves team information. No required parameters; optional parameters allow filtering by season, active status, league, sport, game type, and more.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+
+#### Query Parameters
+- **season** (string) - Optional - Season year
+- **activeStatus** (string) - Optional - Active status filter
+- **leagueIds** (string) - Optional - League IDs filter
+- **sportId** (string) - Optional - Sport ID filter
+- **sportIds** (string) - Optional - Multiple sport IDs filter
+- **gameType** (string) - Optional - Game type filter
+- **hydrate** (string) - Optional - Hydration properties
+- **fields** (string) - Optional - Fields to include in response
+```
+
+--------------------------------
+
+### Example output of statsapi.linescore for Phillies/Mets game
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-linescore
+
+Sample output from the linescore call for gamePk 565997 (Phillies vs Mets on 4/25/19). Shows final score, inning-by-inning runs, and R/H/E totals.
+
+```text
+Final    1 2 3 4 5 6 7 8 9  R   H   E
+Phillies 1 0 0 0 0 0 0 3 2  6   10  0
+Mets     0 0 0 0 0 0 0 0 0  0   6   3
+```
+
+--------------------------------
+
+### GET /api/{ver}/league/{leagueId}/allStarWriteIns
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves All-Star write-in votes for a specific league. Requires leagueId and season parameters.
+
+```APIDOC
+## GET /api/{ver}/league/{leagueId}/allStarWriteIns
+
+### Description
+Retrieves All-Star write-in votes for a specific league.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/league/{leagueId}/allStarWriteIns
+
+### Parameters
+#### Path Parameters
+- **leagueId** (string) - Required - League ID.
+
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **season** (string) - Required - Season.
+- **fields** (string) - Optional - Fields to return.
+
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/{teamId}/leaders
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves leaders for a specific team. Requires teamId and leaderCategories plus season parameters.
+
+```APIDOC
+## [GET] /api/{ver}/teams/{teamId}/leaders
+
+### Description
+Retrieves leaders for a specific team.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/{teamId}/leaders
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **teamId** (integer) - Required - Team ID
+
+#### Query Parameters
+- **leaderCategories** (string) - Required - Leader categories
+- **season** (string) - Required - Season year
+- **leaderGameTypes** (string) - Optional - Leader game types
+- **hydrate** (string) - Optional - Hydration properties
+- **limit** (integer) - Optional - Limit number of results
+- **fields** (string) - Optional - Fields to return
+```
+
+--------------------------------
+
+### GET /api/{ver}/seasons{all}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a list of MLB seasons. Use the 'all' parameter with value True to query all seasons; divisionId and leagueId are supported when 'all' is used.
+
+```APIDOC
+## [GET] /api/{ver}/seasons{all}
+
+### Description
+Retrieves a list of MLB seasons. Use the 'all' parameter with value True to query all seasons; divisionId and leagueId are supported when 'all' is used.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/seasons{all}
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+- **all** (boolean) - Optional - Set to True to query all seasons
+
+#### Query Parameters
+- **sportId** (integer) - Required - Sport ID
+- **divisionId** (integer) - Required - Division ID (supported when 'all' is used)
+- **leagueId** (integer) - Required - League ID (supported when 'all' is used)
+- **season** (string) - Optional - Season year
+- **fields** (string) - Optional - Comma-separated list of fields to return
+
+### Response
+#### Success Response (200)
+- **seasons** (array) - List of season objects
+
+#### Response Example
+{
+  "seasons": []
+}
+```
+
+--------------------------------
+
+### statsapi.latest_season(sportId=1)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-latest_season
+
+Retrieves data about the latest season for a given sportId. This method was added in v1.5 and returns a dictionary containing the season ID.
+
+```APIDOC
+## statsapi.latest_season(sportId=1)
+
+### Description
+Get data about the latest season for a given sportId. Added in v1.5.
+
+### Method
+latest_season
+
+### Parameters
+- **sportId** (int) - Optional - The sport ID for which to retrieve the latest season. Defaults to 1 (MLB).
+
+### Request Example
+```python
+season_data = statsapi.latest_season()
+```
+
+### Response
+#### Success Response
+- **seasonId** (string) - The ID of the latest season.
+
+#### Response Example
+```python
+'2022'
+```
+```
+
+--------------------------------
+
+### Get teamId for team with code 'chn'
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-lookup_team
+
+Calls statsapi.lookup_team('chn') and prints the first team's 'id' field, assuming only one record is returned. The output is 112.
+
+```python
+team = statsapi.lookup_team('chn')
+print(team[0]['id']) #assume only 1 record returned for demo purposes
+```
+
+--------------------------------
+
+### GET /api/{ver}/attendance
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves attendance data for MLB games. Requires at least one of teamId, leagueId, or leagueListid to be specified.
+
+```APIDOC
+## [GET] /api/{ver}/attendance
+
+### Description
+Retrieves attendance data for MLB games. Requires at least one of teamId, leagueId, or leagueListid to be specified.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/attendance
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **teamId** (integer) - Required - Team ID
+- **leagueId** (integer) - Required - League ID
+- **leagueListid** (integer) - Required - League list ID
+- **season** (string) - Optional - Season year
+- **date** (string) - Optional - Date
+- **gameType** (string) - Optional - Game type
+- **fields** (string) - Optional - Fields to return
+
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/{teamId}/alumni
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves alumni for a specific team. Requires teamId and season plus group parameters.
+
+```APIDOC
+## [GET] /api/{ver}/teams/{teamId}/alumni
+
+### Description
+Retrieves alumni for a specific team.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/{teamId}/alumni
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **teamId** (integer) - Required - Team ID
+
+#### Query Parameters
+- **season** (string) - Required - Season year
+- **group** (string) - Required - Group (e.g., hitting, pitching)
+- **hydrate** (string) - Optional - Hydration properties
+- **fields** (string) - Optional - Fields to return
+```
+
+--------------------------------
+
+### GET /api/{ver}/highLow/{orgType}
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves high/low statistics for a specified organization type. Requires orgType and sortStat plus season parameters.
+
+```APIDOC
+## GET /api/{ver}/highLow/{orgType}
+
+### Description
+Retrieves high/low statistics for a specified organization type.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/highLow/{orgType}
+
+### Parameters
+#### Path Parameters
+- **orgType** (string) - Required - Organization type (player, team, division, league, sport, types).
+
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **statGroup** (string) - Optional - Stat group.
+- **sortStat** (string) - Required - Stat to sort by.
+- **season** (string) - Required - Season.
+- **gameType** (string) - Optional - Game type.
+- **teamId** (string) - Optional - Team ID.
+- **leagueId** (string) - Optional - League ID.
+- **sportIds** (string) - Optional - Sport IDs.
+- **limit** (string) - Optional - Limit.
+- **fields** (string) - Optional - Fields to return.
+
+```
+
+--------------------------------
+
+### statsapi.game_pace_data(season, sportId)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_pace_data
+
+Returns a Python dict containing data about pace of game for a given season (back to 1999). The season parameter defaults to the current calendar year, but it is recommended to specify it explicitly to avoid unexpected results before the season starts.
+
+```APIDOC
+## statsapi.game_pace_data(season, sportId)
+
+### Description
+Returns a Python dict containing data about pace of game for a given season (back to 1999).
+
+### Method
+Function call
+
+### Endpoint
+`statsapi.game_pace_data(season=datetime.now().year, sportId=1)`
+
+### Parameters
+- **season** (int) - Optional - The season year (defaults to current calendar year). Recommended to specify explicitly.
+- **sportId** (int) - Optional - The sport ID (defaults to 1).
+
+### Returns
+- **dict** - A Python dict containing pace of game data for the specified season.
+
+### Notes
+- The `season` parameter defaults to the current calendar year. From January 1 until each season starts, this may result in unexpected results. Therefore, it is best to include the season parameter explicitly.
+- For a formatted text version, see the `game_pace` function.
+```
+
+--------------------------------
+
+### statsapi.roster
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Generates a formatted list of players on a team's roster.
+
+```APIDOC
+## statsapi.roster
+
+### Description
+Generates a formatted list of players on a team's roster.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI roster endpoint
+
+### Parameters
+- **team_id** (int) - Required - The team ID.
+- **season** (int) - Optional - The season year.
+
+### Response
+Returns a formatted list of players on the roster.
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/stats
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves team statistics. Requires season, group, and stats parameters; optional parameters allow filtering by sport, game type, ordering, and date range.
+
+```APIDOC
+## [GET] /api/{ver}/teams/stats
+
+### Description
+Retrieves team statistics. Requires season, group, and stats parameters; optional parameters allow filtering by sport, game type, ordering, and date range.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/stats
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+
+#### Query Parameters
+- **season** (string) - Required - Season year
+- **group** (string) - Required - Statistical group (use meta('statGroups') for valid values)
+- **stats** (string) - Required - Statistical type (use meta('statTypes') for valid values)
+- **sportIds** (string) - Optional - Sport IDs filter
+- **gameType** (string) - Optional - Game type filter
+- **order** (string) - Optional - Sort order
+- **sortStat** (string) - Optional - Statistic to sort by
+- **fields** (string) - Optional - Fields to include in response
+- **startDate** (string) - Optional - Start date filter
+- **endDate** (string) - Optional - End date filter
+
+### Note
+Use meta('statGroups') to look up valid values for group, and meta('statTypes') for valid values for stats.
+```
+
+--------------------------------
+
+### GET /api/{ver}/stats/leaders
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves statistical leaders for specified categories. Requires the leaderCategories parameter; optional parameters allow filtering by player pool, game types, season, league, sport, and more.
+
+```APIDOC
+## [GET] /api/{ver}/stats/leaders
+
+### Description
+Retrieves statistical leaders for specified categories. Requires the leaderCategories parameter; optional parameters allow filtering by player pool, game types, season, league, sport, and more.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/stats/leaders
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version (e.g., v1)
+
+#### Query Parameters
+- **leaderCategories** (string) - Required - Categories for which to retrieve leaders
+- **playerPool** (string) - Optional - Player pool filter
+- **leaderGameTypes** (string) - Optional - Game types for leaders
+- **statGroup** (string) - Optional - Statistical group
+- **season** (string) - Optional - Season year; if omitted, all-time leaders are returned (see note)
+- **leagueId** (string) - Optional - League ID filter
+- **sportId** (string) - Optional - Sport ID filter
+- **hydrate** (string) - Optional - Hydration properties
+- **limit** (string) - Optional - Number of results
+- **fields** (string) - Optional - Fields to include in response
+- **statType** (string) - Optional - Statistical type; required when season is omitted to get all-time leaders
+
+### Note
+If excluding season parameter to get all time leaders, include statType=statsSingleSeason or you will likely not get any results.
+```
+
+--------------------------------
+
+### GET /api/{ver}/league/{leagueId}/allStarFinalVote
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves All-Star final vote data for a specific league. Requires leagueId and season parameters.
+
+```APIDOC
+## GET /api/{ver}/league/{leagueId}/allStarFinalVote
+
+### Description
+Retrieves All-Star final vote data for a specific league.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/league/{leagueId}/allStarFinalVote
+
+### Parameters
+#### Path Parameters
+- **leagueId** (string) - Required - League ID.
+
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **season** (string) - Required - Season.
+- **fields** (string) - Optional - Fields to return.
+
+```
+
+--------------------------------
+
+### GET /api/{ver}/teams/{teamId}/stats
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves team statistics for a specified team and season. Requires teamId and season plus group parameters.
+
+```APIDOC
+## [GET] /api/{ver}/teams/{teamId}/stats
+
+### Description
+Retrieves team statistics for a specified team and season. Requires teamId and season plus group parameters.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/teams/{teamId}/stats
+
+### Parameters
+#### Path Parameters
+- **teamId** (integer) - Required - The team identifier.
+
+#### Query Parameters
+- **ver** (string) - Optional - API version.
+- **season** (string) - Required - Season year.
+- **group** (string) - Required - Statistical group (use meta('statGroups') for valid values).
+- **gameType** (string) - Optional - Game type.
+- **stats** (string) - Optional - Statistical category (use meta('statTypes') for valid values).
+- **sportIds** (string) - Optional - Sport identifiers.
+- **sitCodes** (string) - Optional - Situation codes (use meta('situationCodes') for valid values). Use with stats=statSplits.
+- **fields** (string) - Optional - Fields to return.
+
+### Response
+#### Success Response (200)
+- **stats** (object) - Team statistics data.
+
+#### Response Example
+{
+  "stats": {}
+}
+```
+
+--------------------------------
+
+### Get info about all teams from NY
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-lookup_team
+
+Iterates over the list returned by statsapi.lookup_team('ny') and prints each team dictionary. The output shows two teams: New York Yankees (id 147) and New York Mets (id 121).
+
+```python
+for team in statsapi.lookup_team('ny'):
+    print(team)
+```
+
+```output
+{'id': 147, 'name': 'New York Yankees', 'teamCode': 'nya', 'fileCode': 'nyy', 'teamName': 'Yankees', 'locationName': 'Bronx', 'shortName': 'NY Yankees'}
+{'id': 121, 'name': 'New York Mets', 'teamCode': 'nyn', 'fileCode': 'nym', 'teamName': 'Mets', 'locationName': 'New York', 'shortName': 'NY Mets'}
+```
+
+--------------------------------
+
+### statsapi.standings
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Generates a formatted list of standings for a given league/date.
+
+```APIDOC
+## statsapi.standings
+
+### Description
+Generates a formatted list of standings for a given league/date.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI standings endpoint
+
+### Parameters
+- **league_id** (int) - Required - The league ID.
+- **date** (string) - Optional - The date for standings (format: YYYY-MM-DD).
+
+### Response
+Returns a formatted list of standings.
+```
+
+--------------------------------
+
+### statsapi.meta
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Retrieves available values from StatsAPI for use in other queries, or looks up descriptions for values found in API results.
+
+```APIDOC
+## statsapi.meta
+
+### Description
+Retrieves available values from StatsAPI for use in other queries, or looks up descriptions for values found in API results.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI metadata endpoint
+
+### Parameters
+- **endpoint** (string) - Required - The metadata endpoint to query.
+- **params** (dict) - Optional - Query parameters for the request.
+
+### Response
+Returns metadata values or descriptions from StatsAPI.
+```
+
+--------------------------------
+
+### statsapi.linescore(gamePk, timecode=None)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-linescore
+
+Retrieves a formatted linescore for a given game. This function uses the game endpoint to include team names and game status, and optionally supports a timecode to get the linescore as it existed at a specific time.
+
+```APIDOC
+## statsapi.linescore(gamePk, timecode=None)
+
+### Description
+Retrieves a formatted linescore for a given game. This function uses the game endpoint to include team names and game status, and optionally supports a timecode to get the linescore as it existed at a specific time.
+
+### Method
+Function call
+
+### Endpoint
+statsapi.linescore(gamePk, timecode=None)
+
+### Parameters
+- **gamePk** (integer) - Required - The unique identifier for the game.
+- **timecode** (string) - Optional - A timestamp in the format `YYYYMMDD_HHMMSS` (UTC) to retrieve the linescore as it existed at that time.
+
+### Request Example
+```python
+statsapi.linescore(565997)
+```
+
+### Response
+Returns a formatted string containing the linescore, including team names, innings, runs, hits, and errors.
+
+#### Response Example
+```
+Final    1 2 3 4 5 6 7 8 9  R   H   E
+Phillies 1 0 0 0 0 0 0 3 2  6   10  0
+Mets     0 0 0 0 0 0 0 0 0  0   6   3
+```
+```
+
+--------------------------------
+
+### statsapi.schedule
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Retrieves a list of games on a given date/range and/or team/opponent.
+
+```APIDOC
+## statsapi.schedule
+
+### Description
+Retrieves a list of games on a given date/range and/or team/opponent.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI schedule endpoint
+
+### Parameters
+- **date** (string) - Optional - The date for games (format: YYYY-MM-DD).
+- **start_date** (string) - Optional - The start date for a range.
+- **end_date** (string) - Optional - The end date for a range.
+- **team** (int) - Optional - The team ID.
+- **opponent** (int) - Optional - The opponent team ID.
+
+### Response
+Returns a list of games.
+```
+
+--------------------------------
+
+### statsapi.player_stats
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Generates a formatted list of a player's career or season stats.
+
+```APIDOC
+## statsapi.player_stats
+
+### Description
+Generates a formatted list of a player's career or season stats.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI player stats endpoint
+
+### Parameters
+- **player_id** (int) - Required - The player ID.
+- **type** (string) - Required - The stat type (e.g., 'career', 'season').
+- **season** (int) - Optional - The season year (required if type is 'season').
+
+### Response
+Returns a formatted list of player stats.
+```
+
+--------------------------------
+
+### statsapi.get
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Makes direct calls to MLB StatsAPI endpoints. Supports the most flexibility in request parameters and returns raw JSON data.
+
+```APIDOC
+## statsapi.get
+
+### Description
+Makes direct calls to MLB StatsAPI endpoints. Supports the most flexibility in request parameters and returns raw JSON data.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI endpoint (specified by user)
+
+### Parameters
+- **endpoint** (string) - Required - The MLB StatsAPI endpoint to call.
+- **params** (dict) - Optional - Query parameters for the request.
+
+### Response
+Returns raw JSON data from the MLB StatsAPI.
+```
+
+--------------------------------
+
+### statsapi.notes
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Retrieves notes for a given endpoint, including a list of required parameters and hints for some endpoints. Returns info from MLB-StatsAPI module only, no calls to StatsAPI endpoints.
+
+```APIDOC
+## statsapi.notes
+
+### Description
+Retrieves notes for a given endpoint, including a list of required parameters and hints for some endpoints. Returns info from MLB-StatsAPI module only, no calls to StatsAPI endpoints.
+
+### Method
+N/A (local module function)
+
+### Endpoint
+N/A
+
+### Parameters
+- **endpoint** (string) - Required - The endpoint to get notes for.
+
+### Response
+Returns notes and required parameters for the specified endpoint.
+```
+
+--------------------------------
+
+### statsapi.league_leaders
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Generates a formatted list of stat leaders for current or specified season.
+
+```APIDOC
+## statsapi.league_leaders
+
+### Description
+Generates a formatted list of stat leaders for current or specified season.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI league leaders endpoint
+
+### Parameters
+- **season** (int) - Optional - The season year (defaults to current season).
+- **leader_categories** (string) - Required - The stat categories for leaders.
+
+### Response
+Returns a formatted list of stat leaders.
+```
+
+--------------------------------
+
+### statsapi.standings_data
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Returns a python list of standings data for a given league/date.
+
+```APIDOC
+## statsapi.standings_data
+
+### Description
+Returns a python list of standings data for a given league/date.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI standings endpoint
+
+### Parameters
+- **league_id** (int) - Required - The league ID.
+- **date** (string) - Optional - The date for standings (format: YYYY-MM-DD).
+
+### Response
+Returns a Python list of standings data.
+```
+
+--------------------------------
+
+### statsapi.game_scoring_plays
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Generates a formatted list of scoring plays for a given game.
+
+```APIDOC
+## statsapi.game_scoring_plays
+
+### Description
+Generates a formatted list of scoring plays for a given game.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI scoring plays endpoint
+
+### Parameters
+- **game_pk** (int) - Required - The game ID for scoring plays.
+
+### Response
+Returns a formatted list of scoring plays.
+```
+
+--------------------------------
+
+### statsapi.team_leaders
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Generates a formatted list of a team's leaders for a given stat.
+
+```APIDOC
+## statsapi.team_leaders
+
+### Description
+Generates a formatted list of a team's leaders for a given stat.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI team leaders endpoint
+
+### Parameters
+- **team_id** (int) - Required - The team ID.
+- **stat** (string) - Required - The stat category.
+- **season** (int) - Optional - The season year.
+
+### Response
+Returns a formatted list of team leaders.
+```
+
+--------------------------------
+
+### statsapi.linescore
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Generates a formatted linescore for a given game.
+
+```APIDOC
+## statsapi.linescore
+
+### Description
+Generates a formatted linescore for a given game.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI linescore endpoint
+
+### Parameters
+- **game_pk** (int) - Required - The game ID for the linescore.
+
+### Response
+Returns a formatted linescore.
+```
+
+--------------------------------
+
+### Call game_highlights with last_game
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_highlights
+
+Prints the highlight video links for the most recent Phillies game by passing the result of statsapi.last_game(143) to statsapi.game_highlights().
+
+```python
+print( statsapi.game_highlights( statsapi.last_game(143) ) )
+```
+
+--------------------------------
+
+### Print top 10 career ERA leaders
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-league_leaders
+
+Calls statsapi.league_leaders with leaderCategories='earnedRunAverage', statGroup='pitching', limit=10, and statType='career' to print a formatted list of the top 10 pitchers by career earned run average. The output shows the rank, player name, team, and value.
+
+```python
+print( statsapi.league_leaders('earnedRunAverage',statGroup='pitching',limit=10,statType='career') )
+```
+
+```text
+Rank Name                 Team                    Value
+    1   Al Spalding          Chicago White Stockings 1.78
+    2   Ed Walsh             Chicago White Sox       1.82
+    3   Addie Joss           Cleveland Naps          1.89
+    4   Jim Devlin           Louisville Grays        1.89
+    5   Craig Kimbrel        Atlanta Braves          2.00
+    5   Laurie Reis          Chicago White Stockings 2.00
+    7   Jack Pfiester        Pittsburgh Pirates      2.02
+    8   Joe Wood             Cleveland Indians       2.03
+    9   Christy Mathewson    New York Giants         2.13
+    10  Walter Johnson       Washington Senators     2.17
+```
+
+--------------------------------
+
+### statsapi.game_pace
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Generates a formatted list of pace of game information for a given season (back to 1999).
+
+```APIDOC
+## statsapi.game_pace
+
+### Description
+Generates a formatted list of pace of game information for a given season (back to 1999).
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI game pace endpoint
+
+### Parameters
+- **season** (int) - Required - The season year (e.g., 2023).
+
+### Response
+Returns a formatted list of pace of game information.
+```
+
+--------------------------------
+
+### game_contextMetrics
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves context metrics for a game, such as win probability. Requires gamePk.
+
+```APIDOC
+## [GET] /api/{ver}/game/{gamePk}/contextMetrics
+
+### Description
+Retrieves context metrics for a game, such as win probability. Requires gamePk.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/contextMetrics
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **gamePk** (integer) - Required - Game primary key
+
+#### Query Parameters
+- **timecode** (string) - Optional - Timecode for historical data
+- **fields** (string) - Optional - Fields to filter
+
+```
+
+--------------------------------
+
+### statsapi.game_highlight_data(gamePk)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_highlight_data
+
+Retrieves a Python list of highlight data for a given game. This function is part of the MLB StatsAPI Python SDK and returns raw highlight data for the specified game.
+
+```APIDOC
+## statsapi.game_highlight_data(gamePk)
+
+### Description
+Retrieves a Python list of highlight data for a given game. This function is part of the MLB StatsAPI Python SDK and returns raw highlight data for the specified game.
+
+### Method
+Function call
+
+### Endpoint
+`statsapi.game_highlight_data(gamePk)`
+
+### Parameters
+- **gamePk** (int) - Required - The unique identifier for the game.
+
+### Returns
+- A Python list containing highlight data for the specified game.
+
+### Notes
+- For a formatted text version of a game's highlights, see the `game_highlights` function.
+```
+
+--------------------------------
+
+### statsapi.game_highlights(gamePk)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_highlights
+
+Retrieves the highlight video links for a given game. The function returns formatted text containing the highlight titles, descriptions, and video URLs.
+
+```APIDOC
+## statsapi.game_highlights(gamePk)
+
+### Description
+Retrieves the highlight video links for a given game. The function returns formatted text containing the highlight titles, descriptions, and video URLs.
+
+### Method
+Function call
+
+### Endpoint
+`statsapi.game_highlights(gamePk)`
+
+### Parameters
+- **gamePk** (integer) - Required - The unique identifier for the game.
+
+### Example
+Print the highlight links for the most recent Phillies game:
+
+```python
+print( statsapi.game_highlights( statsapi.last_game(143) ) )
+```
+
+### Output (truncated to only include the first two highlights)
+```
+Hoskins' RBI double (00:00:16)
+Rhys Hoskins belts a double off the left-center-field wall to score Bryce Harper and give the Phillies a 1-0 lead in the bottom of the 1st
+https://cuts.diamond.mlb.com/FORGE/2019/2019-04/28/b1117503-3df11d8d-6df0dd65-csvm-diamondx64-asset_1280x720_59_4000K.mp4
+
+Phanatic has birthday party (00:01:15)
+Kids and fellow mascots were at Citizens Bank Park to celebrate the Phillie Phanatic's birthday before the game against the Marlins
+https://cuts.diamond.mlb.com/FORGE/2019/2019-04/28/7d978385-db13f22d-f68c304f-csvm-diamondx64-asset_1280x720_59_4000K.mp4
+```
+
+```
+
+--------------------------------
+
+### statsapi.game_scoring_play_data(gamePk)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-game_scoring_play_data
+
+Returns a Python dict of scoring plays for a given game. The dict contains three keys: 'home' for home team data, 'away' for away team data, and 'plays' for a sorted list of scoring play data.
+
+```APIDOC
+## statsapi.game_scoring_play_data(gamePk)
+
+### Description
+Returns a Python dict of scoring plays for a given game. The dict contains three keys: 'home' for home team data, 'away' for away team data, and 'plays' for a sorted list of scoring play data.
+
+### Method
+Function call
+
+### Endpoint
+statsapi.game_scoring_play_data(gamePk)
+
+### Parameters
+- **gamePk** (int) - Required - The unique identifier for the game.
+
+### Returns
+- **dict** - A dictionary with the following keys:
+  - **home** - Home team data
+  - **away** - Away team data
+  - **plays** - Sorted list of scoring play data
+
+### Notes
+- This method is broken as of 7/25/2020 due to a change in the data returned by the `schedule` endpoint. Please update to v0.1.9 for the fix.
+- To retrieve a formatted text version, see [Function: game_scoring_plays](https://github.com/toddrob99/MLB-StatsAPI/wiki/Function:-game_scoring_plays).
+```
+
+--------------------------------
+
+### Call statsapi.standings with parameters
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-standings
+
+Function signature for retrieving formatted standings. Accepts leagueId, division, include_wildcard, season, standingsTypes, and date. Date format is MM/DD/YYYY. Using both leagueId and divisionId is allowed if the division belongs to the specified league. Returns a formatted table including division and wildcard standings unless include_wildcard is False.
+
+```python
+statsapi.standings(leagueId="103,104", division="all", include_wildcard=True, season=None, standingsTypes=None, date=None)
+```
+
+--------------------------------
+
+### game_winProbability
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves win probability data for a game. Requires gamePk. For current win probability, consider using game_contextMetrics instead.
+
+```APIDOC
+## [GET] /api/{ver}/game/{gamePk}/winProbability
+
+### Description
+Retrieves win probability data for a game. Requires gamePk. For current win probability, consider using game_contextMetrics instead.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/winProbability
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **gamePk** (integer) - Required - Game primary key
+
+#### Query Parameters
+- **timecode** (string) - Optional - Timecode for historical data
+- **fields** (string) - Optional - Fields to filter
+
+```
+
+--------------------------------
+
+### statsapi.league_leader_data
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Returns python list of stat leader data for current or specified season.
+
+```APIDOC
+## statsapi.league_leader_data
+
+### Description
+Returns python list of stat leader data for current or specified season.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI league leaders endpoint
+
+### Parameters
+- **season** (int) - Optional - The season year (defaults to current season).
+- **leader_categories** (string) - Required - The stat categories for leaders.
+
+### Response
+Returns a Python list of stat leader data.
+```
+
+--------------------------------
+
+### statsapi.lookup_team(lookup_value, activeStatus='Y', season=None, sportIds=1)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-lookup_team
+
+Returns a list of teams matching the provided lookup value (team name, city, abbreviation, or file code). The activeStatus parameter filters by active status ('Y', 'N', or 'B' for both), and the season and sportIds parameters allow further filtering. If no matches are found, an empty list is returned.
+
+```APIDOC
+## statsapi.lookup_team(lookup_value, activeStatus='Y', season=None, sportIds=1)
+
+### Description
+Get info about a team or teams based on the team name, city, abbreviation, or file code.
+
+### Method
+Function call
+
+### Endpoint
+statsapi.lookup_team(lookup_value, activeStatus="Y", season=None, sportIds=1)
+
+### Parameters
+- **lookup_value** (string) - Required - The team name, city, abbreviation, or file code to search for.
+- **activeStatus** (string) - Optional - Filter by active status. Valid values: `Y`, `N`, `B` (Both). Default is `Y`.
+- **season** (int) - Optional - The season to filter by.
+- **sportIds** (int) - Optional - The sport ID to filter by. Default is 1.
+
+### Return Value
+A list of teams matching the lookup_value. If no matches are found, an empty list is returned.
+
+### Example 1
+Get teamId for team with code cwa
+
+```python
+team = statsapi.lookup_team('chn')
+print(team[0]['id']) #assume only 1 record returned for demo purposes
+```
+
+Output:
+
+```
+112
+```
+
+### Example 2
+Get info about all teams from NY
+
+```python
+for team in statsapi.lookup_team('ny'):
+    print(team)
+```
+
+Output:
+
+```
+{'id': 147, 'name': 'New York Yankees', 'teamCode': 'nya', 'fileCode': 'nyy', 'teamName': 'Yankees', 'locationName': 'Bronx', 'shortName': 'NY Yankees'}
+{'id': 121, 'name': 'New York Mets', 'teamCode': 'nyn', 'fileCode': 'nym', 'teamName': 'Mets', 'locationName': 'New York', 'shortName': 'NY Mets'}
+```
+```
+
+--------------------------------
+
+### game_content
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves content related to a game, such as highlights. Requires gamePk.
+
+```APIDOC
+## [GET] /api/{ver}/game/{gamePk}/content
+
+### Description
+Retrieves content related to a game, such as highlights. Requires gamePk.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/content
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **gamePk** (integer) - Required - Game primary key
+
+#### Query Parameters
+- **highlightLimit** (integer) - Optional - Limit on number of highlights
+
+```
+
+--------------------------------
+
+### Print top 10 career triples leaders
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-league_leaders
+
+Calls statsapi.league_leaders with leaderCategories='triples', statGroup='hitting', limit=10, sportId=1, and statType='career' to print a formatted list of the top 10 all-time career leaders in triples. The output shows the rank, player name, team, and value.
+
+```python
+print( statsapi.league_leaders('triples',statGroup='hitting',limit=10,sportId=1,statType='career') )
+```
+
+```text
+Rank Name                 Team                    Value
+    1   Sam Crawford         Detroit Tigers           309
+    2   Ty Cobb              Philadelphia Athletics   297
+    3   Tristram Speaker     Washington Senators      222
+    4   Paul Waner           New York Yankees         191
+    5   Bid McPhee           Cincinnati Reds          188
+    6   Eddie Collins        Chicago White Sox        187
+    7   Sam Rice             Washington Senators      184
+    8   Rabbit Maranville    Boston Braves            177
+    8   Stan Musial          St. Louis Cardinals      177
+    10  Goose Goslin         Washington Senators      173
+```
+
+--------------------------------
+
+### statsapi.standings(leagueId, division, include_wildcard, season, standingsTypes, date)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-standings
+
+Retrieves formatted standings for a given league/division and season. Returns a formatted table including division and wildcard standings unless include_wildcard is False.
+
+```APIDOC
+## Function: statsapi.standings
+
+### Description
+Get formatted standings for a given league/division and season.
+
+### Method
+Function call
+
+### Endpoint
+`statsapi.standings(leagueId="103,104", division="all", include_wildcard=True, season=None, standingsTypes=None, date=None)`
+
+### Parameters
+- **leagueId** (string) - Required - Comma-separated list of league IDs. Example: "103,104".
+- **division** (string) - Optional - Division identifier. Default is "all".
+- **include_wildcard** (boolean) - Optional - Whether to include wildcard standings. Default is True.
+- **season** (integer) - Optional - Season year. If not provided, uses current season.
+- **standingsTypes** (list) - Optional - Types of standings to include.
+- **date** (string) - Optional - Date in format MM/DD/YYYY, e.g., 04/24/2019.
+
+### Notes
+- Using both leagueId and divisionId is fine, as long as the division belongs to the specified league.
+- Return value will be a formatted table including division and wildcard standings, unless `include_wildcard`=`False`.
+
+### Example
+Print National League standings from 09/27/2008:
+
+```python
+print( statsapi.standings(leagueId=104,date='09/27/2008') )
+```
+
+### Output
+```
+National League Central
+Rank Team                   W   L   GB  (E#) WC Rank WC GB (E#)
+    1   Chicago Cubs          97  63   -    -      -      -    -
+    2   Milwaukee Brewers     89  72  8.5   E      1      -    -
+    3   Houston Astros        85  75  12.0  E      3     3.5   E
+    4   St. Louis Cardinals   85  76  12.5  E      4     4.0   E
+    5   Cincinnati Reds       74  87  23.5  E      7    15.0   E
+    6   Pittsburgh Pirates    66  95  31.5  E     11    23.0   E
+
+National League West
+Rank Team                   W   L   GB  (E#) WC Rank WC GB (E#)
+    1   Los Angeles Dodgers   84  77   -    -      -      -    -
+    2   Arizona Diamondbacks  81  80  3.0   E      6     8.0   E
+    3   Colorado Rockies      74  87  10.0  E      8    15.0   E
+    4   San Francisco Giants  71  90  13.0  E     10    18.0   E
+    5   San Diego Padres      63  98  21.0  E     12    26.0   E
+
+National League East
+Rank Team                   W   L   GB  (E#) WC Rank WC GB (E#)
+    1   Philadelphia Phillies 91  70   -    -      -      -    -
+    2   New York Mets         89  72  2.0   E      2      -    -
+    3   Florida Marlins       83  77  7.5   E      5     5.5   E
+    4   Atlanta Braves        72  89  19.0  E      9    17.0   E
+    5   Washington Nationals  59  101 31.5  E     13    29.5   E
+```
+```
+
+--------------------------------
+
+### game_timestamps
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a list of timestamps for a given game's live feed. Requires gamePk.
+
+```APIDOC
+## [GET] /api/{ver}/game/{gamePk}/feed/live/timestamps
+
+### Description
+Retrieves a list of timestamps for a given game's live feed. Requires gamePk.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/feed/live/timestamps
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **gamePk** (integer) - Required - Game primary key
+
+```
+
+--------------------------------
+
+### statsapi.boxscore
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Generates a formatted boxscore for a given game.
+
+```APIDOC
+## statsapi.boxscore
+
+### Description
+Generates a formatted boxscore for a given game.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI boxscore endpoint
+
+### Parameters
+- **game_pk** (int) - Required - The game ID for the boxscore.
+
+### Response
+Returns a formatted text boxscore.
+```
+
+--------------------------------
+
+### statsapi.team_leader_data
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Returns a python list of a team's leader data for a given stat.
+
+```APIDOC
+## statsapi.team_leader_data
+
+### Description
+Returns a python list of a team's leader data for a given stat.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI team leaders endpoint
+
+### Parameters
+- **team_id** (int) - Required - The team ID.
+- **stat** (string) - Required - The stat category.
+- **season** (int) - Optional - The season year.
+
+### Response
+Returns a Python list of team leader data.
+```
+
+--------------------------------
+
+### Print current Phillies active roster
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-roster
+
+Calls statsapi.roster with teamId 143 to print the active roster. The default rosterType is 'active' and season defaults to the current year. Output shows player number, position, and name.
+
+```python
+print( statsapi.roster(143) )
+```
+
+--------------------------------
+
+### statsapi.standings_data()
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-standings_data
+
+Retrieves a dictionary of standings data for a given league/division and season. This function is part of the MLB StatsAPI Python SDK and returns division and wildcard standings.
+
+```APIDOC
+## statsapi.standings_data()
+
+### Description
+Retrieves a dictionary of standings data for a given league/division and season. This function is part of the MLB StatsAPI Python SDK and returns division and wildcard standings.
+
+### Method
+Function call
+
+### Endpoint
+`statsapi.standings_data(leagueId="103,104", division="all", include_wildcard=True, season=None, standingsTypes=None, date=None)`
+
+### Parameters
+- **leagueId** (string) - Required - Comma-separated list of league IDs. Default is "103,104".
+- **division** (string or integer) - Required - Accepts "all" or a specific division abbreviation or ID (e.g., "nle", "alw", 200, 204).
+- **include_wildcard** (boolean) - Optional - Parameter included for backward compatibility; does not affect output. Default is True.
+- **season** (integer) - Optional - Season year. If None, uses current season.
+- **standingsTypes** (list) - Optional - List of standings types to retrieve.
+- **date** (string) - Optional - Date in MM/DD/YYYY format (e.g., "04/24/2019").
+
+### Request Example
+```python
+statsapi.standings_data(leagueId="103,104", division="all", include_wildcard=True, season=2019, standingsTypes=None, date="04/24/2019")
+```
+
+### Response
+#### Success Response
+Returns a dictionary containing division and wildcard standings data.
+
+#### Response Example
+```python
+{
+  "division": {...},
+  "wildcard": {...}
+}
+```
+
+### Notes
+- Using both leagueId and divisionId is fine, as long as the division belongs to the specified league.
+- The return value will always include division and wildcard standings, regardless of the include_wildcard parameter value.
+```
+
+--------------------------------
+
+### gamePace
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves game pace statistics for a given season. This endpoint provides data on the duration and pace of games.
+
+```APIDOC
+## GET /api/{ver}/gamePace
+
+### Description
+Retrieves game pace statistics for a given season. This endpoint provides data on the duration and pace of games.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/gamePace
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+
+#### Query Parameters
+- **season** (string) - Required - Season year.
+- **teamIds** (string) - Optional - Comma-separated list of team IDs.
+- **leagueIds** (string) - Optional - Comma-separated list of league IDs.
+- **leagueListId** (string) - Optional - League list ID.
+- **sportId** (integer) - Optional - Sport ID.
+- **gameType** (string) - Optional - Game type (e.g., R, P, etc.).
+- **startDate** (string) - Optional - Start date (YYYY-MM-DD).
+- **endDate** (string) - Optional - End date (YYYY-MM-DD).
+- **venueIds** (string) - Optional - Comma-separated list of venue IDs.
+- **orgType** (string) - Optional - Organization type.
+- **includeChildren** (boolean) - Optional - Include child teams.
+- **fields** (string) - Optional - Comma-separated list of fields to return.
+
+### Response
+#### Success Response (200)
+- **gamePace** (array) - List of game pace data.
+
+#### Response Example
+{
+  "gamePace": []
+}
+```
+
+--------------------------------
+
+### statsapi.player_stat_data
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Returns a python dict of a player's career or season stats, along with some biographical information.
+
+```APIDOC
+## statsapi.player_stat_data
+
+### Description
+Returns a python dict of a player's career or season stats, along with some biographical information.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI player stats endpoint
+
+### Parameters
+- **player_id** (int) - Required - The player ID.
+- **type** (string) - Required - The stat type (e.g., 'career', 'season').
+- **season** (int) - Optional - The season year (required if type is 'season').
+
+### Response
+Returns a Python dict with player stats and biographical info.
+```
+
+--------------------------------
+
+### game_diff
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a diff patch of live game feed changes between two timecodes. Requires both startTimecode and endTimecode along with gamePk.
+
+```APIDOC
+## [GET] /api/{ver}/game/{gamePk}/feed/live/diffPatch
+
+### Description
+Retrieves a diff patch of live game feed changes between two timecodes. Requires both startTimecode and endTimecode along with gamePk.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/feed/live/diffPatch
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **gamePk** (integer) - Required - Game primary key
+
+#### Query Parameters
+- **startTimecode** (string) - Required - Start timecode for diff
+- **endTimecode** (string) - Required - End timecode for diff
+
+```
+
+--------------------------------
+
+### Print full boxscore for a game
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-boxscore
+
+Prints the full box score for the Phillies @ Mets game on 4/24/2019 (gamePk=565997). The output shows batting statistics for both teams.
+
+```python
+print( statsapi.boxscore(565997) )
+```
+
+```text
+------------------------------------------------------------------------------- | -------------------------------------------------------------------------------
+Phillies Batters                         AB   R   H  RBI BB   K  LOB AVG   OPS  | Mets Batters                             AB   R   H  RBI BB   K  LOB AVG   OPS
+------------------------------------------------------------------------------- | -------------------------------------------------------------------------------
+1 McCutchen  LF                           5   0   1   0   0   1   3  .250 .830  | 1 McNeil  LF                              4   0   1   0   0   0   1  .363 .928
+2 Realmuto  C                             3   1   1   0   1   1   2  .282 .786  | 2 Conforto  RF                            3   0   0   0   1   1   1  .292 .986
+3 Harper  RF                              4   1   1   1   1   3   4  .261 .909  | 3 Canó  2B                                3   0   3   0   1   0   0  .272 .758
+4 Hoskins  1B                             4   2   2   2   1   1   3  .273 .982  | 4 Ramos, W  C                             4   0   0   0   0   3   6  .278 .687
+5 Franco  3B                              5   1   1   1   0   0   3  .271 .905  | 5 Smith, Do  1B                           2   0   0   0   1   1   2  .400 .996
+6 Hernández, C  2B                        5   1   1   0   0   1   2  .267 .730  |     c-Alonso, P  1B                       1   0   0   0   0   1   1  .306 1.086
+7 Rodríguez, S  SS                        4   0   1   0   0   1   1  .250 .750  | 6 Frazier, T  3B                          3   0   0   0   0   0   4  .182 .705
+8 Velasquez  P                            1   0   0   0   0   0   0  .167 .453  | 7 Rosario, A  SS                          4   0   1   0   0   0   1  .261 .676
+    a-Williams, N  PH                     1   0   0   0   0   0   1  .150 .427  | 8 Lagares  CF                             2   0   0   0   0   1   1  .244 .653
+    Neshek  P                             0   0   0   0   0   0   0  .000 .000  |     a-Nimmo  CF                           2   0   0   0   0   0   1  .203 .714
+    Domínguez  P                          0   0   0   0   0   0   0  .000 .000  | 9 Vargas  P                               2   0   0   0   0   1   1  .000 .000
+    b-Gosselin  PH                        1   0   1   1   0   0   0  .211 .474  |     Lugo, S  P                            0   0   0   0   0   0   0  .000 .000
+    Morgan  P                             0   0   0   0   0   0   0  .000 .000  |     Zamora  P                             0   0   0   0   0   0   0  .000 .000
+    c-Knapp  PH                           1   0   0   0   0   1   1  .222 .750  |     b-Guillorme  PH                       1   0   1   0   0   0   0  .167 .378
+    Nicasio  P                            0   0   0   0   0   0   0  .000 .000  |     Gsellman  P                           0   0   0   0   0   0   0  .000 .000
+9 Quinn  CF                               4   0   1   1   0   1   1  .120 .305  |     Rhame  P                              0   0   0   0   0   0   0  .000 .000
+    1-Altherr  CF                         0   0   0   0   0   0   0  .042 .163  |     d-Davis, J  PH                        1   0   0   0   0   1   0  .276 .865
+------------------------------------------------------------------------------- | -------------------------------------------------------------------------------
+```
+
+--------------------------------
+
+### statsapi.league_leader_data(leaderCategories, season=None, limit=10, statGroup=None, leagueId=None, gameTypes=None, playerPool=None, sportId=1, statType=None)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-league_leader_data
+
+Retrieves a Python list of stat leaders overall or for a given league (103=AL, 104=NL). This function is part of the MLB StatsAPI Python SDK and returns raw data for further processing.
+
+```APIDOC
+## statsapi.league_leader_data(leaderCategories, season=None, limit=10, statGroup=None, leagueId=None, gameTypes=None, playerPool=None, sportId=1, statType=None)
+
+### Description
+Retrieves a Python list of stat leaders overall or for a given league (103=AL, 104=NL). This function is part of the MLB StatsAPI Python SDK and returns raw data for further processing.
+
+### Method
+Function call (Python SDK)
+
+### Endpoint
+`statsapi.league_leader_data(leaderCategories, season=None, limit=10, statGroup=None, leagueId=None, gameTypes=None, playerPool=None, sportId=1, statType=None)`
+
+### Parameters
+- **leaderCategories** (string) - Required - Comma-separated list of leader categories. Available categories can be obtained by calling the meta endpoint with type=leagueLeaderTypes.
+- **season** (int) - Optional - Season year (e.g., 2023). If not specified, defaults to current season.
+- **limit** (int) - Optional - Number of leaders to return. Default is 10.
+- **statGroup** (string) - Optional - Stat group (e.g., 'pitching', 'catching'). Available groups can be obtained by calling the meta endpoint with type=statGroups. Excluding this may return unexpected results.
+- **leagueId** (int) - Optional - League ID (103=AL, 104=NL). If not specified, returns overall leaders.
+- **gameTypes** (string) - Optional - Comma-separated list of game types. Available types can be obtained by calling the meta endpoint with type=gameTypes.
+- **playerPool** (string) - Optional - Player pool filter. Available values: ['all','qualified','rookies'] (default is 'qualified').
+- **sportId** (int) - Optional - Sport ID. Default is 1 (MLB).
+- **statType** (string) - Optional - Stat type (e.g., 'career', 'statsSingleSeason'). Note: StatsAPI does not appear to support 'statsSingleSeason' at this time; specify a season or use 'career' to get all-time leaders.
+
+### Response
+Returns a Python list of stat leaders. The structure of the list items is not detailed in the source.
+
+### Notes
+- For a formatted text version, see the `league_leaders` function.
+- Available leaderCategories, statGroups, gameTypes, and statTypes can be obtained via the meta endpoint with the respective type parameter.
+- Excluding statGroup may return unexpected results; for example, leaderCategories='earnedRunAverage' will return different results with statGroup='pitching' vs 'catching'.
+```
+
+--------------------------------
+
+### Print top 5 OPS leaders in 2018
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-league_leaders
+
+Calls statsapi.league_leaders with leaderCategories='onBasePlusSlugging', statGroup='hitting', limit=5, and season=2018 to print a formatted list of the top 5 batters by OPS for the 2018 season. The output shows the rank, player name, team, and value.
+
+```python
+print( statsapi.league_leaders('onBasePlusSlugging',statGroup='hitting',limit=5,season=2018) )
+```
+
+```text
+Rank Name                 Team                    Value
+    1   Mike Trout           Los Angeles Angels      1.088
+    2   Mookie Betts         Boston Red Sox          1.078
+    3   J.D. Martinez        Boston Red Sox          1.031
+    4   Christian Yelich     Milwaukee Brewers       1.000
+    5   Jose Ramirez         Cleveland Indians       .939
+```
+
+--------------------------------
+
+### statsapi.roster(teamId, rosterType=None, season=datetime.now().year, date=None)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-roster
+
+Retrieves the roster for a given team. The roster type defaults to 'active' and the season defaults to the current year. The date parameter accepts a string in MM/DD/YYYY format.
+
+```APIDOC
+## statsapi.roster(teamId, rosterType=None, season=datetime.now().year, date=None)
+
+### Description
+Retrieves the roster for a given team. The roster type defaults to 'active' and the season defaults to the current year. The date parameter accepts a string in MM/DD/YYYY format.
+
+### Method
+Function call
+
+### Endpoint
+statsapi.roster(teamId, rosterType=None, season=datetime.now().year, date=None)
+
+### Parameters
+- **teamId** (int) - Required - The team ID for which to retrieve the roster.
+- **rosterType** (str) - Optional - The type of roster to retrieve. Defaults to 'active'. Available roster types can be obtained from the meta endpoint with type=rosterTypes.
+- **season** (int) - Optional - The season year. Defaults to the current year.
+- **date** (str) - Optional - The date for the roster in MM/DD/YYYY format, e.g., 04/24/2019.
+
+### Request Example
+```python
+print( statsapi.roster(143) )
+```
+
+### Response
+#### Success Response
+Returns a formatted string listing each player's number, position, and name.
+
+#### Response Example
+```
+#23  CF  Aaron Altherr
+#27  P   Aaron Nola
+#46  P   Adam Morgan
+#15  C   Andrew Knapp
+#22  RF  Andrew McCutchen
+#3   RF  Bryce Harper
+#16  2B  Cesar Hernandez
+#25  RF  Dylan Cozens
+#61  P   Edubray Ramos
+#51  P   Enyel De Los Santos
+#50  P   Hector Neris
+#10  C   J.T. Realmuto
+#49  P   Jake Arrieta
+#48  P   Jerad Eickhoff
+#52  P   Jose Alvarez
+#12  P   Juan Nicasio
+#7   3B  Maikel Franco
+#5   RF  Nick Williams
+#93  P   Pat Neshek
+#9   2B  Phil Gosselin
+#17  1B  Rhys Hoskins
+#13  2B  Sean Rodriguez
+#58  P   Seranthony Dominguez
+#21  P   Vince Velasquez
+#56  P   Zach Eflin
+```
+```
+
+--------------------------------
+
+### statsapi.meta(type, fields=None)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-meta
+
+Retrieves available values from the MLB StatsAPI for use in other queries, or looks up descriptions for values found in API results. Optionally limits the fields returned by providing a comma-separated list in the fields parameter.
+
+```APIDOC
+## statsapi.meta(type, fields=None)
+
+### Description
+Get available values from StatsAPI for use in other queries, or look up descriptions for values found in API results.
+
+### Method
+Function call
+
+### Endpoint
+statsapi.meta(type, fields=None)
+
+### Parameters
+#### Path Parameters
+- **type** (string) - Required - The type of metadata to retrieve. Known types include: awards, baseballStats, eventTypes, freeGameTypes, gameStatus, gameTypes, hitTrajectories, jobTypes, languages, leagueLeaderTypes, logicalEvents, metrics, pitchCodes, pitchTypes, platforms, positions, reviewReasons, rosterTypes, runnerDetailTypes, scheduleTypes, scheduleEventTypes, situationCodes, sky, standingsTypes, statGroups, statTypes, violationTypes, windDirection.
+
+#### Query Parameters
+- **fields** (string) - Optional - A comma-separated list of fields to limit the response. Get the field names from the un-limited response for the same type.
+
+### Request Example
+statsapi.meta('leagueLeaderTypes')
+
+### Response
+#### Success Response (200)
+Returns a list of available values for the specified type.
+
+#### Response Example
+(Not provided in source)
+```
+
+--------------------------------
+
+### game_changes
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves a list of game changes since a specified time. Requires updatedSince.
+
+```APIDOC
+## [GET] /api/{ver}/game/changes
+
+### Description
+Retrieves a list of game changes since a specified time. Requires updatedSince.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/changes
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+
+#### Query Parameters
+- **updatedSince** (string) - Required - Timestamp to retrieve changes since
+- **sportId** (integer) - Optional - Sport ID
+- **gameType** (string) - Optional - Game type
+- **season** (string) - Optional - Season year
+- **fields** (string) - Optional - Fields to filter
+
+```
+
+--------------------------------
+
+### Call statsapi.boxscore with default parameters
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-boxscore
+
+Retrieves a formatted boxscore for a given game using the game endpoint. All sections (batting box, batting info, fielding info, pitching box, game info) are included by default. The gamePk parameter is required.
+
+```python
+statsapi.boxscore(gamePk, battingBox=True, battingInfo=True, fieldingInfo=True, pitchingBox=True, gameInfo=True, timecode=None)
+```
+
+--------------------------------
+
+### game_playByPlay
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves the play-by-play data for a specific game. This endpoint provides detailed information about each play.
+
+```APIDOC
+## GET /api/{ver}/game/{gamePk}/playByPlay
+
+### Description
+Retrieves the play-by-play data for a specific game. This endpoint provides detailed information about each play.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/playByPlay
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+- **gamePk** (integer) - Required - Unique game identifier.
+
+#### Query Parameters
+- **timecode** (string) - Optional - Timecode for historical data.
+- **fields** (string) - Optional - Comma-separated list of fields to return.
+
+### Response
+#### Success Response (200)
+- **plays** (array) - List of plays.
+
+#### Response Example
+{
+  "plays": []
+}
+```
+
+--------------------------------
+
+### statsapi.player_stat_data(personId, group, type, sportId, season)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-player_stat_data
+
+Retrieves a Python dict of current season or career stat data for a given player. Supports multiple stat groups (hitting, pitching, fielding) and stat types (season, career, yearByYear).
+
+```APIDOC
+## statsapi.player_stat_data(personId, group, type, sportId, season)
+
+### Description
+Retrieves a Python dict of current season or career stat data for a given player. Supports multiple stat groups (hitting, pitching, fielding) and stat types (season, career, yearByYear).
+
+### Method
+Function call
+
+### Endpoint
+statsapi.player_stat_data(personId, group="[hitting,pitching,fielding]", type="season", sportId=1, season=None)
+
+### Parameters
+#### Path Parameters
+- **personId** (int) - Required - The player's ID.
+
+#### Query Parameters
+- **group** (string) - Optional - Stat group(s) to retrieve. Use `hitting`, `pitching`, or `fielding`. Multiple groups can be specified as a string in the format `'[hitting,pitching]'`. Default is `"[hitting,pitching,fielding]"`.
+- **type** (string) - Optional - Stat type(s) to retrieve. Use `career`, `season`, or `yearByYear` (as of v0.1.7). Multiple types can be specified as a string in the format `'[career,season,yearByYear]'`. Default is `"season"`.
+- **sportId** (int) - Optional - The sport ID. Default is `1`.
+- **season** (int) - Optional - The season to retrieve stats for. Can only be used when `type` includes "season". Default is `None`.
+
+### Response
+#### Success Response (200)
+Returns a Python dict containing the requested stat data.
+
+#### Response Example
+{
+  "stats": [...]
+}
+```
+
+--------------------------------
+
+### statsapi.latest_season
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/All-Functions
+
+Returns python dict containing seasonId and dates for the latest season.
+
+```APIDOC
+## statsapi.latest_season
+
+### Description
+Returns python dict containing seasonId and dates for the latest season.
+
+### Method
+GET
+
+### Endpoint
+MLB StatsAPI season endpoint
+
+### Parameters
+None
+
+### Response
+Returns a Python dict with seasonId and dates for the latest season.
+```
+
+--------------------------------
+
+### Retrieve only the batting box
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-boxscore
+
+Customizes which sections are included by setting the battingInfo, fieldingInfo, pitchingBox, and gameInfo parameters to False. Only the batting box is returned.
+
+```python
+statsapi.boxscore(565997,battingInfo=False,fieldingInfo=False,pitchingBox=False,gameInfo=False)
+```
+
+--------------------------------
+
+### statsapi.team_leaders(teamId, leaderCategories, season, leaderGameTypes, limit)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-team_leaders
+
+Retrieves stat leaders for a given team and returns formatted text. The function accepts a team ID, leader categories, season, game types, and a limit for the number of leaders to display.
+
+```APIDOC
+## statsapi.team_leaders(teamId, leaderCategories, season, leaderGameTypes, limit)
+
+### Description
+Get stat leaders for a given team.
+
+### Parameters
+- **teamId** (int) - Required - The ID of the team.
+- **leaderCategories** (str or list) - Required - The stat categories for which to retrieve leaders. Available categories can be obtained from the meta endpoint with type=leagueLeaderTypes.
+- **season** (int) - Optional - The season year. Defaults to the current year.
+- **leaderGameTypes** (str) - Optional - The game types to consider. Defaults to "R" (regular season).
+- **limit** (int) - Optional - The maximum number of leaders to return. Defaults to 10.
+
+### Example
+Print the top 5 team leaders in walks for the 2008 Phillies:
+
+```python
+print(statsapi.team_leaders(143,'walks',limit=5,season=2008))
+```
+
+### Output
+```
+Rank Name                 Value
+    1   Pat Burrell           102
+    2   Ryan Howard           81
+    3   Chase Utley           64
+    4   Jimmy Rollins         58
+    5   Jayson Werth          57
+```
+```
+
+--------------------------------
+
+### statsapi.boxscore_data(gamePk, timecode=None)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-boxscore_data
+
+Returns a python dict containing boxscore data for a given game. Optionally, you can retrieve the boxscore as it existed at a specific time by providing a timecode in the format YYYYMMDD_HHMMSS (UTC).
+
+```APIDOC
+## statsapi.boxscore_data(gamePk, timecode=None)
+
+### Description
+Returns a python dict containing boxscore data for a given game. Optionally, you can retrieve the boxscore as it existed at a specific time by providing a timecode in the format YYYYMMDD_HHMMSS (UTC).
+
+### Method
+Function call
+
+### Endpoint
+statsapi.boxscore_data(gamePk, timecode=None)
+
+### Parameters
+- **gamePk** (int) - Required - The unique identifier for the game.
+- **timecode** (str) - Optional - A timestamp in the format `YYYYMMDD_HHMMSS` (UTC) to retrieve the boxscore as it existed at that time. Example: `20190425_012240` for 4/24/19 10:32:40 EDT.
+
+### Notes
+- This function uses the game endpoint instead of game_box, because game_box does not contain the players' names as they should be displayed in the box score (e.g., Last name only or Last, F).
+- To retrieve a formatted text version of the box score, see the `boxscore` function.
+- A list of timestamps for game events can be found through the `game_timestamps` endpoint using the `get` function: `statsapi.get('game_timestamps',{'gamePk':565997})`.
+
+### Response
+Returns a python dict containing boxscore data for the specified game.
+```
+
+--------------------------------
+
+### game_boxscore
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves the boxscore for a game. Requires gamePk.
+
+```APIDOC
+## [GET] /api/{ver}/game/{gamePk}/boxscore
+
+### Description
+Retrieves the boxscore for a game. Requires gamePk.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/boxscore
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version
+- **gamePk** (integer) - Required - Game primary key
+
+#### Query Parameters
+- **timecode** (string) - Optional - Timecode for historical data
+- **fields** (string) - Optional - Fields to filter
+
+```
+
+--------------------------------
+
+### Print AL leaders in errors for 2017
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-league_leaders
+
+Calls statsapi.league_leaders with leaderCategories='errors', statGroup='fielding', limit=10, season=2017, and leagueId=103 to print a formatted list of the 10 American League players with the most errors in 2017. The output shows the rank, player name, team, and value.
+
+```python
+print( statsapi.league_leaders('errors',statGroup='fielding',limit=10,season=2017,leagueId=103) )
+```
+
+```text
+Rank Name                 Team                   Value
+    1   Tim Anderson         Chicago White Sox       28
+    2   Rougned Odor         Texas Rangers           19
+    3   Tim Beckham          Baltimore Orioles       18
+    3   Nicholas Castellanos Detroit Tigers          18
+    3   Jorge Polanco        Minnesota Twins         18
+    6   Elvis Andrus         Texas Rangers           17
+    6   Xander Bogaerts      Boston Red Sox          17
+    6   Jean Segura          Seattle Mariners        17
+    9   Alcides Escobar      Kansas City Royals      15
+    9   Jonathan Schoop      Baltimore Orioles       15
+```
+
+--------------------------------
+
+### player_stats function signature
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-player_stats
+
+Function signature for retrieving player stats. The group parameter accepts a string like '[hitting,pitching]' and type accepts 'career' or 'season'. The season argument can only be used when type includes 'season'.
+
+```python
+statsapi.player_stats(personId, group="[hitting,pitching,fielding]", type="season", season=None)
+```
+
+--------------------------------
+
+### game_color_timestamps
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves available timestamps for the color feed of a specific game. This endpoint helps in identifying timecodes for historical data.
+
+```APIDOC
+## GET /api/{ver}/game/{gamePk}/feed/color/timestamps
+
+### Description
+Retrieves available timestamps for the color feed of a specific game. This endpoint helps in identifying timecodes for historical data.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/feed/color/timestamps
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+- **gamePk** (integer) - Required - Unique game identifier.
+
+### Response
+#### Success Response (200)
+- **timestamps** (array) - List of available timestamps.
+
+#### Response Example
+{
+  "timestamps": []
+}
+```
+
+--------------------------------
+
+### game_color_diff
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves the difference between two color feeds for a specific game. This endpoint is useful for incremental updates.
+
+```APIDOC
+## GET /api/{ver}/game/{gamePk}/feed/color/diffPatch
+
+### Description
+Retrieves the difference between two color feeds for a specific game. This endpoint is useful for incremental updates.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/feed/color/diffPatch
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+- **gamePk** (integer) - Required - Unique game identifier.
+
+#### Query Parameters
+- **startTimecode** (string) - Required - Starting timecode for the diff.
+- **endTimecode** (string) - Required - Ending timecode for the diff.
+
+### Response
+#### Success Response (200)
+- **diff** (object) - The difference between the two feeds.
+
+#### Response Example
+{
+  "diff": {}
+}
+```
+
+--------------------------------
+
+### Python 2 compatibility lines to be removed
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Python-2-Support
+
+These lines apply only to Python 2 and will be removed from the MLB-StatsAPI on or after January 1, 2021. They reload the sys module and set the default encoding to UTF-8, which may affect string encoding for non-ASCII player names.
+
+```python
+# Trying to support Python 2.7:
+if sys.version_info.major < 3:
+    reload(sys)
+    sys.setdefaultencoding("utf8")
+```
+
+--------------------------------
+
+### statsapi.league_leaders(leaderCategories, season=None, limit=10, statGroup=None, leagueId=None, gameTypes=None, playerPool=None, sportId=1, statType=None)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-league_leaders
+
+Retrieves stat leaders overall or for a given league (103=AL, 104=NL). This function returns formatted text listing the top players in a specified statistical category, with options to filter by season, league, stat group, game types, player pool, sport, and stat type.
+
+```APIDOC
+## Function: statsapi.league_leaders
+
+### Description
+Retrieves stat leaders overall or for a given league (103=AL, 104=NL). Returns formatted text listing the top players in a specified statistical category.
+
+### Method
+Function call
+
+### Endpoint
+`statsapi.league_leaders(leaderCategories, season=None, limit=10, statGroup=None, leagueId=None, gameTypes=None, playerPool=None, sportId=1, statType=None)`
+
+### Parameters
+- **leaderCategories** (string) - Required - The statistical category to rank leaders by. Available categories can be obtained from the meta endpoint with type=leagueLeaderTypes.
+- **season** (int) - Optional - The season to retrieve leaders for. Defaults to current season if not specified.
+- **limit** (int) - Optional - The number of leaders to return. Default is 10.
+- **statGroup** (string) - Optional - The statistical group (e.g., 'pitching', 'hitting', 'fielding', 'catching'). Available groups can be obtained from the meta endpoint with type=statGroups. Excluding this may return unexpected results.
+- **leagueId** (int) - Optional - The league ID (103=AL, 104=NL). If not specified, leaders from all leagues are returned.
+- **gameTypes** (string) - Optional - The game types to include. Available game types can be obtained from the meta endpoint with type=gameTypes.
+- **playerPool** (string) - Optional - The player pool to filter by. Available values: ['all','qualified','rookies'] (default is 'qualified').
+- **sportId** (int) - Optional - The sport ID. Default is 1.
+- **statType** (string) - Optional - The type of statistics to use (e.g., 'career', 'statsSingleSeason'). Note: StatsAPI does not appear to support statType='statsSingleSeason' at this time; specify a season or use 'career' to avoid issues.
+
+### Request Example
+```python
+print( statsapi.league_leaders('earnedRunAverage',statGroup='pitching',limit=10,statType='career') )
+```
+
+### Response
+#### Success Response
+Returns formatted text with columns: Rank, Name, Team, Value.
+
+#### Response Example
+```
+Rank Name                 Team                    Value
+    1   Al Spalding          Chicago White Stockings 1.78
+    2   Ed Walsh             Chicago White Sox       1.82
+    3   Addie Joss           Cleveland Naps          1.89
+    4   Jim Devlin           Louisville Grays        1.89
+    5   Craig Kimbrel        Atlanta Braves          2.00
+    5   Laurie Reis          Chicago White Stockings 2.00
+    7   Jack Pfiester        Pittsburgh Pirates      2.02
+    8   Joe Wood             Cleveland Indians       2.03
+    9   Christy Mathewson    New York Giants         2.13
+    10  Walter Johnson       Washington Senators     2.17
+```
+
+```
+
+--------------------------------
+
+### statsapi.boxscore(gamePk, battingBox=True, battingInfo=True, fieldingInfo=True, pitchingBox=True, gameInfo=True, timecode=None)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-boxscore
+
+Retrieves a formatted boxscore for a given game. The function allows customization of which sections are included and can retrieve the boxscore as it existed at a specific time using the timecode parameter.
+
+```APIDOC
+## statsapi.boxscore(gamePk, battingBox=True, battingInfo=True, fieldingInfo=True, pitchingBox=True, gameInfo=True, timecode=None)
+
+### Description
+Retrieves a formatted boxscore for a given game. The function allows customization of which sections are included and can retrieve the boxscore as it existed at a specific time using the timecode parameter.
+
+### Method
+Function call
+
+### Endpoint
+statsapi.boxscore(gamePk, battingBox=True, battingInfo=True, fieldingInfo=True, pitchingBox=True, gameInfo=True, timecode=None)
+
+### Parameters
+#### Path Parameters
+- **gamePk** (integer) - Required - The unique identifier for the game.
+
+#### Query Parameters
+- **battingBox** (boolean) - Optional - Whether to include the batting box section. Defaults to True.
+- **battingInfo** (boolean) - Optional - Whether to include batting information. Defaults to True.
+- **fieldingInfo** (boolean) - Optional - Whether to include fielding information. Defaults to True.
+- **pitchingBox** (boolean) - Optional - Whether to include the pitching box section. Defaults to True.
+- **gameInfo** (boolean) - Optional - Whether to include game information. Defaults to True.
+- **timecode** (string) - Optional - Timestamp in UTC format YYYYMMDD_HHMMSS to retrieve the boxscore as it existed at that time.
+
+### Request Example
+```python
+statsapi.boxscore(565997)
+```
+
+### Response
+#### Success Response (200)
+- **formatted boxscore** (string) - The formatted boxscore text.
+
+#### Response Example
+```
+------------------------------------------------------------------------------- | -------------------------------------------------------------------------------
+Phillies Batters                         AB   R   H  RBI BB   K  LOB AVG   OPS  | Mets Batters                             AB   R   H  RBI BB   K  LOB AVG   OPS
+------------------------------------------------------------------------------- | -------------------------------------------------------------------------------
+1 McCutchen  LF                           5   0   1   0   0   1   3  .250 .830  | 1 McNeil  LF                              4   0   1   0   0   0   1  .363 .928
+...
+```
+```
+
+--------------------------------
+
+### statsapi.player_stats(personId, group, type, season)
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Function:-player_stats
+
+Retrieves current season or career statistics for a specified player. The function accepts a player ID and optional parameters for statistical group (hitting, pitching, fielding) and type (season or career).
+
+```APIDOC
+## statsapi.player_stats(personId, group, type, season)
+
+### Description
+Retrieves current season or career statistics for a specified player. The function accepts a player ID and optional parameters for statistical group (hitting, pitching, fielding) and type (season or career).
+
+### Method
+Function call
+
+### Endpoint
+statsapi.player_stats(personId, group="[hitting,pitching,fielding]", type="season", season=None)
+
+### Parameters
+- **personId** (int) - Required - The ID of the player to retrieve statistics for.
+- **group** (string) - Optional - The statistical group to retrieve: `hitting`, `pitching`, or `fielding`. Multiple groups can be specified as a string in the format `'[hitting,pitching]'`.
+- **type** (string) - Optional - The type of statistics to retrieve: `career` or `season`. Multiple types can be specified as a string in the format `'[career,season]'`.
+- **season** (int) - Optional - The season to retrieve statistics for. Can only be used when `type` includes "season".
+
+### Request Example
+```python
+statsapi.player_stats(123456, 'hitting', 'career')
+```
+
+### Response
+#### Success Response
+Returns a formatted string containing the player's statistics.
+
+#### Response Example
+```
+Chase "Silver Fox" Utley, 2B (2003-2018)
+
+Career Hitting
+gamesPlayed: 1937
+groundOuts: 1792
+runs: 1103
+doubles: 411
+triples: 58
+homeRuns: 259
+strikeOuts: 1193
+baseOnBalls: 724
+intentionalWalks: 62
+hits: 1885
+hitByPitch: 204
+avg: .275
+atBats: 6857
+obp: .358
+slg: .465
+ops: .823
+caughtStealing: 22
+stolenBases: 154
+groundIntoDoublePlay: 93
+numberOfPitches: 31043
+plateAppearances: 7863
+totalBases: 3189
+rbi: 1025
+leftOnBase: 2780
+sacBunts: 6
+sacFlies: 72
+babip: .297
+groundOutsToAirouts: 0.84
+```
+```
+
+--------------------------------
+
+### game_color
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves the color feed for a specific game. This endpoint provides real-time game data in a color format.
+
+```APIDOC
+## GET /api/{ver}/game/{gamePk}/feed/color
+
+### Description
+Retrieves the color feed for a specific game. This endpoint provides real-time game data in a color format.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/feed/color
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+- **gamePk** (integer) - Required - Unique game identifier.
+
+#### Query Parameters
+- **timecode** (string) - Optional - Timecode for historical data.
+- **fields** (string) - Optional - Comma-separated list of fields to return.
+
+### Response
+#### Success Response (200)
+- **gameData** (object) - Game metadata.
+- **liveData** (object) - Live game data.
+
+#### Response Example
+{
+  "gameData": {},
+  "liveData": {}
+}
+```
+
+--------------------------------
+
+### game_uniforms
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves uniform information for one or more games. This endpoint provides details about the uniforms worn in the specified games.
+
+```APIDOC
+## GET /api/{ver}/uniforms/game
+
+### Description
+Retrieves uniform information for one or more games. This endpoint provides details about the uniforms worn in the specified games.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/uniforms/game
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+
+#### Query Parameters
+- **gamePks** (string) - Required - Comma-separated list of game IDs.
+- **fields** (string) - Optional - Comma-separated list of fields to return.
+
+### Response
+#### Success Response (200)
+- **uniforms** (array) - List of uniform details.
+
+#### Response Example
+{
+  "uniforms": []
+}
+```
+
+--------------------------------
+
+### game_linescore
+
+Source: https://github.com/toddrob99/mlb-statsapi/wiki/Endpoints
+
+Retrieves the linescore for a specific game. This endpoint provides the current score and inning information.
+
+```APIDOC
+## GET /api/{ver}/game/{gamePk}/linescore
+
+### Description
+Retrieves the linescore for a specific game. This endpoint provides the current score and inning information.
+
+### Method
+GET
+
+### Endpoint
+https://statsapi.mlb.com/api/{ver}/game/{gamePk}/linescore
+
+### Parameters
+#### Path Parameters
+- **ver** (string) - Required - API version.
+- **gamePk** (integer) - Required - Unique game identifier.
+
+#### Query Parameters
+- **timecode** (string) - Optional - Timecode for historical data.
+- **fields** (string) - Optional - Comma-separated list of fields to return.
+
+### Response
+#### Success Response (200)
+- **teams** (object) - Team scores.
+- **inning** (integer) - Current inning.
+
+#### Response Example
+{
+  "teams": {},
+  "inning": 1
+}
+```
+
+=== COMPLETE CONTENT === This response contains all available snippets from this library. No additional content exists. Do not make further requests.

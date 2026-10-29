@@ -1,0 +1,1405 @@
+# aiolimiter: documentation excerpt
+
+- Source: Context7 `/mjpieters/aiolimiter` (https://context7.com/mjpieters/aiolimiter)
+- Fetched: 2026-10-29; excerpt only (the service caps a response at about 500 KB), not the complete manual. Upstream licences apply; see the upstream repository.
+
+<!-- topic: generic extract -->
+### Access package version
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/aiolimiter.md
+
+Example of printing the installed package version using the __version__ constant.
+
+```python
+from aiolimiter import __version__
+
+print(__version__)  # e.g. '1.3.0'
+```
+
+--------------------------------
+
+### Context Manager Usage Example
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Example showing how to use AsyncLimiter as an async context manager to limit the rate of processing items.
+
+```APIDOC
+## Context Manager Usage Example
+
+### Description
+Example showing how to use AsyncLimiter as an async context manager to limit the rate of processing items.
+
+### Example
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def handle(item: str) -> None:
+    limiter = AsyncLimiter(10)
+    for item in items:
+        async with limiter:          # at most 10 entries per minute
+            await process(item)      # exceptions propagate, capacity not released
+```
+
+--------------------------------
+
+### Initialize AsyncLimiter
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/aiolimiter.md
+
+Example of initializing the AsyncLimiter class with a rate limit of 100 acquisitions per 30 seconds.
+
+```python
+from aiolimiter import AsyncLimiter
+
+limiter = AsyncLimiter(100, 30)  # 100 acquisitions per 30 seconds
+```
+
+--------------------------------
+
+### Install aiolimiter with pip
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Install the aiolimiter package using pip. Requires Python 3.8 or newer.
+
+```bash
+$ pip install aiolimiter
+```
+
+--------------------------------
+
+### Basic AsyncLimiter usage example
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Shows how to create an AsyncLimiter with a default time period and a custom one. The first limiter allows 100 acquisitions per 60 seconds, the second allows 5 per 10 seconds.
+
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def main() -> None:
+    # at most 100 acquisitions per 60 seconds (the default window)
+    limiter = AsyncLimiter(100)
+    # at most 5 acquisitions per 10 seconds
+    strict = AsyncLimiter(5, 10)
+
+asyncio.run(main())
+```
+
+--------------------------------
+
+### Accessing max_rate
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Example showing how to access the max_rate attribute after initializing an AsyncLimiter.
+
+```python
+limiter = AsyncLimiter(42, 81)
+print(limiter.max_rate)  # 42
+```
+
+--------------------------------
+
+### __version__
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/aiolimiter.md
+
+The __version__ attribute provides the installed package version as a string. It is resolved at import time from the installed distribution metadata.
+
+```APIDOC
+## __version__
+
+### Description
+The __version__ attribute provides the installed package version as a string. It is resolved at import time via importlib.metadata.version("aiolimiter").
+
+### Import
+from aiolimiter import __version__
+
+### Value
+- Type: str
+- Example: "1.3.0"
+
+### Example
+```python
+from aiolimiter import __version__
+
+print(__version__)  # e.g. '1.3.0'
+```
+
+### Notes
+- It is evaluated at import time; if the package is imported from a source checkout without installed metadata, this call raises PackageNotFoundError (an importlib.metadata exception).
+- The test suite confirms it equals the version serialised from git.
+```
+
+--------------------------------
+
+### Cancellation Inside the Context Example
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Example showing behavior when an exception is raised inside the context manager block.
+
+```APIDOC
+## Cancellation Inside the Context Example
+
+### Description
+Example showing behavior when an exception is raised inside the context manager block.
+
+### Example
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def main() -> None:
+    limiter = AsyncLimiter(1)
+    try:
+        async with limiter:
+            raise RuntimeError("boom")
+    except RuntimeError:
+        pass  # __aexit__ returns None, so the exception is propagated
+    # capacity consumed by the entry is NOT refunded; the bucket keeps draining
+    # at max_rate / time_period per second
+```
+
+--------------------------------
+
+### AsyncLimiter.__init__(max_rate, time_period=60)
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Initializes an AsyncLimiter instance with the given maximum rate and time period. The limiter allows up to max_rate acquisitions per time_period seconds, and starts empty so the first burst passes immediately.
+
+```APIDOC
+## AsyncLimiter.__init__(max_rate, time_period=60)
+
+### Description
+Initializes an AsyncLimiter instance with the given maximum rate and time period. The limiter allows up to max_rate acquisitions per time_period seconds, and starts empty so the first burst passes immediately.
+
+### Signature
+```python
+def __init__(self, max_rate: float, time_period: float = 60) -> None:
+```
+
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `max_rate` | `float` | yes | — | Allow up to `max_rate` / `time_period` acquisitions before blocking. Also the maximum burst size and the maximum capacity requestable in a single `acquire()` call. |
+| `time_period` | `float` | no | `60` | Duration, in seconds, of the time period in which to limit the rate. |
+
+### Return
+`None`. The constructor initialises internal state: `_rate_per_sec = max_rate / time_period`, `_level = 0.0`, `_last_check = 0.0`, `_waker_handle = None`, and an empty waiter heap.
+
+### Behaviour notes
+- The limiter starts empty, so the first up-to-`max_rate` acquisitions pass immediately (a burst); the limit only kicks in once `max_rate` capacity has been consumed (see `has_capacity`/`acquire`).
+- To forbid bursts, set `max_rate` to `1` and `time_period` to the minimum interval between acquisitions, e.g. `AsyncLimiter(1, 1.5)` allows entry every 1.5 seconds (pattern shown in `docs/index.rst`).
+- No validation is performed on the constructor arguments; e.g. a zero or negative `time_period` is accepted by `__init__` (the resulting `_rate_per_sec` would simply be `0` or negative) — this is not checked statically, only `acquire()`'s `amount` argument is validated (see [acquire](#acquire-amount1) and [errors.md](../errors.md)).
+
+### Example — basic use
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def main() -> None:
+    # at most 100 acquisitions per 60 seconds (the default window)
+    limiter = AsyncLimiter(100)
+    # at most 5 acquisitions per 10 seconds
+    strict = AsyncLimiter(5, 10)
+
+asyncio.run(main())
+```
+
+### Example — burst-suppressing configuration
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def main() -> None:
+    # no bursts: the section can be entered at most once per 1.5 seconds
+    limiter = AsyncLimiter(1, 1.5)  # max_rate == 1
+    async with limiter:
+        ...  # exclusive, rate-limited section
+
+asyncio.run(main())
+```
+```
+
+--------------------------------
+
+### Bursting example with AsyncLimiter(4, 8)
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Demonstrates that the rate limit only kicks in after capacity is reached. With max_rate=4 and time_period=8, the first four tasks run immediately, then subsequent tasks wait for capacity to free up. Output shows the drip times.
+
+```python
+>>> import asyncio, time
+>>> from aiolimiter import AsyncLimiter
+>>> limiter = AsyncLimiter(4, 8)
+>>> async def task(id):
+...     await asyncio.sleep(id * 0.01)
+...     async with limiter:
+...         print(f'{id:>2d}: Drip! {time.time() - ref:>5.2f}')
+...
+>>> tasks = [task(i) for i in range(10)]
+>>> ref = time.time(); result = asyncio.run(asyncio.wait(tasks))
+ 0: Drip!  0.00
+ 1: Drip!  0.01
+ 2: Drip!  0.02
+ 3: Drip!  0.03
+ 4: Drip!  2.05
+ 5: Drip!  4.05
+ 6: Drip!  6.05
+ 7: Drip!  8.06
+ 8: Drip! 10.06
+ 9: Drip! 12.07
+```
+
+--------------------------------
+
+### Rate Limiting with AsyncLimiter
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/README.md
+
+Example of using AsyncLimiter to restrict a coroutine to 100 entries within a 30-second window.
+
+```python
+from aiolimiter import AsyncLimiter
+
+# allow for 100 concurrent entries within a 30 second window
+rate_limit = AsyncLimiter(100, 30)
+
+
+async def some_coroutine():
+    async with rate_limit:
+        # this section is *at most* going to entered 100 times
+        # in a 30 second period.
+        await do_something()
+```
+
+--------------------------------
+
+### Accessing time_period
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Example showing how to access the time_period attribute after initializing an AsyncLimiter.
+
+```python
+limiter = AsyncLimiter(42, 81)
+print(limiter.time_period)  # 81
+```
+
+--------------------------------
+
+### No bursts example with AsyncLimiter(1, 1.5)
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+To prevent bursts, set max_rate to 1 and time_period to the minimum time between acquisitions. With AsyncLimiter(1, 1.5), tasks are allowed entry every 1.5 seconds. Output shows the drip times.
+
+```python
+>>> limiter = AsyncLimiter(1, 1.5)  # no bursts, allow entry every 1.5 seconds
+>>> tasks = [task(i) for i in range(5)]
+>>> ref = time.time(); result = asyncio.run(asyncio.wait(tasks))
+ 0: Drip!  0.00
+ 1: Drip!  1.52
+ 2: Drip!  3.03
+ 3: Drip!  4.54
+ 4: Drip!  6.05
+```
+
+--------------------------------
+
+### Catching ValueError from AsyncLimiter.acquire
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/errors.md
+
+Example demonstrating how to catch the ValueError raised when an acquisition amount exceeds the configured maximum rate.
+
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def main() -> None:
+    limiter = AsyncLimiter(100, 60)
+    try:
+        await limiter.acquire(101)   # > max_rate → ValueError
+    except ValueError as exc:
+        print("amount out of range:", exc)
+        # 'Amount must be a number between 0 and the maximum capacity'
+
+asyncio.run(main())
+```
+
+--------------------------------
+
+### Check capacity with has_capacity()
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Use has_capacity() to test if there is space before proceeding, for example to reject a request due to rate limiting.
+
+```python
+if limit.has_capacity():
+    # reject a request due to rate limiting
+```
+
+--------------------------------
+
+### Catching RuntimeWarning with warnings.catch_warnings
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/errors.md
+
+Example of using warnings.catch_warnings to detect when an AsyncLimiter instance is reused across different event loops.
+
+```python
+import asyncio
+import warnings
+
+from aiolimiter import AsyncLimiter
+
+with warnings.catch_warnings(record=True) as caught:
+    warnings.simplefilter("always", RuntimeWarning)
+    asyncio.run(loop_one())
+    asyncio.run(loop_two())   # re-uses the same limiter instance
+
+for w in caught:
+    if isinstance(w.message, RuntimeWarning):
+        print("reuse detected — create one AsyncLimiter per event loop")
+```
+
+--------------------------------
+
+### Burst-suppressing AsyncLimiter configuration
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Shows how to configure AsyncLimiter to prevent bursts by setting max_rate to 1 and time_period to the minimum interval between acquisitions. The example uses a limiter that allows entry every 1.5 seconds.
+
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def main() -> None:
+    # no bursts: the section can be entered at most once per 1.5 seconds
+    limiter = AsyncLimiter(1, 1.5)  # max_rate == 1
+    async with limiter:
+        ...  # exclusive, rate-limited section
+
+asyncio.run(main())
+```
+
+--------------------------------
+
+### Filtering RuntimeWarning by message text
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/errors.md
+
+Example of using warnings.filterwarnings to suppress or handle the specific reuse warning message.
+
+```python
+warnings.filterwarnings(
+    "once",
+    message="This AsyncLimiter instance is being re-used across loops\\.",
+    category=RuntimeWarning,
+)
+```
+
+--------------------------------
+
+### AsyncLimiter class declaration and usage example
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+The AsyncLimiter class implements a leaky bucket rate limiter. It is designed to be used as an asynchronous context manager to control the rate of operations within an event loop.
+
+```python
+class AsyncLimiter(AbstractAsyncContextManager[None]):
+    """A leaky bucket rate limiter.
+
+    This is an :ref:`asynchronous context manager <async-context-managers>`;
+    when used with :keyword:`async with`, entering the context acquires
+    capacity::
+
+        limiter = AsyncLimiter(10)
+        for foo in bar:
+            async with limiter:
+                # process foo elements at 10 items per minute
+
+    :param max_rate: Allow up to `max_rate` / `time_period` acquisitions before
+       blocking.
+    :param time_period: duration, in seconds, of the time period in which to
+       limit the rate. Note that up to `max_rate` acquisitions are allowed
+       within this time period in a burst.
+
+    """
+```
+
+--------------------------------
+
+### Basic AsyncLimiter usage
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Demonstrates how to initialize an AsyncLimiter and use acquire to throttle network requests.
+
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def fetch(url: str) -> None:
+    rate_limit = AsyncLimiter(10, 1)  # 10 requests per second
+    await rate_limit.acquire()        # blocks until capacity is available
+    # ... perform the network request
+    await asyncio.sleep(0.1)
+
+async def main() -> None:
+    await asyncio.gather(*(fetch(f"https://example.com/{i}") for i in range(50)))
+```
+
+--------------------------------
+
+### Default window configuration
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/configuration.md
+
+Create a limiter with the default time_period of 60 seconds, allowing 100 acquisitions per 60-second window.
+
+```python
+from aiolimiter import AsyncLimiter
+
+# 100 acquisitions per 60-second window (time_period default)
+limiter = AsyncLimiter(100)
+```
+
+--------------------------------
+
+### Module entry point src/aiolimiter/__init__.py
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/aiolimiter.md
+
+The complete module body for the aiolimiter package entry point.
+
+```python
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2019-2025 Martijn Pieters
+# Licensed under the MIT license as detailed in LICENSE.txt
+
+from importlib.metadata import version
+
+from .leakybucket import AsyncLimiter
+
+__version__ = version("aiolimiter")
+__all__ = ["AsyncLimiter"]
+```
+
+--------------------------------
+
+### __aenter__
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Async context manager entry point. Delegates to acquire() with the default amount=1, blocking until one unit of capacity is acquired. Returns None.
+
+```APIDOC
+## __aenter__
+
+### Description
+Async context manager entry point. Delegates to acquire() with the default amount=1, blocking until one unit of capacity is acquired. Returns None.
+
+### Method
+__aenter__
+
+### Signature
+async def __aenter__(self) -> None
+
+### Parameters
+None
+
+### Returns
+None
+
+### Example
+async with limiter:  # at most 10 entries per minute
+    await process(item)
+```
+
+--------------------------------
+
+### Fractional capacity and early rejection with has_capacity
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Shows how to use fractional amounts with has_capacity and how to perform early rejection for heavy requests.
+
+```python
+from aiolimiter import AsyncLimiter
+
+limiter = AsyncLimiter(5, 10)
+
+# count a request as "light" — only needs half a unit
+if limiter.has_capacity(0.5):
+    await limiter.acquire(0.5)
+
+# reject a "heavy" request immediately rather than blocking on it
+if not limiter.has_capacity(4):
+    return 429  # style: reject under load
+```
+
+--------------------------------
+
+### Create an AsyncLimiter instance
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Create an AsyncLimiter with a maximum capacity of 100 acquisitions per minute. This instance is then used as an asynchronous context manager to control the rate of execution.
+
+```python
+from aiolimiter import AsyncLimiter
+
+async def main():
+    limiter = AsyncLimiter(100)
+```
+
+--------------------------------
+
+### List Available Tasks
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/README.md
+
+Command to list tasks defined in the Taskfile.
+
+```console
+$ task --list
+task: Available tasks for this project:
+* default:                               Default task, runs linters and tests
+* dev:format:                            Runs formatters                           (aliases: format)
+* dev:install-prek:                      Install prek into local git checkout      (aliases: dev:install-precommit)
+* dev:lint:                              Runs linters                              (aliases: lint)
+* dev:lint:code:                         Lint the source code
+* dev:lint:renovate:                     Lint the Renovate configuration file
+* dev:test:                              Run tests                               (aliases: test)
+* dev:tox:                               Run tests with tox                      (aliases: tox)
+* dev:uv-lock:                           Updates the uv lock file                (aliases: lock)
+* dist:build:                            Build the distribution packages         (aliases: dist)
+* dist:clean:                            Remove built distribution packages      (aliases: clean)
+* dist:publish:                          Publish package to PyPI                 (aliases: publish)
+* docs:build:                            Build project documentation             (aliases: docs)
+* docs:checks:                           Run all documentation checks
+* docs:checks:spelling:                  Check documentation spelling.
+* docs:checks:towncrier:                 Check changelog towncrier output()
+* docs:checks:towncrier_fragments:       Check changelog towncrier fragments
+* docs:clean:                            Clean the documentation build directory
+* docs:serve:                            Live preview server for project documentation      (aliases: preview)
+```
+
+--------------------------------
+
+### Sync Dependencies with uv
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/README.md
+
+Command to synchronize project dependencies using uv.
+
+```sh
+uv sync
+```
+
+--------------------------------
+
+### AsyncLimiter __repr__ method
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Returns a diagnostics string containing the current level, number of waiters, and time until the next wake-up if scheduled.
+
+```python
+def __repr__(self) -> str:  # pragma: no cover
+```
+
+--------------------------------
+
+### Per-loop instance configuration
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/configuration.md
+
+Create a fresh AsyncLimiter instance per asyncio event loop, as re-using an instance across loops is unsupported and emits a RuntimeWarning. Construct the limiter inside the coroutine that runs on each loop.
+
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def worker() -> None:
+    limiter = AsyncLimiter(10, 1)   # constructed per loop
+    async with limiter:
+        await do_work()
+```
+
+--------------------------------
+
+### Use AsyncLimiter as an async context manager
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Use the limiter with 'async with' to enclose a section that should be entered at most 100 times per minute.
+
+```python
+async with limiter:
+    # this section will, at most, be entered 100 times / minute
+```
+
+--------------------------------
+
+### AsyncLimiter error handling and weighted amounts
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Shows how to handle ValueError exceptions when acquiring capacity and how to request specific weighted amounts.
+
+```python
+import math
+from aiolimiter import AsyncLimiter
+
+async def worker() -> None:
+    limiter = AsyncLimiter(100, 60)
+
+    # a "heavy" request that should count as 10 units of capacity
+    try:
+        await limiter.acquire(10)
+    except ValueError:
+        # amount is out of range (e.g. 0.0 <= amount <= max_rate violated)
+        # this also covers NaN and negative/infinite values
+        raise
+
+    # wait until 0.5 units of capacity are free, timed out by the caller
+    if limiter.has_capacity(0.5):
+        await limiter.acquire(0.5)
+```
+
+--------------------------------
+
+### AsyncLimiter context manager usage
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Demonstrates using AsyncLimiter as a context manager to limit processing rate. Exceptions propagate and capacity is not released upon exit.
+
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def handle(item: str) -> None:
+    limiter = AsyncLimiter(10)
+    for item in items:
+        async with limiter:          # at most 10 entries per minute
+            await process(item)      # exceptions propagate, capacity not released
+```
+
+--------------------------------
+
+### AsyncLimiter __aenter__ method
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Delegates to acquire() with a default amount of 1. Using async with limiter blocks until one unit of capacity is acquired.
+
+```python
+async def __aenter__(self) -> None:
+    await self.acquire()
+```
+
+--------------------------------
+
+### Acquire capacity directly with acquire()
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Call the acquire() method to block until there is capacity available.
+
+```python
+await limit.acquire()  # blocks until there is capacity
+```
+
+--------------------------------
+
+### __all__
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/aiolimiter.md
+
+The __all__ attribute controls star imports from the aiolimiter package. It contains only AsyncLimiter, excluding __version__ from star imports.
+
+```APIDOC
+## __all__
+
+### Description
+The __all__ attribute controls star imports from the aiolimiter package. It contains only AsyncLimiter, excluding __version__ from star imports.
+
+### Value
+- Type: list of str
+- Value: ["AsyncLimiter"]
+
+### Notes
+- Affects `from aiolimiter import *` star imports only.
+- __version__ is excluded from star imports but remains importable explicitly.
+```
+
+--------------------------------
+
+### AsyncLimiter.acquire
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Asynchronously acquire capacity from the limiter. Blocks until there is enough capacity available.
+
+```APIDOC
+## AsyncLimiter.acquire
+
+### Description
+Asynchronously acquire capacity from the limiter. Blocks until there is enough capacity available.
+
+### Method
+async
+
+### Parameters
+- **capacity** (number) - Optional - The amount of capacity to acquire. Defaults to 1.
+
+### Request Example
+await limit.acquire()
+await limit.acquire(10)
+
+### Response
+No return value.
+```
+
+--------------------------------
+
+### __repr__
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Returns a diagnostics string of the form "<AsyncLimiter(max_rate=..., time_period=...) at 0x... [level: N.NNNNNN, waiters: N, waking in N µs]>".
+
+```APIDOC
+## __repr__
+
+### Description
+Returns a diagnostics string of the form "<AsyncLimiter(max_rate=..., time_period=...) at 0x... [level: N.NNNNNN, waiters: N, waking in N µs]>". The "waking in" fragment is only included while a waker timer is scheduled and still positive.
+
+### Method
+__repr__
+
+### Signature
+def __repr__(self) -> str
+
+### Parameters
+None
+
+### Returns
+str - A diagnostics string with limiter state.
+```
+
+--------------------------------
+
+### __aexit__
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Async context manager exit point. Returns None and does not suppress exceptions. Capacity is not released on exit; the leaky bucket only regains capacity by elapsing time.
+
+```APIDOC
+## __aexit__
+
+### Description
+Async context manager exit point. Returns None and does not suppress exceptions. Capacity is not released on exit; the leaky bucket only regains capacity by elapsing time. Passing an exception into the blocked section does not affect limiter state beyond the capacity consumed on entry.
+
+### Method
+__aexit__
+
+### Signature
+async def __aexit__(
+    self,
+    exc_type: type[BaseException] | None,
+    exc: BaseException | None,
+    tb: TracebackType | None,
+) -> None
+
+### Parameters
+- **exc_type** (type[BaseException] | None) - Required - The type of the exception raised in the context, if any.
+- **exc** (BaseException | None) - Required - The exception instance raised in the context, if any.
+- **tb** (TracebackType | None) - Required - The traceback of the exception, if any.
+
+### Returns
+None
+
+### Example
+try:
+    async with limiter:
+        raise RuntimeError("boom")
+except RuntimeError:
+    pass  # __aexit__ returns None, so the exception is propagated
+```
+
+--------------------------------
+
+### Basic usage of has_capacity
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Demonstrates using has_capacity to check for availability before performing a blocking acquire call.
+
+```python
+from aiolimiter import AsyncLimiter
+
+limiter = AsyncLimiter(1)          # one acquisition per minute
+if limiter.has_capacity():
+    # capacity available now — the next acquire() will not block
+    await limiter.acquire()
+else:
+    print("rate limit reached, reject the request")
+```
+
+--------------------------------
+
+### AsyncLimiter(max_rate, time_period)
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Constructor for the AsyncLimiter class. Creates a leaky bucket rate limiter that allows up to max_rate acquisitions within a rolling time_period window.
+
+```APIDOC
+## AsyncLimiter(max_rate, time_period)
+
+### Description
+Creates a leaky bucket rate limiter. Up to `max_rate` acquisitions are permitted within a rolling `time_period` window, after which acquisition calls block until the bucket has leaked enough capacity.
+
+### Import Path
+`from aiolimiter import AsyncLimiter`
+
+### Parameters
+- **max_rate** (int) - Required - Allow up to `max_rate` / `time_period` acquisitions before blocking.
+- **time_period** (float) - Required - Duration, in seconds, of the time period in which to limit the rate. Note that up to `max_rate` acquisitions are allowed within this time period in a burst.
+
+### Usage
+```python
+limiter = AsyncLimiter(10)
+for foo in bar:
+    async with limiter:
+        # process foo elements at 10 items per minute
+```
+
+### Notes
+- The instance is usable with `async with`.
+- Not a thread-safe object; create one instance per event loop. Re-using an instance across loops triggers a `RuntimeWarning`.
+```
+
+--------------------------------
+
+### AsyncLimiter __aexit__ method
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Returns None and does not suppress exceptions. Capacity is not released on exit as the bucket only regains capacity over time.
+
+```python
+async def __aexit__(
+    self,
+    exc_type: type[BaseException] | None,
+    exc: BaseException | None,
+    tb: TracebackType | None,
+) -> None:
+    pass
+```
+
+--------------------------------
+
+### AsyncLimiter acquire method signature
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+The definition of the acquire coroutine as found in the source code.
+
+```python
+async def acquire(self, amount: float = 1) -> None:
+    """Acquire capacity in the limiter.
+
+    If the limit has been reached, blocks until enough capacity has been
+    freed before returning.
+
+    :param amount: How much capacity you need to be available.
+    :exception: Raises :exc:`ValueError` if `amount` is not a number
+       between zero and :attr:`max_rate`, inclusive.
+
+    """
+```
+
+--------------------------------
+
+### AsyncLimiter
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/aiolimiter.md
+
+The AsyncLimiter class is the primary public API of the aiolimiter package. It is an asyncio rate limiter implementing a leaky bucket algorithm. Import it from aiolimiter and instantiate with a rate and a time period.
+
+```APIDOC
+## AsyncLimiter
+
+### Description
+The AsyncLimiter class is the primary public API of the aiolimiter package. It is an asyncio rate limiter implementing a leaky bucket algorithm. It is an asynchronous context manager that limits the rate of acquisitions.
+
+### Import
+from aiolimiter import AsyncLimiter
+
+### Constructor
+AsyncLimiter(rate, time_period)
+
+### Parameters
+- **rate** (int) - Required - The maximum number of acquisitions allowed per time period.
+- **time_period** (float) - Required - The time period in seconds over which the rate is measured.
+
+### Example
+```python
+from aiolimiter import AsyncLimiter
+
+limiter = AsyncLimiter(100, 30)  # 100 acquisitions per 30 seconds
+```
+
+### Notes
+- The class is an asynchronous context manager (contextlib.AbstractAsyncContextManager[None]).
+- It is re-exported unchanged from the private module .leakybucket.
+- The implementation module aiolimiter.leakybucket is importable but is not part of the documented public API.
+- Full documentation is available in the AsyncLimiter page.
+```
+
+--------------------------------
+
+### Fixed minimum interval configuration
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/configuration.md
+
+Set max_rate to 1 and time_period to the minimum interval between acquisitions to allow entry at most once per that interval. This pattern is from docs/index.rst.
+
+```python
+from aiolimiter import AsyncLimiter
+
+# allow entry at most once per 1.5 seconds
+limiter = AsyncLimiter(1, 1.5)
+```
+
+--------------------------------
+
+### acquire(amount=1)
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Acquires capacity in the limiter. If the limit has been reached, blocks until enough capacity has been freed before returning. Raises ValueError if amount is not a number between zero and max_rate, inclusive.
+
+```APIDOC
+## acquire(amount=1)
+
+### Description
+Acquires capacity in the limiter. If the limit has been reached, blocks until enough capacity has been freed before returning.
+
+### Method
+async def acquire(self, amount: float = 1) -> None
+
+### Parameters
+- **amount** (float) - Optional, default: 1 - How much capacity you need to be available. Must satisfy 0 <= amount <= max_rate.
+
+### Return
+None - the coroutine returns only once the requested capacity has actually been acquired.
+
+### Throws
+- **ValueError** - if amount is not between 0 and max_rate inclusive (negative values, NaN, -inf, +inf, or values greater than max_rate).
+
+### Behaviour notes
+- If there is enough capacity, acquisition is immediate and _level is incremented by amount.
+- Otherwise the caller pushes an entry onto the waiter heap and awaits its future; _wake_next() drains leaked capacity and wakes the head of the heap when enough time has elapsed.
+- Mixing amounts: when at or near max_rate, small requests tend to be served before large blocks of capacity.
+
+### Example - basic call
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def fetch(url: str) -> None:
+    rate_limit = AsyncLimiter(10, 1)  # 10 requests per second
+    await rate_limit.acquire()        # blocks until capacity is available
+    # ... perform the network request
+    await asyncio.sleep(0.1)
+
+async def main() -> None:
+    await asyncio.gather(*(fetch(f"https://example.com/{i}") for i in range(50)))
+```
+
+### Example - error handling and weighted amounts
+```python
+import math
+from aiolimiter import AsyncLimiter
+
+async def worker() -> None:
+    limiter = AsyncLimiter(100, 60)
+
+    # a "heavy" request that should count as 10 units of capacity
+    try:
+        await limiter.acquire(10)
+    except ValueError:
+        # amount is out of range (e.g. 0.0 <= amount <= max_rate violated)
+        # this also covers NaN and negative/infinite values
+        raise
+
+    # wait until 0.5 units of capacity are free, timed out by the caller
+    if limiter.has_capacity(0.5):
+        await limiter.acquire(0.5)
+```
+```
+
+--------------------------------
+
+### Varying capacity requests
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Requests can be weighted by passing a capacity amount to acquire() or has_capacity(). Mixing capacities may cause smaller requests to be processed before larger ones when near the maximum rate.
+
+```python
+await limit.acquire(10)
+if limit.has_capacity(0.5):
+```
+
+--------------------------------
+
+### AsyncLimiter as async context manager
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Use the AsyncLimiter as an asynchronous context manager to enclose a section whose rate of execution is controlled.
+
+```APIDOC
+## AsyncLimiter as async context manager
+
+### Description
+Use the AsyncLimiter as an asynchronous context manager to enclose a section whose rate of execution is controlled.
+
+### Method
+async with
+
+### Request Example
+async with limiter:
+    # this section will, at most, be entered 100 times / minute
+
+### Response
+No return value.
+```
+
+--------------------------------
+
+### AsyncLimiter cancellation inside context
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Shows that exceptions raised inside the context manager propagate and capacity consumed on entry is not refunded.
+
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def main() -> None:
+    limiter = AsyncLimiter(1)
+    try:
+        async with limiter:
+            raise RuntimeError("boom")
+    except RuntimeError:
+        pass  # __aexit__ returns None, so the exception is propagated
+    # capacity consumed by the entry is NOT refunded; the bucket keeps draining
+    # at max_rate / time_period per second
+```
+
+--------------------------------
+
+### AsyncLimiter.has_capacity
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/docs/index.rst
+
+Check if there is enough capacity available without blocking. Useful for rejecting requests due to rate limiting.
+
+```APIDOC
+## AsyncLimiter.has_capacity
+
+### Description
+Check if there is enough capacity available without blocking. Useful for rejecting requests due to rate limiting.
+
+### Method
+sync
+
+### Parameters
+- **capacity** (number) - Optional - The amount of capacity to check. Defaults to 1.
+
+### Request Example
+if limit.has_capacity():
+    # reject a request due to rate limiting
+if limit.has_capacity(0.5):
+
+### Response
+- **bool** - True if there is enough capacity, False otherwise.
+```
+
+--------------------------------
+
+### AsyncLimiter constructor signature
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/configuration.md
+
+The constructor signature for AsyncLimiter, defined in src/aiolimiter/leakybucket.py at line 74. It takes max_rate (float, required) and time_period (float, optional, default 60).
+
+```python
+def __init__(self, max_rate: float, time_period: float = 60) -> None:
+```
+
+--------------------------------
+
+### has_capacity(amount=1)
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Non-blocking, non-consuming check to see if there is enough capacity remaining in the limiter. It leaks the bucket and compares the current level plus amount against max_rate without adding to the level.
+
+```APIDOC
+## Method: has_capacity(amount=1)
+
+### Description
+Check if there is enough capacity remaining in the limiter. This is a non-blocking, non-consuming check: it leaks the bucket and compares self._level + amount <= self.max_rate without adding anything to the level.
+
+### Signature
+```python
+def has_capacity(self, amount: float = 1) -> bool:
+    """Check if there is enough capacity remaining in the limiter.
+
+    :param amount: How much capacity you need to be available.
+
+    """
+```
+
+### Parameters
+- **amount** (float) - Optional, default: 1 - How much capacity you need to be available.
+
+### Return
+bool - True if acquiring amount right now would not block, False otherwise.
+
+### Behaviour Notes
+- Unlike acquire(), no ValueError validation is performed on amount; e.g. has_capacity(42) on a limiter with max_rate=1 simply returns False.
+- The check advances the internal _last_check clock (via _leak()), so it can itself free capacity for subsequent calls.
+
+### Example - basic call
+```python
+from aiolimiter import AsyncLimiter
+
+limiter = AsyncLimiter(1)          # one acquisition per minute
+if limiter.has_capacity():
+    # capacity available now - the next acquire() will not block
+    await limiter.acquire()
+else:
+    print("rate limit reached, reject the request")
+```
+
+### Example - fractional capacity and early rejection
+```python
+from aiolimiter import AsyncLimiter
+
+limiter = AsyncLimiter(5, 10)
+
+# count a request as "light" - only needs half a unit
+if limiter.has_capacity(0.5):
+    await limiter.acquire(0.5)
+
+# reject a "heavy" request immediately rather than blocking on it
+if not limiter.has_capacity(4):
+    return 429  # style: reject under load
+```
+```
+
+--------------------------------
+
+### AsyncLimiter.acquire(amount) - ValueError on out-of-range amount
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/errors.md
+
+The acquire() method of AsyncLimiter raises a ValueError when the amount argument is not between 0 and the limiter's max_rate. This is the only explicit failure condition in aiolimiter.
+
+```APIDOC
+## AsyncLimiter.acquire(amount)
+
+### Description
+Acquires permission to proceed, raising a ValueError if the requested amount is outside the valid range (0 to max_rate). This is the only explicit failure condition in aiolimiter.
+
+### Method
+async def acquire(amount)
+
+### Parameters
+- **amount** (number) - Required - The amount of capacity to acquire. Must satisfy 0 <= amount <= max_rate.
+
+### Errors
+#### ValueError
+- **Trigger condition**: amount fails the comparison 0 <= amount <= max_rate.
+- **Message**: "Amount must be a number between 0 and the maximum capacity"
+- **Source location**: src/aiolimiter/leakybucket.py, lines 140-142 (inside acquire, defined line 129)
+
+### Values that trigger the error
+- Negative numbers (e.g., -1, -0.5)
+- float("-inf")
+- float("inf") when max_rate is finite
+- float("nan") - NaN compares false against everything
+- Any value strictly greater than max_rate (e.g., 42 on an AsyncLimiter(1))
+
+### Non-triggering values
+- 0 (zero-capacity acquisition returns immediately and consumes nothing)
+- Fractional values (e.g., 0.5)
+
+### How to catch
+```python
+import asyncio
+from aiolimiter import AsyncLimiter
+
+async def main() -> None:
+    limiter = AsyncLimiter(100, 60)
+    try:
+        await limiter.acquire(101)   # > max_rate → ValueError
+    except ValueError as exc:
+        print("amount out of range:", exc)
+        # 'Amount must be a number between 0 and the maximum capacity'
+
+asyncio.run(main())
+```
+
+### Notes
+- The ValueError is raised only after awaiting the coroutine, since acquire is an async def.
+- AsyncLimiter.has_capacity(amount) performs no such validation; it simply evaluates the comparison and returns False for out-of-range amounts.
+```
+
+--------------------------------
+
+### Method has_capacity signature
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+The signature for the has_capacity method, which checks if capacity is available without blocking.
+
+```python
+def has_capacity(self, amount: float = 1) -> bool:
+    """Check if there is enough capacity remaining in the limiter.
+
+    :param amount: How much capacity you need to be available.
+
+    """
+```
+
+--------------------------------
+
+### AsyncLimiter.time_period
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Read-only attribute representing the duration, in seconds, of the rolling rate-limit window.
+
+```APIDOC
+## Attribute: time_period
+
+### Description
+Read-only attribute representing the duration, in seconds, of the rolling rate-limit window.
+
+### Type
+float
+
+### Access
+Read-only (set in __init__, never mutated)
+
+### Example
+```python
+limiter = AsyncLimiter(42, 81)
+print(limiter.time_period)  # 81
+```
+```
+
+--------------------------------
+
+### AsyncLimiter.max_rate
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+Read-only attribute representing the maximum capacity of the bucket, i.e., the maximum burst size and upper bound accepted by acquire(amount).
+
+```APIDOC
+## Attribute: max_rate
+
+### Description
+Read-only attribute representing the maximum capacity of the bucket: the maximum burst size and the upper bound accepted by acquire(amount).
+
+### Type
+float
+
+### Access
+Read-only (set in __init__, never mutated)
+
+### Example
+```python
+limiter = AsyncLimiter(42, 81)
+print(limiter.max_rate)  # 42
+```
+```
+
+--------------------------------
+
+### Attribute max_rate definition
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+The max_rate attribute represents the maximum capacity of the bucket and is set during initialization.
+
+```python
+max_rate: float  #: The configured `max_rate` value for this limiter.
+```
+
+--------------------------------
+
+### LIMITER_REUSED_ACROSS_LOOPS_WARNING constant
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/errors.md
+
+The constant defining the warning message text emitted when a limiter is reused across loops.
+
+```python
+LIMITER_REUSED_ACROSS_LOOPS_WARNING = (
+    "This AsyncLimiter instance is being re-used across loops. Please create "
+    "a new limiter per event loop as re-use can lead to undefined behaviour."
+)
+```
+
+--------------------------------
+
+### ValueError trigger condition in AsyncLimiter.acquire
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/errors.md
+
+The internal check within AsyncLimiter.acquire that raises a ValueError when the requested amount exceeds the maximum rate.
+
+```python
+if not 0 <= amount <= self.max_rate:
+    raise ValueError(
+        "Amount must be a number between 0 and the maximum capacity"
+    )
+```
+
+--------------------------------
+
+### Attribute time_period definition
+
+Source: https://github.com/mjpieters/aiolimiter/blob/main/_autodocs/api-reference/async-limiter.md
+
+The time_period attribute represents the duration in seconds of the rolling rate-limit window.
+
+```python
+time_period: float  #: The configured `time_period` value for this limiter.
+```
+
+=== COMPLETE CONTENT === This response contains all available snippets from this library. No additional content exists. Do not make further requests.

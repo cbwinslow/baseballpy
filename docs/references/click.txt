@@ -1,0 +1,4885 @@
+# click: documentation excerpt
+
+- Source: Context7 `/pallets/click` (https://context7.com/pallets/click)
+- Fetched: 2026-10-29; excerpt only (the service caps a response at about 500 KB), not the complete manual. Upstream licences apply; see the upstream repository.
+
+<!-- topic: generic extract -->
+### Running the installed command
+
+Source: https://github.com/pallets/click/blob/main/docs/entry-points.md
+
+Shows the expected output when the installed 'hello' command is executed: it prints 'Hello, World!'.
+
+```console
+$ hello
+Hello, World!
+```
+
+--------------------------------
+
+### Run installed application
+
+Source: https://github.com/pallets/click/blob/main/docs/standalone-apps.md
+
+Shows running the installed executable with arguments, producing greeting output.
+
+```console
+$ hello-cli World
+Hello, World!
+$ hello-cli World --count 2
+Hello, World!
+Hello, World!
+```
+
+--------------------------------
+
+### Build and package commands
+
+Source: https://github.com/pallets/click/blob/main/docs/standalone-apps.md
+
+Runs briefcase create, build, and package to produce a distributable installer.
+
+```console
+briefcase create
+briefcase build
+briefcase package
+```
+
+--------------------------------
+
+### Installation commands in editable mode
+
+Source: https://github.com/pallets/click/blob/main/docs/entry-points.md
+
+Creates a virtual environment, activates it, and installs the package in editable mode with pip. This makes the 'hello' command available during development.
+
+```console
+$ python -m venv .venv
+$ . .venv/bin/activate
+$ pip install -e .
+```
+
+--------------------------------
+
+### Install Click with pip
+
+Source: https://github.com/pallets/click/blob/main/docs/index.md
+
+Install Click directly from PyPI using pip.
+
+```default
+pip install click
+```
+
+--------------------------------
+
+### Install Briefcase with pip
+
+Source: https://github.com/pallets/click/blob/main/docs/standalone-apps.md
+
+Install Briefcase into the virtual environment using pip.
+
+```console
+pip install briefcase
+```
+
+--------------------------------
+
+### Lazy loading example with main, foo, bar, baz
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Shows the complete lazy loading example: main.py defines a group with LazyGroup and lazy_subcommands, foo.py and bar.py define subcommands, and baz.py is a subcommand of bar. The files are part of one setup.
+
+```python
+# in main.py
+import click
+from lazy_group import LazyGroup
+
+@click.group(
+    cls=LazyGroup,
+    lazy_subcommands={"foo": "foo.cli", "bar": "bar.cli"},
+    help="main CLI command for lazy example",
+)
+def cli():
+    pass
+```
+
+```python
+# in foo.py
+import click
+
+@click.group(help="foo command for lazy example")
+def cli():
+    pass
+```
+
+```python
+# in bar.py
+import click
+from lazy_group import LazyGroup
+
+@click.group(
+    cls=LazyGroup,
+    lazy_subcommands={"baz": "baz.cli"},
+    help="bar command for lazy example",
+)
+def cli():
+    pass
+```
+
+```python
+# in baz.py
+import click
+
+@click.group(help="baz command for lazy example")
+def cli():
+    pass
+```
+
+--------------------------------
+
+### Example project directory structure
+
+Source: https://github.com/pallets/click/blob/main/docs/entry-points.md
+
+Shows the minimal file layout for a Click application packaged with an entry point: a src/ directory containing the package and a pyproject.toml at the root.
+
+```text
+hello-project/
+    src/
+        hello/
+            __init__.py
+            hello.py
+    pyproject.toml
+```
+
+--------------------------------
+
+### Detecting Parameter Source: Example
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Shows how to use Context.get_parameter_source() to determine where a parameter's value came from. The output shows COMMANDLINE, ENVIRONMENT, and DEFAULT sources.
+
+```python
+@click.command()
+@click.argument('port', nargs=1, default=8080, envvar="PORT")
+@click.pass_context
+def cli(ctx, port):
+    source = ctx.get_parameter_source("port")
+    click.echo(f"Port came from {source.name}")
+```
+
+```shell-session
+$ cli 8080
+Port came from COMMANDLINE
+
+$ export PORT=8080
+$ cli
+Port came from ENVIRONMENT
+
+$ cli
+Port came from DEFAULT
+```
+
+--------------------------------
+
+### Expected CLI Output for Invoke Example
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Shows the output produced by running the command `cli dist` after defining the previous example.
+
+```shell-session
+$ cli dist
+Count: 1
+Count: 42
+
+```
+
+--------------------------------
+
+### Output of Eager --version Example
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Expected output of the hello commands with and without the `--version` flag. With no arguments, the command prints "Hello World!". With `--version`, the callback prints "Version 1.0" and exits.
+
+```shell-session
+$ hello
+Hello World!
+$ hello --version
+Version 1.0
+```
+
+--------------------------------
+
+### Install packages in virtualenv
+
+Source: https://github.com/pallets/click/blob/main/docs/virtualenv.md
+
+Installs the click package into the active virtual environment using pip.
+
+```console
+$ pip install click
+```
+
+--------------------------------
+
+### Define a simple Click command with argument
+
+Source: https://github.com/pallets/click/blob/main/docs/testing.md
+
+Defines a Click command 'hello' that takes a 'name' argument and echoes a greeting. This is the command under test in the basic example.
+
+```python
+import click
+
+@click.command()
+@click.argument('name')
+def hello(name):
+   click.echo(f'Hello {name}!')
+```
+
+--------------------------------
+
+### Output from inferred name example
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Shell session showing the command 'echo --string-to-echo "Hi!"' prints 'Hi!'.
+
+```shell-session
+$ echo --string-to-echo 'Hi!'
+Hi!
+```
+
+--------------------------------
+
+### Click group with epilog and subcommand help
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Defines a Click group with a help string and epilog that shows an example usage. The group's help output lists subcommands, options, and the epilog together. The greet command accepts a positional name and options --count (default 1, shown) and --greeting (default "Hello", shown).
+
+```python
+import click
+
+@click.group(
+    help="Example Click app with subcommands, options, and positional arguments.",
+    epilog=("Examples:\n\n\b\n  python hello.py greet Alice --count 2\n"),
+)
+def cli() -> None:
+    """Run the example CLI."""
+
+@cli.command()
+@click.argument("name")
+@click.option(
+    "--count",
+    default=1,
+    show_default=True,
+    type=click.IntRange(1, None),
+    help="Number of greetings to print.",
+)
+@click.option(
+    "--greeting",
+    default="Hello",
+    show_default=True,
+    help="Greeting prefix to use.",
+)
+def greet(name: str, count: int, greeting: str) -> None:
+    """Greet NAME one or more times."""
+    for _ in range(count):
+        click.echo(f"{greeting} {name}!")
+
+```
+
+```shell-session
+$ cli --help
+Usage: cli [OPTIONS] COMMAND [ARGS]...
+
+  Example Click app with subcommands, options, and positional arguments.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  greet  Greet NAME one or more times.
+
+  Examples:
+
+    python hello.py greet Alice --count 2
+
+```
+
+--------------------------------
+
+### Read config from app directory with click.get_app_dir()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Use click.get_app_dir() to find the OS-appropriate per-user config directory for an application. This example reads a config.ini file from that directory using ConfigParser and returns a flattened dictionary of section.key values.
+
+```python
+import os
+import click
+import ConfigParser
+
+APP_NAME = 'My Application'
+def read_config():
+cfg = os.path.join(click.get_app_dir(APP_NAME), 'config.ini')
+parser = ConfigParser.RawConfigParser()
+parser.read([cfg])
+rv = {}
+for section in parser.sections():
+    for key, value in parser.items(section):
+        rv[f"{section}.{key}"] = value
+return rv
+```
+
+--------------------------------
+
+### Parameter Source Priority: Comparison Example
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Shows how to use the ParameterSource enum to check how explicitly a value was provided. The source is compared using operators because ParameterSource is an IntEnum.
+
+```python
+source = ctx.get_parameter_source("port")
+
+# True if the value was explicitly set (command line, prompt, or env var).
+if source < click.ParameterSource.DEFAULT_MAP:
+    ...
+
+# True if the value came from any kind of default.
+if source >= click.ParameterSource.DEFAULT_MAP:
+    ...
+```
+
+--------------------------------
+
+### Customize help option names with context_settings
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Override the default help option names by setting help_option_names in the context settings. The example changes the help parameter to accept -h and --help, and the output shows both options listed.
+
+```python
+import click
+
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+@click.command(context_settings=CONTEXT_SETTINGS)
+def cli():
+    pass
+
+```
+
+```shell-session
+$ cli -h
+Usage: cli [OPTIONS]
+
+Options:
+  -h, --help  Show this message and exit.
+
+```
+
+--------------------------------
+
+### Shell variable expansion on Windows - example output
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Shows the output when passing an environment variable in the argument. Click expands the variable even when single quotes are used, because the shell does not expand it.
+
+```powershell
+> Desktop python foo.py '$M0/.viola/2025-01-25-17-20-23-307878'
+> M:/home/ramrachum/.viola/2025-01-25-17-20-23-307878
+>
+```
+
+--------------------------------
+
+### Invoke and Forward Commands in Click
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Use Context.forward() to invoke another command with the current arguments, and Context.invoke() with explicit arguments. This example shows both methods in a group, where 'dist' calls 'test' twice.
+
+```python
+cli = click.Group()
+
+@cli.command()
+@click.option('--count', default=1)
+def test(count):
+    click.echo(f'Count: {count}')
+
+@cli.command()
+@click.option('--count', default=1)
+@click.pass_context
+def dist(ctx, count):
+    ctx.forward(test)
+    ctx.invoke(test, count=42)
+
+```
+
+--------------------------------
+
+### Example of shell completion output for a Click command
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Shows the default completion behavior for a Click command. Typing the command name and pressing Tab lists available subcommands; typing a dash after a subcommand lists its options. Hidden commands and options are not shown.
+
+```console
+$ repo <TAB><TAB>
+clone  commit  copy  delete  setuser
+$ repo clone -<TAB><TAB>
+--deep  --help  --rev  --shallow  -r
+
+```
+
+--------------------------------
+
+### Override value completion with shell_complete function
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Provide a shell_complete function to a parameter to customize value completion without a custom type. The function receives ctx, param, and incomplete, and returns a list of CompletionItem objects or a list of strings. This example suggests environment variables that start with the incomplete value and is used with a click argument.
+
+```python
+def complete_env_vars(ctx, param, incomplete):
+    return [k for k in os.environ if k.startswith(incomplete)]
+
+@click.command()
+@click.argument("name", shell_complete=complete_env_vars)
+def cli(name):
+    click.echo(f"Name: {name}")
+    click.echo(f"Value: {os.environ[name]}")
+```
+
+--------------------------------
+
+### Custom ParamType shell_complete() for environment variable completion
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Override the shell_complete() method of a custom ParamType to suggest environment variables that start with the incomplete value. The method must return a list of CompletionItem objects; the built-in implementations use the 'type' and 'help' metadata for special handling and help text. The example defines an EnvVarType and uses it with a click option.
+
+```python
+class EnvVarType(ParamType[str]):
+    name = "envvar"
+
+    def shell_complete(self, ctx, param, incomplete):
+        return [
+            CompletionItem(name)
+            for name in os.environ if name.startswith(incomplete)
+        ]
+
+@click.command()
+@click.option("--ev", type=EnvVarType())
+def cli(ev):
+    click.echo(os.environ[ev])
+```
+
+--------------------------------
+
+### Argument escape with -- separator
+
+Source: https://github.com/pallets/click/blob/main/docs/arguments.md
+
+Shows how to handle arguments that start with a dash by using the `--` separator. The command accepts any number of file paths and prints each one. The shell session demonstrates the expected output.
+
+```python
+@click.command()
+@click.argument('files', nargs=-1, type=click.Path())
+def touch(files):
+    """Print all FILES file names."""
+    for filename in files:
+        click.echo(filename)
+```
+
+```shell-session
+$ touch -- -foo.txt bar.txt
+-foo.txt
+bar.txt
+```
+
+--------------------------------
+
+### Basic click.Option with --text
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Basic example of a click.Option with a single option name. The decorated function argument is not required and defaults to None if the option is not passed. The first shell session shows the output when the option is provided and when it is omitted; the second shows the generated help text.
+
+```python
+@click.command()
+@click.option('--text')
+def print_this(text):
+    click.echo(text)
+```
+
+```shell-session
+$ print-this --text=this
+this
+$ print-this
+```
+
+```shell-session
+$ print-this --help
+Usage: print-this [OPTIONS]
+
+Options:
+  --text TEXT
+  --help       Show this message and exit.
+```
+
+--------------------------------
+
+### Manual prompt with default value
+
+Source: https://github.com/pallets/click/blob/main/docs/prompts.md
+
+Prompts for input with a default value. The type is automatically inferred from the default, so this example only accepts floats.
+
+```python
+value = click.prompt('Please enter a number', default=42.0)
+```
+
+--------------------------------
+
+### Click command with epilog help
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Defines a Click command with an epilog that appears at the end of the help output. The epilog is useful for showing example usages or referencing additional resources. The help output shows the epilog after the options section.
+
+```python
+import click
+
+@click.command(
+    epilog='See https://example.com for more details',
+    )
+def init():
+    """Initializes the repository."""
+
+```
+
+```shell-session
+$ init --help
+Usage: init [OPTIONS]
+
+  Initializes the repository.
+
+Options:
+  --help  Show this message and exit.
+
+  See https://example.com for more details
+
+```
+
+--------------------------------
+
+### Count option with count=True
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Counts how many times the option is passed. If not passed, the count is 0. The example shows the output for no option and for '-vvv'.
+
+```python
+@click.command()
+@click.option('-v', '--verbose', count=True)
+def log(verbose):
+    click.echo(f"Verbosity: {verbose}")
+```
+
+```shell-session
+$ log
+Verbosity: 0
+$ log -vvv
+Verbosity: 3
+```
+
+--------------------------------
+
+### Basic option with explicit argument name
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+The @click.option() decorator takes the option name and the function argument name. In this example, the argument name 'string_to_echo' is explicitly provided.
+
+```python
+@click.command()
+@click.option('--string-to-echo', 'string_to_echo')
+def echo(string_to_echo):
+    click.echo(string_to_echo)
+```
+
+--------------------------------
+
+### Token Normalization with CONTEXT_SETTINGS
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Set the 'token_normalize_func' in CONTEXT_SETTINGS to lowercase all tokens. Use it with a Click command to enable case-insensitive option names. The example shows that --NAME=Pete works.
+
+```python
+CONTEXT_SETTINGS = {'token_normalize_func': lambda x: x.lower()}
+
+@click.command(context_settings=CONTEXT_SETTINGS)
+@click.option('--name', default='Pete')
+def cli(name):
+    click.echo(f"Name: {name}")
+
+```
+
+--------------------------------
+
+### Clear terminal screen with click.clear()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Clears the entire visible terminal screen in a platform-agnostic way using click.clear(). Available starting with Click 2.0.
+
+```python
+import click
+click.clear()
+```
+
+--------------------------------
+
+### Inferred argument name example
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+The '@click.option('--string-to-echo')' decorator infers the function argument name from the option string. The shell output demonstrates the command works with that option.
+
+```python
+@click.command()
+@click.option('--string-to-echo')
+def echo(string_to_echo):
+    click.echo(string_to_echo)
+```
+
+--------------------------------
+
+### Boolean option with + and - prefix characters
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Use this snippet to define a boolean option with alternative prefix characters `+` and `-`. The `+w/-w` option sets the `w` parameter to `True` when `+w` is passed and `False` when `-w` is passed. The example shows the command output for both invocations.
+
+```python
+@click.command()
+@click.option('+w/-w')
+def chmod(w):
+    click.echo(f"writable={w}")
+```
+
+```shell-session
+$ chmod +w
+writable=True
+$ chmod -w
+writable=False
+```
+
+--------------------------------
+
+### Progress bar updates after each iteration
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+progressbar() updates the bar after each iteration of the loop. This example shows that the bar renders correctly when the loop body performs work (here, sleeping) before the next iteration.
+
+```python
+import time
+
+with click.progressbar([1, 2, 3]) as bar:
+    for x in bar:
+        click.echo(f"sleep({x})...")
+        time.sleep(x)
+```
+
+--------------------------------
+
+### Override default with default_map in Click CLI
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Complete example of overriding a default option value via the default_map passed to the CLI invocation. The command outputs the overridden port (5000) instead of the default 8000.
+
+```python
+import click
+
+@click.group()
+def cli():
+    pass
+
+@cli.command()
+@click.option('--port', default=8000)
+def runserver(port):
+    click.echo(f"Serving on http://127.0.0.1:{port}/")
+
+if __name__ == '__main__':
+    cli(default_map={
+        'runserver': {
+            'port': 5000
+        }
+    })
+```
+
+```shell-session
+$ cli runserver
+Serving on http://127.0.0.1:5000/
+```
+
+--------------------------------
+
+### Create chained command group with chain=True
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Creates a command group with chain=True to allow invoking multiple subcommands in a single call. The example defines a 'validate' and 'build' subcommand, and the shell session shows the output when running 'my-app validate build'. Note that chaining has restrictions: only the last command may use nargs=-1, nesting groups below a chain group is not possible, options must precede arguments for each command, and Context.invoked_subcommand will be '*'.
+
+```python
+@click.group(chain=True)
+def cli():
+    pass
+
+@cli.command('validate')
+def validate():
+    click.echo('validate')
+
+@cli.command('build')
+def build():
+    click.echo('build')
+```
+
+```shell-session
+$ my-app validate build
+validate
+build
+```
+
+--------------------------------
+
+### Multiple options from environment values with click.Path
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Use this snippet to read multiple values from an environment variable into a Click option. The `PATHS` environment variable is split on colons (Unix) or semicolons (Windows) because the option uses `type=click.Path()`. The command prints each path; the example shows the expected output after exporting `PATHS=./foo/bar:./test`.
+
+```python
+@click.command()
+@click.option('paths', '--path', envvar='PATHS', multiple=True,
+              type=click.Path())
+def perform(paths):
+    for path in paths:
+        click.echo(path)
+
+if __name__ == '__main__':
+    perform()
+```
+
+```shell-session
+$ export PATHS=./foo/bar:./test
+$ perform
+./foo/bar
+./test
+```
+
+--------------------------------
+
+### Display long text with click.echo_via_pager()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Uses click.echo_via_pager() to display a long text through a pager. The example generates 200 lines of text and passes them as a single string. The pager is used only if possible; otherwise, output is written to stdout.
+
+```python
+@click.command()
+def less():
+    click.echo_via_pager("\n".join(f"Line {idx}" for idx in range(200)))
+```
+
+--------------------------------
+
+### Manually update click.progressbar with length
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+For external iterators where you advance the bar irregularly, specify only the length (no iterable) and call bar.update() manually instead of iterating over the bar. The example shows updating by the size of each extracted archive.
+
+```python
+with click.progressbar(length=total_size,
+                       label='Unzipping archive') as bar:
+    for archive in zip_file:
+        archive.extract()
+        bar.update(archive.size)
+```
+
+--------------------------------
+
+### Ignore unknown options with an UNPROCESSED argument
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Requires setting 'ignore_unknown_options' and using 'nargs=-1' with 'type=UNPROCESSED' to collect leftover arguments. The example shows a fake wrapper around Python's timeit that forwards options to the command line; unknown options are stored in the argument variable.
+
+```python
+from subprocess import call
+
+@click.command(context_settings={'ignore_unknown_options': True})
+@click.option('-v', '--verbose', is_flag=True, help='Enables verbose mode')
+@click.argument('timeit_args', nargs=-1, type=click.UNPROCESSED)
+def cli(verbose, timeit_args):
+    """A fake wrapper around Python's timeit."""
+    cmdline = ['echo', 'python', '-mtimeit', *timeit_args]
+    if verbose:
+        click.echo(f"Invoking: {' '.join(cmdline)}")
+    call(cmdline)
+```
+
+```shell-session
+$ cli --help
+Usage: cli [OPTIONS] [TIMEIT_ARGS]...
+
+  A fake wrapper around Python's timeit.
+
+Options:
+  -v, --verbose  Enables verbose mode
+  --help         Show this message and exit.
+
+$ cli -n 100 'a = 1; b = 2; a * b'
+python -mtimeit -n 100 a = 1; b = 2; a * b
+
+$ cli -v 'a = 1; b = 2; a * b'
+Invoking: echo python -mtimeit a = 1; b = 2; a * b
+python -mtimeit a = 1; b = 2; a * b
+```
+
+--------------------------------
+
+### Create a basic Click command with entry point
+
+Source: https://github.com/pallets/click/blob/main/docs/quickstart.md
+
+The first block defines a Click command by decorating a function with @click.command() and using click.echo() to print output. The second block is the standard entry point that invokes the command when the script is run directly. Together they form a minimal Click application.
+
+```python
+import click
+
+@click.command()
+def hello():
+    click.echo('Hello World!')
+```
+
+```python
+if __name__ == '__main__':
+    hello()
+```
+
+--------------------------------
+
+### Validate rolls with callback and BadParameter
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Defines a callback that parses a 'NdM' string into a tuple, raising click.BadParameter on invalid input. The callback runs after type conversion and is used with click.UNPROCESSED type. The example shows the command and its usage, including error output.
+
+```python
+def validate_rolls(ctx, param, value):
+    if isinstance(value, tuple):
+        return value
+
+    try:
+        rolls, _, dice = value.partition("d")
+        return int(dice), int(rolls)
+    except ValueError:
+        raise click.BadParameter("format must be 'NdM'")
+
+@click.command()
+@click.option(
+    "--rolls", type=click.UNPROCESSED, callback=validate_rolls,
+    default="1d6", prompt=True,
+)
+def roll(rolls):
+    sides, times = rolls
+    click.echo(f"Rolling a {sides}-sided dice {times} time(s)")
+```
+
+```shell-session
+$ roll --rolls=42
+Usage: roll [OPTIONS]
+Try 'roll --help' for help.
+
+Error: Invalid value for '--rolls': format must be 'NdM'
+
+$ roll --rolls=2d12
+Rolling a 12-sided dice 2 time(s)
+
+$ roll
+Rolls [1d6]: 42
+Error: format must be 'NdM'
+Rolls [1d6]: 2d12
+Rolling a 12-sided dice 2 time(s)
+```
+
+--------------------------------
+
+### Run with briefcase dev and pass arguments
+
+Source: https://github.com/pallets/click/blob/main/docs/standalone-apps.md
+
+Shows running the app from source with briefcase dev, passing arguments after --. Output shows greeting with default and with --count 2.
+
+```console
+$ briefcase dev -- World
+Hello, World!
+$ briefcase dev -- World --count 2
+Hello, World!
+Hello, World!
+```
+
+--------------------------------
+
+### Entry point __main__.py
+
+Source: https://github.com/pallets/click/blob/main/docs/standalone-apps.md
+
+Creates __main__.py that imports the Click command and calls it when run with python -m. Required for Briefcase to launch the app.
+
+```python
+from hello_cli.app import main
+
+if __name__ == "__main__":
+    main()
+```
+
+--------------------------------
+
+### Command Aliases: AliasedGroup subclass
+
+Source: https://github.com/pallets/click/blob/main/docs/extending-click.md
+
+Defines a click.Group subclass that accepts unique prefixes for commands. Overrides get_command() to find commands that start with the given name, and resolve_command() to return the full command name. If multiple matches exist, it fails with a message listing them.
+
+```python
+class AliasedGroup(click.Group):
+    def get_command(self, ctx, cmd_name):
+        rv = super().get_command(ctx, cmd_name)
+
+        if rv is not None:
+            return rv
+
+        matches = [
+            x for x in self.list_commands(ctx)
+            if x.startswith(cmd_name)
+        ]
+
+        if not matches:
+            return None
+
+        if len(matches) == 1:
+            return click.Group.get_command(self, ctx, matches[0])
+
+        ctx.fail(f"Too many matches: {', '.join(sorted(matches))}")
+
+    def resolve_command(self, ctx, args):
+        # always return the full command name
+        _, cmd, args = super().resolve_command(ctx, args)
+        return cmd.name, cmd, args
+```
+
+--------------------------------
+
+### Launch applications with click.launch()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Opens the default application for a URL or file. With locate=True, the file manager opens and selects the file.
+
+```python
+click.launch("https://click.palletsprojects.com/")
+click.launch("/my/downloaded/file.txt", locate=True)
+```
+
+--------------------------------
+
+### Add ctx argument to ParamType methods for Click 8.2 compatibility
+
+Source: https://github.com/pallets/click/blob/main/docs/support-multiple-versions.md
+
+Use the decorator to wrap ParamType method overrides so they accept the new ctx argument in Click 8.2 while remaining compatible with 8.1. The subclass example shows how to apply it to get_metavar; the same technique works for other methods like get_missing_message.
+
+```python
+import functools
+import typing as t
+import click
+
+F = t.TypeVar("F", bound=t.Callable[..., t.Any])
+
+def add_ctx_arg(f: F) -> F:
+    @functools.wraps(f)
+    def wrapper(*args: t.Any, **kwargs: t.Any) -> t.Any:
+        if "ctx" not in kwargs:
+            kwargs["ctx"] = click.get_current_context(silent=True)
+
+        return f(*args, **kwargs)
+
+    return wrapper  # type: ignore[return-value]
+
+```
+
+```python
+class CommaDelimitedString(click.ParamType[str]):
+    @add_ctx_arg
+    def get_metavar(self, param: click.Parameter, ctx: click.Context | None) -> str:
+        return "TEXT,TEXT,..."
+
+```
+
+--------------------------------
+
+### Multi value option as tuple with type=(str, int)
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Multi value option as a tuple with different types per index. The first block uses a tuple literal as type, which automatically sets nargs to the tuple length and uses click.Tuple. The second block shows the equivalent explicit form with nargs=2 and click.Tuple. The command line shows the output for the example invocation.
+
+```python
+@click.command()
+@click.option('--item', type=(str, int))
+def putitem(item):
+    name, id = item
+    click.echo(f"name={name} id={id}")
+```
+
+```shell-session
+$ putitem --item peter 1338
+name=peter id=1338
+```
+
+```python
+@click.command()
+@click.option('--item', nargs=2, type=click.Tuple([str, int]))
+def putitem(item):
+    name, id = item
+    click.echo(f"name={name} id={id}")
+```
+
+--------------------------------
+
+### Project structure for a Click app with Briefcase
+
+Source: https://github.com/pallets/click/blob/main/docs/standalone-apps.md
+
+Shows the directory layout of a Click application named hello-cli, with source in src/hello_cli and a pyproject.toml at the root.
+
+```text
+hello-cli/
+    src/
+        hello_cli/
+            __init__.py
+            app.py
+    LICENSE
+    pyproject.toml
+```
+
+--------------------------------
+
+### Run cp command and see output
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Shows the output of running the cp command, which prints True because the Repo object is created automatically.
+
+```console
+$ cp
+True
+```
+
+--------------------------------
+
+### Enable Fish completion in completions file
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Add this line to ~/.config/fish/completions/foo-bar.fish to enable completion for the foo-bar command in Fish. This is the same file used for the activation script method; for Fish it's probably always easier to use that method.
+
+```fish
+_FOO_BAR_COMPLETE=fish_source foo-bar | source
+```
+
+--------------------------------
+
+### Contents of pyproject.toml
+
+Source: https://github.com/pallets/click/blob/main/docs/entry-points.md
+
+Configures the project metadata, dependencies, and the [project.scripts] entry point that maps the 'hello' command to the cli function in hello.hello.
+
+```toml
+[project]
+name = "hello"
+version = "1.0.0"
+description = "Hello CLI"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+]
+
+[project.scripts]
+hello = "hello.hello:cli"
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
+```
+
+--------------------------------
+
+### Run hello.py and view its help output
+
+Source: https://github.com/pallets/click/blob/main/docs/quickstart.md
+
+These shell sessions show the expected output when running the hello.py script and its help page. The first command prints 'Hello World!', and the second displays the usage and options, including the automatically added --help flag.
+
+```shell-session
+$ python hello.py
+Hello World!
+```
+
+```shell-session
+$ python hello.py --help
+Usage: hello.py [OPTIONS]
+
+Options:
+  --help  Show this message and exit.
+```
+
+--------------------------------
+
+### Click hello command with options and help
+
+Source: https://github.com/pallets/click/blob/main/docs/index.md
+
+A minimal Click program that greets a name a given number of times. The program uses the @click.command() decorator and two options: --count (default 1) and --name (prompted). Running it with --count=3 prompts for a name and prints the greeting three times; running with --help shows the auto-generated help page.
+
+```python
+import click
+
+@click.command()
+@click.option('--count', default=1, help='Number of greetings.')
+@click.option('--name', prompt='Your name',
+              help='The person to greet.')
+def hello(count, name):
+    """Simple program that greets NAME for a total of COUNT times."""
+    for x in range(count):
+        click.echo(f"Hello {name}!")
+
+if __name__ == '__main__':
+    hello()
+```
+
+```shell-session
+$ python hello.py --count=3
+Your name: John
+Hello John!
+Hello John!
+Hello John!
+```
+
+```shell-session
+$ python hello.py --help
+Usage: hello.py [OPTIONS]
+
+  Simple program that greets NAME for a total of COUNT times.
+
+Options:
+  --count INTEGER  Number of greetings.
+  --name TEXT      The person to greet.
+  --help           Show this message and exit.
+```
+
+--------------------------------
+
+### Basic Click group with subcommand and help output
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Defines a Click group named 'greeting' with a subcommand 'say-hello' that echoes 'Hello!' a configurable number of times. Invoking the group without a command shows the help page; invoking the subcommand runs the group callback first, then the command. The group callback executes unless interrupted, such as by the --help option.
+
+```python
+@click.group()
+def greeting():
+    click.echo('Starting greeting ...')
+
+@greeting.command('say-hello')
+@click.option('--count', default=1)
+def hello(count):
+    for x in range(count):
+        click.echo("Hello!")
+```
+
+```shell-session
+$ greeting
+Usage: greeting [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  say-hello
+```
+
+```shell-session
+$ greeting say-hello
+Starting greeting ...
+Hello!
+$ greeting say-hello --help
+Starting greeting ...
+Usage: greeting say-hello [OPTIONS]
+
+Options:
+  --count INTEGER
+  --help           Show this message and exit.
+```
+
+--------------------------------
+
+### Python Click: hello command with help
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Defines a Click command with an argument and option, using help strings and a docstring that are automatically used in the help page. The output shows the generated help text.
+
+```python
+@click.command()
+@click.argument('name', help='The name to print.')
+@click.option('--count', default=1, help='number of greetings')
+def hello(name: str, count: int):
+    """This script prints hello and a name one or more times."""
+    for x in range(count):
+        if name:
+            click.echo(f"Hello {name}!")
+        else:
+            click.echo("Hello!")
+```
+
+```shell-session
+$ hello --help
+Usage: hello [OPTIONS] NAME
+
+  This script prints hello and a name one or more times.
+
+Positional arguments:
+  NAME  The name to print.
+
+Options:
+  --count INTEGER  number of greetings
+  --help           Show this message and exit.
+```
+
+--------------------------------
+
+### Briefcase configuration in pyproject.toml
+
+Source: https://github.com/pallets/click/blob/main/docs/standalone-apps.md
+
+Adds [tool.briefcase] and [tool.briefcase.app.hello-cli] sections. Sets console_app = true to treat the project as a CLI app, lists sources and requires click.
+
+```toml
+[tool.briefcase]
+project_name = "Hello CLI"
+bundle = "com.example"
+version = "0.0.1"
+url = "https://example.com/hello-cli"
+license.file = "LICENSE"
+author = "Your Name"
+author_email = "you@example.com"
+
+[tool.briefcase.app.hello-cli]
+formal_name = "Hello CLI"
+description = "My first application"
+long_description = """More details about the app should go here.
+"""
+sources = [
+    "src/hello_cli",
+]
+console_app = true
+requires = [
+    "click",
+]
+```
+
+--------------------------------
+
+### Root command with click.group and options
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Defines a Click group that accepts --repo-home and --debug/--no-debug options, creates a Repo object, and stores it in the context via pass_context.
+
+```python
+import os
+import click
+
+
+class Repo(object):
+    def __init__(self, home=None, debug=False):
+        self.home = os.path.abspath(home or '.')
+        self.debug = debug
+
+
+@click.group()
+@click.option('--repo-home', envvar='REPO_HOME', default='.repo')
+@click.option('--debug/--no-debug', default=False,
+              envvar='REPO_DEBUG')
+@click.pass_context
+def cli(ctx, repo_home, debug):
+    ctx.obj = Repo(repo_home, debug)
+```
+
+--------------------------------
+
+### Dynamic default with show_default
+
+Source: https://github.com/pallets/click/blob/main/docs/prompts.md
+
+Adds show_default to describe the dynamic default in help output. The output shows the help text with the custom default description.
+
+```python
+import os
+
+@click.command()
+@click.option(
+    "--username", prompt=True,
+    default=lambda: os.environ.get("USER", ""),
+    show_default="current user"
+)
+def hello(username):
+    click.echo(f"Hello, {username}!")
+```
+
+```shell-session
+$ hello --help
+Usage: hello [OPTIONS]
+
+Options:
+  --username TEXT  [default: (current user)]
+  --help           Show this message and exit.
+```
+
+--------------------------------
+
+### Recommended pattern: plain function wrapped with Click command
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Shows the recommended pattern of keeping a plain function and wrapping it with a thin Click command. The function remains available as a Python API, and the command adds the CLI on top.
+
+```python
+def nasa_date_to_iso(datestr): ...
+
+
+@click.command("nasa_date_to_iso")
+@click.argument("datestr")
+def nasa_date_to_iso_command(datestr):
+    click.echo(nasa_date_to_iso(datestr))
+```
+
+--------------------------------
+
+### Alternative form using main() with standalone_mode=False
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Shows an alternative way to run a Click command from Python using the main() method with standalone_mode=False.
+
+```python
+nasa_date_to_iso_command.main(["2017-090"], standalone_mode=False)
+```
+
+--------------------------------
+
+### Contents of hello.py
+
+Source: https://github.com/pallets/click/blob/main/docs/entry-points.md
+
+Defines a Click command named cli that prints a greeting. This is the function referenced by the entry point in pyproject.toml.
+
+```python
+import click
+
+@click.command()
+def cli():
+    """Prints a greeting."""
+    click.echo("Hello, World!")
+```
+
+--------------------------------
+
+### Show defaults with show_default=True
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Shows how show_default=True displays defaults for options, but for boolean flags the default remains hidden when the default value is False. The output shows the resulting help page.
+
+```python
+@click.command()
+@click.option('--n', default=1, show_default=True)
+@click.option("--gr", is_flag=True, show_default=True, default=False, help="Greet the world.")
+@click.option("--br", is_flag=True, show_default=True, default=True, help="Add a thematic break")
+def dots(n, gr, br):
+    if gr:
+        click.echo('Hello world!')
+    click.echo('.' * n)
+    if br:
+        click.echo('-' * n)
+```
+
+```shell-session
+$ dots --help
+Usage: dots [OPTIONS]
+
+Options:
+  --n INTEGER  [default: 1]
+  --gr         Greet the world.
+  --br         Add a thematic break  [default: True]
+  --help       Show this message and exit.
+```
+
+--------------------------------
+
+### Use with_resource() in a group to open a resource
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+The cli group uses ctx.with_resource(Repo(repo_home)) to enter the context manager and return the resource. The resource is cleaned up when the group and subcommands finish. The log subcommand accesses the repo via click.pass_obj.
+
+```python
+@click.group()
+@click.option("--repo-home", default=".repo")
+@click.pass_context
+def cli(ctx, repo_home):
+    ctx.obj = ctx.with_resource(Repo(repo_home))
+
+@cli.command()
+@click.pass_obj
+def log(obj):
+    # obj is the repo opened in the cli group
+    for entry in obj.db.query(...):
+        click.echo(entry)
+```
+
+--------------------------------
+
+### Create a virtualenv
+
+Source: https://github.com/pallets/click/blob/main/docs/virtualenv.md
+
+Creates a project folder and a virtual environment named .venv inside it using python3 -m venv.
+
+```console
+$ mkdir myproject
+$ cd myproject
+$ python3 -m venv .venv
+```
+
+--------------------------------
+
+### Simple Click command with options and prompt
+
+Source: https://github.com/pallets/click/blob/main/README.md
+
+A minimal Click application that defines a command with two options: --count (default 1) and --name (prompted). Running the script with --count=3 prompts for a name and prints a greeting that many times. The output shows the expected interaction and result.
+
+```python
+import click
+
+@click.command()
+@click.option("--count", default=1, help="Number of greetings.")
+@click.option("--name", prompt="Your name", help="The person to greet.")
+def hello(count, name):
+    """Simple program that greets NAME for a total of COUNT times."""
+    for _ in range(count):
+        click.echo(f"Hello, {name}!")
+
+if __name__ == '__main__':
+    hello()
+```
+
+```shell
+$ python hello.py --count=3
+Your name: Click
+Hello, Click!
+Hello, Click!
+Hello, Click!
+```
+
+--------------------------------
+
+### Test the hello command with CliRunner
+
+Source: https://github.com/pallets/click/blob/main/docs/testing.md
+
+Uses CliRunner.invoke() to run the 'hello' command with argument 'Peter'. Asserts exit code is 0 and output matches 'Hello Peter!\n'.
+
+```python
+from click.testing import CliRunner
+from hello import hello
+
+def test_hello_world():
+  runner = CliRunner()
+  result = runner.invoke(hello, ['Peter'])
+  assert result.exit_code == 0
+  assert result.output == 'Hello Peter!\n'
+```
+
+--------------------------------
+
+### Confirmation prompt with @click.option and shell-session output
+
+Source: https://github.com/pallets/click/blob/main/docs/option-decorators.md
+
+Shows the manual way to add a confirmation prompt for a dangerous operation using a boolean --yes flag and a callback that aborts when the flag is not provided. The shell-session output demonstrates both the abort path and the success path with --yes.
+
+```python
+def abort_if_false(ctx, param, value):
+    if not value:
+        ctx.abort()
+
+@click.command()
+@click.option('--yes', is_flag=True, callback=abort_if_false,
+              expose_value=False,
+              prompt='Are you sure you want to drop the db?')
+def dropdb():
+    click.echo('Dropped all tables!')
+
+```
+
+```shell-session
+$ dropdb
+Are you sure you want to drop the db? [y/N]: n
+Aborted!
+$ dropdb --yes
+Dropped all tables!
+
+```
+
+--------------------------------
+
+### Hide default with show_default=False
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Shows how to control the appearance of defaults with show_default. When show_default is False, the default value is not shown in the help output. The output shows the resulting help page.
+
+```python
+@click.command()
+@click.option('--n', default=1, show_default=False, help='number of dots')
+def dots(n):
+    click.echo('.' * n)
+```
+
+```shell-session
+$ dots --help
+Usage: dots [OPTIONS]
+
+Options:
+  --n INTEGER  number of dots
+  --help       Show this message and exit.
+```
+
+--------------------------------
+
+### Auto Envvar Prefix: Basic Usage
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Shows how to enable auto_envvar_prefix on a simple command. The environment variable is formed as PREFIX_PARAMETER (e.g., GREETER_USERNAME).
+
+```python
+@click.command()
+@click.option('--username')
+def greet(username):
+    click.echo(f'Hello {username}!')
+
+if __name__ == '__main__':
+    greet(auto_envvar_prefix='GREETER')
+```
+
+```shell-session
+$ export GREETER_USERNAME=john
+$ greet
+Hello john!
+```
+
+--------------------------------
+
+### Basic Click command with count option
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+A basic Click command that loops and echoes 'Hello!' a number of times. Demonstrates the @click.command() and @click.option() decorators. Running `hello --count 2` prints 'Hello!' twice.
+
+```python
+@click.command()
+@click.option('--count', default=1)
+def hello(count):
+    for x in range(count):
+        click.echo("Hello!")
+```
+
+```shell-session
+$ hello --count 2
+Hello!
+Hello!
+```
+
+--------------------------------
+
+### Registering commands later with group.add_command()
+
+Source: https://github.com/pallets/click/blob/main/docs/quickstart.md
+
+Shows how to define a command with the plain `@click.command()` decorator and later register it to a group using `group.add_command()`. This pattern allows splitting commands into separate Python modules.
+
+```python
+@click.command()
+def greet():
+    click.echo("Hello, World!")
+```
+
+```python
+@click.group()
+def group():
+    pass
+
+group.add_command(greet)
+```
+
+--------------------------------
+
+### Activate virtualenv on Windows
+
+Source: https://github.com/pallets/click/blob/main/docs/virtualenv.md
+
+Activates the virtual environment on Windows. The prompt changes to show the active environment.
+
+```text
+> .venv\scripts\activate
+(venv) >
+```
+
+--------------------------------
+
+### Use click.argument for path completion
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Alternative to a prompt: takes the value as a command-line argument instead. The shell completes paths natively and Click's completion mode participates.
+
+```python
+@click.command()
+@click.argument("source", type=click.Path(exists=True))
+def convert(source):
+    click.echo(f"Converting {source}")
+
+```
+
+--------------------------------
+
+### Use Repo with the with statement
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Shows the typical usage of the Repo context manager with the with statement. However, this approach would close the database before a subcommand can use it.
+
+```python
+with Repo() as repo:
+    repo.db.query(...)
+```
+
+--------------------------------
+
+### Generate Fish completion script to completions file
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Save the Fish completion script to the completions directory. This command generates the completion script and redirects it to ~/.config/fish/completions/foo-bar.fish.
+
+```fish
+_FOO_BAR_COMPLETE=fish_source foo-bar > ~/.config/fish/completions/foo-bar.fish
+```
+
+--------------------------------
+
+### Show environment variable in option help with show_envvar
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Shows how to display environment variables in option help text by passing show_envvar=True. The help output includes the environment variable name in the option's help line.
+
+```python
+@click.command()
+@click.option('--username', envvar='USERNAME', show_envvar=True)
+def greet(username):
+    click.echo(f'Hello {username}!')
+```
+
+```shell-session
+$ greet --help
+Usage: greet [OPTIONS]
+
+Options:
+  --username TEXT  [env var: USERNAME]
+  --help           Show this message and exit.
+```
+
+--------------------------------
+
+### Running a Click command from Python with standalone_mode=False
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Shows how to run a Click command from Python by passing a list of arguments and standalone_mode=False, so it returns the result instead of exiting. This runs the Click pipeline including parsing, validation, and callbacks.
+
+```python
+nasa_date_to_iso_command(["2017-090"], standalone_mode=False)
+```
+
+--------------------------------
+
+### Click command in app.py
+
+Source: https://github.com/pallets/click/blob/main/docs/standalone-apps.md
+
+Defines a Click command 'main' that greets a name a specified number of times. Uses @click.command, @click.argument, and @click.option.
+
+```python
+import click
+
+@click.command()
+@click.argument("name", default="World")
+@click.option("--count", default=1, help="Number of times to greet.")
+def main(name, count):
+    """Greet someone by NAME (default: World)."""
+    for _ in range(count):
+        click.echo(f"Hello, {name}!")
+```
+
+--------------------------------
+
+### Simple Click app with argument
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+A minimal Click application that echoes a message passed as an argument.
+
+```default
+import click
+
+@click.command()
+@click.argument('message')
+def main(message: str):
+    click.echo(message)
+
+if __name__ == '__main__':
+    main()
+```
+
+--------------------------------
+
+### Eager --version Flag with Callback 
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Shows how to implement an eager `--version` flag with a callback that prints a version and exits. The `is_eager=True` ensures the parameter is handled before others, and `expose_value=False` prevents the flag value from being passed to the command function. The callback also respects `ctx.resilient_parsing` to avoid destructive behavior during parsing.
+
+```python
+def print_version(ctx, param, value):
+    if not value or ctx.resilient_parsing:
+        return
+    click.echo('Version 1.0')
+    ctx.exit()
+
+@click.command()
+@click.option('--version', is_flag=True, callback=print_version,
+              expose_value=False, is_eager=True)
+def hello():
+    click.echo('Hello World!')
+```
+
+--------------------------------
+
+### Lazily Attaching Commands with add_command
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Shows how to attach commands lazily using add_command, with the resulting CLI output for both commands.
+
+```python
+@click.group()
+def cli():
+    pass
+
+@cli.command()
+def initdb():
+    click.echo('Initialized the database')
+
+@click.command()
+def dropdb():
+    click.echo('Dropped the database')
+
+cli.add_command(dropdb)
+```
+
+```shell-session
+$ cli initdb
+Initialized the database
+$ cli dropdb
+Dropped the database
+```
+
+--------------------------------
+
+### Dynamic default from environment
+
+Source: https://github.com/pallets/click/blob/main/docs/prompts.md
+
+Uses a callable as the default value to read from the environment. The prompt still appears if the option is not given on the command line.
+
+```python
+import os
+
+@click.command()
+@click.option(
+    "--username", prompt=True,
+    default=lambda: os.environ.get("USER", "")
+)
+def hello(username):
+    click.echo(f"Hello, {username}!")
+```
+
+--------------------------------
+
+### Implement MyshComplete shell completion class
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+These three Python blocks implement a custom shell completion class for a made-up shell "mysh". The first defines the source template and registers the class with `add_completion_class()`. The second implements `get_completion_args()` to parse the command line from environment variables. The third implements `format_completion()` to format each completion item.
+
+```python
+from click.shell_completion import add_completion_class
+from click.shell_completion import ShellComplete
+
+_mysh_source = """\
+%(complete_func)s {
+    response=$(%(complete_var)s=mysh_complete %(foo_bar)s)
+    # parse response and set completions somehow
+}
+call-on-complete %(foo_bar)s %(complete_func)s
+"""
+
+@add_completion_class
+class MyshComplete(ShellComplete):
+    name = "mysh"
+    source_template = _mysh_source
+```
+
+```python
+import os
+from click.parser import split_arg_string
+
+class MyshComplete(ShellComplete):
+    ...
+
+    def get_completion_args(self):
+        args = split_arg_string(os.environ["COMP_WORDS"])
+
+        if os.environ["COMP_PARTIAL"] == "1":
+            incomplete = args.pop()
+            return args, incomplete
+
+        return args, ""
+```
+
+```python
+class MyshComplete(ShellComplete):
+    ...
+
+    def format_completion(self, item):
+        return f"{item.type}\t{item.value}"
+```
+
+--------------------------------
+
+### Add parameters with option() and argument()
+
+Source: https://github.com/pallets/click/blob/main/docs/quickstart.md
+
+Adds a --count option with a default of 1 and a name argument to a Click command. Running the script with --help shows the generated usage and options.
+
+```python
+@click.command()
+@click.option('--count', default=1, help='number of greetings')
+@click.argument('name')
+def hello(count, name):
+    for x in range(count):
+        click.echo(f"Hello {name}!")
+```
+
+```shell-session
+$ python hello.py --help
+Usage: hello.py [OPTIONS] NAME
+
+Options:
+  --count INTEGER  number of greetings
+  --help           Show this message and exit.
+```
+
+--------------------------------
+
+### Document argument with help parameter
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Shows how to document a positional argument with the help parameter, which appears in the Positional arguments section of the help page. The command docstring is still used for the main help text. The output shows the resulting help page.
+
+```python
+@click.command()
+@click.argument('filename', help='The file to print.')
+def touch(filename):
+    """Print FILENAME."""
+    click.echo(filename)
+```
+
+```shell-session
+$ touch --help
+Usage: touch [OPTIONS] FILENAME
+
+  Print FILENAME.
+
+Positional arguments:
+  FILENAME  The file to print.
+
+Options:
+  --help  Show this message and exit.
+```
+
+--------------------------------
+
+### Password prompt with @click.option and shell-session output
+
+Source: https://github.com/pallets/click/blob/main/docs/option-decorators.md
+
+Shows the manual way to create a password prompt with hidden input and confirmation using @click.option. The command asks for a password, repeats for confirmation, then prints the ROT13-encoded value. The shell-session output shows the expected prompts and result.
+
+```python
+import codecs
+
+@click.command()
+@click.option(
+    "--password", prompt=True, hide_input=True,
+    confirmation_prompt=True
+)
+def encode(password):
+    click.echo(f"encoded: {codecs.encode(password, 'rot13')}")
+
+```
+
+```shell-session
+$ encode
+Password: 
+Repeat for confirmation: 
+encoded: frperg
+
+```
+
+--------------------------------
+
+### Activate virtualenv on OSX/Linux
+
+Source: https://github.com/pallets/click/blob/main/docs/virtualenv.md
+
+Activates the virtual environment on OSX/Linux. The prompt changes to show the active environment.
+
+```text
+$ . .venv/bin/activate
+(venv) $
+```
+
+--------------------------------
+
+### Unsupported StringIO replacement for sys.stdin and sys.stdout
+
+Source: https://github.com/pallets/click/blob/main/docs/unicode-support.md
+
+This is the unsupported way to replace standard input and output streams in Click. It fails because Click needs to reopen the stream in binary mode, which is not possible with StringIO.
+
+```python
+sys.stdin = io.StringIO('Input here')
+sys.stdout = io.StringIO()
+```
+
+--------------------------------
+
+### Confirmation option with @click.confirmation_option()
+
+Source: https://github.com/pallets/click/blob/main/docs/option-decorators.md
+
+Uses the @click.confirmation_option() shortcut to replace the manual confirmation flag and callback. The command prompts for confirmation and prints 'Dropped all tables!' when confirmed.
+
+```python
+@click.command()
+@click.confirmation_option(prompt='Are you sure you want to drop the db?')
+def dropdb():
+    click.echo('Dropped all tables!')
+
+```
+
+--------------------------------
+
+### Open files with click.open_file()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Use click.open_file() to open standard streams (like '-') or regular files. When stdin or stdout is returned, the file object is wrapped so the context manager will not close the underlying stream.
+
+```python
+import click
+
+stdout = click.open_file('-', 'w')
+test_file = click.open_file('test.txt', 'w')
+```
+
+--------------------------------
+
+### Option prompt with custom prompt string
+
+Source: https://github.com/pallets/click/blob/main/docs/prompts.md
+
+Uses a custom prompt string instead of the default. The output shows the custom prompt being displayed.
+
+```python
+@click.command()
+@click.option('--name', prompt='Your name please')
+def hello(name):
+    click.echo(f"Hello {name}!")
+```
+
+```shell-session
+$ hello
+Your name please: John
+Hello John!
+```
+
+--------------------------------
+
+### Confirmation prompt with abort=True
+
+Source: https://github.com/pallets/click/blob/main/docs/prompts.md
+
+Confirmation prompt that aborts the program if the user does not confirm (returns False).
+
+```python
+click.confirm('Do you want to continue?', abort=True)
+```
+
+--------------------------------
+
+### Click command with argument and option
+
+Source: https://github.com/pallets/click/blob/main/docs/parameters.md
+
+Defines a Click command with an argument and an option. The argument name must match the Python parameter name; the option has short and long names. Running the command with --times=3 prints the filename three times.
+
+```python
+@click.command()
+@click.argument('filename')
+@click.option('-t', '--times', type=int)
+def multi_echo(filename, times):
+    """Print value filename multiple times."""
+    for x in range(times):
+        click.echo(filename)
+```
+
+```shell-session
+$ multi_echo --times=3 index.txt
+index.txt
+index.txt
+index.txt
+```
+
+--------------------------------
+
+### Option with inferred argument name - output '--help'
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+If the function argument name is not provided, Click infers it from the option name. The shell session shows the help output generated by the command.
+
+```shell-session
+$ echo --help
+Usage: echo [OPTIONS]
+
+Options:
+  --string-to-echo TEXT
+  --help                 Show this message and exit.
+```
+
+--------------------------------
+
+### Group separation: command-specific options and help behavior
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Shows that parameters attached to a command belong only to that command, not to the group. Options must be placed after the command name and before any other command names. The help output lists the subcommands and demonstrates that --help is handled per command.
+
+```python
+@click.group()
+def greeting():
+    pass
+
+@greeting.command()
+@click.option('--count', default=1)
+def hello(count):
+    for x in range(count):
+        click.echo("Hello!")
+
+@greeting.command()
+@click.option('--count', default=1)
+def goodbye(count):
+    for x in range(count):
+        click.echo("Goodbye!")
+```
+
+```shell-session
+$ greeting hello --count 2
+Hello!
+Hello!
+$ greeting goodbye --count 2
+Goodbye!
+Goodbye!
+$ greeting
+Usage: greeting [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  goodbye
+  hello
+```
+
+--------------------------------
+
+### Using AliasedGroup with decorator and commands
+
+Source: https://github.com/pallets/click/blob/main/docs/extending-click.md
+
+Shows how to use the AliasedGroup class with the click.group decorator and define commands push and pop. This demonstrates that the group accepts prefixes like 'pus' for 'push' as long as it is unique.
+
+```python
+
+    @click.group(cls=AliasedGroup)
+    def cli():
+        pass
+
+    @cli.command
+    def push():
+        pass
+
+    @cli.command
+    def pop():
+        pass
+```
+
+--------------------------------
+
+### Define Repo class as a context manager
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+The Repo class is defined as a context manager, opening a database in __enter__ and closing it in __exit__. This allows it to be used with the with statement.
+
+```python
+class Repo:
+    def __init__(self, home=None):
+        self.home = os.path.abspath(home or ".")
+        self.db = None
+
+    def __enter__(self):
+        path = os.path.join(self.home, "repo.db")
+        self.db = open_database(path)
+        return self
+
+    def __exit__(self, exc_type, exc_value, tb):
+        self.db.close()
+```
+
+--------------------------------
+
+### Customize meta variables with options_metavar and metavar
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Customize the meta variable placeholders in help output using the options_metavar and metavar kwargs. The usage line shows the custom options placeholder and the argument placeholder, while the option help shows the custom metavar.
+
+```python
+# This controls entry on the usage line.
+@click.command(options_metavar='[[options]]')
+@click.option('--count', default=1, help='number of greetings',
+              metavar='<int>')
+@click.argument('name', metavar='<name>')
+def hello(name: str, count: int) -> None:
+    """This script prints 'hello <name>' a total of <count> times."""
+    for x in range(count):
+        click.echo(f"Hello {name}!")
+
+```
+
+```shell-session
+$ hello --help
+Usage: hello [[options]] <name>
+
+  This script prints 'hello <name>' a total of <count> times.
+
+Options:
+  --count <int>  number of greetings
+  --help         Show this message and exit.
+
+```
+
+--------------------------------
+
+### Calling a command as a regular function - error output
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Shows the error output when calling a Click command as a regular function with unexpected arguments. The command parses arguments, prints a usage error, and exits with SystemExit.
+
+```pytb
+>>> nasa_date_to_iso("2017-090")
+Usage: cli [OPTIONS] DATESTR
+Try 'cli --help' for help.
+
+Error: Got unexpected extra arguments (0 1 7 - 0 9 0)
+SystemExit: 2
+```
+
+--------------------------------
+
+### IntRange command output and error handling
+
+Source: https://github.com/pallets/click/blob/main/docs/parameter-types.md
+
+Shows the shell session output for the `repeat` command. Demonstrates clamping behavior for `--count` and validation error for `--digit` when out of range.
+
+```shell-session
+$ repeat --count=100 --digit=5
+55555555555555555555
+$ repeat --count=6 --digit=12
+Usage: repeat [OPTIONS]
+Try 'repeat --help' for help.
+
+Error: Invalid value for '--digit': 12 is not in the range 0<=x<=9.
+```
+
+--------------------------------
+
+### Test Click prompt with CliRunner input
+
+Source: https://github.com/pallets/click/blob/main/docs/testing.md
+
+Use the CliRunner to test a Click command that prompts for input. The runner's input parameter feeds stdin, and prompts are emulated so the input is also written to the output stream (unless hidden input is expected). The test asserts the output matches the prompt and echoed value.
+
+```python
+import click
+
+@click.command()
+@click.option('--foo', prompt=True)
+def prompt(foo):
+   click.echo(f"foo={foo}")
+
+```
+
+```python
+from click.testing import CliRunner
+from prompt import prompt
+
+def test_prompts():
+   runner = CliRunner()
+   result = runner.invoke(prompt, input='wau wau\n')
+   assert not result.exception
+   assert result.output == 'Foo: wau wau\nfoo=wau wau\n'
+
+```
+
+--------------------------------
+
+### First child command without context access
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Defines a clone command that takes src and optional dest arguments but does not access the repo object.
+
+```python
+@cli.command()
+@click.argument('src')
+@click.argument('dest', required=False)
+def clone(src, dest):
+    pass
+```
+
+--------------------------------
+
+### Nesting commands with Click Group and subcommands
+
+Source: https://github.com/pallets/click/blob/main/docs/quickstart.md
+
+Shows two equivalent ways to define a Click group with subcommands: using `Group.add_command()` with plain `@click.command()` decorators, or using the `@cli.command()` decorator to attach commands directly. The final block shows the typical entry-point invocation of the group.
+
+```python
+@click.group()
+def cli():
+    pass
+
+@click.command()
+def initdb():
+    click.echo('Initialized the database')
+
+@click.command()
+def dropdb():
+    click.echo('Dropped the database')
+
+cli.add_command(initdb)
+cli.add_command(dropdb)
+```
+
+```python
+@click.group()
+def cli():
+    pass
+
+@cli.command()
+def initdb():
+    click.echo('Initialized the database')
+
+@cli.command()
+def dropdb():
+    click.echo('Dropped the database')
+```
+
+```python
+if __name__ == '__main__':
+    cli()
+```
+
+--------------------------------
+
+### Child command using pass_obj to access repo
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Defines a clone command that uses @click.pass_obj to receive the repo object stored in the context.
+
+```python
+@cli.command()
+@click.argument('src')
+@click.argument('dest', required=False)
+@click.pass_obj
+def clone(repo, src, dest):
+    pass
+```
+
+--------------------------------
+
+### Manual command invocation with make_context and invoke
+
+Source: https://github.com/pallets/click/blob/main/docs/exceptions.md
+
+Invokes a Click command manually without exception handling. Use when you need full control over the invocation process and want exceptions to bubble up naturally.
+
+```python
+ctx = command.make_context("command-name", ["args", "go", "here"])
+with ctx:
+    result = command.invoke(ctx)
+```
+
+--------------------------------
+
+### Edit a file by filename with click.edit()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Launches the editor for a specific file. The return value is always None when editing a file by filename.
+
+```python
+import click
+click.edit(filename='/etc/passwd')
+```
+
+--------------------------------
+
+### Click group with --help returning exit code 0
+
+Source: https://github.com/pallets/click/blob/main/docs/exceptions.md
+
+Defines a Click group with a subcommand and shows the help output when invoked with --help, which returns exit code 0.
+
+```python
+@click.group('printer_group')
+def printer_group():
+    pass
+
+@printer_group.command('printer')
+@click.option('--this')
+def printer(this):
+    if this:
+        click.echo(this)
+```
+
+```shell-session
+$ printer-group --help
+Usage: printer-group [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  printer
+```
+
+--------------------------------
+
+### Custom completer vs Path completion
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Shows how Path and File parameters complete differently from a custom completer. Path.shell_complete and File.shell_complete return a single item tagged file (or dir) and the shell proposes completions, while a custom completer returns values that are both displayed and inserted.
+
+```python
+def complete_dirs(ctx, param, incomplete):
+    return [
+        CompletionItem(incomplete + name)
+        for name in ("Documents", "Downloads", "Pictures")
+    ]
+
+
+@click.command()
+@click.option("--src", type=click.Path())
+@click.option("--dest", shell_complete=complete_dirs)
+def copy(src, dest):
+    click.echo(f"Copy from {src} to {dest}")
+
+```
+
+```console
+$ copy --src /home/user/<TAB><TAB>
+Documents  Downloads  Pictures
+
+```
+
+```console
+$ copy --dest /home/user/<TAB><TAB>
+/home/user/Documents  /home/user/Downloads  /home/user/Pictures
+
+```
+
+--------------------------------
+
+### Command using pass_repo decorator
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Defines a command that uses the pass_repo decorator to receive the Repo object. The command prints whether the object is a Repo instance.
+
+```python
+@click.command()
+@pass_repo
+def cp(repo):
+    click.echo(isinstance(repo, Repo))
+```
+
+--------------------------------
+
+### Bind Tab in readline for prompt completion
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Binds Tab in readline so that prompts complete file paths. The module is Unix-only, so the import fails on Windows. It completes file names only and knows nothing about the parameter, so it cannot complete other values like Choice choices.
+
+```python
+import readline
+
+if "libedit" in (readline.__doc__ or ""):
+    readline.parse_and_bind("bind ^I rl_complete")
+else:
+    readline.parse_and_bind("tab: complete")
+
+```
+
+--------------------------------
+
+### Choice command output and error handling
+
+Source: https://github.com/pallets/click/blob/main/docs/parameter-types.md
+
+Shows the shell session output for the `digest` command with `--hash-type` option. Demonstrates valid inputs (case-insensitive), invalid input error message, and help output showing the valid choices.
+
+```shell-session
+$ digest --hash-type=MD5
+HashType.MD5
+
+$ digest --hash-type=md5
+HashType.MD5
+
+$ digest --hash-type=foo
+Usage: digest [OPTIONS]
+Try 'digest --help' for help.
+
+Error: Invalid value for '--hash-type': 'foo' is not one of 'md5', 'sha1'.
+
+$ digest --help
+Usage: digest [OPTIONS]
+
+Options:
+  --hash-type [md5|sha1]
+  --help                  Show this message and exit.
+```
+
+--------------------------------
+
+### Option prompt with prompt=True
+
+Source: https://github.com/pallets/click/blob/main/docs/prompts.md
+
+Defines an option that prompts for input when not provided on the command line. The output shows the prompt appearing only when the option is omitted.
+
+```python
+@click.command()
+@click.option('--name', prompt=True)
+def hello(name):
+    click.echo(f"Hello {name}!")
+```
+
+```shell-session
+$ hello --name=John
+Hello John!
+$ hello
+Name: John
+Hello John!
+```
+
+--------------------------------
+
+### Click command using inferred types
+
+Source: https://github.com/pallets/click/blob/main/docs/parameter-types.md
+
+Use a Click command that defines options without an explicit type, letting Click infer the type from the default (integer and set). Run it with 'show' to see the inferred types printed.
+
+```python
+@click.command()
+@click.option('--count', default=5)
+@click.option('--tag', default={'git'})
+def show(count, tag):
+    click.echo(f"count is {type(count).__name__}, tag is {type(tag).__name__}")
+```
+
+```shell-session
+$ show
+count is int, tag is str
+```
+
+--------------------------------
+
+### Print styled text with click.secho()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Combines echo() and style() in one function, click.secho(), to print styled text directly. Supports the same styling options as click.style().
+
+```python
+click.secho('Hello World!', fg='green')
+click.secho('Some more text', bg='blue', fg='white')
+click.secho('ATTENTION', blink=True, bold=True)
+```
+
+--------------------------------
+
+### Defer import in Click command callback
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Defines a Click command that defers importing the real callback function until invocation. The options are declared normally, so Click can build help and usage info without importing the heavy module.
+
+```python
+@click.command()
+@click.option("-n", type=int)
+@click.option("-w", type=str)
+def foo(n, w):
+    from mylibrary import foo_concrete
+
+    foo_concrete(n, w)
+```
+
+--------------------------------
+
+### Define a Click group with subcommand and option
+
+Source: https://github.com/pallets/click/blob/main/docs/testing.md
+
+Defines a Click group 'cli' with a '--debug/--no-debug' option and a subcommand 'sync'. The group echoes debug mode, and the subcommand echoes 'Syncing'.
+
+```python
+import click
+
+@click.group()
+@click.option('--debug/--no-debug', default=False)
+def cli(debug):
+   click.echo(f"Debug mode is {'on' if debug else 'off'}")
+
+@cli.command()
+def sync():
+   click.echo('Syncing')
+```
+
+--------------------------------
+
+### Wrap a loop with click.progressbar
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+The first block shows a plain loop without progress feedback. The second block wraps the same loop with click.progressbar, which automatically prints a progress bar and calculates remaining time when the iterable has a length.
+
+```python
+for user in all_the_users_to_process:
+    modify_the_user(user)
+```
+
+```python
+import click
+
+with click.progressbar(all_the_users_to_process) as bar:
+    for user in bar:
+        modify_the_user(user)
+```
+
+--------------------------------
+
+### Source Zsh completion script in ~/.zshrc
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Source the generated Zsh completion script in ~/.zshrc. This loads the completion script into the current shell.
+
+```bash
+. ~/.foo-bar-complete.zsh
+```
+
+--------------------------------
+
+### Generate Bash completion script to file
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Save the Bash completion script to a file. This command generates the completion script and redirects it to ~/.foo-bar-complete.bash.
+
+```bash
+_FOO_BAR_COMPLETE=bash_source foo-bar > ~/.foo-bar-complete.bash
+```
+
+--------------------------------
+
+### Confirmation prompt with confirm()
+
+Source: https://github.com/pallets/click/blob/main/docs/prompts.md
+
+Asks for confirmation and returns a boolean. The code proceeds only if the user confirms.
+
+```python
+if click.confirm('Do you want to continue?'):
+    click.echo('Well done!')
+```
+
+--------------------------------
+
+### Pass context between nested Click commands
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Shows how to use the Context to pass data between nested commands. The group sets a debug flag on ctx.obj, and the sync command reads it. The final cli(obj={}) call initializes the context object.
+
+```python
+@click.group()
+@click.option('--debug/--no-debug', default=False)
+@click.pass_context
+def cli(ctx, debug):
+    # ensure that ctx.obj exists and is a dict (in case `cli()` is called
+    # by means other than the `if` block below)
+    ctx.ensure_object(dict)
+
+    ctx.obj['DEBUG'] = debug
+
+@cli.command()
+@click.pass_context
+def sync(ctx):
+    click.echo(f"Debug is {'on' if ctx.obj['DEBUG'] else 'off'}")
+
+if __name__ == '__main__':
+    cli(obj={})
+```
+
+--------------------------------
+
+### Source Bash completion script in ~/.bashrc
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Source the generated Bash completion script in ~/.bashrc. This loads the completion script into the current shell.
+
+```bash
+. ~/.foo-bar-complete.bash
+```
+
+--------------------------------
+
+### Multiple options with --message -m
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Use the multiple=True option to accept an arbitrary number of arguments, passed as a tuple. The default must be a list or tuple; a string default is interpreted as a list of characters. The command echoes the tuple and then each message.
+
+```python
+@click.command()
+@click.option('--message', '-m', multiple=True)
+def commit(message):
+    click.echo(message)
+    for m in message:
+        click.echo(m)
+```
+
+```shell-session
+$ commit -m foo -m bar -m here
+('foo', 'bar', 'here')
+foo
+bar
+here
+```
+
+--------------------------------
+
+### Password option with @click.password_option()
+
+Source: https://github.com/pallets/click/blob/main/docs/option-decorators.md
+
+Uses the @click.password_option() shortcut to replace the manual password prompt and confirmation parameters. The command still prompts for a password and repeats for confirmation, then prints the ROT13-encoded value.
+
+```python
+    @click.command()
+    @click.password_option()
+    def encrypt(password):
+        click.echo(f"encoded: to {codecs.encode(password, 'rot13')}")
+
+```
+
+--------------------------------
+
+### Write to file with click.open_file() context manager
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Use click.open_file() in a with statement to write to a file. The context manager handles closing, but for standard streams it prevents closing the underlying stream.
+
+```python
+with click.open_file(filename, 'w') as f:
+    f.write('Hello World!\n')
+```
+
+--------------------------------
+
+### Custom Group with decorator: @click.group(cls=PluginGroup)
+
+Source: https://github.com/pallets/click/blob/main/docs/extending-click.md
+
+Shows how to use the custom PluginGroup class with the click.group decorator by passing cls=PluginGroup and the plugin_folder argument. This allows the group to be defined as a function while using the custom behavior.
+
+```python
+@click.group(
+    cls=PluginGroup,
+    plugin_folder=os.path.join(os.path.dirname(__file__), "commands")
+)
+def cli():
+    pass
+```
+
+--------------------------------
+
+### Generate Zsh completion script to file
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Save the Zsh completion script to a file. This command generates the completion script and redirects it to ~/.foo-bar-complete.zsh.
+
+```bash
+_FOO_BAR_COMPLETE=zsh_source foo-bar > ~/.foo-bar-complete.zsh
+```
+
+--------------------------------
+
+### Enable Zsh completion in ~/.zshrc
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Add this line to ~/.zshrc to enable completion for the foo-bar command in Zsh. The environment variable _FOO_BAR_COMPLETE is set to zsh_source and the command is evaluated to load the completion script.
+
+```zsh
+eval "$(_FOO_BAR_COMPLETE=zsh_source foo-bar)"
+```
+
+--------------------------------
+
+### Setting a default with --n
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Setting a default value for an option; Click infers the type from the default. The help output shows the inferred type INTEGER.
+
+```python
+@click.command()
+@click.option('--n', default=1)
+def dots(n):
+    click.echo('.' * n)
+```
+
+```shell-session
+$ dots --help
+Usage: dots [OPTIONS]
+
+Options:
+  --n INTEGER
+  --help       Show this message and exit.
+```
+
+--------------------------------
+
+### IntRange with clamp and validation
+
+Source: https://github.com/pallets/click/blob/main/docs/parameter-types.md
+
+Defines a command with two options using `click.IntRange`. The `--count` option uses `clamp=True` to clamp out-of-range values to the boundary, while `--digit` uses a strict range that fails for out-of-range values.
+
+```python
+@click.command()
+@click.option("--count", type=click.IntRange(0, 20, clamp=True))
+@click.option("--digit", type=click.IntRange(0, 9))
+def repeat(count, digit):
+    click.echo(str(digit) * count)
+```
+
+--------------------------------
+
+### Generate mysh completion script
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Generates the completion script for the custom shell by invoking the program with the `_FOO_BAR_COMPLETE` environment variable set to `mysh_source`. The output must be loaded into the shell.
+
+```console
+_FOO_BAR_COMPLETE=mysh_source foo-bar
+```
+
+--------------------------------
+
+### Python Click group with short_help
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Defines a Click group with a subcommand that uses the short_help parameter to override the default short help extracted from the docstring. The output shows the generated help page with the short help.
+
+```python
+import click
+
+@click.group()
+def cli():
+    """A simple command line tool."""
+
+@cli.command('init', short_help='init the repo')
+def init():
+    """Initializes the repository."""
+```
+
+```shell-session
+$ cli --help
+Usage: cli [OPTIONS] COMMAND [ARGS]...
+
+  A simple command line tool.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  init  init the repo
+```
+
+--------------------------------
+
+### Combining short options with value -v -n
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+When the last option in a combination takes a value, the value can follow as the next argument or be attached directly. The command echoes the flag and integer value.
+
+```python
+@click.command()
+@click.option('-v', is_flag=True)
+@click.option('-n', type=int)
+def cli(v, n):
+    click.echo(f"v={v} n={n}")
+```
+
+```shell-session
+$ cli -v -n 5
+v=True n=5
+$ cli -vn 5
+v=True n=5
+$ cli -vn5
+v=True n=5
+```
+
+--------------------------------
+
+### Enable PowerShell completion in profile
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Add these lines to your PowerShell profile to enable completion for the foo-bar command. It sets the _FOO_BAR_COMPLETE environment variable, pipes the command output to Invoke-Expression, and then removes the environment variable.
+
+```powershell
+$env:_FOO_BAR_COMPLETE = 'powershell_source'
+foo-bar | Out-String | Invoke-Expression
+Remove-Item Env:_FOO_BAR_COMPLETE
+
+```
+
+--------------------------------
+
+### Print existing file path with click.Path
+
+Source: https://github.com/pallets/click/blob/main/docs/handling-files.md
+
+Defines a Click command that prints a filename if it exists, using the Path type with exists=True. The shell session shows the output for an existing file and the error message for a missing file.
+
+```python
+@click.command()
+@click.argument('filename', type=click.Path(exists=True))
+def touch(filename):
+    """Print FILENAME if the file exists."""
+    click.echo(click.format_filename(filename))
+```
+
+```shell-session
+$ touch hello.txt
+hello.txt
+
+$ touch missing.txt
+Usage: touch [OPTIONS] FILENAME
+Try 'touch --help' for help.
+
+Error: Invalid value for 'FILENAME': Path 'missing.txt' does not exist.
+```
+
+--------------------------------
+
+### Test the subcommand with CliRunner
+
+Source: https://github.com/pallets/click/blob/main/docs/testing.md
+
+Invokes the 'cli' group with '--debug' and 'sync' subcommand. Asserts exit code 0 and that output contains 'Debug mode is on' and 'Syncing'.
+
+```python
+from click.testing import CliRunner
+from sync import cli
+
+def test_sync():
+  runner = CliRunner()
+  result = runner.invoke(cli, ['--debug', 'sync'])
+  assert result.exit_code == 0
+  assert 'Debug mode is on' in result.output
+  assert 'Syncing' in result.output
+```
+
+--------------------------------
+
+### Combining short options -a -b -c
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Short options can be combined into one argument, e.g. -abc is equivalent to -a -b -c. This is standard POSIX behavior and enables repeated flags like -vvv. The command echoes the flag values.
+
+```python
+@click.command()
+@click.option('-a', is_flag=True)
+@click.option('-b', is_flag=True)
+@click.option('-c', is_flag=True)
+def cli(a, b, c):
+    click.echo(f"a={a} b={b} c={c}")
+```
+
+```shell-session
+$ cli -a -b -c
+a=True b=True c=True
+$ cli -abc
+a=True b=True c=True
+```
+
+--------------------------------
+
+### Run command with standalone_mode=False
+
+Source: https://github.com/pallets/click/blob/main/docs/exceptions.md
+
+Runs a Click command with standalone mode disabled, which disables exception handling and the implicit sys.exit(). Use when you want to handle exceptions yourself.
+
+```python
+command.main(
+    ["command-name", "args", "go", "here"],
+    standalone_mode=False,
+)
+```
+
+--------------------------------
+
+### Read option value from a list of environment variables with envvar
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Defines a Click command with an option that reads its value from a list of environment variables; the first one found is used. The shell session shows that ALT_USERNAME takes precedence over USERNAME.
+
+```python
+@click.command()
+@click.option('--username', envvar=['ALT_USERNAME', 'USERNAME'])
+def greet(username):
+   click.echo(f"Hello {username}!")
+```
+
+```shell-session
+$ export ALT_USERNAME=Bill
+$ export USERNAME=john
+$ greet
+Hello Bill!
+```
+
+--------------------------------
+
+### Basic argument with click.argument
+
+Source: https://github.com/pallets/click/blob/main/docs/arguments.md
+
+Defines a minimal required argument of type str. The command prints the filename. The shell session shows the expected output when invoked with a single argument.
+
+```python
+@click.command()
+@click.argument('filename')
+def touch(filename: str):
+    """Print FILENAME."""
+    click.echo(filename)
+```
+
+```shell-session
+$ touch foo.txt
+foo.txt
+```
+
+--------------------------------
+
+### Enable Bash completion in ~/.bashrc
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Add this line to ~/.bashrc to enable completion for the foo-bar command in Bash. The environment variable _FOO_BAR_COMPLETE is set to bash_source and the command is evaluated to load the completion script.
+
+```bash
+eval "$(_FOO_BAR_COMPLETE=bash_source foo-bar)"
+```
+
+--------------------------------
+
+### Write to pager file with click.get_pager_file()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Uses click.get_pager_file() to obtain a writable file-like object for the pager and writes output to it. This is for more complex programs that cannot easily use a simple generator.
+
+```python
+@click.command()
+def less():
+    with click.get_pager_file() as pager:
+        for idx in range(50000):
+            print(idx, file=pager)
+```
+
+--------------------------------
+
+### Supported TextIOWrapper replacement for sys.stdin and sys.stdout
+
+Source: https://github.com/pallets/click/blob/main/docs/unicode-support.md
+
+This is the supported way to replace standard input and output streams in Click. It wraps BytesIO streams with TextIOWrapper to allow binary mode access. Remember to use out_stream.getvalue() instead of sys.stdout.getvalue() to access the buffer contents.
+
+```python
+input = 'Input here'
+in_stream = io.BytesIO(input.encode('utf-8'))
+sys.stdin = io.TextIOWrapper(in_stream, encoding='utf-8')
+out_stream = io.BytesIO()
+sys.stdout = io.TextIOWrapper(out_stream, encoding='utf-8')
+```
+
+--------------------------------
+
+### Equivalent flag_value default forms
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Shows the equivalent forms for a non-boolean flag with a default value. The first form is interpreted as 'activate by default' and resolves to the flag_value, so the second form is recommended for clarity.
+
+```python
+@click.option('--upper', 'transformation', flag_value='upper', default=True)
+```
+
+```python
+@click.option('--upper', 'transformation', flag_value='upper', default='upper')
+```
+
+--------------------------------
+
+### Global Context Access: get_current_context()
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Shows how to access the current context from anywhere within the same thread using click.get_current_context().info_name.
+
+```python
+def get_current_command_name():
+    return click.get_current_context().info_name
+```
+
+--------------------------------
+
+### Use call_on_close() to register a cleanup function
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+When the resource is not a context manager, use ctx.call_on_close() to register a cleanup function. The close_db function is called when the context closes, recording usage, saving, and closing the database.
+
+```python
+@click.group()
+@click.option("--name", default="repo.db")
+@click.pass_context
+def cli(ctx, name):
+    ctx.obj = db = open_db(name)
+
+    @ctx.call_on_close
+    def close_db():
+        db.record_use()
+        db.save()
+        db.close()
+```
+
+--------------------------------
+
+### Pass information in a wrapper object
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Recommended alternative to modifying params directly. The callback returns a URL object that bundles the URL and the opened file pointer, avoiding the pitfalls of direct params modification.
+
+```python
+import urllib.request
+
+class URL:
+    def __init__(self, url, fp):
+        self.url = url
+        self.fp = fp
+
+def open_url(ctx, param, value):
+    if value is not None:
+        return URL(value, urllib.request.urlopen(value))
+
+@click.command()
+@click.option('--url', callback=open_url)
+def cli(url):
+    if url is not None:
+        click.echo(f"{url.url}: {url.fp.code}")
+```
+
+--------------------------------
+
+### Multiple arguments with nargs
+
+Source: https://github.com/pallets/click/blob/main/docs/arguments.md
+
+Uses nargs=1 for a single source and nargs=-1 for a variadic list of destinations. The destinations are passed as a tuple. The shell session shows the output for multiple destinations.
+
+```python
+@click.command()
+@click.argument('src', nargs=1)
+@click.argument('dsts', nargs=-1)
+def copy(src: str, dsts: tuple[str, ...]):
+    """Move file SRC to DST."""
+    for destination in dsts:
+        click.echo(f"Copy {src} to folder {destination}")
+```
+
+```shell-session
+$ copy foo.txt usr/david/foo.txt usr/mitsuko/foo.txt
+Copy foo.txt to folder usr/david/foo.txt
+Copy foo.txt to folder usr/mitsuko/foo.txt
+```
+
+--------------------------------
+
+### Set terminal width with CliRunner.invoke(terminal_width=60)
+
+Source: https://github.com/pallets/click/blob/main/docs/testing.md
+
+Sets a fixed terminal width of 60 for the command invocation by passing terminal_width to CliRunner.invoke(). The first block defines a Click group with a sync command; the second block tests it, asserting exit code 0 and that both 'Debug mode is on' and 'Syncing' appear in the output.
+
+```python
+import click
+
+@click.group()
+def cli():
+   pass
+
+@cli.command()
+def sync():
+   click.echo('Syncing')
+
+```
+
+```python
+from click.testing import CliRunner
+from sync import cli
+
+def test_sync():
+  runner = CliRunner()
+  result = runner.invoke(cli, ['sync'], terminal_width=60)
+  assert result.exit_code == 0
+  assert 'Debug mode is on' in result.output
+  assert 'Syncing' in result.output
+
+```
+
+--------------------------------
+
+### Prompt with click.Path and Tab error
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Shows a command that prompts for a file path and the resulting error when Tab is pressed. The prompt reads the line with input() and Click passes the whole prompt text to it, so Tab is not bound to completion by default.
+
+```python
+import click
+
+
+@click.command()
+def convert():
+    source = click.prompt("File to convert", type=click.Path(exists=True))
+    click.echo(f"Converting {source}")
+
+```
+
+```console
+$ convert
+File to convert: Doc<TAB>
+Error: Path 'Doc\t' does not exist.
+
+```
+
+--------------------------------
+
+### Stream output to pager with generator in click.echo_via_pager()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Passes a generator function to click.echo_via_pager() to avoid generating all text in advance. The generator yields 50,000 lines, which is useful when generating the entire output would take too long.
+
+```python
+def _generate_output():
+    for idx in range(50000):
+        yield f"Line {idx}\n"
+
+@click.command()
+def less():
+    click.echo_via_pager(_generate_output())
+```
+
+--------------------------------
+
+### String splitting in default_map for multi-value parameters
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Shows how a string value in default_map is split on whitespace for parameters with nargs > 1 or Tuple type, while a single-value parameter receives the string as-is.
+
+```python
+default_map = {
+    "draw": {
+        "point": "3 4",  # split into ("3", "4") for nargs=2
+        "color": "red",  # passed as-is for nargs=1
+    }
+}
+```
+
+--------------------------------
+
+### Argument from multiple environment variables
+
+Source: https://github.com/pallets/click/blob/main/docs/arguments.md
+
+Reads the argument from multiple environment variables, trying each in order. The command prints the contents of the file. The shell session shows setting the second variable and the output.
+
+```python
+@click.command()
+@click.argument('src', envvar=['SRC', 'SRC_2'], type=click.File('r'))
+def echo(src):
+    """Print value of SRC environment variable."""
+    click.echo(src.read())
+```
+
+```shell-session
+$ export SRC_2=hello.txt
+$ echo
+Hello World from second variable!
+```
+
+--------------------------------
+
+### Chainable group with result_callback and processor functions
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Implements a chainable group with a result_callback that processes lines through subcommand-returned functions. Requires invoke_without_command=True to run the result callback when no subcommand is given. Note that Click closes the context after each callback, so file types cannot be used in the processor functions.
+
+```python
+@click.group(chain=True, invoke_without_command=True)
+@click.argument("fin", type=click.File("r"))
+def cli(fin):
+    pass
+
+@cli.result_callback()
+def process_pipeline(processors, fin):
+    iterator = (x.rstrip("\r\n") for x in input)
+
+    for processor in processors:
+        iterator = processor(iterator)
+
+    for item in iterator:
+        click.echo(item)
+
+@cli.command("upper")
+def make_uppercase():
+    def processor(iterator):
+        for line in iterator:
+            yield line.upper()
+    return processor
+
+@cli.command("lower")
+def make_lowercase():
+    def processor(iterator):
+        for line in iterator:
+            yield line.lower()
+    return processor
+
+@cli.command("strip")
+def make_strip():
+    def processor(iterator):
+        for line in iterator:
+            yield line.strip()
+    return processor
+
+```
+
+--------------------------------
+
+### Global Context Access: Thread Context Manager
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Shows how to give another thread access to the current context by using the context as a context manager. Note that the context is not thread-safe; only read operations are allowed.
+
+```python
+def spawn_thread(ctx, func):
+    def wrapper():
+        with ctx:
+            func()
+    t = threading.Thread(target=wrapper)
+    t.start()
+    return t
+```
+
+--------------------------------
+
+### Nested Click groups with multiple levels
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Demonstrates arbitrary nesting of groups: a group can contain other groups, and commands can be nested under multiple groups. To invoke a nested command, all parent groups must be invoked in order. The comment notes that the inner group is not decorated with @click so it is registered immediately.
+
+```python
+@click.group()
+def cli():
+    pass
+
+# Not @click so that the group is registered now.
+@cli.group()
+def session():
+    click.echo('Starting session')
+
+@session.command()
+def initdb():
+    click.echo('Initialized the database')
+
+@session.command()
+def dropdb():
+    click.echo('Dropped the database')
+```
+
+```shell-session
+$ cli session initdb
+Starting session
+Initialized the database
+```
+
+--------------------------------
+
+### Click group without arguments returning exit code 2
+
+Source: https://github.com/pallets/click/blob/main/docs/exceptions.md
+
+Invoking the group without arguments displays the help page and returns exit code 2 because the user invoked the command incorrectly.
+
+```shell-session
+$ printer-group
+Usage: printer-group [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  printer
+```
+
+--------------------------------
+
+### Rename Click group with first positional argument
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Renames the group to 'greet-someone' by passing it as the first positional argument to @click.group. The subcommand 'say-hello' remains unchanged. Invoking the renamed group with the subcommand produces the same output as the default name.
+
+```python
+@click.group('greet-someone')
+def greeting():
+    click.echo('Starting greeting ...')
+
+@greeting.command('say-hello')
+@click.option('--count', default=1)
+def hello(count):
+    for x in range(count):
+        click.echo("Hello!")
+```
+
+```shell-session
+$ greet-someone say-hello
+Starting greeting ...
+Hello!
+```
+
+--------------------------------
+
+### Click group with no_args_is_help=False showing error
+
+Source: https://github.com/pallets/click/blob/main/docs/exceptions.md
+
+Disables the automatic help display for missing arguments with no_args_is_help=False, causing an error message and exit code 2.
+
+```python
+@click.group('printer_group', no_args_is_help=False)
+def printer_group():
+    pass
+
+@printer_group.command('printer')
+@click.option('--this')
+def printer(this):
+    if this:
+        click.echo(this)
+```
+
+```shell-session
+$ printer-group
+Usage: printer-group [OPTIONS] COMMAND [ARGS]...
+Try 'printer-group --help' for help.
+
+Error: Missing command.
+```
+
+--------------------------------
+
+### Run random-order tests with tox r -e random
+
+Source: https://github.com/pallets/click/blob/main/docs/contributing.md
+
+Runs tests in parallel in a random order to detect test pollution. Use this extra test environment to find order-dependent failures.
+
+```shell-session
+$ tox r -e random
+```
+
+--------------------------------
+
+### Run stress tests with tox r -e stress
+
+Source: https://github.com/pallets/click/blob/main/docs/contributing.md
+
+Runs stress tests for race conditions in Click's test runner. Use this extra test environment to check for concurrency issues.
+
+```shell-session
+$ tox r -e stress
+```
+
+--------------------------------
+
+### Create pass_repo decorator with make_pass_decorator
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Creates a decorator that finds the closest Repo object in the context chain.
+
+```python
+pass_repo = click.make_pass_decorator(Repo)
+```
+
+--------------------------------
+
+### Custom exception handling with click.Abort and click.ClickException
+
+Source: https://github.com/pallets/click/blob/main/docs/exceptions.md
+
+Replaces the default 'Aborted!' message by catching click.Abort and click.ClickException. Use when you want custom error handling and exit codes.
+
+```python
+try:
+    command.main(
+        ["command-name", "args", "go", "here"],
+        standalone_mode=False,
+    )
+except click.Abort:
+    click.echo("Bye!", err=True)
+    raise SystemExit(1)
+except click.ClickException as e:
+    e.show()
+    raise SystemExit(e.exit_code)
+```
+
+--------------------------------
+
+### Group callback invocation with --debug option
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Shows how a group's callback runs only when a subcommand runs. The group defines a --debug/--no-debug option and the subcommand sync prints 'Syncing'. Running without a subcommand prints usage; running with --debug sync prints both the debug message and 'Syncing'.
+
+```python
+@click.group()
+@click.option('--debug/--no-debug', default=False)
+def cli(debug):
+    click.echo(f"Debug mode is {'on' if debug else 'off'}")
+
+@cli.command()  # @cli, not @click!
+def sync():
+    click.echo('Syncing')
+```
+
+```shell-session
+$ tool.py
+Usage: tool.py [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --debug / --no-debug
+  --help                Show this message and exit.
+
+Commands:
+  sync
+
+$ tool.py --debug sync
+Debug mode is on
+Syncing
+```
+
+--------------------------------
+
+### Read option value from a single environment variable with envvar
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Defines a Click command with an option that reads its value from the USERNAME environment variable. The shell session shows exporting USERNAME and running the command, which prints the greeting.
+
+```python
+@click.command()
+@click.option('--username', envvar='USERNAME')
+def greet(username):
+   click.echo(f"Hello {username}!")
+```
+
+```shell-session
+$ export USERNAME=john
+$ greet
+Hello john!
+```
+
+--------------------------------
+
+### Create pass decorator with ensure=True
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Creates a pass decorator that ensures a Repo object exists in the context, creating one if missing. Use when the outer command may not run and the object must still be available.
+
+```python
+pass_repo = click.make_pass_decorator(Repo, ensure=True)
+```
+
+--------------------------------
+
+### Associate a label with click.progressbar
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Add a label that is displayed preceding the progress bar. The label is passed as the label parameter.
+
+```python
+with click.progressbar(all_the_users_to_process,
+                       label='Modifying user accounts',
+                       length=number_of_users) as bar:
+    for user in bar:
+        modify_the_user(user)
+```
+
+--------------------------------
+
+### Style strings with click.style() and echo()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Styles strings with ANSI colors and effects using click.style() and prints them with click.echo(). ANSI codes are automatically stripped when the stream is not a terminal.
+
+```python
+import click
+
+click.echo(click.style('Hello World!', fg='green'))
+click.echo(click.style('Some more text', bg='blue', fg='white'))
+click.echo(click.style('ATTENTION', blink=True, bold=True))
+```
+
+--------------------------------
+
+### Access exit code in Command Prompt
+
+Source: https://github.com/pallets/click/blob/main/docs/command-line-reference.md
+
+Use `echo %ERRORLEVEL%` in Command Prompt to display the exit code of the last executed command.
+
+```text
+> echo %ERRORLEVEL%
+```
+
+--------------------------------
+
+### Child command using pass_repo decorator
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Defines a clone command that uses the pass_repo decorator to always receive a Repo object.
+
+```python
+@cli.command()
+@click.argument('src')
+@click.argument('dest', required=False)
+@pass_repo
+def clone(repo, src, dest):
+    pass
+```
+
+--------------------------------
+
+### Source PowerShell completion script in profile
+
+Source: https://github.com/pallets/click/blob/main/docs/shell-completion.md
+
+Source the generated completion script in your PowerShell profile. The path of $PROFILE is where you add this line.
+
+```powershell
+. ~/.foo-bar-complete.ps1
+```
+
+--------------------------------
+
+### Avoid ternary expressions (x if cond else y)
+
+Source: https://github.com/pallets/click/blob/main/docs/contributing.md
+
+Click code style avoids ternary expressions because coverage cannot measure both branches. Use an explicit if/else block instead.
+
+```python
+x if cond else y
+```
+
+--------------------------------
+
+### Auto Envvar Prefix with Command Groups
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Shows auto_envvar_prefix with a command group. The environment variable includes the command name: PREFIX_COMMAND_VARIABLE (e.g., GREETER_GREET_USERNAME).
+
+```python
+@click.group()
+@click.option('--debug/--no-debug')
+def cli(debug):
+    click.echo(f"Debug mode is {'on' if debug else 'off'}")
+
+@cli.command()
+@click.option('--username')
+def greet(username):
+    click.echo(f"Hello {username}!")
+
+if __name__ == '__main__':
+    cli(auto_envvar_prefix='GREETER')
+```
+
+```shell-session
+$ export GREETER_DEBUG=false
+$ export GREETER_GREET_USERNAME=John
+$ cli greet
+Debug mode is off
+Hello John!
+```
+
+--------------------------------
+
+### Copy file with click.File
+
+Source: https://github.com/pallets/click/blob/main/docs/handling-files.md
+
+Defines a Click command that copies a file to another using the File type. The command supports '-' to read from stdin or write to stdout. The shell session shows both directions: reading from stdin and writing to stdout.
+
+```python
+@click.command()
+@click.argument('input', type=click.File('rb'))
+@click.argument('output', type=click.File('wb'))
+def inout(input, output):
+    """Copy contents of INPUT to OUTPUT."""
+    while True:
+        chunk = input.read(1024)
+        if not chunk:
+            break
+        output.write(chunk)
+```
+
+```shell-session
+$ inout - hello.txt
+hello
+^D
+$ inout hello.txt -
+hello
+```
+
+--------------------------------
+
+### Nested default_map for subcommands
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Shows the structure of a nested default_map for a top-level option and a subcommand. The map can be provided when the script is invoked or overridden at any point by commands.
+
+```python
+default_map = {
+    "debug": True,  # default for a top level option
+    "runserver": {"port": 5000}  # default for a subcommand
+}
+```
+
+--------------------------------
+
+### Split on/off options with semicolon
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Uses a semicolon to separate on/off options when the option name already contains a forward slash. This is useful on Windows where '/' is the prefix character.
+
+```python
+@click.command()
+@click.option('/debug;/no-debug')
+def log(debug):
+    click.echo(f"debug={debug}")
+```
+
+--------------------------------
+
+### Manual prompt with type=int
+
+Source: https://github.com/pallets/click/blob/main/docs/prompts.md
+
+Manually prompts for input and validates it as an integer. The prompt accepts any Unicode string by default, but specifying type=int restricts input to integers.
+
+```python
+value = click.prompt('Please enter a valid integer', type=int)
+```
+
+--------------------------------
+
+### Rename command with custom name 'say-hello'
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Shows using the first positional argument to @click.command to rename the command, replacing underscores with dashes. The command is invoked as `say-hello` instead of `hello`.
+
+```python
+@click.command('say-hello')
+@click.option('--count', default=1)
+def hello(count):
+    for x in range(count):
+        click.echo("Hello!")
+```
+
+```shell-session
+$ say-hello --count 2
+Hello!
+Hello!
+```
+
+--------------------------------
+
+### Choice with Enum and case_sensitive=False
+
+Source: https://github.com/pallets/click/blob/main/docs/parameter-types.md
+
+Defines a command with an option using `click.Choice` with an `Enum` and `case_sensitive=False`. The original enum member is returned, not the string passed on the command line. Token normalization and case insensitivity can cause the returned value to differ from the input string.
+
+```python
+import enum
+
+class HashType(enum.Enum):
+    MD5 = enum.auto()
+    SHA1 = enum.auto()
+
+@click.command()
+@click.option('--hash-type',
+              type=click.Choice(HashType, case_sensitive=False))
+def digest(hash_type: HashType):
+    click.echo(hash_type)
+```
+
+--------------------------------
+
+### Modify params dict directly in callback
+
+Source: https://github.com/pallets/click/blob/main/docs/advanced.md
+
+Shows a callback that adds an 'fp' key to ctx.params by opening a URL, while returning the original value. The command then receives the extra parameter. Note the caution: writing to params directly bypasses Click's per-parameter pipeline.
+
+```python
+import urllib.request
+
+def open_url(ctx, param, value):
+    if value is not None:
+        ctx.params['fp'] = urllib.request.urlopen(value)
+        return value
+
+@click.command()
+@click.option('--url', callback=open_url)
+def cli(url, fp=None):
+    if fp is not None:
+        click.echo(f"{url}: {fp.code}")
+```
+
+--------------------------------
+
+### Truncate help text with \f marker
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Use the \f escape marker in a command's docstring to truncate the help text. The help output shows only the text before the marker, excluding the words after it.
+
+```python
+import click
+
+@click.command()
+def cli():
+    """First paragraph.
+    \f
+
+    Words to not be included.
+    """
+
+```
+
+```shell-session
+$ cli --help
+Usage: cli [OPTIONS]
+
+  First paragraph.
+
+Options:
+  --help  Show this message and exit.
+
+```
+
+--------------------------------
+
+### Pause for key press with click.pause()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Pauses execution until the user presses a key. Prints a customizable message to the terminal and becomes a no-op when the script is not run interactively.
+
+```python
+import click
+click.pause()
+```
+
+--------------------------------
+
+### Set max_content_width to 120
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Changes the rendering maximum width to 120 characters by passing max_content_width when calling the command.
+
+```bash
+cli(max_content_width=120)
+```
+
+--------------------------------
+
+### Deprecated command with deprecated=True
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Marks a command as deprecated by passing deprecated=True, causing a deprecation warning and still executing normally.
+
+```python
+@click.command('say-hello', deprecated=True)
+@click.option('--count', default=1)
+def hello(count):
+    for x in range(count):
+        click.echo("Hello!")
+```
+
+```shell-session
+$ say-hello --count 2
+DeprecationWarning: The command 'say-hello' is deprecated.
+Hello!
+Hello!
+```
+
+--------------------------------
+
+### Multi value option with nargs=2
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Multi value option with nargs=2 and type=float. The values are passed as a tuple; the command line shows the output for two float arguments.
+
+```python
+@click.command()
+@click.option('--pos', nargs=2, type=float)
+def findme(pos):
+    a, b = pos
+    click.echo(f"{a} / {b}")
+```
+
+```shell-session
+$ findme --pos 2.0 3.0
+2.0 / 3.0
+```
+
+--------------------------------
+
+### Flag value with default=True and shell output
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Defines a command with two mutually exclusive flags that set the same parameter to different string values. The first flag is the default, so passing no flag yields the same result as --upper. The shell session shows the help output and the results for each invocation.
+
+```python
+import sys
+
+@click.command()
+@click.option('--upper', 'transformation', flag_value='upper', default=True)
+@click.option('--lower', 'transformation', flag_value='lower')
+def info(transformation):
+    click.echo(getattr(sys.platform, transformation)())
+```
+
+```shell-session
+$ info --help
+Usage: info [OPTIONS]
+
+Options:
+  --upper
+  --lower
+  --help   Show this message and exit.
+$ info --upper
+LINUX
+$ info --lower
+linux
+$ info
+LINUX
+```
+
+--------------------------------
+
+### Custom Group: PluginGroup subclass
+
+Source: https://github.com/pallets/click/blob/main/docs/extending-click.md
+
+Defines a click.Group subclass that loads commands from Python files in a folder. Overrides list_commands() to find .py files and get_command() to lazily load the module and return its cli attribute. The group is instantiated with a plugin_folder and executed when run as a script.
+
+```python
+import importlib.util
+import os
+import click
+
+class PluginGroup(click.Group):
+    def __init__(self, name=None, plugin_folder="commands", **kwargs):
+        super().__init__(name=name, **kwargs)
+        self.plugin_folder = plugin_folder
+
+    def list_commands(self, ctx):
+        rv = []
+
+        for filename in os.listdir(self.plugin_folder):
+            if filename.endswith(".py"):
+                rv.append(filename[:-3])
+
+        rv.sort()
+        return rv
+
+    def get_command(self, ctx, name):
+        path = os.path.join(self.plugin_folder, f"{name}.py")
+        spec = importlib.util.spec_from_file_location(name, path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.cli
+
+cli = PluginGroup(
+    plugin_folder=os.path.join(os.path.dirname(__file__), "commands")
+)
+
+if __name__ == "__main__":
+    cli()
+```
+
+--------------------------------
+
+### Capture fd-level output with CliRunner(capture="fd")
+
+Source: https://github.com/pallets/click/blob/main/docs/testing.md
+
+Use capture="fd" to redirect OS file descriptors 1 and 2 to a temporary file via os.dup2(), catching output that bypasses sys.stdout, such as stale references, logging frameworks, and C extensions. Note that capture="fd" is not available on Windows.
+
+```python
+from click.testing import CliRunner
+from myapp import cli
+
+
+def test_captures_everything():
+    runner = CliRunner(capture="fd")
+    result = runner.invoke(cli)
+    # result.stdout contains both Python-level and fd-level output
+    assert "expected output" in result.stdout
+
+```
+
+--------------------------------
+
+### Provide explicit length to click.progressbar
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Use the length parameter when the iterable has no length but you know the total number of items. This enables remaining-time calculation.
+
+```python
+with click.progressbar(all_the_users_to_process,
+                       length=number_of_users) as bar:
+    for user in bar:
+        modify_the_user(user)
+```
+
+--------------------------------
+
+### Argument from single environment variable
+
+Source: https://github.com/pallets/click/blob/main/docs/arguments.md
+
+Reads the argument from a single environment variable SRC. The command prints the contents of the file. The shell session shows setting the variable and the output.
+
+```python
+@click.command()
+@click.argument('src', envvar='SRC', type=click.File('r'))
+def echo(src):
+    """Print value of SRC environment variable."""
+    click.echo(src.read())
+```
+
+```shell-session
+$ export SRC=hello.txt
+$ echo
+Hello World!
+```
+
+--------------------------------
+
+### Click default wrapping behavior with max_content_width
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Demonstrates Click's default wrapping behavior: single new lines are ignored and text is rewrapped to the terminal width (max 80 characters by default). The second grouping of three lines is rewrapped into a single paragraph.
+
+```python
+import click
+
+@click.command()
+def cli():
+    """
+    This is a very long paragraph and as you
+    can see wrapped very early in the source text
+    but will be rewrapped to the terminal width in
+    the final output.
+
+    This is
+    a paragraph
+    that is compacted.
+    """
+```
+
+```shell-session
+$ cli --help
+Usage: cli [OPTIONS]
+
+  This is a very long paragraph and as you can see wrapped very early in the
+  source text but will be rewrapped to the terminal width in the final output.
+
+  This is a paragraph that is compacted.
+
+Options:
+  --help  Show this message and exit.
+```
+
+--------------------------------
+
+### Optional prompt with prompt_required=False
+
+Source: https://github.com/pallets/click/blob/main/docs/prompts.md
+
+Shows how prompt_required=False changes prompting behavior: the prompt only appears when the flag is given, not when the option is omitted. The output demonstrates the three cases.
+
+```python
+@click.command()
+@click.option('--name', prompt=True, prompt_required=False, default="Default")
+def hello(name):
+    click.echo(f"Hello {name}!")
+```
+
+```shell-session
+$ hello
+Hello Default!
+$ hello --name Value
+Hello Value!
+$ hello --name
+Name [Default]: 
+```
+
+--------------------------------
+
+### Output binary data without newline using click.echo()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Outputs binary data (a UTF-8 encoded snowman) without a trailing newline by passing nl=False. Use this when you need to suppress the default newline.
+
+```python
+click.echo(b'\xe2\x98\x83', nl=False)
+```
+
+--------------------------------
+
+### Print to stdout with click.echo()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Prints a string to stdout using Click's echo() function, which works consistently across terminal environments. It emits a trailing newline by default.
+
+```python
+import click
+
+click.echo('Hello World!')
+```
+
+--------------------------------
+
+### Document argument in docstring
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Documents an argument explicitly in the command docstring instead of using the help parameter. The docstring text appears in the main help text, while the argument is still listed in the Positional arguments section. The output shows the resulting help page.
+
+```python
+@click.command()
+@click.argument('filename')
+def touch(filename):
+    """Print FILENAME.
+
+    FILENAME is the name of the file to check.
+    """
+    click.echo(filename)
+```
+
+```shell-session
+$ touch --help
+Usage: touch [OPTIONS] FILENAME
+
+  Print FILENAME.
+
+  FILENAME is the name of the file to check.
+
+Options:
+  --help  Show this message and exit.
+```
+
+--------------------------------
+
+### Optional option value with is_flag=False and flag_value
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Use this option definition to make an option's value optional: when only the flag is given, the value becomes the flag_value; otherwise the provided value is used. The default is used when the option is omitted entirely. The session output shows the three possible invocations and their results.
+
+```python
+@click.command()
+@click.option("--name", is_flag=False, flag_value="Flag", default="Default")
+def hello(name):
+    click.echo(f"Hello, {name}!")
+```
+
+```shell-session
+$ hello
+Hello, Default!
+$ hello --name Value
+Hello, Value!
+$ hello --name
+Hello, Flag!
+```
+
+--------------------------------
+
+### Escape Click wrapping with \b
+
+Source: https://github.com/pallets/click/blob/main/docs/documentation.md
+
+Shows how to escape Click's wrapping on a per-paragraph basis by adding a line with only \b. The \b is removed from the rendered help text, preserving new lines in that paragraph.
+
+```python
+import click
+
+@click.command()
+def cli():
+    """First paragraph.
+
+    \b
+    This is
+    a paragraph
+    without rewrapping.
+
+    And this is a paragraph
+    that will be rewrapped again.
+    """
+```
+
+```shell-session
+$ cli --help
+Usage: cli [OPTIONS]
+
+  First paragraph.
+
+  This is
+  a paragraph
+  without rewrapping.
+
+  And this is a paragraph that will be rewrapped again.
+
+Options:
+  --help  Show this message and exit.
+```
+
+--------------------------------
+
+### Custom integer type accepting hex and octal
+
+Source: https://github.com/pallets/click/blob/main/docs/parameter-types.md
+
+Subclass click.ParamType[int] and override convert() to parse hex (0x prefix) and octal (leading 0) strings into integers. The name attribute is optional for documentation. Call self.fail() on ValueError. The param and ctx arguments may be None in prompts. Check if the value is already an int and pass it through to support default values and Python arguments.
+
+```python
+import click
+
+
+class BasedIntParamType(click.ParamType[int]):
+    name = "integer"
+
+    def convert(self, value, param, ctx) -> int:
+        if isinstance(value, int):
+            return value
+
+        try:
+            if value[:2].lower() == "0x":
+                return int(value[2:], 16)
+            elif value[:1] == "0":
+                return int(value, 8)
+            return int(value, 10)
+        except ValueError:
+            self.fail(f"{value!r} is not a valid integer", param, ctx)
+
+
+BASED_INT = BasedIntParamType()
+```
+
+--------------------------------
+
+### Print to stderr with click.echo(err=True)
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Prints a string to standard error by passing err=True. This is useful for error messages or diagnostics.
+
+```python
+click.echo('Hello World!', err=True)
+```
+
+--------------------------------
+
+### Set locale to C.UTF-8
+
+Source: https://github.com/pallets/click/blob/main/docs/unicode-support.md
+
+Fix the ASCII environment error on a US machine or newer Linux systems by exporting the locale to C.UTF-8. These values must be exported before invoking your Python script.
+
+```console
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+```
+
+--------------------------------
+
+### Argument escape with ignore_unknown_options
+
+Source: https://github.com/pallets/click/blob/main/docs/arguments.md
+
+Sets ignore_unknown_options to True so arguments that look like options are accepted without the `--` separator. The shell session shows the output when passing a file named -foo.txt.
+
+```python
+@click.command(context_settings={"ignore_unknown_options": True})
+@click.argument('files', nargs=-1, type=click.Path())
+def touch(files):
+    """Print all FILES file names."""
+    for filename in files:
+        click.echo(filename)
+```
+
+```shell-session
+$ touch -foo.txt bar.txt
+-foo.txt
+bar.txt
+```
+
+--------------------------------
+
+### Edit multi-line input with click.edit()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Opens the user's default editor for multi-line input. Returns None if the editor is closed without saving; otherwise returns the entered text with the marker and trailing newline removed.
+
+```python
+import click
+
+def get_commit_message():
+    MARKER = '# Everything below is ignored\n'
+    message = click.edit('\n\n' + MARKER)
+    if message is not None:
+        return message.split(MARKER, 1)[0].rstrip('\n')
+```
+
+--------------------------------
+
+### Boolean feature switch group with default=True
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Defines an enable/disable feature switch group where the enable flag is the default. When no flag is passed, the function receives True; passing --with-xyz yields True and --without-xyz yields False. Use this form when the on and off flags need distinct names without a shared stem or when each flag needs its own help text.
+
+```python
+@click.option("--without-xyz", "enable_xyz", flag_value=False)
+@click.option("--with-xyz", "enable_xyz", flag_value=True, default=True)
+```
+
+--------------------------------
+
+### Set German locale to de_DE.utf-8
+
+Source: https://github.com/pallets/click/blob/main/docs/unicode-support.md
+
+Fix the ASCII environment error on a German Linux machine by exporting the locale to de_DE.utf-8. These values must be exported before invoking your Python script.
+
+```console
+export LC_ALL=de_DE.utf-8
+export LANG=de_DE.utf-8
+```
+
+--------------------------------
+
+### Implement pass_obj decorator with Context.invoke
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Implements a custom decorator that passes the context object as the first argument to the wrapped function. The decorator uses click.pass_context to access the context and Context.invoke() to call the original function with the object, allowing the function to be invoked with either f(ctx, obj) or f(obj) depending on whether it is also decorated with pass_context().
+
+```python
+from functools import update_wrapper
+
+def pass_obj(f):
+    @click.pass_context
+    def new_func(ctx, *args, **kwargs):
+        return ctx.invoke(f, ctx.obj, *args, **kwargs)
+    return update_wrapper(new_func, f)
+```
+
+--------------------------------
+
+### Tuple value in default_map used directly
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Shows that passing a tuple or list as the default_map value bypasses splitting and is used directly for multi-value parameters.
+
+```python
+default_map = {
+    "draw": {
+        "point": (3, 4),  # used directly
+    }
+}
+```
+
+--------------------------------
+
+### Test file-reading command with tmp_path isolation
+
+Source: https://github.com/pallets/click/blob/main/docs/testing.md
+
+Isolates file system access for a command that reads a file. The first block defines a cat command that echoes the contents of a file argument; the second block uses pytest's tmp_path fixture to create a temporary file and invoke the command with an absolute path, asserting the output matches the file content.
+
+```python
+import click
+
+@click.command()
+@click.argument('f', type=click.File())
+def cat(f):
+   click.echo(f.read())
+
+```
+
+```python
+from click.testing import CliRunner
+from cat import cat
+
+def test_cat(tmp_path):
+   hello = tmp_path / 'hello.txt'
+   hello.write_text('Hello World!')
+
+   runner = CliRunner()
+   result = runner.invoke(cat, [str(hello)])
+   assert result.exit_code == 0
+   assert result.output == 'Hello World!\n'
+
+```
+
+--------------------------------
+
+### Format filename with click.format_filename()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Use click.format_filename() to safely convert a filename (which may be bytes) to Unicode for display in a string. The conversion is best-effort and never fails, so it is safe to embed in a full Unicode string.
+
+```python
+click.echo(f"Path: {click.format_filename(b'foo.txt')}")
+```
+
+--------------------------------
+
+### Boolean flag pair with default=True
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Recommended explicit pair form for a negative flag that defaults to off. Use this instead of the single-flag form with flag_value=False and default=True.
+
+```python
+@click.option('--with-xyz/--without-xyz', 'enable_xyz', default=True)
+```
+
+--------------------------------
+
+### RuntimeError for ASCII environment
+
+Source: https://github.com/pallets/click/blob/main/docs/unicode-support.md
+
+This error indicates that Python is configured to use ASCII as the encoding for the environment, which causes Click to abort execution. It occurs when the locale is not set to a Unicode locale.
+
+```console
+Traceback (most recent call last):
+  ...
+RuntimeError: Click will abort further execution because Python was
+  configured to use ASCII as encoding for the environment. Consult
+  https://click.palletsprojects.com/unicode-support/ for mitigation
+  steps.
+```
+
+--------------------------------
+
+### Deactivate virtualenv
+
+Source: https://github.com/pallets/click/blob/main/docs/virtualenv.md
+
+Stops using the virtual environment and restores the shell prompt to its previous state.
+
+```console
+$ deactivate
+```
+
+--------------------------------
+
+### Alias for second option with leading whitespace
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Defines an alias for the second option only using leading whitespace in the format string. The help output shows the alias '-N' for the off option.
+
+```python
+import sys
+
+@click.command()
+@click.option('--shout/--no-shout', ' /-N', default=False)
+def info(shout):
+    rv = sys.platform
+    if shout:
+        rv = rv.upper() + '!!!!111'
+    click.echo(rv)
+```
+
+```shell-session
+$ info --help
+Usage: info [OPTIONS]
+
+Options:
+  --shout / -N, --no-shout
+  --help                    Show this message and exit.
+```
+
+--------------------------------
+
+### Override default_map in decorator with context_settings
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Sets a default port for the runserver command via context settings. The default_map overrides the option's default of 8000, so running 'cli runserver' outputs the port 5000.
+
+```python
+import click
+
+CONTEXT_SETTINGS = dict(
+    default_map={'runserver': {'port': 5000}}
+)
+
+@click.group(context_settings=CONTEXT_SETTINGS)
+def cli():
+    pass
+
+@cli.command()
+@click.option('--port', default=8000)
+def runserver(port):
+    click.echo(f"Serving on http://127.0.0.1:{port}/")
+
+if __name__ == '__main__':
+    cli()
+```
+
+```shell-session
+$ cli runserver
+Serving on http://127.0.0.1:5000/
+```
+
+--------------------------------
+
+### Boolean flag with is_flag=True
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Boolean flag with is_flag=True. Defaults to False when not passed, True when passed. The output shows the platform name and its uppercase version with '!!!!111' when the flag is set.
+
+```python
+import sys
+
+@click.command()
+@click.option('--shout', is_flag=True)
+def info(shout):
+    rv = sys.platform
+    if shout:
+        rv = rv.upper() + '!!!!111'
+    click.echo(rv)
+```
+
+```shell-session
+$ info
+linux
+$ info --shout
+LINUX!!!!111
+```
+
+--------------------------------
+
+### Explicit on/off flag with --shout/--no-shout
+
+Source: https://github.com/pallets/click/blob/main/docs/options.md
+
+Explicit on/off boolean flag with default=False. The user can pass either --shout or --no-shout, or omit both to use the default. Output shows the three cases.
+
+```python
+import sys
+
+@click.command()
+@click.option('--shout/--no-shout', default=False)
+def info(shout):
+    rv = sys.platform
+    if shout:
+        rv = rv.upper() + '!!!!111'
+    click.echo(rv)
+```
+
+```shell-session
+$ info
+linux
+$ info --shout
+LINUX!!!!111
+$ info --no-shout
+linux
+```
+
+--------------------------------
+
+### Access exit code in Bash
+
+Source: https://github.com/pallets/click/blob/main/docs/command-line-reference.md
+
+Use `echo $?` in Bash to display the exit code of the last executed command.
+
+```bash
+$ echo $?
+```
+
+--------------------------------
+
+### Invoke Click group without subcommand using invoke_without_command
+
+Source: https://github.com/pallets/click/blob/main/docs/commands-and-groups.md
+
+Sets invoke_without_command=True so the group callback runs even when no subcommand is given. The context object's invoked_subcommand attribute indicates whether a subcommand will be invoked. Without this flag, the group would not run and --help would be shown automatically.
+
+```python
+@click.group(invoke_without_command=True)
+@click.pass_context
+def cli(ctx):
+    if ctx.invoked_subcommand is None:
+        click.echo('I was invoked without subcommand')
+    else:
+        click.echo(f"I am about to invoke {ctx.invoked_subcommand}")
+
+@cli.command()
+def sync():
+    click.echo('The subcommand')
+```
+
+```shell-session
+$ tool
+I was invoked without subcommand
+$ tool sync
+I am about to invoke sync
+The subcommand
+```
+
+--------------------------------
+
+### Read single character with click.getchar()
+
+Source: https://github.com/pallets/click/blob/main/docs/utils.md
+
+Reads a single character from the terminal using click.getchar() and responds based on the input. The function always reads from the terminal even if stdin is a pipe. It reads raw input, so arrow keys appear in native escape format; only Ctrl+C, Ctrl+D, and Ctrl+Z (on Windows) are translated to keyboard interrupts and end-of-file exceptions.
+
+```python
+import click
+
+click.echo('Continue? [yn] ', nl=False)
+c = click.getchar()
+click.echo()
+if c == 'y':
+    click.echo('We will go on')
+elif c == 'n':
+    click.echo('Abort!')
+else:
+    click.echo('Invalid input :(')
+```
+
+--------------------------------
+
+### Pass context object with make_pass_decorator in chained group
+
+Source: https://github.com/pallets/click/blob/main/docs/commands.md
+
+Uses make_pass_decorator to pass a shared dict between chained commands. The group stores the name, lower converts it, and show prints it. The shell session shows the output of the pipeline.
+
+```python
+pass_ns = click.make_pass_decorator(dict, ensure=True)
+
+@click.group(chain=True)
+@click.argument("name")
+@pass_ns
+def cli(ns, name):
+    ns["name"] = name
+
+@cli.command
+@pass_ns
+def lower(ns):
+    ns["name"] = ns["name"].lower()
+
+@cli.command
+@pass_ns
+def show(ns):
+    click.echo(ns["name"])
+
+```
+
+```shell-session
+$ process Click show lower show
+Click
+click
+
+```
+
+--------------------------------
+
+### Access exit code in PowerShell
+
+Source: https://github.com/pallets/click/blob/main/docs/command-line-reference.md
+
+Use `echo $LASTEXITCODE` in PowerShell to display the exit code of the last executed command.
+
+```powershell
+> echo $LASTEXITCODE
+```
+
+--------------------------------
+
+### UnicodeEncodeError on Windows with redirected stdout
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Shows the exact error raised when a Click CLI writes Unicode to a redirected stdout on Windows. The stream is encoded with the system code page (often cp1252) and errors="strict", so characters outside that codec fail. This is not a Click bug; it is a system configuration issue.
+
+```pytb
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2023' in position 62: character maps to <undefined>
+```
+
+--------------------------------
+
+### Define LazyGroup subclass
+
+Source: https://github.com/pallets/click/blob/main/docs/complex.md
+
+Defines a LazyGroup subclass that lazily loads subcommands by storing a mapping of command names to import paths. Overrides list_commands and get_command to defer imports until needed.
+
+```python
+# in lazy_group.py
+import importlib
+import click
+
+class LazyGroup(click.Group):
+    def __init__(self, *args, lazy_subcommands=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        # lazy_subcommands is a map of the form:
+        #
+        #   {command-name} -> {module-name}.{command-object-name}
+        #
+        self.lazy_subcommands = lazy_subcommands or {}
+
+    def list_commands(self, ctx):
+        base = super().list_commands(ctx)
+        lazy = sorted(self.lazy_subcommands.keys())
+        return base + lazy
+
+    def get_command(self, ctx, cmd_name):
+        if cmd_name in self.lazy_subcommands:
+            return self._lazy_load(cmd_name)
+        return super().get_command(ctx, cmd_name)
+
+    def _lazy_load(self, cmd_name):
+        # lazily loading a command, first get the module name and attribute name
+        import_path = self.lazy_subcommands[cmd_name]
+        modname, cmd_object_name = import_path.rsplit(".", 1)
+        # do the import
+        mod = importlib.import_module(modname)
+        # get the Command object from that module
+        cmd_object = getattr(mod, cmd_object_name)
+        # check the result to make debugging easier
+        if not isinstance(cmd_object, click.Command):
+            raise ValueError(
+                f"Lazy loading of {import_path} failed by returning "
+                "a non-command object"
+            )
+        return cmd_object
+```
+
+--------------------------------
+
+### Detect UTF-8 stdout encoding in Python
+
+Source: https://github.com/pallets/click/blob/main/docs/faqs.md
+
+Checks whether the standard output stream uses a UTF-8 encoding. Use this in a library or CLI that knows its environment to decide whether to degrade output. The check is against sys.stdout.encoding, not sys.flags.utf8_mode, because only the former reports UTF-8 for all three configuration options (PYTHONIOENCODING, -X utf8, and sys.stdout.reconfigure).
+
+```python
+import sys
+
+encoding = getattr(sys.stdout, "encoding", "") or ""
+ascii_only = not encoding.lower().startswith("utf")
+```
+
+=== COMPLETE CONTENT === This response contains all available snippets from this library. No additional content exists. Do not make further requests.

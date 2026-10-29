@@ -1,0 +1,1267 @@
+# mlb-stats-api-openapi: documentation excerpt
+
+- Source: Context7 `/openapi/raw_githubusercontent_saiemgilani_sdv-swagger_main_mlb-stats-api_openapi_yaml` (https://context7.com/openapi/raw_githubusercontent_saiemgilani_sdv-swagger_main_mlb-stats-api_openapi_yaml)
+- Fetched: 2026-10-29; excerpt only (the service caps a response at about 500 KB), not the complete manual. Upstream licences apply; see the upstream repository.
+
+<!-- topic: generic extract -->
+### GET /api/v1/standings
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/standings
+
+```markdown
+### Parameters
+
+- **leagueId** (string, query, required)
+- **season** (string, query, optional)
+- **date** (string (date), query, optional)
+- **standingsTypes** (string, query, optional)
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+- **fields** (string, query, optional): Comma-separated allow-list of JSON keys to keep. Hierarchical:
+`teams,id,name` returns only `teams[].id` and `teams[].name`. Significant
+bandwidth savings on large responses.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/standings?leagueId=string&season=string&date=2023-01-01&standingsTypes=string&hydrate=string&fields=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/stats
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/stats
+
+```markdown
+### Parameters
+
+- **stats** (string, query, optional)
+- **group** (string, query, optional)
+- **season** (string, query, optional)
+- **gameType** (string, query, optional)
+- **playerPool** (string (all|qualified|rookies), query, optional)
+- **limit** (integer, query, optional)
+- **offset** (integer, query, optional)
+- **fields** (string, query, optional): Comma-separated allow-list of JSON keys to keep. Hierarchical:
+`teams,id,name` returns only `teams[].id` and `teams[].name`. Significant
+bandwidth savings on large responses.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/stats?stats=string&group=string&season=string&gameType=string&playerPool=all&limit=50&offset=0&fields=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/teams/affiliates
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/teams/affiliates
+
+```markdown
+### Parameters
+
+- **teamIds** (string, query, required)
+- **season** (string, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/teams/affiliates?teamIds=string&season=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/leagues
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/leagues
+
+```markdown
+### Parameters
+
+- **sportId** (integer, query, optional)
+- **season** (string, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/leagues?sportId=0&season=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/draft/prospects/{year}
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/draft/prospects/{year}
+
+```markdown
+### Parameters
+
+- **year** (string, path, required)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/draft/prospects/{year}"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/seasons
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/seasons
+
+```markdown
+### Parameters
+
+- **sportId** (integer, query, optional)
+- **all** (boolean, query, optional): When true, returns every season. Supports `divisionId`/`leagueId` filters.
+- **divisionId** (integer, query, optional)
+- **leagueId** (integer, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/seasons?sportId=0&all=true&divisionId=0&leagueId=0"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/game/{gamePk}/winProbability
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/game/{gamePk}/winProbability
+
+```markdown
+### Parameters
+
+- **gamePk** (integer, path, required): MLB's internal game ID, found in schedule responses.
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/game/{gamePk}/winProbability"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/venues
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/venues
+
+```markdown
+### Parameters
+
+- **season** (string, query, optional)
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/venues?season=string&hydrate=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/game/{gamePk}/contextMetrics
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/game/{gamePk}/contextMetrics
+
+```markdown
+### Parameters
+
+- **gamePk** (integer, path, required): MLB's internal game ID, found in schedule responses.
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/game/{gamePk}/contextMetrics"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/people
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/people
+
+```markdown
+### Parameters
+
+- **personIds** (string, query, required)
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/people?personIds=string&hydrate=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/divisions
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/divisions
+
+```markdown
+### Parameters
+
+- **sportId** (integer, query, optional)
+- **leagueId** (integer, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/divisions?sportId=0&leagueId=0"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/draft/{year}
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+Pass `year=latest` (with no other query params) for the most recent draft.
+`prospects=true` and `latest=true` are mutually exclusive.
+
+
+```markdown
+### Parameters
+
+- **year** (string, path, required)
+- **round** (string, query, optional)
+- **name** (string, query, optional)
+- **school** (string, query, optional)
+- **state** (string, query, optional)
+- **country** (string, query, optional)
+- **position** (string, query, optional)
+- **teamId** (integer, query, optional)
+- **playerId** (integer, query, optional)
+- **bisPlayerId** (integer, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/draft/{year}?round=string&name=string&school=string&state=string&country=string&position=string&teamId=0&playerId=0&bisPlayerId=0"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/sports
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/sports
+
+```markdown
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/sports"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/venues/{venueId}
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/venues/{venueId}
+
+```markdown
+### Parameters
+
+- **venueId** (integer, path, required)
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/venues/{venueId}?hydrate=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/stats/streaks
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/stats/streaks
+
+```markdown
+### Parameters
+
+- **streakType** (string (hittingStreakOverall|hittingStreakHome|hittingStreakAway|onBaseOverall|onBaseHome|onBaseAway), query, required)
+- **streakSpan** (string (career|season|currentStreak|currentStreakInSeason|notable|notableInSeason), query, required)
+- **season** (string, query, optional)
+- **sportId** (integer, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/stats/streaks?streakType=hittingStreakOverall&streakSpan=career&season=string&sportId=0"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/schedule/postseason
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/schedule/postseason
+
+```markdown
+### Parameters
+
+- **season** (string, query, optional)
+- **sportId** (integer, query, optional)
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/schedule/postseason?season=string&sportId=1&hydrate=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/{metaType}
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+Each `metaType` returns a flat list of valid values for the corresponding
+query parameter elsewhere in the API. Use these to populate dropdowns and
+validate inputs in the wrapper.
+
+
+```markdown
+### Parameters
+
+- **metaType** (string (awards|baseballStats|eventTypes|gameStatus|gameTypes|hitTrajectories|jobTypes|languages|leagueLeaderTypes|logicalEvents|metrics|pitchCodes|pitchTypes|platforms|positions|reviewReasons|rosterTypes|scheduleEventTypes|situationCodes|sky|standingsTypes|statGroups|statTypes|windDirection), path, required)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/{metaType}"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/game/{gamePk}/feed/live/diffPatch
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/game/{gamePk}/feed/live/diffPatch
+
+```markdown
+### Parameters
+
+- **gamePk** (integer, path, required): MLB's internal game ID, found in schedule responses.
+- **startTimecode** (string, query, required)
+- **endTimecode** (string, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/game/{gamePk}/feed/live/diffPatch?startTimecode=string&endTimecode=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/game/{gamePk}/content
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/game/{gamePk}/content
+
+```markdown
+### Parameters
+
+- **gamePk** (integer, path, required): MLB's internal game ID, found in schedule responses.
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/game/{gamePk}/content"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/teams
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/teams
+
+```markdown
+### Parameters
+
+- **sportId** (integer, query, optional)
+- **season** (string, query, optional)
+- **activeStatus** (string (Y|N|B), query, optional)
+- **leagueIds** (string, query, optional)
+- **sportIds** (string, query, optional)
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+- **fields** (string, query, optional): Comma-separated allow-list of JSON keys to keep. Hierarchical:
+`teams,id,name` returns only `teams[].id` and `teams[].name`. Significant
+bandwidth savings on large responses.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/teams?sportId=1&season=string&activeStatus=Y&leagueIds=string&sportIds=string&hydrate=string&fields=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/teams/{teamId}/roster
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/teams/{teamId}/roster
+
+```markdown
+### Parameters
+
+- **teamId** (integer, path, required)
+- **rosterType** (string, query, optional)
+- **season** (string, query, optional)
+- **date** (string (date), query, optional)
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/teams/{teamId}/roster?rosterType=string&season=string&date=2023-01-01&hydrate=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/people/{personId}/stats
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+Career and season splits for a player. Combine `stats=`, `group=`, and
+`season=` to scope. For a player's stats for a specific game, set
+`stats=gameLog,statsSingleSeason` and filter by `season`.
+
+
+```markdown
+### Parameters
+
+- **personId** (integer, path, required): MLBAM player ID. Shared with Statcast / Baseball Savant.
+- **group** (string, query, optional)
+- **stats** (string, query, optional)
+- **season** (string, query, optional)
+- **sportId** (integer, query, optional)
+- **gameType** (string, query, optional)
+- **fields** (string, query, optional): Comma-separated allow-list of JSON keys to keep. Hierarchical:
+`teams,id,name` returns only `teams[].id` and `teams[].name`. Significant
+bandwidth savings on large responses.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/people/{personId}/stats?group=string&stats=string&season=string&sportId=0&gameType=string&fields=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/awards
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/awards
+
+```markdown
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/awards"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/schedule
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+Returns games for a date, date range, team, or season. The response is
+nested as `dates[].games[]`. Use `hydrate=probablePitcher,linescore,team`
+for the most common enrichments.
+
+
+```markdown
+### Parameters
+
+- **sportId** (integer, query, optional)
+- **date** (string (date), query, optional): Single date (YYYY-MM-DD). Mutually exclusive with the range params.
+- **startDate** (string (date), query, optional)
+- **endDate** (string (date), query, optional)
+- **teamId** (integer, query, optional)
+- **opponentId** (integer, query, optional)
+- **season** (string, query, optional)
+- **gameType** (string, query, optional)
+- **gamePk** (integer, query, optional)
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+- **fields** (string, query, optional): Comma-separated allow-list of JSON keys to keep. Hierarchical:
+`teams,id,name` returns only `teams[].id` and `teams[].name`. Significant
+bandwidth savings on large responses.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=2023-01-01&startDate=2023-01-01&endDate=2023-01-01&teamId=0&opponentId=0&season=string&gameType=string&gamePk=0&hydrate=string&fields=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/game/{gamePk}/playByPlay
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/game/{gamePk}/playByPlay
+
+```markdown
+### Parameters
+
+- **gamePk** (integer, path, required): MLB's internal game ID, found in schedule responses.
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/game/{gamePk}/playByPlay"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/seasons/{seasonId}
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/seasons/{seasonId}
+
+```markdown
+### Parameters
+
+- **seasonId** (string, path, required)
+- **sportId** (integer, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/seasons/{seasonId}?sportId=0"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/jobs/umpires
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/jobs/umpires
+
+```markdown
+### Parameters
+
+- **date** (string (date), query, optional)
+- **sportId** (integer, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/jobs/umpires?date=2023-01-01&sportId=0"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/teams/{teamId}
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/teams/{teamId}
+
+```markdown
+### Parameters
+
+- **teamId** (integer, path, required)
+- **season** (string, query, optional)
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/teams/{teamId}?season=string&hydrate=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/people/{personId}
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/people/{personId}
+
+```markdown
+### Parameters
+
+- **personId** (integer, path, required): MLBAM player ID. Shared with Statcast / Baseball Savant.
+- **hydrate** (string, query, optional): Comma-separated list of related resources to expand. Supports nesting via
+parentheses, e.g. `team(roster(person(stats(splits))))`.
+Common values: probablePitcher, linescore, team, person, stats, decisions,
+flags, broadcasts, content, weather.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/people/{personId}?hydrate=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1.1/game/{gamePk}/feed/live
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+Full event-by-event feed for a game, including play results, baserunners,
+pitch data, and Statcast-flavored hit data where available. Updates in
+near-real-time during a live game. Note this is the only commonly-used
+v1.1 endpoint.
+
+
+```markdown
+### Parameters
+
+- **gamePk** (integer, path, required): MLB's internal game ID, found in schedule responses.
+- **timecode** (string, query, optional): ISO-ish timestamp `YYYYMMDD_HHMMSS`. If set, returns the state of the
+game at that point. Used for replay / scrubbing.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1.1/game/{gamePk}/feed/live?timecode=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/game/{gamePk}/linescore
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/game/{gamePk}/linescore
+
+```markdown
+### Parameters
+
+- **gamePk** (integer, path, required): MLB's internal game ID, found in schedule responses.
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/game/{gamePk}/linescore"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/attendance
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+Requires one of teamId, leagueId, or leagueListId.
+
+```markdown
+### Parameters
+
+- **teamId** (integer, query, optional)
+- **leagueId** (integer, query, optional)
+- **leagueListId** (string, query, optional)
+- **season** (string, query, optional)
+- **date** (string (date), query, optional)
+- **gameType** (string, query, optional)
+- **fields** (string, query, optional): Comma-separated allow-list of JSON keys to keep. Hierarchical:
+`teams,id,name` returns only `teams[].id` and `teams[].name`. Significant
+bandwidth savings on large responses.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/attendance?teamId=0&leagueId=0&leagueListId=string&season=string&date=2023-01-01&gameType=string&fields=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/teams/{teamId}/stats
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/teams/{teamId}/stats
+
+```markdown
+### Parameters
+
+- **teamId** (integer, path, required)
+- **season** (string, query, optional)
+- **group** (string, query, optional)
+- **stats** (string, query, optional)
+- **fields** (string, query, optional): Comma-separated allow-list of JSON keys to keep. Hierarchical:
+`teams,id,name` returns only `teams[].id` and `teams[].name`. Significant
+bandwidth savings on large responses.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/teams/{teamId}/stats?season=string&group=string&stats=string&fields=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/teams/{teamId}/leaders
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/teams/{teamId}/leaders
+
+```markdown
+### Parameters
+
+- **teamId** (integer, path, required)
+- **leaderCategories** (string, query, required)
+- **season** (string, query, optional)
+- **leaderGameTypes** (string, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/teams/{teamId}/leaders?leaderCategories=string&season=string&leaderGameTypes=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/stats/leaders
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+League leaders. Note: if omitting `season` to query all-time, you must
+include `statType=statsSingleSeason` or the result will be empty.
+
+
+```markdown
+### Parameters
+
+- **leaderCategories** (string, query, required)
+- **season** (string, query, optional)
+- **statGroup** (string, query, optional)
+- **gameType** (string, query, optional)
+- **leagueId** (string, query, optional)
+- **sportId** (integer, query, optional)
+- **limit** (integer, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=string&season=string&statGroup=string&gameType=string&leagueId=string&sportId=0&limit=0"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/sports/{sportId}/players
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/sports/{sportId}/players
+
+```markdown
+### Parameters
+
+- **sportId** (integer, path, required)
+- **season** (string, query, required)
+- **gameType** (string, query, optional)
+- **fields** (string, query, optional): Comma-separated allow-list of JSON keys to keep. Hierarchical:
+`teams,id,name` returns only `teams[].id` and `teams[].name`. Significant
+bandwidth savings on large responses.
+
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/sports/{sportId}/players?season=string&gameType=string&fields=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/people/{personId}/stats/game/{gamePk}
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/people/{personId}/stats/game/{gamePk}
+
+```markdown
+### Parameters
+
+- **personId** (integer, path, required): MLBAM player ID. Shared with Statcast / Baseball Savant.
+- **gamePk** (union, path, required)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/people/{personId}/stats/game/{gamePk}"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/teams/{teamId}/alumni
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/teams/{teamId}/alumni
+
+```markdown
+### Parameters
+
+- **teamId** (integer, path, required)
+- **season** (string, query, optional)
+- **group** (string, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/teams/{teamId}/alumni?season=string&group=string"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/game/{gamePk}/boxscore
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/game/{gamePk}/boxscore
+
+```markdown
+### Parameters
+
+- **gamePk** (integer, path, required): MLB's internal game ID, found in schedule responses.
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/game/{gamePk}/boxscore"
+```
+
+```
+
+--------------------------------
+
+### GET /api/v1/awards/{awardId}/recipients
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+API endpoint for GET /api/v1/awards/{awardId}/recipients
+
+```markdown
+### Parameters
+
+- **awardId** (string, path, required)
+- **season** (string, query, optional)
+- **sportId** (integer, query, optional)
+
+### Responses
+
+#### 200 - response
+
+
+### Example Usage
+
+```bash
+curl -X GET "https://statsapi.mlb.com/api/v1/awards/{awardId}/recipients?season=string&sportId=0"
+```
+
+```
+
+--------------------------------
+
+### API Overview: MLB Stats API (unofficial)
+
+Source: https://raw.githubusercontent.com/saiemgilani/sdv-swagger/main/mlb-stats-api.openapi.yaml
+
+The MLB Stats API powers MLB.com, the At Bat app, and most public baseball stat
+sites. It is not officially documented for public use; this spec is consolidated
+from the toddrob99/MLB-StatsAPI Python wrapper, the pseudo-r/Public-MLB-API
+project, and MLB's own 2025 hackathon dataset.
+
+Coverage: the endpoints below are the ones we plan to wrap. The full surface
+area is larger (~150 endpoints); see toddrob99/MLB-StatsAPI/statsapi/endpoints.py
+for the full enumeration.
+
+Common conventions:
+  - `sportId=1` selects MLB. Most endpoints default to MLB but require the param
+    explicitly for some queries.
+  - `season` is a 4-digit year string.
+  - `fields` is a comma-separated allow-list of JSON keys to return.
+  - `hydrate` is a comma-separated list of related resources to expand inline.
+    Hydrations can be nested with parentheses, e.g. `team(roster(person))`.
+  - All responses are JSON unless noted. No authentication required.
+
+
+```yaml
+# MLB Stats API (unofficial)
+# Version: 1.0.0-rev2026.05
+
+The MLB Stats API powers MLB.com, the At Bat app, and most public baseball stat
+sites. It is not officially documented for public use; this spec is consolidated
+from the toddrob99/MLB-StatsAPI Python wrapper, the pseudo-r/Public-MLB-API
+project, and MLB's own 2025 hackathon dataset.
+
+Coverage: the endpoints below are the ones we plan to wrap. The full surface
+area is larger (~150 endpoints); see toddrob99/MLB-StatsAPI/statsapi/endpoints.py
+for the full enumeration.
+
+Common conventions:
+  - `sportId=1` selects MLB. Most endpoints default to MLB but require the param
+    explicitly for some queries.
+  - `season` is a 4-digit year string.
+  - `fields` is a comma-separated allow-list of JSON keys to return.
+  - `hydrate` is a comma-separated list of related resources to expand inline.
+    Hydrations can be nested with parentheses, e.g. `team(roster(person))`.
+  - All responses are JSON unless noted. No authentication required.
+
+
+# Base URL: https://statsapi.mlb.com
+```
+
+=== COMPLETE CONTENT === This response contains all available snippets from this library. No additional content exists. Do not make further requests.

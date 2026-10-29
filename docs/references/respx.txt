@@ -1,0 +1,5661 @@
+# respx: documentation excerpt
+
+- Source: Context7 `/lundberg/respx` (https://context7.com/lundberg/respx)
+- Fetched: 2026-10-29; excerpt only (the service caps a response at about 500 KB), not the complete manual. Upstream licences apply; see the upstream repository.
+
+<!-- topic: generic extract -->
+### Migrate responses.RequestsMock unittest setUp to respx.mock()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace responses.RequestsMock with respx.mock() in a unittest setUp method. Both use start() and stop() with addCleanup to ensure cleanup.
+
+```python
+def setUp(self):
+    self.responses = responses.RequestsMock()
+    self.responses.start()
+    self.addCleanup(self.responses.stop)
+
+```
+
+```python
+def setUp(self):
+    self.respx_mock = respx.mock()
+    self.respx_mock.start()
+    self.addCleanup(self.respx_mock.stop)
+
+```
+
+--------------------------------
+
+### Example — lookups
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Use respx.get with url__regex, params, and headers__contains to mock a GET request. The example asserts a 200 response with JSON body.
+
+```python
+import httpx
+import respx
+
+respx.get(
+    url__regex=r"https://example\.org/.*",
+    params={"page": "2"},
+    headers__contains={"X-Api-Key": "secret"},
+).respond(200, json={"items": []})
+
+response = httpx.get(
+    "https://example.org/list",
+    params={"page": "2"},
+    headers={"X-Api-Key": "secret"},
+)
+assert response.status_code == 200
+```
+
+--------------------------------
+
+### Basic usage with global router
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/module-api.md
+
+Starts the respx global router, mocks a GET request to example.org to return a 204 response, performs the request with httpx, asserts the response status and that a call was made, then stops and clears the router.
+
+```python
+import httpx
+import respx
+
+respx.start()
+respx.get("https://example.org/").mock(return_value=httpx.Response(204))
+response = httpx.get("https://example.org/")
+assert response.status_code == 204
+assert respx.calls.called
+respx.stop(clear=True, reset=True)
+```
+
+--------------------------------
+
+### Mocker.start()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Starts patching all configured targets and methods, ensuring each patch is applied only once.
+
+```APIDOC
+## Mocker.start()
+
+### Description
+Starts patching all configured targets and methods, ensuring each patch is applied only once.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+def start(cls) -> None:
+```
+
+### Parameters
+None
+
+### Returns
+None
+
+### Notes
+For each `target` × `target_method`, creates `mock.patch(f"{target}.{method}", spec=True, new_callable=cls.mock)` and starts it. `AttributeError` (target/method absent) is swallowed.
+```
+
+--------------------------------
+
+### Install RESPX with pip
+
+Source: https://github.com/lundberg/respx/blob/master/docs/index.md
+
+Install RESPX using pip. Requires Python 3.8+ and HTTPX 0.25+.
+
+```console
+$ pip install respx
+```
+
+--------------------------------
+
+### Default fixture usage example
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/pytest-plugin.md
+
+Shows basic usage of the respx_mock fixture without a marker, using the global respx.mock instance. The test mocks a GET request and asserts the response status code.
+
+```python
+import httpx
+
+
+def test_default(respx_mock):
+    respx_mock.get("https://foo.bar/").mock(return_value=httpx.Response(204))
+    response = httpx.get("https://foo.bar/")
+    assert response.status_code == 204
+```
+
+--------------------------------
+
+### Selecting the HTTPX mocker per router
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Shows how to use respx.mock with using='httpx' to mock HTTPX requests. The example mocks a GET request and asserts the response status code.
+
+```python
+import httpx
+import respx
+
+with respx.mock(using="httpx") as respx_mock:
+    respx_mock.get("https://example.org/").respond(204)
+    assert httpx.get("https://example.org/").status_code == 204
+```
+
+--------------------------------
+
+### unittest: Reuse setUpClass and setUp for mocked API
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Defines a mixin class that sets up a mocked API in `setUpClass` and starts/stops it in `setUp`/`addCleanup`, allowing reuse across test cases. Requires `respx` and `httpx`.
+
+```python
+# testcases.py
+import respx
+
+from httpx import Response
+
+
+class MockedAPIMixin:
+    @classmethod
+    def setUpClass(cls):
+        cls.mocked_api = respx.mock(
+            base_url="https://foo.bar", assert_all_called=False
+        )
+        users_route = cls.mocked_api.get("/users/", name="list_users")
+        users_route.return_value = Response(200, json=[])
+        ...
+
+    def setUp(self):
+        self.mocked_api.start()
+        self.addCleanup(self.mocked_api.stop)
+```
+
+--------------------------------
+
+### Base URL Configuration with respx.mock(base_url=...)
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Configures the router with a base_url so routes can be added with relative paths. The example uses an async client and mocks a response.
+
+```python
+import httpx
+import respx
+
+from httpx import Response
+
+
+@respx.mock(base_url="https://example.org/api/")
+async def test_something(respx_mock):
+    async with httpx.AsyncClient(base_url="https://example.org/api/") as client:
+        respx_mock.get("/baz/").mock(return_value=Response(200, text="Baz"))
+        response = await client.get("/baz/")
+        assert response.text == "Baz"
+
+```
+
+--------------------------------
+
+### Marker-based configuration examples
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/pytest-plugin.md
+
+Two examples showing how to use the @pytest.mark.respx marker to configure a fresh MockRouter per test. The first sets base_url, the second enables strict assertion options; leaving a route uncalled in the second raises on fixture teardown.
+
+```python
+import httpx
+import pytest
+
+
+@pytest.mark.respx(base_url="https://foo.bar")
+def test_with_marker(respx_mock):
+    respx_mock.get("/baz/").mock(return_value=httpx.Response(204))
+    response = httpx.get("https://foo.bar/baz/")
+    assert response.status_code == 204
+```
+
+```python
+@pytest.mark.respx(assert_all_called=True, using="httpx")
+def test_strict(respx_mock):
+    respx_mock.get("/must-be-called/").respond(200)
+    # leaving this route uncalled raises on fixture teardown
+```
+
+--------------------------------
+
+### Mocker.restart()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Restarts patching by stopping with force and then starting again if patches are installed.
+
+```APIDOC
+## Mocker.restart()
+
+### Description
+Restarts patching by stopping with force and then starting again if patches are installed.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+def restart(cls) -> None:
+```
+
+### Parameters
+None
+
+### Returns
+None
+
+### Notes
+Calls `stop(force=True)` then `start()` when patches are installed.
+```
+
+--------------------------------
+
+### M(): Create reusable pattern with host lookup
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Creates a reusable pattern combining multiple arguments using the AND operator. The example creates a pattern matching host 'example.org' and registers it with respx.route().
+
+```python
+import respx
+from respx.patterns import M
+pattern = M(host="example.org")
+respx.route(pattern)
+```
+
+--------------------------------
+
+### Migrate responses.add to respx.get().respond()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace responses.add with respx.get().respond() to mock a GET request with a JSON response and status 200.
+
+```python
+responses.add(
+    responses.GET, "https://example.org/",
+    json={"foo": "bar"},
+    status=200,
+)
+
+```
+
+```python
+respx.get("https://example.org/").respond(200, json={"foo": "bar"})
+
+```
+
+--------------------------------
+
+### startswith lookup
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Case-sensitive starts-with test. Matches when the path starts with the given prefix.
+
+```python
+M(path__startswith="/api/")
+```
+
+--------------------------------
+
+### Host pattern: eq, regex, and in lookups
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches request URL host using eq (default), regex, or in lookups. The examples show matching 'example.org', a regex pattern, and a list of hosts.
+
+```python
+respx.route(host="example.org")
+respx.route(host__regex=r"example\.(org|com)")
+respx.route(host__in=["example.org", "example.com"])
+```
+
+--------------------------------
+
+### Method pattern: eq and in lookups
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches request HTTP method using eq (default) or in lookups. The examples show matching a single method 'GET' and a list of methods ['PUT', 'PATCH'].
+
+```python
+respx.route(method="GET")
+respx.route(method__in=["PUT", "PATCH"])
+```
+
+--------------------------------
+
+### respx module-level API functions
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/module-api.md
+
+All functions in the respx module-level API delegate to the global mock router. They provide lifecycle management (start, stop, clear, reset), route management (pop, route, add, request), and HTTP method helpers (get, post, put, patch, delete, head, options).
+
+```APIDOC
+## start()
+
+### Description
+Activates the global mock router: snapshots state, registers on the default `Mocker` ("httpcore") and starts patching.
+
+### Signature
+```python
+def start() -> None:
+```
+
+### Parameters
+None.
+
+### Returns
+None.
+```
+
+```APIDOC
+## stop(clear=True, reset=True)
+
+### Description
+Deactivates the global mock router: unregisters it, stops patching when no registered routers remain, then optionally rolls back routes (`clear`) and clears call stats (`reset`). Raises an `AssertionError`-derived failure if `assert_all_called` is enabled (disabled by default on the global router).
+
+### Signature
+```python
+def stop(clear: bool = True, reset: bool = True) -> None:
+```
+
+### Parameters
+- **clear** (bool) - Optional - Whether to roll back routes. Default `True`.
+- **reset** (bool) - Optional - Whether to clear call stats. Default `True`.
+
+### Returns
+None.
+```
+
+```APIDOC
+## clear()
+
+### Description
+Clears all routes on the global router (rollback-able to the last snapshot).
+
+### Signature
+```python
+def clear() -> None:
+```
+
+### Parameters
+None.
+
+### Returns
+None.
+```
+
+```APIDOC
+## reset()
+
+### Description
+Resets call statistics (calls and per-route call lists) without touching routes.
+
+### Signature
+```python
+def reset() -> None:
+```
+
+### Parameters
+None.
+
+### Returns
+None.
+```
+
+```APIDOC
+## pop(name, default=...)
+
+### Description
+Removes a route by name and returns it. Raises `KeyError` when `default` is not provided and the name is not found; otherwise returns `default`.
+
+### Signature
+```python
+@overload
+def pop(name: str) -> Route: ...
+
+@overload
+def pop(name: str, default: DefaultType) -> Union[Route, DefaultType]: ...
+
+def pop(name, default=...):
+```
+
+### Parameters
+- **name** (str) - Required - The name of the route to remove.
+- **default** (DefaultType) - Optional - Value to return if the name is not found.
+
+### Returns
+- **Route** - The removed route.
+- **DefaultType** - The default value if the name is not found and default is provided.
+```
+
+```APIDOC
+## route(*patterns, name=None, **lookups)
+
+### Description
+Creates and adds a `Route` from one or more `Pattern` objects and/or keyword lookups, optionally named.
+
+### Signature
+```python
+def route(*patterns: Pattern, name: Optional[str] = None, **lookups: Any) -> Route:
+```
+
+### Parameters
+- **patterns** (Pattern) - Required - One or more pattern objects to match.
+- **name** (Optional[str]) - Optional - Route name.
+- **lookups** (Any) - Optional - Pattern lookups, e.g. `params={"foo": "bar"}`.
+
+### Returns
+- **Route** - The newly added route.
+```
+
+```APIDOC
+## add(route, *, name=None)
+
+### Description
+Adds an existing `Route`, optionally under a name; replaces any existing route with the same name or pattern.
+
+### Signature
+```python
+def add(route: Route, *, name: Optional[str] = None) -> Route:
+```
+
+### Parameters
+- **route** (Route) - Required - The route to add.
+- **name** (Optional[str]) - Optional - Name for the route.
+
+### Returns
+- **Route** - The added route.
+```
+
+```APIDOC
+## request(method, url=None, *, name=None, **lookups)
+
+### Description
+Adds a route matching the given HTTP `method` and optional URL.
+
+### Signature
+```python
+def request(
+    method: str,
+    url: Optional[URLPatternTypes] = None,
+    *,
+    name: Optional[str] = None,
+    **lookups: Any,
+) -> Route:
+```
+
+### Parameters
+- **method** (str) - Required - HTTP method to match.
+- **url** (Optional[URLPatternTypes]) - Optional - URL pattern to match.
+- **name** (Optional[str]) - Optional - Route name.
+- **lookups** (Any) - Optional - Pattern lookups.
+
+### Returns
+- **Route** - The newly added route.
+```
+
+```APIDOC
+## get(url=None, *, name=None, **lookups)
+
+### Description
+Convenience wrapper for `request()` with method `GET`.
+
+### Signature
+```python
+def get(
+    url: Optional[URLPatternTypes] = None, *, name: Optional[str] = None, **lookups: Any
+) -> Route:
+```
+
+### Parameters
+- **url** (Optional[URLPatternTypes]) - Optional - URL pattern to match.
+- **name** (Optional[str]) - Optional - Route name.
+- **lookups** (Any) - Optional - Pattern lookups.
+
+### Returns
+- **Route** - The newly added route.
+```
+
+```APIDOC
+## post(url=None, *, name=None, **lookups)
+
+### Description
+Convenience wrapper for `request()` with method `POST`.
+
+### Signature
+```python
+def post(
+    url: Optional[URLPatternTypes] = None, *, name: Optional[str] = None, **lookups: Any
+) -> Route:
+```
+
+### Parameters
+- **url** (Optional[URLPatternTypes]) - Optional - URL pattern to match.
+- **name** (Optional[str]) - Optional - Route name.
+- **lookups** (Any) - Optional - Pattern lookups.
+
+### Returns
+- **Route** - The newly added route.
+```
+
+```APIDOC
+## put(url=None, *, name=None, **lookups)
+
+### Description
+Convenience wrapper for `request()` with method `PUT`.
+
+### Signature
+```python
+def put(
+    url: Optional[URLPatternTypes] = None, *, name: Optional[str] = None, **lookups: Any
+) -> Route:
+```
+
+### Parameters
+- **url** (Optional[URLPatternTypes]) - Optional - URL pattern to match.
+- **name** (Optional[str]) - Optional - Route name.
+- **lookups** (Any) - Optional - Pattern lookups.
+
+### Returns
+- **Route** - The newly added route.
+```
+
+```APIDOC
+## patch(url=None, *, name=None, **lookups)
+
+### Description
+Convenience wrapper for `request()` with method `PATCH`.
+
+### Signature
+```python
+def patch(
+    url: Optional[URLPatternTypes] = None, *, name: Optional[str] = None, **lookups: Any
+) -> Route:
+```
+
+### Parameters
+- **url** (Optional[URLPatternTypes]) - Optional - URL pattern to match.
+- **name** (Optional[str]) - Optional - Route name.
+- **lookups** (Any) - Optional - Pattern lookups.
+
+### Returns
+- **Route** - The newly added route.
+```
+
+```APIDOC
+## delete(url=None, *, name=None, **lookups)
+
+### Description
+Convenience wrapper for `request()` with method `DELETE`.
+
+### Signature
+```python
+def delete(
+    url: Optional[URLPatternTypes] = None, *, name: Optional[str] = None, **lookups: Any
+) -> Route:
+```
+
+### Parameters
+- **url** (Optional[URLPatternTypes]) - Optional - URL pattern to match.
+- **name** (Optional[str]) - Optional - Route name.
+- **lookups** (Any) - Optional - Pattern lookups.
+
+### Returns
+- **Route** - The newly added route.
+```
+
+```APIDOC
+## head(url=None, *, name=None, **lookups)
+
+### Description
+Convenience wrapper for `request()` with method `HEAD`.
+
+### Signature
+```python
+def head(
+    url: Optional[URLPatternTypes] = None, *, name: Optional[str] = None, **lookups: Any
+) -> Route:
+```
+
+### Parameters
+- **url** (Optional[URLPatternTypes]) - Optional - URL pattern to match.
+- **name** (Optional[str]) - Optional - Route name.
+- **lookups** (Any) - Optional - Pattern lookups.
+
+### Returns
+- **Route** - The newly added route.
+```
+
+```APIDOC
+## options(url=None, *, name=None, **lookups)
+
+### Description
+Convenience wrapper for `request()` with method `OPTIONS`.
+
+### Signature
+```python
+def options(
+    url: Optional[URLPatternTypes] = None, *, name: Optional[str] = None, **lookups: Any
+) -> Route:
+```
+
+### Parameters
+- **url** (Optional[URLPatternTypes]) - Optional - URL pattern to match.
+- **name** (Optional[str]) - Optional - Route name.
+- **lookups** (Any) - Optional - Pattern lookups.
+
+### Returns
+- **Route** - The newly added route.
+```
+
+--------------------------------
+
+### startswith
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Case-sensitive starts-with test. Checks if a field value starts with the given prefix.
+
+```APIDOC
+## startswith
+
+### Description
+Case-sensitive starts-with test. Checks if a field value starts with the given prefix.
+
+### Usage
+```python
+M(path__startswith="/api/")
+```
+```
+
+--------------------------------
+
+### pytest: Use respx_mock fixture to mock GET request
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Uses the built-in `respx_mock` pytest fixture to mock a GET request to `https://foo.bar/` and assert a 204 status code. Requires `httpx` and `respx` installed.
+
+```python
+import httpx
+
+
+def test_fixture(respx_mock):
+    respx_mock.get("https://foo.bar/").mock(return_value=httpx.Response(204))
+    response = httpx.get("https://foo.bar/")
+    assert response.status_code == 204
+```
+
+--------------------------------
+
+### Example — direct pattern objects and errors
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Constructs a Route with Method, Host, and Path patterns, adds it to a Router with assert_all_mocked=True, and tests a mismatched method raises AssertionError. Also shows that M(badkey="x") raises KeyError for invalid pattern keys.
+
+```python
+import re
+import httpx
+from respx import Router
+from respx.models import Route
+from respx.patterns import Host, M, Method, Path
+
+route = Route(
+    Method("get"),
+    Host(re.compile(r"api\..+\.com"), lookup=Lookup.REGEX),
+    Path("/v1/", lookup=Lookup.STARTS_WITH),
+)
+router = Router(assert_all_mocked=True)
+router.add(route)
+
+try:
+    router.handler(httpx.Request("POST", "https://api.foo.com/v1/items"))
+except AssertionError:  # AllMockedAssertionError: method did not match
+    pass
+
+try:
+    M(badkey="x")  # 'badkey' is not a registered pattern key
+except KeyError as error:
+    assert "is not a valid Pattern" in str(error)
+```
+
+--------------------------------
+
+### Path pattern: eq, regex, startswith, and in lookups
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches request URL path using eq (default), regex, startswith, or in lookups. The examples show matching a literal path, a regex with a named group, a prefix, and a list of paths.
+
+```python
+respx.route(path="/api/foobar/")
+respx.route(path__regex=r"^/api/(?P<slug>\w+)/")
+respx.route(path__startswith="/api/")
+respx.route(path__in=["/api/v1/foo/", "/api/v2/foo/"])
+```
+
+--------------------------------
+
+### Sync App Example: Mock with WSGIHandler
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Mocks a route with a Flask app using WSGIHandler as side effect. Requires Flask and httpx. The test asserts the JSON response and that the route was called.
+
+```python
+import httpx
+import respx
+
+from flask import Flask
+
+app = Flask("foobar")
+
+
+@app.route("/baz/")
+def baz():
+    return {"ham": "spam"}
+
+
+@respx.mock(base_url="https://foo.bar/")
+def test_baz(respx_mock):
+    app_route = respx_mock.route().mock(side_effect=WSGIHandler(app))
+    response = httpx.get("https://foo.bar/baz/")
+    assert response.json() == {"ham": "spam"}
+    assert app_route.called
+```
+
+--------------------------------
+
+### Async App Example: Mock with ASGIHandler
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Mocks a route with a Starlette app using ASGIHandler as side effect. Requires Starlette and httpx. The test asserts the JSON response and that the route was called.
+
+```python
+import httpx
+import respx
+
+from starlette.applications import Starlette
+from starlette.responses import JSONResponse
+from starlette.routing import Route
+
+
+async def baz(request):
+    return JSONResponse({"ham": "spam"})
+
+
+app = Starlette(routes=[Route("/baz/", baz)])
+
+
+@respx.mock(base_url="https://foo.bar/")
+async def test_baz(respx_mock):
+    app_route = respx_mock.route().mock(side_effect=ASGIHandler(app))
+    response = await httpx.AsyncClient().get("https://foo.bar/baz/")
+    assert response.json() == {"ham": "spam"}
+    assert app_route.called
+```
+
+--------------------------------
+
+### respx.get
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+HTTP method helper to add a route for GET requests, mimicking the HTTPX Helper Functions.
+
+```APIDOC
+## respx.get
+
+### Description
+HTTP method helper to add a route for GET requests, mimicking the HTTPX Helper Functions.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **url** (str | compiled regex | tuple (httpcore) | httpx.URL) - Optional - Request URL to match, full or partial, turned into a URL pattern.
+- **name** (str) - Optional - Name this route.
+- **lookups** (kwargs) - Optional - One or more pattern keyword lookups, given as `<pattern>__<lookup>=value`.
+
+### Returns
+`Route`
+
+### Example
+```python
+respx.get("https://example.org/", params={"foo": "bar"}, ...)
+```
+```
+
+--------------------------------
+
+### Mock HTTPX with respx.mock decorator
+
+Source: https://github.com/lundberg/respx/blob/master/docs/index.md
+
+Use @respx.mock to patch HTTPX, then add a route with respx.get and mock a response. The example asserts the route was called and the response status is 204.
+
+```python
+import httpx
+import respx
+
+from httpx import Response
+
+
+@respx.mock
+def test_example():
+    my_route = respx.get("https://foo.bar/").mock(return_value=Response(204))
+    response = httpx.get("https://foo.bar/")
+    assert my_route.called
+    assert response.status_code == 204
+```
+
+--------------------------------
+
+### Scheme pattern: eq and in lookups
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches request URL scheme using eq (default) or in lookups. The examples show matching 'https' and a list of schemes ['http', 'https'].
+
+```python
+respx.route(scheme="https")
+respx.route(scheme__in=["http", "https"])
+```
+
+--------------------------------
+
+### Port pattern: eq and in lookups
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches request URL port using eq (default) or in lookups. The examples show matching port 8000 and a list of ports [2375, 2376].
+
+```python
+respx.route(port=8000)
+respx.route(port__in=[2375, 2376])
+```
+
+--------------------------------
+
+### Retrieving Calls by Unpacking
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Unpack a matched Call from respx.calls to get the request and response. Access by last call or by index.
+
+```python
+request, response = respx.calls.last
+request, response = respx.calls[-2]  # by call order
+```
+
+--------------------------------
+
+### WSGI app as side effect (sync)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Shows how to use a WSGI app as a side effect for a mocked route. The app returns a plain text response, and the example asserts the response text.
+
+```python
+import httpx
+import respx
+from respx import WSGIHandler
+
+def wsgi_app(environ, start_response):
+    start_response("200 OK", [("Content-Type", "text/plain")])
+    return [b"hello from wsgi"]
+
+respx.get("https://example.org/app").mock(side_effect=WSGIHandler(wsgi_app))
+response = httpx.get("https://example.org/app")
+assert response.text == "hello from wsgi"
+```
+
+--------------------------------
+
+### Content pattern: eq and contains lookups
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches request raw content using eq (default) or contains lookups. The examples show matching string content, bytes content, and a contains lookup.
+
+```python
+respx.post("https://example.org/", content="foobar")
+respx.post("https://example.org/", content=b"foobar")
+respx.post("https://example.org/", content__contains="bar")
+```
+
+--------------------------------
+
+### Use respx_mock fixture with respx marker in pytest
+
+Source: https://github.com/lundberg/respx/blob/master/docs/index.md
+
+Use the respx_mock fixture for pytest and the @pytest.mark.respx marker to set base_url. The example mocks a path and asserts the response status is 204.
+
+```python
+import httpx
+import pytest
+
+
+def test_default(respx_mock):
+    respx_mock.get("https://foo.bar/").mock(return_value=httpx.Response(204))
+    response = httpx.get("https://foo.bar/")
+    assert response.status_code == 204
+
+
+@pytest.mark.respx(base_url="https://foo.bar")
+def test_with_marker(respx_mock):
+    respx_mock.get("/baz/").mock(return_value=httpx.Response(204))
+    response = httpx.get("https://foo.bar/baz/")
+    assert response.status_code == 204
+```
+
+--------------------------------
+
+### Decorator with respx_mock injection and error handling
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/MockRouter.md
+
+Use @respx.mock to decorate a function. The first example mocks a side_effect of httpx.ConnectError. The second uses base_url and using='httpx' with respx_mock injection.
+
+```python
+import httpx
+import respx
+
+@respx.mock
+def run():
+    respx.get("https://example.org/").mock(side_effect=httpx.ConnectError("boom"))
+    try:
+        httpx.get("https://example.org/")
+    except httpx.ConnectError as error:
+        assert str(error) == "boom"
+
+
+@respx.mock(base_url="https://foo.bar", using="httpx")
+def run_with_settings(respx_mock):
+    respx_mock.get("/").respond(200)
+    assert httpx.get("https://foo.bar/").status_code == 200
+```
+
+--------------------------------
+
+### Legacy session_event_loop fixture
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/pytest-plugin.md
+
+Session-scoped event loop fixture for compatibility with older async test setups. Imported via 'from respx.fixtures import *' and not registered by the plugin.
+
+```python
+@pytest.fixture(scope="session")
+def session_event_loop():
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
+```
+
+--------------------------------
+
+### URL pattern: shorthand and eq, regex, startswith lookups
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches request URL. Without a lookup, url works as a shorthand pattern combining URL parts with the AND operator. The examples show shorthand matching, eq, regex, startswith, and a wildcard host pattern.
+
+```python
+respx.get("//example.org/foo/")  # == M(host="example.org", path="/foo/")
+respx.get(url__eq="https://example.org:8080/foobar/?ham=spam")
+respx.get(url__regex=r"https://example.org/(?P<slug>\w+)/")
+respx.get(url__startswith="https://example.org/api/")
+respx.get("all://*.example.org/foo/")
+```
+
+--------------------------------
+
+### Assert all Called Disabled
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+With assert_all_called=False, routes that are not called are not asserted. The example shows a route that is not called but the test passes.
+
+```python
+@respx.mock(assert_all_called=False)
+def test_something(respx_mock):
+    respx_mock.get("https://example.org/")
+    respx_mock.get("https://some.url/")  # Not called, yet not asserted
+
+    response = httpx.get("https://example.org/")
+    assert response.status_code == 200
+
+```
+
+--------------------------------
+
+### unittest: Test case using MockedAPIMixin
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Defines a unittest test case that inherits from `MockedAPIMixin` and tests a GET request to `/users/`, asserting status code, JSON, and that the route was called. Requires the mixin defined in testcases.py.
+
+```python
+# test_api.py
+import httpx
+import unittest
+
+from .testcases import MockedAPIMixin
+
+
+class APITestCase(MockedAPIMixin, unittest.TestCase):
+    def test_list_users(self):
+        response = httpx.get("https://foo.bar/users/")
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(response.json(), [])
+        self.assertTrue(self.mocked_api["list_users"].called)
+```
+
+--------------------------------
+
+### Configure the Context Manager with respx.mock(...)
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Shows how to pass configuration arguments to the context manager. The configured router is yielded as respx_mock.
+
+```python
+with respx.mock(...) as respx_mock:
+    ...
+
+```
+
+--------------------------------
+
+### Handling PassThrough exception from router.handler
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/errors.md
+
+Consumers of Router.handler calling a pass-through route will see the PassThrough exception propagate. The example shows catching it and asserting on request and origin attributes.
+
+```python
+import httpx
+from respx.models import PassThrough
+from respx import Router
+
+router = Router()
+router.get("https://example.org/").pass_through()
+try:
+    router.handler(httpx.Request("GET", "https://example.org/"))
+except PassThrough as error:
+    assert error.request.url.host == "example.org"
+    assert error.origin.pattern is not None
+```
+
+--------------------------------
+
+### Mixing sync/async wrongly raises RuntimeError
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Demonstrates that passing an async stream to a WSGIHandler raises a RuntimeError containing 'async request to a sync app'. The example creates a request with an AsyncStream and catches the error.
+
+```python
+import httpx
+from respx import WSGIHandler
+
+class AsyncStream(httpx.AsyncByteStream):
+    async def __aiter__(self):
+        return
+        yield b""
+
+request = httpx.Request("GET", "https://example.org/", stream=AsyncStream())
+try:
+    WSGIHandler(lambda environ, start_response: [b"ok"])(request)
+except RuntimeError as error:
+    assert "async request to a sync app" in str(error)
+```
+
+--------------------------------
+
+### Params pattern: contains and eq lookups
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches request URL query params using contains (default) or eq lookups. The examples show matching params as a dict, list of tuples, tuple of tuples, and a query string. A request querystring with multiple parameters of the same name is treated as an ordered list when matching.
+
+```python
+respx.route(params={"foo": "bar", "ham": "spam"})
+respx.route(params=[("foo", "bar"), ("ham", "spam")])
+respx.route(params=(("foo", "bar"), ("ham", "spam")))
+respx.route(params="foo=bar&ham=spam")
+```
+
+--------------------------------
+
+### pytest: Async test with respx.mock decorator
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Uses `@respx.mock` decorator on an async test to mock a GET request to `https://example.org/`, asserting the route was called and response status is 200. Requires `httpx` and `respx`.
+
+```python
+import httpx
+import respx
+
+
+@respx.mock
+async def test_async_decorator():
+    async with httpx.AsyncClient() as client:
+        route = respx.get("https://example.org/")
+        response = await client.get("https://example.org/")
+        assert route.called
+        assert response.status_code == 200
+```
+
+--------------------------------
+
+### Router.__init__
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Initializes a Router instance with options for assertions and a base URL. Sets up empty route and call lists and takes an initial snapshot.
+
+```APIDOC
+## Router.__init__
+
+### Description
+Initializes a Router instance with options for assertions and a base URL. Sets up empty route and call lists and takes an initial snapshot.
+
+### Method
+Constructor
+
+### Signature
+```python
+def __init__(
+    self,
+    *,
+    assert_all_called: bool = True,
+    assert_all_mocked: bool = True,
+    base_url: Optional[str] = None,
+) -> None:
+```
+
+### Parameters
+- `assert_all_called` (bool) - Optional - Default: `True` - Assert that every added route was called when the router is stopped (checked in `stop()` / `MockTransport.__exit__`).
+- `assert_all_mocked` (bool) - Optional - Default: `True` - Assert that every resolved (intercepted) request matched a route; requests with no match raise `AllMockedAssertionError`. If `False`, unmatched requests are auto-mocked with a `200` response.
+- `base_url` (Optional[str]) - Optional - Default: `None` - Base URL to match, merged (AND) into every route added afterwards, and used to shorten relative path patterns. Parsed with `parse_url_patterns(base_url, exact=False)` — non-exact, so a base path matches via `startswith`.
+
+### Returns
+A `Router` with `routes = RouteList()` and `calls = CallList()`, and an initial snapshot taken.
+```
+
+--------------------------------
+
+### unittest: Decorate test method with @respx.mock
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Uses `@respx.mock` decorator on a unittest test method to mock a GET request, asserting a 202 status code. Requires `httpx`, `respx`, and `unittest`.
+
+```python
+# test_api.py
+import httpx
+import respx
+import unittest
+
+
+class APITestCase(unittest.TestCase):
+    @respx.mock
+    def test_some_endpoint(self):
+        respx.get("https://example.org/") % 202
+        response = httpx.get("https://example.org/")
+        self.assertEqual(response.status_code, 202)
+```
+
+--------------------------------
+
+### SetCookie: Mock response with Set-Cookie header
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Use respx.SetCookie to produce a Set-Cookie header tuple for a mocked response. The example shows a POST route returning a 200 response with a Set-Cookie header for 'foo=bar'.
+
+```python
+import respx
+respx.post("https://example.org/").mock(
+    return_value=httpx.Response(200, headers=[SetCookie("foo", "bar")])
+)
+```
+
+--------------------------------
+
+### pytest: Async test with respx.mock context manager
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Uses `async with respx.mock` to mock a GET request inside an async test, asserting the route was called and response status is 200. Requires `httpx` and `respx`.
+
+```python
+import httpx
+import respx
+
+
+async def test_async_ctx_manager():
+    async with respx.mock:
+        async with httpx.AsyncClient() as client:
+            route = respx.get("https://example.org/")
+            response = await client.get("https://example.org/")
+            assert route.called
+            assert response.status_code == 200
+```
+
+--------------------------------
+
+### WSGIHandler.__init__
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Initializes a WSGIHandler by wrapping a WSGI app in an httpx.WSGITransport.
+
+```APIDOC
+## WSGIHandler.__init__
+
+### Description
+Creates a WSGIHandler that wraps a WSGI application in an httpx.WSGITransport, allowing the app to be used as a sync side effect.
+
+### Method
+Constructor
+
+### Endpoint
+WSGIHandler.__init__
+
+### Parameters
+#### Constructor Parameters
+- **app** (`Callable`) - Required - The WSGI application callable.
+- **kwargs** (`Any`) - Optional - Additional keyword arguments passed to httpx.WSGITransport.
+
+### Request Example
+```python
+handler = WSGIHandler(app, **kwargs)
+```
+
+### Response
+#### Success Response
+None
+
+#### Response Example
+No response body.
+```
+
+--------------------------------
+
+### pytest: Use custom mocked_api fixture in test
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Uses the custom `mocked_api` fixture to test a GET request to `/users/`, asserting status code, JSON response, and that the route was called. Requires the fixture defined in conftest.py.
+
+```python
+# test_api.py
+import httpx
+
+
+def test_list_users(mocked_api):
+    response = httpx.get("https://foo.bar/users/")
+    assert response.status_code == 200
+    assert response.json() == []
+    assert mocked_api["list_users"].called
+```
+
+--------------------------------
+
+### ASGIHandler.__init__
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Initializes an ASGIHandler by wrapping an ASGI app in an httpx.ASGITransport.
+
+```APIDOC
+## ASGIHandler.__init__
+
+### Description
+Creates an ASGIHandler that wraps an ASGI application in an httpx.ASGITransport, allowing the app to be used as an async side effect.
+
+### Method
+Constructor
+
+### Endpoint
+ASGIHandler.__init__
+
+### Parameters
+#### Constructor Parameters
+- **app** (`Callable`) - Required - The ASGI application callable.
+- **kwargs** (`Any`) - Optional - Additional keyword arguments passed to httpx.ASGITransport.
+
+### Request Example
+```python
+handler = ASGIHandler(app, **kwargs)
+```
+
+### Response
+#### Success Response
+None
+
+#### Response Example
+No response body.
+```
+
+--------------------------------
+
+### Configure the Decorator with respx.mock(...)
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Shows how to pass configuration arguments to the decorator. The test function receives the router as respx_mock.
+
+```python
+@respx.mock(...)
+def test_something(respx_mock):
+    ...
+
+```
+
+--------------------------------
+
+### Route.respond()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Shortcut for creating and mocking an HTTPX Response with various content options. Returns the Route instance.
+
+```APIDOC
+## Route.respond()
+
+### Description
+Shortcut for creating and mocking an HTTPX Response.
+
+### Method
+respond
+
+### Signature
+route.respond(*status_code=200, headers=None, cookies=None, content=None, text=None, html=None, json=None, stream=None, content_type=None)
+
+### Parameters
+#### Parameters
+- **status_code** (int) - Optional - Response status code to mock. Default: 200.
+- **headers** (dict | Sequence[tuple[str, str]]) - Optional - Response headers to mock.
+- **cookies** (dict | Sequence[tuple[str, str]] | Sequence[SetCookie]) - Optional - Response cookies to mock as Set-Cookie headers.
+- **content** (bytes | str | Iterable[bytes]) - Optional - Response raw content to mock.
+- **text** (str) - Optional - Response text content to mock, with automatic content-type header added.
+- **html** (str) - Optional - Response HTML content to mock, with automatic content-type header added.
+- **json** (Any) - Optional - Response JSON content to mock, with automatic content-type header added.
+- **stream** (Iterable[bytes]) - Optional - Response stream to mock.
+- **content_type** (str) - Optional - Response Content-Type header to mock.
+
+### Returns
+- **Route** - The Route instance.
+```
+
+--------------------------------
+
+### Using the Context Manager with respx.mock
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Activates RESPX within a with block. The router is active only inside the block, and routes are added inside.
+
+```python
+import httpx
+import respx
+
+
+def test_ctx_manager():
+    with respx.mock:
+        my_route = respx.get("https://example.org/")
+        response = httpx.get("https://example.org/")
+        assert my_route.called
+        assert response.status_code == 200
+
+```
+
+--------------------------------
+
+### MockRouter.__init__
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/MockRouter.md
+
+Initializes a MockRouter instance with options for assertions, base URL, and mocker selection.
+
+```APIDOC
+## MockRouter.__init__
+
+### Description
+Initializes a MockRouter instance with options for assertions, base URL, and mocker selection.
+
+### Method
+Constructor
+
+### Signature
+```python
+def __init__(
+    self,
+    *,
+    assert_all_called: bool = True,
+    assert_all_mocked: bool = True,
+    base_url: Optional[str] = None,
+    using: Optional[Union[str, Default]] = DEFAULT,
+) -> None:
+```
+
+### Parameters
+#### Keyword Arguments
+- **assert_all_called** (bool) - Optional - Default: `True` - Assert all routes were called on stop.
+- **assert_all_mocked** (bool) - Optional - Default: `True` - Assert every request matched a route.
+- **base_url** (Optional[str]) - Optional - Default: `None` - Base URL to merge into every route.
+- **using** (Optional[Union[str, Default]]) - Optional - Default: `DEFAULT` - Which mocker to patch: `DEFAULT` resolves to `"httpcore"`; `None` disables registering a mocker; any other value is rejected with `ValueError`.
+
+### Notes
+Also initializes `self.Mocker: Optional[Type[Mocker]] = None` and stores `self._using`.
+```
+
+--------------------------------
+
+### Context manager with local settings
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/MockRouter.md
+
+Use respx.mock as a context manager to set base_url and assert_all_called=False. On exit, assert_all_mocked is checked, patches are stopped, and state is rolled back.
+
+```python
+import httpx
+import respx
+
+with respx.mock(base_url="https://api.example.com", assert_all_called=False) as respx_mock:
+    respx_mock.get("/health/").respond(200, json={"status": "ok"})
+    response = httpx.get("https://api.example.com/health/")
+    assert response.status_code == 200
+# On exit: assert_all_mocked is checked, patches are stopped, state is rolled back
+```
+
+--------------------------------
+
+### Migrate responses.replace to respx.get().respond()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace responses.add and responses.replace with repeated respx.get().respond() calls to modify a mocked response.
+
+```python
+responses.add(responses.GET, "http://example.org/", json={"data": 1})
+responses.replace(responses.GET, "http://example.org/", json={"data": 2})
+
+```
+
+```python
+respx.get("https://example.org/").respond(json={"data": 1})
+respx.get("https://example.org/").respond(json={"data": 2})
+
+```
+
+--------------------------------
+
+### TransportHandler.__init__
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Initializes a TransportHandler with a sync HTTPX transport.
+
+```APIDOC
+## TransportHandler.__init__
+
+### Description
+Initializes a TransportHandler instance with a sync HTTPX transport.
+
+### Method
+Constructor
+
+### Endpoint
+TransportHandler.__init__
+
+### Parameters
+#### Constructor Parameters
+- **transport** (`httpx.BaseTransport`) - Required - A sync HTTPX transport to delegate to.
+
+### Request Example
+```python
+handler = TransportHandler(transport)
+```
+
+### Response
+#### Success Response
+None
+
+#### Response Example
+No response body.
+```
+
+--------------------------------
+
+### Configure the Fixture with pytest.mark.respx(...)
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Shows how to configure the router when using the pytest fixture by decorating the test case with the respx marker.
+
+```python
+@pytest.mark.respx(...)
+def test_something(respx_mock):
+    ...
+
+```
+
+--------------------------------
+
+### route(*patterns, name=None, **lookups)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Creates a Route and adds it via add(); returns the (possibly reused) route.
+
+```APIDOC
+## route(*patterns, name=None, **lookups)
+
+### Description
+Creates a `Route(*patterns, **lookups)` and adds it via `add()`; returns the (possibly reused) route.
+
+### Method
+route
+
+### Signature
+```python
+def route(
+    self, *patterns: Pattern, name: Optional[str] = None, **lookups: Any
+) -> Route:
+```
+
+### Parameters
+- **patterns** (Pattern) - Required - Pattern objects to match against.
+- **name** (Optional[str]) - Optional - Name for the route.
+- **lookups** (Any) - Optional - Additional lookup parameters for the route.
+
+### Returns
+- **Route** - The created or reused route.
+
+### Source
+`respx/router.py:128`
+```
+
+--------------------------------
+
+### Router.__init__ constructor signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Defines the Router constructor with keyword-only parameters: assert_all_called (default True), assert_all_mocked (default True), and base_url (default None). The base_url is parsed non-exactly and merged into every route added afterwards.
+
+```python
+def __init__(
+    self,
+    *,
+    assert_all_called: bool = True,
+    assert_all_mocked: bool = True,
+    base_url: Optional[str] = None,
+) -> None:
+```
+
+--------------------------------
+
+### Mocking with %, respond(), and side-effect iteration
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Shows how to use the % operator to set a status code, a dict of response kwargs, or a raw httpx.Response. Also demonstrates stacking side effects with a list (404, then 500, then 204) and a callable side effect that raises an httpx.ConnectError.
+
+```python
+import httpx
+import respx
+
+route = respx.get("https://example.org/")
+route % 204                                            # int -> status code
+route % {"status_code": 200, "json": {"ok": True}}     # dict -> Response(**dict)
+route % httpx.Response(500)                            # raw Response
+
+# Stacked side effects (iterable): 404, then 500, then 204
+respx.get("https://example.org/api/").mock(
+    side_effect=[httpx.Response(404), httpx.Response(500), httpx.Response(204)]
+)
+assert httpx.get("https://example.org/api/").status_code == 404
+
+# Callable side effect raising an httpx error
+def boom(request):
+    raise httpx.ConnectError("down")
+
+try:
+    httpx.get("https://example.org/api/")
+except httpx.ConnectError as error:
+    assert str(error) == "down"
+```
+
+--------------------------------
+
+### Extending patched targets and inspecting the registry
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Demonstrates how to add custom targets to HTTPCoreMocker, inspect the Mocker registry, and handle invalid 'using' values. Also shows that unknown string names register no mocker.
+
+```python
+import respx
+from respx import HTTPXMocker
+from respx.mocks import Mocker, HTTPCoreMocker
+
+assert set(Mocker.registry) == {"httpx", "httpcore"}
+assert Mocker.registry["httpcore"] is HTTPCoreMocker
+
+HTTPCoreMocker.add_targets("httpcore._async.anyio.AsyncAnyIOBackend")
+# HTTPCoreMocker.remove_targets("httpcore._async.anyio.AsyncAnyIOBackend")
+
+try:
+    mock_router = respx.mock(using=123)  # 123 is not str/None/DEFAULT
+    mock_router.using                      # ValueError raised here, lazily
+    raise SystemExit("should not reach")
+except ValueError as error:
+    assert "using" in str(error)
+
+# Unknown *string* names are valid but register no mocker (no patching):
+mock_router = respx.mock(using="unknown-mocker")
+assert mock_router.using == "unknown-mocker"
+assert mock_router.Mocker is None  # after start()
+```
+
+--------------------------------
+
+### Context manager
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to use respx.mock as a context manager to mock HTTP requests within a block, equivalent to requests-mock's context manager.
+
+```APIDOC
+## Context manager
+
+### Description
+Use `with respx.mock() as respx_mock:` to mock HTTP requests within a block. The `respx_mock` variable is a `respx.Router` instance for configuring mocks.
+
+### Method
+N/A (Python context manager)
+
+### Endpoint
+N/A
+
+### Parameters
+#### Context Variable
+- **respx_mock** (respx.Router) - Required - The respx router instance for configuring mocks.
+
+### Request Example
+```python
+with respx.mock() as respx_mock:
+    respx_mock.get().respond(json=json)
+```
+
+### Response
+#### Success Response
+No explicit response; the mock is configured to return the provided JSON.
+
+#### Response Example
+```json
+{"key": "value"}
+```
+```
+
+--------------------------------
+
+### AsyncTransportHandler.__init__
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Initializes an AsyncTransportHandler with an async HTTPX transport.
+
+```APIDOC
+## AsyncTransportHandler.__init__
+
+### Description
+Initializes an AsyncTransportHandler instance with an async HTTPX transport.
+
+### Method
+Constructor
+
+### Endpoint
+AsyncTransportHandler.__init__
+
+### Parameters
+#### Constructor Parameters
+- **transport** (`httpx.AsyncBaseTransport`) - Required - An async HTTPX transport to delegate to.
+
+### Request Example
+```python
+handler = AsyncTransportHandler(transport)
+```
+
+### Response
+#### Success Response
+None
+
+#### Response Example
+No response body.
+```
+
+--------------------------------
+
+### Using the pytest Fixture respx_mock
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Uses the respx_mock pytest fixture to activate RESPX. The fixture provides the router instance.
+
+```python
+import httpx
+
+
+def test_fixture(respx_mock):
+    my_route = respx_mock.get("https://example.org/")
+    response = httpx.get("https://example.org/")
+    assert my_route.called
+    assert response.status_code == 200
+
+```
+
+--------------------------------
+
+### respx.mock
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Creates a mock Router instance for configuring and activating HTTPX request mocking.
+
+```APIDOC
+## respx.mock
+
+### Description
+Creates a mock `Router` instance, ready to be used as decorator/manager for activation.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **assert_all_mocked** (bool) - Optional - Asserts that all sent and captured `HTTPX` requests are routed and mocked. If disabled, all non-routed requests will be auto mocked with status code `200`. Default: `True`.
+- **assert_all_called** (bool) - Optional - Asserts that all added and mocked routes were called when exiting context. Default: `True`. Note: When using the default mock router `respx.mock` without settings, `assert_all_called` is disabled.
+- **base_url** (str) - Optional - Base URL to match, on top of each route specific pattern and/or side effect.
+
+### Returns
+`Router`
+```
+
+--------------------------------
+
+### Mocking Responses: Before and After
+
+Source: https://github.com/lundberg/respx/blob/master/docs/upgrade.md
+
+Shows the old and new ways to mock a response with status code and JSON content. Previously used status_code and content arguments; now use .mock(return_value=...), .respond(...), or the % operator.
+
+```python
+# Previously
+respx.post("https://some.url/", status_code=200, content={"x": 1})
+
+# Now
+respx.post("https://some.url/").mock(return_value=Response(200, json={"x": 1}))
+respx.post("https://some.url/").respond(200, json={"x": 1})
+respx.post("https://some.url/") % dict(json={"x": 1})
+```
+
+--------------------------------
+
+### MockRouter.using
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/MockRouter.md
+
+Resolves the configured mocker name based on the `using` parameter.
+
+```APIDOC
+## MockRouter.using
+
+### Description
+Resolves the configured mocker name based on the `using` parameter.
+
+### Method
+Property getter
+
+### Signature
+```python
+@property
+def using(self) -> Optional[str]:
+```
+
+### Behavior
+- `None` → `None`
+- `DEFAULT` → `"httpcore"` (from `DEFAULT_MOCKER` in `respx.mocks`)
+- `str` → returned as-is
+- anything else → raises `ValueError(f"Invalid Router `using` kwarg: {self._using!r}")`
+
+### Notes
+The value is used to look up `Mocker.registry.get(self.using or "")` in `start()`; the empty string key is used when `using` is `None` (no mocker).
+```
+
+--------------------------------
+
+### Exports from respx __init__.py
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/index.md
+
+The exact list of names exported by the top-level respx package, as defined in __all__.
+
+```python
+__version__, MockResponse, MockRouter, ASGIHandler, WSGIHandler, Router, Route,
+SetCookie, mock, routes, calls, start, stop, clear, reset, pop, route, add,
+request, get, post, put, patch, delete, head, options
+```
+
+--------------------------------
+
+### route() method
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Creates a Route(*patterns, **lookups) and adds it via add(); returns the (possibly reused) route. Source: respx/router.py:128.
+
+```python
+def route(
+    self, *patterns: Pattern, name: Optional[str] = None, **lookups: Any
+) -> Route:
+```
+
+--------------------------------
+
+### MockRouter constructor
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/MockRouter.md
+
+Constructor for MockRouter. Accepts keyword-only arguments: assert_all_called (default True), assert_all_mocked (default True), base_url (default None), and using (default DEFAULT). The using parameter determines which mocker to patch; DEFAULT resolves to "httpcore", None disables patching, and any other value raises ValueError.
+
+```python
+def __init__(
+    self,
+    *,
+    assert_all_called: bool = True,
+    assert_all_mocked: bool = True,
+    base_url: Optional[str] = None,
+    using: Optional[Union[str, Default]] = DEFAULT,
+) -> None:
+```
+
+--------------------------------
+
+### snapshot() method
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Snapshots the current routes and calls state, including each route's own state. Source: respx/router.py:63.
+
+```python
+def snapshot(self) -> None:
+```
+
+--------------------------------
+
+### respx_mock fixture definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/pytest-plugin.md
+
+Defines the respx_mock fixture that yields either the global respx.mock instance or a new MockRouter created from the respx marker's keyword arguments. When no marker is present, the global router is used; with a marker, a fresh router is created with MockRouter defaults (assert_all_called=True, assert_all_mocked=True).
+
+```python
+@pytest.fixture
+def respx_mock(request):
+    respx_marker = request.node.get_closest_marker("respx")
+
+    mock_router: MockRouter = (
+        respx.mock
+        if respx_marker is None
+        else cast(MockRouter, respx.mock(**respx_marker.kwargs))
+    )
+
+    with mock_router:
+        yield mock_router
+```
+
+--------------------------------
+
+### Migrate responses.RequestsMock context manager to respx.mock()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace the responses.RequestsMock context manager with respx.mock() in a test function. The respx.mock() context manager provides a mock router instance.
+
+```python
+def test_foo():
+    with responses.RequestsMock() as rsps:
+        ...
+
+```
+
+```python
+def test_foo():
+    with respx.mock() as respx_mock:
+        ...
+
+```
+
+--------------------------------
+
+### Decorator
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to use respx.mock as a decorator to mock HTTP requests in a test function, equivalent to requests-mock's decorator.
+
+```APIDOC
+## Decorator
+
+### Description
+Use the `@respx.mock()` decorator to mock HTTP requests within a test function. The decorated function receives a `respx.Router` instance as an argument, which can be used to configure mock responses.
+
+### Method
+N/A (Python decorator)
+
+### Endpoint
+N/A
+
+### Parameters
+#### Function Argument
+- **respx_mock** (respx.Router) - Required - The respx router instance for configuring mocks.
+
+### Request Example
+```python
+@respx.mock()
+def test_some_call(self, respx_mock: respx.Router):
+    respx_mock.get().respond(json={})
+```
+
+### Response
+#### Success Response
+No explicit response; the mock is configured to return an empty JSON object.
+
+#### Response Example
+```json
+{}
+```
+```
+
+--------------------------------
+
+### Migrate responses.add_passthru to respx.route().pass_through()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace responses.add_passthru with respx.route(url=...).pass_through() to allow requests to pass through to the real server.
+
+```python
+responses.add_passthru("https://example.org/")
+
+```
+
+```python
+respx.route(url="https://example.org/").pass_through()
+
+```
+
+--------------------------------
+
+### unittest: Async test cases with asynctest
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Shows two async test cases: one using `@respx.mock` decorator and one using `async with respx.mock` context manager, both asserting route called and status 200. Requires `asynctest`, `httpx`, and `respx`.
+
+```python
+import asynctest
+import httpx
+import respx
+
+
+class MyTestCase(asynctest.TestCase):
+    @respx.mock
+    async def test_async_decorator(self):
+        async with httpx.AsyncClient() as client:
+            route = respx.get("https://example.org/")
+            response = await client.get("https://example.org/")
+            assert route.called
+            assert response.status_code == 200
+
+    async def test_async_ctx_manager(self):
+        async with respx.mock:
+            async with httpx.AsyncClient() as client:
+                route = respx.get("https://example.org/")
+                response = await client.get("https://example.org/")
+                assert route.called
+                assert response.status_code == 200
+```
+
+--------------------------------
+
+### Specifying a list of responses
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to configure a mocked request to return a list of responses sequentially using respx, equivalent to requests-mock's responses parameter.
+
+```APIDOC
+## Specifying a list of responses
+
+### Description
+Configure a mocked request to return multiple responses in sequence by setting the `side_effect` attribute to a list of responses. This is equivalent to requests-mock's `responses` parameter.
+
+### Method
+N/A (Python attribute assignment)
+
+### Endpoint
+N/A
+
+### Parameters
+#### Route Configuration
+- **side_effect** (list) - Required - A list of responses to return sequentially.
+
+### Request Example
+```python
+respx.get().side_effect = responses
+```
+
+### Response
+#### Success Response
+Returns each response in the list in order for each matching request.
+
+#### Response Example
+```json
+[{"response1": "value1"}, {"response2": "value2"}]
+```
+```
+
+--------------------------------
+
+### respx.options
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+HTTP method helper to add a route for OPTIONS requests, mimicking the HTTPX Helper Functions.
+
+```APIDOC
+## respx.options
+
+### Description
+HTTP method helper to add a route for OPTIONS requests, mimicking the HTTPX Helper Functions.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **url** (str | compiled regex | tuple (httpcore) | httpx.URL) - Optional - Request URL to match, full or partial, turned into a URL pattern.
+- **name** (str) - Optional - Name this route.
+- **lookups** (kwargs) - Optional - One or more pattern keyword lookups, given as `<pattern>__<lookup>=value`.
+
+### Returns
+`Route`
+```
+
+--------------------------------
+
+### add(route, *, name=None)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Adds an existing route, optionally named, replacing any existing route with the same name or pattern.
+
+```APIDOC
+## add(route, *, name=None)
+
+### Description
+Adds an existing route, optionally named, replacing any existing route with the same name **or** pattern (see `RouteList.add` in [models.md](models.md)). Merges the router's `base_url` pattern into the route's pattern via `merge_patterns(route.pattern, **self._bases)`.
+
+### Method
+add
+
+### Signature
+```python
+def add(self, route: Route, *, name: Optional[str] = None) -> Route:
+```
+
+### Parameters
+- **route** (Route) - Required - The route to add.
+- **name** (Optional[str]) - Optional - Name for the route.
+
+### Returns
+- **Route** - The added route.
+
+### Raises
+- `ValueError` — when `route` is not a `Route` instance: `f"Invalid route {route!r}, please use respx.route(...).mock(...)"`
+
+### Source
+`respx/router.py:134`
+```
+
+--------------------------------
+
+### snapshot()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Snapshots the current routes and calls state, including each route's own state.
+
+```APIDOC
+## snapshot()
+
+### Description
+Snapshots the current routes and calls state, including each route's own state.
+
+### Method
+snapshot
+
+### Signature
+```python
+def snapshot(self) -> None:
+```
+
+### Parameters
+None
+
+### Returns
+None
+
+### Source
+`respx/router.py:63`
+```
+
+--------------------------------
+
+### TryTransport
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/transports.md
+
+Documentation for the TryTransport class, a dual sync/async transport that tries each of its transports in order, swallowing PassThrough exceptions and falling through to the next transport.
+
+```APIDOC
+## TryTransport(BaseTransport, AsyncBaseTransport)
+
+### Description
+A dual sync/async transport that tries each of its transports in order, swallowing `PassThrough` (raised by the router when a route is marked for pass-through) and falling through to the next transport. This is how `HTTPXMocker` chains the mock transport in front of the real transport.
+
+### Constructor
+`__init__(self, transports: List[Union[BaseTransport, AsyncBaseTransport]]) -> None`
+
+### Parameters
+- **transports** (List[Union[BaseTransport, AsyncBaseTransport]]) - Required - Transports to try, in order
+
+### Methods
+
+#### handle_request(self, request: httpx.Request) -> httpx.Response
+Synchronously tries each transport in order, returning the first response that does not raise `PassThrough`. If all transports raise `PassThrough`, raises `RuntimeError`.
+
+#### handle_async_request(self, request: httpx.Request) -> httpx.Response
+Asynchronously tries each transport in order, returning the first response that does not raise `PassThrough`. If all transports raise `PassThrough`, raises `RuntimeError`.
+
+### Raises
+- `RuntimeError()` — when no transport handles the request (only reachable if every transport raises `PassThrough`).
+```
+
+--------------------------------
+
+### Raising an exception
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to make a mocked request raise an exception using respx, equivalent to requests-mock's exc parameter.
+
+```APIDOC
+## Raising an exception
+
+### Description
+Configure a mocked request to raise an exception by setting the `side_effect` attribute on the route. This is equivalent to requests-mock's `exc` parameter.
+
+### Method
+N/A (Python attribute assignment)
+
+### Endpoint
+N/A
+
+### Parameters
+#### Route Configuration
+- **side_effect** (Exception) - Required - The exception to raise when the request is made.
+
+### Request Example
+```python
+respx.post().side_effect = JSONDecodeError("nope", "ok", 1)
+```
+
+### Response
+#### Error Response
+Raises the specified exception when the request is made.
+
+#### Response Example
+```json
+{"error": "JSONDecodeError"}
+```
+```
+
+--------------------------------
+
+### Migrate responses.activate decorator to respx.mock
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace the responses decorator with respx.mock in a test function. The respx.mock decorator activates the router for the duration of the test.
+
+```python
+@responses.activate
+def test_foo():
+    ...
+
+```
+
+```python
+@respx.mock
+def test_foo():
+    ...
+
+```
+
+--------------------------------
+
+### Error handling - popping a route that does not exist
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/module-api.md
+
+Registers a route with name 'index', pops it successfully, then demonstrates that popping a missing route raises KeyError unless a default is provided, in which case it returns None.
+
+```python
+import respx
+
+respx.route("GET", "https://example.org/", name="index")
+
+route = respx.pop("index")              # -> Route
+try:
+    respx.pop("missing")
+except KeyError:
+    print("route 'missing' not found")
+
+fallback = respx.pop("missing", default=None)  # -> None, no exception
+```
+
+--------------------------------
+
+### MockRouter using property
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/MockRouter.md
+
+Property that resolves the configured mocker name. Returns None for None, "httpcore" for DEFAULT, the string as-is for str, and raises ValueError for any other value.
+
+```python
+@property
+def using(self) -> Optional[str]:
+```
+
+--------------------------------
+
+### ASGI app as side effect (async)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Shows how to use an ASGI app as a side effect for a mocked route. The app sends a response with status 200 and a plain text body. Note that an async client is required for the request.
+
+```python
+import httpx
+import respx
+from respx import ASGIHandler
+
+async def asgi_app(scope, receive, send):
+    await send({
+        "type": "http.response.start",
+        "status": 200,
+        "headers": [(b"content-type", b"text/plain")],
+    })
+    await send({"type": "http.response.body", "body": b"hello from asgi"})
+
+respx.post("https://example.org/api").mock(side_effect=ASGIHandler(asgi_app))
+response = httpx.post("https://example.org/api")  # needs an async client
+```
+
+--------------------------------
+
+### MockRouter.__call__ overload signatures
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/MockRouter.md
+
+Shows the two `@overload` signatures and the implementation signature for `MockRouter.__call__`. The first overload handles the case where `func` is `None` (factory mode), returning a `MockRouter`. The second overload handles the case where `func` is a callable (decorator mode), returning a `Callable`. The implementation signature combines both behaviors.
+
+```python
+@overload
+def __call__(
+    self,
+    func: None = None,
+    *,
+    assert_all_called: Optional[bool] = None,
+    assert_all_mocked: Optional[bool] = None,
+    base_url: Optional[str] = None,
+    using: Optional[Union[str, Default]] = DEFAULT,
+) -> "MockRouter":
+    ...  # pragma: nocover
+
+@overload
+def __call__(
+    self,
+    func: Callable = ...,
+    *,
+    assert_all_called: Optional[bool] = None,
+    assert_all_mocked: Optional[bool] = None,
+    base_url: Optional[str] = None,
+    using: Optional[Union[str, Default]] = DEFAULT,
+) -> Callable:
+    ...  # pragma: nocover
+
+def __call__(
+    self,
+    func: Optional[Callable] = None,
+    *,
+    assert_all_called: Optional[bool] = None,
+    assert_all_mocked: Optional[bool] = None,
+    base_url: Optional[str] = None,
+    using: Optional[Union[str, Default]] = DEFAULT,
+) -> Union["MockRouter", Callable]:
+```
+
+--------------------------------
+
+### handler() method signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Resolves a request and returns the mocked httpx.Response, asserting the result is an httpx.Response instance.
+
+```python
+def handler(self, request: httpx.Request) -> httpx.Response:
+```
+
+--------------------------------
+
+### __getitem__(name)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Returns the route with the given name; raises KeyError if not found.
+
+```APIDOC
+## __getitem__(name)
+
+### Description
+Returns `self.routes[name]` — raises `KeyError` when the named route does not exist.
+
+### Method
+__getitem__
+
+### Signature
+```python
+def __getitem__(self, name: str) -> Route:
+```
+
+### Parameters
+- **name** (str) - Required - The name of the route to retrieve.
+
+### Returns
+- **Route** - The route with the given name.
+
+### Raises
+- `KeyError` — if the named route does not exist.
+
+### Source
+`respx/router.py:104`
+```
+
+--------------------------------
+
+### Using the Decorator with respx.mock
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Activates RESPX for a test function using the @respx.mock decorator. The test function can access the router via the respx_mock argument.
+
+```python
+import httpx
+import respx
+
+
+@respx.mock
+def test_decorator():
+    my_route = respx.get("https://example.org/")
+    response = httpx.get("https://example.org/")
+    assert my_route.called
+    assert response.status_code == 200
+
+```
+
+--------------------------------
+
+### Assertions
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to assert on mocked calls using respx, equivalent to requests-mock's assertion methods.
+
+```APIDOC
+## Assertions
+
+### Description
+Use `respx.calls` to assert on the calls made to mocked requests. This is equivalent to requests-mock's `called_once`, `last_request`, and related attributes.
+
+### Method
+N/A (Python assertions)
+
+### Endpoint
+N/A
+
+### Parameters
+#### Assertion Methods
+- **respx.calls.assert_called_once()** - Asserts that exactly one call was made.
+- **respx.calls.last** - The last call made, with `request` attribute for the request object.
+
+### Request Example
+```python
+respx.calls.assert_called_once()
+self.assertEqual(
+    str(respx.calls.last.request.url),
+    "https://api.io/example/endpoint",
+)
+self.assertEqual(json.loads(respx.calls.last.request.content), {"key": "value"})
+```
+
+### Response
+#### Success Response
+No explicit response; assertions pass if conditions are met.
+
+#### Response Example
+```json
+{}
+```
+```
+
+--------------------------------
+
+### parse_url_patterns helper
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Splits a URL into scheme/host/port/path/params patterns. Handles url=None or 'all' returning {}, compiled regex, host wildcards, exact/STARTS_WITH path matching, and CONTAINS/EQUAL query param matching.
+
+```python
+def parse_url_patterns(
+    url: Optional[URLPatternTypes], exact: bool = True
+) -> Dict[str, Pattern]:
+```
+
+--------------------------------
+
+### Stacking Responses with Side Effects
+
+Source: https://github.com/lundberg/respx/blob/master/docs/upgrade.md
+
+Shows how to stack multiple responses using side_effect with a list. Note that repeating a route in 0.15.0+ replaces any existing route with the same pattern.
+
+```python
+# Previously
+respx.post("https://some.url/", status_code=404)
+respx.post("https://some.url/", status_code=200)
+
+# Now
+respx.post("https://some.url/").mock(
+    side_effect=[
+        Response(404),
+        Response(200),
+    ],
+)
+```
+
+--------------------------------
+
+### regex lookup
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches the path against a regular expression pattern.
+
+```python
+M(path__regex=r"^/api/(?P<slug>\w+)/")
+```
+
+--------------------------------
+
+### parse_url helper
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Accepts httpx.URL, string, or raw httpcore URL tuple; builds the last into a string (with IPv6 brackets) and parses it.
+
+```python
+def parse_url(value: Union[httpx.URL, str, RawURL]) -> httpx.URL:
+```
+
+--------------------------------
+
+### pytest marker @pytest.mark.respx with base_url, assert_all_called, using
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/configuration.md
+
+Use this marker to configure a fresh per-test MockRouter via the respx_mock fixture. The kwargs are forwarded verbatim to respx.mock(**kwargs). Defaults are assert_all_called=True, assert_all_mocked=True, base_url=None, using="httpcore".
+
+```python
+@pytest.mark.respx(base_url="https://foo.bar", assert_all_called=True, using="httpx")
+def test_mocked(respx_mock):
+    ...
+```
+
+--------------------------------
+
+### Mocker.async_handler(httpx_request)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Asynchronous dispatch handler that routes an HTTPX request through registered routers.
+
+```APIDOC
+## Mocker.async_handler(httpx_request)
+
+### Description
+Asynchronous dispatch handler that routes an HTTPX request through registered routers.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+async def async_handler(cls, httpx_request):
+```
+
+### Parameters
+- **httpx_request** - Required - The HTTPX request object to handle.
+
+### Returns
+The response from the first router that produces one.
+
+### Notes
+Async variant of `handler` (awaits `router.async_handler`).
+```
+
+--------------------------------
+
+### Mocker.register(router)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Registers a Router instance with the Mocker class, adding it to the class-level routers list.
+
+```APIDOC
+## Mocker.register(router)
+
+### Description
+Registers a Router instance with the Mocker class, adding it to the class-level routers list.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+def register(cls, router: "Router") -> None:
+```
+
+### Parameters
+- **router** (Router) - Required - The Router instance to register.
+
+### Returns
+None
+
+### Notes
+Appends the router to `cls.routers`.
+```
+
+--------------------------------
+
+### M() pattern combinator signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Core pattern combinator used by Route.__init__/Router.route. Parses keyword lookups as <pattern__lookup>=value, combines patterns with AND, and skips falsy patterns unless using eq lookup.
+
+```python
+def M(*patterns: Pattern, **lookups: Any) -> Pattern:
+```
+
+--------------------------------
+
+### respx.head
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+HTTP method helper to add a route for HEAD requests, mimicking the HTTPX Helper Functions.
+
+```APIDOC
+## respx.head
+
+### Description
+HTTP method helper to add a route for HEAD requests, mimicking the HTTPX Helper Functions.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **url** (str | compiled regex | tuple (httpcore) | httpx.URL) - Optional - Request URL to match, full or partial, turned into a URL pattern.
+- **name** (str) - Optional - Name this route.
+- **lookups** (kwargs) - Optional - One or more pattern keyword lookups, given as `<pattern>__<lookup>=value`.
+
+### Returns
+`Route`
+```
+
+--------------------------------
+
+### eq lookup
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches a path exactly. The second form is equivalent to the first, using the explicit `__eq` suffix.
+
+```python
+M(path="/foo/bar/")
+M(path__eq="/foo/bar/")
+```
+
+--------------------------------
+
+### clear() method
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Clears all routes. May be rolled back to the last snapshot state. Source: respx/router.py:57.
+
+```python
+def clear(self) -> None:
+```
+
+--------------------------------
+
+### Route.pass_through()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Marks the route to pass through, sending matched requests to the real server instead of mocking. Returns the Route instance.
+
+```APIDOC
+## Route.pass_through()
+
+### Description
+Mark route to pass through, sending matched requests to real server.
+
+### Method
+pass_through
+
+### Signature
+route.pass_through(*value=True)
+
+### Parameters
+#### Parameters
+- **value** (bool) - Optional - Mark route to pass through. Default: True.
+
+### Returns
+- **Route** - The Route instance.
+```
+
+--------------------------------
+
+### Pass Through Route with respx.route().pass_through()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Use .pass_through() on a route to let requests matching the host pass through to the real server instead of being mocked. The response comes from the actual server.
+
+```python
+import httpx
+import respx
+
+
+@respx.mock
+def test_remote_response():
+    respx.route(host="localhost").pass_through()
+    response = httpx.get("http://localhost:8000/")  # response from server
+```
+
+--------------------------------
+
+### Route API Change: .add to .route
+
+Source: https://github.com/lundberg/respx/blob/master/docs/upgrade.md
+
+Shows the change from respx.add() to respx.route() for defining a route with method and URL, and responding with content.
+
+```python
+# Previously
+respx.add("POST", "https://some.url/", content="foobar")
+
+# Now
+respx.route(method="POST", url="https://some.url/").respond(content="foobar")
+```
+
+--------------------------------
+
+### respx.request
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Adds a route for a specific HTTP method and URL, with optional name and lookups.
+
+```APIDOC
+## respx.request
+
+### Description
+Adds a route for a specific HTTP method and URL, with optional name and lookups.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **method** (str) - Required - Request HTTP method to match.
+- **url** (str | compiled regex | tuple (httpcore) | httpx.URL) - Optional - Request URL to match, full or partial, turned into a URL pattern.
+- **name** (str) - Optional - Name this route.
+- **lookups** (kwargs) - Optional - One or more pattern keyword lookups, given as `<pattern>__<lookup>=value`.
+
+### Returns
+`Route`
+
+### Example
+```python
+respx.request("GET", "https://example.org/", params={"foo": "bar"}, ...)
+```
+```
+
+--------------------------------
+
+### clear()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Clears all routes. May be rolled back to the last snapshot state.
+
+```APIDOC
+## clear()
+
+### Description
+Clears all routes. May be rolled back to the last snapshot state.
+
+### Method
+clear
+
+### Signature
+```python
+def clear(self) -> None:
+```
+
+### Parameters
+None
+
+### Returns
+None
+
+### Source
+`respx/router.py:57`
+```
+
+--------------------------------
+
+### pytest: Custom fixture with respx.mock context manager
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Defines a custom pytest fixture `mocked_api` that uses `respx.mock` with `base_url` and `assert_all_called=False`, yielding the mock for use in tests. The fixture sets up a route for `/users/` with a name.
+
+```python
+# conftest.py
+import pytest
+import respx
+
+from httpx import Response
+
+
+@pytest.fixture
+def mocked_api():
+    with respx.mock(
+        base_url="https://foo.bar", assert_all_called=False
+    ) as respx_mock:
+        users_route = respx_mock.get("/users/", name="list_users")
+        users_route.return_value = Response(200, json=[])
+        ...
+        yield respx_mock
+```
+
+--------------------------------
+
+### Mock without Patching HTTPX using MockTransport
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Use httpx.MockTransport with a RESPX router as handler to mock HTTPX without patching. The router's handler and async_handler are used for sync and async clients respectively. Note that you must manually call <router>.assert_all_called() to assert all routes were called.
+
+```python
+import httpx
+import respx
+
+
+router = respx.Router()
+router.post("https://example.org/") % 404
+
+
+def test_client():
+    mock_transport = httpx.MockTransport(router.handler)
+    with httpx.Client(transport=mock_transport) as client:
+        response = client.post("https://example.org/")
+        assert response.status_code == 404
+
+
+def test_client():
+    mock_transport = httpx.MockTransport(router.async_handler)
+    with httpx.AsyncClient(transport=mock_transport) as client:
+        ...
+```
+
+--------------------------------
+
+### __getitem__ method
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Returns self.routes[name], raising KeyError when the named route does not exist. Source: respx/router.py:104.
+
+```python
+def __getitem__(self, name: str) -> Route:
+```
+
+--------------------------------
+
+### Mock a Response with return_value
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Creates a mocked HTTPX Response object and sets it as the return value for a route. Returns a 204 status code.
+
+```python
+respx.get("https://example.org/").mock(return_value=Response(204))
+```
+
+--------------------------------
+
+### Mocker.handler(httpx_request)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Synchronous dispatch handler that routes an HTTPX request through registered routers.
+
+```APIDOC
+## Mocker.handler(httpx_request)
+
+### Description
+Synchronous dispatch handler that routes an HTTPX request through registered routers.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+def handler(cls, httpx_request):
+```
+
+### Parameters
+- **httpx_request** - Required - The HTTPX request object to handle.
+
+### Returns
+The response from the first router that produces one.
+
+### Notes
+Iterates `cls.routers`, calling `router.handler(httpx_request)`. An `AllMockedAssertionError` from one router is remembered and the next router tried; if nothing produced a response the assertion error is re-raised.
+```
+
+--------------------------------
+
+### add() method
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Adds an existing route, optionally named, replacing any existing route with the same name or pattern. Merges base_url pattern via merge_patterns. Raises ValueError for invalid route. Source: respx/router.py:134.
+
+```python
+def add(self, route: Route, *, name: Optional[str] = None) -> Route:
+```
+
+--------------------------------
+
+### Pass-through and route-as-decorator
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Demonstrates using a router with a base URL to forward requests matching a regex to the real network via pass_through(). Also shows Route.__call__ used as a decorator to define a side effect that returns a 201 response with JSON.
+
+```python
+import httpx
+import respx
+
+router = respx.mock(base_url="https://example.org", using="httpx")
+with router:
+    # Forward all /public/ requests to the real network
+    router.route(url__regex=r"/public/.*").pass_through()
+
+    # Route.__call__ used as a decorator for a side effect
+    @router.get("/api/")
+    def side_effect(request):
+        return httpx.Response(201, json={"id": 1})
+
+    assert httpx.get("https://example.org/api/").status_code == 201
+```
+
+--------------------------------
+
+### Route.match(request)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Matches and resolves a request with the route's patterns and optional side effect.
+
+```APIDOC
+## `match(request)`
+
+### Description
+Matches and resolves request with given patterns and optional side effect. Returns `None` for a non-matching route, the mocked response for a match, or the input `request` for pass-through. Matched lookup context (e.g. regex groupdics) is passed to `resolve(request, **context)`.
+
+### Method
+`match`
+
+### Signature
+```python
+def match(self, request: httpx.Request) -> RouteResultTypes:
+```
+
+### Parameters
+- **request** (httpx.Request) - Required - The request to match.
+
+### Returns
+`RouteResultTypes` - `None` for non-match, mocked response for match, or the input request for pass-through.
+
+### Source
+`respx/models.py:409-429`
+```
+
+--------------------------------
+
+### record() method signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Defines the record method that appends a Call to Router.calls and optionally to a route's calls. The response and route parameters are optional.
+
+```python
+def record(
+    self,
+    request: httpx.Request,
+    *,
+    response: Optional[httpx.Response] = None,
+    route: Optional[Route] = None,
+) -> None:
+```
+
+--------------------------------
+
+### respond(status_code=200, ...) method signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Builds a MockResponse with the given arguments and applies it via self.mock(return_value=response). Returns self. Source: respx/models.py:271-299.
+
+```python
+def respond(
+    self,
+    status_code: int = 200,
+    *,
+    headers: Optional[HeaderTypes] = None,
+    cookies: Optional[Union[CookieTypes, Sequence[SetCookie]]] = None,
+    content: Optional[Content] = None,
+    text: Optional[str] = None,
+    html: Optional[str] = None,
+    json: Any = None,
+    stream: Optional[Union[httpx.SyncByteStream, httpx.AsyncByteStream]] = None,
+    content_type: Optional[str] = None,
+    http_version: Optional[str] = None,
+    **kwargs: Any,
+) -> "Route":
+```
+
+--------------------------------
+
+### rollback() method
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Rolls back routes and calls to the last snapshot. Source: respx/router.py:76.
+
+```python
+def rollback(self) -> None:
+```
+
+--------------------------------
+
+### Migrate responses callback to respx side_effect
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace responses.add_callback with respx.get().mock(side_effect=...) using a side effect function that returns a Response object.
+
+```python
+def my_callback(request):
+    headers = {"Content-Type": "application/json"}
+    body = {"foo": "bar"}
+    return (200, headers, json.dumps(resp_body))
+
+responses.add_callback(
+    responses.GET, "http://example.org/",
+    callback=my_callback,
+)
+
+```
+
+```python
+def my_side_effect(request, route):
+    return Response(200, json={"foo": "bar"})
+
+respx.get("https://example.org/").mock(side_effect=my_side_effect)
+
+```
+
+--------------------------------
+
+### Migrate responses exception mock to respx side_effect
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace responses.add with body=Exception with respx.get().mock(side_effect=ConnectError) to raise an exception when the request is made.
+
+```python
+responses.add(
+    responses.GET, "https://example.org/",
+    body=Exception("..."),
+)
+
+```
+
+```python
+respx.get("https://example.org/").mock(side_effect=ConnectError)
+
+```
+
+--------------------------------
+
+### respx.post
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+HTTP method helper to add a route for POST requests, mimicking the HTTPX Helper Functions.
+
+```APIDOC
+## respx.post
+
+### Description
+HTTP method helper to add a route for POST requests, mimicking the HTTPX Helper Functions.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **url** (str | compiled regex | tuple (httpcore) | httpx.URL) - Optional - Request URL to match, full or partial, turned into a URL pattern.
+- **name** (str) - Optional - Name this route.
+- **lookups** (kwargs) - Optional - One or more pattern keyword lookups, given as `<pattern>__<lookup>=value`.
+
+### Returns
+`Route`
+```
+
+--------------------------------
+
+### Route.return_value
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Setter for the HTTPX Response to return when the route is matched.
+
+```APIDOC
+## Route.return_value
+
+### Description
+Setter for the HTTPX Response to return.
+
+### Usage
+route.return_value = Response(204)
+```
+
+--------------------------------
+
+### Aliasing to Named Routes
+
+Source: https://github.com/lundberg/respx/blob/master/docs/upgrade.md
+
+Shows the change from alias to name for route identification, and from respx.aliases to respx.routes for checking call status.
+
+```python
+# Previously
+respx.post("https://example.org/", alias="example")
+assert respx.aliases["example"].called
+
+# Now
+respx.post("https://example.org/", name="example")
+assert respx.routes["example"].called
+```
+
+--------------------------------
+
+### resolve() method signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Synchronously resolves a request by iterating routes in order and returning the first match. Pre-reads the response stream for sync byte streams.
+
+```python
+def resolve(self, request: httpx.Request) -> ResolvedRoute:
+```
+
+--------------------------------
+
+### Migrate responses.assert_call_count to respx route.call_count
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace responses.assert_call_count with a route's call_count attribute and an assert statement.
+
+```python
+responses.assert_call_count("http://example.org/", 1)
+
+```
+
+```python
+route = respx.get("https://example.org/")
+assert route.call_count == 1
+
+```
+
+--------------------------------
+
+### Migrate subsequent responses to respx iterable side_effect
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace multiple responses.add calls with a single respx.get().mock() using an iterable side_effect to return different responses in sequence.
+
+```python
+responses.add(responses.GET, "https://example.org/", status=200)
+responses.add(responses.GET, "https://example.org/", status=500)
+
+```
+
+```python
+respx.get("https://example.org/").mock(
+    side_effect=[Response(200), Response(500)]
+)
+
+```
+
+--------------------------------
+
+### Mocker.stop(force=False)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Stops all active patches, unless routers are still registered and force is False.
+
+```APIDOC
+## Mocker.stop(force=False)
+
+### Description
+Stops all active patches, unless routers are still registered and force is False.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+def stop(cls, force: bool = False) -> None:
+```
+
+### Parameters
+- **force** (bool) - Optional - If `True`, stops patches even when routers are active. Defaults to `False`.
+
+### Returns
+None
+
+### Notes
+Stops all patches, unless `cls.routers` is non-empty and `force` is `False` (i.e. active routers keep patching alive).
+```
+
+--------------------------------
+
+### AND (&)
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Combines two patterns using the `and` operator. Both patterns must match.
+
+```APIDOC
+## AND (&)
+
+### Description
+Combines two patterns using the `and` operator. Both patterns must match.
+
+### Usage
+```python
+M(scheme="http") & M(host="example.org")
+```
+```
+
+--------------------------------
+
+### Mocker.mock(spec)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Abstract factory method for creating the patch callable. Must be overridden by subclasses.
+
+```APIDOC
+## Mocker.mock(spec)
+
+### Description
+Abstract factory method for creating the patch callable. Must be overridden by subclasses.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+def mock(cls, spec):
+    raise NotImplementedError()  # pragma: nocover
+```
+
+### Parameters
+- **spec** - Required - The specification object passed to the patch callable.
+
+### Returns
+Not implemented; raises `NotImplementedError`.
+
+### Notes
+Abstract factory for the patch callable.
+```
+
+--------------------------------
+
+### respx.delete
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+HTTP method helper to add a route for DELETE requests, mimicking the HTTPX Helper Functions.
+
+```APIDOC
+## respx.delete
+
+### Description
+HTTP method helper to add a route for DELETE requests, mimicking the HTTPX Helper Functions.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **url** (str | compiled regex | tuple (httpcore) | httpx.URL) - Optional - Request URL to match, full or partial, turned into a URL pattern.
+- **name** (str) - Optional - Name this route.
+- **lookups** (kwargs) - Optional - One or more pattern keyword lookups, given as `<pattern>__<lookup>=value`.
+
+### Returns
+`Route`
+```
+
+--------------------------------
+
+### URLPatternTypes type alias
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+Accepted URL values for router helpers (respx.get(url), Router.request(url), base urls): plain string, compiled regex (Pattern[str], normally re.Pattern[str]), raw httpcore URL tuple, or an httpx.URL.
+
+```python
+URLPatternTypes = Union[str, Pattern[str], URL, httpx.URL]
+```
+
+--------------------------------
+
+### Migrate responses assert_all_requests_are_fired to respx assert_all_called
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to replace responses.RequestsMock(assert_all_requests_are_fired=False) with respx.mock(assert_all_called=False) to disable the assertion that all requests are fired.
+
+```python
+with responses.RequestsMock(assert_all_requests_are_fired=False) as rsps:
+    ...
+
+```
+
+```python
+with respx.mock(assert_all_called=False) as respx_mock:
+    ...
+
+```
+
+--------------------------------
+
+### pytest: Session-scoped async fixture with event_loop
+
+Source: https://github.com/lundberg/respx/blob/master/docs/examples.md
+
+Defines a session-scoped async fixture `mocked_api` that uses `respx.mock` as an async context manager, requiring the `session_event_loop` utility for `pytest-asyncio`. The fixture yields the mock for async tests.
+
+```python
+# conftest.py
+import pytest
+import respx
+
+from respx.fixtures import session_event_loop as event_loop  # noqa: F401
+
+
+@pytest.fixture(scope="session")
+async def mocked_api(event_loop):  # noqa: F811
+    async with respx.mock(base_url="https://foo.bar") as respx_mock:
+        ...
+        yield respx_mock
+```
+
+--------------------------------
+
+### respx.put
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+HTTP method helper to add a route for PUT requests, mimicking the HTTPX Helper Functions.
+
+```APIDOC
+## respx.put
+
+### Description
+HTTP method helper to add a route for PUT requests, mimicking the HTTPX Helper Functions.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **url** (str | compiled regex | tuple (httpcore) | httpx.URL) - Optional - Request URL to match, full or partial, turned into a URL pattern.
+- **name** (str) - Optional - Name this route.
+- **lookups** (kwargs) - Optional - One or more pattern keyword lookups, given as `<pattern>__<lookup>=value`.
+
+### Returns
+`Route`
+```
+
+--------------------------------
+
+### async_handler() method signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Async variant of handler(). Resolves a request and returns the mocked httpx.Response asynchronously.
+
+```python
+async def async_handler(self, request: httpx.Request) -> httpx.Response:
+```
+
+--------------------------------
+
+### pop() overloads and implementation
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Removes a route by name and returns it; raises KeyError when default is not given and the name is missing, otherwise returns default. Source: respx/router.py:108-126.
+
+```python
+@overload
+def pop(self, name: str) -> Route:
+    ...  # pragma: nocover
+
+@overload
+def pop(self, name: str, default: DefaultType) -> Union[Route, DefaultType]:
+    ...  # pragma: nocover
+
+def pop(self, name, default=...):
+```
+
+--------------------------------
+
+### Migrate responses call history to respx.calls
+
+Source: https://github.com/lundberg/respx/blob/master/docs/migrate.md
+
+Shows how to access call history in respx. respx.calls supports indexing, unpacking into request and response, and a .last attribute.
+
+```python
+responses.calls[0].request
+responses.calls[0].response
+
+```
+
+```python
+respx.calls[0].request
+respx.calls[0].response
+
+request, response = respx.calls[0]
+respx.calls.last.response
+
+```
+
+--------------------------------
+
+### ASGIHandler class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Wraps an ASGI app in an httpx.ASGITransport. Extra kwargs are passed to the transport constructor. Async-only.
+
+```python
+class ASGIHandler(AsyncTransportHandler):
+    def __init__(self, app: Callable, **kwargs: Any) -> None:
+        super().__init__(httpx.ASGITransport(app=app, **kwargs))
+```
+
+--------------------------------
+
+### MockTransport class (deprecated)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/transports.md
+
+Deprecated wrapper over httpx.MockTransport that accepts exactly one of router, handler, or async_handler. Raises RuntimeError if none is given and emits a DeprecationWarning on construction.
+
+```python
+class MockTransport(httpx.MockTransport):
+    _router: Optional["Router"]
+
+    def __init__(
+        self,
+        *,
+        handler: Optional[RequestHandler] = None,
+        async_handler: Optional[AsyncRequestHandler] = None,
+        router: Optional["Router"] = None,
+    ):
+        if router:
+            super().__init__(router.handler)
+            self._router = router
+        elif handler:
+            super().__init__(handler)
+            self._router = None
+        elif async_handler:
+            super().__init__(async_handler)
+            self._router = None
+        else:
+            raise RuntimeError(
+                "Missing a MockTransport required handler or router argument"
+            )
+        warn(
+            "MockTransport is deprecated. "
+            "Please use `httpx.MockTransport(respx_router.handler)`.",
+            category=DeprecationWarning,
+        )
+```
+
+--------------------------------
+
+### eq
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches a pattern field exactly. Can be used with the `__eq` suffix or directly.
+
+```APIDOC
+## eq
+
+### Description
+Matches a pattern field exactly. Can be used with the `__eq` suffix or directly.
+
+### Usage
+```python
+M(path="/foo/bar/")
+M(path__eq="/foo/bar/")
+```
+```
+
+--------------------------------
+
+### respx.route
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Adds a new, optionally named, Route with given patterns and/or lookups combined using the AND operator.
+
+```APIDOC
+## respx.route
+
+### Description
+Adds a new, optionally named, `Route` with given patterns and/or lookups combined, using the AND operator.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **patterns** (args) - Optional - One or more pattern objects.
+- **lookups** (kwargs) - Optional - One or more pattern keyword lookups, given as `<pattern>__<lookup>=value`.
+- **name** (str) - Optional - Name this route.
+
+### Returns
+`Route`
+```
+
+--------------------------------
+
+### Route.mock()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Mocks a route's response or side effect. Accepts an optional return_value (HTTPX Response) and side_effect (Callable, Exception, or iterable of responses/exceptions). Returns the Route instance for chaining.
+
+```APIDOC
+## Route.mock()
+
+### Description
+Mock a route's response or side effect.
+
+### Method
+mock
+
+### Signature
+route.mock(*return_value=None, side_effect=None)
+
+### Parameters
+#### Parameters
+- **return_value** (Response) - Optional - HTTPX Response to mock and return.
+- **side_effect** (Callable | Exception | Iterable of httpx.Response/Exception) - Optional - Side effect to call, exception to raise, or stacked responses to respond with in order.
+
+### Returns
+- **Route** - The Route instance.
+```
+
+--------------------------------
+
+### regex
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Matches a field value against a regular expression.
+
+```APIDOC
+## regex
+
+### Description
+Matches a field value against a regular expression.
+
+### Usage
+```python
+M(path__regex=r"^/api/(?P<slug>\w+)/")
+```
+```
+
+--------------------------------
+
+### mock(return_value=None, *, side_effect=None) method signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Sets return_value and side_effect via property setters and returns self for chaining. Source: respx/models.py:259-269.
+
+```python
+def mock(
+    self,
+    return_value: Optional[httpx.Response] = None,
+    *,
+    side_effect: Optional[
+        Union[SideEffectTypes, Sequence[SideEffectListTypes]]
+    ] = None,
+) -> "Route":
+```
+
+--------------------------------
+
+### rollback()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Rolls back routes and calls to the last snapshot.
+
+```APIDOC
+## rollback()
+
+### Description
+Rolls back routes and calls to the last snapshot.
+
+### Method
+rollback
+
+### Signature
+```python
+def rollback(self) -> None:
+```
+
+### Parameters
+None
+
+### Returns
+None
+
+### Source
+`respx/router.py:76`
+```
+
+--------------------------------
+
+### Callbacks and Simulated Errors as Side Effects
+
+Source: https://github.com/lundberg/respx/blob/master/docs/upgrade.md
+
+Shows how callbacks and exceptions are now specified using side_effect instead of content. Includes both callback functions and exception classes.
+
+```python
+# Previously
+respx.post("https://some.url/", content=callback)
+respx.post("https://some.url/", content=Exception())
+respx.add(callback)
+
+# Now
+respx.post("https://some.url/").mock(side_effect=callback)
+respx.post("https://some.url/").mock(side_effect=Exception)
+respx.route().mock(side_effect=callback)
+```
+
+--------------------------------
+
+### TryTransport class implementation
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/transports.md
+
+Defines TryTransport, a dual sync/async transport that tries each transport in order, catching PassThrough to fall through. Raises RuntimeError if no transport handles the request.
+
+```python
+class TryTransport(BaseTransport, AsyncBaseTransport):
+    def __init__(
+        self, transports: List[Union[BaseTransport, AsyncBaseTransport]]
+    ) -> None:
+        self.transports = transports
+
+    def handle_request(self, request: httpx.Request) -> httpx.Response:
+        for transport in self.transports:
+            try:
+                transport = cast(BaseTransport, transport)
+                return transport.handle_request(request)
+            except PassThrough:
+                continue
+
+        raise RuntimeError()  # pragma: nocover
+
+    async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
+        for transport in self.transports:
+            try:
+                transport = cast(AsyncBaseTransport, transport)
+                return await transport.handle_async_request(request)
+            except PassThrough:
+                continue
+
+        raise RuntimeError()  # pragma: nocover
+```
+
+--------------------------------
+
+### pop(name, default=...)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Removes a route by name and returns it; raises KeyError if default is not given and name is missing.
+
+```APIDOC
+## pop(name, default=...)
+
+### Description
+Removes a route by name and returns it; raises `KeyError` when `default` is not given and the name is missing, otherwise returns `default`.
+
+### Method
+pop
+
+### Signature
+```python
+@overload
+def pop(self, name: str) -> Route:
+    ...  # pragma: nocover
+
+@overload
+def pop(self, name: str, default: DefaultType) -> Union[Route, DefaultType]:
+    ...  # pragma: nocover
+
+def pop(self, name, default=...):
+```
+
+### Parameters
+- **name** (str) - Required - The name of the route to remove.
+- **default** (DefaultType) - Optional - Value to return if the name is not found.
+
+### Returns
+- **Route** - The removed route if found.
+- **DefaultType** - The default value if the name is not found and default is provided.
+
+### Raises
+- `KeyError` — if the name is not found and no default is provided.
+
+### Source
+`respx/router.py:108-126`
+```
+
+--------------------------------
+
+### Route.snapshot()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Clones iterator-type side effects and pushes the current route state onto a snapshot stack for later rollback.
+
+```APIDOC
+## `snapshot()`
+
+### Description
+Clones iterator-type side effects (so they are not pre-exhausted on rollback) and pushes `(pattern, name, return_value, side_effect, pass_through, calls)` onto `_snapshots`.
+
+### Method
+`snapshot`
+
+### Signature
+```python
+def snapshot(self) -> None:
+```
+
+### Parameters
+None.
+
+### Returns
+`None`
+
+### Source
+`respx/models.py:223`
+```
+
+--------------------------------
+
+### Mocker.add_targets(*targets)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Adds new patch targets to the Mocker and restarts patching to include them.
+
+```APIDOC
+## Mocker.add_targets(*targets)
+
+### Description
+Adds new patch targets to the Mocker and restarts patching to include them.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+def add_targets(cls, *targets: str) -> None:
+```
+
+### Parameters
+- **targets** (str) - Required - One or more target strings to add to `cls.targets`.
+
+### Returns
+None
+
+### Notes
+Extends `cls.targets` with not-yet-present targets and restarts patching.
+```
+
+--------------------------------
+
+### Noop class implementation
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+The Noop class is a pattern that always matches but is falsy, so it is ignored by combinators. It is produced by combine() when there are no patterns.
+
+```python
+class Noop(Pattern):
+    def __init__(self) -> None:
+        super().__init__(None)
+
+    def __bool__(self) -> bool:
+        # Treat this pattern as non-existent, e.g. when filtering or conditioning
+        return False
+
+    def match(self, request: httpx.Request) -> Match:
+        # If this pattern is part of a combined pattern, always be truthy, i.e. noop
+        return Match(True)
+```
+
+--------------------------------
+
+### get_scheme_port helper
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Returns 80 for 'http' and 443 for 'https'. Used to encode scheme default ports into URLs.
+
+```python
+def get_scheme_port(scheme: Optional[str]) -> Optional[int]:
+```
+
+--------------------------------
+
+### Content type alias
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+Defines accepted body content for Route.respond() and MockResponse, allowing str, bytes, or sync/async iterables of bytes.
+
+```python
+Content = Union[str, bytes, Iterable[bytes], AsyncIterable[bytes]]
+```
+
+--------------------------------
+
+### Route.resolve(request, **kwargs)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Resolves a request to a response, using side effect, return value, or auto-mocked response.
+
+```APIDOC
+## `resolve(request, **kwargs)`
+
+### Description
+Resolves a request to a response. Resolution order: `self._side_effect` first (`_resolve_side_effect`), else `self._return_value`, else an auto-mocked `httpx.Response(200, request=request)`. Responses that have no `_request` set are cloned per-request for immutability via `clone_response`.
+
+### Method
+`resolve`
+
+### Signature
+```python
+def resolve(self, request: httpx.Request, **kwargs: Any) -> RouteResultTypes:
+```
+
+### Parameters
+- **request** (httpx.Request) - Required - The request to resolve.
+- **kwargs** (Any) - Optional - Additional context (e.g., matched regex groups).
+
+### Returns
+`RouteResultTypes` - The resolved response or request.
+
+### Side-effect resolution semantics
+
+| Side effect value | Behavior |
+|---|---|
+| `Exception` instance | `SideEffectError(self, origin=effect)` is raised; the router re-raises `origin` (see [errors.md](../errors.md)) |
+| `Exception` class | `SideEffectError(self, origin=effect("Mock Error", request=request))` when it subclasses `httpx.RequestError`, else `effect()`; result re-raised as `origin` |
+| callable | Called as `effect(request, **matched_context)`; a `route` kwarg is injected when the callable accepts it (a `UserWarning` is emitted for using the reserved word `route`); async results are awaited by `Router.aresolve`. Returns `None` for a non-match, or a `httpx.Response`/`httpx.Request` (raise `TypeError` otherwise) |
+| `httpx.Response` / anything else | Returned as the resolved response |
+
+Iterator side effects yield one item per call via `next()` (`_next_side_effect`, `respx/models.py:317`).
+
+### Source
+`respx/models.py:388-407`
+```
+
+--------------------------------
+
+### pass_through(value=True) method signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Marks the route to forward matching requests to the real/underlying transport instead of mocking them (_pass_through = value). Returns self. Source: respx/models.py:301-303.
+
+```python
+def pass_through(self, value: bool = True) -> "Route":
+```
+
+--------------------------------
+
+### Content
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+The Content type alias represents accepted body content for Route.respond() and MockResponse, allowing strings, bytes, or sync/async byte streams.
+
+```APIDOC
+## Content
+
+### Description
+The `Content` type alias represents accepted body content for `Route.respond()` and `MockResponse`. It can be a string, bytes, or a sync/async iterable of bytes.
+
+### Type Definition
+```python
+Content = Union[str, bytes, Iterable[bytes], AsyncIterable[bytes]]
+```
+
+### Variants
+- `str` / `bytes` - Encoded text or raw bytes body
+- `Iterable[bytes]` / `AsyncIterable[bytes]` - Sync/async byte stream
+```
+
+--------------------------------
+
+### WSGIHandler class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Wraps a WSGI app in an httpx.WSGITransport. Extra kwargs are passed to the transport constructor. Sync-only.
+
+```python
+class WSGIHandler(TransportHandler):
+    def __init__(self, app: Callable, **kwargs: Any) -> None:
+        super().__init__(httpx.WSGITransport(app=app, **kwargs))
+```
+
+--------------------------------
+
+### respx marker registration in pytest_configure
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/pytest-plugin.md
+
+Registers the respx marker with pytest to avoid PytestUnknownMarkWarning. The marker accepts assert_all_called, assert_all_mocked, base_url, and using keyword arguments that map to the MockRouter constructor.
+
+```python
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers",
+        "respx(assert_all_called=False, assert_all_mocked=False, base_url=...): "
+        "configure the respx_mock fixture. "
+        "See https://lundberg.github.io/respx/api.html#configuration",
+    )
+```
+
+--------------------------------
+
+### Reset Call History with respx.reset()
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Manually reset call stats during a test case using respx.reset() or <your_router>.reset(). After reset, call count is zero and assert_not_called() passes.
+
+```python
+import httpx
+import respx
+
+
+@respx.mock
+def test_reset():
+    respx.post("https://foo.bar/baz/")
+    httpx.post("https://foo.bar/baz/")
+
+    assert respx.calls.call_count == 1
+    respx.calls.assert_called_once()
+
+    respx.reset()
+
+    assert len(respx.calls) == 0
+    assert respx.calls.call_count == 0
+    respx.calls.assert_not_called()
+```
+
+--------------------------------
+
+### combine helper
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Reduces falsy-filtered patterns with the given operator (default operator.and_) and returns Noop() for an empty sequence.
+
+```python
+def combine(patterns: Sequence[Pattern], op: Callable = operator.and_) -> Pattern:
+```
+
+--------------------------------
+
+### Route.rollback()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Pops the last snapshot and restores all fields, including calls.
+
+```APIDOC
+## `rollback()`
+
+### Description
+Pops the last snapshot and restores all fields, including `calls`.
+
+### Method
+`rollback`
+
+### Signature
+```python
+def rollback(self) -> None:
+```
+
+### Parameters
+None.
+
+### Returns
+`None`
+
+### Source
+`respx/models.py:242`
+```
+
+--------------------------------
+
+### respx.patch
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+HTTP method helper to add a route for PATCH requests, mimicking the HTTPX Helper Functions.
+
+```APIDOC
+## respx.patch
+
+### Description
+HTTP method helper to add a route for PATCH requests, mimicking the HTTPX Helper Functions.
+
+### Method
+N/A (function call)
+
+### Endpoint
+N/A
+
+### Parameters
+- **url** (str | compiled regex | tuple (httpcore) | httpx.URL) - Optional - Request URL to match, full or partial, turned into a URL pattern.
+- **name** (str) - Optional - Name this route.
+- **lookups** (kwargs) - Optional - One or more pattern keyword lookups, given as `<pattern>__<lookup>=value`.
+
+### Returns
+`Route`
+```
+
+--------------------------------
+
+### resolver() context manager signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Context manager that drives a request through the router. Yields a ResolvedRoute whose route and response are set by the caller. On exit, it enforces mocking assertions, auto-mocks unmatched requests when assert_all_mocked is False, and raises PassThrough for pass-through requests.
+
+```python
+@contextmanager
+def resolver(self, request: httpx.Request) -> Generator[ResolvedRoute, None, None]:
+```
+
+--------------------------------
+
+### Assert all Mocked Enabled
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+With assert_all_mocked=True, any request not routed will raise an error. The comment indicates the request is not mocked.
+
+```python
+@respx.mock(assert_all_mocked=True)
+def test_something(respx_mock):
+    response = httpx.get("https://example.org/")  # Not mocked, will raise
+
+```
+
+--------------------------------
+
+### aresolve() method signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Async variant of resolve(). Awaits async side-effect results, wrapping exceptions in SideEffectError, and pre-reads via aread() for async byte streams.
+
+```python
+async def aresolve(self, request: httpx.Request) -> ResolvedRoute:
+```
+
+--------------------------------
+
+### Set Response via route.return_value Setter
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Uses the <route>.return_value setter to assign a mocked Response with a JSON body. Returns a 200 status code with the given JSON.
+
+```python
+route = respx.get("https://example.org/")
+route.return_value = Response(200, json={"foo": "bar"})
+```
+
+--------------------------------
+
+### Retrieving Calls by Direct Access
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Access request or response directly from respx.calls.last to inspect content or status code.
+
+```python
+last_request = respx.calls.last.request
+assert json.loads(last_request.content) == {"foo": "bar"}
+
+last_response = respx.calls.last.response
+assert last_response.status_code == 200
+```
+
+--------------------------------
+
+### RouteList class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/models.md
+
+Defines RouteList, a list-like container for routes with name-based access. Includes methods for iteration, item access, assignment, and route management.
+
+```python
+class RouteList:
+    _routes: List[Route]
+    _names: Dict[str, Route]
+
+    def __init__(self, routes: Optional["RouteList"] = None) -> None:
+        if routes is None:
+            self._routes = []
+            self._names = {}
+        else:
+            self._routes = list(routes._routes)
+            self._names = dict(routes._names)
+
+    def __repr__(self) -> str:
+        return repr(self._routes)  # pragma: nocover
+
+    def __iter__(self) -> Iterator[Route]:
+        return iter(self._routes)
+
+    def __bool__(self) -> bool:
+        return bool(self._routes)
+
+    def __len__(self) -> int:
+        return len(self._routes)
+
+    def __contains__(self, name: str) -> bool:
+        return name in self._names
+
+    def __getitem__(self, key: Union[int, str]) -> Route:
+        if isinstance(key, int):
+            return self._routes[key]
+        else:
+            return self._names[key]
+
+    def __setitem__(self, i: slice, routes: "RouteList") -> None:
+        """
+        Re-set all routes to given routes.
+        """
+        if (i.start, i.stop, i.step) != (None, None, None):
+            raise TypeError("Can't slice assign routes")
+        self._routes = list(routes._routes)
+        self._names = dict(routes._names)
+
+    def clear(self) -> None:
+        self._routes.clear()
+        self._names.clear()
+
+    def add(self, route: Route, name: Optional[str] = None) -> Route:
+        ...
+
+    def pop(self, name, default=...):
+        ...
+```
+
+--------------------------------
+
+### Route.__mod__(response) — % operator
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Sets the return value of the route using the % operator. Accepts an int (status code), a dict (response options), or an httpx.Response instance.
+
+```APIDOC
+## `__mod__(response)` — `%` operator
+
+### Description
+Sets the return value of the route using the `%` operator. Accepts an int (status code), a dict (response options), or an `httpx.Response` instance.
+
+### Method
+`__mod__`
+
+### Signature
+```python
+def __mod__(self, response: Union[int, Dict[str, Any], httpx.Response]) -> "Route":
+```
+
+### Parameters
+- **response** (Union[int, Dict[str, Any], httpx.Response]) - Required - The value to set as the route's return value.
+
+### Behavior
+- `int` → `self.return_value = httpx.Response(status_code=response)`
+- `dict` → `response.setdefault("status_code", 200)`; `self.return_value = httpx.Response(**response)`
+- `httpx.Response` → assigned directly
+- anything else → `TypeError(f"Route can only % with int, dict or Response, got {response!r}")`
+
+### Returns
+`self` (the Route instance).
+
+### Source
+`respx/models.py:159-175`
+```
+
+--------------------------------
+
+### MockTransport Usage Change
+
+Source: https://github.com/lundberg/respx/blob/master/docs/upgrade.md
+
+Shows that respx.MockTransport should no longer be used as a mock router; use respx.mock(...) instead.
+
+```python
+# Previously
+my_mock = respx.MockTransport(assert_all_called=False)
+
+# Now
+my_mock = respx.mock(assert_all_called=False)
+```
+
+--------------------------------
+
+### OR (|)
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Combines two patterns using the `or` operator. Either pattern can match.
+
+```APIDOC
+## OR (|)
+
+### Description
+Combines two patterns using the `or` operator. Either pattern can match.
+
+### Usage
+```python
+M(method="PUT") | M(method="PATCH")
+```
+```
+
+--------------------------------
+
+### RouteList
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/models.md
+
+A collection of Route objects that supports indexing by position or name, and provides methods to manage routes. It is used internally by the router but is part of the public API.
+
+```APIDOC
+## RouteList
+
+### Description
+A collection of `Route` objects, supporting access by position or name, and providing methods to manage routes.
+
+### Members
+
+#### `__getitem__(int)` (Route)
+- Route by position.
+
+#### `__getitem__(str)` (Route)
+- Route by name; raises `KeyError` when missing.
+
+#### `__setitem__(slice, RouteList)` (None)
+- Replaces all routes; any non-empty slice raises `TypeError("Can't slice assign routes")`.
+
+#### `__contains__(name)` (bool)
+- Name membership.
+
+#### `clear()` (None)
+- Empties routes and names.
+
+#### `add(route, name=None)` (Route)
+- Adds/replaces a route; name or pattern collisions reuse or update the existing route. See details below.
+
+#### `pop(name, default=...)` (Route | default)
+- Removes by name; raises `KeyError` when missing and no default.
+
+### `add()` Semantics
+A route with the same name as an existing route, or the same pattern, replaces the existing entry (names are freed from `_names`, the existing route's `_pattern`, `return_value`, `side_effect` and pass-through flag are updated, and the same `Route` object is returned). Otherwise the new route is appended; when `name` is given it is stored (writing the private `route._name`).
+
+### Usage
+```python
+# Example usage
+routes = RouteList()
+route = routes.add(route_obj, name="my_route")
+if "my_route" in routes:
+    print(routes["my_route"])
+```
+```
+
+--------------------------------
+
+### QueryParamTypes type alias
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+Accepted by the Params pattern (params=... lookups), forwarded to httpx.QueryParams.
+
+```python
+QueryParamTypes = Union[
+    bytes, str, List[Tuple[str, Any]], Dict[str, Any], Tuple[Tuple[str, Any], ...]
+]
+```
+
+--------------------------------
+
+### PathPattern class implementation
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+The PathPattern class is the base for JSON pattern, supporting a double-underscore JSON pointer path (e.g., json__user__name).
+
+```python
+class PathPattern(Pattern):
+    path: Optional[str]
+
+    def __init__(
+        self, value: Any, lookup: Optional[Lookup] = None, *, path: Optional[str] = None
+    ) -> None:
+        self.path = path
+        super().__init__(value, lookup)
+```
+
+--------------------------------
+
+### in lookup
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Case-sensitive within test. Matches when the method is one of the listed values.
+
+```python
+M(method__in=["PUT", "PATCH"])
+```
+
+--------------------------------
+
+### AND operator
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Combines two patterns using the `and` operator. Both patterns must match for the combined pattern to match.
+
+```python
+M(scheme="http") & M(host="example.org")
+```
+
+--------------------------------
+
+### CallList
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/models.md
+
+A list of Call items that also exposes unittest.mock.NonCallableMock auto-attributes. It is exposed publicly as the global respx.calls.
+
+```APIDOC
+## CallList
+
+### Description
+A list of `Call` items, also exposing `unittest.mock.NonCallableMock` auto-attributes (`assert_called`, `assert_called_once`, `assert_not_called`, ...). Exposed publicly as the global `respx.calls`.
+
+### Members
+
+#### `called` (bool)
+- `True` when the list is non-empty.
+
+#### `call_count` (int)
+- Number of recorded calls.
+
+#### `last` (Call)
+- Last call; raises `IndexError` when empty.
+
+#### `record(request, response)` (Call)
+- Appends and returns a new `Call`.
+
+### Usage
+```python
+# Accessing the global calls list
+import respx
+
+calls = respx.calls
+if calls.called:
+    print(calls.call_count)
+    print(calls.last)
+```
+```
+
+--------------------------------
+
+### HTTPCoreMocker class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Defines the HTTPCoreMocker class with name 'httpcore' and targets for sync and async httpcore connections, connection pools, and HTTP proxies. It overrides handle_request and handle_async_request methods.
+
+```python
+class HTTPCoreMocker(AbstractRequestMocker):
+    name = "httpcore"
+    targets = [
+        "httpcore._sync.connection.HTTPConnection",
+        "httpcore._sync.connection_pool.ConnectionPool",
+        "httpcore._sync.http_proxy.HTTPProxy",
+        "httpcore._async.connection.AsyncHTTPConnection",
+        "httpcore._async.connection_pool.AsyncConnectionPool",
+        "httpcore._async.http_proxy.AsyncHTTPProxy",
+    ]
+    target_methods = ["handle_request", "handle_async_request"]
+```
+
+--------------------------------
+
+### ResolvedResponseTypes type alias
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+A matched route resolves to None (no match), an httpx.Request (pass-through), or an httpx.Response (mock).
+
+```python
+ResolvedResponseTypes = Optional[Union[httpx.Request, httpx.Response]]
+```
+
+--------------------------------
+
+### Headers type alias
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+Defines raw header pairs with byte keys and values, following httpcore style.
+
+```python
+Headers = List[Tuple[bytes, bytes]]
+```
+
+--------------------------------
+
+### HeaderTypes type alias
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+Accepted header values for Route.respond(headers=...).
+
+```python
+HeaderTypes = Union[
+    httpx.Headers,
+    Dict[str, str],
+    Dict[bytes, bytes],
+    Sequence[Tuple[str, str]],
+    Sequence[Tuple[bytes, bytes]],
+]
+```
+
+--------------------------------
+
+### Assert all Called Enabled
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+With assert_all_called=True, all added routes must be called when exiting the test. The comment indicates a route that is not called will fail the test.
+
+```python
+@respx.mock(assert_all_called=True)
+def test_something(respx_mock):
+    respx_mock.get("https://example.org/")
+    respx_mock.get("https://some.url/")  # Not called, will fail the test
+
+    response = httpx.get("https://example.org/")
+
+```
+
+--------------------------------
+
+### merge_patterns helper
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Merges base patterns into a pattern: flattens combined patterns, sets matchable base on relative patterns (skipping exact bases), and AND-combines leftover bases. Absolute patterns (with host) drop bases.
+
+```python
+def merge_patterns(pattern: Pattern, **bases: Pattern) -> Pattern:
+```
+
+--------------------------------
+
+### reset() method
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Resets call stats, clearing Router.calls and each route's Route.calls. Source: respx/router.py:92.
+
+```python
+def reset(self) -> None:
+```
+
+--------------------------------
+
+### URL type alias
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+Defines the raw httpcore URL tuple with byte-encoded scheme, host, port, and path. Accepted by URL patterns and parse_url.
+
+```python
+URL = Tuple[
+    bytes,  # scheme
+    bytes,  # host
+    Optional[int],  # port
+    bytes,  # path
+]
+```
+
+--------------------------------
+
+### Local Route Call Stats
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Each Route object has its own .calls, .called, and .call_count to track calls made to that specific route.
+
+```python
+import httpx
+import respx
+
+
+@respx.mock
+def test_route_call_stats():
+    route = respx.post("https://example.org/baz/") % 201
+    httpx.post("https://example.org/baz/")
+
+    assert route.calls.last.request.url.path == "/baz/"
+    assert route.calls.last.response.status_code == 201
+
+    assert route.called
+    assert route.call_count == 1
+
+    route.calls.assert_called_once()
+```
+
+--------------------------------
+
+### Mocker.unregister(router)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Removes a Router from the Mocker's routers list and returns whether it was present.
+
+```APIDOC
+## Mocker.unregister(router)
+
+### Description
+Removes a Router from the Mocker's routers list and returns whether it was present.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+def unregister(cls, router: "Router") -> bool:
+```
+
+### Parameters
+- **router** (Router) - Required - The Router instance to remove.
+
+### Returns
+- **bool** - `True` if the router was present and removed, `False` otherwise.
+
+### Notes
+Removes the router from `cls.routers`.
+```
+
+--------------------------------
+
+### SetCookie NamedTuple with __new__ for cookie serialization
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/utils.md
+
+Defines the SetCookie NamedTuple used to build a serialized Set-Cookie header value. Accepts optional attributes; datetime expires values are formatted as RFC 1123, and same_site="None" forces secure=True. Bare boolean attributes are rendered without =... .
+
+```python
+Self = TypeVar("Self", bound="SetCookie")
+
+
+class SetCookie(
+    NamedTuple(
+        "SetCookie",
+        [
+            ("header_name", Literal["Set-Cookie"]),
+            ("header_value", str),
+        ],
+    )
+):
+    def __new__(
+        cls: Type[Self],
+        name: str,
+        value: str,
+        *,
+        path: Optional[str] = None,
+        domain: Optional[str] = None,
+        expires: Optional[Union[str, datetime]] = None,
+        max_age: Optional[int] = None,
+        http_only: bool = False,
+        same_site: Optional[Literal["Strict", "Lax", "None"]] = None,
+        secure: bool = False,
+        partitioned: bool = False,
+    ) -> Self:
+        """
+        https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#syntax
+        """
+        attrs: Dict[str, Union[str, bool]] = {name: value}
+        if path is not None:
+            attrs["Path"] = path
+        if domain is not None:
+            attrs["Domain"] = domain
+        if expires is not None:
+            if isinstance(expires, datetime):  # pragma: no branch
+                expires = expires.strftime("%a, %d %b %Y %H:%M:%S GMT")
+            attrs["Expires"] = expires
+        if max_age is not None:
+            attrs["Max-Age"] = str(max_age)
+        if http_only:
+            attrs["HttpOnly"] = True
+        if same_site is not None:
+            attrs["SameSite"] = same_site
+            if same_site == "None":  # pragma: no branch
+                secure = True
+        if secure:
+            attrs["Secure"] = True
+        if partitioned:
+            attrs["Partitioned"] = True
+
+        string = "; ".join(
+            _name if _value is True else f"{_name}={_value}"
+            for _name, _value in attrs.items()
+        )
+        self = super().__new__(cls, "Set-Cookie", string)
+        return self
+```
+
+--------------------------------
+
+### Asserting Calls with respx.calls
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+Use respx.calls to assert call history: check if called, call count, and use assertion methods like assert_called(), assert_not_called(), and assert_called_once().
+
+```python
+assert respx.calls.called
+assert respx.calls.call_count == 1
+
+respx.calls.assert_called()
+respx.calls.assert_not_called()
+respx.calls.assert_called_once()
+```
+
+--------------------------------
+
+### History Renamed: stats to calls
+
+Source: https://github.com/lundberg/respx/blob/master/docs/upgrade.md
+
+Shows the rename of respx.stats.call_count to respx.calls.call_count for checking call history.
+
+```python
+# Previously
+assert respx.stats.call_count == 1
+
+# Now
+assert respx.calls.call_count == 1
+```
+
+--------------------------------
+
+### INVERT (~)
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Inverts a pattern match. The pattern matches when the original pattern does not match.
+
+```APIDOC
+## INVERT (~)
+
+### Description
+Inverts a pattern match. The pattern matches when the original pattern does not match.
+
+### Usage
+```python
+~M(params={"foo": "bar"})
+```
+```
+
+--------------------------------
+
+### Route.reset()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Clears the calls list on the route.
+
+```APIDOC
+## `reset()`
+
+### Description
+`self.calls.clear()` only.
+
+### Method
+`reset`
+
+### Signature
+```python
+def reset(self) -> None:
+```
+
+### Parameters
+None.
+
+### Returns
+`None`
+
+### Source
+`respx/models.py:256`
+```
+
+--------------------------------
+
+### Assert all Mocked Disabled
+
+Source: https://github.com/lundberg/respx/blob/master/docs/guide.md
+
+With assert_all_mocked=False, non-routed requests are auto-mocked with status code 200.
+
+```python
+@respx.mock(assert_all_mocked=False)
+def test_something(respx_mock):
+    response = httpx.get("https://example.org/")  # Will auto-mock
+    assert response.status_code == 200
+
+```
+
+--------------------------------
+
+### MultiItems defaultdict class
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/utils.md
+
+A defaultdict whose default factory is tuple, holding multiple values per key. Used to represent form data / files in the Data and Files patterns. Provides get_list, multi_items, and append methods.
+
+```python
+class MultiItems(defaultdict):
+    def __init__(self, values: Optional[Iterable[Tuple[str, Any]]] = None) -> None:
+        super().__init__(tuple)
+        if values is not None:
+            for key, value in values:
+                if isinstance(value, (tuple, list)):
+                    self[key] += tuple(value)  # Convert list to tuple and extend
+                else:
+                    self[key] += (value,)  # Extend with value
+
+    def get_list(self, key: str) -> List[Any]:
+        return list(self[key])
+
+    def multi_items(self) -> List[Tuple[str, str]]:
+        return [(key, value) for key, values in self.items() for value in values]
+
+    def append(self, key: str, value: Any) -> None:
+        self[key] += (value,)
+```
+
+--------------------------------
+
+### AsyncTransportHandler.__call__
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Asynchronously calls the handler with a request and returns a response from the transport.
+
+```APIDOC
+## AsyncTransportHandler.__call__
+
+### Description
+Processes a request asynchronously by delegating to the wrapped transport's handle_async_request method.
+
+### Method
+Call
+
+### Endpoint
+AsyncTransportHandler.__call__
+
+### Parameters
+#### Request Parameters
+- **request** (`httpx.Request`) - Required - The HTTPX request object.
+
+### Request Example
+```python
+response = await handler(request)
+```
+
+### Response
+#### Success Response (200)
+- **response** (`httpx.Response`) - The response from the transport.
+
+#### Response Example
+```python
+response = await handler(request)
+```
+
+### Error Handling
+- **RuntimeError** - Raised when the request stream is not an `httpx.AsyncByteStream` (i.e., sync request routed to async app).
+```
+
+--------------------------------
+
+### __call__(side_effect) decorative side effect method signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Route.md
+
+Sets self.side_effect = side_effect and returns the callable, usable as a decorator. Source: respx/models.py:155-157.
+
+```python
+def __call__(self, side_effect: CallableSideEffect) -> CallableSideEffect:
+```
+
+--------------------------------
+
+### TransportHandler.__call__
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Calls the handler with a request and returns a response from the transport.
+
+```APIDOC
+## TransportHandler.__call__
+
+### Description
+Processes a request by delegating to the wrapped transport's handle_request method.
+
+### Method
+Call
+
+### Endpoint
+TransportHandler.__call__
+
+### Parameters
+#### Request Parameters
+- **request** (`httpx.Request`) - Required - The HTTPX request object.
+
+### Request Example
+```python
+response = handler(request)
+```
+
+### Response
+#### Success Response (200)
+- **response** (`httpx.Response`) - The response from the transport.
+
+#### Response Example
+```python
+response = handler(request)
+```
+
+### Error Handling
+- **RuntimeError** - Raised when the request stream is not a `httpx.SyncByteStream` (i.e., async request routed to sync app).
+```
+
+--------------------------------
+
+### MockTransport context manager exit methods
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/transports.md
+
+Context manager exit methods for MockTransport. On clean sync or async exit, calls router.assert_all_called() when a router is attached and its assert_all_called flag is enabled.
+
+```python
+def __exit__(
+    self,
+    exc_type: Optional[Type[BaseException]] = None,
+    exc_value: Optional[BaseException] = None,
+    traceback: Optional[TracebackType] = None,
+) -> None:
+    if not exc_type and self._router and self._router._assert_all_called:
+        self._router.assert_all_called()
+
+async def __aexit__(self, *args: Any) -> None:
+    self.__exit__(*args)
+```
+
+--------------------------------
+
+### Match class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Holds a boolean 'matches' flag and a context dict of matched values passed to the route's side effect as kwargs. The __invert__ method toggles the flag, enabling NOT logic.
+
+```python
+class Match:
+    def __init__(self, matches: bool, **context: Any) -> None:
+        self.matches = matches
+        self.context = context
+
+    def __bool__(self):
+        return bool(self.matches)
+
+    def __invert__(self):
+        self.matches = not self.matches
+        return self
+```
+
+--------------------------------
+
+### Headers
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+The Headers type alias represents raw header pairs with byte keys and values, following httpcore style.
+
+```APIDOC
+## Headers
+
+### Description
+The `Headers` type alias represents raw header pairs with byte keys and values, following httpcore style.
+
+### Type Definition
+```python
+Headers = List[Tuple[bytes, bytes]]
+```
+```
+
+--------------------------------
+
+### reset()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Resets call stats — clears Router.calls and each route's Route.calls.
+
+```APIDOC
+## reset()
+
+### Description
+Resets call stats — clears `Router.calls` and each route's `Route.calls`.
+
+### Method
+reset
+
+### Signature
+```python
+def reset(self) -> None:
+```
+
+### Parameters
+None
+
+### Returns
+None
+
+### Source
+`respx/router.py:92`
+```
+
+--------------------------------
+
+### DEFAULT_MOCKER constant
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Sets the default mocker name to 'httpcore', used by MockRouter.using when set to DEFAULT.
+
+```python
+DEFAULT_MOCKER: str = HTTPCoreMocker.name
+```
+
+--------------------------------
+
+### CallList class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/models.md
+
+Defines CallList, a list of Call items with mock auto-attributes. Exposes called, call_count, last, and record().
+
+```python
+class CallList(list, mock.NonCallableMock):
+    def __init__(self, *args: Sequence[Call], name: Any = "respx") -> None:
+        super().__init__(*args)
+        mock.NonCallableMock.__init__(self, name=name)
+
+    @property
+    def called(self) -> bool:  # type: ignore[override]
+        return bool(self)
+
+    @property
+    def call_count(self) -> int:  # type: ignore[override]
+        return len(self)
+
+    @property
+    def last(self) -> Call:
+        return self[-1]
+
+    def record(
+        self, request: httpx.Request, response: Optional[httpx.Response]
+    ) -> Call:
+        call = Call(request=request, optional_response=response)
+        self.append(call)
+        return call
+```
+
+--------------------------------
+
+### OR operator
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Combines two patterns using the `or` operator. Either pattern can match for the combined pattern to match.
+
+```python
+M(method="PUT") | M(method="PATCH")
+```
+
+--------------------------------
+
+### assert_all_called() method
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Asserts that every route in self.routes has been called; raises AssertionError with message "RESPX: some routes were not called!" otherwise. Source: respx/router.py:100.
+
+```python
+def assert_all_called(self) -> None:
+```
+
+--------------------------------
+
+### clone_response(response, request)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/models.md
+
+Clones an httpx.Response for a given request, used by Route.resolve() to ensure reused responses are not shared by reference.
+
+```APIDOC
+## clone_response(response, request)
+
+### Description
+Clones a httpx Response for given request. Used by `Route.resolve()` so a reused `httpx.Response` is not shared by reference across requests (immutability).
+
+### Function Signature
+```python
+def clone_response(response: httpx.Response, request: httpx.Request) -> httpx.Response:
+```
+
+### Parameters
+- **response** (`httpx.Response`) - Required - Source response to clone
+- **request** (`httpx.Request`) - Required - Request to attach to the clone
+
+### Returns
+A new `httpx.Response` with the same status code, headers, stream, request and a copy of `extensions`.
+
+```
+
+--------------------------------
+
+### assert_all_called()
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/Router.md
+
+Asserts that every route in self.routes has been called; raises AssertionError otherwise.
+
+```APIDOC
+## assert_all_called()
+
+### Description
+Asserts that every route in `self.routes` has been called; raises a plain `AssertionError` with message `"RESPX: some routes were not called!"` otherwise.
+
+### Method
+assert_all_called
+
+### Signature
+```python
+def assert_all_called(self) -> None:
+```
+
+### Parameters
+None
+
+### Returns
+None
+
+### Raises
+- `AssertionError` — if any route has not been called.
+
+### Source
+`respx/router.py:100`
+```
+
+--------------------------------
+
+### URL
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+The URL type alias represents a raw httpcore URL tuple (scheme, host, port, path) with byte-encoded values. It is accepted by URL patterns and parse_url.
+
+```APIDOC
+## URL
+
+### Description
+The `URL` type alias represents a raw httpcore URL tuple `(scheme, host, port, path)`, all byte-encoded. It is accepted by `URL` patterns and `parse_url` (`respx/patterns.py`), which converts it to an `httpx.URL`.
+
+### Type Definition
+```python
+URL = Tuple[
+    bytes,  # scheme
+    bytes,  # host
+    Optional[int],  # port
+    bytes,  # path
+]
+```
+
+### Fields
+- **element 0** (`bytes`) - scheme, e.g. `b"https"`
+- **element 1** (`bytes`) - host, e.g. `b"example.org"`
+- **element 2** (`Optional[int]`) - port, or `None`
+- **element 3** (`bytes`) - path target, e.g. `b"/"`
+```
+
+--------------------------------
+
+### CookieTypes type alias
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+Accepted cookie mapping/sequence for MockResponse, Route.respond() and the Cookies pattern.
+
+```python
+CookieTypes = Union[Dict[str, str], Sequence[Tuple[str, str]]]
+```
+
+--------------------------------
+
+### PassThrough class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/errors.md
+
+Exception with request and origin attributes. Raised when a route matches and resolves to the input request itself (pass_through or side effect returning the request).
+
+```python
+class PassThrough(Exception):
+    def __init__(self, message: str, *, request: httpx.Request, origin: Route) -> None:
+        super().__init__(message)
+        self.request = request
+        self.origin = origin
+```
+
+--------------------------------
+
+### Call (NamedTuple)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/models.md
+
+Represents an intercepted request and its optional mocked response. Provides properties to access the response and check if a response was recorded.
+
+```APIDOC
+## Call (NamedTuple)
+
+### Description
+Represents an intercepted request and its optional mocked response. Provides properties to access the response and check if a response was recorded.
+
+### Class Definition
+```python
+class Call(NamedTuple):
+    request: httpx.Request
+    optional_response: Optional[httpx.Response]
+
+    @property
+    def response(self) -> httpx.Response:
+        if self.optional_response is None:
+            raise ValueError(f"{self!r} has no response")
+        return self.optional_response
+
+    @property
+    def has_response(self) -> bool:
+        return self.optional_response is not None
+```
+
+### Fields
+- **request** (`httpx.Request`) - Required - The intercepted request
+- **optional_response** (`Optional[httpx.Response]`) - Optional - Mocked response, or `None` when the call raised (side effect / pass-through)
+
+### Properties
+- **response** - Returns the response or raises `ValueError(f"{call!r} has no response")` when `optional_response is None`.
+- **has_response** - `True` when a response was recorded.
+
+```
+
+--------------------------------
+
+### TransportHandler class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Defines a handler that wraps a sync HTTPX transport. The __call__ method checks that the request stream is a SyncByteStream, raising RuntimeError if not, then delegates to the transport's handle_request method.
+
+```python
+class TransportHandler:
+    def __init__(self, transport: httpx.BaseTransport) -> None:
+        self.transport = transport
+
+    def __call__(self, request: httpx.Request) -> httpx.Response:
+        if not isinstance(
+            request.stream,
+            httpx.SyncByteStream,
+        ):  # pragma: nocover
+            raise RuntimeError("Attempted to route an async request to a sync app.")
+
+        return self.transport.handle_request(request)
+```
+
+--------------------------------
+
+### AsyncTransportHandler class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/handlers.md
+
+Defines a handler that wraps an async HTTPX transport. The async __call__ method checks that the request stream is an AsyncByteStream, raising RuntimeError if not, then delegates to the transport's handle_async_request method.
+
+```python
+class AsyncTransportHandler:
+    def __init__(self, transport: httpx.AsyncBaseTransport) -> None:
+        self.transport = transport
+
+    async def __call__(self, request: httpx.Request) -> httpx.Response:
+        if not isinstance(
+            request.stream,
+            httpx.AsyncByteStream,
+        ):  # pragma: nocover
+            raise RuntimeError("Attempted to route a sync request to an async app.")
+
+        return await self.transport.handle_async_request(request)
+```
+
+--------------------------------
+
+### Route.side_effect
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Setter for the side effect to trigger when the route is matched. Valid side effect types are the same as for route.mock().
+
+```APIDOC
+## Route.side_effect
+
+### Description
+Setter for the side effect to trigger.
+
+### Usage
+route.side_effect = ...
+
+### Notes
+See route.mock() for valid side effect types.
+```
+
+--------------------------------
+
+### clone_response function signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/models.md
+
+Defines the clone_response function that clones an httpx.Response for a given request. Used by Route.resolve() to avoid sharing a response by reference across requests. Parameters: response (httpx.Response) and request (httpx.Request). Returns a new httpx.Response with the same status code, headers, stream, request, and a copy of extensions.
+
+```python
+def clone_response(response: httpx.Response, request: httpx.Request) -> httpx.Response:
+```
+
+--------------------------------
+
+### Catching AllMockedAssertionError
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/errors.md
+
+Catch the specific type to distinguish from plain asserts. The error message contains 'not mocked'.
+
+```python
+from respx.models import AllMockedAssertionError
+
+try:
+    transport.handle_request(request)
+except AllMockedAssertionError as error:
+    assert "not mocked" in str(error)
+```
+
+--------------------------------
+
+### Lookup enum definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/patterns.md
+
+Defines the five lookup operators used in keyword lookups like <pattern>__<lookup>=value. The 'regex' lookup accepts bare strings compiled with re.compile. Unsupported lookups raise NotImplementedError.
+
+```python
+class Lookup(Enum):
+    EQUAL = "eq"
+    REGEX = "regex"
+    STARTS_WITH = "startswith"
+    CONTAINS = "contains"
+    IN = "in"
+```
+
+--------------------------------
+
+### Type aliases for request handlers
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/transports.md
+
+Type aliases for sync and async request-handler callables used by MockTransport. The async handler returns a Coroutine[None, None, httpx.Response].
+
+```python
+RequestHandler = Callable[[httpx.Request], httpx.Response]
+AsyncRequestHandler = Callable[[httpx.Request], Coroutine[None, None, httpx.Response]]
+```
+
+--------------------------------
+
+### decode_data function signature
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/utils.md
+
+Function signature for decode_data, which reads the request body and decodes it. For multipart/form-data, parses with email.message_from_bytes into (data, files) MultiItems; otherwise uses urllib.parse.parse_qsl with keep_blank_values=True. Returns the (data, files) tuple consumed by Data/Files patterns and Route matching.
+
+```python
+def decode_data(request: httpx.Request) -> Tuple[MultiItems, MultiItems]:
+```
+
+--------------------------------
+
+### contains lookup
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Case-sensitive containment test. Matches when the parameter value contains the given substring.
+
+```python
+M(params__contains={"id": "123"})
+```
+
+--------------------------------
+
+### in
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Case-sensitive within test. Checks if a field value is within a given list.
+
+```APIDOC
+## in
+
+### Description
+Case-sensitive within test. Checks if a field value is within a given list.
+
+### Usage
+```python
+M(method__in=["PUT", "PATCH"])
+```
+```
+
+--------------------------------
+
+### Mocker.remove_targets(*targets)
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/mocks.md
+
+Removes specified patch targets from the Mocker and restarts patching to exclude them.
+
+```APIDOC
+## Mocker.remove_targets(*targets)
+
+### Description
+Removes specified patch targets from the Mocker and restarts patching to exclude them.
+
+### Method
+classmethod
+
+### Signature
+```python
+@classmethod
+def remove_targets(cls, *targets: str) -> None:
+```
+
+### Parameters
+- **targets** (str) - Required - One or more target strings to remove from `cls.targets`.
+
+### Returns
+None
+
+### Notes
+Removes matching targets and restarts patching.
+```
+
+--------------------------------
+
+### Call NamedTuple class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/models.md
+
+Defines the Call NamedTuple with request and optional_response fields. The response property raises ValueError when optional_response is None, and has_response returns True when a response was recorded. Located at respx/models.py:48-61.
+
+```python
+class Call(NamedTuple):
+    request: httpx.Request
+    optional_response: Optional[httpx.Response]
+
+    @property
+    def response(self) -> httpx.Response:
+        if self.optional_response is None:
+            raise ValueError(f"{self!r} has no response")
+        return self.optional_response
+
+    @property
+    def has_response(self) -> bool:
+        return self.optional_response is not None
+```
+
+--------------------------------
+
+### DefaultType type variable
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/types.md
+
+Type variable for pop(name, default) overloads in Router and the module API.
+
+```python
+DefaultType = TypeVar("DefaultType", bound=Any)
+```
+
+--------------------------------
+
+### AllMockedAssertionError class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/errors.md
+
+Plain marker subclass of AssertionError with no extra attributes. Raised when a request does not match any route and assert_all_mocked=True (the default).
+
+```python
+class AllMockedAssertionError(AssertionError):
+    pass
+```
+
+--------------------------------
+
+### ResolvedRoute
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/api-reference/models.md
+
+The ResolvedRoute class is a mutable result carrier yielded by Router.resolver(). It contains the matched Route (or None) and the resolved httpx.Response or httpx.Request (or None).
+
+```APIDOC
+## ResolvedRoute
+
+### Description
+Mutable result carrier yielded by `Router.resolver()`. Contains the matched `Route` (or `None`) and the resolved `httpx.Response`/`httpx.Request` (or `None`).
+
+### Attributes
+- **route** (Optional[Route]) - The matched `Route`, or `None` if no route matched.
+- **response** (Optional[ResolvedResponseTypes]) - The resolved `httpx.Response` or `httpx.Request`, or `None` if no response was resolved.
+
+### Example
+Recording calls and resolving:
+
+```python
+import httpx
+from respx.router import Router
+from respx.models import CallList
+
+router = Router()
+router.get("https://example.org/").respond(200)
+
+response = router.handler(httpx.Request("GET", "https://example.org/"))
+
+call = router.calls.last
+assert call.request.url.host == "example.org"
+assert call.response.status_code == 200
+assert call.has_response is True
+
+try:
+    call.response  # only fails for calls recorded without a response
+except ValueError:
+    pass
+```
+```
+
+--------------------------------
+
+### contains
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Case-sensitive containment test. Checks if a field value contains the given substring.
+
+```APIDOC
+## contains
+
+### Description
+Case-sensitive containment test. Checks if a field value contains the given substring.
+
+### Usage
+```python
+M(params__contains={"id": "123"})
+```
+```
+
+--------------------------------
+
+### Catching original exception from side effect
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/errors.md
+
+When a side effect raises, the original exception is re-raised (chained from SideEffectError). Catch the original exception type; error.__cause__ carries the SideEffectError with .route and .origin.
+
+```python
+import httpx
+import respx
+
+respx.get("https://example.org/").mock(
+    side_effect=ValueError("intentional failure")
+)
+
+try:
+    httpx.get("https://example.org/")
+except ValueError as error:
+    assert str(error) == "intentional failure"
+    # `error.__cause__` is the SideEffectError carrying `.route` and `.origin`
+```
+
+--------------------------------
+
+### SideEffectError class definition
+
+Source: https://github.com/lundberg/respx/blob/master/_autodocs/errors.md
+
+Exception subclass with route and origin attributes. Raised when a side effect fails, wrapping the original exception.
+
+```python
+class SideEffectError(Exception):
+    def __init__(self, route: Route, origin: Exception) -> None:
+        self.route = route
+        self.origin = origin
+```
+
+--------------------------------
+
+### INVERT operator
+
+Source: https://github.com/lundberg/respx/blob/master/docs/api.md
+
+Inverts a pattern match. The pattern matches when the original pattern does not match.
+
+```python
+~M(params={"foo": "bar"})
+```
+
+=== COMPLETE CONTENT === This response contains all available snippets from this library. No additional content exists. Do not make further requests.

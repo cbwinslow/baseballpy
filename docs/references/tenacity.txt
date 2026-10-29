@@ -1,0 +1,266 @@
+# tenacity: documentation excerpt
+
+- Source: Context7 `/jd/tenacity` (https://context7.com/jd/tenacity)
+- Fetched: 2026-10-29; excerpt only (the service caps a response at about 500 KB), not the complete manual. Upstream licences apply; see the upstream repository.
+
+<!-- topic: generic extract -->
+### tenacity.before
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Module containing functions that can be used as the 'before' keyword argument of tenacity.retry. These functions are called before each retry attempt.
+
+```APIDOC
+## tenacity.before
+
+### Description
+Functions to be used as the 'before' keyword argument of tenacity.retry. They are called before each retry attempt.
+
+### Usage
+```python
+@retry(before=before_log(logger, logging.INFO))
+def my_function():
+    ...
+```
+```
+
+--------------------------------
+
+### tenacity.AsyncRetrying
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Retrying class for asynchronous functions. Similar to Retrying but designed for use with async/await syntax.
+
+```APIDOC
+## tenacity.AsyncRetrying
+
+### Description
+Retrying class for asynchronous functions. Configure retry behavior via constructor arguments and await the instance with the async function to retry.
+
+### Usage
+```python
+retrying = AsyncRetrying(stop=stop_after_attempt(3), wait=wait_fixed(2))
+result = await retrying(async_function, arg1, kwarg1='value')
+```
+```
+
+--------------------------------
+
+### tenacity.after
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Module containing functions that can be used as the 'after' keyword argument of tenacity.retry. These functions are called after each retry attempt.
+
+```APIDOC
+## tenacity.after
+
+### Description
+Functions to be used as the 'after' keyword argument of tenacity.retry. They are called after each retry attempt.
+
+### Usage
+```python
+@retry(after=after_log(logger, logging.INFO))
+def my_function():
+    ...
+```
+```
+
+--------------------------------
+
+### tenacity.before_sleep
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Module containing functions that can be used as the 'before_sleep' keyword argument of tenacity.retry. These functions are called before sleeping between retry attempts.
+
+```APIDOC
+## tenacity.before_sleep
+
+### Description
+Functions to be used as the 'before_sleep' keyword argument of tenacity.retry. They are called before sleeping between retry attempts.
+
+### Usage
+```python
+@retry(before_sleep=before_sleep_log(logger, logging.INFO))
+def my_function():
+    ...
+```
+```
+
+--------------------------------
+
+### tenacity.stop
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Module containing functions that can be used as the 'stop' keyword argument of tenacity.retry. These functions determine when to stop retrying.
+
+```APIDOC
+## tenacity.stop
+
+### Description
+Functions to be used as the 'stop' keyword argument of tenacity.retry. They determine when to stop retrying.
+
+### Usage
+```python
+@retry(stop=stop_after_attempt(3))
+def my_function():
+    ...
+```
+```
+
+--------------------------------
+
+### tenacity.tornadoweb.TornadoRetrying
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Retrying class for Tornado coroutines. Provides retry functionality for Tornado-based asynchronous code.
+
+```APIDOC
+## tenacity.tornadoweb.TornadoRetrying
+
+### Description
+Retrying class for Tornado coroutines. Configure retry behavior via constructor arguments and call the instance with the Tornado coroutine to retry.
+
+### Usage
+```python
+retrying = TornadoRetrying(stop=stop_after_attempt(3), wait=wait_fixed(2))
+result = retrying(tornado_coroutine, arg1, kwarg1='value')
+```
+```
+
+--------------------------------
+
+### tenacity.Retrying
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Class that implements the retry logic for synchronous functions. It can be instantiated with the same configuration options as the retry decorator and used to call a function with retry behavior.
+
+```APIDOC
+## tenacity.Retrying
+
+### Description
+Retrying class for synchronous functions. Configure retry behavior via constructor arguments and call the instance with the function to retry.
+
+### Usage
+```python
+retrying = Retrying(stop=stop_after_attempt(3), wait=wait_fixed(2))
+result = retrying(my_function, arg1, kwarg1='value')
+```
+```
+
+--------------------------------
+
+### tenacity.wait
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Module containing functions that can be used as the 'wait' keyword argument of tenacity.retry. These functions determine how long to wait between retry attempts.
+
+```APIDOC
+## tenacity.wait
+
+### Description
+Functions to be used as the 'wait' keyword argument of tenacity.retry. They determine how long to wait between retry attempts.
+
+### Usage
+```python
+@retry(wait=wait_fixed(2))
+def my_function():
+    ...
+```
+```
+
+--------------------------------
+
+### tenacity.retry
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Module containing functions that can be used as the 'retry' keyword argument of tenacity.retry. These functions determine whether a retry should occur based on the outcome.
+
+```APIDOC
+## tenacity.retry
+
+### Description
+Functions to be used as the 'retry' keyword argument of tenacity.retry. They determine whether a retry should occur based on the outcome.
+
+### Usage
+```python
+@retry(retry=retry_if_exception_type(ValueError))
+def my_function():
+    ...
+```
+```
+
+--------------------------------
+
+### tenacity.retry
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+The main retry decorator function used to wrap a function with retry behavior. It accepts various keyword arguments to configure retry conditions, wait strategies, stop conditions, and more.
+
+```APIDOC
+## tenacity.retry
+
+### Description
+Decorator that applies retry logic to a function. Configure retry behavior via keyword arguments such as retry, stop, wait, before, after, before_sleep, and sleep.
+
+### Usage
+```python
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+def my_function():
+    ...
+```
+```
+
+--------------------------------
+
+### tenacity.nap
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Module containing functions that can be used as the 'sleep' keyword argument of tenacity.retry. These functions control the sleep behavior between retry attempts.
+
+```APIDOC
+## tenacity.nap
+
+### Description
+Functions to be used as the 'sleep' keyword argument of tenacity.retry. They control the sleep behavior between retry attempts.
+
+### Usage
+```python
+@retry(sleep=sleep_random(0, 1))
+def my_function():
+    ...
+```
+```
+
+--------------------------------
+
+### tenacity.RetryCallState
+
+Source: https://github.com/jd/tenacity/blob/main/doc/source/api.rst
+
+Class that represents the state of a retry call. Provides information about the current attempt, outcome, and other details during retry execution.
+
+```APIDOC
+## tenacity.RetryCallState
+
+### Description
+Represents the state of a retry call, including attempt number, outcome, and other metadata. Used internally by retry logic but may be accessed in custom callbacks.
+
+### Usage
+```python
+def custom_callback(retry_state):
+    print(retry_state.attempt_number)
+    print(retry_state.outcome)
+```
+```
+
+=== COMPLETE CONTENT === This response contains all available snippets from this library. No additional content exists. Do not make further requests.
