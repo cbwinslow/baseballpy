@@ -49,7 +49,6 @@ numbers are in `verify-optin-paths/design.md`.
 |---|---|---|---|
 | B-11 | catalog-completeness-audit 2.2: open an issue on audit findings | DONE in code and tests; the real GitHub run is OWNER (needs a push and Actions enabled, section H item 4) | `live.yml` step uses `gh issue create`/`gh issue comment` (permission `issues: write`, one open issue titled by a fixed marker so findings update it), written and YAML-parsed; a test checks the step exists; the first real run on GitHub is listed as not verified until the owner enables Actions |
 | B-12 | `repo-hygiene-and-docs-sync 6.4`: merge deltas and archive | after B-04, B-10, B-16, B-19, B-37, B-38 (OWNER / EXTERNAL) | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
-after B-04, B-10, B-16, B-19, B-37, B-38 (OWNER / EXTERNAL) | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
 | B-27 | spec-test-traceability 1: cite or write a test for each of the 39 uncited scenarios | DONE | per spec, every scenario ends with a `Verified by` line naming a test that asserts its THEN clause (write the missing mocked tests first; a claim nothing can check is removed from the spec); `uv run python scripts/project_map.py` shows the cited-test counts rising |
 | B-28 | spec-test-traceability 2: enforce it | DONE (change archived) | `tests/test_spec_scenarios.py` fails for any scenario without a citation; gates green; change archived |
 
@@ -113,3 +112,26 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 | B-43 | `dlt-pipeline-core 3.1`: DltAdapter behind IngestAdapter (design REJECTED by the owner 2026-10-29; redesign first, see docs/agents/HANDOFF_B43.md) | NEEDS REDESIGN (owner brainstorm) | a new design the owner approves: existing tools used better (Arrow interchange, SinkProtocol sinks incl. CSV, dlt, narwhals), uniform and registry-driven |
 | B-44 | `dlt-pipeline-core 3.2`: retire flatten, _extras and drift paths replaced by contracts | after B-43 is redesigned and done | tests, docs generate, gates green |
 | B-45 | `reference-docs 3`: cross-check endpoints and column types against the reference docs | READY (agy can extract the endpoint and type tables from the cloned docs, Claude verifies against live data) | `docs/references/ENDPOINT_CROSSCHECK.md` lists every registry endpoint with its documented route and types in each reference and any disagreement with the live-probed schema |
+
+## K. Source-by-source review (owner request 2026-10-29; method in `docs/agents/WORK_BREAKDOWN.md`)
+
+One source is open at a time, in this order: Chadwick, Lahman, Retrosheet, Statcast, MLB API. Each
+source has a change `<source>-source-review` and a card file in `docs/agents/tracks/`. Rows for the
+next source are added when the owner opens it. The older sections above keep their rows; where a row
+touches a source under review, do it inside that source's track.
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-46 | project-replan-and-agent-rails 2.1: AGENTS.md section 14, CLAUDE.md hard rules, prompt pointers | DONE | `tests/test_agent_rails.py` passes; `GOAL_SEEK_PROMPT.md` and `NEXT_GOAL.md` point at section 14 and `TOOLING.md` |
+| B-47 | project-replan-and-agent-rails 2.2: rails test and `agent-runbooks` spec delta | DONE | test file and delta exist, scenarios cite their tests, `openspec validate --specs` passes |
+| B-48 | project-replan-and-agent-rails 3.1: backlog fix and reorder | DONE | duplicate row gone, section K present, `test_agent_runbooks.py` passes |
+| B-49 | project-replan-and-agent-rails 3.2: EXECUTION_ORDER and project.md drift | DONE | status lines current, `openspec/project.md` names real modules, AGENTS.md paths use `$BASEBALLPY_HOME` |
+| B-50 | project-replan-and-agent-rails 3.3: gates, merge deltas, archive | DONE | all gates green with output, change archived |
+| B-51 | `chadwick-source-review 1.1`: inventory upstream vs registry (card C-01) | READY | see the card |
+| B-52 | `chadwick-source-review 1.2`: adapter conformance, no hard-coded dataset names (card C-02) | READY | see the card |
+| B-53 | `chadwick-source-review 1.3`: generated schema vs real data (card C-03) | READY | see the card |
+| B-54 | `chadwick-source-review 1.4`: code review against the designated tools (card C-04) | READY | see the card |
+| B-55 | `chadwick-source-review 2.1`: spec and test gaps (card C-05) | after B-51..B-54 | see the card |
+| B-56 | `chadwick-source-review 3.1`: live verification on a scratch home (card C-06) | after B-52 (disk: C: is full, use the homelab or free space first) | see the card |
+| B-57 | `chadwick-source-review 3.2`: export through every sink (card C-07) | after B-56 | see the card |
+| B-58 | `chadwick-source-review 4.1`: docs, ADRs, spec merge, archive (card C-08) | after B-55, B-57 | see the card |

@@ -1,0 +1,105 @@
+# Track 1: Chadwick Register (first source under review)
+
+OpenSpec change: `openspec/changes/chadwick-source-review/`. Spec: `openspec/specs/chadwick-register/`.
+Docs: `docs/sources/chadwick.md`. Code: `src/baseballpy/sources/chadwick/` (adapter, extractor,
+normalizer, register, schema, generated `tables.py`). Method: `docs/agents/WORK_BREAKDOWN.md`.
+
+Why first: smallest source, and `AGENTS.md` 3A routes every player-ID resolution through it. Four
+datasets are registered (`register`, `register_names`, `register_links`, `register_countries`); the
+upstream repository is `chadwickbureau/register`, files under `data/` at a pinned SHA
+(`core/sources_lock.json`).
+
+Suspected findings to verify (not yet confirmed; the cards decide):
+- `ChadwickAdapter.KNOWN_DATASETS = {"register"}` is a hard-coded name list; the registry has four
+  Chadwick datasets, so `--datasets register_names` may be rejected and the adapter plans one job.
+- The extractor mixes `asyncio` and `concurrent.futures` for a handful of static files.
+- `PlayerRecord` and index building in `register.py` (406 lines) may duplicate what Polars/Arrow
+  joins and `narwhals` already give.
+
+### C-01 Inventory the upstream repository against the registry
+- **Change task:** `chadwick-source-review 1.1`
+- **Stage:** S1
+- **Executor:** Claude
+- **Files:** `docs/sources/chadwick.md` (hand-written part only), `openspec/changes/chadwick-source-review/design.md`
+- **Tools (reuse check):** `core/github_tree.py` (git tree listing), `HttpClient`; no new fetch code.
+- **Inputs:** pinned SHA in `core/sources_lock.json`; the four registered datasets; `docs/references/` excerpts.
+- **Steps:** 1. list every file in `data/` at the pinned SHA; 2. map each file to a dataset, or mark it uncovered; 3. list upstream documentation of the columns (repo README, `docs/`); 4. record in `design.md` an inventory table: file, rows, dataset, status.
+- **Done when:** every file in `data/` is mapped or listed as a gap with a reason; `uv run baseballpy catalog status --gaps` output for chadwick pasted in `design.md`.
+- **Record:** tick 1.1; evidence in `design.md` section "S1 inventory".
+
+### C-02 Verify and fix adapter conformance (suspected hard-coded dataset list)
+- **Change task:** `chadwick-source-review 1.2`
+- **Stage:** S2
+- **Executor:** Claude decides the design, then agy for the code slice (review the full diff)
+- **Files:** `src/baseballpy/sources/chadwick/adapter.py`, `tests/test_ingest_adapters.py` (chadwick cases), `tests/test_cli_ingest.py` if needed
+- **Tools (reuse check):** the dataset registry (`core/datasets.py`) is the only list of dataset names.
+- **Inputs:** `uv run baseballpy ingest chadwick --datasets register_names --help`-style dry run result; `ingest/adapters.py` for how the other adapters derive names.
+- **Steps:** 1. reproduce with a mocked loader: does `plan(Selection(datasets=["register_names"]))` raise; 2. derive known names from the registry for source `chadwick`; 3. decide: one job per dataset or one job that loads all four (shared download), documented in `design.md`; 4. test both the accepted and the unknown-name path.
+- **Done when:** `uv run pytest tests/test_ingest_adapters.py tests/test_ingest_contract.py tests/test_architecture.py -q` passes; no dataset name string remains in `adapter.py`.
+- **Record:** tick 1.2; design note; ADR only if the job granularity changes.
+
+### C-03 Compare the generated schema with real data
+- **Change task:** `chadwick-source-review 1.3`
+- **Stage:** S3
+- **Executor:** Claude
+- **Files:** `openspec/changes/chadwick-source-review/design.md`; `scripts/gen_schemas.py --only chadwick` only if a mismatch is proven (then regenerate, never hand-edit `tables.py`)
+- **Tools (reuse check):** `pyarrow.csv`/Polars to profile the raw shard files, not a Python loop.
+- **Inputs:** `sources/chadwick/tables.py` (types), one downloaded shard, `docs/sources/chadwick.md` dictionary.
+- **Steps:** 1. profile each column of the four datasets: null rate, distinct count, min/max, sentinel-looking values; 2. compare with the declared Arrow type; 3. list era quirks (placeholder IDs, `0`, empty strings, dates with partial precision); 4. check `_extras` is empty on the pinned SHA and drift is logged once.
+- **Done when:** a table in `design.md` with one row per column group and a verdict; every mismatch has a follow-up card or a regeneration commit.
+- **Record:** tick 1.3.
+
+### C-04 Review the code against the designated tools and the decoupling rules
+- **Change task:** `chadwick-source-review 1.4`
+- **Stage:** S4
+- **Executor:** Claude (review), agy (mechanical migrations it approves)
+- **Files:** read all of `src/baseballpy/sources/chadwick/`; edit only files a follow-up card names
+- **Tools (reuse check):** `TOOLING.md` rows: HTTP, CSV/Parquet parsing, dataframe-agnostic code, concurrency.
+- **Inputs:** `AGENTS.md` sections 2, 4, 7, 8; `tests/test_architecture.py`.
+- **Steps:** 1. list per module what it does and which designated tool covers it; 2. flag: sync/async mixing in `extractor.py`, per-row Python in `register.py` (index build, `PlayerRecord`), any swallowed exception, any non-atomic write; 3. for each flag choose "migrate" (new card) or "tool cannot" (one sentence of evidence); 4. no code change in this card.
+- **Done when:** `design.md` has the per-module table; every "migrate" has a numbered follow-up task in `tasks.md` and a BACKLOG row.
+- **Record:** tick 1.4; add follow-up tasks.
+
+### C-05 Close the spec and test gaps
+- **Change task:** `chadwick-source-review 2.1`
+- **Stage:** S5
+- **Executor:** agy for tests (brief from C-02 to C-04 results), Claude reviews
+- **Files:** `openspec/changes/chadwick-source-review/specs/chadwick-register/spec.md` (delta), `tests/test_chadwick.py`, `tests/test_chadwick_coverage.py`
+- **Tools (reuse check):** `respx` for HTTP, `hypothesis` for the name/ID lookups, fixtures under `tests/fixtures/`.
+- **Inputs:** current spec requirements (4) and the findings of C-01 to C-04.
+- **Steps:** 1. one scenario per finding that changed behavior, each ending with a `- Verified by` line; 2. property test: any ID in the fixture register round-trips through `resolve_id` both ways; 3. confirm unit tests make no network call.
+- **Done when:** `uv run pytest tests/test_spec_scenarios.py tests/test_chadwick.py tests/test_chadwick_coverage.py -q` and `openspec validate --specs` pass.
+- **Record:** tick 2.1; spec delta stays in the change until archive.
+
+### C-06 Live verification on a scratch home
+- **Change task:** `chadwick-source-review 3.1`
+- **Stage:** S6
+- **Executor:** Claude
+- **Files:** none in the repo (scratch `BASEBALLPY_HOME` outside it); evidence into `design.md`
+- **Tools (reuse check):** the CLI (`baseballpy ingest chadwick`, `catalog audit`, `audit tail`); no ad hoc scripts committed.
+- **Inputs:** free disk space on `C:` (check first; the register is far below 1 GB, use the homelab if space is short).
+- **Steps:** 1. `BASEBALLPY_HOME=<scratch> uv run baseballpy ingest chadwick`; 2. row counts per dataset from `audit.jsonl` and DuckDB views vs the upstream file line counts; 3. resolve a handful of known players (for example MLBAM 660271 to `ohtas001`); 4. rerun to prove resume/idempotence (no re-download at the same SHA); 5. delete the scratch home.
+- **Done when:** counts, timings, resolved IDs and the second-run result are pasted into `design.md`; `catalog audit` clean for chadwick.
+- **Record:** tick 3.1.
+
+### C-07 Check export through every sink
+- **Change task:** `chadwick-source-review 3.2`
+- **Stage:** S7
+- **Executor:** Claude
+- **Files:** `design.md` only (the CSV sink is Track 6a and is not built here)
+- **Tools (reuse check):** `SinkProtocol` implementations in `sinks/` (Parquet, DuckDB, Polars, dlt).
+- **Inputs:** the processed `register` table from C-06.
+- **Steps:** 1. write the register through each existing sink into scratch destinations; 2. read it back and compare row counts and schema; 3. record what fails or is lossy; 4. list the CSV/Postgres gap for Track 6a.
+- **Done when:** a sink-by-sink result table in `design.md`; gaps copied to the Track 6a notes in `WORK_BREAKDOWN.md`.
+- **Record:** tick 3.2.
+
+### C-08 Docs, decisions and close
+- **Change task:** `chadwick-source-review 4.1`
+- **Stage:** S7
+- **Executor:** Claude
+- **Files:** `docs/sources/chadwick.md`, `docs/DECISIONS.md`, `openspec/specs/chadwick-register/spec.md`, the change directory (moved to `archive/`)
+- **Tools (reuse check):** `uv run baseballpy docs generate` for dictionaries; never hand-type counts.
+- **Inputs:** results of C-01 to C-07.
+- **Steps:** 1. update hand-written parts of the source page; 2. ADR for each decision; 3. merge the spec delta; 4. run all gates; 5. archive the change and update `EXECUTION_ORDER.md`, `BACKLOG.md`, regenerate `PROJECT_MAP.md`.
+- **Done when:** all gates green, `openspec validate --specs` passes, change archived.
+- **Record:** tick 4.1 and move the change.

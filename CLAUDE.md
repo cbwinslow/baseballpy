@@ -4,6 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `baseballpy` ingests Statcast (Baseball Savant), the MLB Stats API, Lahman, the Chadwick Register and Retrosheet into typed Parquet (queried through DuckDB views). GPL-3.0-or-later (ADR 26; upstream data licenses in `docs/DATA_LICENSES.md`).
 
+## Hard rules (every task, every agent; full text is `AGENTS.md` section 14)
+
+1. **Preflight first:** find the task in `docs/agents/BACKLOG.md` (and its card in `docs/agents/tracks/`), read its OpenSpec change, list the files you will touch. No row, no change: open the change first.
+2. **Tools before code:** run the reuse check of `docs/agents/TOOLING.md` (pyarrow, polars, duckdb, narwhals, msgspec, httpx/tenacity/aiolimiter, dlt, pydantic-settings, click/rich, hypothesis). `Grep` for an existing helper. Custom code needs one sentence of evidence for what the tool cannot do.
+3. **Registry and data, not names:** no hard-coded dataset, endpoint or season lists; one declarative table plus one generic function; keep Protocol boundaries (`IngestAdapter`, `SinkProtocol`).
+4. **OpenSpec always:** spec delta with a `Verified by` test, ADR per decision, tick `tasks.md`, evidence in `design.md`, archive finished changes.
+5. **Small slices, evidence or not done:** one card per commit, the four gates plus `docs generate --check` and `openspec validate --specs`, command output pasted, "not verified" said plainly.
+
+How the project is partitioned into tasks: `docs/agents/WORK_BREAKDOWN.md`. Current source under review: Chadwick (`docs/agents/tracks/01-chadwick.md`).
+
 ## The contract: read before changing anything
 
 - `AGENTS.md` is the engineering contract (decoupling, full data preservation, rate limits, atomic writes, quarantine, audit logging). `openspec/project.md`, `openspec/specs/*` and `docs/DECISIONS.md` (ADRs) are the living specs.

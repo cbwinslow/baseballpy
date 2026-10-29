@@ -7,7 +7,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 | Spec | Requirements | Scenarios | Tests cited |
 |---|---|---|---|
-| `agent-runbooks` | 1 | 1 | 1 |
+| `agent-runbooks` | 3 | 4 | 7 |
 | `audit-and-benchmarking` | 5 | 5 | 5 |
 | `caching-and-invalidation` | 9 | 16 | 18 |
 | `chadwick-register` | 4 | 5 | 7 |
@@ -24,11 +24,12 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 ## Active changes (`openspec/changes/`)
 
-26 changes are archived under `openspec/changes/archive/`.
+27 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 1 | 4.2 |
+| `chadwick-source-review` | 0 | 12 | 1.1, 1.2, 1.3, 1.4, 2.1, 3.1, 3.2, 4.1 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `dlt-pipeline-core` | 6 | 3 | 3.1, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
@@ -100,6 +101,9 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 - `docs/agents/HANDOFF_B43.md`
 - `docs/agents/NEXT_GOAL.md`
 - `docs/agents/PROJECT_MAP.md`
+- `docs/agents/TOOLING.md`
+- `docs/agents/WORK_BREAKDOWN.md`
+- `docs/agents/tracks/01-chadwick.md`
 - `docs/index.md`
 - `docs/references/README.md`
 - `docs/sources/chadwick.md`

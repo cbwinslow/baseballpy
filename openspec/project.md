@@ -46,6 +46,13 @@ Supported and planned data sources:
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
+Module names behind the boxes (2026-10-29): extract and parse live together per provider in
+`baseballpy.sources.<source>` (there is no `baseballpy.extract` or `baseballpy.parse` package),
+strict Arrow schemas are generated into each source's `tables.py`, orchestration is
+`baseballpy.ingest` (`IngestAdapter`, `plan_jobs`, `run_jobs`), storage is `baseballpy.core.stores`,
+and sinks are `baseballpy.sinks`. FanGraphs and Baseball-Reference are planned, not implemented
+(`docs/ROADMAP.md`). The method for working on the project is `docs/agents/WORK_BREAKDOWN.md`.
+
 ## Architectural Invariants
 1. **Strictly Typed Columnar Data, Never Raw Strings:**
    Every dataset must be parsed directly into strongly-typed PyArrow Tables with optimized physical storage types (e.g. `uint16` for pitch speeds, `date32` for game dates, `timestamp[us, tz="UTC"]` for pitch timestamps, dictionary-encoded categorical strings for pitch types).

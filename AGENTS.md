@@ -111,7 +111,7 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 ## 6. Audit Logging, Telemetry & Benchmarking Mandates
 
 1. **Structured Telemetry (JSONL):**
-   - Every public command and pipeline execution MUST emit an audit event to `~/.baseballpy/logs/audit.jsonl`.
+   - Every public command and pipeline execution MUST emit an audit event to `$BASEBALLPY_HOME/logs/audit.jsonl` (default `~/.baseballpy`).
    - Recorded fields: `timestamp_utc`, `operation`, `source`, `status`, `records_count`, `duration_seconds`, `throughput_rps`, `cache_hit`, `endpoint`, `destination`, and `error`.
 2. **CLI Reviewer:**
    - Provide user-facing audit inspection tools (`baseballpy audit summary`, `baseballpy audit tail`, `baseballpy audit stats`) formatted cleanly with `rich` tables.
@@ -122,7 +122,7 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 
 1. **No Silent Failures:**
    - Never use bare `except:` or `except Exception: pass`.
-   - If a row fails schema coercion, log a structured warning and route the unparseable payload to a dead-letter quarantine (`~/.baseballpy/quarantine/`).
+   - If a row fails schema coercion, log a structured warning and route the unparseable payload to a dead-letter quarantine (`$BASEBALLPY_HOME/quarantine/`).
 2. **Schema Drift Resilience:**
    - Schema normalizers must handle evolutionary schema drift: accept optional new fields gracefully without crashing historical pipelines, and log unknown column discoveries.
 
@@ -187,3 +187,67 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 2. Search the web for existing solutions (other libraries, the provider's repositories, issues) before writing any workaround, and record the findings in the change's design.
 3. Bulk code that Claude has already designed may be delegated to `agy`; every delegated diff is reviewed in full and gated (`docs/agents/AGY_DELEGATION.md`). Claude `Agent`/workflow subagents remain off unless the owner asks.
 
+
+## 14. AI Agent Operating Rules (binding for every agent and every task)
+
+These rules apply to Claude, `agy` and any other agent. They are short on purpose; the reasons are in
+sections 1-13 and `docs/DECISIONS.md`. `tests/test_agent_rails.py` enforces what a machine can check.
+
+### 14.1 Preflight (before the first edit of a task)
+
+1. Find the task: a row in `docs/agents/BACKLOG.md` and, for source work, its card in
+   `docs/agents/tracks/`. No row, no card: open an OpenSpec change and add the row first.
+2. Read the OpenSpec change (`proposal.md`, `design.md`, `tasks.md`, spec deltas) and the spec in
+   `openspec/specs/` for the area. Code or docs edited without a covering change are a defect.
+3. Do the **reuse check** of `docs/agents/TOOLING.md`: name the designated tool that covers what you
+   are about to write, search the repository for an existing helper (`Grep`), and write the answers in
+   the commit body. Custom code needs one sentence of evidence for what the tool cannot do.
+4. Read the files the card lists, then only what you need beyond them.
+
+### 14.2 Hard rules
+
+1. **OpenSpec always.** Behavior change = spec delta with a `Verified by` test; decision = ADR; deviation
+   from a design = "As built" note; finished change = merged deltas and archive.
+2. **Tools before code.** Use the tool in `docs/agents/TOOLING.md` first. Do not hand-write what
+   `pyarrow`, `polars`, `duckdb`, `narwhals`, `msgspec`, `httpx`/`tenacity`/`aiolimiter`, `dlt`,
+   `pydantic-settings`, `click`/`rich` or `hypothesis` already do.
+3. **Registry and data, not names.** No dataset, endpoint, stat type, league or season is named in code
+   that should read it from the registry, a generator or a catalog. Prefer one declarative table and one
+   generic function over parallel hand-written functions; if a fix needs a special case, find the
+   mechanism that removes it.
+4. **Reusable and flexible.** New behavior goes behind an existing `Protocol` (`IngestAdapter`,
+   `SinkProtocol`, ...) or a new one with an ADR. A helper used twice moves to `core/`. No module reaches
+   across the boundaries enforced by `tests/test_architecture.py`.
+5. **No data left behind, no silent failure.** Sections 3, 7 and 11 apply to every slice.
+6. **Small slices.** One card, one concern, the listed files only. Work found on the way becomes a new
+   card or change, never a drive-by edit.
+7. **Evidence or it is not done.** Paste command output for every gate and live check; say "not
+   verified" plainly. Two failures of one gate need a written root-cause note before the next try.
+8. **Search before a workaround** (section 13.2) and record what others do.
+9. **Owner rules:** no Claude `Agent`/workflow subagents; delegation only to `agy` with a brief and a
+   full diff review; Lahman only from `cbwinslow/lahman-database-csv` or user-supplied data; commit after
+   every green slice, never push unless the owner says so; heavy runs go to the homelab; stop only
+   background jobs you started.
+
+### 14.3 Banned patterns (reviewers reject these)
+
+- `import requests`, `aiohttp`, `urllib.request`, or `httpx` outside `core/http.py`; manual `sleep`/retry loops.
+- Row-by-row Python loops over bulk data where Arrow, Polars or DuckDB can do it; pandas in `src/` outside the optional extra.
+- Passing `dict` rows or untyped frames between layers; untyped VARCHAR columns; `safe=False` casts.
+- Editing generated files (`tables.py`, `lb_tables.py`, `mlb_tables.py`, `stat_combos.py`, column dictionaries).
+- Hard-coded counts, dataset lists or endpoint lists in docs or code; `# type: ignore` or `noqa` without a reason.
+- Reading `os.environ` outside `core/config.py`; writing straight to a final filename instead of `.part` plus `os.replace`.
+- New runtime dependencies without a change, an ADR, a `TOOLING.md` row and a reference excerpt.
+
+### 14.4 Definition of done for a slice
+
+Task ticked in `tasks.md`; evidence in the change's `design.md`; `BACKLOG.md` status updated and
+`uv run python scripts/project_map.py` regenerated; gates green (`pytest`, `ruff check`, `ruff format
+--check`, `mypy --strict src`, `docs generate --check`, `openspec validate --specs`); one conventional
+commit whose body lists the reuse-check answers, the evidence and what is not verified.
+
+### 14.5 When blocked
+
+Stop, record the block (what was tried, dates, commands) in the change, mark the backlog row
+OWNER/EXTERNAL, ask the owner once in one short list, and move to the next ready card. Never build a
+workaround for a block you did not research (section 13.2).
