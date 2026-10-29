@@ -110,3 +110,35 @@ def test_scorecard_has_one_row_per_source_in_review_order() -> None:
     chadwick = [c.strip() for c in rows[0].split("|")[1:-1]]
     assert chadwick[2] == "archived" and chadwick[3:6] == ["yes", "yes", "yes"]
     assert all(len(row.split("|")) == 10 for row in rows)  # eight columns, no broken cell
+
+
+def test_lessons_from_the_chadwick_audit_and_the_lahman_plan_review_are_standard() -> None:
+    text = " ".join(
+        " ".join((c.title, c.files, c.tools, c.inputs, *c.steps, c.done)) for c in gen.CARDS
+    )
+    for needle in (
+        "licence",  # the licence is read, named and kept
+        "documentation files",  # README / licence / data dictionary kept through one helper
+        "match rate against the Chadwick register",  # cross-source id check
+        "every cache shortcut",  # raw tier AND processed tier go through is_current()
+        "processed tier",
+        "1000 repeated calls",  # per-call cost of public functions
+        "mixed release",  # partial user-supplied set completed from the mirror
+        "names survive",  # mixed case / leading digits on export
+        "pinned version",  # citations point at the pinned document, not a moving branch
+        "N/A",  # steps that do not apply say so
+        "OWNER",  # decisions are flagged, asked once
+        "run every code block",  # documentation examples are executed
+    ):
+        assert needle in text or needle in gen.render_cards("lahman"), needle
+
+
+def test_fixes_come_before_tests_and_the_tests_wait_for_every_fix() -> None:
+    tasks = gen.render_tasks("lahman")
+    order = re.findall(r"^- \[ \] (\d)\. ", tasks, flags=re.M)
+    assert order == ["1", "5", "2", "3", "4"]
+    review_tasks = re.findall(r"^  - \[ \] (1\.\d) ", tasks, flags=re.M)
+    assert review_tasks == ["1.1", "1.2", "1.3", "1.4"]  # the look-only tasks
+    rows = gen.render_backlog("lahman", "")
+    two_one = next(line for line in rows.splitlines() if "source-review 2.1`" in line)
+    assert "after every task 5.n found by the review" in two_one

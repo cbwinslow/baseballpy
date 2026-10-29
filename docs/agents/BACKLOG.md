@@ -147,7 +147,7 @@ touches a source under review, do it inside that source's track.
 | B-68 | data-workflow-standard 2.3: `baseballpy cache check` | DONE | verifies sha256 of local files and lists files whose upstream fingerprint changed, CliRunner test, `docs/CLI.md` regenerated |
 | B-69 | data-workflow-standard 3.1: `docs/DATA_WORKFLOW.md` | DONE | five-step workflow, cache folders and overrides, every read and export path, linked from README and ARCHITECTURE |
 | B-70 | data-workflow-standard 2.4: ingest jobs report skipped work in the audit log (cache_hit) | DONE | a cached rerun logs cache_hit=true; test added |
-| B-71 | `data-workflow-standard 2.5`: Lahman records fingerprints and decides with is_current() | in the Lahman review | upstream.is_current used, blob fingerprints in the raw manifests, `cache check --upstream` shows no unfingerprinted Lahman file |
+| B-71 | `data-workflow-standard 2.5`: Lahman records fingerprints and decides with is_current() (done by lahman-source-review 5.1 and 5.2 = B-90 and B-91; tick both tasks when they finish) | in the Lahman review | upstream.is_current used, blob fingerprints in the raw manifests, `cache check --upstream` shows no unfingerprinted Lahman file |
 | B-72 | `data-workflow-standard 2.6`: Retrosheet records fingerprints and decides with is_current() | in the Retrosheet review | same as B-71 for Retrosheet |
 | B-73 | `data-workflow-standard 2.7`: Statcast records fingerprints and decides with is_current() | in the Statcast review | content or ETag fingerprints recorded, time-to-live kept for how often to ask |
 | B-74 | `data-workflow-standard 2.8`: MLB API records fingerprints and decides with is_current() | in the MLB API review | same as B-73 for the MLB API |
@@ -176,10 +176,13 @@ touches a source under review, do it inside that source's track.
 | B-87 | `lahman-source-review 1.2`: Check registry and adapter conformance (card L-02) | after B-86 | see the card |
 | B-88 | `lahman-source-review 1.3`: Compare the generated schema with real data (card L-03) | after B-87 | see the card |
 | B-89 | `lahman-source-review 1.4`: Review the code against the designated tools and decoupling rules (card L-04) | after B-88 | see the card |
-| B-90 | `lahman-source-review 1.5`: Move the source onto the shared currency check (card L-05) | after B-89 | see the card |
-| B-91 | `lahman-source-review 1.6`: Make every dataset and column reachable from Python (card L-06) | after B-90 | see the card |
-| B-92 | `lahman-source-review 2.1`: Close the spec and test gaps (card L-07) | after B-91 | see the card |
-| B-93 | `lahman-source-review 3.1`: Live verification on a clean scratch home (card L-08) | after B-92 | see the card |
-| B-94 | `lahman-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card L-09) | after B-93 | see the card |
-| B-95 | `lahman-source-review 3.3`: Cited column descriptions (card L-10) | after B-94 | see the card |
-| B-96 | `lahman-source-review 4.1`: Docs, decisions, spec merge, archive (card L-11) | after B-95 | see the card |
+| B-90 | `lahman-source-review 5.1`: Record upstream fingerprints for every raw file (card L-05) | after B-89 | see the card |
+| B-91 | `lahman-source-review 5.2`: Decide currency with is_current() at every cache tier (card L-06) | after B-90 | see the card |
+| B-92 | `lahman-source-review 5.3`: Keep the provider's documentation files (card L-07) | after B-91 | see the card |
+| B-93 | `lahman-source-review 5.4`: Review the second way in (user-supplied files); N/A if the source has none (card L-08) | after B-92 | see the card |
+| B-94 | `lahman-source-review 5.5`: Make every dataset and column reachable from Python (card L-09) | after B-93 | see the card |
+| B-95 | `lahman-source-review 2.1`: Close the spec and test gaps (card L-10) | after B-94 and after every task 5.n found by the review (add its rows below) | see the card |
+| B-96 | `lahman-source-review 3.1`: Live verification on a clean scratch home (card L-11) | after B-95 | see the card |
+| B-97 | `lahman-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card L-12) | after B-96 | see the card |
+| B-98 | `lahman-source-review 3.3`: Cited column descriptions (card L-13) | after B-97 | see the card |
+| B-99 | `lahman-source-review 4.1`: Docs, decisions, spec merge, archive (card L-14) | after B-98 | see the card |

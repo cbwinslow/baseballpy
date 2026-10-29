@@ -60,27 +60,28 @@ CARDS: tuple[Card, ...] = (
         "the pinned version (core/sources_lock.json) or the provider docs; `uv run baseballpy catalog list`",
         (
             "list every file, endpoint, parameter and documentation file the provider offers",
-            "map each to a registered dataset, or mark it a gap with the reason (documentation, licence and README files count: nothing is left behind)",
-            "compare the latest upstream version with the pin",
-            "record the inventory table in design.md",
+            "map each to a registered dataset, or mark it a gap with the reason (README, licence and data-dictionary files count: nothing is left behind)",
+            "read the provider's licence and data dictionary and write down which licence applies and what attribution it asks for",
+            "if the source has a second way in (user-supplied files, an alternative mirror), inventory a real sample of that too",
+            "compare the latest upstream version with the pin; record the inventory table in design.md",
         ),
-        "every upstream item is mapped or listed as a gap with a reason; `uv run baseballpy catalog status --gaps` for the source is pasted in design.md",
+        "every upstream item is mapped or listed as a gap with a reason; the licence is named; `uv run baseballpy catalog status --gaps` for the source is pasted in design.md",
         "tick 1.1; design.md section S1",
     ),
     Card(
         "1.2",
         "S2",
         "Check registry and adapter conformance",
-        "Claude designs, agy codes (review the full diff)",
-        "src/baseballpy/sources/$source/adapter.py, tests/test_ingest_adapters.py",
+        "Claude",
+        "src/baseballpy/sources/$source/adapter.py, tests/test_ingest_adapters.py (read only; fixes are tasks 5.n)",
         "the dataset registry (core/datasets.py) is the only list of dataset names",
         "`uv run baseballpy ingest $source -d <name> --dry-run` for every registered dataset",
         (
             "reproduce: is every registered dataset accepted by --datasets, and unknown names rejected with the registry list?",
-            "derive names from the registry (no hard-coded dataset lists)",
-            "test the accepted and the rejected path",
+            "find every hard-coded list of dataset or table names in the source (adapter, extractor, api) and whether it agrees with the registry",
+            "record the result; a disagreement becomes a task 5.n",
         ),
-        "`uv run pytest tests/test_ingest_adapters.py tests/test_ingest_contract.py tests/test_architecture.py -q` passes and no dataset name literal list remains in the adapter",
+        "the result for every registered dataset is in design.md; every disagreement has a task 5.n",
         "tick 1.2; design.md S2",
     ),
     Card(
@@ -92,64 +93,115 @@ CARDS: tuple[Card, ...] = (
         "Polars or pyarrow to profile the cached Parquet and the raw files, never a Python row loop",
         "the source's tables.py (types), one clean ingest, docs/sources/$source.md",
         (
-            "profile every column: type, null rate, distinct values, ranges, sentinel-looking values, empty strings",
-            "check uniqueness of every registry key and which key columns contain NULLs (a key with NULLs cannot be merged on export)",
-            "check _extras is empty and that drift is logged once",
-            "list era or provider quirks to document",
+            "profile every column: type, null rate, distinct values, ranges, sentinel-looking values (blank vs 0 vs a text marker), empty strings",
+            "check uniqueness of every registry key and which key columns contain NULLs (a key with NULLs cannot be merged on export; changing a key is a generator change and an OWNER decision)",
+            "check every id column that points into another table or another source: orphan rows inside the source, and the match rate against the Chadwick register for player ids",
+            "check _extras is empty and that drift is logged once; list era or provider quirks to document",
         ),
-        "a table in design.md with a verdict per column group; every mismatch has a follow-up task or a regeneration commit",
+        "a table in design.md with a verdict per column group and the measured match rates; every mismatch has a follow-up task 5.n or a regeneration commit",
         "tick 1.3; design.md S3",
     ),
     Card(
         "1.4",
         "S4",
         "Review the code against the designated tools and decoupling rules",
-        "Claude (review), agy (mechanical migrations it approves)",
-        "read all of src/baseballpy/sources/$source/; edit only files a follow-up task names",
+        "Claude (review only; no code change in this task)",
+        "read all of src/baseballpy/sources/$source/",
         "docs/agents/TOOLING.md rows: HTTP, parsing, dataframe code, concurrency, config",
         "AGENTS.md sections 2, 4, 7, 8 and 14; tests/test_architecture.py",
         (
             "per module: what it does and which designated tool covers it",
             "flag Python loops over bulk data, hard-coded names, custom retry/hash/cache code, per-source special cases, swallowed errors, non-atomic writes",
-            "measure load, first lookup and ingest times on a real lake",
-            "for each flag choose migrate (new task 5.n) or tool-cannot (one sentence of evidence); no code change in this task",
+            "list every cache shortcut (raw tier and processed tier) and say whether upstream is ever asked before it serves data",
+            "check validation and quality code: does its result depend on load order, is it shown to users or only logged?",
+            "measure load, first lookup and 1000 repeated calls of each public function on a real lake; look for registry, catalog or config work done on every call",
+            "for each flag choose migrate (new task 5.n) or tool-cannot (one sentence of evidence)",
         ),
-        "design.md has the per-module table and timings; every migrate has a numbered follow-up task in tasks.md and a BACKLOG row",
+        "design.md has the per-module table, the cache-tier list and the timings; every migrate has a numbered follow-up task in tasks.md and a BACKLOG row",
         "tick 1.4; add tasks 5.n",
     ),
     Card(
-        "1.5",
+        "5.1",
         "S4",
-        "Move the source onto the shared currency check",
+        "Record upstream fingerprints for every raw file",
         "Claude designs, agy codes (review the full diff)",
-        "the source's extractor, tests/test_$source*.py; tick data-workflow-standard $dws in that change",
-        "core/upstream.py (Fingerprint, is_current), RawStore.put(upstream=...), core/github_tree.py for git blob SHAs",
-        "ADR 43; docs/DATA_WORKFLOW.md; the Chadwick extractor as the model",
+        "the source's extractor, tests/test_$source*.py",
+        "core/upstream.py (Fingerprint), RawStore.put(upstream=...), core/github_tree.py for git blob SHAs; the Chadwick extractor as the model",
+        "ADR 43; docs/DATA_WORKFLOW.md; `uv run baseballpy cache check --upstream --source $source`",
         (
-            "record the provider's fingerprint of every raw file (git blob SHA, ETag or Last-Modified, content sha256)",
-            "replace the source's own 'is my copy current' logic with is_current(); keep a time-to-live only for how often to ask",
-            "tests with respx: fresh copy costs no request, changed fingerprint refetches, unreachable upstream serves the copy with a warning",
-            "run `uv run baseballpy cache check --upstream --source $source` on a real lake",
+            "record the provider's fingerprint of every raw file: git blob SHA from the tree, else ETag or Last-Modified, else the content sha256",
+            "files the user supplied keep their own origin marker; decide and document what `cache check --upstream` reports for them",
+            "tests with respx that the fingerprints are stored",
+            "run `cache check --upstream --source $source` on a real lake",
         ),
-        "no raw file of the source reports `no_fingerprint`; the old decision code is gone; the tests above pass",
-        "tick 1.5 and data-workflow-standard $dws; design.md S4",
+        "every remote raw file reports current or changed (not `no_fingerprint` or `not_checked`); local imports report a documented verdict; the tests pass",
+        "tick 5.1; design.md S4",
     ),
     Card(
-        "1.6",
+        "5.2",
+        "S4",
+        "Decide currency with is_current() at every cache tier",
+        "Claude designs, agy codes (review the full diff)",
+        "the source's extractor and api modules, tests/test_$source*.py; tick data-workflow-standard $dws in that change",
+        "core/upstream.py (is_current), the cache-tier list from task 1.4",
+        "ADR 43; the Chadwick extractor and register as the model",
+        (
+            "route every cache shortcut found in 1.4 (raw tier AND processed tier) through is_current(); fixing only the extractor leaves the processed tier serving stale data",
+            "use the pinned fingerprint as `expected=` (reproducible mode) unless the owner decides the source should float with a time-to-live: OWNER decision, ask once, then continue",
+            "tests with respx: fresh copy costs no request, changed fingerprint refetches, unreachable upstream serves the copy with a warning",
+            "correct any documentation that claims behavior the code does not have",
+        ),
+        "no cache shortcut bypasses is_current(); the old decision code is gone; the tests above pass; the docs state what is checked at each tier",
+        "tick 5.2 and data-workflow-standard $dws; design.md S4",
+    ),
+    Card(
+        "5.3",
+        "S1",
+        "Keep the provider's documentation files",
+        "Claude designs, agy codes (review the full diff)",
+        "a shared helper in src/baseballpy/core/ (move Chadwick's DOCUMENT_FILES logic there), the source's extractor, docs/DATA_LICENSES.md, tests",
+        "RawStore.put with fingerprints; core/github_tree.py; AGENTS.md 14.2.4 (a helper used twice moves to core/)",
+        "the documentation files found in task 1.1 (README, licence, data dictionary)",
+        (
+            "keep each documentation file in raw/ with its sha256 and fingerprint through one shared helper that Chadwick and this source both use",
+            "state the licence and the attribution text in docs/DATA_LICENSES.md from the kept text",
+            "tests: the files are stored once, not downloaded again on a cached run, a failed download is logged and does not block the data",
+        ),
+        "the files are in raw/ with hashes; Chadwick uses the same helper and its tests still pass; DATA_LICENSES names the licence",
+        "tick 5.3; design.md S1",
+    ),
+    Card(
+        "5.4",
+        "S4",
+        "Review the second way in (user-supplied files); N/A if the source has none",
+        "Claude designs, agy codes (review the full diff)",
+        "the source's import code, tests, docs/sources/$source.md",
+        "the source's own safety checks stay; the registry decides which files are datasets",
+        "the sample inventoried in task 1.1",
+        (
+            "keep the non-data files (README, licence, data dictionary) of a supplied release, not only the data files",
+            "detect a mixed release: a partial supplied set completed from the remote mirror must warn or refuse",
+            "decide what unknown files in a supplied set become (reject, or keep raw only), never silent unregistered tables",
+            "document how currency applies to supplied data",
+        ),
+        "tests cover the partial import, the unknown file and the kept documents; or the card is marked N/A with one sentence",
+        "tick 5.4; design.md S4",
+    ),
+    Card(
+        "5.5",
         "S7",
         "Make every dataset and column reachable from Python",
         "Claude designs, agy codes (review the full diff)",
         "src/baseballpy/sources/$source/__init__.py and api module, tests, docs/sources/$source.md, docs/QUICKSTART.md",
         "pyarrow tables from ProcessedStore; Polars/narwhals for lookups; a process-wide cache when lookups repeat (as ChadwickRegister.load does)",
-        "the registry (every dataset), the schema (every column)",
+        "the registry (every dataset), the schema (every column); the access that already exists (do not rebuild it)",
         (
-            "list datasets and columns with no Python access (top-level function or documented accessor) and records that lack columns",
-            "add a generic accessor driven by the registry instead of one hand-written function per dataset",
-            "add a schema-sync test that fails when a regenerated column is missing from a record class",
-            "run every example in the docs against a real lake",
+            "list datasets with no documented Python access; reuse the generic accessor if one exists, else add one driven by the registry and validated against it (OWNER decision if named functions per dataset are wanted instead)",
+            "if the source has record classes, add a schema-sync test that fails when a column is missing from them; otherwise mark this step N/A (tables only)",
+            "run every code block of docs/sources/$source.md and the source's quickstart lines against a real lake and fix wrong examples",
         ),
-        "every registered dataset is readable with one documented call and every column is on the record types; `uv run pytest` for the new tests passes",
-        "tick 1.6; docs updated",
+        "every registered dataset is readable with one documented call; every documented example ran; the new tests pass",
+        "tick 5.5; docs updated",
     ),
     Card(
         "2.1",
@@ -158,7 +210,7 @@ CARDS: tuple[Card, ...] = (
         "agy writes tests from the findings, Claude reviews",
         "openspec/changes/$source-source-review/specs/$spec/spec.md (delta), tests/test_$source*.py",
         "respx for HTTP, hypothesis for parsing and lookups, fixtures under tests/fixtures/",
-        "the current spec requirements and every finding that changed behavior",
+        "the current spec requirements and every finding that changed behavior; start only when every task 5.n is done",
         (
             "one scenario per finding and per requirement without one; each ends with a `Verified by` line",
             "property tests where parsing or lookups are lossy",
@@ -179,7 +231,7 @@ CARDS: tuple[Card, ...] = (
             "ingest the source from an empty home; note rows, bytes and seconds from audit.jsonl",
             "run again: nothing downloaded, audit shows cache_hit true",
             "`baseballpy cache check` and `cache check --upstream --source $source`",
-            "raw rows against processed rows; spot-check known facts against the provider",
+            "raw rows (minus any header line) against processed rows; spot-check known facts against the provider",
         ),
         "counts, timings, the second-run result and the cache-check output are pasted in design.md",
         "tick 3.1; design.md S6",
@@ -194,6 +246,7 @@ CARDS: tuple[Card, ...] = (
         "the cached datasets from the live run; `uv run --with pgserver` or the dev dependency",
         (
             "export every dataset to parquet and csv, then duckdb and postgres, with verification on",
+            "check that column names survive every target (mixed case, names that start with a digit, reserved words) and compare the names read back",
             "try --mode merge and note which datasets are refused (key with NULLs)",
             "record rows, seconds and sizes; list the exceptions (nested columns, season partitions, size)",
         ),
@@ -207,10 +260,10 @@ CARDS: tuple[Card, ...] = (
         "Claude",
         "scripts/build_column_descriptions.py (the source's builder), docs/columns/$source.json (generated), docs/sources/$source.md",
         "the provider's own documentation (never invented text); `uv run baseballpy docs generate`",
-        "ADR 34; the current description coverage in docs/agents/PROJECT_MAP.md",
+        "ADR 34; the description coverage in docs/agents/PROJECT_MAP.md (it counts _extras columns too: state which denominator you mean)",
         (
             "list undescribed columns",
-            "add cited text for each column the provider defines, with the source URL",
+            "add cited text for each column the provider defines, citing the pinned version of the document (not a moving branch)",
             "list the columns the provider does not define in the source page",
         ),
         "`uv run python scripts/build_column_descriptions.py $source` run, `docs generate --check` clean, coverage not lower than before",
@@ -235,7 +288,14 @@ CARDS: tuple[Card, ...] = (
     ),
 )
 
-SECTIONS = {"1": "Review", "2": "Tests", "3": "Verify", "4": "Close"}
+#: section number -> heading; sections render in this order (fixes come before tests and verification)
+SECTIONS = {
+    "1": "Review (look and report; no code changes)",
+    "5": "Fixes (the standard ones first, then one task per finding of the review)",
+    "2": "Tests",
+    "3": "Verify",
+    "4": "Close",
+}
 
 
 def _subs(source: str) -> dict[str, str]:
@@ -286,6 +346,10 @@ def render_cards(source: str) -> str:
         f"Docs: `docs/sources/{source}.md`. Code: `src/baseballpy/sources/{source}/`. Method: `docs/agents/WORK_BREAKDOWN.md`;",
         "standing standards: `docs/DATA_WORKFLOW.md` (currency, export, onboarding checklist), `docs/agents/TOOLING.md`.",
         "",
+        "How to read a card: a step that does not apply is marked N/A with one sentence of reason; a step that",
+        "needs a decision from the owner is marked OWNER, the agent asks once (one short list) and moves on to",
+        "the next card. Tasks 1.x only look and report; every fix is a task 5.n.",
+        "",
         "Suspected findings to verify (not yet confirmed; the cards decide):",
         "- (fill in from the survey in design.md)",
         "",
@@ -323,8 +387,8 @@ access, tests and spec, a clean live run, the export checklist (ADR 46), cited c
 documentation. Starting facts and suspected findings are in design.md.
 
 ## What changes
-The standard tasks in tasks.md (cards in `docs/agents/tracks/{number}-{source}.md`), plus a task `5.n` for each
-finding of the review. Code changes happen only under a numbered task.
+The standard tasks in tasks.md (cards in `docs/agents/tracks/{number}-{source}.md`): look-only review tasks 1.x, the
+standard fixes 5.1 to 5.5, one more task `5.n` for each finding of the review, then tests, verification and close. Code changes happen only under a numbered task.
 
 ## Out of scope
 Other sources; the export command itself (built, ADR 46); changes to how the provider is reached beyond
@@ -388,6 +452,8 @@ def render_backlog(source: str, text: str) -> str:
     ]
     for offset, card in enumerate(CARDS):
         status = "READY" if offset == 0 else f"after B-{start + offset - 1}"
+        if card.num == "2.1":
+            status += " and after every task 5.n found by the review (add its rows below)"
         title = Template(card.title).substitute(s)
         rows.append(
             f"| B-{start + offset} | `{source}-source-review {card.num}`: {title} "
