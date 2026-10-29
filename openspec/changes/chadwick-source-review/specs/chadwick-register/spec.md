@@ -51,3 +51,22 @@ Every registered Chadwick dataset (`register`, `register_names`, `register_links
 - **WHEN** the register is extracted
 - **THEN** the README is stored under `raw/` with a verifiable sha256 and is not downloaded again on a cached run
 - Verified by `tests/test_chadwick_coverage.py::test_upstream_readme_is_kept_with_its_sha256_when_the_tree_lists_it`.
+
+### Requirement: Lazy Lookup and Data-Driven Name Search
+Constructing a register MUST build no index; each id index MUST be built on first use from the non-null values and a repeated id MUST be logged with the first row winning. Nickname variants of a first name MUST be learned from the register (people whose `name_first` differs from the first word of `name_given`), with a short fallback list for what the data cannot show; a person's own `name_nick` and the `names.csv` spellings MUST resolve as aliases; fuzzy search MUST rank by Jaro-Winkler similarity through the shared similarity helper.
+
+#### Scenario: Nicknames are learned from the data and noise is dropped
+- **GIVEN** a register where many people are "Mike" with given name "Michael" and one is "Mike" with given name "George"
+- **WHEN** the nickname table is learned
+- **THEN** "mike" maps to "michael" only, and the fallback list still adds its diminutives
+- Verified by `tests/test_chadwick.py::test_nicknames_are_learned_from_the_register_and_noise_is_dropped` and `tests/test_chadwick.py::test_search_uses_nicknames_learned_from_the_register_data`.
+
+#### Scenario: Own nickname and fuzzy matches
+- **WHEN** "Babe Ruth" is searched and the register has name_nick "Babe" for George Ruth, and "Aron Juge" is searched with `fuzzy=True`
+- **THEN** George Ruth is found by alias and Aaron Judge is the first fuzzy match
+- Verified by `tests/test_chadwick.py::test_search_finds_a_person_by_their_own_nickname` and `tests/test_chadwick.py::test_fuzzy_search_ranks_the_closest_name_first`.
+
+#### Scenario: Nothing is indexed up front
+- **WHEN** a register is constructed and then an id that appears twice is resolved
+- **THEN** no index existed before the lookup, a warning names the repeated column, and the first row is returned
+- Verified by `tests/test_chadwick.py::test_register_builds_nothing_up_front_and_warns_about_repeated_ids`.

@@ -213,3 +213,99 @@ def test_resolve_id_rejects_unknown_id_types() -> None:
         register.resolve_id(1, "key_nope", PlayerIdType.RETRO)
     with pytest.raises(ValueError, match="unknown player id type"):
         register.resolve_id(1, PlayerIdType.MLBAM, "nope")
+
+
+def _register_from_rows(rows: list[dict[str, str]]) -> ChadwickRegister:
+    columns = ["key_person", "key_uuid", "key_mlbam", "name_last", "name_first", "name_given"]
+    columns += [c for c in ("name_nick",) if any(c in r for r in rows)]
+    lines = [",".join(columns)]
+    for n, row in enumerate(rows):
+        row = {
+            "key_person": f"p{n:07d}",
+            "key_uuid": f"u{n:07d}",
+            "key_mlbam": str(900000 + n),
+            **row,
+        }
+        lines.append(",".join(row.get(c, "") for c in columns))
+    table = ChadwickNormalizer().normalize("\n".join(lines).encode())
+    return ChadwickRegister(table)
+
+
+def test_nicknames_are_learned_from_the_register_and_noise_is_dropped() -> None:
+    import polars as pl
+
+    from baseballpy.sources.chadwick.search import learn_nicknames
+
+    many = [("Mike", "Michael John")] * 12 + [("Pete", "Peter Paul")] * 6
+    noise = [("Mike", "George")]  # one stray row must not become a nickname
+    df = pl.DataFrame(
+        {
+            "name_first": [first for first, _ in [*many, *noise]],
+            "name_given": [given for _, given in [*many, *noise]],
+        }
+    )
+    table = learn_nicknames(df)
+    assert table["mike"] == ("michael",) and table["michael"] == ("mike",)
+    assert table["pete"] == ("peter",) and "george" not in table
+    # the fallback list still adds the diminutives the data lacks, in both directions
+    assert "james" in table["jimmy"] and "jimmy" in table["james"]
+    # a register without the name columns falls back to the short list (and invents nothing else)
+    fallback_only = learn_nicknames(pl.DataFrame({"x": [1]}))
+    assert fallback_only["mike"] == ("michael",) and fallback_only["michael"] == ("mike",)
+    assert "george" not in fallback_only
+
+
+def test_search_uses_nicknames_learned_from_the_register_data() -> None:
+    rows = [
+        {"name_last": f"Player{n}", "name_first": "Pete", "name_given": "Peter Paul"}
+        for n in range(6)
+    ]
+    rows.append({"name_last": "Alonso", "name_first": "Peter", "name_given": "Peter Morgan"})
+    register = _register_from_rows(rows)
+    found = register.search_name("Pete Alonso")
+    assert [r.full_name for r in found] == ["Peter Alonso"]
+
+
+def test_search_finds_a_person_by_their_own_nickname() -> None:
+    register = _register_from_rows(
+        [
+            {
+                "name_last": "Ruth",
+                "name_first": "George",
+                "name_given": "George Herman",
+                "name_nick": "Babe",
+            },
+            {"name_last": "Ruth", "name_first": "Other", "name_given": "Other", "name_nick": ""},
+        ]
+    )
+    assert [r.full_name for r in register.search_name("Babe Ruth")] == ["George Ruth"]
+
+
+def test_fuzzy_search_ranks_the_closest_name_first() -> None:
+    register = _register_from_rows(
+        [
+            {"name_last": "Judge", "name_first": "Aaron", "name_given": "Aaron"},
+            {"name_last": "Jungers", "name_first": "Aaron", "name_given": "Aaron"},
+            {"name_last": "Smith", "name_first": "Zed", "name_given": "Zed"},
+        ]
+    )
+    found = register.search_name("Aron Juge", fuzzy=True, min_score=0.7)
+    assert found[0].full_name == "Aaron Judge"
+    assert "Zed Smith" not in [r.full_name for r in found]
+    assert register.search_name("Aron Juge") == []  # without fuzzy there is no typo tolerance
+
+
+def test_register_builds_nothing_up_front_and_warns_about_repeated_ids(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    register = _register_from_rows(
+        [
+            {"name_last": "A", "name_first": "One", "name_given": "One", "key_mlbam": "5"},
+            {"name_last": "B", "name_first": "Two", "name_given": "Two", "key_mlbam": "5"},
+        ]
+    )
+    assert register._id_index == {}  # lazy: constructing the register indexed nothing
+    with caplog.at_level("WARNING"):
+        record = register.resolve(mlbam=5)
+    assert record is not None and record.full_name == "One A"  # the first row wins
+    assert "repeated key_mlbam" in caplog.text

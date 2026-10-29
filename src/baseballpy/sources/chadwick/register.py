@@ -1,20 +1,25 @@
-"""Chadwick Bureau Player Register and fast in-memory lookup index with crosswalk resolution."""
+"""Chadwick Bureau Player Register: the typed table with lazy id indexes, crosswalk and name search."""
 
-import difflib
-from dataclasses import dataclass
+import logging
+from dataclasses import dataclass, fields
 from typing import Any
 
 import narwhals as nw
 import polars as pl
 import pyarrow as pa
+import pyarrow.compute as pc
 
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import get_dataset
+from baseballpy.core.similarity import top_matches
 from baseballpy.core.stores import ProcessedStore
 from baseballpy.sources import catalog
 from baseballpy.sources.chadwick.extractor import ChadwickExtractor
 from baseballpy.sources.chadwick.ingest import ingest
 from baseballpy.sources.chadwick.schema import PlayerIdType
+from baseballpy.sources.chadwick.search import learn_nicknames
+
+logger = logging.getLogger(__name__)
 
 #: ``PlayerIdType.value`` is the register column and the ``PlayerRecord`` field; these sets say how
 #: an id of that type is compared (integers are coerced, some text ids ignore case).
@@ -30,6 +35,11 @@ _CASEFOLDED_IDS = frozenset(
 )
 _ID_TYPES = {id_type.value: id_type for id_type in PlayerIdType}
 
+_REQUIRED = frozenset({"key_person", "key_uuid"})
+
+#: how many matches a fuzzy search returns
+FUZZY_LIMIT = 10
+
 
 def _id_type(value: PlayerIdType | str) -> PlayerIdType:
     """The ``PlayerIdType`` for an enum member, ``"key_mlbam"`` or ``"mlbam"``."""
@@ -41,7 +51,10 @@ def _id_type(value: PlayerIdType | str) -> PlayerIdType:
 
 
 def _normalise_id(id_type: PlayerIdType, value: Any) -> Any:
-    """The form in which ``value`` is stored in and looked up from the index of ``id_type``."""
+    """The form in which ``value`` is stored in and looked up from the index of ``id_type``.
+
+    ``None`` means the value cannot be an id of that type (empty, or not a number for an integer id).
+    """
     if value is None or value == "":
         return None
     if id_type in _INT_IDS:
@@ -87,80 +100,20 @@ class PlayerRecord:
         last = self.name_last or ""
         return f"{first} {last}".strip()
 
-
-# Common baseball nicknames mapping to formal first names
-COMMON_NICKNAMES: dict[str, list[str]] = {
-    "pete": ["peter"],
-    "peter": ["pete"],
-    "mike": ["michael"],
-    "michael": ["mike"],
-    "bob": ["robert"],
-    "bobby": ["robert"],
-    "rob": ["robert"],
-    "robert": ["bob", "bobby", "rob"],
-    "bill": ["william"],
-    "billy": ["william"],
-    "will": ["william"],
-    "william": ["bill", "billy", "will"],
-    "jim": ["james"],
-    "jimmy": ["james"],
-    "james": ["jim", "jimmy"],
-    "dan": ["daniel"],
-    "danny": ["daniel"],
-    "daniel": ["dan", "danny"],
-    "tom": ["thomas"],
-    "tommy": ["thomas"],
-    "thomas": ["tom", "tommy"],
-    "joe": ["joseph"],
-    "joseph": ["joe"],
-    "tony": ["anthony"],
-    "anthony": ["tony"],
-    "chris": ["christopher"],
-    "christopher": ["chris"],
-    "matt": ["matthew"],
-    "matthew": ["matt"],
-    "alex": ["alexander"],
-    "alexander": ["alex"],
-    "nick": ["nicholas"],
-    "nicholas": ["nick"],
-    "dave": ["david"],
-    "david": ["dave"],
-    "ken": ["kenneth"],
-    "kenny": ["kenneth"],
-    "kenneth": ["ken", "kenny"],
-    "ron": ["ronald"],
-    "ronnie": ["ronald"],
-    "ronald": ["ron", "ronnie"],
-    "ed": ["edward", "edwin"],
-    "eddie": ["edward", "edwin"],
-    "edward": ["ed", "eddie"],
-    "edwin": ["ed", "eddie"],
-    "frank": ["francis", "franklin"],
-    "frankie": ["francis", "franklin"],
-    "steve": ["stephen", "steven"],
-    "steven": ["steve"],
-    "stephen": ["steve"],
-    "sam": ["samuel"],
-    "sammy": ["samuel"],
-    "samuel": ["sam", "sammy"],
-    "fred": ["frederick"],
-    "freddie": ["frederick"],
-    "frederick": ["fred", "freddie"],
-    "dick": ["richard"],
-    "rich": ["richard"],
-    "richie": ["richard"],
-    "rick": ["richard"],
-    "ricky": ["richard"],
-    "richard": ["dick", "rich", "richie", "rick", "ricky"],
-    "babe": ["george"],
-    "chipper": ["larry"],
-    "buster": ["gerald"],
-    "shohei": ["shohei"],
-}
+    @classmethod
+    def from_row(cls, row: dict[str, Any]) -> "PlayerRecord":
+        """Build a record from one register row (columns the register lacks become ``None``)."""
+        rest = {f.name: row.get(f.name) for f in fields(cls) if f.name not in _REQUIRED}
+        return cls(key_person=row["key_person"], key_uuid=row["key_uuid"], **rest)
 
 
 class ChadwickRegister:
-    """Indexed player identity register for instant cross-system resolution."""
+    """The player register with id crosswalk and name search.
+
+    Nothing is indexed up front: each id index is built the first time that id type is used (from
+    the non-null values only, with Arrow), and names are searched with vectorised string
+    operations. Constructing a register is free.
+    """
 
     def __init__(
         self,
@@ -169,11 +122,11 @@ class ChadwickRegister:
     ) -> None:
         self._table = table
         self._names_table = names_table
-        self._records: list[PlayerRecord] = []
-        self._by_id: dict[PlayerIdType, dict[Any, PlayerRecord]] = {t: {} for t in PlayerIdType}
-        self._by_name: dict[str, list[PlayerRecord]] = {}
-        self._aliases: dict[str, set[str]] = {}
-        self._build_index()
+        self._polars: pl.DataFrame | None = None
+        self._id_index: dict[PlayerIdType, dict[Any, int]] = {}
+        self._lower_names: pl.Series | None = None
+        self._nicknames: dict[str, tuple[str, ...]] | None = None
+        self._aliases: dict[str, list[int]] | None = None
 
     @property
     def table(self) -> pa.Table:
@@ -182,80 +135,52 @@ class ChadwickRegister:
 
     def to_polars(self) -> pl.DataFrame:
         """Return as a Polars DataFrame with zero-copy memory handoff."""
-        df = pl.from_arrow(self._table)
-        if not isinstance(df, pl.DataFrame):
-            raise TypeError(f"expected a Polars DataFrame, got {type(df).__name__}")
-        return df
+        if self._polars is None:
+            df = pl.from_arrow(self._table)
+            if not isinstance(df, pl.DataFrame):
+                raise TypeError(f"expected a Polars DataFrame, got {type(df).__name__}")
+            self._polars = df
+        return self._polars
 
     def to_dataframe(self) -> nw.DataFrame[Any]:
         """Return as a Narwhals DataFrame for multi-engine compatibility."""
         return nw.from_native(self.to_polars())
 
-    def _build_index(self) -> None:
-        """Construct fast dictionary hash lookups from Arrow table."""
-        pydict = self._table.to_pydict()
-        length = len(self._table)
+    # -- id indexes -------------------------------------------------------------------------
 
-        col_names = self._table.column_names
-        for i in range(length):
-            mlbam = pydict["key_mlbam"][i]
-            retro = pydict["key_retro"][i]
-            bbref = pydict["key_bbref"][i]
-            fangraphs = pydict["key_fangraphs"][i] if "key_fangraphs" in col_names else None
-            bbref_min = pydict["key_bbref_minors"][i] if "key_bbref_minors" in col_names else None
-            npb = pydict["key_npb"][i] if "key_npb" in col_names else None
-            wiki = pydict["key_wikidata"][i] if "key_wikidata" in col_names else None
-            suffix = pydict["name_suffix"][i] if "name_suffix" in col_names else None
-            nick = pydict["name_nick"][i] if "name_nick" in col_names else None
+    def _ids(self, id_type: PlayerIdType) -> dict[Any, int]:
+        """``id value -> row`` for ``id_type``, built on first use from the non-null values."""
+        index = self._id_index.get(id_type)
+        if index is None:
+            index = self._build_id_index(id_type)
+            self._id_index[id_type] = index
+        return index
 
-            rec = PlayerRecord(
-                key_person=pydict["key_person"][i],
-                key_uuid=pydict["key_uuid"][i],
-                key_mlbam=mlbam,
-                key_retro=retro,
-                key_bbref=bbref,
-                key_bbref_minors=bbref_min,
-                key_fangraphs=fangraphs,
-                key_npb=npb,
-                key_wikidata=wiki,
-                name_last=pydict["name_last"][i],
-                name_first=pydict["name_first"][i],
-                name_given=pydict["name_given"][i],
-                name_suffix=suffix,
-                name_nick=nick,
-                birth_year=pydict["birth_year"][i],
-                birth_month=pydict["birth_month"][i],
-                birth_day=pydict["birth_day"][i],
-                mlb_played_first=pydict["mlb_played_first"][i],
-                mlb_played_last=pydict["mlb_played_last"][i],
+    def _build_id_index(self, id_type: PlayerIdType) -> dict[Any, int]:
+        if id_type.value not in self._table.column_names:
+            return {}
+        column = self._table.column(id_type.value)
+        if id_type in _CASEFOLDED_IDS:
+            column = pc.utf8_lower(column)
+        valid = pc.is_valid(column)
+        rows = pc.indices_nonzero(valid).to_pylist()
+        values = pc.filter(column, valid).to_pylist()
+        # reversed, so that when an id repeats the first row wins
+        index = dict(zip(reversed(values), reversed(rows), strict=True))
+        if len(index) != len(values):
+            logger.warning(
+                "chadwick register has %d repeated %s value(s); the first row of each is used",
+                len(values) - len(index),
+                id_type.value,
             )
-            self._records.append(rec)
+        return index
 
-            for id_type, index in self._by_id.items():
-                value = getattr(rec, id_type.value)
-                norm = _normalise_id(id_type, value)
-                if norm is not None:
-                    index[norm] = rec
-
-            name_key = rec.full_name.lower()
-            if name_key:
-                self._by_name.setdefault(name_key, []).append(rec)
-
-        # Index names.csv alternate spellings if available
-        if self._names_table is not None:
-            ndict = self._names_table.to_pydict()
-            for i in range(len(self._names_table)):
-                pid = ndict["key_person"][i]
-                if not pid:
-                    continue
-                last = (ndict["altname_last"][i] or ndict["name_last"][i] or "").strip().lower()
-                for first_col in ("altname_first", "altname_given", "name_first"):
-                    first = (ndict[first_col][i] or "").strip().lower()
-                    if first and last:
-                        self._aliases.setdefault(f"{first} {last}", set()).add(pid)
-                nick = (ndict["altname_nick"][i] or "").strip().lower()
-                if nick and last:
-                    self._aliases.setdefault(f"{nick} {last}", set()).add(pid)
+    def _records(self, rows: list[int]) -> list[PlayerRecord]:
+        """Records for ``rows``, in that order."""
+        if not rows:
+            return []
+        taken = self._table.take(pa.array(rows, pa.int64()))
+        return [PlayerRecord.from_row(r) for r in taken.to_pylist()]
 
     def resolve(
         self,
@@ -270,7 +195,7 @@ class ChadwickRegister:
         npb: int | None = None,
         wikidata: str | None = None,
     ) -> PlayerRecord | None:
-        """Resolve a single player by any known identifier (the first one given wins)."""
+        """Resolve a single player by any known identifier (the first given id that is found wins)."""
         given = (
             (PlayerIdType.MLBAM, mlbam),
             (PlayerIdType.RETRO, retro),
@@ -283,12 +208,9 @@ class ChadwickRegister:
             (PlayerIdType.WIKIDATA, wikidata),
         )
         for id_type, value in given:
-            if value is not None and value != "":
-                norm = _normalise_id(id_type, value)
-                if norm is not None:
-                    rec = self._by_id[id_type].get(norm)
-                    if rec is not None:
-                        return rec
+            norm = _normalise_id(id_type, value)
+            if norm is not None and (row := self._ids(id_type).get(norm)) is not None:
+                return self._records([row])[0]
         return None
 
     def resolve_id(
@@ -302,67 +224,111 @@ class ChadwickRegister:
         Both types may be a ``PlayerIdType`` or its name (``"key_mlbam"`` or ``"mlbam"``); an
         unknown type raises ``ValueError``.
         """
-        if id_value is None or id_value == "":
-            return None
         source = _id_type(from_type)
         target = _id_type(to_type)
         norm = _normalise_id(source, id_value)
         if norm is None:
             return None
-        record = self._by_id[source].get(norm)
-        return None if record is None else getattr(record, target.value)
+        row = self._ids(source).get(norm)
+        if row is None or target.value not in self._table.column_names:
+            return None
+        return self._table.column(target.value)[row].as_py()
+
+    # -- name search ------------------------------------------------------------------------
+
+    def _names(self) -> pl.Series:
+        """Lower-case ``first last`` of every row (computed once)."""
+        if self._lower_names is None:
+            first = pl.col("name_first").fill_null("")
+            last = pl.col("name_last").fill_null("")
+            self._lower_names = self.to_polars().select(
+                pl.concat_str([first, last], separator=" ")
+                .str.strip_chars()
+                .str.to_lowercase()
+                .alias("name")
+            )["name"]
+        return self._lower_names
+
+    def _nickname_table(self) -> dict[str, tuple[str, ...]]:
+        if self._nicknames is None:
+            self._nicknames = learn_nicknames(self.to_polars())
+        return self._nicknames
+
+    def _alias_index(self) -> dict[str, list[int]]:
+        """``"first last"`` aliases -> rows: ``names.csv`` spellings and each person's ``name_nick``."""
+        if self._aliases is None:
+            aliases: dict[str, list[int]] = {}
+            by_person = self._ids(PlayerIdType.PERSON)
+
+            def add(alias: str, row: int) -> None:
+                rows = aliases.setdefault(alias, [])
+                if row not in rows:
+                    rows.append(row)
+
+            if self._names_table is not None:
+                for entry in self._names_table.to_pylist():
+                    row = by_person.get(entry.get("key_person"))
+                    last = (entry.get("altname_last") or entry.get("name_last") or "").strip()
+                    if row is None or not last:
+                        continue
+                    for column in ("altname_first", "altname_given", "name_first", "altname_nick"):
+                        first = (entry.get(column) or "").strip()
+                        if first:
+                            add(f"{first} {last}".lower(), row)
+            if "name_nick" in self._table.column_names:
+                positions = pc.indices_nonzero(pc.is_valid(self._table.column("name_nick")))
+                rows = positions.to_pylist()
+                taken = self._table.take(pa.array(rows, pa.int64())).to_pylist() if rows else []
+                for row, entry in zip(rows, taken, strict=True):
+                    nick = (entry.get("name_nick") or "").strip()
+                    last = (entry.get("name_last") or "").strip()
+                    if nick and last:
+                        add(f"{nick} {last}".lower(), row)
+            self._aliases = aliases
+        return self._aliases
 
     def search_name(
         self,
         name: str,
         fuzzy: bool = False,
-        min_score: float = 0.8,
+        min_score: float = 0.9,
     ) -> list[PlayerRecord]:
-        """Search players by name, nickname variants, and optional fuzzy matching."""
+        """Search players by name, nickname variants, and optional fuzzy matching.
+
+        Tried in order, the first step that finds anyone answers: exact ``first last``; aliases
+        (``names.csv`` spellings and a person's own ``name_nick``); nickname variants of the first
+        name learned from the register (Pete, Peter); substring; and, with ``fuzzy=True``, the ten
+        most Jaro-Winkler-similar names scoring at least ``min_score`` (default 0.9, about as strict as the old difflib 0.8).
+        """
         clean = name.strip().lower()
         if not clean:
             return []
+        names = self._names()
 
-        # 1. Exact match
-        if exact := self._by_name.get(clean):
-            return exact
+        if rows := names.eq(clean).arg_true().to_list():
+            return self._records(rows)
 
-        # 2. Check alias index from names.csv
-        if pids := self._aliases.get(clean):
-            by_person = self._by_id[PlayerIdType.PERSON]
-            matched = [by_person[pid] for pid in pids if pid in by_person]
-            if matched:
-                return matched
+        if rows := self._alias_index().get(clean, []):
+            return self._records(rows)
 
-        # 3. Nickname expansion (e.g. Pete Alonso -> Peter Alonso)
         parts = clean.split()
         if len(parts) >= 2:
             first_name, last_name = parts[0], " ".join(parts[1:])
-            if variants := COMMON_NICKNAMES.get(first_name):
-                for alt_first in variants:
-                    alt_key = f"{alt_first} {last_name}"
-                    if alt_matches := self._by_name.get(alt_key):
-                        return alt_matches
+            for alt_first in self._nickname_table().get(first_name, ()):
+                if rows := names.eq(f"{alt_first} {last_name}").arg_true().to_list():
+                    return self._records(rows)
 
-        # 4. Substring search
-        substr_matches = [r for r in self._records if clean in r.full_name.lower()]
-        if substr_matches:
-            return substr_matches
+        if rows := names.str.contains(clean, literal=True).arg_true().to_list():
+            return self._records(rows)
 
-        # 5. Fuzzy string similarity if requested
         if fuzzy:
-            scored: list[tuple[float, PlayerRecord]] = []
-            for r in self._records:
-                score = difflib.SequenceMatcher(None, clean, r.full_name.lower()).ratio()
-                if score >= min_score:
-                    scored.append((score, r))
-            scored.sort(key=lambda x: x[0], reverse=True)
-            return [r for _, r in scored[:10]]
+            best = top_matches(names.to_arrow(), clean, min_score=min_score, limit=FUZZY_LIMIT)
+            return self._records([row for row, _ in best])
 
         return []
 
     def __len__(self) -> int:
-        return len(self._records)
+        return len(self._table)
 
     @classmethod
     def load(

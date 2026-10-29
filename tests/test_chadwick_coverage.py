@@ -227,10 +227,10 @@ def test_ingest_has_a_parser_for_exactly_the_registered_datasets() -> None:
 def test_ingest_stores_all_datasets_without_building_the_lookup_index(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    def boom(self: ChadwickRegister) -> None:
-        raise AssertionError("ingest must not build the lookup index")
+    def boom(self: ChadwickRegister, *args: object, **kwargs: object) -> None:
+        raise AssertionError("ingest must not construct a ChadwickRegister")
 
-    monkeypatch.setattr(ChadwickRegister, "_build_index", boom)
+    monkeypatch.setattr(ChadwickRegister, "__init__", boom)
     _serve_everything()
     cfg = LakeConfig(home=tmp_path)
     outcome = ingest(config=cfg)
