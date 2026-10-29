@@ -30,6 +30,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 1 | 4.2 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
+| `dlt-pipeline-core` | 0 | 9 | 1.1, 1.2, 1.3, 2.1, 3.1, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `mlb-stats-route-406-and-deep-pools` | 0 | 9 | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |

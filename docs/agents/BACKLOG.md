@@ -101,3 +101,14 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 | B-36 | `mlb-stats-route-406-and-deep-pools 3.2`: regenerate the team_stats_year_by_year schemas | READY (confirm the route answers 200 first) | fields such as stat.flyHits are typed columns, test added, no full generator run |
 | B-37 | `catalog-completeness-audit 4.2`: ADR 35, spec merge, archive | READY | ADR 35 exists, the catalog-audit spec is in openspec/specs, the change is archived |
 | B-38 | `historical-backfill-plan 3.3`: ADR 36, backfill spec merge, archive | after B-10 | ADR 36 exists, the backfill spec is merged, the change is archived |
+
+## J. dlt as the core (`dlt-pipeline-core`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-39 | `dlt-pipeline-core 1.1`: brief and registry-driven dlt resource factory for three endpoints | READY (agy writes the first draft, Claude reviews) | resources for teams, schedule (one day) and people_stats_season_hitting (three people) exist, gates green |
+| B-40 | `dlt-pipeline-core 1.2`: load into DuckDB and Parquet and compare | after B-39 | columns, types, row counts and code size compared with the current path, about 20 requests |
+| B-41 | `dlt-pipeline-core 1.3`: record what dlt replaced and what it could not | after B-40 | findings in design.md |
+| B-42 | `dlt-pipeline-core 2.1`: ADR 42 adopt or reject | after B-41 | ADR 42 cites the numbers |
+| B-43 | `dlt-pipeline-core 3.1`: DltAdapter behind IngestAdapter | after B-42 (only if adopted) | registry-generated resources, HttpClient as dlt's session, tests |
+| B-44 | `dlt-pipeline-core 3.2`: retire flatten, _extras and drift paths replaced by contracts | after B-43 | tests, docs generate, gates green |
