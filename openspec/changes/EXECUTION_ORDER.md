@@ -3,7 +3,7 @@
 Rules for the run (token-saving, per owner request):
 - **Do not spawn subagents or workflows.** Work linearly in the main session; read files with targeted `Read`/`Grep`; run commands directly.
 - Commit after each numbered section group (conventional commits). Do not push unless asked.
-- After each change: `uv run pytest -m "not live"`, `uvx ruff check .`, `uvx ruff format --check .`, `uvx mypy --strict src`. Fix before moving on.
+- After each change: `uv run pytest -m "not live"`, `uvx ruff check .`, `uvx ruff format --check .`, `uv run mypy --strict src`. Fix before moving on.
 - Tick `tasks.md` boxes as you go; if you discover the spec is wrong, edit the spec/design in the same commit and note it in the ADR.
 - Any task that says **Manual** must actually be run (live network) and its observed output summarized in the commit message or `docs/examples/`.
 - Open questions that block progress: (1) license — default GPL-3.0-or-later per ADR 26, proceed unless owner says Apache-2.0; (2) Lahman source — decided: ONLY `cbwinslow/lahman-database-csv` or user-supplied data; never `chadwickbureau/baseballdatabank` (data stops ~2023).
@@ -22,7 +22,7 @@ Rules for the run (token-saving, per owner request):
 - `docs/sources/*.md` contain generated column dictionaries for every dataset; `baseballpy docs check` passes.
 - CI workflow files exist; coverage ≥ 85%; architecture-boundary tests pass.
 
-## Status (updated 2026-10-27)
+## Status (updated 2026-10-29; see the dated lines at the end)
 - Done and archived (`archive/2026-10-27-*`): `harden-ingestion-core`, `restructure-data-lake`, `complete-source-coverage`, `statcast-minor-league-pitches`, `statcast-chunk-alignment` (found and fixed after the coverage change closed).
 - `repo-hygiene-and-docs-sync`: tasks 1-3 done (license, coerce helpers, dependencies); 4-7 (lint policy, CI, docs rewrite, spec merge and archive) open.
 - `unified-pipeline-and-cli`: complete and archived 2026-10-28 (spec `cli-and-ingest`).
@@ -35,3 +35,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-10-28: the remaining work is one ordered queue in `docs/agents/BACKLOG.md` (every open task of every change; a test fails if one is missing) with a generated overview in `docs/agents/PROJECT_MAP.md`; `docs/agents/NEXT_GOAL.md` is the standing prompt that works the queue. New change `spec-test-traceability` (39 of 89 spec scenarios cite no test). `verify-optin-paths` is down to the all-time pools run (running), the CLI check and the two non-unique `vs_player_*_opp_team` keys; the 2015-2024 window, the game feed and the on-demand datasets are verified.
 - 2026-10-28 (later): `spec-test-traceability` is done and archived: every one of the 89 spec scenarios now ends with a `- Verified by` line and `tests/test_spec_scenarios.py::test_every_scenario_cites_a_test` enforces it. Also done: `baseballpy backfill` (B-07, B-08), the weekly audit issue step (B-11), the box-account live check (B-13), Statcast glossary descriptions (B-17), and the CSV-bundle consumer survey (B-22).
 - 2026-10-29: owner rejected `retrosheet-csv-bundles` (ADR 41); archived unimplemented.
+- 2026-10-29: ADR 40 (pybaseball User-Agent) unblocked MLB; 2024 season ingested; all-time pools run (42 of 57); B-01 and B-03 done; league-wide v1/stats answers 406 (B-30) and its work is the new change `mlb-stats-route-406-and-deep-pools`; `catalog-completeness-audit` needs ADR 35 and a spec merge (B-37); `historical-backfill-plan` needs ADR 36 (B-38). 96 commits are unpushed.

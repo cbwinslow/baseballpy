@@ -25,9 +25,9 @@ host that is unreachable; retry, do not work around), DONE-WHEN-LAST (closes the
 | B-01 | verify-optin-paths 3: all-time pools | DONE: 42 of 57 pools ingested, 15 failures recorded with root cause in design.md (provider 503 on deep offsets; league v1/stats 406, B-30) | all 57 pools in the homelab scratch `home` are INGESTED or recorded failing with root cause and fix; `stats_stats_single_season_hitting` is re-run with the 180 s page timeout (fix in `0d9c59d`) and either ingests or has a new root cause; every `schema_drift` warning in `optin3.err` is regenerated (`scripts/gen_mlb_schemas.py --only NAME`) or recorded; results added to `design.md` |
 | B-02 | verify-optin-paths 6: CLI knobs | DONE (finished tasks are written without backticks so the test ignores them) | `ingest mlb_api --datasets games\|history\|people_stats` and `--limit` are in `docs/CLI.md`, covered by `CliRunner` tests, and `catalog status --gaps` notes name working commands (already built: confirm nothing else is missing, then tick) |
 | B-03 | verify-optin-paths 8: unique keys for the two `vs_player_*_opp_team` datasets | DONE: KEY_OVERRIDES in endpoints.py, key_unique_per_request true for both in docs/mlb_probe.json, live check summarised in the commit | the payload's split dimensions are identified from a real response, the key is extended in `endpoints.py`, schemas regenerated, `key_unique_per_request` is true for both in `docs/mlb_probe.json`, test added |
-| B-04 | `verify-optin-paths 7`: final report and archive | READY | B-01..B-03 done; report lists verified / not verified / needs-owner; change archived under `openspec/changes/archive/<date>-verify-optin-paths/` with spec deltas merged |
-| B-29 | MLB Stats API answers HTTP 403 to our User-Agent (new, found 2026-10-28) | DONE (ADR 40) | owner chose the pybaseball agent on 2026-10-28; was: see section H item 6: until it is resolved B-01, B-03 and the MLB part of B-05 cannot finish; no workaround (such as a different User-Agent) is applied without the owner's decision |
-| B-30 | MLB Stats API answers HTTP 406 to every league-wide v1/stats request (new, found 2026-10-29) | EXTERNAL | probed from this PC and the homelab: stats=season, with or without playerPool/limit/sitCodes or a browser User-Agent, gives 406; v1/teams and v1/people/{id}/stats give 200; it worked earlier on 2026-10-29. Retest later (one request per hour at most); when it answers 200 again re-run the 15 failed pools (3 had provider 503 on deep offsets: smaller pages or a per-season split) and do not mark the 12 stat_splits pools unsupported without a 200-control. Never run the full gen_mlb_schemas.py while it persists (phase 1 wrote an empty combo table) |
+| B-04 | `verify-optin-paths 7`: final report and archive | READY | B-01..B-03 done (the pool failures and the schema_drift leftovers moved to mlb-stats-route-406-and-deep-pools, B-31..B-36); report lists verified / not verified / needs-owner; change archived under `openspec/changes/archive/<date>-verify-optin-paths/` with spec deltas merged |
+| B-29 | MLB Stats API answers HTTP 403 to our User-Agent (new, found 2026-10-28) | DONE (ADR 40) | owner chose the pybaseball agent on 2026-10-28; resolved 2026-10-28; the 406 of 2026-10-29 on league-wide v1/stats is a different problem (B-30) |
+| B-30 | MLB Stats API answers HTTP 406 to every league-wide v1/stats request (new, found 2026-10-29) | EXTERNAL | probed from this PC and the homelab: stats=season, with or without playerPool/limit/sitCodes or a browser User-Agent, gives 406; v1/teams and v1/people/{id}/stats give 200; it worked earlier on 2026-10-29. Retest later (one request per hour at most); when it answers 200 again re-run the 15 failed pools (3 had provider 503 on deep offsets: smaller pages or a per-season split) and do not mark the 12 stat_splits pools unsupported without a 200-control. Impact: the per-season default stats_* datasets use the same route, so every MLB season ingest lacks them while it lasts (work is in B-31..B-36). Never run the full gen_mlb_schemas.py while it persists (phase 1 wrote an empty combo table) |
 
 ## B. Historical depth and backfill (`historical-backfill-plan`)
 
@@ -48,7 +48,8 @@ numbers are in `verify-optin-paths/design.md`.
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-11 | catalog-completeness-audit 2.2: open an issue on audit findings | DONE in code and tests; the real GitHub run is OWNER (needs a push and Actions enabled, section H item 4) | `live.yml` step uses `gh issue create`/`gh issue comment` (permission `issues: write`, one open issue titled by a fixed marker so findings update it), written and YAML-parsed; a test checks the step exists; the first real run on GitHub is listed as not verified until the owner enables Actions |
-| B-12 | `repo-hygiene-and-docs-sync 6.4`: merge deltas and archive | after B-01, B-03 (EXTERNAL), B-09, B-14 (OWNER) | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
+| B-12 | `repo-hygiene-and-docs-sync 6.4`: merge deltas and archive | after B-04, B-10, B-16, B-19, B-37, B-38 (OWNER / EXTERNAL) | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
+after B-04, B-10, B-16, B-19, B-37, B-38 (OWNER / EXTERNAL) | every other change is archived or explicitly deferred by the owner; `openspec validate --specs` 14 of 14 (or more); `EXECUTION_ORDER.md` current |
 | B-27 | spec-test-traceability 1: cite or write a test for each of the 39 uncited scenarios | DONE | per spec, every scenario ends with a `Verified by` line naming a test that asserts its THEN clause (write the missing mocked tests first; a claim nothing can check is removed from the spec); `uv run python scripts/project_map.py` shows the cited-test counts rising |
 | B-28 | spec-test-traceability 2: enforce it | DONE (change archived) | `tests/test_spec_scenarios.py` fails for any scenario without a citation; gates green; change archived |
 
@@ -83,8 +84,20 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 
 ## H. Owner decisions pending (ask once, then continue with everything else)
 
-2. Supply `boxfile.txt`, or say retrosheet.org is reachable from a machine you can use (B-14, B-18).
-3. Name the permanent lake location and approve backfill ranges (B-09).
-4. Decide when to push and whether to tag a first release (nothing has been pushed; versioning is in `docs/RELEASING.md`).
-5. The host-key mismatch of `cbwdellr720-lan` (use `cbwdellr720` until fixed).
-6. Decide how to handle `statsapi.mlb.com` returning 403 to the User-Agent `baseballpy (+https://github.com/cbwinslow/baseballpy)` (B-29): from this PC and the homelab, the same URL answers 200 to `curl/8`, `baseballpy/0.1` and `python-httpx/0.27`, and Savant is unaffected. It began after about 3 h of continuous MLB API requests (first as 500s, then 403s), so it may be a temporary block on that client or a rule against it; I did not change the User-Agent, because that would sidestep a block MLB may have put there on purpose.
+1. Supply `boxfile.txt`, or say retrosheet.org is reachable from a machine you can use (B-14, B-18).
+2. Name the permanent lake location and approve backfill ranges (B-09). Stages 1-3 of `docs/BACKFILL.md` can run as soon as you do; the MLB stage waits on B-30.
+3. Decide when to push (96 unpushed commits, only on this PC plus a homelab bundle; CI has never run) and whether to tag a first release (versioning is in `docs/RELEASING.md`).
+4. The host-key mismatch of `cbwdellr720-lan` (use `cbwdellr720` until fixed).
+
+## I. League-wide MLB stats and loose ends (`mlb-stats-route-406-and-deep-pools` and two closers)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-31 | `mlb-stats-route-406-and-deep-pools 1.1`: research the 406 | READY | sources (pybaseball, MLB-StatsAPI, baseballr issues) and findings in the change's design.md |
+| B-32 | `mlb-stats-route-406-and-deep-pools 1.2`: retest the route | EXTERNAL (one request per hour at most) | the date league-wide v1/stats answers 200 again, with a v1/teams control, is recorded |
+| B-33 | `mlb-stats-route-406-and-deep-pools 2.1`: generator guard and 406 as provider error | READY | an empty combo table is never written, a 406 is logged and not marked unsupported, tests |
+| B-34 | `mlb-stats-route-406-and-deep-pools 2.2`: smaller pages or per-season split for the three deep pools | READY (delegate the code to agy, review the diff) | respx tests; the pools page without 503 in a later live run |
+| B-35 | `mlb-stats-route-406-and-deep-pools 3.1`: re-run the 15 failed pools and a modern season | after B-32 and B-34 (LONG, homelab) | rows and errors recorded in design.md |
+| B-36 | `mlb-stats-route-406-and-deep-pools 3.2`: regenerate the team_stats_year_by_year schemas | READY (confirm the route answers 200 first) | fields such as stat.flyHits are typed columns, test added, no full generator run |
+| B-37 | `catalog-completeness-audit 4.2`: ADR 35, spec merge, archive | READY | ADR 35 exists, the catalog-audit spec is in openspec/specs, the change is archived |
+| B-38 | `historical-backfill-plan 3.3`: ADR 36, backfill spec merge, archive | after B-10 | ADR 36 exists, the backfill spec is merged, the change is archived |

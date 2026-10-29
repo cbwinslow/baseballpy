@@ -7,7 +7,7 @@ Finish the project by working `docs/agents/BACKLOG.md` to the end. The backlog i
 
 START
 1. Read `docs/agents/BACKLOG.md` and `docs/agents/PROJECT_MAP.md`; run `git status`, `git log --oneline -5`, `uv run python scripts/project_map.py --check`.
-2. Check the homelab: `ssh -o BatchMode=yes cbwdellr720 'pgrep -fa "[o]ptin3.py|[b]aseballpy ingest"; ls ~/baseballpy-scratch'`. Item B-01 (all-time pools) may still be running there; read `~/baseballpy-scratch/optin3.out` and `optin3.err` for progress instead of waiting blind.
+2. Check the homelab: `ssh -o BatchMode=yes cbwdellr720 'pgrep -fa "[o]ptin3.py|[b]aseballpy ingest"; ls ~/baseballpy-scratch'`. No long run is expected there now; if one is, read its `.out`/`.err` or `logs/audit.jsonl` for progress instead of waiting blind. Do not touch `statsapi.mlb.com` more than once an hour while B-30 (HTTP 406 on league-wide v1/stats) is open, and never run the full `scripts/gen_mlb_schemas.py` (use `--only`).
 
 THE LOOP (repeat until the stop condition)
 1. Pick the first backlog item that is READY and whose dependencies are done. Start LONG items in the background first (`run_in_background`, or a detached run on the homelab), then work READY items while they run. Check long runs between items (audit log, output files), never by polling in a tight loop.
@@ -23,7 +23,7 @@ Every backlog item is DONE, or every remaining item is OWNER/EXTERNAL/after-one-
 
 STATE AT START (all committed on `main` except this prompt's own commit; nothing pushed)
 - 14 specs; `unified-pipeline-and-cli` archived; the CLI (`ingest`, `catalog list|show|status|audit`, `db`, `stream`, `quarantine`, `audit`, `doctor`, `refs`, `migrate-layout`) and `docs/CLI.md` exist.
-- Verified on the homelab on 2026-10-28: default `ingest all` for 2023; per-game (13 datasets) and per-player (149 endpoints) opt-in families; on-demand datasets; Statcast game feed; 2015-2024 historical window with resume; clean-machine install; mkdocs strict; sdist and wheel. Evidence is in `openspec/changes/verify-optin-paths/design.md`. Open there: all-time pools (B-01, running), CLI check (B-02), two non-unique keys (B-03).
+- Verified on the homelab on 2026-10-28: default `ingest all` for 2023; per-game (13 datasets) and per-player (149 endpoints) opt-in families; on-demand datasets; Statcast game feed; 2015-2024 historical window with resume; clean-machine install; mkdocs strict; sdist and wheel. Evidence is in `openspec/changes/verify-optin-paths/design.md`. The all-time pools and the two vs_player keys are done (B-01, B-03); the 15 failed pools and the schema drift are in `mlb-stats-route-406-and-deep-pools` (B-30..B-36). The default User-Agent is pybaseball's (ADR 40).
 - retrosheet.org times out from the PC and the homelab; `retrosheet-csv-bundles` was rejected (ADR 41); `boxfile.txt` is not available.
 
 STORAGE RULE (owner standing instruction)

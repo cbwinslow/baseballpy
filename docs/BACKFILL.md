@@ -48,7 +48,7 @@ safe):
 4. **MLB API** (per season, then the opt-in all-time pools): about 18 minutes for an old season
    (1990) and about 1.2 hours for a modern one (2024), so **the full history is about 100 hours**
    (a few days of running), and about **0.12 GB per old season and 1 GB per modern one**, so roughly
-   **15-25 GB** in all. Run it last, per decade.
+   **15-25 GB** in all. Run it last, per decade. **Blocked in part (2026-10-29):** league-wide `v1/stats` answers HTTP 406 (backlog B-30), so the `stats_*` datasets of every season, and the all-time pools, are missing until it answers 200 again.
 
 A plan file for stages 1-3 (example, edit the ranges):
 

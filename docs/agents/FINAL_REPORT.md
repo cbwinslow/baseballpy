@@ -1,37 +1,47 @@
-# Final report of the backlog run (2026-10-28)
+# Status report (2026-10-29)
 
-Written because `NEXT_GOAL.md` asks for it once nothing is READY. The run stopped here; what is left
-needs the owner or an external host.
+Replaces the report of 2026-10-28, which predated ADR 40 and the pools run. The next work is the
+backlog (`BACKLOG.md`); what is left needs the owner, an external host, or the new change
+`mlb-stats-route-406-and-deep-pools`.
 
 ## Verified (command, result)
 
-- `uv run pytest`: 981 passed, 5 skipped (before the last doc-only commits; after them the targeted
-  tests, `ruff check`, `ruff format`, `mypy --strict src` and `tests/test_agent_runbooks.py` were rerun and are clean).
-- `baseballpy backfill <plan> --dry-run --max-gb 15` on the plan in `docs/BACKFILL.md`: 96 jobs, 9.7 GB estimated.
-- `baseballpy catalog audit`: "No findings." (earlier in the run).
-- Homelab throughput probe: `docs/BACKFILL.md` (Lahman, Chadwick, Retrosheet, Statcast).
+- `uv run pytest`: 985 passed, 5 skipped; `ruff check`, `ruff format --check` and `mypy --strict src`
+  clean (run for commit `1729921`; the later commits are documentation only and re-ran the runbook tests).
+- Homelab, 2026-10-28/29: default `ingest all`, per-game and per-player families, on-demand datasets,
+  the 2015-2024 window with resume, MLB API 1990 and 2024 (654,821 rows, 3,061 s after ADR 40);
+  numbers in `docs/BACKFILL.md`, evidence in `openspec/changes/verify-optin-paths/design.md`.
+- All-time pools: 42 of 57 ingested (2,265,447 rows); 15 failed with root causes recorded (B-01 done).
+- The two `vs_player_*_opp_team` keys are unique on live data (B-03 done, `KEY_OVERRIDES`).
 - All 89 spec scenarios cite a test (`tests/test_spec_scenarios.py`).
 
 ## Not verified
 
-- A complete modern MLB API season: the 2024 run failed (HTTP 500, then 403). The MLB row of `docs/BACKFILL.md` is a bound.
-- Real regeneration of the MLB schemas with the new key probe (B-03); the all-time pools (B-01).
-- The first GitHub run of the audit workflow (B-11).
+- League-wide `v1/stats` answers HTTP 406 to every request from this PC and the homelab (B-30): the
+  15 failed pools, the per-season `stats_*` datasets of any new season and the `team_stats_year_by_year_*`
+  schema drift cannot be finished until it answers 200.
+- The first GitHub run of CI and of the weekly audit workflow (nothing has been pushed).
+- A full-history backfill has never run; only the measured seasons exist.
+- The MLB 2024 commit `1d54fbf` records rows, seconds and size only, not failed jobs, quarantine or drift.
 
-## Needs the owner (docs/agents/BACKLOG.md section H)
+## Needs the owner (BACKLOG section H)
 
-1. `statsapi.mlb.com` answers 403 to our User-Agent since 2026-10-28 21:57 UTC (B-29): wait and retry, or use a plain `baseballpy/<version>` agent.
-2. (Rejected by the owner on 2026-10-29: `retrosheet-csv-bundles`, ADR 41.)
-3. Supply `boxfile.txt` or retrosheet.org access (B-14, B-18).
-4. Permanent lake location and backfill ranges (B-09).
-5. When to push (about 55 unpushed commits) and whether to tag a release.
-6. The `cbwdellr720-lan` host-key mismatch.
+1. `boxfile.txt`, or retrosheet.org reachable from a machine you can use (B-14, B-18).
+2. The permanent lake location and backfill ranges (B-09); stages 1-3 can then run.
+3. When to push (96 unpushed commits) and whether to tag a release.
+4. The `cbwdellr720-lan` host-key mismatch.
+
+## Decided this session
+
+- ADR 40: default User-Agent is pybaseball's. ADR 41: the Retrosheet CSV bundles are not ingested.
+
+## Known bookkeeping gaps (tracked)
+
+- ADR 35 and ADR 36 are cited by finished tasks and absent from `docs/DECISIONS.md` (B-37, B-38).
+- `retrosheet-box-accounts`, `column-descriptions-retrosheet-and-leaderboards` and `historical-backfill-plan`
+  still wait on external or owner items (B-09, B-10, B-14..B-19).
 
 ## Homelab scratch cleanup
 
-Kept on purpose so the MLB runs can resume: `~/baseballpy-scratch` and `/tmp/bbpy.bundle` on `cbwdellr720`,
-and a local `bbpy.bundle` in the session scratchpad. Remove them when the MLB work is done or on request.
-
-## Commits
-
-`b0de322`, `b072ef1`, `31176bc`, `f44be05`, `7f5d18d`, `60c1f95`, `4ab2609`, `cc97f14`, `84302da`.
+Kept on purpose until the MLB work is done: `~/baseballpy-scratch` and `/tmp/bbpy.bundle` on
+`cbwdellr720`, and a local `bbpy.bundle` in the session scratchpad. Remove them on request.

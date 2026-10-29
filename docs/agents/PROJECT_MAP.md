@@ -28,9 +28,10 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
-| `catalog-completeness-audit` | 10 | 0 | none |
+| `catalog-completeness-audit` | 10 | 1 | 4.2 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `historical-backfill-plan` | 6 | 3 | 3.1, 3.2 |
+| `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
+| `mlb-stats-route-406-and-deep-pools` | 0 | 9 | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
 | `verify-optin-paths` | 7 | 1 | 7 |
