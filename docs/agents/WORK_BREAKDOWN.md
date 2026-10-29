@@ -66,6 +66,11 @@ A card is **atomic** when all of these hold; otherwise split it:
 - it needs no decision the owner has not already made (otherwise it is an OWNER card);
 - an agent that has read only the card, `AGENTS.md` and the listed files can finish it.
 
+The standard cards are one table in `scripts/new_source_review.py`; `uv run python scripts/new_source_review.py <source>`
+renders the change, the track file and the backlog rows for a source so no review drifts from the pattern
+(then fill in the survey and the suspected findings, and add the findings as tasks `5.n`). The generated
+scorecard in `docs/agents/PROJECT_MAP.md` shows where every source stands.
+
 Cards live in `docs/agents/tracks/<NN>-<source>.md` and mirror the tasks of the source's OpenSpec change
 one to one (the task number is the card number). Format (enforced by `tests/test_agent_rails.py`):
 

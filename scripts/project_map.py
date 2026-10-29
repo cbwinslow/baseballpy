@@ -79,6 +79,57 @@ def change_rows() -> list[str]:
     return rows
 
 
+SOURCE_SPECS = {
+    "chadwick": "chadwick-register",
+    "lahman": "lahman-database",
+    "retrosheet": "retrosheet-ingestion",
+    "statcast": "statcast-ingestion",
+    "mlb_api": "mlb-api-ingestion",
+}
+TRACKS = ROOT / "docs" / "agents" / "tracks"
+
+
+def source_rows() -> list[str]:
+    """One scorecard row per source: where it stands against the standing standards.
+
+    Everything is read from files and the registry, so the table is deterministic: review state
+    (archived, in progress with its task counts, not started), whether a track card file exists,
+    whether the source code uses the shared currency check and stores upstream fingerprints,
+    cited column-description coverage, and spec size.
+    """
+    from baseballpy.core.datasets import datasets_for
+    from baseballpy.docsgen import description_coverage
+    from baseballpy.sources import catalog
+
+    catalog.register_all()
+    coverage = description_coverage(ROOT / "docs")
+    rows = []
+    for source in SOURCE_SPECS:  # the planned review order
+        if any((CHANGES / "archive").glob(f"*-{source}-source-review")):
+            review = "archived"
+        elif (CHANGES / f"{source}-source-review").is_dir():
+            tasks = [(n, d) for n, d in tasks_of(CHANGES / f"{source}-source-review") if "." in n]
+            review = f"in progress ({sum(1 for _, d in tasks if d)}/{len(tasks)} tasks)"
+        else:
+            review = "not started"
+        track = "yes" if any(TRACKS.glob(f"*-{source}.md")) else "no"
+        code = "\n".join(
+            f.read_text(encoding="utf-8")
+            for f in sorted((ROOT / "src" / "baseballpy" / "sources" / source).glob("*.py"))
+        )
+        currency = "yes" if "core.upstream import" in code else "no"
+        fingerprints = "yes" if "upstream=" in code else "no"
+        described, total = coverage.get(source, (0, 0))
+        percent = f"{described}/{total} ({100 * described // total}%)" if total else "n/a"
+        spec_file = SPECS / SOURCE_SPECS[source] / "spec.md"
+        requirements = len(re.findall(r"^###\s+Requirement:", spec_file.read_text("utf-8"), re.M))
+        rows.append(
+            f"| `{source}` | {len(datasets_for(source))} | {review} | {track} | {currency} | "
+            f"{fingerprints} | {percent} | {requirements} |"
+        )
+    return rows
+
+
 def render() -> str:
     """The full text of ``PROJECT_MAP.md``."""
     archived = sum(1 for p in (CHANGES / "archive").iterdir() if p.is_dir())
@@ -94,6 +145,17 @@ def render() -> str:
         "| Spec | Requirements | Scenarios | Tests cited |",
         "|---|---|---|---|",
         *spec_rows(),
+        "",
+        "## Source review scorecard (where each source stands)",
+        "",
+        "Review = the `<source>-source-review` change (seven stages, `docs/agents/WORK_BREAKDOWN.md`);",
+        "currency = uses the shared `is_current()` check; fingerprints = stores upstream fingerprints",
+        "(ADR 43); descriptions = columns with cited text. A new source review is created with",
+        "`uv run python scripts/new_source_review.py <source>`.",
+        "",
+        "| Source | Datasets | Review | Track cards | Shared currency | Fingerprints | Column descriptions | Spec requirements |",
+        "|---|---|---|---|---|---|---|---|",
+        *source_rows(),
         "",
         "## Active changes (`openspec/changes/`)",
         "",

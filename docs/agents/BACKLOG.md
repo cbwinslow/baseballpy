@@ -167,3 +167,19 @@ touches a source under review, do it inside that source's track.
 | B-83 | export-workflow 4.1: export all Chadwick datasets to every target | DONE | numbers and comparison recorded in design.md |
 | B-84 | export-workflow 4.2: export section of `docs/DATA_WORKFLOW.md` and the source-onboarding checklist | DONE | page written, exceptions listed |
 | B-85 | export-workflow 5.1: spec delta merged, ADR, archive | DONE | change archived, specs validate |
+
+## Source review: Lahman (`lahman-source-review`, track 2)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-86 | `lahman-source-review 1.1`: Inventory the provider against the registry (card L-01) | READY | see the card |
+| B-87 | `lahman-source-review 1.2`: Check registry and adapter conformance (card L-02) | after B-86 | see the card |
+| B-88 | `lahman-source-review 1.3`: Compare the generated schema with real data (card L-03) | after B-87 | see the card |
+| B-89 | `lahman-source-review 1.4`: Review the code against the designated tools and decoupling rules (card L-04) | after B-88 | see the card |
+| B-90 | `lahman-source-review 1.5`: Move the source onto the shared currency check (card L-05) | after B-89 | see the card |
+| B-91 | `lahman-source-review 1.6`: Make every dataset and column reachable from Python (card L-06) | after B-90 | see the card |
+| B-92 | `lahman-source-review 2.1`: Close the spec and test gaps (card L-07) | after B-91 | see the card |
+| B-93 | `lahman-source-review 3.1`: Live verification on a clean scratch home (card L-08) | after B-92 | see the card |
+| B-94 | `lahman-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card L-09) | after B-93 | see the card |
+| B-95 | `lahman-source-review 3.3`: Cited column descriptions (card L-10) | after B-94 | see the card |
+| B-96 | `lahman-source-review 4.1`: Docs, decisions, spec merge, archive (card L-11) | after B-95 | see the card |
