@@ -48,3 +48,11 @@ def test_the_key_check_maps_names_over_every_record_not_the_first() -> None:
     ]
     assert gen.key_unique_per_request([chunk], ("batter_id", "pitcher_id", "season", "game_type"))
     assert not gen.key_unique_per_request([chunk], ("batter_id",))
+
+
+def test_key_overrides_name_existing_endpoints_and_are_used() -> None:
+    from baseballpy.sources.mlb_api.endpoints import BY_NAME, KEY_OVERRIDES
+
+    assert KEY_OVERRIDES
+    for name, key in KEY_OVERRIDES.items():
+        assert BY_NAME[name].keys == key

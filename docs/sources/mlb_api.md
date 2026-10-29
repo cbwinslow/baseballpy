@@ -20280,7 +20280,7 @@ Per-player hitting stats, type vsPlayer, parameters {'season': '{season}', 'oppo
 - **View:** `mlb_people_stats_vs_player_hitting_opp_team`
 - **Processed path:** `processed/mlb_api/people_stats_vs_player_hitting_opp_team/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `person_id`
+- **Key:** `person_id`, `opposing_team_id`, `game_type`, `opponent_id`, `num_teams`, `batter_id`, `pitcher_id`, `season`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -20290,7 +20290,6 @@ Per-player hitting stats, type vsPlayer, parameters {'season': '{season}', 'oppo
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
 | `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
@@ -20320,24 +20319,25 @@ Per-player hitting stats, type vsPlayer, parameters {'season': '{season}', 'oppo
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
 | `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
 | `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` | atBatsPerHomeRun: rate or derived statistic (hitting). (src: mlb_baseball_stats) |
-| `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
-| `team_name` | string | yes | `team.name` | Name of the team. (authored) |
-| `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
 | `opponent_id` | int32 | yes | `opponent.id` | MLBAM identifier of the opponent. (authored) |
 | `opponent_name` | string | yes | `opponent.name` | Name of the opponent. (authored) |
 | `opponent_link` | string | yes | `opponent.link` | Relative MLB Stats API path of the opponent resource (prefix https://statsapi.mlb.com). (authored) |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `num_teams` | int32 | yes | `numTeams` | TODO |
-| `pitcher_id` | int32 | yes | `pitcher.id` | MLBAM identifier of the pitcher. (authored) |
-| `pitcher_full_name` | string | yes | `pitcher.fullName` | Full name of the pitcher. (authored) |
-| `pitcher_link` | string | yes | `pitcher.link` | Relative MLB Stats API path of the pitcher resource (prefix https://statsapi.mlb.com). (authored) |
-| `pitcher_first_name` | string | yes | `pitcher.firstName` | Name of the pitcher first. (authored) |
-| `pitcher_last_name` | string | yes | `pitcher.lastName` | Name of the pitcher last. (authored) |
 | `batter_id` | int32 | yes | `batter.id` | MLBAM identifier of the batter. (authored) |
 | `batter_full_name` | string | yes | `batter.fullName` | Full name of the batter. (authored) |
 | `batter_link` | string | yes | `batter.link` | Relative MLB Stats API path of the batter resource (prefix https://statsapi.mlb.com). (authored) |
 | `batter_first_name` | string | yes | `batter.firstName` | Name of the batter first. (authored) |
 | `batter_last_name` | string | yes | `batter.lastName` | Name of the batter last. (authored) |
+| `season` | string | yes | — | TODO |
+| `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
+| `team_name` | string | yes | `team.name` | Name of the team. (authored) |
+| `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
+| `pitcher_id` | int32 | yes | `pitcher.id` | MLBAM identifier of the pitcher. (authored) |
+| `pitcher_full_name` | string | yes | `pitcher.fullName` | Full name of the pitcher. (authored) |
+| `pitcher_link` | string | yes | `pitcher.link` | Relative MLB Stats API path of the pitcher resource (prefix https://statsapi.mlb.com). (authored) |
+| `pitcher_first_name` | string | yes | `pitcher.firstName` | Name of the pitcher first. (authored) |
+| `pitcher_last_name` | string | yes | `pitcher.lastName` | Name of the pitcher last. (authored) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.people_stats_vs_player_hitting_opp_team -->
@@ -20350,7 +20350,7 @@ Per-player pitching stats, type vsPlayer, parameters {'season': '{season}', 'opp
 - **View:** `mlb_people_stats_vs_player_pitching_opp_team`
 - **Processed path:** `processed/mlb_api/people_stats_vs_player_pitching_opp_team/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `person_id`, `opposing_team_id`, `game_type`, `opponent_id`, `num_teams`, `stat_number_of_pitches`, `stat_ops`, `stat_balls`
+- **Key:** `person_id`, `opposing_team_id`, `game_type`, `opponent_id`, `num_teams`, `batter_id`, `pitcher_id`, `season`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -20360,7 +20360,6 @@ Per-player pitching stats, type vsPlayer, parameters {'season': '{season}', 'opp
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
 | `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
@@ -20403,9 +20402,6 @@ Per-player pitching stats, type vsPlayer, parameters {'season': '{season}', 'opp
 | `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
 | `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
-| `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
-| `team_name` | string | yes | `team.name` | Name of the team. (authored) |
-| `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
 | `opponent_id` | int32 | yes | `opponent.id` | MLBAM identifier of the opponent. (authored) |
 | `opponent_name` | string | yes | `opponent.name` | Name of the opponent. (authored) |
 | `opponent_link` | string | yes | `opponent.link` | Relative MLB Stats API path of the opponent resource (prefix https://statsapi.mlb.com). (authored) |
@@ -20416,6 +20412,10 @@ Per-player pitching stats, type vsPlayer, parameters {'season': '{season}', 'opp
 | `pitcher_link` | string | yes | `pitcher.link` | Relative MLB Stats API path of the pitcher resource (prefix https://statsapi.mlb.com). (authored) |
 | `pitcher_first_name` | string | yes | `pitcher.firstName` | Name of the pitcher first. (authored) |
 | `pitcher_last_name` | string | yes | `pitcher.lastName` | Name of the pitcher last. (authored) |
+| `season` | string | yes | — | TODO |
+| `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
+| `team_name` | string | yes | `team.name` | Name of the team. (authored) |
+| `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
 | `batter_id` | int32 | yes | `batter.id` | MLBAM identifier of the batter. (authored) |
 | `batter_full_name` | string | yes | `batter.fullName` | Full name of the batter. (authored) |
 | `batter_link` | string | yes | `batter.link` | Relative MLB Stats API path of the batter resource (prefix https://statsapi.mlb.com). (authored) |

@@ -463,6 +463,24 @@ _PEOPLE_STATS = [
     for stat, group, keys in PEOPLE_STAT_COMBOS
 ]
 
+#: Keys the payload itself proves unique, where the generated combo key is only ``person_id``.
+#: 2026-10-29: GET /v1/people/592450/stats?stats=vsPlayer&group=hitting&season=2024&opposingTeamId=111
+#: returned 152 rows, all distinct by (pitcher.id, season, gameType); the opponent, batter and
+#: ``numTeams`` columns complete the dimensions of the pitching variant.
+KEY_OVERRIDES: dict[str, tuple[str, ...]] = {
+    f"people_stats_vs_player_{group}_opp_team": (
+        "person_id",
+        "opposing_team_id",
+        "gameType",
+        "opponent.id",
+        "numTeams",
+        "batter.id",
+        "pitcher.id",
+        "season",
+    )
+    for group in ("hitting", "pitching")
+}
+
 _FAN_OUT_PLACEHOLDERS = ("metric", "opposing_team_id", "opposing_player_id")
 
 
@@ -487,7 +505,7 @@ def _param_stats() -> list[MlbEndpoint]:
                     "v1/people/{person_id}/stats",
                     ("stats", "*", "splits"),
                     f"Per-player {group} stats, type {stat}, parameters {dict(params)}.",
-                    keys,
+                    KEY_OVERRIDES.get(f"people_stats_{snake(stat)}_{group}{suffix}", keys),
                     "person_season",
                     merged,
                     "stats",

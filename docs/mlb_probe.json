@@ -1,5 +1,5 @@
 {
- "probed_on": "2026-10-28",
+ "probed_on": "2026-10-29",
  "endpoints": {
   "stats_projected_hitting": {
    "status": "ok",
@@ -451,19 +451,19 @@
   },
   "people_stats_vs_player_hitting_opp_team": {
    "status": "ok",
-   "requests_ok": 54,
-   "requests_failed": 2,
-   "sample_rows": 2024,
+   "requests_ok": 55,
+   "requests_failed": 1,
+   "sample_rows": 2190,
    "columns": 54,
-   "key_unique_per_request": false
+   "key_unique_per_request": true
   },
   "people_stats_vs_player_pitching_opp_team": {
    "status": "ok",
-   "requests_ok": 48,
-   "requests_failed": 8,
-   "sample_rows": 717,
+   "requests_ok": 54,
+   "requests_failed": 2,
+   "sample_rows": 1479,
    "columns": 67,
-   "key_unique_per_request": false
+   "key_unique_per_request": true
   },
   "people_stats_vs_player_running_opp_player": {
    "status": "ok",

@@ -21,6 +21,7 @@ from baseballpy.sources.mlb_api import generic
 from baseballpy.sources.mlb_api.endpoints import (
     BY_NAME,
     ENDPOINTS,
+    KEY_OVERRIDES,
     MLB_BASE_URL,
     SUPPORTED,
     Context,
@@ -229,7 +230,11 @@ def test_fixture_normalizes_completely(name: str, tmp_path: Path) -> None:
     assert table.num_rows >= 1
     assert table.column("_extras").null_count == table.num_rows, "live fields fully covered"
     assert not list((tmp_path / "q").rglob("*.jsonl")), "no cell was quarantined"
+    # a declared override may include dimensions the totals row lacks (a null is one more value)
+    nullable = set(ep.keys[1:]) if name in KEY_OVERRIDES else set()
     for key in ep.keys:
+        if key in nullable:
+            continue
         assert table.column(snake(key)).null_count == 0, f"{name}.{key} has NULL key cells"
 
 

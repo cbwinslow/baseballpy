@@ -34,7 +34,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
 | `retrosheet-csv-bundles` | 1 | 6 | 0, 1, 3, 4, 5, 6 |
-| `verify-optin-paths` | 5 | 3 | 3, 7, 8 |
+| `verify-optin-paths` | 7 | 1 | 7 |
 
 ## Decisions (`docs/DECISIONS.md`)
 
