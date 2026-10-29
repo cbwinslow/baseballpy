@@ -32,6 +32,8 @@ something a designated tool does is a defect, even if its tests pass. This file 
 | Retrosheet event parsing | `chadwickpy` only inside `sources/retrosheet/_chadwick_adapter.py` | GPL boundary (ADR 26) | import it anywhere else; re-implement the parser |
 | Packaging / env | `uv` only | `uv sync`, `uv run` | `pip install`, `python -m venv` |
 | Lint / types | `ruff` (`uvx ruff`), `mypy --strict` (`uv run mypy`) | zero warnings | add `# type: ignore` or `noqa` without a written reason |
+| Export data (files and databases) | `baseballpy export` (`export.py`): `pyarrow` sinks for Parquet and CSV (`sinks/csv.py` keeps types in a `.schema.json` sidecar), `dlt` for PostgreSQL and warehouses, native `DuckDBSink` for DuckDB | ADR 46; `docs/DATA_WORKFLOW.md` | write per-source export code; let `dlt` guess types; skip the read-back check |
+| PostgreSQL in tests | `pgserver` (dev-only embedded PostgreSQL 16, loopback only) | tests skip when it is absent | point unit tests at a shared or homelab server |
 | Code delegation | `agy` via `scripts/agy_delegate.py` | `docs/agents/AGY_DELEGATION.md` | use Claude `Agent`/workflow subagents (owner rule) |
 
 ## Where the project does not yet follow this table (the review finds and fixes these)

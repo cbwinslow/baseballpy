@@ -95,6 +95,7 @@ class LakeConfig(EnvSettings):
     database_path_override: Path | None = Field(
         default=None, description="Override for databases/baseball.duckdb"
     )
+    exports_root_override: Path | None = Field(default=None, description="Override for exports/")
 
     def __init__(self, **values: Any) -> None:
         """Build the config; ``base_dir=`` is accepted as a deprecated alias of ``home=``."""
@@ -145,6 +146,11 @@ class LakeConfig(EnvSettings):
         return self.http_cache_root_override or (self.home / "cache" / "http")
 
     @property
+    def exports_root(self) -> Path:
+        """Root of exported files (Parquet, CSV, DuckDB) written by ``baseballpy export``."""
+        return self.exports_root_override or (self.home / "exports")
+
+    @property
     def database_path(self) -> Path:
         """Location of the DuckDB catalog (views only)."""
         return self.database_path_override or (self.home / "databases" / "baseball.duckdb")
@@ -173,6 +179,12 @@ class LakeConfig(EnvSettings):
     ) -> Path:
         """``processed/<source>/<dataset>/[season=YYYY/]`` (created only when ``create``)."""
         return self._dir(self.processed_root, source, dataset, season, create)
+
+    def export_dir(
+        self, source: str, dataset: str, season: int | None = None, *, create: bool = False
+    ) -> Path:
+        """``exports/<source>/<dataset>/[season=YYYY/]`` (created only when ``create``)."""
+        return self._dir(self.exports_root, source, dataset, season, create)
 
     def dataset_manifest(
         self,
