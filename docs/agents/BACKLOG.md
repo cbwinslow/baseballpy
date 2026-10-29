@@ -109,8 +109,8 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 | B-40 | dlt-pipeline-core 1.2: load into DuckDB and Parquet and compare | DONE: three endpoints, 5 live requests, compared | columns, types, row counts and code size compared with the current path, about 20 requests |
 | B-41 | dlt-pipeline-core 1.3: record what dlt replaced and what it could not | DONE: findings in design.md | findings in design.md |
 | B-42 | dlt-pipeline-core 2.1: ADR 42 adopt or reject | DONE: ADR 42 | ADR 42 cites the numbers |
-| B-43 | `dlt-pipeline-core 3.1`: DltAdapter behind IngestAdapter (design REJECTED by the owner 2026-10-29; redesign first, see docs/agents/HANDOFF_B43.md) | NEEDS REDESIGN (owner brainstorm) | a new design the owner approves: existing tools used better (Arrow interchange, SinkProtocol sinks incl. CSV, dlt, narwhals), uniform and registry-driven |
-| B-44 | `dlt-pipeline-core 3.2`: retire flatten, _extras and drift paths replaced by contracts | after B-43 is redesigned and done | tests, docs generate, gates green |
+| B-43 | dlt-pipeline-core 3.1: DltAdapter behind IngestAdapter (design REJECTED by the owner 2026-10-29; redesign first, see docs/agents/HANDOFF_B43.md) | DONE (superseded by ADR 44 and export-workflow, B-76..B-85) | a new design the owner approves: existing tools used better (Arrow interchange, SinkProtocol sinks incl. CSV, dlt, narwhals), uniform and registry-driven |
+| B-44 | dlt-pipeline-core 3.2: retire flatten, _extras and drift paths replaced by contracts | DONE (superseded by ADR 44 and export-workflow, B-76..B-85) | tests, docs generate, gates green |
 | B-45 | `reference-docs 3`: cross-check endpoints and column types against the reference docs | READY (agy can extract the endpoint and type tables from the cloned docs, Claude verifies against live data) | `docs/references/ENDPOINT_CROSSCHECK.md` lists every registry endpoint with its documented route and types in each reference and any disagreement with the live-probed schema |
 
 ## K. Source-by-source review (owner request 2026-10-29; method in `docs/agents/WORK_BREAKDOWN.md`)
@@ -152,3 +152,18 @@ touches a source under review, do it inside that source's track.
 | B-73 | `data-workflow-standard 2.7`: Statcast records fingerprints and decides with is_current() | in the Statcast review | content or ETag fingerprints recorded, time-to-live kept for how often to ask |
 | B-74 | `data-workflow-standard 2.8`: MLB API records fingerprints and decides with is_current() | in the MLB API review | same as B-73 for the MLB API |
 | B-75 | chadwick-complete-access 1.1-3.1: process-wide register cache, full PlayerRecord, access to all four datasets, cited descriptions, docs, spec merge | DONE (archived 2026-10-29) | Chadwick has no open tasks; remaining Chadwick-adjacent work is only B-43 (export command, CSV/PostgreSQL) and the Retrosheet use of the Chadwick software tools |
+
+## L. Export workflow, Chadwick as the model (`export-workflow`, replaces B-43 and B-44)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-76 | `export-workflow 1.1`: owner answers decisions A to D, ADR 46 | OWNER | four answers recorded, ADR 46 written |
+| B-77 | `export-workflow 2.1`: `exports/` tier in LakeConfig and path rules | after B-76 | paths from design.md, override env var, tests |
+| B-78 | `export-workflow 2.2`: CSV sink with `.schema.json` sidecar | after B-76 | Arrow round trip through CSV equals the original table, tests |
+| B-79 | `export-workflow 2.3`: typed dlt database sink | after B-76 | explicit column types and registry key passed to dlt; replace/append/merge tests on DuckDB and embedded Postgres |
+| B-80 | `export-workflow 2.4`: `export_dataset()` with verify and audit | after B-77..B-79 | rows and schema read back, audit event written, tests |
+| B-81 | `export-workflow 2.5`: `baseballpy export` command | after B-80 | CliRunner tests, `docs/CLI.md` regenerated |
+| B-82 | `export-workflow 3.1`: round-trip tests for all four targets | after B-80 | Parquet, CSV, DuckDB, embedded Postgres; Postgres skipped when `pgserver` is absent |
+| B-83 | `export-workflow 4.1`: export all Chadwick datasets to every target | after B-81 | numbers and comparison recorded in design.md |
+| B-84 | `export-workflow 4.2`: export section of `docs/DATA_WORKFLOW.md` and the source-onboarding checklist | after B-83 | page written, exceptions listed |
+| B-85 | `export-workflow 5.1`: spec delta merged, ADR, archive | after B-83, B-84 | change archived, specs validate |

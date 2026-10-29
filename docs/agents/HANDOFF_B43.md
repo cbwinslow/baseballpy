@@ -1,5 +1,7 @@
 # Handoff: B-43 must be redesigned (owner said the design was wrong, 2026-10-29)
 
+> SUPERSEDED (2026-10-29): the redesign is ADR 44 and the change `export-workflow`; this file is kept for history.
+
 Read this first in the next session, then brainstorm with the owner before writing any code.
 
 ## What the owner said (verbatim intent)

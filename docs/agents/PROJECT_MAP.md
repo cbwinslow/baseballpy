@@ -24,14 +24,14 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 ## Active changes (`openspec/changes/`)
 
-29 changes are archived under `openspec/changes/archive/`.
+30 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 1 | 4.2 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `data-workflow-standard` | 8 | 5 | 2.5, 2.6, 2.7, 2.8 |
-| `dlt-pipeline-core` | 6 | 3 | 3.1, 3.2 |
+| `export-workflow` | 0 | 15 | 1.1, 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 4.1, 4.2, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `mlb-stats-route-406-and-deep-pools` | 0 | 9 | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2 |
 | `reference-docs` | 2 | 1 | 3 |
