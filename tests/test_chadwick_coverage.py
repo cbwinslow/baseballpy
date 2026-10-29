@@ -12,9 +12,10 @@ from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import datasets_for, get_dataset
 from baseballpy.core.http import HttpClient
 from baseballpy.core.sources_lock import get_source_ref
-from baseballpy.core.stores import ProcessedStore
+from baseballpy.core.stores import ProcessedStore, RawStore
 from baseballpy.sources import catalog
 from baseballpy.sources.chadwick.extractor import HEX_SHARDS, ChadwickExtractor
+from baseballpy.sources.chadwick.ingest import _PARSERS, dataset_names, ingest
 from baseballpy.sources.chadwick.normalizer import ChadwickNormalizer
 from baseballpy.sources.chadwick.register import ChadwickRegister
 from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_SCHEMAS
@@ -205,3 +206,83 @@ def test_load_persists_all_four_datasets_and_names_feed_alias_search(tmp_path: P
     assert len(register) == 16 * 4
     entry = cfg.dataset_manifest("chadwick", "register").get_chunk("data")
     assert entry is not None and entry["source_ref"] == get_source_ref("chadwick_register").ref
+
+
+def _serve_everything() -> None:
+    names = [*HEX_SHARDS, "names.csv", "links.csv", "countries.csv"]
+    _tree(names)
+    people = (FIX / "people_real_header_sample.csv").read_bytes()
+    bodies = {s: people for s in HEX_SHARDS}
+    bodies["names.csv"] = (FIX / "names_sample.csv").read_bytes()
+    bodies["links.csv"] = (FIX / "links_sample.csv").read_bytes()
+    bodies["countries.csv"] = (FIX / "countries_sample.csv").read_bytes()
+    _serve(names, bodies)
+
+
+def test_ingest_has_a_parser_for_exactly_the_registered_datasets() -> None:
+    assert set(_PARSERS) == set(dataset_names())
+
+
+@respx.mock
+def test_ingest_stores_all_datasets_without_building_the_lookup_index(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def boom(self: ChadwickRegister) -> None:
+        raise AssertionError("ingest must not build the lookup index")
+
+    monkeypatch.setattr(ChadwickRegister, "_build_index", boom)
+    _serve_everything()
+    cfg = LakeConfig(home=tmp_path)
+    outcome = ingest(config=cfg)
+    assert set(outcome.rows) == set(dataset_names())
+    assert all(rows > 0 for rows in outcome.rows.values())
+    store = ProcessedStore(cfg)
+    for name, rows in outcome.rows.items():
+        assert store.row_count(get_dataset("chadwick", name)) == rows
+
+
+@respx.mock
+def test_ingest_subset_reuses_the_cache_and_unknown_names_fail(tmp_path: Path) -> None:
+    _serve_everything()
+    cfg = LakeConfig(home=tmp_path)
+    first = ingest(["register_names"], config=cfg)
+    assert list(first.rows) == ["register_names"] and set(first.tables) == {"register_names"}
+    requests_after_first = len(respx.calls)
+    again = ingest(["register_names"], config=cfg)
+    assert again.rows == first.rows and again.tables == {}
+    assert len(respx.calls) == requests_after_first  # nothing downloaded the second time
+    with pytest.raises(ValueError, match="unknown dataset"):
+        ingest(["nope"], config=cfg)
+
+
+@respx.mock
+def test_upstream_readme_is_kept_with_its_sha256_when_the_tree_lists_it(tmp_path: Path) -> None:
+    ref = get_source_ref("chadwick_register").ref
+    respx.get(f"{API}/{ref}?recursive=1").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "truncated": False,
+                "tree": [
+                    {"path": "README.md", "type": "blob", "size": 8, "sha": "r"},
+                    *(
+                        {"path": f"data/{n}", "type": "blob", "size": 1, "sha": "x"}
+                        for n in HEX_SHARDS
+                    ),
+                ],
+            },
+        )
+    )
+    _serve(list(HEX_SHARDS))
+    readme = b"# Chadwick Baseball Bureau Persons Register\n"
+    respx.get(f"https://raw.githubusercontent.com/chadwickbureau/register/{ref}/README.md").mock(
+        return_value=httpx.Response(200, content=readme)
+    )
+    ext, _ = _extractor(tmp_path)
+    ext.extract()
+    raw = RawStore(LakeConfig(home=tmp_path))
+    assert raw.get("chadwick", "register", "README.md") == readme
+    assert raw.verify("chadwick", "register", "README.md")
+    calls = len(respx.calls)
+    ext.extract()  # cached: the README is present, so nothing is downloaded again
+    assert len(respx.calls) == calls

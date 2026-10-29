@@ -84,3 +84,11 @@ index in `ChadwickRegister._by_id`; int ids are coerced, retro/bbref/bbref_minor
 `BBREF_MINORS`, `NPB`, `WIKIDATA`. `PlayerRecord.key_npb` is now `int | None` (was `str`). The whole
 9 x 9 crosswalk matrix is a test. Targeted run: 29 passed (`test_chadwick`, `test_chadwick_coverage`,
 `test_architecture`), mypy --strict clean. Duplicate-id guard and the vectorised build stay in 5.4.
+
+## As built: tasks 5.1, 5.2 and 5.6 (cards C-09, C-10, C-14), 2026-10-29
+- New `sources/chadwick/ingest.py`: `ingest(datasets, refresh=...)` downloads once, types and stores the selected datasets and returns rows per dataset; cached datasets are read from the Parquet footer. Dataset names come from the registry (`dataset_names()`); a small parser table must match the registry (test). `ChadwickRegister.load` now calls it and then builds the index.
+- Deviation from card C-10 (one job per dataset): the adapter keeps ONE job `register` with an optional `datasets=a,b` parameter. Reason: per-dataset jobs would each pass `--refresh` to the shared download (the same 70 MB four times, and a race when jobs run in threads). Rows are summed in `JobResult.rows`; the per-dataset counts are in `detail`.
+- Missing aux file in the download: logged warning, dataset skipped with 0 rows (as before, but no longer silent).
+- README: `_fetch_documents` keeps `README.md` in `raw/chadwick/register/` with sha256 when the git tree lists it; a failed download is logged and does not block the data. Cached runs fetch it only if missing.
+- Spec delta written (`specs/chadwick-register/spec.md`: modified crosswalk requirement, new per-dataset ingest requirement); merged at archive (task 4.1). Docs: keys, quirks and selection added to `docs/sources/chadwick.md`.
+- Real run, this PC, 2026-10-29: `ingest chadwick` job 15.3 s -> 1.8 s (download cached), cached rerun 0.05 s; `-d register_names` works; unknown names are rejected with the registry list.

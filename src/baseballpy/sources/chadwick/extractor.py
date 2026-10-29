@@ -32,6 +32,9 @@ AUXILIARY_DATASETS = {
     "links.csv": "register_links",
     "countries.csv": "register_countries",
 }
+#: Repository-root documents kept next to the shards in ``raw/chadwick/register/`` (they explain the
+#: id systems and the key rules); they are fetched only when the git tree lists them.
+DOCUMENT_FILES = ("README.md",)
 _SHARD = re.compile(r"^people-[0-9a-f]\.csv$")
 
 
@@ -118,6 +121,35 @@ class ChadwickExtractor:
             logger.warning("Chadwick tree has data file(s) no dataset covers yet: %s", uncovered)
         return [*shards, *aux]
 
+    def _fetch_documents(self, source_ref: str, *, only_missing: bool) -> None:
+        """Keep the upstream documents the git tree lists (see ``DOCUMENT_FILES``).
+
+        A failed download is logged and does not block the register: the data files are what the
+        datasets are built from.
+        """
+        try:
+            entries = fetch_tree(self.source_ref, self.cache_config, self.http)
+        except (HttpStatusError, TransportError, ValueError, TreeTruncatedError) as exc:
+            logger.warning("could not list Chadwick documents from the git tree: %s", exc)
+            return
+        listed = {e.path for e in entries}
+        for name in DOCUMENT_FILES:
+            if name not in listed or (only_missing and (self.shards_dir / name).exists()):
+                continue
+            try:
+                result = self.http.get_sync(f"{self.source_ref.raw_base()}/{name}")
+            except (HttpStatusError, TransportError) as exc:
+                logger.warning("could not download Chadwick document %s: %s", name, exc)
+                continue
+            self.raw.put(
+                "chadwick",
+                "register",
+                name,
+                result.content,
+                source_ref=source_ref or None,
+                etag=result.etag or "",
+            )
+
     def get_latest_commit_sha(self) -> str | None:
         """Query the GitHub API (authenticated when ``GITHUB_TOKEN`` is set) for the latest SHA.
 
@@ -198,6 +230,7 @@ class ChadwickExtractor:
         ) as tracker:
             if self.is_cache_current(refresh):
                 tracker.set_cache_hit(True)
+                self._fetch_documents(self.source_ref.ref, only_missing=True)
                 return self._read_cached_files()
 
             files = self.discover_files(refresh=refresh)
@@ -213,6 +246,7 @@ class ChadwickExtractor:
                 for name, future in futures.items():
                     results[name] = future.result()
 
+            self._fetch_documents(latest_sha or "", only_missing=False)
             self.manifest.set_completed(
                 SHA_CHUNK,
                 records_count=len(results),

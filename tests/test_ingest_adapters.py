@@ -1,7 +1,7 @@
 """Tests for source ingest adapters and registration."""
 
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from dataclasses import dataclass
 from typing import Any
 
@@ -425,36 +425,44 @@ def test_lahman_adapter() -> None:
 # ----------------------------------------------------------------------
 
 
-class FakeRegister:
-    def __len__(self) -> int:
-        return 42
+CHADWICK_ROWS = {
+    "register": 40,
+    "register_countries": 2,
+    "register_links": 7,
+    "register_names": 3,
+}
 
 
 def test_chadwick_adapter() -> None:
-    loader_calls: list[bool] = []
+    calls: list[tuple[list[str] | None, bool]] = []
 
-    def fake_loader(refresh: bool = False) -> FakeRegister:
-        loader_calls.append(refresh)
-        return FakeRegister()
+    def fake_loader(datasets: Sequence[str] | None, refresh: bool) -> dict[str, int]:
+        calls.append((None if datasets is None else list(datasets), refresh))
+        return {d: n for d, n in CHADWICK_ROWS.items() if datasets is None or d in datasets}
 
     adapter = ChadwickAdapter(loader=fake_loader)
     assert isinstance(adapter, IngestAdapter)
     assert adapter.all_seasons() == []
 
-    # plan with empty seasons and non-empty seasons
+    # every registered dataset is accepted; selecting all of them is the plain job
     assert adapter.plan(Selection(seasons=())) == [make_job("chadwick", "register")]
     assert adapter.plan(Selection(seasons=(2023,))) == [make_job("chadwick", "register")]
+    every = tuple(CHADWICK_ROWS)
+    assert adapter.plan(Selection(datasets=every)) == [make_job("chadwick", "register")]
 
-    # dataset filtering
-    assert adapter.plan(Selection(datasets=("register",))) == [make_job("chadwick", "register")]
+    # a subset is carried in the job parameters, in registry order
+    subset = adapter.plan(Selection(datasets=("register_names", "register_links")))
+    assert subset == [make_job("chadwick", "register", datasets="register_links,register_names")]
     with pytest.raises(ValueError, match="unknown dataset"):
         adapter.plan(Selection(datasets=("invalid",)))
 
-    # run
+    # run: rows are summed, the detail names each dataset
     res = adapter.run(make_job("chadwick", "register"), refresh=True)
     assert res.status == JobStatus.COMPLETED
-    assert res.rows == 42
-    assert loader_calls == [True]
+    assert res.rows == sum(CHADWICK_ROWS.values())
+    assert "register_names=3" in res.detail
+    res = adapter.run(subset[0])
+    assert res.rows == 10 and calls == [(None, True), (["register_links", "register_names"], False)]
 
     # unknown task
     with pytest.raises(ValueError, match="unknown task"):

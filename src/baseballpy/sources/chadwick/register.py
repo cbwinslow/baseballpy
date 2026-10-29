@@ -13,13 +13,21 @@ from baseballpy.core.datasets import get_dataset
 from baseballpy.core.stores import ProcessedStore
 from baseballpy.sources import catalog
 from baseballpy.sources.chadwick.extractor import ChadwickExtractor
-from baseballpy.sources.chadwick.normalizer import ChadwickNormalizer
+from baseballpy.sources.chadwick.ingest import ingest
 from baseballpy.sources.chadwick.schema import PlayerIdType
 
 #: ``PlayerIdType.value`` is the register column and the ``PlayerRecord`` field; these sets say how
 #: an id of that type is compared (integers are coerced, some text ids ignore case).
 _INT_IDS = frozenset({PlayerIdType.MLBAM, PlayerIdType.FANGRAPHS, PlayerIdType.NPB})
-_CASEFOLDED_IDS = frozenset({PlayerIdType.RETRO, PlayerIdType.BBREF, PlayerIdType.BBREF_MINORS})
+_CASEFOLDED_IDS = frozenset(
+    {
+        PlayerIdType.PERSON,
+        PlayerIdType.UUID,
+        PlayerIdType.RETRO,
+        PlayerIdType.BBREF,
+        PlayerIdType.BBREF_MINORS,
+    }
+)
 _ID_TYPES = {id_type.value: id_type for id_type in PlayerIdType}
 
 
@@ -34,9 +42,17 @@ def _id_type(value: PlayerIdType | str) -> PlayerIdType:
 
 def _normalise_id(id_type: PlayerIdType, value: Any) -> Any:
     """The form in which ``value`` is stored in and looked up from the index of ``id_type``."""
+    if value is None or value == "":
+        return None
     if id_type in _INT_IDS:
-        return int(value)
-    text = str(value)
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            try:
+                return int(float(value))
+            except (ValueError, TypeError):
+                return None
+    text = str(value).strip()
     return text.lower() if id_type in _CASEFOLDED_IDS else text
 
 
@@ -217,8 +233,9 @@ class ChadwickRegister:
 
             for id_type, index in self._by_id.items():
                 value = getattr(rec, id_type.value)
-                if value is not None and value != "":
-                    index[_normalise_id(id_type, value)] = rec
+                norm = _normalise_id(id_type, value)
+                if norm is not None:
+                    index[norm] = rec
 
             name_key = rec.full_name.lower()
             if name_key:
@@ -266,8 +283,12 @@ class ChadwickRegister:
             (PlayerIdType.WIKIDATA, wikidata),
         )
         for id_type, value in given:
-            if value is not None:
-                return self._by_id[id_type].get(_normalise_id(id_type, value))
+            if value is not None and value != "":
+                norm = _normalise_id(id_type, value)
+                if norm is not None:
+                    rec = self._by_id[id_type].get(norm)
+                    if rec is not None:
+                        return rec
         return None
 
     def resolve_id(
@@ -281,9 +302,14 @@ class ChadwickRegister:
         Both types may be a ``PlayerIdType`` or its name (``"key_mlbam"`` or ``"mlbam"``); an
         unknown type raises ``ValueError``.
         """
+        if id_value is None or id_value == "":
+            return None
         source = _id_type(from_type)
         target = _id_type(to_type)
-        record = self._by_id[source].get(_normalise_id(source, id_value))
+        norm = _normalise_id(source, id_value)
+        if norm is None:
+            return None
+        record = self._by_id[source].get(norm)
         return None if record is None else getattr(record, target.value)
 
     def search_name(
@@ -348,44 +374,15 @@ class ChadwickRegister:
         catalog.register_all()
         config = cache_config or LakeConfig()
         store = ProcessedStore(config)
+        outcome = ingest(
+            refresh=refresh, config=config, extractor=ChadwickExtractor(cache_config=config)
+        )
         register_spec = get_dataset("chadwick", "register")
         names_spec = get_dataset("chadwick", "register_names")
-        links_spec = get_dataset("chadwick", "register_links")
-        countries_spec = get_dataset("chadwick", "register_countries")
-
-        extractor = ChadwickExtractor(cache_config=config)
-        if not refresh and store.is_cached(register_spec) and extractor.is_cache_current(False):
+        table = outcome.tables.get("register")
+        if table is None:
             table = store.read_part(register_spec)
-            names_table = store.read_part(names_spec) if store.is_cached(names_spec) else None
-            return cls(table, names_table=names_table)
-
-        # Extract and normalize
-        normalizer = ChadwickNormalizer()
-        raw_shards = extractor.extract(refresh=refresh)
-        table = normalizer.normalize(raw_shards)
-
-        names_table = None
-        if "names.csv" in raw_shards:
-            names_table = normalizer.normalize_names(raw_shards["names.csv"])
-        links_table = (
-            normalizer.normalize_links(raw_shards["links.csv"])
-            if "links.csv" in raw_shards
-            else None
-        )
-        countries_table = (
-            normalizer.normalize_countries(raw_shards["countries.csv"])
-            if "countries.csv" in raw_shards
-            else None
-        )
-
-        # Persist as typed Parquet in processed/
-        if config.enabled and len(table) > 0:
-            ref = (extractor.manifest.get_chunk("commit_sha") or {}).get("sha") or None
-            store.put(register_spec, table, source_ref=ref)
-            if names_table is not None and len(names_table) > 0:
-                store.put(names_spec, names_table, source_ref=ref)
-            for spec, aux in ((links_spec, links_table), (countries_spec, countries_table)):
-                if aux is not None and len(aux) > 0:
-                    store.put(spec, aux, source_ref=ref)
-
+        names_table = outcome.tables.get("register_names")
+        if names_table is None and store.is_cached(names_spec):
+            names_table = store.read_part(names_spec)
         return cls(table, names_table=names_table)

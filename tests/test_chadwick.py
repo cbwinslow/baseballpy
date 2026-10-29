@@ -193,6 +193,16 @@ def test_resolve_id_accepts_names_ignores_case_and_returns_none_for_unknown_ids(
     register = _full_register()
     assert register.resolve_id("OHTAS001", "key_retro", "key_mlbam") == 660271
     assert register.resolve_id("Q4391858", "wikidata", "retro") == "ohtas001"
+    assert register.resolve_id("270BFA31", PlayerIdType.PERSON, PlayerIdType.MLBAM) == 660271
+    assert (
+        register.resolve_id(
+            "270BFA31-F65B-4D2B-A54A-09DCA1B6A000", PlayerIdType.UUID, PlayerIdType.MLBAM
+        )
+        == 660271
+    )
+    assert register.resolve_id("660271.0", PlayerIdType.MLBAM, PlayerIdType.RETRO) == "ohtas001"
+    assert register.resolve_id(None, PlayerIdType.MLBAM, PlayerIdType.RETRO) is None
+    assert register.resolve_id("", PlayerIdType.MLBAM, PlayerIdType.RETRO) is None
     assert register.resolve_id(1, PlayerIdType.MLBAM, PlayerIdType.RETRO) is None
     assert register.resolve_id(592450, PlayerIdType.MLBAM, PlayerIdType.NPB) is None
 

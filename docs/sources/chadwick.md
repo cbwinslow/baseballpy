@@ -31,6 +31,10 @@
 - `names.csv` columns are `altname_*` (not `name_*`): `altname_type`, `altname_lang`, `altname_last`, `altname_first`, `altname_given`, `altname_matrilineal`, `altname_nick`, `altname_date_start`, `altname_date_end`.
 - `links.csv` identifies the external system in `source` (e.g. `tsncards`) and its identifier in `value`.
 - Country code `NA` (Namibia) is data, not NULL; only empty cells are NULL.
+- **Keys (from the upstream README):** `key_uuid` is the primary key and is never re-used. `key_person` is the first 8 hex digits of it: unique within one release, but upstream may re-use a short key for a different identity over time. `names` and `links` refer to people by `key_person`, so join them only against the register of the same release. The upstream README is kept at `raw/chadwick/register/README.md` (with its sha256).
+- `key_bbref_minors` is filled for every person (it is not limited to minor leaguers) and is a different id space from `key_bbref`; `key_npb` is an integer.
+- Upstream quirks (verified 2026-10-29 on the pinned commit): `links.source` holds `tsncardS` (capital S) on a few rows besides `tsncards`; one `names.csv` row names a `key_person` that is not in the register. Both are kept as published.
+- Selecting data: any of the four datasets can be ingested by name (`baseballpy ingest chadwick -d register_names`); one ingest downloads the files once and reports the rows of each dataset.
 - Any column the schema does not know is preserved as JSON in the trailing `_extras` column and logged once as `schema_drift`.
 
 ## Exhaustive Master Register Schema Dictionary (`CHADWICK_PEOPLE_SCHEMA`)
