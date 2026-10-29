@@ -63,6 +63,20 @@ def allstar(refresh: bool = False) -> pa.Table:
     return get_default_source().allstar(refresh=refresh)
 
 
+def table(name: str, refresh: bool = False) -> pa.Table:
+    """Any of the 27 Lahman tables by name (any letter case), e.g. ``table("Batting")``.
+
+    The names are the ones in :class:`LahmanTable`; an unknown name raises ``ValueError`` listing
+    them. Tables are read once per process and reused until the Parquet changes.
+    """
+    return get_default_source().get_table(name, refresh=refresh)
+
+
+def tables() -> list[str]:
+    """The names of the 27 Lahman tables."""
+    return get_default_source().list_tables()
+
+
 def import_archive(archive_path: Path | str) -> int:
     """Import a local Lahman ZIP archive or unzipped directory downloaded from SABR Box."""
     return get_default_source().import_archive(archive_path)
@@ -89,5 +103,7 @@ __all__ = [
     "people",
     "pitching",
     "salaries",
+    "table",
+    "tables",
     "teams",
 ]

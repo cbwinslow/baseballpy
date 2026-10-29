@@ -8,6 +8,7 @@ import pyarrow as pa
 import respx
 
 from baseballpy.core.config import LakeConfig
+from baseballpy.core.sources_lock import get_source_ref
 from baseballpy.sources.lahman.api import LahmanSource
 from baseballpy.sources.lahman.extractor import LAHMAN_GITHUB_BASE
 from baseballpy.sources.lahman.normalizer import LahmanNormalizer
@@ -53,8 +54,18 @@ def test_lahman_normalizer_batting() -> None:
 def test_lahman_extractor_and_caching(tmp_path: Path) -> None:
     cache_config = LakeConfig(home=tmp_path)
     source = LahmanSource(cache_config=cache_config)
+    ref = get_source_ref("lahman")
 
-    # Mock remote GitHub mirror
+    # Mock the remote GitHub mirror: the git tree (blob fingerprints) and the file
+    respx.get(f"https://api.github.com/repos/{ref.repo}/git/trees/{ref.ref}?recursive=1").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "truncated": False,
+                "tree": [{"path": "data/Batting.csv", "type": "blob", "size": 1, "sha": "b1"}],
+            },
+        )
+    )
     respx.get(f"{LAHMAN_GITHUB_BASE}/Batting.csv").mock(
         return_value=httpx.Response(200, content=SAMPLE_BATTING_CSV.encode("utf-8"))
     )
@@ -70,12 +81,12 @@ def test_lahman_extractor_and_caching(tmp_path: Path) -> None:
     assert raw_file.exists()
     assert processed_file.exists()
 
-    # Verify manifest
-    assert source.extractor.manifest_for("Batting").is_completed("Batting")
+    # Verify manifest: one completed entry per raw file
+    assert source.extractor.manifest_for("Batting").is_completed("Batting.csv")
 
     # 2. Second fetch reads directly from local Parquet cache without network calls
     respx.get(f"{LAHMAN_GITHUB_BASE}/Batting.csv").mock(return_value=httpx.Response(500))
-    cached_table = source.batting(refresh=False)
+    cached_table = LahmanSource(cache_config=cache_config).batting(refresh=False)
     assert len(cached_table) == 2
 
 

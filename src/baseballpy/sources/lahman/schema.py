@@ -40,6 +40,22 @@ class LahmanTable(StrEnum):
     TEAMS_HALF = "TeamsHalf"
 
 
+_BY_LOWER = {table.value.lower(): table.value for table in LahmanTable}
+
+
+def canonical_table_name(name: str | LahmanTable) -> str:
+    """The table name as Lahman spells it, accepting any letter case (``"batting"`` -> ``Batting``).
+
+    Raises ``ValueError`` listing the 27 known names for anything else.
+    """
+    found = _BY_LOWER.get(str(name).strip().lower())
+    if found is None:
+        raise ValueError(
+            f"unknown table {str(name)!r} for lahman; known: {sorted(_BY_LOWER.values())}"
+        )
+    return found
+
+
 #: Strict schema for every one of the 27 tables (typed columns + trailing ``_extras`` JSON string).
 LAHMAN_SCHEMAS: dict[str, pa.Schema] = {
     table: schema_from_columns(columns) for table, columns in LAHMAN_COLUMNS.items()

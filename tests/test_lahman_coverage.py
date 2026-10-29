@@ -141,8 +141,9 @@ def test_import_archive_imports_all_27_as_local_import_and_never_hits_the_networ
     )
     source = LahmanSource(cfg)
     assert source.import_archive(archive) == 27
-    entry = source.extractor.manifest_for("Batting").get_chunk("Batting")
+    entry = source.extractor.file_entry("Batting")
     assert entry is not None and entry["origin"] == LOCAL_IMPORT
+    assert entry["source_ref"] == LOCAL_IMPORT and entry["records_count"] == 5
     # served from the imported data: pytest-socket would fail any network attempt
     assert len(source.get_table("Batting")) == 5
     assert source.extractor.extract_table("Batting").startswith(b"playerID")

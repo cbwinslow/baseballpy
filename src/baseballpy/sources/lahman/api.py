@@ -1,7 +1,10 @@
 """High-level public interface for the SABR Lahman Baseball Database."""
 
+import hashlib
 import logging
+import time
 import zipfile
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import pyarrow as pa
@@ -11,11 +14,17 @@ from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS, DatasetSpec
 from baseballpy.core.stores import ProcessedStore, RawStore
+from baseballpy.core.upstream import CONTENT_SHA256, Fingerprint, is_current, stored_fingerprint
 from baseballpy.sources import catalog
-from baseballpy.sources.lahman.extractor import LOCAL_IMPORT, LahmanExtractor
+from baseballpy.sources.lahman.extractor import (
+    DOCUMENT_DATASET,
+    LOCAL_IMPORT,
+    LahmanExtractor,
+    data_rows,
+)
 from baseballpy.sources.lahman.normalizer import LahmanNormalizer
 from baseballpy.sources.lahman.quality import quality_report
-from baseballpy.sources.lahman.schema import LahmanTable
+from baseballpy.sources.lahman.schema import LahmanTable, canonical_table_name
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +49,32 @@ def lahman_spec(table_name: str, schema: pa.Schema | None = None) -> DatasetSpec
     )
 
 
+@dataclass(frozen=True)
+class LoadedTable:
+    """A table and whether it was served from a cache (memory or processed Parquet)."""
+
+    table: pa.Table
+    from_cache: bool
+
+
+@dataclass
+class ImportReport:
+    """What the last :meth:`LahmanSource.import_archive` did."""
+
+    tables: list[str] = field(default_factory=list)
+    documents: list[str] = field(default_factory=list)
+    raw_only: list[str] = field(default_factory=list)
+
+
+def _is_document(filename: str) -> bool:
+    lower = Path(filename).name.lower()
+    return not lower.endswith(".csv") and lower.startswith(("readme", "license", "licence"))
+
+
+def _content_fingerprint(data: bytes) -> Fingerprint:
+    return Fingerprint(CONTENT_SHA256, hashlib.sha256(data).hexdigest(), origin=LOCAL_IMPORT)
+
+
 class LahmanSource:
     """Orchestrator for Lahman Baseball Database extraction, local import, and caching."""
 
@@ -50,23 +85,80 @@ class LahmanSource:
         self.normalizer = LahmanNormalizer()
         self.raw = RawStore(self.cache_config)
         self.store = ProcessedStore(self.cache_config)
+        self.last_import = ImportReport()
+        #: tables already read in this process: name -> (parquet stamp, loaded at, table)
+        self._memory: dict[str, tuple[tuple[int, int], float, pa.Table]] = {}
 
-    def _import_csv(self, filename: str, data: bytes) -> None:
-        """Store one user-supplied CSV in raw/ and compile it to typed Parquet in processed/."""
-        table_name = Path(filename).stem
-        self.raw.put("lahman", table_name, f"{table_name}.csv", data, source_ref=LOCAL_IMPORT)
+    # -- user-supplied archives -----------------------------------------------------------------
+
+    def _import_csv(self, filename: str, data: bytes) -> str:
+        """Store one supplied CSV: a known table is typed into Parquet, anything else stays raw.
+
+        Returns ``"table"`` or ``"raw_only"``. Unknown CSV files are never turned into unregistered
+        tables; their bytes are kept in ``raw/`` and a warning names them.
+        """
+        stem = Path(filename).stem
+        fingerprint = _content_fingerprint(data)
+        try:
+            table_name = canonical_table_name(stem)
+        except ValueError:
+            logger.warning(
+                "supplied file %s is not one of the 27 Lahman tables; its bytes are kept in raw/ "
+                "and no table is built from it",
+                filename,
+            )
+            self.raw.put(
+                "lahman",
+                stem,
+                f"{stem}.csv",
+                data,
+                source_ref=LOCAL_IMPORT,
+                upstream=fingerprint,
+                records=data_rows(data),
+                extra={"origin": LOCAL_IMPORT, "source": LOCAL_IMPORT},
+            )
+            return "raw_only"
+        self.raw.put(
+            "lahman",
+            table_name,
+            f"{table_name}.csv",
+            data,
+            source_ref=LOCAL_IMPORT,
+            upstream=fingerprint,
+            records=data_rows(data),
+            extra={"origin": LOCAL_IMPORT, "source": LOCAL_IMPORT},
+        )
         table = self.normalizer.normalize(data, table_name=table_name)
         self.store.put(
             lahman_spec(table_name, table.schema),
             table,
             source_ref=LOCAL_IMPORT,
-            metadata=self._quality(table_name, table),
+            metadata={**self._quality(table_name, table), "upstream": fingerprint.to_dict()},
         )
-        self.extractor.manifest_for(table_name).set_completed(
-            table_name,
-            records_count=len(table),
-            metadata={"origin": LOCAL_IMPORT, "source": LOCAL_IMPORT},
+        return "table"
+
+    def _import_document(self, filename: str, data: bytes) -> None:
+        """Keep a supplied README, licence or data dictionary in ``raw/lahman/documents/``."""
+        self.raw.put(
+            "lahman",
+            DOCUMENT_DATASET,
+            Path(filename).name,
+            data,
+            source_ref=LOCAL_IMPORT,
+            upstream=_content_fingerprint(data),
+            extra={"origin": LOCAL_IMPORT, "source": LOCAL_IMPORT},
         )
+
+    def _import_member(self, filename: str, data: bytes) -> None:
+        lower = filename.lower()
+        if lower.endswith(".csv"):
+            kind = self._import_csv(filename, data)
+            (self.last_import.tables if kind == "table" else self.last_import.raw_only).append(
+                Path(filename).stem
+            )
+        elif _is_document(filename):
+            self._import_document(filename, data)
+            self.last_import.documents.append(Path(filename).name)
 
     def _people_ids(self) -> pa.ChunkedArray | None:
         """``People.playerID`` from the processed store if already present (never fetches)."""
@@ -101,12 +193,15 @@ class LahmanSource:
     def import_archive(self, archive_path: Path | str) -> int:
         """Import a local Lahman ZIP archive or unzipped directory downloaded from SABR Box.
 
-        Copies raw CSVs into cache raw/ directory and compiles them directly into
-        strongly-typed Parquet tables in processed/.
+        Copies the raw CSVs into ``raw/`` and compiles the 27 known tables into strongly-typed
+        Parquet in ``processed/``; the release's README, licence and data dictionary are kept in
+        ``raw/lahman/documents/``; a CSV that is not one of the 27 tables is kept raw only, with a
+        warning. Returns the number of tables imported; :attr:`last_import` lists everything.
         """
         path = Path(archive_path).expanduser().resolve()
         if not path.exists():
             raise FileNotFoundError(f"Lahman archive path does not exist: {path}")
+        self.last_import = ImportReport()
 
         with default_audit_logger.track(
             operation="lahman_import_archive",
@@ -114,129 +209,167 @@ class LahmanSource:
             endpoint=str(path),
             destination=str(self.cache_config.processed_root / "lahman"),
         ) as tracker:
-            imported_count = 0
-
-            # Handle ZIP file
             if path.is_file() and path.suffix.lower() == ".zip":
                 with zipfile.ZipFile(path, "r") as zf:
                     members = [
                         info
                         for info in zf.infolist()
-                        if info.filename.lower().endswith(".csv")
-                        and not info.filename.startswith("__MACOSX")
+                        if not info.is_dir() and not info.filename.startswith("__MACOSX")
                     ]
                     self._check_zip_safety(members)
                     for info in members:
                         with zf.open(info) as src:
-                            self._import_csv(Path(info.filename).name, src.read())
-                        imported_count += 1
-                tracker.set_records(imported_count)
-                return imported_count
+                            self._import_member(Path(info.filename).name, src.read())
+            elif path.is_dir():
+                for file in sorted(path.glob("**/*")):
+                    if file.is_file() and not file.name.startswith("."):
+                        self._import_member(file.name, file.read_bytes())
+            else:
+                raise ValueError(f"Unsupported archive format: {path}. Expected .zip or directory.")
+            self._memory.clear()
+            tracker.set_records(len(self.last_import.tables))
+            return len(self.last_import.tables)
 
-            # Handle directory
-            if path.is_dir():
-                for csv_file in path.glob("**/*.csv"):
-                    if csv_file.name.startswith("."):
-                        continue
-                    self._import_csv(csv_file.name, csv_file.read_bytes())
-                    imported_count += 1
-                tracker.set_records(imported_count)
-                return imported_count
+    # -- reading tables ---------------------------------------------------------------------------
 
-            raise ValueError(f"Unsupported archive format: {path}. Expected .zip or directory.")
+    def _memory_hit(self, name: str, parquet: Path, refresh: bool) -> pa.Table | None:
+        """The table from this process's memory while its Parquet is unchanged and not expired."""
+        kept = self._memory.get(name)
+        if refresh or kept is None or not parquet.exists():
+            return None
+        stamp, loaded_at, table = kept
+        status = parquet.stat()
+        ttl = self.cache_config.ttl_for("lahman")
+        if stamp != (status.st_mtime_ns, status.st_size):
+            return None
+        if ttl is not None and time.monotonic() - loaded_at >= ttl:
+            return None
+        return table
+
+    def _processed_is_current(self, name: str, parquet: Path) -> bool:
+        """The Parquet is current when it was built from the raw file we hold (same fingerprint)."""
+        raw_fingerprint = stored_fingerprint(self.extractor.file_entry(name))
+        if raw_fingerprint is None or not parquet.exists():
+            return False
+        processed = self.cache_config.dataset_manifest("lahman", name).get_chunk("data")
+        return is_current(processed, expected=raw_fingerprint)
+
+    def load_table(self, table_name: str | LahmanTable, refresh: bool = False) -> LoadedTable:
+        """Extract, normalize, and cache any Lahman table; says whether a cache served it.
+
+        Both cache tiers are checked with the shared ``is_current``: the raw CSV against the
+        fingerprint the pinned git tree lists (or the pinned commit offline), the processed Parquet
+        against the fingerprint of the raw file it was built from. Table names ignore letter case.
+        """
+        name = canonical_table_name(table_name)
+        spec = lahman_spec(name)
+        parquet = self.store.part_path(spec, "data")
+
+        with default_audit_logger.track(
+            operation="lahman_get_table",
+            source="lahman",
+            endpoint=name,
+            destination=str(parquet),
+        ) as tracker:
+            if (kept := self._memory_hit(name, parquet, refresh)) is not None:
+                tracker.set_cache_hit(True)
+                tracker.set_records(len(kept))
+                return LoadedTable(kept, True)
+
+            raw_current = not refresh and self.extractor.is_current(name)
+            if raw_current and self._processed_is_current(name, parquet):
+                table = pq.read_table(parquet)
+                self._remember(name, parquet, table)
+                tracker.set_cache_hit(True)
+                tracker.set_records(len(table))
+                return LoadedTable(table, True)
+
+            raw_bytes = self.extractor.extract_table(name, refresh=refresh)
+            table = self.normalizer.normalize(raw_bytes, table_name=name)
+            if self.cache_config.enabled and len(table) > 0:
+                fingerprint = stored_fingerprint(self.extractor.file_entry(name))
+                local = self.extractor.is_local(name)
+                self.store.put(
+                    lahman_spec(name, table.schema),
+                    table,
+                    source_ref=LOCAL_IMPORT if local else self.extractor.source_ref.ref,
+                    metadata={
+                        **self._quality(name, table),
+                        **({"upstream": fingerprint.to_dict()} if fingerprint else {}),
+                    },
+                )
+                self._remember(name, parquet, table)
+            tracker.set_cache_hit(False)
+            tracker.set_records(len(table))
+            return LoadedTable(table, raw_current)
+
+    def _remember(self, name: str, parquet: Path, table: pa.Table) -> None:
+        if parquet.exists():
+            status = parquet.stat()
+            self._memory[name] = ((status.st_mtime_ns, status.st_size), time.monotonic(), table)
 
     def get_table(
         self,
         table_name: str | LahmanTable,
         refresh: bool = False,
     ) -> pa.Table:
-        """Extract, normalize, and cache any Lahman table."""
-        name_str = str(table_name)
-        spec = lahman_spec(name_str)
-        target_parquet = self.store.part_path(spec, "data")
+        """Extract, normalize, and cache any Lahman table (names ignore letter case)."""
+        return self.load_table(table_name, refresh=refresh).table
 
-        with default_audit_logger.track(
-            operation="lahman_get_table",
-            source="lahman",
-            endpoint=name_str,
-            destination=str(target_parquet),
-        ) as tracker:
-            # 1. Load from Parquet cache if available
-            if not refresh and target_parquet.exists():
-                tracker.set_cache_hit(True)
-                table = pq.read_table(target_parquet)
-                tracker.set_records(len(table))
-                return table
-
-            # 2. Extract raw CSV (from cache or remote GitHub mirror)
-            raw_bytes = self.extractor.extract_table(name_str, refresh=refresh)
-
-            # 3. Normalize into strongly typed PyArrow Table
-            table = self.normalizer.normalize(raw_bytes, table_name=name_str)
-
-            # 4. Save to processed Parquet
-            if self.cache_config.enabled and len(table) > 0:
-                self.store.put(
-                    lahman_spec(name_str, table.schema),
-                    table,
-                    source_ref=self.extractor.source_ref.ref,
-                    metadata=self._quality(name_str, table),
-                )
-
-            tracker.set_cache_hit(False)
-            tracker.set_records(len(table))
-            return table
+    def clear_cache(self) -> None:
+        """Forget the tables kept in memory by this source."""
+        self._memory.clear()
 
     def people(self, refresh: bool = False) -> pa.Table:
-        """Extract People table (biographical player registry)."""
+        """Biographical player registry (People)."""
         return self.get_table(LahmanTable.PEOPLE, refresh=refresh)
 
     def batting(self, refresh: bool = False) -> pa.Table:
-        """Extract regular season Batting statistics (1871-2025)."""
+        """Regular season batting (Batting)."""
         return self.get_table(LahmanTable.BATTING, refresh=refresh)
 
     def pitching(self, refresh: bool = False) -> pa.Table:
-        """Extract regular season Pitching statistics (1871-2025)."""
+        """Regular season pitching (Pitching)."""
         return self.get_table(LahmanTable.PITCHING, refresh=refresh)
 
     def teams(self, refresh: bool = False) -> pa.Table:
-        """Extract Teams standings and seasonal team totals."""
+        """Yearly team stats and standings (Teams)."""
         return self.get_table(LahmanTable.TEAMS, refresh=refresh)
 
     def fielding(self, refresh: bool = False) -> pa.Table:
-        """Extract Fielding statistics by position and year."""
+        """Regular season fielding (Fielding)."""
         return self.get_table(LahmanTable.FIELDING, refresh=refresh)
 
     def salaries(self, refresh: bool = False) -> pa.Table:
-        """Extract historical player Salaries."""
+        """Player salaries (Salaries)."""
         return self.get_table(LahmanTable.SALARIES, refresh=refresh)
 
     def hall_of_fame(self, refresh: bool = False) -> pa.Table:
-        """Extract Hall of Fame voting outcomes and ballots."""
+        """Hall of Fame voting (HallOfFame)."""
         return self.get_table(LahmanTable.HALL_OF_FAME, refresh=refresh)
 
     def allstar(self, refresh: bool = False) -> pa.Table:
-        """Extract All-Star Game roster appearances."""
+        """All-Star appearances (AllstarFull)."""
         return self.get_table(LahmanTable.ALLSTAR_FULL, refresh=refresh)
 
     def appearances(self, refresh: bool = False) -> pa.Table:
-        """Extract player season Appearances across positions."""
+        """Positions played per season (Appearances)."""
         return self.get_table(LahmanTable.APPEARANCES, refresh=refresh)
 
     def parks(self, refresh: bool = False) -> pa.Table:
-        """Extract ballpark metadata and historical park identifiers."""
+        """Ballparks (Parks)."""
         return self.get_table(LahmanTable.PARKS, refresh=refresh)
 
     def managers(self, refresh: bool = False) -> pa.Table:
-        """Extract managerial records and win-loss records."""
+        """Managerial records (Managers)."""
         return self.get_table(LahmanTable.MANAGERS, refresh=refresh)
 
     def awards_players(self, refresh: bool = False) -> pa.Table:
-        """Extract major awards won by players (MVP, Cy Young, Rookie of the Year)."""
+        """Player awards (AwardsPlayers)."""
         return self.get_table(LahmanTable.AWARDS_PLAYERS, refresh=refresh)
 
     def series_post(self, refresh: bool = False) -> pa.Table:
-        """Extract postseason series outcomes (World Series, LCS, LDS, Wild Card)."""
+        """Post-season series (SeriesPost)."""
         return self.get_table(LahmanTable.SERIES_POST, refresh=refresh)
 
     def list_tables(self) -> list[str]:

@@ -10,6 +10,7 @@ from pathlib import Path
 from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
+from baseballpy.core.documents import keep_documents, tree_or_none
 from baseballpy.core.github_tree import TreeTruncatedError, fetch_tree
 from baseballpy.core.http import HttpClient, HttpStatusError, TransportError, get_http_client
 from baseballpy.core.sources_lock import SourceRef, get_source_ref, github_headers
@@ -125,35 +126,24 @@ class ChadwickExtractor:
         return [*shards, *aux]
 
     def _fetch_documents(self, source_ref: str, *, only_missing: bool) -> None:
-        """Keep the upstream documents the git tree lists (see ``DOCUMENT_FILES``).
-
-        A failed download is logged and does not block the register: the data files are what the
-        datasets are built from.
-        """
-        try:
-            entries = fetch_tree(self.source_ref, self.cache_config, self.http)
-        except (HttpStatusError, TransportError, ValueError, TreeTruncatedError) as exc:
-            logger.warning("could not list Chadwick documents from the git tree: %s", exc)
+        """Keep the upstream documents the git tree lists (see ``DOCUMENT_FILES``)."""
+        entries = tree_or_none(
+            self.source_ref, self.cache_config, self.http, what="Chadwick documents"
+        )
+        if entries is None:
             return
-        listed = {e.path for e in entries}
         self._blob_shas.update({e.path: e.sha for e in entries})
-        for name in DOCUMENT_FILES:
-            if name not in listed or (only_missing and (self.shards_dir / name).exists()):
-                continue
-            try:
-                result = self.http.get_sync(f"{self.source_ref.raw_base()}/{name}")
-            except (HttpStatusError, TransportError) as exc:
-                logger.warning("could not download Chadwick document %s: %s", name, exc)
-                continue
-            self.raw.put(
-                "chadwick",
-                "register",
-                name,
-                result.content,
-                source_ref=source_ref or None,
-                etag=result.etag or "",
-                upstream=self._blob_fingerprint(name),
-            )
+        keep_documents(
+            raw=self.raw,
+            http=self.http,
+            ref=self.source_ref,
+            entries=entries,
+            source="chadwick",
+            dataset="register",
+            patterns=DOCUMENT_FILES,
+            source_ref=source_ref or None,
+            only_missing=only_missing,
+        )
 
     def get_latest_commit_sha(self) -> str | None:
         """Query the GitHub API (authenticated when ``GITHUB_TOKEN`` is set) for the latest SHA.

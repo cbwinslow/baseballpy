@@ -34,12 +34,14 @@ class LahmanAdapter:
 
             available_tables = [t.value for t in LahmanTable]
 
-        known = set(available_tables)
+        by_lower = {name.lower(): name for name in available_tables}
         if selection.datasets:
-            unknown = [d for d in selection.datasets if d not in known]
+            unknown = [d for d in selection.datasets if d.lower() not in by_lower]
             if unknown:
-                raise ValueError(f"unknown table(s) for lahman: {unknown}; known: {sorted(known)}")
-            wanted = list(selection.datasets)
+                raise ValueError(
+                    f"unknown table(s) for lahman: {unknown}; known: {sorted(by_lower.values())}"
+                )
+            wanted = [by_lower[d.lower()] for d in selection.datasets]  # names ignore letter case
         else:
             wanted = list(available_tables)
 
@@ -54,8 +56,13 @@ class LahmanAdapter:
         if name_val is None:
             raise ValueError(f"job {job.job_id} missing 'name' parameter")
 
-        table = self._get_source().get_table(str(name_val), refresh=refresh)
-        return JobResult(job=job, status=JobStatus.COMPLETED, rows=table.num_rows)
+        loaded = self._get_source().load_table(str(name_val), refresh=refresh)
+        return JobResult(
+            job=job,
+            status=JobStatus.COMPLETED,
+            rows=loaded.table.num_rows,
+            cache_hit=loaded.from_cache,
+        )
 
 
 __all__ = ["LahmanAdapter"]

@@ -2,7 +2,7 @@
 
 import hashlib
 import logging
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Mapping
 from pathlib import Path
 from typing import Any
 
@@ -58,11 +58,15 @@ class RawStore:
         source_ref: str | None = None,
         etag: str = "",
         upstream: Fingerprint | None = None,
+        records: int | None = None,
+        extra: Mapping[str, Any] | None = None,
     ) -> Path:
         """Atomically write ``data`` and record size + sha256 in the dataset's raw manifest.
 
         ``upstream`` is the provider's fingerprint of this file version (see ``core/upstream.py``);
-        without one, a given ``etag`` is recorded as an ETag fingerprint.
+        without one, a given ``etag`` is recorded as an ETag fingerprint. ``records`` is the number
+        of data rows in the file (omit when unknown) and ``extra`` adds source-specific fields to
+        the same manifest entry, so there is exactly one entry per raw file.
         """
         if upstream is None and etag:
             upstream = Fingerprint(ETAG, etag)
@@ -73,8 +77,10 @@ class RawStore:
             part.write_bytes(data)
         self.config.dataset_manifest(source, dataset, "raw", season).set_completed(
             name,
+            records_count=records or 0,
             etag=etag,
             metadata={
+                **(extra or {}),
                 "bytes": len(data),
                 "sha256": hashlib.sha256(data).hexdigest(),
                 "season": season,

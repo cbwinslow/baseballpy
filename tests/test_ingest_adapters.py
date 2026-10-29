@@ -3,6 +3,7 @@
 import sys
 from collections.abc import Generator, Sequence
 from dataclasses import dataclass
+from types import SimpleNamespace
 from typing import Any
 
 import pyarrow as pa
@@ -385,10 +386,12 @@ class FakeLahmanSource:
     def list_tables(self) -> list[str]:
         return list(self.tables)
 
-    def get_table(self, table_name: str, refresh: bool = False) -> pa.Table:
+    def load_table(self, table_name: str, refresh: bool = False) -> SimpleNamespace:
         if table_name not in self.tables:
             raise KeyError(table_name)
-        return pa.table({"col": [1, 2, 3]})
+        return SimpleNamespace(
+            table=pa.table({"col": [1, 2, 3]}), from_cache=table_name == "People"
+        )
 
 
 def test_lahman_adapter() -> None:
@@ -414,7 +417,14 @@ def test_lahman_adapter() -> None:
     # run table
     res = adapter.run(make_job("lahman", "table", name="People"))
     assert res.status == JobStatus.COMPLETED
-    assert res.rows == 3
+    assert res.rows == 3 and res.cache_hit  # the source said this table came from a cache
+    assert not adapter.run(make_job("lahman", "table", name="Batting")).cache_hit
+
+    # names ignore letter case and are reported back as the source spells them
+    assert [j.param("name") for j in adapter.plan(Selection(datasets=("people", "BATTING")))] == [
+        "People",
+        "Batting",
+    ]
 
     # run unknown task
     with pytest.raises(ValueError, match="unknown task"):
