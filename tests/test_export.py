@@ -236,3 +236,101 @@ def test_every_export_is_written_to_the_audit_log(lake: LakeConfig) -> None:
     exported = [e for e in events if e["operation"] == "export"]
     assert exported and exported[-1]["records_count"] == 3
     assert exported[-1]["source"] == "demo" and exported[-1]["status"] == "SUCCESS"
+
+
+# -- the command ----------------------------------------------------------------------------------
+
+
+def _chadwick_lake() -> LakeConfig:
+    """Cache two of the four Chadwick datasets (names and countries) from the test fixtures."""
+    from baseballpy.core.datasets import get_dataset
+    from baseballpy.sources import catalog
+    from baseballpy.sources.chadwick.normalizer import ChadwickNormalizer
+
+    catalog.register_all()
+    fixtures = Path(__file__).parent / "fixtures" / "chadwick"
+    config = LakeConfig()
+    store = ProcessedStore(config)
+    normalizer = ChadwickNormalizer()
+    store.put(
+        get_dataset("chadwick", "register_countries"),
+        normalizer.normalize_countries((fixtures / "countries_sample.csv").read_bytes()),
+    )
+    store.put(
+        get_dataset("chadwick", "register_names"),
+        normalizer.normalize_names((fixtures / "names_sample.csv").read_bytes()),
+    )
+    return config
+
+
+def test_command_exports_named_datasets_and_skips_uncached_ones_of_a_source() -> None:
+    from click.testing import CliRunner
+
+    from baseballpy.cli import main
+
+    config = _chadwick_lake()
+    runner = CliRunner()
+    one = runner.invoke(main, ["export", "chadwick:register_countries", "--to", "csv", "--json"])
+    assert one.exit_code == 0 and json.loads(one.output)["dataset"] == "register_countries"
+    assert (
+        config.exports_root / "chadwick" / "register_countries" / "register_countries.csv"
+    ).exists()
+    whole = runner.invoke(main, ["export", "chadwick", "--to", "parquet", "--json"])
+    assert whole.exit_code == 0
+    done = {
+        json.loads(line)["dataset"] for line in whole.output.splitlines() if line.startswith("{")
+    }
+    assert done == {"register_countries", "register_names"}  # links and register are not cached
+
+
+def test_command_fails_for_an_explicit_dataset_with_nothing_cached_and_for_bad_input() -> None:
+    from click.testing import CliRunner
+
+    from baseballpy.cli import main
+
+    _chadwick_lake()
+    runner = CliRunner()
+    missing = runner.invoke(main, ["export", "chadwick:register", "--to", "csv"])
+    assert missing.exit_code == 1 and "ingest chadwick -d register" in missing.output.replace(
+        "\n", ""
+    )
+    assert runner.invoke(main, ["export", "nosuch", "--to", "csv"]).exit_code == 2
+    assert runner.invoke(main, ["export", "chadwick:nosuch", "--to", "csv"]).exit_code == 2
+    assert (
+        runner.invoke(main, ["export", "chadwick", "--to", "csv", "--seasons", "x"]).exit_code == 2
+    )
+    nothing = runner.invoke(main, ["export", "lahman", "--to", "csv"])
+    assert nothing.exit_code == 1 and "Nothing was exported" in nothing.output
+
+
+def test_command_reaches_postgres_through_the_environment(
+    postgres_url: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from click.testing import CliRunner
+
+    from baseballpy.cli import main
+
+    _chadwick_lake()
+    monkeypatch.setenv("BASEBALLPY_POSTGRES_URL", postgres_url)
+    schema = f"t_{uuid.uuid4().hex[:8]}"
+    result = CliRunner().invoke(
+        main,
+        ["export", "chadwick:register_countries", "--to", "postgres", "--schema", schema, "--json"],
+    )
+    assert result.exit_code == 0
+    assert (
+        json.loads(result.output)["destination"] == f"postgres:{schema}.chadwick_register_countries"
+    )
+
+
+def test_merge_is_refused_when_a_key_column_has_empty_values(
+    lake: LakeConfig, tmp_path: Path
+) -> None:
+    keyed = _spec("keyed", "none")
+    table = _table(["k1", "k2"])
+    table = table.set_column(0, "key", pa.array(["k1", None], pa.string()))
+    ProcessedStore(lake).put(keyed, table)
+    with pytest.raises(ExportError, match="cannot be merged.*'key'.*replace"):
+        export_dataset(keyed, "duckdb", config=lake, out=tmp_path / "k.duckdb", mode="merge")
+    assert not (tmp_path / "k.duckdb").exists()  # refused before anything was written
+    assert export_dataset(keyed, "duckdb", config=lake, out=tmp_path / "k.duckdb").rows == 2

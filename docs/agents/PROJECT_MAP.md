@@ -14,6 +14,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `cli-and-ingest` | 9 | 11 | 15 |
 | `concurrency-and-rate-limiting` | 3 | 5 | 6 |
 | `core-protocols` | 2 | 3 | 5 |
+| `data-export` | 3 | 6 | 19 |
 | `docs-generation` | 1 | 1 | 1 |
 | `lahman-database` | 6 | 7 | 9 |
 | `mlb-api-ingestion` | 11 | 11 | 13 |
@@ -24,14 +25,13 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 ## Active changes (`openspec/changes/`)
 
-30 changes are archived under `openspec/changes/archive/`.
+31 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 1 | 4.2 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `data-workflow-standard` | 8 | 5 | 2.5, 2.6, 2.7, 2.8 |
-| `export-workflow` | 0 | 15 | 1.1, 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 4.1, 4.2, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `mlb-stats-route-406-and-deep-pools` | 0 | 9 | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2 |
 | `reference-docs` | 2 | 1 | 3 |
@@ -84,6 +84,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 - ADR 43: Upstream Change Detection Uses a Per-File Fingerprint and One Shared Check
 - ADR 44: dlt Is the Send-It-Anywhere Layer Over the Cached Parquet; Extract and Typing Stay Ours
 - ADR 45: The Chadwick Lookup Is Lazy, Nicknames Come From the Data, Fuzzy Search Is a Shared DuckDB Helper
+- ADR 46: Export Is Hybrid and Registry-Driven: pyarrow Files, dlt for Server Databases, Verified and Typed
 
 ## Documentation pages (`docs/`)
 

@@ -157,13 +157,13 @@ touches a source under review, do it inside that source's track.
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-76 | `export-workflow 1.1`: owner answers decisions A to D, ADR 46 | OWNER | four answers recorded, ADR 46 written |
-| B-77 | `export-workflow 2.1`: `exports/` tier in LakeConfig and path rules | after B-76 | paths from design.md, override env var, tests |
-| B-78 | `export-workflow 2.2`: CSV sink with `.schema.json` sidecar | after B-76 | Arrow round trip through CSV equals the original table, tests |
-| B-79 | `export-workflow 2.3`: typed dlt database sink | after B-76 | explicit column types and registry key passed to dlt; replace/append/merge tests on DuckDB and embedded Postgres |
-| B-80 | `export-workflow 2.4`: `export_dataset()` with verify and audit | after B-77..B-79 | rows and schema read back, audit event written, tests |
-| B-81 | `export-workflow 2.5`: `baseballpy export` command | after B-80 | CliRunner tests, `docs/CLI.md` regenerated |
-| B-82 | `export-workflow 3.1`: round-trip tests for all four targets | after B-80 | Parquet, CSV, DuckDB, embedded Postgres; Postgres skipped when `pgserver` is absent |
-| B-83 | `export-workflow 4.1`: export all Chadwick datasets to every target | after B-81 | numbers and comparison recorded in design.md |
-| B-84 | `export-workflow 4.2`: export section of `docs/DATA_WORKFLOW.md` and the source-onboarding checklist | after B-83 | page written, exceptions listed |
-| B-85 | `export-workflow 5.1`: spec delta merged, ADR, archive | after B-83, B-84 | change archived, specs validate |
+| B-76 | export-workflow 1.1: owner answers decisions A to D, ADR 46 | DONE | four answers recorded, ADR 46 written |
+| B-77 | export-workflow 2.1: `exports/` tier in LakeConfig and path rules | DONE | paths from design.md, override env var, tests |
+| B-78 | export-workflow 2.2: CSV sink with `.schema.json` sidecar | DONE | Arrow round trip through CSV equals the original table, tests |
+| B-79 | export-workflow 2.3: typed dlt database sink | DONE | explicit column types and registry key passed to dlt; replace/append/merge tests on DuckDB and embedded Postgres |
+| B-80 | export-workflow 2.4: `export_dataset()` with verify and audit | DONE | rows and schema read back, audit event written, tests |
+| B-81 | export-workflow 2.5: `baseballpy export` command | DONE | CliRunner tests, `docs/CLI.md` regenerated |
+| B-82 | export-workflow 3.1: round-trip tests for all four targets | DONE | Parquet, CSV, DuckDB, embedded Postgres; Postgres skipped when `pgserver` is absent |
+| B-83 | export-workflow 4.1: export all Chadwick datasets to every target | DONE | numbers and comparison recorded in design.md |
+| B-84 | export-workflow 4.2: export section of `docs/DATA_WORKFLOW.md` and the source-onboarding checklist | DONE | page written, exceptions listed |
+| B-85 | export-workflow 5.1: spec delta merged, ADR, archive | DONE | change archived, specs validate |

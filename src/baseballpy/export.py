@@ -117,6 +117,16 @@ def _slices(
     return [(None, store.read(spec))]
 
 
+def _require_matchable_keys(spec: DatasetSpec, slices: list[tuple[int | None, pa.Table]]) -> None:
+    """A merge matches rows by the registry key; rows with an empty key value cannot be matched."""
+    for key in spec.keys:
+        if any(table[key].null_count for _, table in slices):
+            raise ExportError(
+                f"{spec.key} cannot be merged: key column {key!r} has empty (NULL) values, so its "
+                "rows cannot be matched; use --mode replace or --mode append"
+            )
+
+
 def _out_root(config: LakeConfig, out: Path | str | None) -> Path:
     return Path(out) if out else config.exports_root
 
@@ -282,6 +292,8 @@ def export_dataset(
         raise ValueError(f"{target} files are always replaced; {mode!r} is for databases")
     cfg = config or LakeConfig()
     slices = _slices(ProcessedStore(cfg), cfg, spec, seasons)
+    if mode == "merge":
+        _require_matchable_keys(spec, slices)
     rows = sum(len(table) for _, table in slices)
     started = time.perf_counter()
     with default_audit_logger.track(

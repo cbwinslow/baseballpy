@@ -23,6 +23,7 @@ Commands:
   db              Manage the DuckDB catalog (views over processed/ Parquet).
   docs            Generate the per-dataset column dictionaries in docs/sources/*.md.
   doctor          Diagnose data lake layout, disk usage, package versions, and orphan files.
+  export          Export cached datasets: SPECS are `source` or `source:dataset[,dataset]`.
   ingest          Execute ingestion jobs across registered adapters with planning and concurrency.
   migrate-layout  Migrate a v1 data lake (cache/<source>/...) to layout v2 (raw/ + processed/).
   quarantine      Inspect and display dead-letter quarantine files and unparseable records.
@@ -335,6 +336,36 @@ Options:
   --clean  Delete orphan .part files under raw and processed tiers.
   --json   Print system and lake diagnosis as a JSON object.
   --help   Show this message and exit.
+```
+
+## `baseballpy export`
+
+```text
+Usage: baseballpy export [OPTIONS] SPECS...
+
+  Export cached datasets: SPECS are `source` or `source:dataset[,dataset]`.
+
+  Reads only what `baseballpy ingest` already stored; every export is read back and compared with
+  the source unless --no-verify is given. Exit code 1 when something failed or nothing was exported.
+
+Options:
+  --to [csv|duckdb|parquet|postgres]
+                                  Where to send the data: parquet = typed zstd Parquet file(s); csv
+                                  = UTF-8 CSV with a .schema.json type sidecar; duckdb = tables in a
+                                  DuckDB file; postgres = tables in a PostgreSQL schema (via dlt)
+                                  [required]
+  --out PATH                      Folder for files (or a .duckdb file); default: the lake's
+                                  exports/.
+  --url TEXT                      PostgreSQL URL (default: the BASEBALLPY_POSTGRES_URL environment
+                                  variable).
+  --schema TEXT                   PostgreSQL schema.  [default: baseballpy]
+  --mode [replace|append|merge]   replace, append, or merge on the registry key (databases only).
+                                  [default: replace]
+  --seasons TEXT                  Seasons of season-partitioned datasets, e.g. 2023 or 2015-2024
+                                  (default: all cached).
+  --no-verify                     Skip the read-back check.
+  --json                          Print one JSON object per dataset.
+  --help                          Show this message and exit.
 ```
 
 ## `baseballpy ingest`

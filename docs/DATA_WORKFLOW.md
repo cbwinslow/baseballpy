@@ -70,10 +70,44 @@ it with `baseballpy ingest <source> --refresh`.
 | An Arrow table in Python | `ProcessedStore().read(get_dataset("chadwick", "register"))`, or the source function (`bp.statcast(...)`, `bp.chadwick.get_register()`) |
 | Polars | `bp.to_polars(table)` or `pl.scan_parquet(...)` on the Parquet files |
 | SQL | `baseballpy db sync`, then `bp.connect_db()` or `baseballpy db query` |
-| Parquet files elsewhere | `ParquetSink` |
-| A DuckDB file | `DuckDBSink` |
-| PostgreSQL or a warehouse | `DltSink` in Python today; a single `baseballpy export` command is planned (ADR 44) |
-| CSV | `pyarrow.csv.write_csv(table, "out.csv")`; there is no project command yet |
+| Files, DuckDB or PostgreSQL | `baseballpy export` (next section) |
 
-Checked on the Chadwick datasets: Parquet, DuckDB and Polars give back exactly the same rows, columns
-and types.
+## Exporting: Parquet, CSV, DuckDB, PostgreSQL
+
+```bash
+baseballpy export chadwick --to parquet                 # all four Chadwick datasets
+baseballpy export chadwick:register_links --to csv      # one dataset
+baseballpy export statcast:pitches --to parquet --seasons 2023-2024
+baseballpy export chadwick --to duckdb --out my.duckdb
+BASEBALLPY_POSTGRES_URL=postgresql://user:pw@host:5432/db baseballpy export chadwick --to postgres
+```
+
+The same function (`baseballpy.export.export_dataset`) serves every source; it takes names, types, keys and season layout from the dataset registry and reads only the cached typed Parquet (run `baseballpy ingest` first; a source-wide export skips datasets with nothing cached, a named dataset with nothing cached is an error).
+
+| Target | What you get | Tool | Modes |
+|---|---|---|---|
+| `parquet` | `exports/<source>/<dataset>/<dataset>.parquet` (zstd) | pyarrow | replace |
+| `csv` | `<dataset>.csv` (UTF-8, header, empty cell = NULL) plus `<dataset>.schema.json` holding every column's Arrow type | pyarrow | replace |
+| `duckdb` | tables named by the registry view name (`chadwick_register`) in `exports/baseballpy.duckdb` (or `--out file.duckdb`) | native DuckDB sink | replace, append, merge |
+| `postgres` | tables named by the registry view name in schema `baseballpy` (`--schema`), created and typed by `dlt` | `dlt` | replace, append, merge |
+
+- **Where:** files go to `$BASEBALLPY_HOME/exports/` (`BASEBALLPY_EXPORTS_ROOT_OVERRIDE` or `--out` moves them); season-partitioned datasets get `season=YYYY/` folders like `processed/`. The PostgreSQL URL comes from `--url` or `BASEBALLPY_POSTGRES_URL`, never from a file.
+- **Typed:** Parquet, DuckDB and PostgreSQL keep the schema (through `dlt`, PostgreSQL stores a `float` column as `double precision` and `int8` as `smallint`; nothing is lost). CSV cannot hold types, so read it back with `baseballpy.sinks.csv.read_csv_typed(path)`, which uses the sidecar. Nested columns (a list column) cannot go to CSV; use Parquet.
+- **Modes:** `replace` (default) rewrites the target, `append` adds the rows, `merge` updates rows with the same registry key and never duplicates. Merge is refused for a dataset whose key column has empty values (for example `chadwick.register_names`): use replace or append there. Files are always replaced.
+- **Checked:** every export is read back (rows, types, and for files the full data) unless `--no-verify`, and written to `logs/audit.jsonl` as an `export` event. A difference fails the command.
+
+Measured on the Chadwick datasets (555,829 rows, this PC, whole command including start-up): Parquet 6.9 s (24 MB), CSV 6.8 s (75 MB), DuckDB 10.7 s (65 MB), PostgreSQL 39 s.
+
+## Onboarding a source (the checklist other sources follow)
+
+A source needs no export code. It is exportable when:
+1. each of its datasets is in the registry with a schema, a `view` name, a `keys` tuple and its season partitioning (`partition`), and ingest stores the typed Parquet under `processed/`;
+2. `baseballpy export <source> --to parquet` and `--to csv` succeed and verify (a dataset with a nested column is the only expected CSV exception);
+3. `--to duckdb` and `--to postgres` verify, and `--mode merge` either works or is refused for a stated reason (the key has empty values);
+4. its source page lists the exceptions below that apply, and `cache check` shows its raw files with fingerprints.
+
+Exceptions to expect:
+- **Season-partitioned datasets** (Statcast, Retrosheet, MLB per season): files get `season=` folders; databases get the seasons one after another (replace wipes once, then appends); a season subset with `replace` leaves only those seasons in the table.
+- **Very large datasets:** each season is held in memory once; datasets larger than memory per season need batch streaming (`write_stream`) before they can be exported.
+- **Keys with empty values or non-unique keys** (some MLB endpoints): `replace` or `append` only.
+- **Nested columns** (`retrosheet.box_records`): Parquet, DuckDB and PostgreSQL only.

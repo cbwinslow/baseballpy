@@ -188,6 +188,12 @@ baseballpy db sync
 baseballpy db views
 baseballpy db query "SELECT count(*) FROM statcast_pitches"
 
+# Send the typed data anywhere (read back and checked): Parquet, CSV, DuckDB, PostgreSQL
+baseballpy export chadwick --to parquet            # exports/<source>/<dataset>/<dataset>.parquet
+baseballpy export chadwick:register_links --to csv # CSV plus a .schema.json with the column types
+BASEBALLPY_POSTGRES_URL=postgresql://user:pw@host/db baseballpy export chadwick --to postgres
+baseballpy cache check --upstream                  # raw files intact? changed upstream?
+
 # Live games, dead letters and housekeeping
 baseballpy stream 745789 --duckdb live.duckdb      # --replay re-emits a finished game
 baseballpy quarantine list
