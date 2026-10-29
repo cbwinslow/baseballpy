@@ -1,7 +1,7 @@
 # Tasks: data-workflow-standard
 
-- [ ] 1. Decide
-  - [ ] 1.1 Owner picks the update-check rule (Decision A) and the dlt role (Decision B); record both as ADRs
+- [x] 1. Decide
+  - [x] 1.1 Owner picks the update-check rule (Decision A) and the dlt role (Decision B); record both as ADRs
 - [ ] 2. Shared mechanism
   - [ ] 2.1 Manifest records an upstream fingerprint per raw file (git blob SHA, ETag or Last-Modified, content sha256); `RawStore.put` takes it
   - [ ] 2.2 One `is_current()` function used by every source, replacing the per-source checks (moved source by source inside the source tracks)

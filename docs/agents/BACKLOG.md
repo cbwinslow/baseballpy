@@ -137,12 +137,12 @@ touches a source under review, do it inside that source's track.
 | B-58 | `chadwick-source-review 4.1`: docs, ADRs, spec merge, archive (card C-08) | after B-55, B-57 | see the card |
 | B-59 | `chadwick-source-review 5.1`: split ingest from the lookup index (card C-09) | READY | see the card |
 | B-60 | `chadwick-source-review 5.2`: registry-driven adapter, per-dataset jobs (card C-10) | after B-59 | see the card |
-| B-61 | `chadwick-source-review 5.3`: resolve_id explicit column map, BBREF_MINORS bug (card C-11) | READY | see the card |
+| B-61 | chadwick-source-review 5.3: resolve_id explicit column map, BBREF_MINORS bug (card C-11) | DONE | see the card |
 | B-62 | `chadwick-source-review 5.4`: vectorised index, duplicate guard, record types (card C-12) | after B-59 (reads the cached Parquet, compatible with any B-65 choice) | see the card |
 | B-63 | `chadwick-source-review 5.5`: data-driven nicknames, vectorised search (card C-13) | OWNER (one question on dropping the nickname table), then READY | see the card |
 | B-64 | `chadwick-source-review 5.6`: keep the upstream README, correct spec and docs (card C-14) | READY | see the card |
-| B-65 | `data-workflow-standard 1.1`: owner picks the update-check rule and the dlt role (design.md decisions A and B) | OWNER | two ADRs written; B-43 brainstorm can build on them |
-| B-66 | `data-workflow-standard 2.1`: manifest records an upstream fingerprint per raw file | after B-65 | `RawStore.put` takes it, tests, git sources store the tree blob SHA |
+| B-65 | data-workflow-standard 1.1: owner picks the update-check rule and the dlt role (design.md decisions A and B) | DONE (ADR 43 and 44, 2026-10-29) | two ADRs written; B-43 brainstorm can build on them |
+| B-66 | `data-workflow-standard 2.1`: manifest records an upstream fingerprint per raw file | READY | `RawStore.put` takes it, tests, git sources store the tree blob SHA |
 | B-67 | `data-workflow-standard 2.2`: one shared `is_current()` for every source | after B-66 | per-source checks replaced one source at a time inside the source tracks, tests |
 | B-68 | `data-workflow-standard 2.3`: `baseballpy cache check` | after B-66 | verifies sha256 of local files and lists files whose upstream fingerprint changed, CliRunner test, `docs/CLI.md` regenerated |
-| B-69 | `data-workflow-standard 3.1`: `docs/DATA_WORKFLOW.md` | after B-65 | five-step workflow, cache folders and overrides, every read and export path, linked from README and ARCHITECTURE |
+| B-69 | `data-workflow-standard 3.1`: `docs/DATA_WORKFLOW.md` | READY | five-step workflow, cache folders and overrides, every read and export path, linked from README and ARCHITECTURE |

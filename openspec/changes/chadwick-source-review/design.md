@@ -75,3 +75,12 @@ A scratch ingest on 2026-10-29 served as evidence for S3 and S4: 526,894 / 1,346
 
 ## S7 export, docs, close
 (not started)
+
+## As built: task 5.3 (card C-11), 2026-10-29
+`resolve_id` and `resolve` now use one explicit table: every `PlayerIdType` is its own column, with its own
+index in `ChadwickRegister._by_id`; int ids are coerced, retro/bbref/bbref_minors ignore case, names
+(`"key_mlbam"` or `"mlbam"`) are accepted and an unknown type raises `ValueError`. Fixed the
+`BBREF_MINORS` bug (MLBAM 660271 now gives `otani-000sho`) and the missing lookups from
+`BBREF_MINORS`, `NPB`, `WIKIDATA`. `PlayerRecord.key_npb` is now `int | None` (was `str`). The whole
+9 x 9 crosswalk matrix is a test. Targeted run: 29 passed (`test_chadwick`, `test_chadwick_coverage`,
+`test_architecture`), mypy --strict clean. Duplicate-id guard and the vectorised build stay in 5.4.

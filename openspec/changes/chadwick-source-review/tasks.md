@@ -10,7 +10,7 @@ Cards with steps and files: `docs/agents/tracks/01-chadwick.md` (card C-0N = the
 - [ ] 5. Fixes found by the review
   - [ ] 5.1 Split ingest (extract, normalize, store) from the lookup index (C-09)
   - [ ] 5.2 Registry-driven adapter: one job per registered dataset, per-dataset row counts (C-10)
-  - [ ] 5.3 `resolve_id` through an explicit column map for all nine id types, both directions (C-11)
+  - [x] 5.3 `resolve_id` through an explicit column map for all nine id types, both directions (C-11)
   - [ ] 5.4 Vectorised lookup index, duplicate-id guard, correct `PlayerRecord` types (C-12)
   - [ ] 5.5 Data-driven nicknames and vectorised name search (C-13, needs the owner's OK)
   - [ ] 5.6 Keep the upstream README, correct spec and docs (C-14)

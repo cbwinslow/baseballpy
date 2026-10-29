@@ -4,6 +4,7 @@ from pathlib import Path
 
 import httpx
 import pyarrow as pa
+import pytest
 import respx
 
 from baseballpy.core.config import LakeConfig
@@ -145,3 +146,60 @@ def test_chadwick_sharded_extractor(tmp_path: Path) -> None:
 
     cached_shards = extractor.extract(refresh=False)
     assert len(cached_shards) >= 17
+
+
+_FULL_IDS_CSV = (
+    "key_person,key_uuid,key_mlbam,key_retro,key_bbref,key_bbref_minors,key_fangraphs,key_npb,"
+    "key_wikidata,name_last,name_first,name_given,birth_year,birth_month,birth_day,"
+    "mlb_played_first,mlb_played_last\n"
+    "270bfa31,270bfa31-f65b-4d2b-a54a-09dca1b6a000,660271,ohtas001,ohtansh01,otani-000sho,19755,"
+    "1305137,Q4391858,Ohtani,Shohei,Shohei,1994,7,5,2018,2024\n"
+    "a1b2c3d4,a1b2c3d4-0000-4000-8000-000000000001,592450,judga001,judgeaa01,judge-000aar,15640,"
+    ",Q1234,Judge,Aaron,Aaron James,1992,4,26,2016,2024\n"
+)
+
+
+def _full_register() -> ChadwickRegister:
+    table = ChadwickNormalizer().normalize(_FULL_IDS_CSV.encode())
+    return ChadwickRegister(table)
+
+
+def test_resolve_id_bbref_minors_is_not_confused_with_bbref() -> None:
+    register = _full_register()
+    assert register.resolve_id(660271, PlayerIdType.MLBAM, PlayerIdType.BBREF) == "ohtansh01"
+    assert (
+        register.resolve_id(660271, PlayerIdType.MLBAM, PlayerIdType.BBREF_MINORS) == "otani-000sho"
+    )
+    assert register.resolve_id("otani-000sho", PlayerIdType.BBREF_MINORS, PlayerIdType.MLBAM) == (
+        660271
+    )
+
+
+def test_resolve_id_round_trips_every_id_type_in_both_directions() -> None:
+    register = _full_register()
+    ohtani = register.resolve(mlbam=660271)
+    assert ohtani is not None
+    columns = {id_type: getattr(ohtani, id_type.value) for id_type in PlayerIdType}
+    assert all(value is not None for value in columns.values())
+    for source in PlayerIdType:
+        for target in PlayerIdType:
+            assert register.resolve_id(columns[source], source, target) == columns[target], (
+                source,
+                target,
+            )
+
+
+def test_resolve_id_accepts_names_ignores_case_and_returns_none_for_unknown_ids() -> None:
+    register = _full_register()
+    assert register.resolve_id("OHTAS001", "key_retro", "key_mlbam") == 660271
+    assert register.resolve_id("Q4391858", "wikidata", "retro") == "ohtas001"
+    assert register.resolve_id(1, PlayerIdType.MLBAM, PlayerIdType.RETRO) is None
+    assert register.resolve_id(592450, PlayerIdType.MLBAM, PlayerIdType.NPB) is None
+
+
+def test_resolve_id_rejects_unknown_id_types() -> None:
+    register = _full_register()
+    with pytest.raises(ValueError, match="unknown player id type"):
+        register.resolve_id(1, "key_nope", PlayerIdType.RETRO)
+    with pytest.raises(ValueError, match="unknown player id type"):
+        register.resolve_id(1, PlayerIdType.MLBAM, "nope")

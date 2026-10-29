@@ -16,6 +16,29 @@ from baseballpy.sources.chadwick.extractor import ChadwickExtractor
 from baseballpy.sources.chadwick.normalizer import ChadwickNormalizer
 from baseballpy.sources.chadwick.schema import PlayerIdType
 
+#: ``PlayerIdType.value`` is the register column and the ``PlayerRecord`` field; these sets say how
+#: an id of that type is compared (integers are coerced, some text ids ignore case).
+_INT_IDS = frozenset({PlayerIdType.MLBAM, PlayerIdType.FANGRAPHS, PlayerIdType.NPB})
+_CASEFOLDED_IDS = frozenset({PlayerIdType.RETRO, PlayerIdType.BBREF, PlayerIdType.BBREF_MINORS})
+_ID_TYPES = {id_type.value: id_type for id_type in PlayerIdType}
+
+
+def _id_type(value: PlayerIdType | str) -> PlayerIdType:
+    """The ``PlayerIdType`` for an enum member, ``"key_mlbam"`` or ``"mlbam"``."""
+    text = str(value).lower()
+    for candidate in (text, f"key_{text}"):
+        if candidate in _ID_TYPES:
+            return _ID_TYPES[candidate]
+    raise ValueError(f"unknown player id type {value!r}; known: {sorted(_ID_TYPES)}")
+
+
+def _normalise_id(id_type: PlayerIdType, value: Any) -> Any:
+    """The form in which ``value`` is stored in and looked up from the index of ``id_type``."""
+    if id_type in _INT_IDS:
+        return int(value)
+    text = str(value)
+    return text.lower() if id_type in _CASEFOLDED_IDS else text
+
 
 @dataclass(frozen=True, slots=True)
 class PlayerRecord:
@@ -28,7 +51,7 @@ class PlayerRecord:
     key_bbref: str | None
     key_bbref_minors: str | None = None
     key_fangraphs: int | None = None
-    key_npb: str | None = None
+    key_npb: int | None = None
     key_wikidata: str | None = None
     name_last: str | None = None
     name_first: str | None = None
@@ -131,12 +154,7 @@ class ChadwickRegister:
         self._table = table
         self._names_table = names_table
         self._records: list[PlayerRecord] = []
-        self._by_mlbam: dict[int, PlayerRecord] = {}
-        self._by_retro: dict[str, PlayerRecord] = {}
-        self._by_bbref: dict[str, PlayerRecord] = {}
-        self._by_fangraphs: dict[int, PlayerRecord] = {}
-        self._by_person: dict[str, PlayerRecord] = {}
-        self._by_uuid: dict[str, PlayerRecord] = {}
+        self._by_id: dict[PlayerIdType, dict[Any, PlayerRecord]] = {t: {} for t in PlayerIdType}
         self._by_name: dict[str, list[PlayerRecord]] = {}
         self._aliases: dict[str, set[str]] = {}
         self._build_index()
@@ -197,18 +215,10 @@ class ChadwickRegister:
             )
             self._records.append(rec)
 
-            if rec.key_person:
-                self._by_person[rec.key_person] = rec
-            if rec.key_uuid:
-                self._by_uuid[rec.key_uuid] = rec
-            if mlbam is not None:
-                self._by_mlbam[mlbam] = rec
-            if retro:
-                self._by_retro[retro.lower()] = rec
-            if bbref:
-                self._by_bbref[bbref.lower()] = rec
-            if fangraphs is not None:
-                self._by_fangraphs[fangraphs] = rec
+            for id_type, index in self._by_id.items():
+                value = getattr(rec, id_type.value)
+                if value is not None and value != "":
+                    index[_normalise_id(id_type, value)] = rec
 
             name_key = rec.full_name.lower()
             if name_key:
@@ -239,20 +249,25 @@ class ChadwickRegister:
         fangraphs: int | None = None,
         uuid: str | None = None,
         person: str | None = None,
+        bbref_minors: str | None = None,
+        npb: int | None = None,
+        wikidata: str | None = None,
     ) -> PlayerRecord | None:
-        """Resolve a single player by any known identifier."""
-        if mlbam is not None:
-            return self._by_mlbam.get(mlbam)
-        if retro is not None:
-            return self._by_retro.get(retro.lower())
-        if bbref is not None:
-            return self._by_bbref.get(bbref.lower())
-        if fangraphs is not None:
-            return self._by_fangraphs.get(fangraphs)
-        if uuid is not None:
-            return self._by_uuid.get(uuid)
-        if person is not None:
-            return self._by_person.get(person)
+        """Resolve a single player by any known identifier (the first one given wins)."""
+        given = (
+            (PlayerIdType.MLBAM, mlbam),
+            (PlayerIdType.RETRO, retro),
+            (PlayerIdType.BBREF, bbref),
+            (PlayerIdType.FANGRAPHS, fangraphs),
+            (PlayerIdType.UUID, uuid),
+            (PlayerIdType.PERSON, person),
+            (PlayerIdType.BBREF_MINORS, bbref_minors),
+            (PlayerIdType.NPB, npb),
+            (PlayerIdType.WIKIDATA, wikidata),
+        )
+        for id_type, value in given:
+            if value is not None:
+                return self._by_id[id_type].get(_normalise_id(id_type, value))
         return None
 
     def resolve_id(
@@ -261,46 +276,15 @@ class ChadwickRegister:
         from_type: PlayerIdType | str,
         to_type: PlayerIdType | str,
     ) -> Any | None:
-        """Crosswalk from one identifier system to another."""
-        from_str = str(from_type).lower()
-        to_str = str(to_type).lower()
+        """Crosswalk from one identifier system to another (``None`` when the id is unknown).
 
-        # 1. Resolve source player record
-        record: PlayerRecord | None = None
-        if "mlbam" in from_str:
-            record = self._by_mlbam.get(int(id_value))
-        elif "retro" in from_str:
-            record = self._by_retro.get(str(id_value).lower())
-        elif "bbref" in from_str:
-            record = self._by_bbref.get(str(id_value).lower())
-        elif "fangraphs" in from_str:
-            record = self._by_fangraphs.get(int(id_value))
-        elif "uuid" in from_str:
-            record = self._by_uuid.get(str(id_value))
-        elif "person" in from_str:
-            record = self._by_person.get(str(id_value))
-
-        if not record:
-            return None
-
-        # 2. Extract requested target identifier
-        if "mlbam" in to_str:
-            return record.key_mlbam
-        if "retro" in to_str:
-            return record.key_retro
-        if "bbref" in to_str:
-            return record.key_bbref
-        if "fangraphs" in to_str:
-            return record.key_fangraphs
-        if "uuid" in to_str:
-            return record.key_uuid
-        if "person" in to_str:
-            return record.key_person
-        if "npb" in to_str:
-            return record.key_npb
-        if "wikidata" in to_str:
-            return record.key_wikidata
-        return None
+        Both types may be a ``PlayerIdType`` or its name (``"key_mlbam"`` or ``"mlbam"``); an
+        unknown type raises ``ValueError``.
+        """
+        source = _id_type(from_type)
+        target = _id_type(to_type)
+        record = self._by_id[source].get(_normalise_id(source, id_value))
+        return None if record is None else getattr(record, target.value)
 
     def search_name(
         self,
@@ -319,7 +303,8 @@ class ChadwickRegister:
 
         # 2. Check alias index from names.csv
         if pids := self._aliases.get(clean):
-            matched = [self._by_person[pid] for pid in pids if pid in self._by_person]
+            by_person = self._by_id[PlayerIdType.PERSON]
+            matched = [by_person[pid] for pid in pids if pid in by_person]
             if matched:
                 return matched
 
