@@ -303,9 +303,19 @@ class LahmanSource:
             return None
         return table
 
+    def _raw_fingerprint(self, name: str) -> Fingerprint | None:
+        """Fingerprint of the raw file held; entries stored without one are identified by content."""
+        entry = self.extractor.file_entry(name)
+        if (found := stored_fingerprint(entry)) is not None or entry is None:
+            return found
+        digest = entry.get("sha256")
+        if isinstance(digest, str) and digest:
+            return Fingerprint(CONTENT_SHA256, digest, origin=str(entry.get("source_ref", "")))
+        return None
+
     def _processed_is_current(self, name: str, parquet: Path) -> bool:
         """The Parquet is current when it was built from the raw file we hold (same fingerprint)."""
-        raw_fingerprint = stored_fingerprint(self.extractor.file_entry(name))
+        raw_fingerprint = self._raw_fingerprint(name)
         if raw_fingerprint is None or not parquet.exists():
             return False
         processed = self.cache_config.dataset_manifest("lahman", name).get_chunk("data")
@@ -344,7 +354,7 @@ class LahmanSource:
             raw_bytes = self.extractor.extract_table(name, refresh=refresh)
             table = self.normalizer.normalize(raw_bytes, table_name=name)
             if self.cache_config.enabled and len(table) > 0:
-                fingerprint = stored_fingerprint(self.extractor.file_entry(name))
+                fingerprint = self._raw_fingerprint(name)
                 local = self.extractor.is_local(name)
                 self.store.put(
                     lahman_spec(name, table.schema),

@@ -151,6 +151,24 @@ class DltSink:
             first = False
         return total
 
+    def drop_if_columns_differ(self, table_name: str, schema: pa.Schema) -> bool:
+        """Drop ``table_name`` when it exists with other columns than ``schema`` (returns True).
+
+        A replace load adds columns but never removes them, so a table left by an older export
+        (for example with dlt's renamed ``player_id``) would keep columns the data no longer has.
+        """
+        with self.pipeline.sql_client() as client:
+            found = client.execute_sql(
+                "select column_name from information_schema.columns "
+                "where table_schema = %s and table_name = %s",
+                self.dataset_name,
+                table_name,
+            )
+            if not found or {row[0] for row in found} == set(schema.names):
+                return False
+            client.execute_sql(f"drop table {client.make_qualified_table_name(table_name)}")
+        return True
+
     def table_info(self, table_name: str) -> TableInfo:
         """Row count and column types of ``table_name`` as the database reports them."""
         with self.pipeline.sql_client() as client:

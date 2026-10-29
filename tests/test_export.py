@@ -5,6 +5,7 @@ import json
 import uuid
 from pathlib import Path
 
+import dlt
 import duckdb
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -165,7 +166,7 @@ def test_postgres_replace_append_merge_with_registry_names(
         dataset_name=schema,
         credentials=postgres_url,
         pipelines_dir=str(lake.home / "cache" / "dlt"),
-        pipeline_name="baseballpy_export",
+        pipeline_name="baseballpy_export_direct",
     )
     result = export_dataset(GAMES, "postgres", config=lake, url=postgres_url, schema=schema)
     assert result.rows == 5 and result.destination == f"postgres:{schema}.demo_games"
@@ -176,6 +177,23 @@ def test_postgres_replace_append_merge_with_registry_names(
     assert sink.table_info("demo_games").rows == 5  # merge on the registry key: no duplicates
     export_dataset(GAMES, "postgres", config=lake, url=postgres_url, schema=schema, mode="append")
     assert sink.table_info("demo_games").rows == 10
+
+
+def test_postgres_export_still_works_after_an_export_by_the_first_version(
+    lake: LakeConfig, postgres_url: str
+) -> None:
+    schema = f"t_{uuid.uuid4().hex[:8]}"
+    first_version = dlt.pipeline(  # the first version used dlt's default snake_case naming
+        pipeline_name="baseballpy_export",
+        destination=dlt.destinations.postgres(credentials=postgres_url),
+        dataset_name=schema,
+        pipelines_dir=str(lake.home / "cache" / "dlt"),
+    )
+    first_version.run(
+        dlt.resource([pa.table({"gameID": ["g0"]})], name="demo_games", write_disposition="replace")
+    )
+    result = export_dataset(GAMES, "postgres", config=lake, url=postgres_url, schema=schema)
+    assert result.rows == 5 and result.verified
 
 
 def test_postgres_url_comes_from_the_environment_or_an_error_says_how(

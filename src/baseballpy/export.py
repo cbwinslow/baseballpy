@@ -246,8 +246,12 @@ def _export_postgres(
         dataset_name=schema,
         credentials=credentials,
         pipelines_dir=str(config.home / "cache" / "dlt"),
-        pipeline_name="baseballpy_export",
+        # not "baseballpy_export": dlt refuses to change the naming of a pipeline that already
+        # loaded tables, and the first version of this pipeline used dlt's snake_case names
+        pipeline_name="baseballpy_export_direct",
     )
+    if mode == "replace" and slices:
+        sink.drop_if_columns_differ(spec.view, slices[0][1].schema)
     for index, (_, table) in enumerate(slices):
         sink.write(
             table,

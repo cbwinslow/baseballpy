@@ -14,11 +14,12 @@ from baseballpy.cache_check import CURRENT, NOT_CHECKED, check_raw
 from baseballpy.core import sources_lock
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import datasets_for
+from baseballpy.core.stores import RawStore
 from baseballpy.core.upstream import CONTENT_SHA256, GIT_BLOB, stored_fingerprint
 from baseballpy.ingest.types import Selection, make_job
 from baseballpy.sources import catalog, lahman
 from baseballpy.sources.lahman.adapter import LahmanAdapter
-from baseballpy.sources.lahman.api import LahmanSource
+from baseballpy.sources.lahman.api import LahmanSource, lahman_spec
 from baseballpy.sources.lahman.extractor import DOCUMENT_DATASET, LOCAL_IMPORT
 from baseballpy.sources.lahman.schema import LahmanTable, canonical_table_name
 
@@ -387,6 +388,23 @@ def test_catalog_status_shows_the_findings(tmp_path: Path) -> None:
     assert "data quality lahman.Batting: orphan_rows:playerID->People=1" in " ".join(
         table.output.split()
     )
+
+
+def test_a_raw_file_stored_without_a_fingerprint_is_not_rebuilt_in_every_process(
+    tmp_path: Path,
+) -> None:
+    cfg = LakeConfig(home=tmp_path)
+    # what the previous version stored for a supplied file: no upstream, no etag
+    RawStore(cfg).put("lahman", "People", "People.csv", PEOPLE.encode(), source_ref=LOCAL_IMPORT)
+    first = LahmanSource(cfg)
+    first.load_table("People")
+    parquet = first.store.part_path(lahman_spec("People"), "data")
+    stamp = parquet.stat().st_mtime_ns
+    for _ in range(2):  # new objects stand for new processes: nothing may be rewritten
+        again = LahmanSource(cfg).load_table("People")
+        assert again.from_cache and parquet.stat().st_mtime_ns == stamp
+    entry = LahmanSource(cfg).extractor.file_entry("People")
+    assert entry is not None and "sha256" in entry
 
 
 def test_the_licence_documentation_names_cc_by_sa_and_the_share_alike_term() -> None:
