@@ -286,3 +286,20 @@ def test_upstream_readme_is_kept_with_its_sha256_when_the_tree_lists_it(tmp_path
     calls = len(respx.calls)
     ext.extract()  # cached: the README is present, so nothing is downloaded again
     assert len(respx.calls) == calls
+
+
+@respx.mock
+def test_missing_auxiliary_file_is_logged_and_its_dataset_has_zero_rows(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    names = [*HEX_SHARDS, "names.csv", "links.csv"]  # the tree has no countries.csv
+    _tree(names)
+    people = (FIX / "people_real_header_sample.csv").read_bytes()
+    bodies = {s: people for s in HEX_SHARDS}
+    bodies["names.csv"] = (FIX / "names_sample.csv").read_bytes()
+    bodies["links.csv"] = (FIX / "links_sample.csv").read_bytes()
+    _serve(names, bodies)
+    with caplog.at_level("WARNING"):
+        outcome = ingest(config=LakeConfig(home=tmp_path))
+    assert outcome.rows["register_countries"] == 0 and outcome.rows["register"] > 0
+    assert "no countries.csv" in caplog.text

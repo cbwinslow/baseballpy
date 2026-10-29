@@ -6,6 +6,8 @@ import httpx
 import pyarrow as pa
 import pytest
 import respx
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from baseballpy.core.config import LakeConfig
 from baseballpy.sources.chadwick.extractor import (
@@ -309,3 +311,27 @@ def test_register_builds_nothing_up_front_and_warns_about_repeated_ids(
         record = register.resolve(mlbam=5)
     assert record is not None and record.full_name == "One A"  # the first row wins
     assert "repeated key_mlbam" in caplog.text
+
+
+@settings(max_examples=40, deadline=None)
+@given(
+    mlbam=st.lists(st.integers(1, 2_000_000), min_size=1, max_size=8, unique=True),
+    retro=st.lists(
+        st.from_regex(r"[a-z]{4}[a-z0-9]{4}", fullmatch=True), min_size=8, max_size=8, unique=True
+    ),
+)
+def test_property_every_id_pair_round_trips(mlbam: list[int], retro: list[str]) -> None:
+    rows = [
+        {"name_last": f"L{n}", "name_first": "F", "name_given": "F", "key_mlbam": str(m)}
+        for n, m in enumerate(mlbam)
+    ]
+    csv = ["key_person,key_uuid,key_mlbam,key_retro,name_last,name_first,name_given"]
+    for n, row in enumerate(rows):
+        csv.append(f"p{n:07d},u{n:07d},{row['key_mlbam']},{retro[n]},{row['name_last']},F,F")
+    register = ChadwickRegister(ChadwickNormalizer().normalize("\n".join(csv).encode()))
+    for n, m in enumerate(mlbam):
+        assert register.resolve_id(m, PlayerIdType.MLBAM, PlayerIdType.RETRO) == retro[n]
+        assert register.resolve_id(retro[n].upper(), PlayerIdType.RETRO, PlayerIdType.MLBAM) == m
+        assert (
+            register.resolve_id(f"p{n:07d}", PlayerIdType.PERSON, PlayerIdType.UUID) == f"u{n:07d}"
+        )

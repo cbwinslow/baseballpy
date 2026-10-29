@@ -54,10 +54,11 @@ reg.resolve_id(660271, PlayerIdType.MLBAM, PlayerIdType.RETRO)  # -> "ohtas001"
 # 3. Complete record lookup
 player = reg.resolve(mlbam=660271)
 
-# 4. Name search including aliases and nicknames from names.csv
+# 4. Name search: exact name, aliases (names.csv spellings and each person's own nickname), nickname
+#    variants learned from the register ("Michael Trout" finds Mike Trout), then substring
 reg.search_name("Mike Trout")
 
-# 5. Fuzzy matching with typo tolerance
+# 5. Fuzzy matching with typo tolerance (Jaro-Winkler, 10 best; default min_score 0.9)
 reg.search_name("Aron Juge", fuzzy=True, min_score=0.7)
 ```
 

@@ -6,5 +6,6 @@
   - [ ] 2.1 Manifest records an upstream fingerprint per raw file (git blob SHA, ETag or Last-Modified, content sha256); `RawStore.put` takes it
   - [ ] 2.2 One `is_current()` function used by every source, replacing the per-source checks (moved source by source inside the source tracks)
   - [ ] 2.3 `baseballpy cache check`: verify local sha256 (uses `RawStore.verify`) and report files whose upstream fingerprint changed
+  - [ ] 2.4 Ingest jobs report that they skipped work (audit `cache_hit`); today a cached rerun of `ingest chadwick` logs `cache_hit=False` (found in chadwick-source-review S6)
 - [ ] 3. Document
   - [ ] 3.1 `docs/DATA_WORKFLOW.md`: the five steps, the cache folders and overrides, and how to read or export the data (Arrow, Polars, DuckDB, PostgreSQL, files)

@@ -100,3 +100,26 @@ Owner chose "data-driven nicknames with a small fallback".
 - Fuzzy search: new `core/similarity.py::top_matches` (DuckDB `jaro_winkler_similarity`; sources reach DuckDB only through `core`, which keeps `tests/test_architecture.py` intact). Jaro-Winkler scores are higher than the old difflib ratio, so the default `min_score` is now 0.9 (measured on the real register: 0.9 gives 2 / 1 / 61 / 6 hits for four typo queries; 0.8 gave 215 / 86 / 416 / 105).
 - Merged in edits that arrived in the working tree while this was in progress and were committed in `0c7a22e`: ids tolerate `None`, empty strings and float strings; `person`/`uuid` ids ignore case; `resolve` falls through to the next given id when the first is not found.
 - Real register (526,894 people), this PC, old vs new on 24 fixed queries: construct 12.4 s -> instant; exact and nickname queries 0.00 s -> about 0.02 s; fuzzy 11-13 s -> 0.3 s; first crosswalk 0.05 s, then 1000 crosswalks in 0.04 s; top result identical on all queries; the one difference is the tail of the fuzzy list for "Mokie Betts" (the new score ranks different near-misses after the right person).
+
+## S5 tests and spec gaps (task 2.1, card C-05), 2026-10-29
+Added `tests/test_similarity.py` (ranking, tie-break, threshold, nulls, empty input), a Hypothesis property test (every generated MLBAM, Retrosheet and person id round-trips; Retrosheet ids ignore case), and a test for a download without `countries.csv` (warning logged, dataset 0 rows). Scenarios were added along the way (see the spec delta, merged at close). Unit tests use no network (respx and the project's socket block).
+
+## S6 live verification (task 3.1, card C-06), 2026-10-29, this PC, empty scratch home
+- `baseballpy ingest chadwick`: completed, 555,829 rows, 4.41 s (download 2.5 s); second run 0.05 s with no extract event in `audit.jsonl`.
+- All 20 raw files (16 shards, 3 auxiliary files, README.md) pass `RawStore.verify` (sha256 against the manifest): this is the first real use of `verify`.
+- CSV rows against processed rows: register 526,894 = 526,894; names 1,346 = 1,346; links 27,340 = 27,340; countries 249 = 249.
+- Crosswalk: MLBAM 660271 to `ohtas001`, 592450 to `judga001`, 545361 to `troum001`; Ohtani minors id `otani-000sho`; "Michael Trout" finds Mike Trout (1991).
+- `baseballpy db sync` registered 6 views; `catalog audit` covers only `mlb_api` and `statcast`, so Chadwick completeness is the tree inventory of S1 (all 19 data files mapped, README kept).
+- Finding: the audit event of a cached rerun says `cache_hit=False` (the ingest job does not report that it skipped the work). Added as task 2.4 of `data-workflow-standard`.
+
+## S7 export, docs, close (tasks 3.2 and 4.1, cards C-07 and C-08), 2026-10-29
+Every dataset written through each existing sink and read back (rows, column names, types, equality):
+| Sink | register (526,894 rows) | names | links | countries |
+|---|---|---|---|---|
+| `ParquetSink` | identical, 1.2 s | identical | identical | identical |
+| `DuckDBSink` | identical, 3.1 s | identical | identical | identical |
+| `PolarsSink` | identical, 0.03 s | identical | identical | identical |
+| `DltSink` to DuckDB | only `register_countries` tried: 249 rows, 6 columns, all VARCHAR | not tried | not tried | |
+| CSV | no project sink (pyarrow `write_csv` works as a one-liner) | | | |
+Gaps for Track 6a (export command, ADR 44): no CSV sink, no PostgreSQL path from the CLI (`DltSink` in Python only), the CLI exposes only the DuckDB and Parquet sinks, the larger datasets were not pushed through `dlt`. Fingerprint for the kept README (blob SHA) waits for `data-workflow-standard` 2.1.
+Close: ADR 45 written, spec delta merged into `openspec/specs/chadwick-register/spec.md` (6 requirements, 13 scenarios, all citing tests), `docs/sources/chadwick.md` updated, change archived.

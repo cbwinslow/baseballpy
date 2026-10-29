@@ -131,10 +131,10 @@ touches a source under review, do it inside that source's track.
 | B-52 | chadwick-source-review 1.2: adapter conformance, no hard-coded dataset names (card C-02) | DONE (findings in design.md) | see the card |
 | B-53 | chadwick-source-review 1.3: generated schema vs real data (card C-03) | DONE (findings in design.md) | see the card |
 | B-54 | chadwick-source-review 1.4: code review against the designated tools (card C-04) | DONE (findings in design.md) | see the card |
-| B-55 | `chadwick-source-review 2.1`: spec and test gaps (card C-05) | after B-59..B-64 | see the card |
-| B-56 | `chadwick-source-review 3.1`: live verification on a scratch home (card C-06) | after B-59 and B-60 | see the card |
-| B-57 | `chadwick-source-review 3.2`: export through every sink (card C-07) | after B-56 | see the card |
-| B-58 | `chadwick-source-review 4.1`: docs, ADRs, spec merge, archive (card C-08) | after B-55, B-57 | see the card |
+| B-55 | chadwick-source-review 2.1: spec and test gaps (card C-05) | DONE | see the card |
+| B-56 | chadwick-source-review 3.1: live verification on a scratch home (card C-06) | DONE | see the card |
+| B-57 | chadwick-source-review 3.2: export through every sink (card C-07) | DONE | see the card |
+| B-58 | chadwick-source-review 4.1: docs, ADRs, spec merge, archive (card C-08) | DONE | see the card |
 | B-59 | chadwick-source-review 5.1: split ingest from the lookup index (card C-09) | DONE | see the card |
 | B-60 | chadwick-source-review 5.2: registry-driven adapter, per-dataset jobs (card C-10) | DONE | see the card |
 | B-61 | chadwick-source-review 5.3: resolve_id explicit column map, BBREF_MINORS bug (card C-11) | DONE | see the card |
@@ -146,3 +146,4 @@ touches a source under review, do it inside that source's track.
 | B-67 | `data-workflow-standard 2.2`: one shared `is_current()` for every source | after B-66 | per-source checks replaced one source at a time inside the source tracks, tests |
 | B-68 | `data-workflow-standard 2.3`: `baseballpy cache check` | after B-66 | verifies sha256 of local files and lists files whose upstream fingerprint changed, CliRunner test, `docs/CLI.md` regenerated |
 | B-69 | `data-workflow-standard 3.1`: `docs/DATA_WORKFLOW.md` | READY | five-step workflow, cache folders and overrides, every read and export path, linked from README and ARCHITECTURE |
+| B-70 | `data-workflow-standard 2.4`: ingest jobs report skipped work in the audit log (cache_hit) | READY | a cached rerun logs cache_hit=true; test added |
