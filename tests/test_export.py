@@ -1,0 +1,238 @@
+"""export_dataset: one registry-driven path to Parquet, CSV, DuckDB and PostgreSQL, verified."""
+
+import datetime as dt
+import json
+import uuid
+from pathlib import Path
+
+import duckdb
+import pyarrow as pa
+import pyarrow.parquet as pq
+import pytest
+
+from baseballpy import export as export_module
+from baseballpy.core.config import LakeConfig
+from baseballpy.core.datasets import DatasetSpec
+from baseballpy.core.stores import ProcessedStore
+from baseballpy.export import (
+    ExportError,
+    NoCachedDataError,
+    available_seasons,
+    export_dataset,
+)
+from baseballpy.sinks.csv import read_csv_typed
+from baseballpy.sinks.dlt import DltSink
+
+SCHEMA = pa.schema(
+    [
+        pa.field("key", pa.string()),
+        pa.field("name", pa.string()),
+        pa.field("n", pa.int16()),
+        pa.field("score", pa.float64()),
+        pa.field("day", pa.date32()),
+        pa.field("at", pa.timestamp("us", "UTC")),
+        pa.field("flag", pa.bool_()),
+        pa.field("kind", pa.dictionary(pa.int8(), pa.string())),
+    ]
+)
+
+
+def _spec(name: str, partition: str) -> DatasetSpec:
+    return DatasetSpec(
+        source="demo",
+        name=name,
+        view=f"demo_{name}",
+        schema=SCHEMA,
+        partition=partition,  # type: ignore[arg-type]
+        keys=("key",),
+        description="test dataset",
+        endpoint_doc="",
+    )
+
+
+PEOPLE = _spec("people", "none")
+GAMES = _spec("games", "season")
+
+
+def _table(keys: list[str], n: int = 7) -> pa.Table:
+    count = len(keys)
+    return pa.table(
+        {
+            "key": keys,
+            "name": ['ünï, "q"' if i == 0 else None for i in range(count)],
+            "n": pa.array([n] * count, pa.int16()),
+            "score": pa.array([0.1 * i for i in range(count)], pa.float64()),
+            "day": pa.array([dt.date(2024, 4, 1)] * count, pa.date32()),
+            "at": pa.array(
+                [dt.datetime(2024, 4, 1, 12, tzinfo=dt.UTC)] * count, SCHEMA.field("at").type
+            ),
+            "flag": pa.array([i % 2 == 0 for i in range(count)], pa.bool_()),
+            "kind": pa.array(["a", "b", "a"][:count] + ["a"] * max(0, count - 3))
+            .dictionary_encode()
+            .cast(SCHEMA.field("kind").type),
+        },
+        schema=SCHEMA,
+    )
+
+
+@pytest.fixture
+def lake(tmp_path: Path) -> LakeConfig:
+    config = LakeConfig(home=tmp_path / "lake")
+    store = ProcessedStore(config)
+    store.put(PEOPLE, _table(["p1", "p2", "p3"]))
+    store.put(GAMES, _table(["g1", "g2"]), season=2023)
+    store.put(GAMES, _table(["g3", "g4", "g5"]), season=2024)
+    return config
+
+
+@pytest.mark.parametrize("target", ["parquet", "csv"])
+def test_files_land_in_the_exports_folder_with_the_registry_layout(
+    lake: LakeConfig, target: str
+) -> None:
+    result = export_dataset(PEOPLE, target, config=lake)
+    path = lake.exports_root / "demo" / "people" / f"people.{target}"
+    assert path.exists() and result.rows == 3 and result.verified
+    assert result.destination == str(lake.exports_root / "demo" / "people")
+    expected = ProcessedStore(lake).read(PEOPLE)
+    back = pq.read_table(path) if target == "parquet" else read_csv_typed(path)
+    assert back.schema.equals(SCHEMA) and back.equals(expected)
+    if target == "csv":
+        assert (path.parent / "people.schema.json").exists()
+
+
+def test_out_overrides_the_folder_and_seasons_get_season_folders(
+    lake: LakeConfig, tmp_path: Path
+) -> None:
+    out = tmp_path / "elsewhere"
+    result = export_dataset(GAMES, "parquet", config=lake, out=out)
+    assert result.seasons == (2023, 2024) and result.rows == 5
+    assert (out / "demo" / "games" / "season=2023" / "games.parquet").exists()
+    assert (out / "demo" / "games" / "season=2024" / "games.parquet").exists()
+    assert not lake.exports_root.exists()
+    only = export_dataset(GAMES, "csv", config=lake, seasons=[2024])
+    assert only.seasons == (2024,) and only.rows == 3
+    assert not (lake.exports_root / "demo" / "games" / "season=2023").exists()
+
+
+def test_the_exports_folder_can_be_moved_by_environment(
+    lake: LakeConfig, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("BASEBALLPY_EXPORTS_ROOT_OVERRIDE", str(tmp_path / "moved"))
+    config = LakeConfig(home=lake.home)
+    export_dataset(PEOPLE, "parquet", config=config)
+    assert (tmp_path / "moved" / "demo" / "people" / "people.parquet").exists()
+
+
+def test_seasons_listing_reads_the_processed_folders(lake: LakeConfig) -> None:
+    assert available_seasons(lake, GAMES) == [2023, 2024]
+    assert available_seasons(lake, PEOPLE) == []
+
+
+def _duckdb_rows(path: Path, table: str) -> list[tuple[object, ...]]:
+    con = duckdb.connect(str(path), read_only=True)
+    try:
+        return con.execute(f'SELECT key, n FROM "{table}" ORDER BY key').fetchall()  # noqa: S608
+    finally:
+        con.close()
+
+
+def test_duckdb_modes_with_seasons(lake: LakeConfig, tmp_path: Path) -> None:
+    out = tmp_path / "x.duckdb"
+    first = export_dataset(GAMES, "duckdb", config=lake, out=out)
+    assert first.rows == 5 and first.destination.endswith(":demo_games") and first.verified
+    export_dataset(GAMES, "duckdb", config=lake, out=out)  # replace again: still 5, not 10
+    assert [k for k, _ in _duckdb_rows(out, "demo_games")] == ["g1", "g2", "g3", "g4", "g5"]
+    export_dataset(GAMES, "duckdb", config=lake, out=out, mode="append")
+    assert len(_duckdb_rows(out, "demo_games")) == 10
+    ProcessedStore(lake).put(GAMES, _table(["g3", "g9"], n=99), season=2024)
+    export_dataset(GAMES, "duckdb", config=lake, out=out, mode="replace")
+    export_dataset(GAMES, "duckdb", config=lake, out=out, mode="merge")  # same keys: no growth
+    rows = dict(_duckdb_rows(out, "demo_games"))
+    assert sorted(rows) == ["g1", "g2", "g3", "g9"] and rows["g3"] == 99
+
+
+def test_default_duckdb_file_is_in_the_exports_folder(lake: LakeConfig) -> None:
+    export_dataset(PEOPLE, "duckdb", config=lake)
+    assert _duckdb_rows(lake.exports_root / "baseballpy.duckdb", "demo_people")[0][0] == "p1"
+
+
+def test_postgres_replace_append_merge_with_registry_names(
+    lake: LakeConfig, postgres_url: str
+) -> None:
+    schema = f"t_{uuid.uuid4().hex[:8]}"
+    sink = DltSink(
+        destination="postgres",
+        dataset_name=schema,
+        credentials=postgres_url,
+        pipelines_dir=str(lake.home / "cache" / "dlt"),
+        pipeline_name="baseballpy_export",
+    )
+    result = export_dataset(GAMES, "postgres", config=lake, url=postgres_url, schema=schema)
+    assert result.rows == 5 and result.destination == f"postgres:{schema}.demo_games"
+    assert sink.table_info("demo_games").rows == 5
+    export_dataset(GAMES, "postgres", config=lake, url=postgres_url, schema=schema)  # replace
+    assert sink.table_info("demo_games").rows == 5
+    export_dataset(GAMES, "postgres", config=lake, url=postgres_url, schema=schema, mode="merge")
+    assert sink.table_info("demo_games").rows == 5  # merge on the registry key: no duplicates
+    export_dataset(GAMES, "postgres", config=lake, url=postgres_url, schema=schema, mode="append")
+    assert sink.table_info("demo_games").rows == 10
+
+
+def test_postgres_url_comes_from_the_environment_or_an_error_says_how(
+    lake: LakeConfig, postgres_url: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("BASEBALLPY_POSTGRES_URL", raising=False)
+    with pytest.raises(ExportError, match="BASEBALLPY_POSTGRES_URL"):
+        export_dataset(PEOPLE, "postgres", config=lake)
+    monkeypatch.setenv("BASEBALLPY_POSTGRES_URL", postgres_url)
+    schema = f"t_{uuid.uuid4().hex[:8]}"
+    assert export_dataset(PEOPLE, "postgres", config=lake, schema=schema).rows == 3
+
+
+def test_missing_data_modes_targets_and_seasons_are_refused_clearly(lake: LakeConfig) -> None:
+    other = _spec("nothing", "none")
+    with pytest.raises(NoCachedDataError, match="ingest demo -d nothing"):
+        export_dataset(other, "parquet", config=lake)
+    with pytest.raises(NoCachedDataError, match=r"season\(s\) \[1999\]"):
+        export_dataset(GAMES, "parquet", config=lake, seasons=[1999])
+    with pytest.raises(ValueError, match="always replaced"):
+        export_dataset(PEOPLE, "csv", config=lake, mode="merge")
+    with pytest.raises(ValueError, match="unknown export target"):
+        export_dataset(PEOPLE, "xlsx", config=lake)
+    with pytest.raises(ValueError, match="unknown export mode"):
+        export_dataset(PEOPLE, "duckdb", config=lake, mode="upsert")
+
+
+def test_a_difference_found_on_read_back_fails_the_export(
+    lake: LakeConfig, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    real = export_module.read_csv_typed
+
+    def damaged(path: Path | str) -> pa.Table:
+        return real(path).slice(1)  # one row lost
+
+    monkeypatch.setattr(export_module, "read_csv_typed", damaged)
+    with pytest.raises(ExportError, match="data read back differs"):
+        export_dataset(PEOPLE, "csv", config=lake)
+    assert export_dataset(PEOPLE, "csv", config=lake, verify=False).verified is False
+
+
+def test_an_empty_cached_dataset_exports_an_empty_typed_file(lake: LakeConfig) -> None:
+    empty = _spec("empty", "none")
+    ProcessedStore(lake).put_stream(empty, [])  # recorded with zero rows
+    result = export_dataset(empty, "csv", config=lake)
+    assert result.rows == 0 and result.verified
+    assert read_csv_typed(lake.exports_root / "demo" / "empty" / "empty.csv").schema.equals(SCHEMA)
+
+
+def test_every_export_is_written_to_the_audit_log(lake: LakeConfig) -> None:
+    from baseballpy.core.audit import default_audit_logger
+
+    export_dataset(PEOPLE, "parquet", config=lake)
+    events = [
+        json.loads(line)
+        for line in default_audit_logger.log_path.read_text(encoding="utf-8").splitlines()
+    ]
+    exported = [e for e in events if e["operation"] == "export"]
+    assert exported and exported[-1]["records_count"] == 3
+    assert exported[-1]["source"] == "demo" and exported[-1]["status"] == "SUCCESS"

@@ -2,7 +2,6 @@
 
 import datetime as dt
 import uuid
-from collections.abc import Iterator
 from pathlib import Path
 
 import pyarrow as pa
@@ -34,16 +33,6 @@ def _table(keys: list[str], i32: int = 3) -> pa.Table:
             .cast(pa.dictionary(pa.int8(), pa.string())),
         }
     )
-
-
-@pytest.fixture(scope="module")
-def postgres_url(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
-    pgserver = pytest.importorskip("pgserver")
-    server = pgserver.get_server(tmp_path_factory.mktemp("pgdata"), cleanup_mode="stop")
-    try:
-        yield str(server.get_uri())
-    finally:
-        server.cleanup()
 
 
 @pytest.fixture(params=["duckdb", "postgres"])

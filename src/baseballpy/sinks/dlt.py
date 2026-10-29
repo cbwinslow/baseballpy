@@ -59,6 +59,8 @@ def type_mismatches(schema: pa.Schema, columns: Mapping[str, str]) -> list[str]:
         return problems
     for field in schema:
         sql_type = actual[field.name].lower()
+        if sql_type.startswith("enum"):  # a DuckDB ENUM holds text
+            sql_type = "varchar"
         if sql_type not in allowed_sql_types(field.type):
             problems.append(f"{field.name}: arrow {field.type} became database type {sql_type}")
     return problems

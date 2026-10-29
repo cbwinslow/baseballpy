@@ -88,3 +88,14 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     for item in items:
         if "live" in item.keywords:
             item.add_marker(skip)
+
+
+@pytest.fixture(scope="session")
+def postgres_url(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
+    """A disposable embedded PostgreSQL server (dev-only ``pgserver``); skips when it is absent."""
+    pgserver = pytest.importorskip("pgserver")
+    server = pgserver.get_server(tmp_path_factory.mktemp("pgdata"), cleanup_mode="stop")
+    try:
+        yield str(server.get_uri())
+    finally:
+        server.cleanup()
