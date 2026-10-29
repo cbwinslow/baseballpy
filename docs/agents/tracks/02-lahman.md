@@ -27,6 +27,14 @@ tables before `People` is 18, not 14; the first plan's "no fingerprints" claim w
 
 Rules that never change for this source: Lahman data comes only from `cbwinslow/lahman-database-csv` or user-supplied data (never `chadwickbureau/baseballdatabank`; `tests/test_architecture.py` enforces it); `import_archive` keeps its zip-safety checks; the dual mode (remote mirror, local import) stays.
 
+Results of L-01 to L-04 (2026-10-29; evidence in the change's design.md S1 to S4):
+- **Confirmed:** L-A (documentation files not kept; licence is CC BY-SA 3.0 and is only deferred to the unkept readme), L-B (both cache tiers; plus the job-level `cache_hit` is never true), L-C (repeated calls re-read the Parquet: 6 to 18 ms each), L-D (exactly three tables have key columns with NULLs: `AllstarFull`, `AwardsPlayers`, `CollegePlaying`; 24 of 27 can merge), L-G and L-H (in code), L-K (records_count off by one, 0 on the file entry, a second chunk in the same manifest).
+- **Refined:** L-F (all 27 registry, enum and generated names agree and every table is accepted by `--datasets`, but nothing pins the lists together and names are case-sensitive); L-I (measured: 99.94% of `bbrefID` and 99.85% of `retroID` match Chadwick; 4 people link to two different Chadwick persons; 14 and 36 ids unmatched).
+- **Measured clean:** no duplicate keys, no mistyped columns, no empty strings, `_extras` empty, nothing quarantined, no `playerID` orphans; 5 `AllstarFull` rows have a (yearID, teamID) with no `Teams` row.
+- **New:** unused async twins in the extractor; `cache check --upstream` prints a misleading message (shared tool, data-workflow-standard 2.9); `FieldingOFsplit.WP` and `ZR` are always empty; ShareAlike consequence for exports.
+- **Still open for the review:** L-E and L-J (cards L-13 and L-12); the import path on a real SABR zip (OWNER may supply one).
+- **Tasks added from the findings:** 5.6 to 5.9 (cards L-15 to L-18 at the end of this file). Owner decisions are collected in the change's design.md under "Owner decisions expected".
+
 ### L-01 Inventory the provider against the registry
 - **Change task:** `lahman-source-review 1.1`
 - **Stage:** S1
@@ -180,3 +188,50 @@ Rules that never change for this source: Lahman data comes only from `cbwinslow/
 - **Steps:** 1. update the hand-written parts of the source page (keys, quirks, access, export, currency); 2. one ADR per decision; 3. merge the spec delta into openspec/specs; 4. run all gates; move the change to openspec/changes/archive/<date>-lahman-source-review; update BACKLOG, EXECUTION_ORDER, PROJECT_MAP.
 - **Done when:** gates green, `openspec validate --specs` passes, change archived, scorecard row complete.
 - **Record:** tick 4.1 and archive the change.
+
+## Cards created by the review (fixes found by L-01 to L-04)
+
+### L-15 Quality checks that do not depend on load order and are visible to users
+- **Change task:** `lahman-source-review 5.6`
+- **Stage:** S4
+- **Executor:** Claude designs, agy codes (review the full diff)
+- **Files:** src/baseballpy/sources/lahman/quality.py, src/baseballpy/sources/lahman/api.py (`_quality`, `_people_ids`), the place chosen to show findings, tests/test_lahman_coverage.py, docs/sources/lahman.md
+- **Tools (reuse check):** pyarrow compute (already used in quality.py); `baseballpy catalog status` or `doctor` for showing findings
+- **Inputs:** design.md S3 and S4: measured results (no `playerID` orphans, 5 `AllstarFull` rows with no `Teams` row, none for `franchID`, `parkkey`, `schoolID`); the 18 tables that load before `People`
+- **Steps:** 1. run the orphan checks after the tables of a run are stored, or read `People` once per run, so no table is skipped by load order; 2. add (yearID, teamID) against `Teams`, `franchID` against `TeamsFranchises`, `parkkey` against `Parks`, `schoolID` against `Schools`; 3. keep the findings in the processed manifest and show them to users in one named place (OWNER may prefer a different place: ask once); 4. tests with small fixtures, including a table that sorts before `People`.
+- **Done when:** a clean ingest of the real data reports exactly the 5 `AllstarFull` rows and nothing else; the new tests pass.
+- **Record:** tick 5.6; design.md S4.
+
+### L-16 Pin the table-name lists together and decide case handling
+- **Change task:** `lahman-source-review 5.7`
+- **Stage:** S2
+- **Executor:** agy (Claude reviews the full diff)
+- **Files:** tests/test_lahman_coverage.py, src/baseballpy/sources/lahman/adapter.py and schema.py only if case-insensitive names are chosen
+- **Tools (reuse check):** the dataset registry; `LahmanTable` stays (the spec requires the enum)
+- **Inputs:** design.md S2 (27 names agree today; `batting` is rejected)
+- **Steps:** 1. a test that fails when the enum, the registry and the generated tables disagree; 2. decide whether table names are accepted case-insensitively (recommended; OWNER, ask once) and implement it in one place with the canonical name reported back; 3. tests for both.
+- **Done when:** `uv run pytest tests/test_lahman_coverage.py tests/test_ingest_adapters.py -q` passes and the lists cannot drift silently.
+- **Record:** tick 5.7; design.md S2.
+
+### L-17 One consistent raw manifest entry per file; remove unused duplicate code
+- **Change task:** `lahman-source-review 5.8`
+- **Stage:** S4
+- **Executor:** agy (Claude reviews the full diff)
+- **Files:** src/baseballpy/sources/lahman/extractor.py, tests/test_lahman_coverage.py
+- **Tools (reuse check):** `RawStore.put` already writes the file entry (size, sha256, fingerprint)
+- **Inputs:** design.md S4: `records_count` is the line count including the header on one chunk and 0 on the file entry; a second dataset-level chunk lives in the same manifest; `extract_table_async`, `extract_all` and `extract_all_async` have no callers
+- **Steps:** 1. one entry per raw file; `records_count` means data rows or is omitted, the same way everywhere; 2. remove the unused extractor twins, or give them a caller and tests (decide with evidence); 3. keep the entry fields other code reads (check `cache_check.py`, `RawStore.verify`).
+- **Done when:** the raw manifest of a clean ingest has one entry per file with consistent fields; `uv run pytest tests/test_lahman*.py tests/test_cache_check.py -q` passes.
+- **Record:** tick 5.8; design.md S4.
+
+### L-18 Ingest jobs report cache hits
+- **Change task:** `lahman-source-review 5.9`
+- **Stage:** S4
+- **Executor:** agy (Claude reviews the full diff)
+- **Files:** src/baseballpy/sources/lahman/adapter.py, src/baseballpy/sources/lahman/api.py (a way for `get_table` to say it came from the cache), tests/test_ingest_adapters.py
+- **Tools (reuse check):** `JobResult.cache_hit` and the runner's audit tracker (built for Chadwick, ADR 43 follow-up)
+- **Inputs:** design.md S4 (0 of 54 `ingest_job` events say cache hit)
+- **Steps:** 1. let the table load report whether it was served from the cache; 2. the adapter sets `cache_hit` on the `JobResult`; 3. test with a cached and an uncached run.
+- **Done when:** a second `uv run baseballpy ingest lahman` writes `cache_hit` true for every job in `audit.jsonl`.
+- **Record:** tick 5.9; design.md S4.
+

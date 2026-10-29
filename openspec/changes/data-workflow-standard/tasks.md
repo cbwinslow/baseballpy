@@ -11,5 +11,6 @@
   - [ ] 2.6 Retrosheet records fingerprints and decides with `is_current()` (inside the Retrosheet review)
   - [ ] 2.7 Statcast records fingerprints and decides with `is_current()` (inside the Statcast review)
   - [ ] 2.8 MLB API records fingerprints and decides with `is_current()` (inside the MLB API review)
+  - [ ] 2.9 `cache check --upstream` says so when nothing could be compared (no file has a git fingerprint) instead of "add --upstream" (found in lahman-source-review 1.4)
 - [x] 3. Document
   - [x] 3.1 `docs/DATA_WORKFLOW.md`: the five steps, the cache folders and overrides, and how to read or export the data (Arrow, Polars, DuckDB, PostgreSQL, files)

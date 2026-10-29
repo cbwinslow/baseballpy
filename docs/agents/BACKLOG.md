@@ -172,11 +172,11 @@ touches a source under review, do it inside that source's track.
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-86 | `lahman-source-review 1.1`: Inventory the provider against the registry (card L-01) | READY | see the card |
-| B-87 | `lahman-source-review 1.2`: Check registry and adapter conformance (card L-02) | after B-86 | see the card |
-| B-88 | `lahman-source-review 1.3`: Compare the generated schema with real data (card L-03) | after B-87 | see the card |
-| B-89 | `lahman-source-review 1.4`: Review the code against the designated tools and decoupling rules (card L-04) | after B-88 | see the card |
-| B-90 | `lahman-source-review 5.1`: Record upstream fingerprints for every raw file (card L-05) | after B-89 | see the card |
+| B-86 | lahman-source-review 1.1: Inventory the provider against the registry (card L-01) | DONE (findings in design.md S1-S4) | see the card |
+| B-87 | lahman-source-review 1.2: Check registry and adapter conformance (card L-02) | DONE (findings in design.md S1-S4) | see the card |
+| B-88 | lahman-source-review 1.3: Compare the generated schema with real data (card L-03) | DONE (findings in design.md S1-S4) | see the card |
+| B-89 | lahman-source-review 1.4: Review the code against the designated tools and decoupling rules (card L-04) | DONE (findings in design.md S1-S4) | see the card |
+| B-90 | `lahman-source-review 5.1`: Record upstream fingerprints for every raw file (card L-05) | READY | see the card |
 | B-91 | `lahman-source-review 5.2`: Decide currency with is_current() at every cache tier (card L-06) | after B-90 | see the card |
 | B-92 | `lahman-source-review 5.3`: Keep the provider's documentation files (card L-07) | after B-91 | see the card |
 | B-93 | `lahman-source-review 5.4`: Review the second way in (user-supplied files); N/A if the source has none (card L-08) | after B-92 | see the card |
@@ -186,3 +186,8 @@ touches a source under review, do it inside that source's track.
 | B-97 | `lahman-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card L-12) | after B-96 | see the card |
 | B-98 | `lahman-source-review 3.3`: Cited column descriptions (card L-13) | after B-97 | see the card |
 | B-99 | `lahman-source-review 4.1`: Docs, decisions, spec merge, archive (card L-14) | after B-98 | see the card |
+| B-100 | `lahman-source-review 5.6`: Quality checks independent of load order, every id column, visible to users (card L-15) | after B-94 | see the card |
+| B-101 | `lahman-source-review 5.7`: Pin the table-name lists together with a test; case-insensitive names (card L-16) | after B-100 | see the card |
+| B-102 | `lahman-source-review 5.8`: One consistent raw manifest entry per file; remove unused extractor code (card L-17) | after B-101 | see the card |
+| B-103 | `lahman-source-review 5.9`: Ingest jobs report cache hits (card L-18) | after B-102 | see the card |
+| B-104 | `data-workflow-standard 2.9`: `cache check --upstream` says so when nothing could be compared | READY (do it inside lahman-source-review 5.1) | message fixed, CliRunner test |

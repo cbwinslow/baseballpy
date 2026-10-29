@@ -33,7 +33,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | Source | Datasets | Review | Track cards | Shared currency | Fingerprints | Column descriptions | Spec requirements |
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
-| `lahman` | 27 | in progress (0/14 tasks) | yes | no | no | 388/399 (97%) | 6 |
+| `lahman` | 27 | in progress (4/18 tasks) | yes | no | no | 388/399 (97%) | 6 |
 | `retrosheet` | 25 | not started | no | no | no | 718/1074 (66%) | 6 |
 | `statcast` | 38 | not started | no | no | no | 293/977 (29%) | 9 |
 | `mlb_api` | 366 | not started | no | no | no | 9462/16692 (56%) | 11 |
@@ -46,9 +46,9 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 1 | 4.2 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `data-workflow-standard` | 8 | 5 | 2.5, 2.6, 2.7, 2.8 |
+| `data-workflow-standard` | 8 | 6 | 2.5, 2.6, 2.7, 2.8, 2.9 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
-| `lahman-source-review` | 0 | 19 | 1.1, 1.2, 1.3, 1.4, 5.1, 5.2, 5.3, 5.4, 5.5, 2.1, 3.1, 3.2, 3.3, 4.1 |
+| `lahman-source-review` | 5 | 18 | 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 2.1, 3.1, 3.2, 3.3, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 0 | 9 | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2 |
 | `reference-docs` | 2 | 1 | 3 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
