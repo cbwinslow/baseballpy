@@ -17,6 +17,7 @@ nav:
   - Quickstart: QUICKSTART.md
   - Command-line reference: CLI.md
   - Architecture: ARCHITECTURE.md
+  - Data workflow: DATA_WORKFLOW.md
   - Sources:
       - Statcast: sources/statcast.md
       - MLB Stats API: sources/mlb_api.md

@@ -303,3 +303,40 @@ def test_missing_auxiliary_file_is_logged_and_its_dataset_has_zero_rows(
         outcome = ingest(config=LakeConfig(home=tmp_path))
     assert outcome.rows["register_countries"] == 0 and outcome.rows["register"] > 0
     assert "no countries.csv" in caplog.text
+
+
+@respx.mock
+def test_downloaded_files_record_their_git_blob_fingerprint(tmp_path: Path) -> None:
+    from baseballpy.core.upstream import GIT_BLOB, GIT_COMMIT, stored_fingerprint
+
+    ref = get_source_ref("chadwick_register").ref
+    names = [*HEX_SHARDS, "names.csv"]
+    respx.get(f"{API}/{ref}?recursive=1").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "truncated": False,
+                "tree": [
+                    {"path": f"data/{n}", "type": "blob", "size": 1, "sha": f"blob-{n}"}
+                    for n in names
+                ],
+            },
+        )
+    )
+    _serve(names)
+    ext, _ = _extractor(tmp_path)
+    ext.extract()
+    cfg = LakeConfig(home=tmp_path)
+    shard = stored_fingerprint(
+        cfg.dataset_manifest("chadwick", "register", "raw").chunks()["people-3.csv"]
+    )
+    assert shard is not None and shard.kind == GIT_BLOB and shard.value == "blob-people-3.csv"
+    assert shard.origin == "chadwickbureau/register:data/people-3.csv"
+    aux = stored_fingerprint(
+        cfg.dataset_manifest("chadwick", "register_names", "raw").chunks()["names.csv"]
+    )
+    assert aux is not None and aux.value == "blob-names.csv"
+    commit = stored_fingerprint(
+        cfg.dataset_manifest("chadwick", "register", "raw").chunks()["commit_sha"]
+    )
+    assert commit is not None and commit.kind == GIT_COMMIT and commit.value == ref

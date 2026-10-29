@@ -1,17 +1,21 @@
 """Chadwick Bureau Register ingest adapter."""
 
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Sequence
+from typing import TYPE_CHECKING
 
 from baseballpy.ingest.types import Job, JobResult, JobStatus, Selection, make_job
 
-#: ``loader(datasets, refresh)`` makes the datasets current and returns rows per dataset.
-Loader = Callable[[Sequence[str] | None, bool], Mapping[str, int]]
+if TYPE_CHECKING:
+    from baseballpy.sources.chadwick.ingest import IngestOutcome
+
+#: ``loader(datasets, refresh)`` makes the datasets current and says what it did per dataset.
+Loader = Callable[[Sequence[str] | None, bool], "IngestOutcome"]
 
 
-def _default_loader(datasets: Sequence[str] | None, refresh: bool) -> Mapping[str, int]:
+def _default_loader(datasets: Sequence[str] | None, refresh: bool) -> "IngestOutcome":
     from baseballpy.sources.chadwick.ingest import ingest
 
-    return ingest(datasets, refresh=refresh).rows
+    return ingest(datasets, refresh=refresh)
 
 
 def _dataset_names() -> list[str]:
@@ -57,12 +61,13 @@ class ChadwickAdapter:
             raise ValueError(f"unknown task {job.task!r} for chadwick")
         chosen = job.param("datasets")
         selected = str(chosen).split(",") if chosen else None
-        rows = self._loader(selected, refresh)
+        outcome = self._loader(selected, refresh)
         return JobResult(
             job=job,
             status=JobStatus.COMPLETED,
-            rows=sum(rows.values()),
-            detail=", ".join(f"{name}={count}" for name, count in rows.items()),
+            rows=sum(outcome.rows.values()),
+            detail=", ".join(f"{name}={count}" for name, count in outcome.rows.items()),
+            cache_hit=not outcome.tables,
         )
 
 

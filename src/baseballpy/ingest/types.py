@@ -76,6 +76,8 @@ class JobResult:
     seconds: float = 0.0
     detail: str = ""
     error: str | None = None
+    #: True when the job served everything from the cache and downloaded nothing
+    cache_hit: bool = False
 
 
 @dataclass

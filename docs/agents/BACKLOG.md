@@ -142,8 +142,12 @@ touches a source under review, do it inside that source's track.
 | B-63 | chadwick-source-review 5.5: data-driven nicknames, vectorised search (card C-13) | DONE | see the card |
 | B-64 | chadwick-source-review 5.6: keep the upstream README, correct spec and docs (card C-14) | DONE | see the card |
 | B-65 | data-workflow-standard 1.1: owner picks the update-check rule and the dlt role (design.md decisions A and B) | DONE (ADR 43 and 44, 2026-10-29) | two ADRs written; B-43 brainstorm can build on them |
-| B-66 | `data-workflow-standard 2.1`: manifest records an upstream fingerprint per raw file | READY | `RawStore.put` takes it, tests, git sources store the tree blob SHA |
-| B-67 | `data-workflow-standard 2.2`: one shared `is_current()` for every source | after B-66 | per-source checks replaced one source at a time inside the source tracks, tests |
-| B-68 | `data-workflow-standard 2.3`: `baseballpy cache check` | after B-66 | verifies sha256 of local files and lists files whose upstream fingerprint changed, CliRunner test, `docs/CLI.md` regenerated |
-| B-69 | `data-workflow-standard 3.1`: `docs/DATA_WORKFLOW.md` | READY | five-step workflow, cache folders and overrides, every read and export path, linked from README and ARCHITECTURE |
-| B-70 | `data-workflow-standard 2.4`: ingest jobs report skipped work in the audit log (cache_hit) | READY | a cached rerun logs cache_hit=true; test added |
+| B-66 | data-workflow-standard 2.1: manifest records an upstream fingerprint per raw file | DONE | `RawStore.put` takes it, tests, git sources store the tree blob SHA |
+| B-67 | data-workflow-standard 2.2: one shared `is_current()` for every source | DONE | per-source checks replaced one source at a time inside the source tracks, tests |
+| B-68 | data-workflow-standard 2.3: `baseballpy cache check` | DONE | verifies sha256 of local files and lists files whose upstream fingerprint changed, CliRunner test, `docs/CLI.md` regenerated |
+| B-69 | data-workflow-standard 3.1: `docs/DATA_WORKFLOW.md` | DONE | five-step workflow, cache folders and overrides, every read and export path, linked from README and ARCHITECTURE |
+| B-70 | data-workflow-standard 2.4: ingest jobs report skipped work in the audit log (cache_hit) | DONE | a cached rerun logs cache_hit=true; test added |
+| B-71 | `data-workflow-standard 2.5`: Lahman records fingerprints and decides with is_current() | in the Lahman review | upstream.is_current used, blob fingerprints in the raw manifests, `cache check --upstream` shows no unfingerprinted Lahman file |
+| B-72 | `data-workflow-standard 2.6`: Retrosheet records fingerprints and decides with is_current() | in the Retrosheet review | same as B-71 for Retrosheet |
+| B-73 | `data-workflow-standard 2.7`: Statcast records fingerprints and decides with is_current() | in the Statcast review | content or ETag fingerprints recorded, time-to-live kept for how often to ask |
+| B-74 | `data-workflow-standard 2.8`: MLB API records fingerprints and decides with is_current() | in the MLB API review | same as B-73 for the MLB API |

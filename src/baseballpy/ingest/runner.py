@@ -89,6 +89,8 @@ def run_jobs(
                     result.seconds = round(duration, 4)
                 if result.rows is not None:
                     tracker.set_records(result.rows)
+                if result.cache_hit:
+                    tracker.set_cache_hit(True)
                 return result
         except Exception as exc:
             duration = time.perf_counter() - start

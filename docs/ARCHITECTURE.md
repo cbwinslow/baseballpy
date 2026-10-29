@@ -37,6 +37,10 @@ Sources meet the runner and the CLI only through `baseballpy.ingest.IngestAdapte
 
 Never edit these by hand: `sources/lahman|chadwick|retrosheet/tables.py`, `sources/statcast/lb_tables.py`, `sources/mlb_api/mlb_tables.py` and `stat_combos.py`. Their generators in `scripts/` probe the live provider, widen types over samples, verify keys and write `docs/*_probe.json`; unknown columns land in `_extras` with a one-time `schema_drift` warning.
 
+## Data workflow
+
+How files are downloaded, cached, fingerprinted and checked, and how to read or export the data: [Data workflow](DATA_WORKFLOW.md).
+
 ## Decisions
 
 The reasoning behind each choice is recorded as an ADR in [Design decisions](DECISIONS.md); behavior requirements live in `openspec/specs/`.

@@ -14,6 +14,7 @@ from baseballpy.core.github_tree import TreeTruncatedError, fetch_tree
 from baseballpy.core.http import HttpClient, HttpStatusError, TransportError, get_http_client
 from baseballpy.core.sources_lock import SourceRef, get_source_ref, github_headers
 from baseballpy.core.stores import RawStore
+from baseballpy.core.upstream import GIT_BLOB, GIT_COMMIT, Fingerprint, is_current
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +62,7 @@ class ChadwickExtractor:
         self.source_ref = SourceRef(locked.key, locked.repo, ref) if ref else locked
         self.data_base_url = f"{self.source_ref.raw_base()}/data"
         self.manifest = self.cache_config.dataset_manifest("chadwick", "register", "raw")
+        self._blob_shas: dict[str, str] = {}
         self.raw = RawStore(self.cache_config)
         # discard orphaned .part files from killed runs
         cleanup_stale_parts(self.cache_config.raw_root / "chadwick")
@@ -106,6 +108,7 @@ class ChadwickExtractor:
                 exc,
             )
             return [*HEX_SHARDS, *AUXILIARY_FILES]
+        self._blob_shas.update({e.path: e.sha for e in entries})
         names = sorted(
             e.path.removeprefix("data/")
             for e in entries
@@ -133,6 +136,7 @@ class ChadwickExtractor:
             logger.warning("could not list Chadwick documents from the git tree: %s", exc)
             return
         listed = {e.path for e in entries}
+        self._blob_shas.update({e.path: e.sha for e in entries})
         for name in DOCUMENT_FILES:
             if name not in listed or (only_missing and (self.shards_dir / name).exists()):
                 continue
@@ -148,6 +152,7 @@ class ChadwickExtractor:
                 result.content,
                 source_ref=source_ref or None,
                 etag=result.etag or "",
+                upstream=self._blob_fingerprint(name),
             )
 
     def get_latest_commit_sha(self) -> str | None:
@@ -178,31 +183,49 @@ class ChadwickExtractor:
         names = [str(f) for f in files] if isinstance(files, list) else list(HEX_SHARDS)
         return all(self._raw_path(n).exists() for n in names)
 
-    def is_cache_current(self, refresh: bool) -> bool:
-        """Apply the freshness policy; after 24 h a floating ref is revalidated against upstream."""
-        if refresh or not self.are_shards_cached():
-            return False
+    def _commit_fingerprint(self, sha: str | None) -> Fingerprint | None:
+        return Fingerprint(GIT_COMMIT, sha, origin=self.source_ref.repo) if sha else None
+
+    def _touch_commit_entry(self) -> None:
+        """Renew the timestamps of the commit chunk after upstream confirmed it is unchanged."""
         entry = self.manifest.get_chunk(SHA_CHUNK)
-        if entry is None or entry.get("status") != "COMPLETED":
-            return False
-        if not self._recorded_files_present(entry):
-            return False
-        if self.source_ref.pinned:
-            # reproducible mode: current iff fetched at exactly the locked commit
-            return bool(entry.get("sha") == self.source_ref.ref)
-        if self.cache_config.is_fresh(entry, "chadwick"):
-            return True
-        latest = self.get_latest_commit_sha()
-        if latest is None:
-            logger.warning("serving possibly stale Chadwick register (SHA check failed)")
-            return True
-        if latest == entry.get("sha"):
+        if entry is not None:
             self.manifest.put_entry(
                 SHA_CHUNK, {**entry, "fetched_at": _now_iso(), "completed_at": _now_iso()}
             )
-            return True
-        logger.info("Chadwick register changed upstream (%s); re-downloading", latest)
-        return False
+
+    def is_cache_current(self, refresh: bool) -> bool:
+        """Whether the cached register can be served (the shared rule of ``core/upstream.py``).
+
+        A pinned commit is current exactly when it was fetched at that commit; a floating ref is
+        trusted for the time-to-live and then compared with upstream's latest commit.
+        """
+        if refresh or not self.are_shards_cached():
+            return False
+        entry = self.manifest.get_chunk(SHA_CHUNK)
+        if (
+            entry is not None
+            and entry.get("status") == "COMPLETED"
+            and not self._recorded_files_present(entry)
+        ):
+            return False
+        pinned = self._commit_fingerprint(self.source_ref.ref) if self.source_ref.pinned else None
+        current = is_current(
+            entry,
+            expected=pinned,
+            probe=lambda: self._commit_fingerprint(self.get_latest_commit_sha()),
+            on_confirmed=self._touch_commit_entry,
+            ttl_seconds=self.cache_config.ttl_for("chadwick"),
+            today=self.cache_config.today,
+        )
+        if not current and entry is not None and not self.source_ref.pinned:
+            logger.info("Chadwick register changed upstream; re-downloading")
+        return current
+
+    def _blob_fingerprint(self, path: str) -> Fingerprint | None:
+        """Git blob fingerprint of ``path`` in the tree last listed (``None`` when not listed)."""
+        sha = self._blob_shas.get(path)
+        return Fingerprint(GIT_BLOB, sha, origin=f"{self.source_ref.repo}:{path}") if sha else None
 
     def _download(self, filename: str, source_ref: str) -> bytes:
         dataset = "register" if _SHARD.match(filename) else AUXILIARY_DATASETS[filename]
@@ -214,6 +237,7 @@ class ChadwickExtractor:
             result.content,
             source_ref=source_ref or None,
             etag=result.etag or "",
+            upstream=self._blob_fingerprint(f"data/{filename}"),
         )
         return result.content
 
@@ -250,7 +274,15 @@ class ChadwickExtractor:
             self.manifest.set_completed(
                 SHA_CHUNK,
                 records_count=len(results),
-                metadata={"sha": latest_sha or "", "files": sorted(results)},
+                metadata={
+                    "sha": latest_sha or "",
+                    "files": sorted(results),
+                    **(
+                        {"upstream": fp.to_dict()}
+                        if (fp := self._commit_fingerprint(latest_sha))
+                        else {}
+                    ),
+                },
             )
             tracker.set_cache_hit(False)
             tracker.set_records(sum(len(b) for b in results.values()))

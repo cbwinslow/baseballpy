@@ -1,5 +1,6 @@
 """Tests for runner, adapters registry, and types in baseballpy.ingest."""
 
+import json
 import threading
 import time
 from collections.abc import Sequence
@@ -298,3 +299,23 @@ def test_run_jobs_pool_interrupt_returns_while_a_job_is_still_running() -> None:
     assert time.perf_counter() - began < 10
     assert report.exit_code == 130
     assert {r.status for r in report.results} == {JobStatus.CANCELLED}
+
+
+def test_a_job_that_served_everything_from_the_cache_logs_a_cache_hit(tmp_path: Path) -> None:
+    class CachedAdapter:
+        source = "cached"
+
+        def all_seasons(self) -> list[int]:
+            return []
+
+        def plan(self, selection: object) -> list[Job]:
+            return []
+
+        def run(self, job: Job, *, refresh: bool = False) -> JobResult:
+            return JobResult(job=job, status=JobStatus.COMPLETED, rows=3, cache_hit=True)
+
+    audit = AuditLogger(AuditConfig(log_dir_override=tmp_path))
+    job = Job("cached", "x")
+    run_jobs([job], {"cached": CachedAdapter()}, audit=audit)
+    events = [json.loads(line) for line in audit.log_path.read_text().splitlines()]
+    assert [e["cache_hit"] for e in events if e["operation"] == "ingest_job"] == [True]

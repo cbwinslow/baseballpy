@@ -1,5 +1,6 @@
 """Cache freshness policy: completed historical seasons are immutable; current data uses TTLs."""
 
+from collections.abc import Mapping
 from datetime import UTC, date, datetime
 from typing import Any
 
@@ -33,7 +34,7 @@ def _parse_ts(value: Any) -> datetime | None:
 
 
 def is_fresh(
-    entry: dict[str, Any] | None,
+    entry: Mapping[str, Any] | None,
     *,
     ttl_seconds: float | None,
     season: int | None = None,

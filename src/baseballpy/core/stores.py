@@ -13,6 +13,7 @@ from baseballpy.core.atomic import atomic_write, atomic_write_parquet
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec
 from baseballpy.core.layout import ensure_version_file, hint_if_legacy
+from baseballpy.core.upstream import ETAG, Fingerprint
 
 logger = logging.getLogger(__name__)
 
@@ -56,8 +57,15 @@ class RawStore:
         season: int | None = None,
         source_ref: str | None = None,
         etag: str = "",
+        upstream: Fingerprint | None = None,
     ) -> Path:
-        """Atomically write ``data`` and record size + sha256 in the dataset's raw manifest."""
+        """Atomically write ``data`` and record size + sha256 in the dataset's raw manifest.
+
+        ``upstream`` is the provider's fingerprint of this file version (see ``core/upstream.py``);
+        without one, a given ``etag`` is recorded as an ETag fingerprint.
+        """
+        if upstream is None and etag:
+            upstream = Fingerprint(ETAG, etag)
         ensure_version_file(self.config)
         directory = self.config.raw_dir(source, dataset, season, create=True)
         path = directory / _safe_chunk_id(name)
@@ -71,6 +79,7 @@ class RawStore:
                 "sha256": hashlib.sha256(data).hexdigest(),
                 "season": season,
                 "source_ref": source_ref,
+                **({"upstream": upstream.to_dict()} if upstream is not None else {}),
             },
         )
         return path

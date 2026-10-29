@@ -13,6 +13,7 @@ from baseballpy.ingest.results import counts_to_result
 from baseballpy.ingest.types import JobStatus, Selection, make_job
 from baseballpy.sources.adapters import register_all_adapters
 from baseballpy.sources.chadwick.adapter import ChadwickAdapter
+from baseballpy.sources.chadwick.ingest import IngestOutcome
 from baseballpy.sources.lahman.adapter import LahmanAdapter
 from baseballpy.sources.mlb_api.adapter import MlbApiAdapter
 from baseballpy.sources.retrosheet.adapter import RetrosheetAdapter
@@ -436,9 +437,11 @@ CHADWICK_ROWS = {
 def test_chadwick_adapter() -> None:
     calls: list[tuple[list[str] | None, bool]] = []
 
-    def fake_loader(datasets: Sequence[str] | None, refresh: bool) -> dict[str, int]:
+    def fake_loader(datasets: Sequence[str] | None, refresh: bool) -> IngestOutcome:
         calls.append((None if datasets is None else list(datasets), refresh))
-        return {d: n for d, n in CHADWICK_ROWS.items() if datasets is None or d in datasets}
+        rows = {d: n for d, n in CHADWICK_ROWS.items() if datasets is None or d in datasets}
+        built = {d: pa.table({"x": [1]}) for d in rows} if refresh else {}
+        return IngestOutcome(rows=rows, tables=built)
 
     adapter = ChadwickAdapter(loader=fake_loader)
     assert isinstance(adapter, IngestAdapter)
@@ -460,8 +463,9 @@ def test_chadwick_adapter() -> None:
     res = adapter.run(make_job("chadwick", "register"), refresh=True)
     assert res.status == JobStatus.COMPLETED
     assert res.rows == sum(CHADWICK_ROWS.values())
-    assert "register_names=3" in res.detail
+    assert "register_names=3" in res.detail and not res.cache_hit  # data was typed
     res = adapter.run(subset[0])
+    assert res.cache_hit  # nothing was typed: everything came from the cache
     assert res.rows == 10 and calls == [(None, True), (["register_links", "register_names"], False)]
 
     # unknown task

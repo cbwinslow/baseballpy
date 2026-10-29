@@ -18,6 +18,7 @@ Options:
 Commands:
   audit           Inspect and analyze pipeline execution logs, benchmarks, and audit telemetry.
   backfill        Run a TOML plan of ingest stages (sources, seasons, datasets) into the lake.
+  cache           Inspect the raw download cache.
   catalog         Inspect and audit what the registry covers.
   db              Manage the DuckDB catalog (views over processed/ Parquet).
   docs            Generate the per-dataset column dictionaries in docs/sources/*.md.
@@ -107,6 +108,38 @@ Options:
                                   Max concurrent worker threads (minimum 1).  [x>=1]
   --json                          Print one JSON object per stage.
   --help                          Show this message and exit.
+```
+
+## `baseballpy cache`
+
+```text
+Usage: baseballpy cache [OPTIONS] COMMAND [ARGS]...
+
+  Inspect the raw download cache.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  check  Verify raw files against their recorded sha256 and optionally against upstream.
+```
+
+## `baseballpy cache check`
+
+```text
+Usage: baseballpy cache check [OPTIONS]
+
+  Verify raw files against their recorded sha256 and optionally against upstream.
+
+  Exit code 1 when a file is missing or corrupt. Files whose upstream version changed are reported
+  only: refresh them with ``baseballpy ingest <source> --refresh``.
+
+Options:
+  --source TEXT  Limit to a source (repeatable).
+  --upstream     Also compare git file fingerprints with upstream's latest commit (needs the
+                 network).
+  --json         Print every checked file as JSON.
+  --help         Show this message and exit.
 ```
 
 ## `baseballpy catalog`
