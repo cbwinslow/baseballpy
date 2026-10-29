@@ -29,7 +29,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 1 | 4.2 |
-| `chadwick-source-review` | 0 | 12 | 1.1, 1.2, 1.3, 1.4, 2.1, 3.1, 3.2, 4.1 |
+| `chadwick-source-review` | 5 | 14 | 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 2.1, 3.1, 3.2, 4.1 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `dlt-pipeline-core` | 6 | 3 | 3.1, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |

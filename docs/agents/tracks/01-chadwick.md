@@ -9,12 +9,17 @@ datasets are registered (`register`, `register_names`, `register_links`, `regist
 upstream repository is `chadwickbureau/register`, files under `data/` at a pinned SHA
 (`core/sources_lock.json`).
 
-Suspected findings to verify (not yet confirmed; the cards decide):
-- `ChadwickAdapter.KNOWN_DATASETS = {"register"}` is a hard-coded name list; the registry has four
-  Chadwick datasets, so `--datasets register_names` may be rejected and the adapter plans one job.
-- The extractor mixes `asyncio` and `concurrent.futures` for a handful of static files.
-- `PlayerRecord` and index building in `register.py` (406 lines) may duplicate what Polars/Arrow
-  joins and `narwhals` already give.
+Status 2026-10-29: C-01 to C-04 are done (evidence in the change's `design.md`). Results:
+- CONFIRMED: `ChadwickAdapter.KNOWN_DATASETS = {"register"}` rejects `register_names`, `register_links`
+  and `register_countries`; the job also builds a 9.6 s Python index just to count rows (C-09, C-10).
+- CONFIRMED bug: `resolve_id` returns the `key_bbref` value for `BBREF_MINORS` and cannot start from
+  `BBREF_MINORS`, `NPB` or `WIKIDATA` (C-11).
+- CONFIRMED: the index is a 526,894-row Python loop; `PlayerRecord.key_npb` is typed `str` but is `int`;
+  duplicate ids would be overwritten silently (C-12).
+- CONFIRMED: hand-typed nickname table and an 11 s fuzzy search where DuckDB/Polars can do it (C-13).
+- CONFIRMED gap: the upstream README is not kept, and the spec calls `key_person` the UUID (C-14).
+- REFUTED: the asyncio/threads mix is the project design (sync `HttpClient`, thin `to_thread` wrapper).
+- Schema and types match the real data; no drift; no duplicate ids at this pin (C-03).
 
 ### C-01 Inventory the upstream repository against the registry
 - **Change task:** `chadwick-source-review 1.1`
@@ -103,3 +108,71 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. update hand-written parts of the source page; 2. ADR for each decision; 3. merge the spec delta; 4. run all gates; 5. archive the change and update `EXECUTION_ORDER.md`, `BACKLOG.md`, regenerate `PROJECT_MAP.md`.
 - **Done when:** all gates green, `openspec validate --specs` passes, change archived.
 - **Record:** tick 4.1 and move the change.
+
+## Cards created by the review (fixes; code changes start here)
+
+### C-09 Split ingest from the lookup index
+- **Change task:** `chadwick-source-review 5.1`
+- **Stage:** S4
+- **Executor:** Claude designs the function boundary, agy writes it (Claude reviews the full diff)
+- **Files:** `src/baseballpy/sources/chadwick/register.py`, new `src/baseballpy/sources/chadwick/ingest.py`, `tests/test_chadwick_coverage.py`
+- **Tools (reuse check):** `ChadwickExtractor`, `ChadwickNormalizer`, `ProcessedStore` already exist; reuse them, add no new fetch or write code.
+- **Inputs:** `ChadwickRegister.load` (the extract, normalize, store part) and the S4 table in `design.md`.
+- **Steps:** 1. move extract, normalize and store of all four datasets into one function that returns rows per dataset; 2. `ChadwickRegister.load` calls it, then builds the index; 3. keep the public API unchanged.
+- **Done when:** `uv run pytest tests/test_chadwick.py tests/test_chadwick_coverage.py tests/test_architecture.py -q` passes and the new function runs without constructing `ChadwickRegister` (asserted by a test).
+- **Record:** tick 5.1.
+
+### C-10 Registry-driven adapter with per-dataset jobs
+- **Change task:** `chadwick-source-review 5.2`
+- **Stage:** S2
+- **Executor:** agy (Claude reviews the full diff)
+- **Files:** `src/baseballpy/sources/chadwick/adapter.py`, `tests/test_ingest_adapters.py`, `tests/test_cli_ingest.py`
+- **Tools (reuse check):** the dataset registry (`core/datasets.py`) supplies the names; the function of C-09 does the work.
+- **Inputs:** `ingest/types.py` (`Selection`, `make_job`); the Lahman adapter as the pattern (one job per table).
+- **Steps:** 1. known names = registry datasets of source `chadwick`; 2. one job per selected dataset (all four by default); 3. `run` reports that dataset's rows; 4. unknown names still raise `ValueError` listing the registry names.
+- **Done when:** `uv run baseballpy ingest chadwick -d register_names --dry-run` plans one job; `uv run pytest tests/test_ingest_adapters.py tests/test_ingest_contract.py -q` passes; no dataset name literal remains in `adapter.py`.
+- **Record:** tick 5.2; note the job granularity in `design.md` (ADR only if the owner wants a different one).
+
+### C-11 `resolve_id` through an explicit column map
+- **Change task:** `chadwick-source-review 5.3`
+- **Stage:** S4
+- **Executor:** agy (Claude reviews the full diff)
+- **Files:** `src/baseballpy/sources/chadwick/register.py` (`resolve_id`, `resolve`), `src/baseballpy/sources/chadwick/schema.py` only if a helper map belongs there, `tests/test_chadwick.py`
+- **Tools (reuse check):** `PlayerIdType` is already the enum of columns; derive the map from it, no string matching.
+- **Inputs:** the failing cases in `design.md` S4 (MLBAM 660271 to BBREF_MINORS must be `otani-000sho`; lookups from BBREF_MINORS, NPB, WIKIDATA must work).
+- **Steps:** 1. test first for all nine id types in both directions on a small fixture register; 2. one map from `PlayerIdType` to column and Python type; 3. unknown or unsupported types raise `ValueError`.
+- **Done when:** `uv run pytest tests/test_chadwick.py -q` passes with a property test that every non-null id round-trips through `resolve_id`.
+- **Record:** tick 5.3.
+
+### C-12 Vectorised lookup index and honest record types
+- **Change task:** `chadwick-source-review 5.4`
+- **Stage:** S4
+- **Executor:** Claude designs, agy writes (Claude reviews the full diff)
+- **Files:** `src/baseballpy/sources/chadwick/register.py`, `tests/test_chadwick.py`, `tests/test_chadwick_coverage.py`
+- **Tools (reuse check):** `pyarrow.compute` or Polars for id lookups; `narwhals` for dataframe-agnostic code; no Python loop over 526,894 rows.
+- **Inputs:** S4 timing (index build 9.6 s) and the duplicate check in S3.
+- **Steps:** 1. build lookups from the id columns with Arrow or Polars (only non-null ids); 2. refuse or log a duplicate id instead of overwriting; 3. `PlayerRecord` fields typed like the schema (`key_npb: int`), built on demand from a row; 4. keep the public methods.
+- **Done when:** the load of the cached register plus first lookup takes under 3 s on this PC (measured, pasted in `design.md`) and `uv run pytest tests/test_chadwick.py tests/test_chadwick_coverage.py -q` passes with a duplicate-id test.
+- **Record:** tick 5.4.
+
+### C-13 Data-driven nicknames and vectorised name search
+- **Change task:** `chadwick-source-review 5.5`
+- **Stage:** S4
+- **Executor:** Claude (needs the owner's OK on the behavior change), agy for the code
+- **Files:** `src/baseballpy/sources/chadwick/register.py`, `tests/test_chadwick.py`
+- **Tools (reuse check):** Polars string expressions, DuckDB `jaro_winkler_similarity`, the `name_nick` column and `register_names`.
+- **Inputs:** the spec scenario "Typo resolves with fuzzy search" (`Aron Juge` finds `Aaron Judge`) must keep passing; owner decision on dropping `COMMON_NICKNAMES`.
+- **Steps:** 1. ask the owner (one question); 2. replace the hand table with data from `name_nick` and `register_names` or document why a fallback list stays; 3. vectorise substring and fuzzy search; 4. compare results on a fixed name list before and after.
+- **Done when:** fuzzy search on the full register runs under 2 s (measured) and `uv run pytest tests/test_chadwick.py -q` passes.
+- **Record:** tick 5.5; ADR if the nickname source changes.
+
+### C-14 Keep the upstream README, correct spec and docs
+- **Change task:** `chadwick-source-review 5.6`
+- **Stage:** S1
+- **Executor:** Claude
+- **Files:** `src/baseballpy/sources/chadwick/extractor.py` (one extra raw file), `docs/sources/chadwick.md`, `openspec/changes/chadwick-source-review/specs/chadwick-register/spec.md`, `tests/test_chadwick_coverage.py`
+- **Tools (reuse check):** `RawStore.put` and the git-tree listing already in the extractor; no new fetch path.
+- **Inputs:** README facts and S3 quirks in `design.md` (`key_uuid` primary key, short key re-use, `tsncardS`, orphan `names.csv` row, `key_bbref_minors` always populated).
+- **Steps:** 1. store `README.md` under `raw/chadwick/` with its sha256 (not a dataset); 2. spec delta: `key_uuid` is the UUID and primary key, `key_person` is the short key; 3. docs: quirks and key-stability note; 4. test for the raw README.
+- **Done when:** `uv run pytest tests/test_chadwick_coverage.py tests/test_spec_scenarios.py -q` passes and `openspec validate --specs` is clean.
+- **Record:** tick 5.6.

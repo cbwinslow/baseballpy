@@ -127,11 +127,17 @@ touches a source under review, do it inside that source's track.
 | B-48 | project-replan-and-agent-rails 3.1: backlog fix and reorder | DONE | duplicate row gone, section K present, `test_agent_runbooks.py` passes |
 | B-49 | project-replan-and-agent-rails 3.2: EXECUTION_ORDER and project.md drift | DONE | status lines current, `openspec/project.md` names real modules, AGENTS.md paths use `$BASEBALLPY_HOME` |
 | B-50 | project-replan-and-agent-rails 3.3: gates, merge deltas, archive | DONE | all gates green with output, change archived |
-| B-51 | `chadwick-source-review 1.1`: inventory upstream vs registry (card C-01) | READY | see the card |
-| B-52 | `chadwick-source-review 1.2`: adapter conformance, no hard-coded dataset names (card C-02) | READY | see the card |
-| B-53 | `chadwick-source-review 1.3`: generated schema vs real data (card C-03) | READY | see the card |
-| B-54 | `chadwick-source-review 1.4`: code review against the designated tools (card C-04) | READY | see the card |
-| B-55 | `chadwick-source-review 2.1`: spec and test gaps (card C-05) | after B-51..B-54 | see the card |
-| B-56 | `chadwick-source-review 3.1`: live verification on a scratch home (card C-06) | after B-52 | see the card |
+| B-51 | chadwick-source-review 1.1: inventory upstream vs registry (card C-01) | DONE (findings in design.md) | see the card |
+| B-52 | chadwick-source-review 1.2: adapter conformance, no hard-coded dataset names (card C-02) | DONE (findings in design.md) | see the card |
+| B-53 | chadwick-source-review 1.3: generated schema vs real data (card C-03) | DONE (findings in design.md) | see the card |
+| B-54 | chadwick-source-review 1.4: code review against the designated tools (card C-04) | DONE (findings in design.md) | see the card |
+| B-55 | `chadwick-source-review 2.1`: spec and test gaps (card C-05) | after B-59..B-64 | see the card |
+| B-56 | `chadwick-source-review 3.1`: live verification on a scratch home (card C-06) | after B-59 and B-60 | see the card |
 | B-57 | `chadwick-source-review 3.2`: export through every sink (card C-07) | after B-56 | see the card |
 | B-58 | `chadwick-source-review 4.1`: docs, ADRs, spec merge, archive (card C-08) | after B-55, B-57 | see the card |
+| B-59 | `chadwick-source-review 5.1`: split ingest from the lookup index (card C-09) | READY | see the card |
+| B-60 | `chadwick-source-review 5.2`: registry-driven adapter, per-dataset jobs (card C-10) | after B-59 | see the card |
+| B-61 | `chadwick-source-review 5.3`: resolve_id explicit column map, BBREF_MINORS bug (card C-11) | READY | see the card |
+| B-62 | `chadwick-source-review 5.4`: vectorised index, duplicate guard, record types (card C-12) | after B-59 | see the card |
+| B-63 | `chadwick-source-review 5.5`: data-driven nicknames, vectorised search (card C-13) | OWNER (one question on dropping the nickname table), then READY | see the card |
+| B-64 | `chadwick-source-review 5.6`: keep the upstream README, correct spec and docs (card C-14) | READY | see the card |
