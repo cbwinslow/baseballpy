@@ -132,6 +132,6 @@ touches a source under review, do it inside that source's track.
 | B-53 | `chadwick-source-review 1.3`: generated schema vs real data (card C-03) | READY | see the card |
 | B-54 | `chadwick-source-review 1.4`: code review against the designated tools (card C-04) | READY | see the card |
 | B-55 | `chadwick-source-review 2.1`: spec and test gaps (card C-05) | after B-51..B-54 | see the card |
-| B-56 | `chadwick-source-review 3.1`: live verification on a scratch home (card C-06) | after B-52 (disk: C: is full, use the homelab or free space first) | see the card |
+| B-56 | `chadwick-source-review 3.1`: live verification on a scratch home (card C-06) | after B-52 | see the card |
 | B-57 | `chadwick-source-review 3.2`: export through every sink (card C-07) | after B-56 | see the card |
 | B-58 | `chadwick-source-review 4.1`: docs, ADRs, spec merge, archive (card C-08) | after B-55, B-57 | see the card |

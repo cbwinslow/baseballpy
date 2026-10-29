@@ -77,7 +77,7 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Executor:** Claude
 - **Files:** none in the repo (scratch `BASEBALLPY_HOME` outside it); evidence into `design.md`
 - **Tools (reuse check):** the CLI (`baseballpy ingest chadwick`, `catalog audit`, `audit tail`); no ad hoc scripts committed.
-- **Inputs:** free disk space on `C:` (check first; the register is far below 1 GB, use the homelab if space is short).
+- **Inputs:** free disk space on `C:` (about 120 GB free since 2026-10-29; check with df first).
 - **Steps:** 1. `BASEBALLPY_HOME=<scratch> uv run baseballpy ingest chadwick`; 2. row counts per dataset from `audit.jsonl` and DuckDB views vs the upstream file line counts; 3. resolve a handful of known players (for example MLBAM 660271 to `ohtas001`); 4. rerun to prove resume/idempotence (no re-download at the same SHA); 5. delete the scratch home.
 - **Done when:** counts, timings, resolved IDs and the second-run result are pasted into `design.md`; `catalog audit` clean for chadwick.
 - **Record:** tick 3.1.
