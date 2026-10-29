@@ -43,3 +43,11 @@ The `dlt` sink MUST declare key columns not-null, support append, replace and me
 - **WHEN** an Arrow table with all registry types is loaded into DuckDB and PostgreSQL and the database types are compared
 - **THEN** there is no mismatch, and a changed column type or column list is reported
 - Verified by `tests/test_dlt_typed.py::test_types_survive_the_load_and_the_read_back_reports_no_mismatch` and `tests/test_dlt_typed.py::test_sql_type_table_and_mismatch_report`.
+
+### Requirement: Identifier Names Are Preserved
+Exports to server databases MUST keep every column name exactly as the Arrow schema spells it (mixed case and names starting with a digit included), so the read-back check compares the same names.
+
+#### Scenario: Mixed-case and digit-leading names in DuckDB and PostgreSQL
+- **WHEN** a table with columns `playerID`, `yearID`, `2B` and `HR` is loaded and merged on its original-case key
+- **THEN** the database holds the same column names and the merge does not duplicate rows
+- Verified by `tests/test_dlt_typed.py::test_mixed_case_and_digit_leading_names_survive_unchanged`.

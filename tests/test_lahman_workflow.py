@@ -387,3 +387,13 @@ def test_catalog_status_shows_the_findings(tmp_path: Path) -> None:
     assert "data quality lahman.Batting: orphan_rows:playerID->People=1" in " ".join(
         table.output.split()
     )
+
+
+def test_the_licence_documentation_names_cc_by_sa_and_the_share_alike_term() -> None:
+    root = Path(__file__).resolve().parent.parent
+    licences = (root / "docs" / "DATA_LICENSES.md").read_text(encoding="utf-8")
+    lahman_row = next(line for line in licences.splitlines() if line.startswith("| Lahman"))
+    assert "CC BY-SA 3.0" in lahman_row and "same licence" in lahman_row
+    assert "raw/lahman/documents" in lahman_row
+    page = (root / "docs" / "sources" / "lahman.md").read_text(encoding="utf-8")
+    assert "ShareAlike applies to adaptations" in page

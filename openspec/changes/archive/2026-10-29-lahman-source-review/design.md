@@ -69,14 +69,30 @@ Done 2026-10-29 (task 1.4, card L-04). No code was changed.
 - **Shared-tool defects found:** `baseballpy cache check --upstream` prints "Upstream was not checked (add --upstream)" even when `--upstream` was given and nothing could be compared (every Lahman file reports `not_checked` because only an ETag is stored); the message should say that no file has a git fingerprint (new task 2.9 of `data-workflow-standard`).
 - **Hard rules re-checked:** no `requests`/`urllib.request`/pandas; no swallowed exceptions (architecture tests pass); `httpx` only through `HttpClient`.
 
-## S5 tests and spec gaps
-(not started)
+## Owner decisions taken (2026-10-29: all six recommendations accepted)
+1. Stay pinned (task 5.2): the pinned fingerprint is the `expected` value of `is_current()`; the pinned commit decides offline. 2. One generic `lahman.table(name)` plus the 8 existing named functions (5.5). 3. Keys with NULLs left as they are; merge refused for `AllstarFull`, `AwardsPlayers`, `CollegePlaying` and documented. 4. Table names ignore letter case (5.7). 5. Quality findings are printed by `catalog status` under the table (5.6). 6. No real SABR zip for now: the import path is tested on generated archives only (not verified on a real SABR zip).
 
-## S6 live verification
-(not started)
+## As built: fix tasks 5.1 to 5.9 and 2.9 (2026-10-29)
+- **Shared pieces added:** `core/documents.py` (`keep_documents`, `tree_or_none`; Chadwick moved onto it), `RawStore.put(records=, extra=)`, `canonical_table_name`, `cache check` message (data-workflow-standard 2.9), `catalog status` prints data-quality findings of any source, and (found by the export run) `DltSink` builds its destination with `naming_convention="direct"` so database identifiers equal our Arrow names.
+- **Extractor:** git blob fingerprint of every table from the pinned tree; one manifest entry per file (`<Table>.csv`: sha256, bytes, exact data-row count, origin, source_ref, `upstream`); `is_current()` decides (pinned commit offline); unused async twins removed; documents kept in `raw/lahman/documents/`.
+- **LahmanSource.load_table:** the processed Parquet is served only if it was built from the raw file held (its manifest stores that fingerprint); tables are remembered in process (stat stamp plus time-to-live); `get_table`, the named accessors and the new `lahman.table(name)` / `lahman.tables()` all go through it; jobs report `cache_hit`.
+- **Import:** documents of a supplied release kept; unknown CSVs raw only with a warning; non-CSV/non-document files ignored; supplied files get a content fingerprint; one warning for a mixed release.
+- **Quality:** `FOREIGN_KEYS` table plus `foreign_key_findings`; children are rechecked when a parent is stored later.
+- **Not done / left as is:** the import path was never run on a real SABR zip; the 11 columns the data dictionary does not define by their data names stay undescribed; keys with empty values were not changed.
 
-## S7 access, export, descriptions, docs, close
-(not started)
+## S5 tests and spec gaps (task 2.1)
+`tests/test_lahman_workflow.py` (17 tests) covers fingerprints, both tiers, offline behavior, moving the pin, memory reuse, names, parity, the generic accessor, cache-hit reporting, import contents, the mixed-release warning, cache-check verdicts, order-independent quality, null ids, `catalog status`, and the licence text; `tests/test_documents.py` (4), `tests/test_dlt_typed.py` (mixed-case names), `tests/test_cache_check.py` (message). The spec delta (`specs/lahman-database`, `specs/data-export`, `specs/caching-and-invalidation`) has 6 new requirements with 12 scenarios, each citing a test. Unit tests make no network call (pytest-socket).
+
+## S6 live verification (task 3.1), 2026-10-29, this PC, real mirror, empty scratch home
+- Clean ingest of all 27 tables: 15.3 s wall (was 21.6 s before the changes); rerun: 6.5 s wall with 27 of 27 jobs `cache_hit` true in `audit.jsonl` (was 0 of 54); raw manifest of `Batting` has the single entry `Batting.csv` with `records_count` 128,598 (the real row count) and a `git_blob` fingerprint.
+- `raw/lahman/documents/` holds `LICENSE`, `README.md`, `readme2025.txt`; `baseballpy cache check --upstream --source lahman`: 30 files, all `ok` and `current`.
+- `catalog status`: exactly one data-quality finding, `lahman.AllstarFull orphan_rows:yearID+teamID->Teams=5` (18 tables load before `People`; none is skipped any more).
+- The docs example (`docs/sources/lahman.md`, Python API Usage) ran against the real lake (Bonds 73 HR 2001, McGwire 70 in 1998 as expected); the import example was skipped (needs a supplied zip).
+
+## S7 export, descriptions, close (tasks 3.2, 3.3, 4.1)
+- **Export checklist** (27 tables, 706,466 rows, whole command incl. start-up): Parquet 7.3 s, CSV 7.4 s (8.4 MB `Batting.csv` against 1.6 MB Parquet), DuckDB 14.4 s, embedded PostgreSQL 16 52 s, all 27 verified for every target; `--mode merge` on DuckDB merged 24 tables and refused exactly `AllstarFull`, `AwardsPlayers`, `CollegePlaying` (key columns with NULLs). The first PostgreSQL run failed 26 of 27 read-back checks because `dlt` renamed `playerID` to `player_id` and `2B` to `_2_b`; fixed with `naming_convention="direct"` (test on DuckDB and PostgreSQL), rerun clean with `playerID yearID ... 2B 3B` intact. Quote mixed-case names in PostgreSQL SQL.
+- **Descriptions:** the builder cites the data dictionary at the pinned commit (not `main`); 388 of 399 columns (361 data columns described, `_extras` defaulted) as before; the 11 left undescribed are listed in the source page with the reason (the dictionary uses other names or none).
+- **Licence:** CC BY-SA 3.0 (ShareAlike) stated in `docs/DATA_LICENSES.md` and the source page; attribution text added.
 
 ## Owner decisions expected (asked once, in one short list; cards continue meanwhile)
 1. **Stay pinned or float (task 5.2).** Pinned: the cached copy is current exactly when it was fetched at the locked commit (reproducible; moves only when someone updates the lock). Float with a time-to-live: refreshes itself, but results can change under you. Recommendation: stay pinned (Lahman releases once a year).

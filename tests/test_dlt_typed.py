@@ -103,3 +103,21 @@ def test_sql_type_table_and_mismatch_report() -> None:
     assert type_mismatches(schema, bad) == ["i16: arrow int16 became database type bigint"]
     assert "columns differ" in type_mismatches(schema, {"key": "varchar"})[0]
     assert type_mismatches(schema, {**ok, "_dlt_id": "varchar"}) == []  # bookkeeping is ignored
+
+
+def test_mixed_case_and_digit_leading_names_survive_unchanged(sink: DltSink) -> None:
+    # Lahman spells columns playerID, yearID and 2B; dlt's default naming would rewrite them
+    table = pa.table(
+        {
+            "playerID": ["a", "b"],
+            "yearID": pa.array([2020, 2021], pa.int16()),
+            "2B": pa.array([5, None], pa.int16()),
+            "HR": pa.array([1, 2], pa.int16()),
+        }
+    )
+    sink.write(table, "probe", "replace", primary_key=["playerID", "yearID"])
+    info = sink.table_info("probe")
+    assert list(info.columns) == ["playerID", "yearID", "2B", "HR"]
+    assert type_mismatches(table.schema, info.columns) == []
+    assert sink.write(table, "probe", "merge", primary_key=["playerID", "yearID"]) == 2
+    assert sink.table_info("probe").rows == 2  # merge on the original-case key does not duplicate

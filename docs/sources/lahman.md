@@ -5,7 +5,8 @@
 - **Historical Scope:** 1871 through 2025 Major League Baseball seasons
 - **Format:** 27 relational CSV tables
 - **Official SABR Page:** `https://sabr.org/lahman-database/`
-- **Automated Mirror:** `https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/<pinned sha>/data/` (the repository also ships `readme2025.txt`, the release's own documentation)
+- **Licence:** Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0); copyright 1996-2025 SABR, donated by Sean Lahman; licensing questions to SABR (see `docs/DATA_LICENSES.md`). ShareAlike applies to adaptations: copies you export (Parquet, CSV, DuckDB, PostgreSQL) and share further carry the same licence and the attribution.
+- **Automated Mirror:** `https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/<pinned sha>/data/` (the repository also ships `data/readme2025.txt`, the release's data dictionary, plus `LICENSE` and `README.md`; all three are kept in `raw/lahman/documents/` with their hashes)
 - **Why Automated Scrapers Fail on SABR Box:** The official download link on SABR routes through `sabr.app.box.com`, which requires ephemeral session cookies and interactive verification. Direct HTTP scripts hitting Box break.
 - **baseballpy Dual-Mode Solution:**
   1. **Mode A (Automated Extraction):** Direct zero-configuration download from the verified GitHub repository `cbwinslow/lahman-database-csv`, containing the complete 1871–2025 SABR release with 27 tables.
@@ -29,6 +30,8 @@ If you prefer to download the official distribution directly from SABR:
    print(f"Successfully compiled and cached {count} Lahman tables into Parquet!")
    ```
 5. All subsequent calls to `bb.lahman.batting()`, `bb.lahman.pitching()`, etc., will now load directly from your local Parquet cache without network access!
+
+What the import keeps (`LahmanSource().last_import` lists it): the 27 known tables are typed into Parquet; the release's README, licence and data dictionary are kept in `raw/lahman/documents/`; a CSV that is not one of the 27 tables is kept as raw bytes only (with a warning), never turned into an unregistered table; other file types are ignored. Supplied files carry a content fingerprint and stay authoritative until you refresh them. If you import only part of a release and the rest is later fetched from the mirror, a warning says the tables may come from two different releases.
 
 ---
 
@@ -68,9 +71,11 @@ If you prefer to download the official distribution directly from SABR:
 
 ## Sources, pinning and data quality
 - **Allowed sources only:** the configured remote repository (default `cbwinslow/lahman-database-csv`, pinned commit in `src/baseballpy/core/sources_lock.json`; override the repo with `BASEBALLPY_LAHMAN_REPO` and the ref with `BASEBALLPY_LAHMAN_REF`) or user-supplied data via `import_archive`. `chadwickbureau/baseballdatabank` is refused outright (its data stops around 2023) and there is **no automatic fallback** to any other repository: if the remote fails after retries a `LahmanSourceError` names `import_archive` as the alternative.
-- **Provenance:** each table's raw manifest records `origin` (`<repo>@<sha>` or `local-import`) and `source_ref`. A table fetched at a different ref is refetched; user-imported tables are never overwritten by remote cache invalidation.
+- **Provenance:** every raw file has exactly one entry in `raw/lahman/<Table>/manifest.json` (key `<Table>.csv`): sha256, size, data-row count, `origin` (`<repo>@<sha>` or `local-import`), `source_ref` and the provider's fingerprint (the git blob SHA of `data/<Table>.csv`; supplied files get a content sha256).
+- **Currency (ADR 43), at both cache tiers:** a raw file is current when its stored git blob SHA equals the one the pinned tree lists (the tree is saved in `cache/http/github-tree/`, so a pinned lake works offline; with no tree the pinned commit decides). The processed Parquet is current only when it was built from the raw file we hold (its manifest records that fingerprint). Move the pin (`BASEBALLPY_LAHMAN_REF` or the lock) and only the files whose blob changed are downloaded and rebuilt. User-supplied tables are never overwritten by remote cache invalidation. `baseballpy cache check --upstream --source lahman` compares the stored blob SHAs with the latest tree of the mirror.
+- **Documents kept:** `README.md`, `LICENSE` and `data/readme*.txt` of the mirror are stored in `raw/lahman/documents/` (the data dictionary is renamed every release year, hence the pattern).
 - **Stale-data warning:** if the newest `yearID` in `Batting`/`Teams` is more than one season behind the last completed MLB season, a warning is logged and kept in the processed manifest (`quality.stale`).
-- **Data-quality checks (warnings, never errors):** primary-key uniqueness and `playerID` ∈ `People` are checked on every ingest; findings are logged and stored in the processed manifest (`quality`).
+- **Data-quality checks (warnings, never errors):** primary-key uniqueness and the relationships between tables (`playerID` in `People`; `yearID`+`teamID` in `Teams`; `Teams.franchID` in `TeamsFranchises`; `HomeGames.parkkey` in `Parks`; `CollegePlaying.schoolID` in `Schools`; rows with an empty id are not orphans) are checked whenever a table is stored, and again for the tables that point into a parent when that parent is stored later, so the result does not depend on load order. Findings are logged, stored in the processed manifest (`quality`) and printed by `baseballpy catalog status` (also in `--json`). On the 2025 release exactly one finding exists: 5 `AllstarFull` rows whose (`yearID`, `teamID`) has no `Teams` row.
 - **Safe imports:** `import_archive` rejects zip members with path traversal (`..`) and members/archives beyond 512 MB / 2 GB; raw files are written atomically and untouched (byte-for-byte, BOM included).
 
 ## Schemas
@@ -79,12 +84,19 @@ All 27 schemas are **generated from the real headers** (`scripts/gen_schemas.py 
 Quirks verified on the 2025 release:
 - `People.csv`, `Parks.csv`, `Batting.csv` start with a UTF-8 BOM; it is stripped from the first header.
 - `People` and `Parks` carry a surrogate `ID` column; `HomeGames` uses `yearkey/leaguekey/teamkey/parkkey` instead of `yearID/lgID/teamID`; `HallOfFame` spells its year column `yearid`.
-- `lgID` code `NA` (National Association, 1871–75) is real data, not NULL.
+- `lgID` code `NA` (National Association, 1871–75) is real data, not NULL. The data dictionary says missing values are NULL, never zero.
+- `FieldingOFsplit.WP` and `FieldingOFsplit.ZR` exist in the file but are empty in every row.
+- **Keys with empty values:** `AllstarFull` (`gameNum`, `gameID`), `AwardsPlayers` (`notes`) and `CollegePlaying` (`yearID`) have key columns that can be empty, so `baseballpy export --mode merge` is refused for those three tables (the other 24 can merge); use replace or append there.
+- **Names the data dictionary does not define:** 11 columns have no description because `readme2025.txt` documents other names for them (`Schools`: it documents `schoolName`, `schoolCity`, `schoolState`, the files carry `name_full`, `city`, `state`, `country`) or none (`Parks.ID`, `Teams.teamIDlahman45`, `FieldingOFsplit.PB/WP/SB/CS/ZR`). They are left undescribed rather than guessed; the dictionary is cited at the pinned commit.
+- **Against the Chadwick register** (2025 release): 99.94% of `People.bbrefID` and 99.85% of `People.retroID` values match a Chadwick `key_bbref` / `key_retro`; 4 people (`smither02`, `smithge05`, `hughesa01`, `williwo03`) have a `bbrefID` and a `retroID` that point at two different Chadwick persons, and 14 `bbrefID` and 36 `retroID` values have no Chadwick row. `People` has no MLBAM id; go through Chadwick for it.
+- Table names ignore letter case everywhere (`batting` finds `Batting`); the data dictionary spells a few differently from the files (`AllStarFull`, `HallofFame`, `TeamFranchises`).
 - Documented primary keys (uniqueness verified on the full data): `AllstarFull` (`playerID, yearID, gameNum, gameID, teamID, lgID`), `AwardsPlayers` (`playerID, awardID, yearID, lgID, notes`), `Appearances` (`yearID, teamID, playerID`), `Batting`/`Pitching` (`playerID, yearID, stint`), `Fielding` (`playerID, yearID, stint, POS`), `Teams` (`yearID, lgID, teamID`) and so on — see the generated per-table blocks below.
 
 The generated column dictionaries for all 27 tables follow (regenerate with `baseballpy docs generate`).
 
 ## Python API Usage
+
+Any of the 27 tables is one call: `lahman.table("Batting")` (any letter case; `lahman.tables()` lists the names; the named functions below remain). A table is read once per process and reused until its Parquet changes, so repeated calls are free.
 
 ```python
 from baseballpy.sources.lahman import (
@@ -126,7 +138,7 @@ print(top_hr_seasons)
 <!-- BEGIN GENERATED:lahman.description_sources -->
 ### Description sources
 
-- `lahman_readme`: https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/main/data/readme2025.txt
+- `lahman_readme`: https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/0377e0b8d3f1b8f6710cc4faee7d842d0e81f344/data/readme2025.txt
 
 <!-- END GENERATED:lahman.description_sources -->
 

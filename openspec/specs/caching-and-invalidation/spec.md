@@ -167,3 +167,11 @@ An ingest job that served everything from the cache MUST be recorded in the audi
 - **WHEN** a job reports `cache_hit` and the runner records it
 - **THEN** the audit event has `cache_hit` true
 - Verified by `tests/test_ingest_runner.py::test_a_job_that_served_everything_from_the_cache_logs_a_cache_hit` and `tests/test_ingest_adapters.py::test_chadwick_adapter`.
+
+### Requirement: Cache Check Says When Nothing Was Compared
+When `baseballpy cache check --upstream` finds no file it can compare with upstream (no git fingerprint), it MUST say so; without `--upstream` it MUST say that upstream was not checked.
+
+#### Scenario: Nothing comparable
+- **WHEN** `--upstream` runs over files without a git fingerprint, and without the flag
+- **THEN** the first run says nothing could be compared and the second says to add `--upstream`
+- Verified by `tests/test_cache_check.py::test_upstream_run_with_nothing_comparable_says_so`.

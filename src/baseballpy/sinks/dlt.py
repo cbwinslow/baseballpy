@@ -90,8 +90,13 @@ class DltSink:
             raise ValueError(f"destination must be one of {SUPPORTED_DESTINATIONS}")
         self.dataset_name = dataset_name
         target: Any = destination
-        if credentials is not None and pipeline is None:
-            target = getattr(dlt.destinations, destination)(credentials=credentials)
+        if pipeline is None:
+            # "direct" keeps every identifier exactly as our Arrow schema spells it; dlt's default
+            # would rewrite playerID to player_id and 2B to _2_b, so the tables would not match
+            options_for_destination: dict[str, Any] = {"naming_convention": "direct"}
+            if credentials is not None:
+                options_for_destination["credentials"] = credentials
+            target = getattr(dlt.destinations, destination)(**options_for_destination)
         options: dict[str, Any] = {} if pipelines_dir is None else {"pipelines_dir": pipelines_dir}
         self.pipeline = pipeline or dlt.pipeline(
             pipeline_name=pipeline_name,

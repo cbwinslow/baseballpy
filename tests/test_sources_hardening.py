@@ -459,7 +459,10 @@ def test_lahman_cache_requires_manifest_completion(tmp_path: Path) -> None:
     route = respx.get(f"{LAHMAN_GITHUB_BASE}/Parks.csv").mock(
         return_value=httpx.Response(200, content=b"parkkey\nBOS07\n")
     )
-    rates = fast_rates("raw.githubusercontent.com")
+    respx.get(url__startswith="https://api.github.com/repos/").mock(
+        return_value=httpx.Response(500)  # no file listing: the pinned commit decides
+    )
+    rates = fast_rates("raw.githubusercontent.com", "api.github.com")
     http = HttpClient(rates, http2=False)
     ext = LahmanExtractor(
         cache_config=LakeConfig(home=tmp_path / "c"), rate_limit_config=rates, http=http

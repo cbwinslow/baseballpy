@@ -165,6 +165,9 @@ def test_lahman_chunk_fetched_at_other_ref_is_refetched(tmp_path: Path) -> None:
     new = respx.get(f"{base}/{SHA_B}/data/Parks.csv").mock(
         return_value=httpx.Response(200, content=b"parkkey\nB\n")
     )
+    respx.get(url__startswith="https://api.github.com/repos/").mock(
+        return_value=httpx.Response(500)  # no file listing: the pinned commit decides
+    )
     first, http1 = _lahman(tmp_path, SHA_A)
     try:
         assert first.extract_table("Parks") == b"parkkey\nA\n"
@@ -172,7 +175,7 @@ def test_lahman_chunk_fetched_at_other_ref_is_refetched(tmp_path: Path) -> None:
         assert old.call_count == 1
     finally:
         http1.close()
-    entry = first.manifest_for("Parks").get_chunk("Parks")
+    entry = first.file_entry("Parks")
     assert entry is not None and entry["source_ref"] == SHA_A
 
     second, http2 = _lahman(tmp_path, SHA_B)  # lock moved

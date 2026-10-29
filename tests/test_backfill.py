@@ -177,6 +177,9 @@ def test_resume_with_the_real_adapter_fetches_only_what_is_incomplete(tmp_path: 
 
     adapter = CtrlCOnPeople(source=LahmanSource(cache_config=LakeConfig(home=tmp_path)))
     plan = parse_plan({"stage": [{"sources": ["lahman"], "datasets": ["Batting", "People"]}]})
+    respx.get(url__startswith="https://api.github.com/repos/").mock(
+        return_value=httpx.Response(500)  # no file listing: the pinned commit decides
+    )
     batting = respx.get(f"{LAHMAN_GITHUB_BASE}/Batting.csv").mock(
         return_value=httpx.Response(200, content=BATTING_CSV.encode())
     )

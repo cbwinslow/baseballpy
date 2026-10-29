@@ -9,14 +9,14 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 5 | 5 | 5 |
-| `caching-and-invalidation` | 13 | 23 | 30 |
+| `caching-and-invalidation` | 14 | 24 | 31 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 9 | 11 | 15 |
 | `concurrency-and-rate-limiting` | 3 | 5 | 6 |
 | `core-protocols` | 2 | 3 | 5 |
-| `data-export` | 3 | 6 | 19 |
+| `data-export` | 4 | 7 | 20 |
 | `docs-generation` | 1 | 1 | 1 |
-| `lahman-database` | 6 | 7 | 9 |
+| `lahman-database` | 11 | 18 | 26 |
 | `mlb-api-ingestion` | 11 | 11 | 13 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 3 | 5 | 5 |
@@ -33,22 +33,21 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | Source | Datasets | Review | Track cards | Shared currency | Fingerprints | Column descriptions | Spec requirements |
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
-| `lahman` | 27 | in progress (4/18 tasks) | yes | no | no | 388/399 (97%) | 6 |
+| `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
 | `retrosheet` | 25 | not started | no | no | no | 718/1074 (66%) | 6 |
 | `statcast` | 38 | not started | no | no | no | 293/977 (29%) | 9 |
 | `mlb_api` | 366 | not started | no | no | no | 9462/16692 (56%) | 11 |
 
 ## Active changes (`openspec/changes/`)
 
-32 changes are archived under `openspec/changes/archive/`.
+33 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `catalog-completeness-audit` | 10 | 1 | 4.2 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `data-workflow-standard` | 8 | 6 | 2.5, 2.6, 2.7, 2.8, 2.9 |
+| `data-workflow-standard` | 10 | 4 | 2.6, 2.7, 2.8 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
-| `lahman-source-review` | 5 | 18 | 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 2.1, 3.1, 3.2, 3.3, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 0 | 9 | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2 |
 | `reference-docs` | 2 | 1 | 3 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
@@ -101,6 +100,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 44: dlt Is the Send-It-Anywhere Layer Over the Cached Parquet; Extract and Typing Stay Ours
 - ADR 45: The Chadwick Lookup Is Lazy, Nicknames Come From the Data, Fuzzy Search Is a Shared DuckDB Helper
 - ADR 46: Export Is Hybrid and Registry-Driven: pyarrow Files, dlt for Server Databases, Verified and Typed
+- ADR 47: Lahman Is Checked at Both Cache Tiers by Git Fingerprint; Database Exports Keep Identifier Names
 
 ## Documentation pages (`docs/`)
 

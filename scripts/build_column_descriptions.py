@@ -28,6 +28,7 @@ from baseballpy.core.config import RateLimitConfig
 from baseballpy.core.datasets import DATASETS
 from baseballpy.core.http import HttpClient
 from baseballpy.core.schema_tools import snake
+from baseballpy.core.sources_lock import get_source_ref
 from baseballpy.sources import catalog
 
 OUT = Path("docs/columns")
@@ -211,9 +212,9 @@ def build_statcast(http: HttpClient) -> dict[str, Any]:
     return {"_sources": sources, "*": star, "pitches": entry, "pitches_minors": entry}
 
 
-LAHMAN_README = (
-    "https://raw.githubusercontent.com/cbwinslow/lahman-database-csv/main/data/readme2025.txt"
-)
+#: the data dictionary at the PINNED commit of the mirror (never a moving branch), so every
+#: description cites exactly the text it was built from
+LAHMAN_README = f"{get_source_ref('lahman').raw_base()}/data/readme2025.txt"
 CHADWICK_README = "https://raw.githubusercontent.com/chadwickbureau/register/master/README.md"
 _LAHMAN_ALIASES = {"teamfranchises": "teamsfranchises"}
 _COLUMN_LINE = re.compile(r"^(\w+)\s{2,}(\S.*)$")
