@@ -244,8 +244,8 @@ touches a source under review, do it inside that source's track.
 | B-140 | statcast-source-review 1.2: Check registry and adapter conformance (card S-02) | DONE | see the card |
 | B-141 | `statcast-source-review 1.3`: Compare the generated schema with real data (card S-03) | after B-140 | see the card |
 | B-142 | statcast-source-review 1.4: Review the code against the designated tools and decoupling rules (card S-04) | DONE | see the card |
-| B-143 | `statcast-source-review 5.1`: Record upstream fingerprints for every raw file (card S-05) | after B-142 | see the card |
-| B-144 | `statcast-source-review 5.2`: Decide currency with is_current() at every cache tier (card S-06) | after B-143 | see the card |
+| B-143 | statcast-source-review 5.1: Record upstream fingerprints for every raw file (card S-05) | DONE | see the card |
+| B-144 | statcast-source-review 5.2: Decide currency with is_current() at every cache tier (card S-06) | DONE | see the card |
 | B-145 | `statcast-source-review 5.3`: Keep the provider's documentation files (card S-07) | after B-144 | see the card |
 | B-146 | `statcast-source-review 5.4`: Review the second way in (user-supplied files); N/A if the source has none (card S-08) | after B-145 | see the card |
 | B-147 | `statcast-source-review 5.5`: Make every dataset and column reachable from Python (card S-09) | after B-146 | see the card |

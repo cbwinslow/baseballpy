@@ -35,3 +35,9 @@ Reuse check per module (`sources/statcast/`): `extractor.py` uses `HttpClient`, 
 
 ## S7 access, export, descriptions, docs, close
 (not started)
+
+## 5.1 evidence (2026-10-30)
+Savant sends no version marker on the pitch CSV or the leaderboards, so the raw manifests held no fingerprint. `core/upstream.py` gains `content_fingerprint` and `response_fingerprint` (ETag when present, else the payload sha256); the three raw writes (pitch windows, leaderboards, game feeds) pass it as `upstream`. Three tests fail without the change. `RawStore.put` itself is unchanged (other sources keep their own markers).
+
+## 5.2 evidence (2026-10-30)
+Cache tiers: raw (content/ETag fingerprint from 5.1; Savant offers no version marker, so past seasons are immutable and the trailing days of the current season are always refetched) and processed (pitch windows and leaderboards judged by the freshness policy). Finding: neither processed tier looked at the schema digest, so a column change left old chunks in place. Both now call `schema_matches` (ADR 49/51) before reuse. Tests fail without the change.

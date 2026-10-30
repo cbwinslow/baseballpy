@@ -12,6 +12,7 @@ import respx
 from baseballpy.core.config import LakeConfig, QuarantineConfig
 from baseballpy.core.datasets import get_dataset
 from baseballpy.core.quarantine import Quarantine
+from baseballpy.core.upstream import Fingerprint, stored_fingerprint
 from baseballpy.sources import catalog
 from baseballpy.sources.statcast.lb_catalog import (
     BY_SLUG,
@@ -161,6 +162,10 @@ def test_get_leaderboard_persists_strict_season_partition(tmp_path: Path) -> Non
     assert extractor.raw.verify(
         "statcast", "leaderboard_sprint_speed", "sprint_speed_2024.csv", 2024
     )
+    raw_entry = lake.dataset_manifest(
+        "statcast", "leaderboard_sprint_speed", "raw", 2024
+    ).get_chunk("sprint_speed_2024.csv")
+    assert (stored_fingerprint(raw_entry) or Fingerprint("none", "")).kind == "content_sha256"
     # past seasons are immutable: a second call never touches the network
     respx.get(f"{SAVANT_BASE}/sprint_speed").mock(return_value=httpx.Response(500))
     again = extractor.get_leaderboard("sprint_speed", year=2024)
@@ -335,3 +340,49 @@ def test_game_feed_fetches_and_season_ingests_are_audit_logged(
     ]
     assert [e.cache_hit for e in events[1:]] == [False, True]
     assert events[0].records_count == 1 and all(e.status == "SUCCESS" for e in events)
+
+
+@respx.mock
+def test_every_raw_file_records_an_upstream_fingerprint(tmp_path: Path) -> None:
+    import hashlib
+
+    from baseballpy.core.upstream import CONTENT_SHA256, ETAG, stored_fingerprint
+    from baseballpy.sources.statcast.game_feed import GAME_FEED_URL, StatcastGameFeed
+
+    lake = LakeConfig(home=tmp_path)
+    feed = StatcastGameFeed(cache_config=lake)
+    body = {"game_status_code": "F", "scoreboard": {"gamePk": 7}, "game_date": "6/23/2024"}
+    respx.get(GAME_FEED_URL).mock(return_value=httpx.Response(200, json=body))
+    feed.get(7)
+    entry = lake.dataset_manifest("statcast", "game_feed", "raw", 2024).get_chunk("7.json")
+    stored = stored_fingerprint(entry)
+    assert stored is not None and stored.kind == CONTENT_SHA256
+    assert (
+        stored.value
+        == hashlib.sha256(feed.raw.get("statcast", "game_feed", "7.json", 2024)).hexdigest()
+    )
+
+    respx.get(GAME_FEED_URL).mock(
+        return_value=httpx.Response(200, json=body, headers={"ETag": '"abc"'})
+    )
+    feed.get(7, refresh=True)
+    entry = lake.dataset_manifest("statcast", "game_feed", "raw", 2024).get_chunk("7.json")
+    fingerprint = stored_fingerprint(entry)
+    assert fingerprint is not None and fingerprint.kind == ETAG
+
+
+@respx.mock
+def test_a_leaderboard_written_under_another_schema_is_fetched_again(tmp_path: Path) -> None:
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = StatcastLeaderboardExtractor(cache_config=lake)
+    route = respx.get(f"{SAVANT_BASE}/sprint_speed").mock(
+        return_value=httpx.Response(200, content=_fixture("sprint_speed"))
+    )
+    extractor.get_leaderboard("sprint_speed", year=2024)
+    extractor.get_leaderboard("sprint_speed", year=2024)
+    assert route.call_count == 1
+    manifest = lake.dataset_manifest("statcast", "leaderboard_sprint_speed")
+    for key, entry in list(manifest.chunks().items()):
+        manifest.put_entry(key, {**entry, "schema_sha256": "0" * 64})
+    extractor.get_leaderboard("sprint_speed", year=2024)
+    assert route.call_count == 2

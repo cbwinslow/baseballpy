@@ -19,7 +19,8 @@ from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
-from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
+from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key, schema_matches
+from baseballpy.core.upstream import response_fingerprint
 from baseballpy.sources import catalog
 from baseballpy.sources.statcast.normalizer import StatcastNormalizer
 
@@ -236,6 +237,8 @@ class StatcastExtractor:
         rows = int(entry.get("records_count", 0) or 0)
         if rows > 0 and not cache_path.exists():
             return False, rows
+        if not schema_matches(self._spec(minors), entry):
+            return False, rows  # written under another schema or parser revision (ADR 49, 51)
         if end_dt >= self._today() - timedelta(days=REVALIDATE_TRAILING_DAYS) and (
             start_dt.year >= self._today().year
         ):
@@ -264,6 +267,7 @@ class StatcastExtractor:
                     season=start_dt.year,
                     source_ref=SAVANT_BASE_URL,
                     etag=result.etag or "",
+                    upstream=response_fingerprint(result.content, result.etag, SAVANT_BASE_URL),
                 )
             return table
         if start_dt >= end_dt:

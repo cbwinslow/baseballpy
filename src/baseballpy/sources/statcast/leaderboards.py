@@ -21,7 +21,8 @@ from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.core.quarantine import Quarantine
 from baseballpy.core.schema_tools import infer_type_name, normalize_csv, read_csv_strings, snake
-from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
+from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key, schema_matches
+from baseballpy.core.upstream import response_fingerprint
 from baseballpy.sources import catalog
 from baseballpy.sources.statcast.lb_catalog import (
     BY_SLUG,
@@ -191,8 +192,10 @@ class StatcastLeaderboardExtractor:
 
         if persisted:
             entry = self._manifest(defn.slug).get_chunk(manifest_key(chunk_id, season))
-            if cache_path.exists() and self.cache_config.is_fresh(
-                entry, "leaderboard", season=season, refresh=refresh
+            if (
+                cache_path.exists()
+                and schema_matches(spec, entry)
+                and self.cache_config.is_fresh(entry, "leaderboard", season=season, refresh=refresh)
             ):
                 with default_audit_logger.track(
                     operation=f"savant_leaderboard_{defn.slug}",
@@ -222,6 +225,7 @@ class StatcastLeaderboardExtractor:
                     payload,
                     season=season,
                     source_ref=url,
+                    upstream=response_fingerprint(payload, origin=url),
                 )
                 self.store.put(spec, table, chunk_id=chunk_id, season=season)
             tracker.set_cache_hit(False)

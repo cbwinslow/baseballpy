@@ -13,6 +13,7 @@ import respx
 
 from baseballpy.core.config import LakeConfig, QuarantineConfig
 from baseballpy.core.quarantine import Quarantine
+from baseballpy.core.upstream import Fingerprint, stored_fingerprint
 from baseballpy.sources.statcast.extractor import (
     MLB_SEASONS_URL,
     SAVANT_BASE_URL,
@@ -186,6 +187,11 @@ def test_ingest_season_is_resumable_and_checks_pitch_keys(tmp_path: Path) -> Non
     assert first.rows == 15 and route.call_count == 3
     parts = list(lake.processed_dir("statcast", "pitches").rglob("*.parquet"))
     assert sorted(p.parent.name for p in parts) == ["season=2024"] * 3
+    raw_chunks = lake.dataset_manifest("statcast", "pitches", "raw", 2024).chunks()
+    assert raw_chunks and all(
+        (stored_fingerprint(entry) or Fingerprint("none", "")).kind == "content_sha256"
+        for entry in raw_chunks.values()
+    )
     again = extractor.ingest_season(2024)
     assert again.cached_chunks == 3 and route.call_count == 3, "complete season: no refetch"
     assert again.rows == first.rows
@@ -253,3 +259,25 @@ def test_ingest_all_walks_each_season(tmp_path: Path) -> None:
     reports = extractor.ingest_all(2023, 2024)
     assert [r.season for r in reports] == [2023, 2024] and seen == ["2023", "2024"]
     assert all(r.rows == 5 for r in reports)
+
+
+@respx.mock
+def test_pitch_chunks_written_under_another_schema_are_refetched(tmp_path: Path) -> None:
+    lake = LakeConfig(home=tmp_path, today=date(2026, 1, 1))
+    extractor = StatcastExtractor(cache_config=lake, chunk_days=5)
+    respx.get(MLB_SEASONS_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "seasons": [{"springStartDate": "2024-06-01", "postSeasonEndDate": "2024-06-12"}]
+            },
+        )
+    )
+    route = respx.get(SAVANT_BASE_URL).mock(side_effect=_by_window)
+    extractor.ingest_season(2024)
+    assert route.call_count == 3
+    manifest = lake.dataset_manifest("statcast", "pitches")
+    for key, entry in list(manifest.chunks().items()):
+        manifest.put_entry(key, {**entry, "schema_sha256": "0" * 64})  # an older release wrote it
+    again = extractor.ingest_season(2024)
+    assert again.cached_chunks == 0 and route.call_count == 6, "stale chunks are fetched again"

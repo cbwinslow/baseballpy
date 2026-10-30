@@ -7,6 +7,7 @@ the single decision every source uses; sources only supply what they know (the e
 fingerprint, a probe that asks upstream, the time-to-live).
 """
 
+import hashlib
 import logging
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
@@ -55,6 +56,16 @@ class Fingerprint:
         if isinstance(kind, str) and isinstance(value, str) and kind and value:
             return cls(kind, value, str(data.get("origin") or ""))
         return None
+
+
+def content_fingerprint(data: bytes, origin: str = "") -> Fingerprint:
+    """The fingerprint of a payload the provider gives no version marker for: its sha256."""
+    return Fingerprint(CONTENT_SHA256, hashlib.sha256(data).hexdigest(), origin=origin)
+
+
+def response_fingerprint(data: bytes, etag: str | None = None, origin: str = "") -> Fingerprint:
+    """The provider's ETag when it sent one, else the payload's own sha256."""
+    return Fingerprint(ETAG, etag, origin=origin) if etag else content_fingerprint(data, origin)
 
 
 def stored_fingerprint(entry: Mapping[str, Any] | None) -> Fingerprint | None:
@@ -130,6 +141,8 @@ __all__ = [
     "GIT_COMMIT",
     "LAST_MODIFIED",
     "Fingerprint",
+    "content_fingerprint",
+    "response_fingerprint",
     "is_current",
     "stored_fingerprint",
 ]

@@ -16,6 +16,7 @@ from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.core.stores import RawStore
+from baseballpy.core.upstream import response_fingerprint
 
 GAME_FEED_URL = "https://baseballsavant.mlb.com/gf"
 MLB_SCHEDULE_URL = "https://statsapi.mlb.com/api/v1/schedule"
@@ -93,6 +94,7 @@ class StatcastGameFeed:
                     season=self._season(payload),
                     source_ref=f"{GAME_FEED_URL}?game_pk={game_pk}",
                     etag=result.etag or "",
+                    upstream=response_fingerprint(result.content, result.etag, GAME_FEED_URL),
                 )
             tracker.set_records(1)
             return payload
