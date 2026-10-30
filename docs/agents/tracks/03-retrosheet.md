@@ -252,3 +252,14 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. a FOREIGN_KEYS table; 2. one generic function independent of load order; 3. findings reach users through `catalog status`; 4. measure the real match rates on the homelab lake (2015 to 2024) in card R-11.
 - **Done when:** `uv run pytest tests/test_retrosheet_quality.py -q` passes; `uv run baseballpy catalog status` shows the findings
 - **Record:** tick 5.13; design.md.
+
+### R-23 boxscores_batting has no unique key: a player who re-enters in the same slot gets two rows
+- **Change task:** `retrosheet-source-review 5.14`
+- **Stage:** S3
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/retrosheet/parser.py (boxscores), schema.py, src/baseballpy/sources/catalog.py, tests/test_retrosheet_events.py
+- **Tools (reuse check):** chadwickpy `box_create` output order; core/quality.py duplicate_rows
+- **Inputs:** design.md 5.13 evidence: 1925 and 1935 samples each hold one game where the same player appears twice with the same (game, team, player, slot, position) in separate stints; (game_id, team_id, player_id, slot) is therefore not unique and `export --mode merge` would keep one of the two rows
+- **Steps:** 1. look at the two games in the raw files and decide what the second row means (a second stint); 2. add a per-(game, team, slot) appearance sequence column so the key is unique, or document why not; 3. measure on the homelab lake; 4. update the registry key and the generated docs.
+- **Done when:** `uv run pytest tests/test_retrosheet_events.py -q` passes with a test of a re-entering player, and the key is unique on the six sample files.
+- **Record:** tick 5.14; design.md.

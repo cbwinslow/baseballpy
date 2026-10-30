@@ -1,12 +1,25 @@
 """Every registered Retrosheet dataset is selectable with --datasets (retrosheet-source-review 5.7)."""
 
-import pytest
+from pathlib import Path
 
+import pytest
+import respx
+from conftest import RetroRepo
+from test_retrosheet_coverage import GAMELOG, full_season
+
+from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import datasets_for
 from baseballpy.ingest.types import Selection
 from baseballpy.sources import catalog
 from baseballpy.sources.retrosheet.adapter import RetrosheetAdapter, known_datasets
-from baseballpy.sources.retrosheet.api import DATASET_UNIT, REFERENCE_UNIT, UNITS, unit_of
+from baseballpy.sources.retrosheet.api import (
+    ACCESSORS,
+    DATASET_UNIT,
+    REFERENCE_UNIT,
+    UNITS,
+    RetrosheetSource,
+    unit_of,
+)
 
 
 def _registry() -> list[str]:
@@ -53,3 +66,37 @@ def test_a_season_dataset_without_seasons_fails_with_an_instruction() -> None:
         adapter.plan(Selection(datasets=("events",)))
     # season-less datasets need no seasons
     assert [j.task for j in adapter.plan(Selection(datasets=("reference_teams",)))] == ["reference"]
+
+
+@respx.mock
+def test_every_registry_dataset_is_selectable_and_readable(
+    tmp_path: Path, retro_repo: RetroRepo
+) -> None:
+    full_season(retro_repo)
+    reference = {
+        "ballparks": b"PARKID,NAME,AKA,CITY,STATE,START,END,LEAGUE,NOTES\nBOS07,Fenway Park,,Boston,MA,1/1/1912,,AL,\n",
+        "teams": b"TEAM,LEAGUE,CITY,NICKNAME,FIRST,LAST\nBOS,AL,Boston,Red Sox,1901,2024\n",
+    }
+    for ref_name, content in reference.items():
+        retro_repo.add(f"reference/{ref_name}.csv", content)
+    retro_repo.add("gamelog/GLWS.TXT", GAMELOG)
+    retro_repo.mount()
+    source = RetrosheetSource(cache_config=LakeConfig(home=tmp_path))
+    names = _registry()
+    assert {n for n in names if unit_of(n) != REFERENCE_UNIT} <= set(
+        ACCESSORS
+    )  # the table covers the registry
+    for name in names:
+        if name.startswith("reference_") and name.removeprefix("reference_") not in reference:
+            continue  # this fake repository publishes only two reference files
+        season = None if unit_of(name) == REFERENCE_UNIT else 2024
+        table = source.table(name, season)
+        assert table.schema.equals(datasets_for_name(name).schema), name
+    with pytest.raises(ValueError, match="pass season"):
+        source.table("events")
+    with pytest.raises(ValueError, match="unknown retrosheet dataset"):
+        source.table("nope", 2024)
+
+
+def datasets_for_name(name: str):  # type: ignore[no-untyped-def]
+    return next(d for d in datasets_for("retrosheet") if d.name == name)

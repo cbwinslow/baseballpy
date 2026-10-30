@@ -4,6 +4,7 @@ from baseballpy.sources.retrosheet.api import (
     IngestReport,
     RetrosheetSource,
     SeasonReport,
+    box_accounts,
     boxscores,
     daily_splits,
     discrepancies,
@@ -18,6 +19,7 @@ from baseballpy.sources.retrosheet.api import (
     schedule,
     schedule_original,
     substitutions,
+    table,
     umpires,
 )
 from baseballpy.sources.retrosheet.downloader import RetrosheetDownloader
@@ -53,6 +55,7 @@ __all__ = [
     "RetrosheetSource",
     "RetrosheetSubstitutionsParser",
     "SeasonReport",
+    "box_accounts",
     "boxscores",
     "daily_splits",
     "discrepancies",
@@ -67,5 +70,6 @@ __all__ = [
     "schedule",
     "schedule_original",
     "substitutions",
+    "table",
     "umpires",
 ]

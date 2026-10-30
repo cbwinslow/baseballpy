@@ -294,7 +294,7 @@ def register_all() -> dict[str, DatasetSpec]:
         (
             "daily_splits",
             retro.RETROSHEET_DAILY_SPLITS_SCHEMA,
-            ("GAME_ID", "TEAM_ID", "PLAYER_ID"),
+            ("GAME_ID", "TEAM_ID", "PLAYER_ID", "SLOT_CT", "SEQ_CT"),
             "season",
             "4-daily-player-splits-daily",
             "Daily player appearance lines.",
@@ -302,7 +302,7 @@ def register_all() -> dict[str, DatasetSpec]:
         (
             "substitutions",
             retro.RETROSHEET_SUBSTITUTIONS_SCHEMA,
-            ("GAME_ID", "EVENT_ID"),
+            ("GAME_ID", "EVENT_ID", "SUB_ID"),
             "season",
             "5-substitutions-sub",
             "In-game substitutions.",

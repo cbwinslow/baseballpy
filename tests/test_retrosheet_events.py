@@ -75,3 +75,30 @@ def test_a_field_the_schema_does_not_know_goes_to_extras(
     monkeypatch.setattr(cw, "event_rows", with_new_field)
     table = _parse(tmp_path)
     assert json.loads(table["_extras"].to_pylist()[0]) == {"FUTURE_FIELD": "x"}
+
+
+def test_substitution_and_daily_split_keys_survive_double_switches(tmp_path: Path) -> None:
+    from baseballpy.sources.retrosheet.parser import (
+        RetrosheetDailySplitsParser,
+        RetrosheetSubstitutionsParser,
+    )
+
+    game = (
+        GAME.split(b"play,")[0]
+        + b"play,1,0,vis01,00,,S8\n"
+        + b"sub,visp2,Reliever,0,0,1\n"
+        + b"sub,vis03,Pinch,0,2,11\n"
+        + b"play,1,0,vis03,00,,K\n"
+    )
+    path = tmp_path / "2024BOS.EVA"
+    path.write_bytes(game)
+    catalog.register_all()
+    subs = RetrosheetSubstitutionsParser().parse_files([path], year=2024)
+    daily = RetrosheetDailySplitsParser().parse_files([path], year=2024)
+    for name, table in (("substitutions", subs), ("daily_splits", daily)):
+        keys = get_dataset("retrosheet", name).keys
+        rows = list(zip(*[table[k].to_pylist() for k in keys], strict=True))
+        assert rows and len(set(rows)) == len(rows), name
+    # two substitutions in front of the same play share (GAME_ID, EVENT_ID); SUB_ID tells them apart
+    event_keys = set(zip(subs["GAME_ID"].to_pylist(), subs["EVENT_ID"].to_pylist(), strict=True))
+    assert len(subs) == 2 and len(event_keys) == 1

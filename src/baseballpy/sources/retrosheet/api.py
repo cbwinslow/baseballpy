@@ -13,9 +13,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import pyarrow as pa
+import pyarrow.parquet as pq
 
 from baseballpy.core.config import LakeConfig
-from baseballpy.core.datasets import DatasetSpec, get_dataset
+from baseballpy.core.datasets import DatasetSpec, datasets_for, get_dataset
 from baseballpy.core.github_tree import TreeTruncatedError
 from baseballpy.core.http import HttpStatusError, TransportError
 from baseballpy.core.lazy import lazy_singleton
@@ -25,6 +26,7 @@ from baseballpy.sources import catalog
 from baseballpy.sources.retrosheet.box_parser import decode_box, parse_box_text
 from baseballpy.sources.retrosheet.downloader import RetrosheetDownloader
 from baseballpy.sources.retrosheet.pool import parse_stream
+from baseballpy.sources.retrosheet.quality import columns_needed, quality_report
 from baseballpy.sources.retrosheet.tree import POSTSEASON_GAMELOG_KINDS, RetroFile
 
 logger = logging.getLogger(__name__)
@@ -111,6 +113,28 @@ def units_for(names: Sequence[str]) -> tuple[str, ...]:
     return tuple(dict.fromkeys(unit_of(n) or n for n in names))
 
 
+#: registry dataset -> (public accessor, index of the table in its result; ``None`` = the result is the table)
+ACCESSORS: dict[str, tuple[str, int | str | None]] = {
+    "events": ("events", None),
+    "events_postseason": ("events_postseason", None),
+    "events_deduced": ("events_deduced", None),
+    "boxscores_batting": ("boxscores", 0),
+    "boxscores_pitching": ("boxscores", 1),
+    "box_games": ("box_accounts", "box_games"),
+    "box_starters": ("box_accounts", "box_starters"),
+    "box_batting_lines": ("box_accounts", "box_batting_lines"),
+    "box_records": ("box_accounts", "box_records"),
+    "daily_splits": ("daily_splits", None),
+    "substitutions": ("substitutions", None),
+    "rosters": ("rosters", None),
+    "gamelogs": ("game_logs", None),
+    "schedule": ("schedule", None),
+    "schedule_original": ("schedule_original", None),
+    "umpires": ("umpires", None),
+    "discrepancies": ("discrepancies", None),
+}
+
+
 def _tables(stream: Iterator[pa.Table | tuple[pa.Table, pa.Table]]) -> Iterator[pa.Table]:
     """Narrow a parse stream to plain tables (a pair here is a programming error)."""
     for item in stream:
@@ -164,6 +188,8 @@ class RetrosheetSource:
         #: (season, file kind) pairs already re-downloaded by this object, so ``refresh`` fetches a file once
         self._refreshed: set[tuple[int, str]] = set()
         self._tree_warned = False
+        self._register_loaded = False
+        self._register_ids: pa.Table | None = None
 
     # ------------------------------------------------------------------ plumbing
     @property
@@ -519,6 +545,94 @@ class RetrosheetSource:
         file = self.downloader.tree().reference_file(table_name)
         return self._read(dataset, "data", None, refresh, make, [file] if file else None)
 
+    def table(
+        self,
+        name: str,
+        season: int | None = None,
+        *,
+        kind: str | None = None,
+        refresh: bool = False,
+    ) -> pa.Table:
+        """Any registered Retrosheet dataset by its registry name (``baseballpy.sources.retrosheet.table``).
+
+        Season datasets need ``season``; ``reference_*`` tables need nothing; ``gamelogs_postseason``
+        takes an optional ``kind`` (``world_series``, ``lcs``, ...) and returns all kinds without it.
+        """
+        catalog.register_all()
+        if name in ACCESSORS:
+            if season is None:
+                raise ValueError(
+                    f"retrosheet dataset {name!r} is stored per season: pass season=YYYY"
+                )
+            method, pick = ACCESSORS[name]
+            result = getattr(self, method)(season, refresh=refresh)
+            return result if pick is None else result[pick]
+        if name == "gamelogs_postseason":
+            kinds = (
+                [kind]
+                if kind
+                else [
+                    k
+                    for k in POSTSEASON_GAMELOG_KINDS
+                    if self.downloader.tree().postseason_gamelog(k)
+                ]
+            )
+            parts = [self.postseason_game_logs(k, refresh) for k in kinds]
+            return pa.concat_tables(parts) if parts else _spec(name).schema.empty_table()
+        if name.startswith("reference_"):
+            return self.reference(name.removeprefix("reference_"), refresh)
+        known = sorted(
+            {*DATASET_UNIT, "gamelogs_postseason"} | {d.name for d in datasets_for("retrosheet")}
+        )
+        raise ValueError(f"unknown retrosheet dataset {name!r}; known: {known}")
+
+    # ------------------------------------------------------------------ data quality
+    def _parent(self, ref: str, year: int) -> pa.Table | None:
+        """The parent table of a relationship (``<source>.<dataset>``); ``None`` if not stored or empty."""
+        source, _, dataset = ref.partition(".")
+        spec = get_dataset(source, dataset)
+        if source == "retrosheet":
+            path = self.store.part_path(spec, f"rosters_{year}", year)
+            return pq.read_table(path, columns=["player_id"]) if path.exists() else None
+        if not self._register_loaded:
+            self._register_loaded = True
+            parts = self.store.files(spec)
+            if parts:
+                self._register_ids = pa.concat_tables(
+                    [pq.read_table(p, columns=["key_retro"]) for p in parts]
+                )
+        return self._register_ids
+
+    def _quality(self, year: int, units: Sequence[str]) -> None:
+        """Check the stored chunks of ``units``; findings go to the manifest and are logged."""
+        for unit in units:
+            for dataset, chunk in UNITS[unit][1]:
+                spec, chunk_id = _spec(dataset), chunk.format(y=year)
+                path = self.store.part_path(spec, chunk_id, year)
+                if not path.exists():
+                    continue
+                table = pq.read_table(path, columns=columns_needed(dataset, spec.keys))
+                findings = quality_report(
+                    dataset, table, spec.keys, lambda ref: self._parent(ref, year)
+                )
+                manifest = self.cache_config.dataset_manifest("retrosheet", dataset, "processed")
+                key = manifest_key(chunk_id, year)
+                entry = manifest.get_chunk(key)
+                if entry is None or dict(entry.get("quality") or {}) == findings:
+                    continue
+                updated = {k: v for k, v in entry.items() if k != "quality"}
+                if findings:
+                    updated["quality"] = findings
+                manifest.put_entry(key, updated)
+                for finding, count in findings.items():
+                    logger.warning(
+                        "retrosheet data quality: %s %s=%s (season %s)",
+                        dataset,
+                        finding,
+                        count,
+                        year,
+                    )
+
     # ------------------------------------------------------------------ ingest everything
     def ingest_season(
         self, year: int, datasets: tuple[str, ...] | None = None, refresh: bool = False
@@ -547,6 +661,7 @@ class RetrosheetSource:
             report.complete_download = download.complete
         for unit in units:
             report.datasets.update(self._unit_write(unit, year, refresh))
+        self._quality(year, units)
         return report
 
     def ingest_reference(self, refresh: bool = False) -> dict[str, int | None]:
@@ -620,6 +735,13 @@ class RetrosheetSource:
 get_default_source = lazy_singleton(RetrosheetSource)
 
 
+def table(
+    name: str, season: int | None = None, *, kind: str | None = None, refresh: bool = False
+) -> pa.Table:
+    """Any Retrosheet dataset by registry name, for example ``table("box_games", 2023)``."""
+    return get_default_source().table(name, season, kind=kind, refresh=refresh)
+
+
 def events(year: int, include_postseason: bool = False, refresh: bool = False) -> pa.Table:
     """Extract Retrosheet play-by-play events for a season."""
     return get_default_source().events(
@@ -640,6 +762,11 @@ def events_deduced(year: int, refresh: bool = False) -> pa.Table:
 def boxscores(year: int, refresh: bool = False) -> tuple[pa.Table, pa.Table]:
     """Extract Retrosheet batting and pitching boxscores for a season."""
     return get_default_source().boxscores(year=year, refresh=refresh)
+
+
+def box_accounts(year: int, refresh: bool = False) -> dict[str, pa.Table]:
+    """Extract Retrosheet box-score game accounts (``box_games``, ``box_starters``, ...) for a season."""
+    return get_default_source().box_accounts(year=year, refresh=refresh)
 
 
 def daily_splits(year: int, refresh: bool = False) -> pa.Table:

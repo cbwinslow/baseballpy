@@ -1,5 +1,6 @@
 """Retrosheet box-score game accounts: typed kinds, lossless remainder, strict layouts."""
 
+import json
 from datetime import date
 from pathlib import Path
 
@@ -9,6 +10,7 @@ import respx
 from conftest import RetroRepo
 
 from baseballpy.core.config import LakeConfig
+from baseballpy.core.quarantine import get_quarantine
 from baseballpy.sources.retrosheet.api import BOX_DATASETS, RetrosheetSource
 from baseballpy.sources.retrosheet.box_parser import (
     BoxParseError,
@@ -132,3 +134,83 @@ def test_season_without_box_files_stores_empty_tables(
     tables = source.box_accounts(2023)
     assert all(t.num_rows == 0 for t in tables.values())
     assert tables["box_batting_lines"].schema.names[0] == "game_id"
+
+
+def test_repeated_info_keys_are_kept() -> None:
+    text = (
+        "id,BOS195004010\n"
+        "version,3\n"
+        "info,visteam,NYA\n"
+        "info,hometeam,BOS\n"
+        "info,date,1950/04/01\n"
+        "info,save,a\n"
+        "info,save,b\n"
+    )
+    tables = parse_box_text(text)
+    games = tables.games
+    assert games.column("save")[0].as_py() == "a"
+    records = tables.records
+    assert records.num_rows == 1
+    assert records.column("game_id")[0].as_py() == "BOS195004010"
+    assert records.column("kind")[0].as_py() == "info"
+    assert records.column("fields")[0].as_py() == ["save", "b"]
+    assert records.column("raw")[0].as_py() == "info,save,b"
+
+
+def test_unpadded_dates_parse_and_bad_dates_are_quarantined(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    lake = LakeConfig(home=tmp_path / "lake")
+    monkeypatch.setenv("BASEBALLPY_HOME", str(lake.home))
+    get_quarantine.reset()
+
+    text = (
+        "id,BOS195004010\n"
+        "version,3\n"
+        "info,visteam,NYA\n"
+        "info,hometeam,BOS\n"
+        "info,date,1950/4/1\n"
+        "id,BOS195004020\n"
+        "version,3\n"
+        "info,visteam,NYA\n"
+        "info,hometeam,BOS\n"
+        "info,date,not-a-date\n"
+    )
+    try:
+        tables = parse_box_text(text)
+        games = tables.games
+        assert games.num_rows == 2
+        assert games.column("date")[0].as_py() == date(1950, 4, 1)
+        assert games.column("date")[1].as_py() is None
+
+        q_files = list((lake.quarantine_root / "retrosheet").rglob("*.jsonl"))
+        assert len(q_files) == 1
+        lines = [
+            line.strip()
+            for line in q_files[0].read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        assert len(lines) == 1
+        record = json.loads(lines[0])
+        assert record["source"] == "retrosheet"
+        assert record["dataset"] == "box_games"
+        assert record["payload"]["type"] == "date"
+        assert record["payload"]["value"] == "not-a-date"
+    finally:
+        get_quarantine.reset()
+
+
+def test_non_integer_numbers_raise_box_parse_error() -> None:
+    bad_version = "id,BOS195004010\nversion,x\n"
+    with pytest.raises(BoxParseError):
+        parse_box_text(bad_version)
+
+    bad_start = 'id,BOS195004010\nversion,3\nstart,sprig001,"George Springer",0,x,9\n'
+    with pytest.raises(BoxParseError):
+        parse_box_text(bad_start)
+
+    bad_bline = (
+        "id,BOS195004010\nversion,3\nstat,bline,sprig001,0,9,1,4,1,1,0,0,0,0,0,0,0,0,0,x,0,0,0,0\n"
+    )
+    with pytest.raises(BoxParseError):
+        parse_box_text(bad_bline)

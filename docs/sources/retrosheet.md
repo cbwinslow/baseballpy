@@ -43,7 +43,7 @@
 - **Coverage:** every season with play-by-play files in the tree (1912–present for most; complete modern coverage). `events` holds regular-season games, `events_postseason` postseason/all-star/special games, `events_deduced` games deduced from box scores. They are separate datasets so a game never appears twice in a view.
 - **Format:** Retrosheet DiamondWare event records parsed by `chadwickpy.tools.events.event_rows` into all 164 fields it returns (cwevent standard fields 0-96 and extended fields 0-66, in that order) plus `_extras` for any field a future `chadwickpy` adds; a test pins the column list to `chadwickpy`'s own (see the generated dictionaries).
 - **Partitioning:** `season=YYYY`; one atomic Parquet part per season written as one row group per source file.
-- **Parsing:** CPU-bound and offline; files are parsed one at a time (optionally in a bounded process pool, `LakeConfig.parse_workers`) and streamed into the Parquet writer — no whole-season Python lists.
+- **Parsing:** CPU-bound and offline; files are parsed one at a time (optionally in a bounded process pool, `LakeConfig.parse_workers`). Event, daily, substitution, roster, game-log and flat-file datasets stream into the Parquet writer one file per row group; the derived box scores and the box accounts hold one season in memory (a few MB) before writing. Never more than one season is held at once, and export (`baseballpy export`) also reads, writes and verifies one season at a time.
 - **Key:** `(GAME_ID, EVENT_ID)`; `EVENT_ID` (cwevent standard field 96) is the play's number within the game, so the key is unique (checked on 38,161 real rows from 1925, 1935, 1950, 1975, 2000 and 2023). Before 2026-10-30 only 98 fields were kept and the key was `GAME_ID`, which collapsed a game to one row on merge exports; event Parquet written before then must be rebuilt (`ingest --refresh`).
 
 ### 2. Historical Game Logs (1871–present)
@@ -97,6 +97,13 @@ Retrosheet data is immutable at a pinned commit, and what is stored is judged by
 - **Processed chunks:** each chunk records one fingerprint (a digest of the blob SHAs of the raw files it was built from). It is served only while that fingerprint matches the tree; after a pin move, only chunks built from changed files are rebuilt. When the tree cannot be listed (offline) the chunk's recorded pinned commit decides.
 - `refresh=True` (or `ingest --refresh`) downloads each needed file once and rebuilds the selected chunks. `baseballpy cache check` compares the stored fingerprints with upstream.
 - **Kept documents:** the repository's `README.md` (the Retrosheet copyright and terms-of-use notice), `.gitattributes` and any file under the data folders that no pattern covers are stored raw in `raw/retrosheet/documents/` and `raw/retrosheet/unclassified/`.
+
+## Selecting and reading datasets
+- **Ingest:** `baseballpy ingest retrosheet -d <name> --seasons 2023` accepts any registered dataset name (`events`, `box_games`, `boxscores_batting`, `reference_teams`, ...). A name is resolved to the unit that writes it, so `box_games` builds all four `box_*` datasets and `reference_teams` ingests every `reference/*.csv` table and the postseason game logs. Season datasets need `--seasons`; only the raw files the selection reads are downloaded.
+- **Python:** `baseballpy.sources.retrosheet.table(name, season)` returns any registered dataset (`table("box_games", 2023)`, `table("reference_teams")`, `table("gamelogs_postseason", kind="world_series")`); the named functions (`events`, `rosters`, ...) remain.
+
+## Data quality
+After the datasets of a season are stored, `ingest` checks them and records the findings in the processed manifest (shown by `baseballpy catalog status`; they never stop an ingest): duplicate keys, and player ids in events, box scores, daily splits, substitutions and rosters that match no roster of the same season (rosters themselves are compared with the Chadwick register's `key_retro` when it is cached). Known limit: `boxscores_batting` is not unique by `(game_id, team_id, player_id, slot)` when a player re-enters in the same slot (task 5.14).
 
 ## Dataset reference (generated)
 
@@ -197,7 +204,7 @@ Daily player appearance lines.
 - **View:** `retrosheet_daily_splits`
 - **Processed path:** `processed/retrosheet/daily_splits/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `GAME_ID`, `TEAM_ID`, `PLAYER_ID`
+- **Key:** `GAME_ID`, `TEAM_ID`, `PLAYER_ID`, `SLOT_CT`, `SEQ_CT`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -1556,7 +1563,7 @@ In-game substitutions.
 - **View:** `retrosheet_substitutions`
 - **Processed path:** `processed/retrosheet/substitutions/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `GAME_ID`, `EVENT_ID`
+- **Key:** `GAME_ID`, `EVENT_ID`, `SUB_ID`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |

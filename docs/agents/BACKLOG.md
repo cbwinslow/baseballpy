@@ -204,7 +204,7 @@ touches a source under review, do it inside that source's track.
 | B-110 | retrosheet-source-review 5.2: Decide currency with is_current() at every cache tier (card R-06) | DONE | see the card |
 | B-111 | retrosheet-source-review 5.3: Keep the provider's documentation files (card R-07) | DONE | see the card |
 | B-112 | retrosheet-source-review 5.4: Review the second way in (user-supplied files); N/A if the source has none (card R-08) | DONE | see the card |
-| B-113 | `retrosheet-source-review 5.5`: Make every dataset and column reachable from Python (card R-09) | after B-112 | see the card |
+| B-113 | retrosheet-source-review 5.5: Make every dataset and column reachable from Python (card R-09) | DONE | see the card |
 | B-114 | `retrosheet-source-review 2.1`: Close the spec and test gaps (card R-10) | after B-113 and after every task 5.n found by the review (add its rows below) | see the card |
 | B-115 | `retrosheet-source-review 3.1`: Live verification on a clean scratch home (card R-11) | after B-114 | see the card |
 | B-116 | `retrosheet-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card R-12) | after B-115 | see the card |
@@ -213,8 +213,9 @@ touches a source under review, do it inside that source's track.
 | B-119 | retrosheet-source-review 5.6: Store every event field chadwickpy emits and key events on (GAME_ID, EVENT_ID) (card R-15) | DONE | see the card |
 | B-120 | retrosheet-source-review 5.7: One declarative dataset-to-producer map: every registry name works with --datasets, one download per ingest (card R-16) | DONE | see the card |
 | B-121 | retrosheet-source-review 5.8: No silent loss in game logs and rosters: quarantine short rows, keep extra fields in _extras (card R-17) | DONE | see the card |
-| B-122 | `retrosheet-source-review 5.9`: Box parser: keep repeated info keys, safe dates, BoxParseError for bad numbers (card R-18) | after B-109 and B-110 | see the card |
+| B-122 | retrosheet-source-review 5.9: Box parser: keep repeated info keys, safe dates, BoxParseError for bad numbers (card R-18) | DONE | see the card |
 | B-123 | retrosheet-source-review 5.10: Shared stores: an empty rebuild removes the stale Parquet; stale .part files cleaned in processed/; quarantine follows the source's lake (card R-19) | DONE | see the card |
 | B-124 | retrosheet-source-review 5.11: Export streams one season at a time (card R-20) | DONE | see the card |
-| B-125 | `retrosheet-source-review 5.12`: Really stream box scores and box accounts; count rows without re-reading Parquet (card R-21) | after B-109 and B-110 | see the card |
-| B-126 | `retrosheet-source-review 5.13`: Data-quality checks across datasets, shown by catalog status (card R-22) | after B-109 and B-110 | see the card |
+| B-125 | retrosheet-source-review 5.12: Really stream box scores and box accounts; count rows without re-reading Parquet (card R-21) | DONE | see the card |
+| B-126 | retrosheet-source-review 5.13: Data-quality checks across datasets, shown by catalog status (card R-22) | DONE | see the card |
+| B-127 | `retrosheet-source-review 5.14`: boxscores_batting has no unique key (card R-23) | READY | see the card |
