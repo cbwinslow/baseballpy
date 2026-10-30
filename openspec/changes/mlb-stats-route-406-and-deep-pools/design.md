@@ -15,3 +15,6 @@ The three single-season pools (`stats_stats_single_season_{hitting,fielding,adva
 
 ## Root cause and fix (2026-10-30)
 Not the user agent, the `Accept` header, the parameters or the rate: the whole `GET /api/v1/stats` route answers 406 for every request (evidence in `mlb_api-source-review/design.md`, 5.13). Task 5.13 of `mlb_api-source-review` fetches the league-wide player pools through `/v1/people?hydrate=stats(...)` when the direct route is refused, so tasks 3.1 and 3.2 no longer wait for the provider; the all-time pools without a season stay blocked.
+
+## 3.2 (2026-10-30)
+`gen_mlb_schemas.py --only` regenerated the eight `team_stats_year_by_year_*` (and `_advanced_*`) schemas: 40 requests each, all answered 200, keys unique; 78 stat columns (`stat_fly_hits`, `stat_balls_in_play`, `stat_ground_outs`, ...) are now typed instead of landing in `_extras`. Test `tests/test_mlb_param.py::test_year_by_year_team_stats_type_the_fields_the_real_run_showed`.

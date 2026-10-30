@@ -191,3 +191,12 @@ def test_the_team_expected_statistics_route_is_recorded_unsupported_with_evidenc
 
     ep = BY_NAME["team_stats_expected_statistics_hitting"]
     assert ep.unsupported and ep.verified_on == "2026-10-30" and len(ep.tried) >= 2
+
+
+def test_year_by_year_team_stats_type_the_fields_the_real_run_showed() -> None:
+    from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
+
+    names = {n for n in MLB_SCHEMAS if n.startswith("team_stats_year_by_year")}
+    assert names, "the year-by-year team stats are typed"
+    typed = {c for n in names for c in MLB_SCHEMAS[n].names}
+    assert {"stat_fly_hits", "stat_balls_in_play", "stat_ground_outs"} <= typed

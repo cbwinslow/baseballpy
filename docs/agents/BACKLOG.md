@@ -97,7 +97,7 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 | B-33 | mlb-stats-route-406-and-deep-pools 2.1: generator guard and 406 as provider error | DONE | an empty combo table is never written, a 406 is logged and not marked unsupported, tests |
 | B-34 | mlb-stats-route-406-and-deep-pools 2.2: smaller pages or per-season split for the three deep pools | DONE (adaptive halving of the page after a 5xx, respx test; live run waits for the 406 to clear, B-35) | respx tests; the pools page without 503 in a later live run |
 | B-35 | `mlb-stats-route-406-and-deep-pools 3.1`: re-run the 15 failed pools and a modern season | after B-32 and B-34 (LONG, homelab) | rows and errors recorded in design.md |
-| B-36 | `mlb-stats-route-406-and-deep-pools 3.2`: regenerate the team_stats_year_by_year schemas | READY (confirm the route answers 200 first) | fields such as stat.flyHits are typed columns, test added, no full generator run |
+| B-36 | mlb-stats-route-406-and-deep-pools 3.2: regenerate the team_stats_year_by_year schemas | DONE (route answers 200; 8 datasets regenerated with --only, 78 new typed stat columns) | fields such as stat.flyHits are typed columns, test added, no full generator run |
 | B-37 | catalog-completeness-audit 4.2: ADR 35, spec merge, archive | DONE | ADR 35 exists, the catalog-audit spec is in openspec/specs, the change is archived |
 | B-38 | `historical-backfill-plan 3.3`: ADR 36, backfill spec merge, archive | after B-10 | ADR 36 exists, the backfill spec is merged, the change is archived |
 

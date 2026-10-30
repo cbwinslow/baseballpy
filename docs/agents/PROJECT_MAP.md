@@ -37,7 +37,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
 | `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 19 |
 | `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 14 |
-| `mlb_api` | 365 | archived | yes | yes | yes | 9443/16670 (56%) | 18 |
+| `mlb_api` | 365 | archived | yes | yes | yes | 9486/16748 (56%) | 18 |
 
 ## Active changes (`openspec/changes/`)
 
@@ -47,7 +47,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
-| `mlb-stats-route-406-and-deep-pools` | 4 | 5 | 1.2, 3.1, 3.2 |
+| `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
 
@@ -123,6 +123,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/agents/BACKLOG.md`
 - `docs/agents/FINAL_REPORT.md`
 - `docs/agents/GOAL_SEEK_PROMPT.md`
+- `docs/agents/HANDOFF_2026-10-30.md`
 - `docs/agents/HANDOFF_B43.md`
 - `docs/agents/LOOP_PROMPT.md`
 - `docs/agents/NEXT_GOAL.md`

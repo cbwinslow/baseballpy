@@ -8,4 +8,4 @@
   - [x] 2.2 The three deep single-season pools use smaller pages or a per-season split; respx tests (delegate the code to agy, review the diff)
 - [ ] 3. Re-run
   - [ ] 3.1 After a 200: re-run the 15 failed pools and one modern MLB season on the homelab; record rows and errors in `design.md`
-  - [ ] 3.2 Regenerate the `team_stats_year_by_year_*` schemas (`gen_mlb_schemas.py --only`, never the full run while the 406 lasts); add a test that the real-run fields are typed columns
+  - [x] 3.2 Regenerate the `team_stats_year_by_year_*` schemas (`gen_mlb_schemas.py --only`, never the full run while the 406 lasts); add a test that the real-run fields are typed columns

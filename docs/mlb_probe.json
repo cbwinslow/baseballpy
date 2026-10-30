@@ -1731,65 +1731,65 @@
   },
   "team_stats_year_by_year_hitting": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 37,
+   "sample_rows": 1068,
+   "columns": 44,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_pitching": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 46,
+   "sample_rows": 1068,
+   "columns": 70,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_fielding": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
+   "sample_rows": 1048,
    "columns": 25,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_catching": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
+   "sample_rows": 1048,
    "columns": 39,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_advanced_hitting": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 25,
+   "sample_rows": 1068,
+   "columns": 41,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_advanced_pitching": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 31,
+   "sample_rows": 1068,
+   "columns": 62,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_advanced_fielding": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
+   "sample_rows": 1048,
    "columns": 25,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_advanced_catching": {
    "status": "ok",
-   "requests_ok": 2,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
+   "sample_rows": 1048,
    "columns": 39,
    "key_unique_per_request": true
   },
