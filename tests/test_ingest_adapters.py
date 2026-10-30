@@ -206,13 +206,13 @@ def test_statcast_adapter_plan() -> None:
 
     # Default datasets for 2023 (>= 2021 includes minors)
     jobs_2023 = adapter.plan(Selection(seasons=(2023,)))
-    assert [j.task for j in jobs_2023] == ["pitches", "pitches", "leaderboards"]
-    assert jobs_2023[0].param("minors") is None
-    assert jobs_2023[1].param("minors") is True
+    assert [j.task for j in jobs_2023] == ["documents", "pitches", "pitches", "leaderboards"]
+    assert jobs_2023[1].param("minors") is None
+    assert jobs_2023[2].param("minors") is True
 
     # Pre-2021 season omits pitches_minors
     jobs_2019 = adapter.plan(Selection(seasons=(2019,)))
-    assert [j.task for j in jobs_2019] == ["pitches", "leaderboards"]
+    assert [j.task for j in jobs_2019] == ["documents", "pitches", "leaderboards"]
 
     # Explicit dataset filter including opt-in game_feed
     jobs_filtered = adapter.plan(Selection(seasons=(2023,), datasets=("game_feed", "pitches")))

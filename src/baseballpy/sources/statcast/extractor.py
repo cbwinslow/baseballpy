@@ -17,6 +17,7 @@ from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger, get_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
+from baseballpy.core.documents import keep_pages
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key, schema_matches
@@ -175,6 +176,10 @@ def _to_date(value: str | date) -> date:
     return datetime.strptime(value, "%Y-%m-%d").date() if isinstance(value, str) else value
 
 
+#: provider documentation pages kept next to the data (raw/statcast/documents/): the pitch data dictionary
+DOCUMENT_PAGES = {"csv-docs.html": "https://baseballsavant.mlb.com/csv-docs"}
+
+
 class StatcastExtractor:
     """Extracts pitch-level tracking data from Baseball Savant with chunking and row-cap bisection."""
 
@@ -219,6 +224,27 @@ class StatcastExtractor:
         return self.store.part_path(
             self._spec(minors), self._chunk_id(start_dt, end_dt), start_dt.year
         )
+
+    def keep_documents(self, refresh: bool = False) -> list[str]:
+        """Keep Savant's data dictionary page; returns the names of newly stored pages."""
+        with default_audit_logger.track(
+            operation="statcast_keep_documents",
+            source="statcast",
+            endpoint=", ".join(DOCUMENT_PAGES.values()),
+            destination=str(self.cache_config.raw_dir("statcast", "documents", None)),
+        ) as tracker:
+            kept = keep_pages(
+                raw=self.raw,
+                http=self.http,
+                source="statcast",
+                dataset="documents",
+                pages=DOCUMENT_PAGES,
+                source_ref=None,
+                only_missing=not refresh,
+            )
+            tracker.set_records(len(kept))
+            tracker.set_cache_hit(not kept)
+            return kept
 
     def _is_chunk_fresh(
         self,

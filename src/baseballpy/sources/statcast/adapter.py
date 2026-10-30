@@ -9,8 +9,8 @@ from baseballpy.ingest.types import Job, JobResult, JobStatus, Selection, make_j
 
 FIRST_SEASON = 2008
 FIRST_MINORS_SEASON = 2021
-KNOWN_DATASETS = {"pitches", "pitches_minors", "leaderboards", "game_feed"}
-DEFAULT_DATASETS = ("pitches", "pitches_minors", "leaderboards")
+KNOWN_DATASETS = {"pitches", "pitches_minors", "leaderboards", "game_feed", "documents"}
+DEFAULT_DATASETS = ("pitches", "pitches_minors", "leaderboards", "documents")
 
 
 class StatcastAdapter:
@@ -69,6 +69,8 @@ class StatcastAdapter:
             return []
 
         jobs: list[Job] = []
+        if "documents" in wanted:
+            jobs.append(make_job("statcast", "documents"))
         for season in selection.seasons:
             if "pitches" in wanted:
                 jobs.append(make_job("statcast", "pitches", season=season))
@@ -84,6 +86,14 @@ class StatcastAdapter:
 
     def run(self, job: Job, *, refresh: bool = False) -> JobResult:
         """Execute a single Statcast ingest job."""
+        if job.task == "documents":
+            kept = self._get_extractor().keep_documents(refresh=refresh)
+            if not kept:
+                return JobResult(
+                    job=job, status=JobStatus.SKIPPED, rows=None, detail="already kept"
+                )
+            return JobResult(job=job, status=JobStatus.COMPLETED, rows=len(kept))
+
         if job.task == "pitches":
             season_val = job.param("season")
             if season_val is None:

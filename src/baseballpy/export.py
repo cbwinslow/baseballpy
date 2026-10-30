@@ -161,6 +161,19 @@ def _file_path(root: Path, spec: DatasetSpec, target: ExportTarget, season: int 
     return folder / f"{spec.name}.{target.suffix}"
 
 
+def _decoded(table: pa.Table) -> pa.Table:
+    """The table with dictionary columns turned into plain values.
+
+    Dictionary arrays of several stored parts carry different dictionaries; Arrow's ``equals``
+    compares the dictionaries too, so equal values would read as different data.
+    """
+    columns = [
+        column.cast(column.type.value_type) if pa.types.is_dictionary(column.type) else column
+        for column in table.columns
+    ]
+    return pa.Table.from_arrays(columns, names=table.column_names)
+
+
 def _export_files(
     spec: DatasetSpec,
     target: ExportTarget,
@@ -180,7 +193,7 @@ def _export_files(
             back = pq.read_table(path) if target.name == "parquet" else read_csv_typed(path)
             if not back.schema.equals(table.schema):
                 problems.append(f"{path.name}: schema read back differs from the source")
-            elif not back.equals(table):
+            elif not _decoded(back).equals(_decoded(table)):
                 problems.append(f"{path.name}: data read back differs from the source")
     return str(root / spec.source / spec.name), problems
 

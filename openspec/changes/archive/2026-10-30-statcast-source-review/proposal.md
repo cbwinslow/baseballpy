@@ -17,3 +17,6 @@ what a finding requires.
 
 ## Impact
 `src/baseballpy/sources/statcast/`, `docs/sources/statcast.md`, the `statcast-ingestion` spec, `docs/columns/statcast.json`.
+
+## As built (2026-10-30)
+All tasks done: findings 5.1-5.7 (fingerprints, schema-following chunks, documents page, Python access, game-feed audit logging, export read-back of dictionary columns). Live 2025 run: 3 jobs, 1.73 million pitch rows, all keys unique, no quarantine; four-target export verified. Not verified: the 2026 season (not ingested), leaderboard column definitions beyond the 255 cited (no published source found).

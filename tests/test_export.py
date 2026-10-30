@@ -394,3 +394,31 @@ def test_a_list_column_exports_to_duckdb_and_verifies(tmp_path: Path) -> None:
     )
     result = export_dataset(spec, "duckdb", config=config, out=tmp_path / "l.duckdb")
     assert result.rows == 2 and not result.problems
+
+
+@pytest.mark.parametrize("target", ["parquet", "csv"])
+def test_dictionary_columns_with_different_dictionaries_per_stored_part_verify(
+    tmp_path: Path, target: str
+) -> None:
+    # Statcast stores 50 parts per season; each part's text categories carry their own dictionary
+    kind = pa.dictionary(pa.int8(), pa.string())
+    spec = DatasetSpec(
+        source="demo",
+        name="parts",
+        view="demo_parts",
+        schema=pa.schema([("key", pa.string()), ("kind", kind)]),
+        partition="none",
+        keys=("key",),
+        description="dictionary column in two parts",
+        endpoint_doc="",
+    )
+    config = LakeConfig(home=tmp_path / "lake")
+    store = ProcessedStore(config)
+    for chunk, keys, values in (("c1", ["a", "b"], ["x", "y"]), ("c2", ["c", "d"], ["y", "z"])):
+        table = pa.table(
+            {"key": keys, "kind": pa.array(values).dictionary_encode().cast(kind)},
+            schema=spec.schema,
+        )
+        store.put(spec, table, chunk_id=chunk)
+    result = export_dataset(spec, target, config=config, out=tmp_path / "out")
+    assert result.rows == 4 and not result.problems

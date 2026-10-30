@@ -15,14 +15,14 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `cli-and-ingest` | 9 | 11 | 15 |
 | `concurrency-and-rate-limiting` | 3 | 5 | 6 |
 | `core-protocols` | 2 | 3 | 5 |
-| `data-export` | 5 | 8 | 22 |
+| `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
 | `lahman-database` | 11 | 18 | 26 |
 | `mlb-api-ingestion` | 11 | 11 | 13 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 3 | 5 | 5 |
 | `retrosheet-ingestion` | 19 | 20 | 21 |
-| `statcast-ingestion` | 9 | 9 | 10 |
+| `statcast-ingestion` | 14 | 14 | 20 |
 
 ## Source review scorecard (where each source stands)
 
@@ -36,12 +36,12 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
 | `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 19 |
-| `statcast` | 38 | in progress (6/15 tasks) | yes | yes | yes | 293/977 (29%) | 9 |
+| `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 14 |
 | `mlb_api` | 366 | not started | no | no | no | 9462/16692 (56%) | 11 |
 
 ## Active changes (`openspec/changes/`)
 
-38 changes are archived under `openspec/changes/archive/`.
+39 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -51,7 +51,6 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `mlb-stats-route-406-and-deep-pools` | 4 | 5 | 1.2, 3.1, 3.2 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
-| `statcast-source-review` | 6 | 14 | 1.3, 5.3, 5.4, 5.5, 2.1, 3.1, 3.2, 3.3, 4.1 |
 
 ## Decisions (`docs/DECISIONS.md`)
 
@@ -105,6 +104,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 49: A Schema Change Invalidates Stored Chunks (schema digest in the manifest)
 - ADR 50: dlt Does Not Write the Processed Tier; It Stays the Delivery Layer
 - ADR 51: Retrosheet Event Text Is NULL When Missing; a Dataset Revision Replaces Chunks an Older Parser Wrote
+- ADR 52: Statcast Applies the Source-Review Standard: Content Fingerprints, Kept Dictionary Page, Schema-Following Chunks, One Python Entry Point
 
 ## Documentation pages (`docs/`)
 

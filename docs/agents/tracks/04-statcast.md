@@ -1,6 +1,6 @@
 # Track 4: Statcast
 
-OpenSpec change: `openspec/changes/statcast-source-review/`. Spec: `openspec/specs/statcast-ingestion/`.
+OpenSpec change: `openspec/changes/archive/2026-10-30-statcast-source-review/`. Spec: `openspec/specs/statcast-ingestion/`.
 Docs: `docs/sources/statcast.md`. Code: `src/baseballpy/sources/statcast/`. Method: `docs/agents/WORK_BREAKDOWN.md`;
 standing standards: `docs/DATA_WORKFLOW.md` (currency, export, onboarding checklist), `docs/agents/TOOLING.md`.
 
@@ -114,7 +114,7 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Change task:** `statcast-source-review 2.1`
 - **Stage:** S5
 - **Executor:** agy writes tests from the findings, Claude reviews
-- **Files:** openspec/changes/statcast-source-review/specs/statcast-ingestion/spec.md (delta), tests/test_statcast*.py
+- **Files:** openspec/changes/archive/2026-10-30-statcast-source-review/specs/statcast-ingestion/spec.md (delta), tests/test_statcast*.py
 - **Tools (reuse check):** respx for HTTP, hypothesis for parsing and lookups, fixtures under tests/fixtures/
 - **Inputs:** the current spec requirements and every finding that changed behavior; start only when every task 5.n is done
 - **Steps:** 1. one scenario per finding and per requirement without one; each ends with a `Verified by` line; 2. property tests where parsing or lookups are lossy; 3. confirm unit tests make no network call.
@@ -175,3 +175,14 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. wrap the fetch and the season ingest in `track`; 2. a test reads the events back (fetch, season, cache hit).
 - **Done when:** `uv run pytest tests/test_statcast_coverage.py -q` passes and the test fails without the change
 - **Record:** tick 5.6; design.md S4.
+
+### S-16 Export read-back: dictionary columns of several stored parts
+- **Change task:** `statcast-source-review 5.7`
+- **Stage:** S7
+- **Executor:** Claude
+- **Files:** src/baseballpy/export.py, tests/test_export.py
+- **Tools (reuse check):** pyarrow `cast` of dictionary columns to their value type
+- **Inputs:** card S-12 run: parquet and csv export of `pitches` failed the read-back
+- **Steps:** 1. diff column by column; 2. compare dictionary columns as values; 3. rerun the exports.
+- **Done when:** `uv run pytest tests/test_export.py -q` passes and fails without the change; the live Statcast export verifies
+- **Record:** tick 5.7; design.md.

@@ -1,5 +1,6 @@
 """Statcast (Baseball Savant) pitch-level tracking and leaderboards module."""
 
+from baseballpy.sources.statcast.access import datasets, table
 from baseballpy.sources.statcast.extractor import (
     StatcastExtractor,
     StatcastQuery,
@@ -30,6 +31,8 @@ from baseballpy.sources.statcast.schema import (
 )
 
 __all__ = [
+    "datasets",
+    "table",
     "PitchType",
     "PlayerType",
     "STATCAST_SCHEMA",

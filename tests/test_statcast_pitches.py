@@ -281,3 +281,21 @@ def test_pitch_chunks_written_under_another_schema_are_refetched(tmp_path: Path)
         manifest.put_entry(key, {**entry, "schema_sha256": "0" * 64})  # an older release wrote it
     again = extractor.ingest_season(2024)
     assert again.cached_chunks == 0 and route.call_count == 6, "stale chunks are fetched again"
+
+
+@respx.mock
+def test_table_ingests_a_season_of_pitches_and_returns_it(tmp_path: Path) -> None:
+    from baseballpy.sources.statcast import access
+
+    lake = LakeConfig(home=tmp_path, today=date(2026, 1, 1))
+    respx.get(MLB_SEASONS_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "seasons": [{"springStartDate": "2024-06-01", "postSeasonEndDate": "2024-06-12"}]
+            },
+        )
+    )
+    respx.get(SAVANT_BASE_URL).mock(side_effect=_by_window)
+    pitches = access.table("pitches", 2024, cache_config=lake)
+    assert pitches.num_rows == 15 and pitches.schema.equals(STATCAST_SCHEMA)

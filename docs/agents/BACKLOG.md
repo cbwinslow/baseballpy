@@ -242,16 +242,17 @@ touches a source under review, do it inside that source's track.
 |---|---|---|---|
 | B-139 | statcast-source-review 1.1: Inventory the provider against the registry (card S-01) | DONE | see the card |
 | B-140 | statcast-source-review 1.2: Check registry and adapter conformance (card S-02) | DONE | see the card |
-| B-141 | `statcast-source-review 1.3`: Compare the generated schema with real data (card S-03) | after B-140 | see the card |
+| B-141 | statcast-source-review 1.3: Compare the generated schema with real data (card S-03) | DONE | see the card |
 | B-142 | statcast-source-review 1.4: Review the code against the designated tools and decoupling rules (card S-04) | DONE | see the card |
 | B-143 | statcast-source-review 5.1: Record upstream fingerprints for every raw file (card S-05) | DONE | see the card |
 | B-144 | statcast-source-review 5.2: Decide currency with is_current() at every cache tier (card S-06) | DONE | see the card |
-| B-145 | `statcast-source-review 5.3`: Keep the provider's documentation files (card S-07) | after B-144 | see the card |
-| B-146 | `statcast-source-review 5.4`: Review the second way in (user-supplied files); N/A if the source has none (card S-08) | after B-145 | see the card |
-| B-147 | `statcast-source-review 5.5`: Make every dataset and column reachable from Python (card S-09) | after B-146 | see the card |
-| B-148 | `statcast-source-review 2.1`: Close the spec and test gaps (card S-10) | after B-147 and after every task 5.n found by the review (add its rows below) | see the card |
-| B-149 | `statcast-source-review 3.1`: Live verification on a clean scratch home (card S-11) | after B-148 | see the card |
-| B-150 | `statcast-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card S-12) | after B-149 | see the card |
-| B-151 | `statcast-source-review 3.3`: Cited column descriptions (card S-13) | after B-150 | see the card |
-| B-152 | `statcast-source-review 4.1`: Docs, decisions, spec merge, archive (card S-14) | after B-151 | see the card |
+| B-145 | statcast-source-review 5.3: Keep the provider's documentation files (card S-07) | DONE | see the card |
+| B-146 | statcast-source-review 5.4: Review the second way in (user-supplied files); N/A if the source has none (card S-08) | DONE | see the card |
+| B-147 | statcast-source-review 5.5: Make every dataset and column reachable from Python (card S-09) | DONE | see the card |
+| B-148 | statcast-source-review 2.1: Close the spec and test gaps (card S-10) | DONE | see the card |
+| B-149 | statcast-source-review 3.1: Live verification on a clean scratch home (card S-11) | DONE | see the card |
+| B-150 | statcast-source-review 3.2: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card S-12) | DONE | see the card |
+| B-151 | statcast-source-review 3.3: Cited column descriptions (card S-13) | DONE | see the card |
+| B-152 | statcast-source-review 4.1: Docs, decisions, spec merge, archive (card S-14) | DONE | see the card |
 | B-153 | statcast-source-review 5.6: Audit-log and time the game-feed fetch and season ingest (card S-15) | DONE | see the card |
+| B-154 | statcast-source-review 5.7: Export read-back: dictionary columns of several stored parts (card S-16) | DONE | see the card |

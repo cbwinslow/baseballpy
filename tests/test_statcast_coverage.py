@@ -10,7 +10,7 @@ import pytest
 import respx
 
 from baseballpy.core.config import LakeConfig, QuarantineConfig
-from baseballpy.core.datasets import get_dataset
+from baseballpy.core.datasets import datasets_for, get_dataset
 from baseballpy.core.quarantine import Quarantine
 from baseballpy.core.upstream import Fingerprint, stored_fingerprint
 from baseballpy.sources import catalog
@@ -386,3 +386,49 @@ def test_a_leaderboard_written_under_another_schema_is_fetched_again(tmp_path: P
         manifest.put_entry(key, {**entry, "schema_sha256": "0" * 64})
     extractor.get_leaderboard("sprint_speed", year=2024)
     assert route.call_count == 2
+
+
+@respx.mock
+def test_the_data_dictionary_page_is_kept_once_with_a_fingerprint(tmp_path: Path) -> None:
+    from baseballpy.sources.statcast.extractor import DOCUMENT_PAGES, StatcastExtractor
+
+    lake = LakeConfig(home=tmp_path)
+    extractor = StatcastExtractor(cache_config=lake)
+    url = DOCUMENT_PAGES["csv-docs.html"]
+    route = respx.get(url).mock(
+        return_value=httpx.Response(200, content=b"<html>dictionary</html>")
+    )
+    assert extractor.keep_documents() == ["csv-docs.html"]
+    assert extractor.keep_documents() == []  # already kept: nothing downloaded
+    assert route.call_count == 1
+    assert (lake.raw_root / "statcast" / "documents" / "csv-docs.html").read_bytes() == (
+        b"<html>dictionary</html>"
+    )
+    entry = lake.dataset_manifest("statcast", "documents", "raw").get_chunk("csv-docs.html")
+    assert (stored_fingerprint(entry) or Fingerprint("none", "")).kind == "content_sha256"
+    extractor.keep_documents(refresh=True)
+    assert route.call_count == 2
+
+
+def test_the_planner_adds_one_documents_job_per_run() -> None:
+    from baseballpy.ingest.types import Selection
+    from baseballpy.sources.statcast.adapter import StatcastAdapter
+
+    jobs = StatcastAdapter().plan(Selection(seasons=(2024, 2025)))
+    assert [j.task for j in jobs].count("documents") == 1
+
+
+@respx.mock
+def test_table_reaches_every_registered_dataset_by_name(tmp_path: Path) -> None:
+    from baseballpy.sources.statcast import access
+
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    respx.get(f"{SAVANT_BASE}/sprint_speed").mock(
+        return_value=httpx.Response(200, content=_fixture("sprint_speed"))
+    )
+    table = access.table("leaderboard_sprint_speed", 2024, cache_config=lake)
+    assert table.num_rows == 4
+    assert {spec.name for spec in datasets_for("statcast")} == set(access.datasets())
+    assert {"pitches", "pitches_minors", "leaderboard_sprint_speed"} <= set(access.datasets())
+    with pytest.raises(ValueError, match="unknown statcast dataset 'nope'.*pitches"):
+        access.table("nope", 2024, cache_config=lake)

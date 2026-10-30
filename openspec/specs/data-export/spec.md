@@ -59,3 +59,11 @@ A dataset with a list column (for example `retrosheet.box_records.fields`) MUST 
 - **WHEN** a dataset with a `list<string>` column is exported to DuckDB, and written through the database sink to DuckDB and PostgreSQL
 - **THEN** the row count matches and the read-back reports no type mismatch
 - Verified by `tests/test_export.py::test_a_list_column_exports_to_duckdb_and_verifies` and `tests/test_dlt_typed.py::test_a_list_column_loads_into_either_database_and_reads_back_without_mismatch`.
+
+### Requirement: Read-Back Compares Dictionary Columns As Values
+The export read-back check MUST treat a dictionary-encoded column as equal to the source when the values are equal, whatever dictionaries the stored parts used.
+
+#### Scenario: Parts with different dictionaries verify
+- **WHEN** a dataset stored in two parts whose text categories have different dictionaries is exported to Parquet or CSV
+- **THEN** the export verifies
+- Verified by `tests/test_export.py::test_dictionary_columns_with_different_dictionaries_per_stored_part_verify`.

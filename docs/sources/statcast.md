@@ -111,6 +111,10 @@ The `StatcastLeaderboard` enum has one member per supported slug (a test compare
 ## Storage Layout (lake v2)
 - Raw: `raw/statcast/pitches/season=YYYY/<start>_<end>.csv`; `raw/statcast/leaderboard_<slug>/season=YYYY/<slug>_<year>.csv` (`.html` for `park_factors`); `raw/statcast/game_feed/season=YYYY/<pk>.json`. Each raw file records its sha256 and source URL in the dataset manifest.
 - Typed: `processed/statcast/pitches/season=YYYY/part-<start>_<end>.parquet` (view `statcast_pitches`) and `processed/statcast/leaderboard_<slug>/season=YYYY/part-<slug>_<year>.parquet` (view `statcast_leaderboard_<slug>`). Leaderboards never share a directory with pitches.
+- Documentation: Savant's data dictionary page is kept as `raw/statcast/documents/csv-docs.html` (job `documents`, once per lake).
+- Fingerprints: Savant sends no version marker, so each raw file records its ETag when there is one, else its sha256; past seasons are immutable and the trailing days of the current season are refetched.
+- Python: `baseballpy.sources.statcast.table(name, season)` returns any registered dataset (`table("pitches", 2024)` ingests the season first, `table("leaderboard_sprint_speed", 2024)` fetches one leaderboard); `datasets()` lists the names.
+- Export (`baseballpy export statcast --to parquet|csv|duckdb|postgres`): see the checks recorded in the review's design notes.
 
 ## Dataset reference (generated)
 
