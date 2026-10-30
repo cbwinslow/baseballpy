@@ -254,7 +254,7 @@ def register_all() -> dict[str, DatasetSpec]:
         (
             "events",
             retro.RETROSHEET_EVENT_SCHEMA,
-            ("GAME_ID",),
+            ("GAME_ID", "EVENT_ID"),
             "season",
             "1-play-by-play-event-data-eva-evn-eve-eb",
             "Regular-season play-by-play events.",
@@ -262,7 +262,7 @@ def register_all() -> dict[str, DatasetSpec]:
         (
             "events_postseason",
             retro.RETROSHEET_EVENT_SCHEMA,
-            ("GAME_ID",),
+            ("GAME_ID", "EVENT_ID"),
             "season",
             "1-play-by-play-event-data-eva-evn-eve-eb",
             "Postseason and all-star play-by-play events.",
@@ -270,7 +270,7 @@ def register_all() -> dict[str, DatasetSpec]:
         (
             "events_deduced",
             retro.RETROSHEET_EVENT_SCHEMA,
-            ("GAME_ID",),
+            ("GAME_ID", "EVENT_ID"),
             "season",
             "1-play-by-play-event-data-eva-evn-eve-eb",
             "Play-by-play events deduced from box scores (.ED* files).",

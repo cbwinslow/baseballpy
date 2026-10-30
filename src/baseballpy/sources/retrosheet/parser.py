@@ -2,6 +2,7 @@
 
 import csv
 import io
+import json
 import logging
 import re
 from datetime import datetime
@@ -12,7 +13,7 @@ import pyarrow as pa
 
 from baseballpy.core.coerce import NULL_TOKENS, CoercionError, to_bool, to_int
 from baseballpy.core.quarantine import Quarantine, collect_bad_values, record_bad_value, safe_array
-from baseballpy.core.schema_tools import normalize_csv
+from baseballpy.core.schema_tools import EXTRAS, normalize_csv
 from baseballpy.sources.retrosheet import _chadwick_adapter as cw
 from baseballpy.sources.retrosheet.schema import (
     RETROSHEET_BOX_BATTING_SCHEMA,
@@ -97,35 +98,37 @@ class RetrosheetEventParser:
 
         league = self.league or _load_league(paths, year)
 
-        records: list[dict[str, Any]] = []
+        rows: list[dict[str, str]] = []
         for path in paths:
-            data = path.read_bytes()
-            for raw_row in cw.event_rows(data, league=league):
-                casted_row: dict[str, Any] = {}
-                for field in RETROSHEET_EVENT_SCHEMA:
-                    col_name = field.name
-                    target_type = field.type
-                    val = raw_row.get(col_name)
-
-                    if target_type == pa.bool_():
-                        casted_row[col_name] = _safe_bool(val)
-                    elif pa.types.is_integer(target_type):
-                        casted_row[col_name] = _safe_int(val)
-                    else:
-                        casted_row[col_name] = str(val) if val is not None else None
-
-                records.append(casted_row)
-
-        if not records:
+            rows.extend(cw.event_rows(path.read_bytes(), league=league))
+        if not rows:
             return pa.Table.from_batches([], schema=RETROSHEET_EVENT_SCHEMA)
 
+        known = set(RETROSHEET_EVENT_SCHEMA.names)
         arrays = []
         for field in RETROSHEET_EVENT_SCHEMA:
-            col_name = field.name
-            col_vals = [r.get(col_name) for r in records]
-            arrays.append(_arr(col_vals, field))
-
+            if field.name == EXTRAS:
+                continue
+            values: list[Any] = [row.get(field.name) for row in rows]
+            if field.type == pa.bool_():
+                values = [_safe_bool(v) for v in values]
+            elif pa.types.is_integer(field.type):
+                values = [_safe_int(v) for v in values]
+            arrays.append(_arr(values, field))
+        arrays.append(_event_extras(rows, known))
         return pa.Table.from_arrays(arrays, schema=RETROSHEET_EVENT_SCHEMA)
+
+
+def _event_extras(rows: list[dict[str, str]], known: set[str]) -> pa.Array:
+    """JSON text of the fields chadwickpy returned that the schema has no column for (else NULL)."""
+    unknown = sorted({key for row in rows for key in row if key not in known})
+    if not unknown:
+        return pa.nulls(len(rows), type=pa.string())
+    logger.warning(
+        "retrosheet events: chadwickpy returned unknown field(s) %s (kept in _extras)", unknown
+    )
+    payload = [json.dumps({k: row[k] for k in unknown if k in row}) for row in rows]
+    return pa.array(payload, pa.string())
 
 
 class RetrosheetBoxScoreParser:

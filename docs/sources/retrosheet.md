@@ -41,10 +41,10 @@
 
 ### 1. Play-by-Play Event Data (`.EVA`, `.EVN`, `.EVE`, `.EB*`)
 - **Coverage:** every season with play-by-play files in the tree (1912–present for most; complete modern coverage). `events` holds regular-season games, `events_postseason` postseason/all-star/special games, `events_deduced` games deduced from box scores. They are separate datasets so a game never appears twice in a view.
-- **Format:** Retrosheet DiamondWare event records parsed by `chadwickpy.tools.events.event_rows` into 97 canonical fields (see the generated dictionaries).
+- **Format:** Retrosheet DiamondWare event records parsed by `chadwickpy.tools.events.event_rows` into all 164 fields it returns (cwevent standard fields 0-96 and extended fields 0-66, in that order) plus `_extras` for any field a future `chadwickpy` adds; a test pins the column list to `chadwickpy`'s own (see the generated dictionaries).
 - **Partitioning:** `season=YYYY`; one atomic Parquet part per season written as one row group per source file.
 - **Parsing:** CPU-bound and offline; files are parsed one at a time (optionally in a bounded process pool, `LakeConfig.parse_workers`) and streamed into the Parquet writer — no whole-season Python lists.
-- **Key:** `GAME_ID` (event order is file order; there is no unique event key upstream).
+- **Key:** `(GAME_ID, EVENT_ID)`; `EVENT_ID` (cwevent standard field 96) is the play's number within the game, so the key is unique (checked on 38,161 real rows from 1925, 1935, 1950, 1975, 2000 and 2023). Before 2026-10-30 only 98 fields were kept and the key was `GAME_ID`, which collapsed a game to one row on merge exports; event Parquet written before then must be rebuilt (`ingest --refresh`).
 
 ### 2. Historical Game Logs (1871–present)
 - **Regular season:** `seasons/<year>/GL<year>.TXT` (header-less, 161 positional fields documented by Retrosheet).
@@ -393,7 +393,7 @@ Regular-season play-by-play events.
 - **View:** `retrosheet_events`
 - **Processed path:** `processed/retrosheet/events/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `GAME_ID`
+- **Key:** `GAME_ID`, `EVENT_ID`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -491,10 +491,77 @@ Regular-season play-by-play events.
 | `ASS1_FLD_CD` | int8 | yes | — | Fielder with first assist (src: chadwick_cwevent) |
 | `ASS2_FLD_CD` | int8 | yes | — | Fielder with second assist (src: chadwick_cwevent) |
 | `ASS3_FLD_CD` | int8 | yes | — | Fielder with third assist (src: chadwick_cwevent) |
-| `ERR1_FLD_CD_NEW` | int8 | yes | — | TODO |
-| `ERR2_FLD_CD_NEW` | int8 | yes | — | TODO |
-| `ERR3_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `ASS4_FLD_CD` | int16 | yes | — | TODO |
+| `ASS5_FLD_CD` | int16 | yes | — | TODO |
+| `EVENT_ID` | int16 | yes | — | TODO |
+| `HOME_TEAM_ID` | string | yes | — | TODO |
+| `BAT_TEAM_ID` | string | yes | — | TODO |
+| `FLD_TEAM_ID` | string | yes | — | TODO |
 | `BAT_LAST_ID` | int8 | yes | — | half inning (differs from batting team if home team bats first) (src: chadwick_cwevent) |
+| `INN_NEW_FL` | bool | yes | — | TODO |
+| `INN_END_FL` | bool | yes | — | TODO |
+| `START_BAT_SCORE_CT` | int16 | yes | — | TODO |
+| `START_FLD_SCORE_CT` | int16 | yes | — | TODO |
+| `INN_RUNS_CT` | int16 | yes | — | TODO |
+| `GAME_PA_CT` | int16 | yes | — | TODO |
+| `INN_PA_CT` | int16 | yes | — | TODO |
+| `PA_NEW_FL` | bool | yes | — | TODO |
+| `PA_TRUNC_FL` | bool | yes | — | TODO |
+| `START_BASES_CD` | int16 | yes | — | TODO |
+| `END_BASES_CD` | int16 | yes | — | TODO |
+| `BAT_START_FL` | bool | yes | — | TODO |
+| `RESP_BAT_START_FL` | bool | yes | — | TODO |
+| `BAT_ON_DECK_ID` | string | yes | — | TODO |
+| `BAT_IN_HOLD_ID` | string | yes | — | TODO |
+| `PIT_START_FL` | bool | yes | — | TODO |
+| `RESP_PIT_START_FL` | bool | yes | — | TODO |
+| `RUN1_FLD_CD` | int16 | yes | — | TODO |
+| `RUN1_LINEUP_CD` | int16 | yes | — | TODO |
+| `RUN1_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
+| `RUN2_FLD_CD` | int16 | yes | — | TODO |
+| `RUN2_LINEUP_CD` | int16 | yes | — | TODO |
+| `RUN2_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
+| `RUN3_FLD_CD` | int16 | yes | — | TODO |
+| `RUN3_LINEUP_CD` | int16 | yes | — | TODO |
+| `RUN3_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
+| `RUN1_RESP_CAT_ID` | string | yes | — | TODO |
+| `RUN2_RESP_CAT_ID` | string | yes | — | TODO |
+| `RUN3_RESP_CAT_ID` | string | yes | — | TODO |
+| `PA_BALL_CT` | int16 | yes | — | TODO |
+| `PA_CALLED_BALL_CT` | int16 | yes | — | TODO |
+| `PA_INTENT_BALL_CT` | int16 | yes | — | TODO |
+| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | TODO |
+| `PA_HITBATTER_BALL_CT` | int16 | yes | — | TODO |
+| `PA_OTHER_BALL_CT` | int16 | yes | — | TODO |
+| `PA_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_CALLED_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_FOUL_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_OTHER_STRIKE_CT` | int16 | yes | — | TODO |
+| `EVENT_RUNS_CT` | int16 | yes | — | TODO |
+| `FLD_ID` | string | yes | — | TODO |
+| `BASE2_FORCE_FL` | bool | yes | — | TODO |
+| `BASE3_FORCE_FL` | bool | yes | — | TODO |
+| `BASE4_FORCE_FL` | bool | yes | — | TODO |
+| `BAT_SAFE_ERR_FL` | bool | yes | — | TODO |
+| `BAT_FATE_ID` | int16 | yes | — | TODO |
+| `RUN1_FATE_ID` | int16 | yes | — | TODO |
+| `RUN2_FATE_ID` | int16 | yes | — | TODO |
+| `RUN3_FATE_ID` | int16 | yes | — | TODO |
+| `FATE_RUNS_CT` | int16 | yes | — | TODO |
+| `ASS6_FLD_CD` | int16 | yes | — | TODO |
+| `ASS7_FLD_CD` | int16 | yes | — | TODO |
+| `ASS8_FLD_CD` | int16 | yes | — | TODO |
+| `ASS9_FLD_CD` | int16 | yes | — | TODO |
+| `ASS10_FLD_CD` | int16 | yes | — | TODO |
+| `UNKNOWN_OUT_EXC_FL` | bool | yes | — | TODO |
+| `UNCERTAIN_PLAY_EXC_FL` | bool | yes | — | TODO |
+| `COUNT_TX` | string | yes | — | TODO |
+| `RUN1_AUTO_FL` | bool | yes | — | TODO |
+| `RUN2_AUTO_FL` | bool | yes | — | TODO |
+| `RUN3_AUTO_FL` | bool | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.events -->
 
@@ -506,7 +573,7 @@ Play-by-play events deduced from box scores (.ED* files).
 - **View:** `retrosheet_events_deduced`
 - **Processed path:** `processed/retrosheet/events_deduced/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `GAME_ID`
+- **Key:** `GAME_ID`, `EVENT_ID`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -604,10 +671,77 @@ Play-by-play events deduced from box scores (.ED* files).
 | `ASS1_FLD_CD` | int8 | yes | — | Fielder with first assist (src: chadwick_cwevent) |
 | `ASS2_FLD_CD` | int8 | yes | — | Fielder with second assist (src: chadwick_cwevent) |
 | `ASS3_FLD_CD` | int8 | yes | — | Fielder with third assist (src: chadwick_cwevent) |
-| `ERR1_FLD_CD_NEW` | int8 | yes | — | TODO |
-| `ERR2_FLD_CD_NEW` | int8 | yes | — | TODO |
-| `ERR3_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `ASS4_FLD_CD` | int16 | yes | — | TODO |
+| `ASS5_FLD_CD` | int16 | yes | — | TODO |
+| `EVENT_ID` | int16 | yes | — | TODO |
+| `HOME_TEAM_ID` | string | yes | — | TODO |
+| `BAT_TEAM_ID` | string | yes | — | TODO |
+| `FLD_TEAM_ID` | string | yes | — | TODO |
 | `BAT_LAST_ID` | int8 | yes | — | half inning (differs from batting team if home team bats first) (src: chadwick_cwevent) |
+| `INN_NEW_FL` | bool | yes | — | TODO |
+| `INN_END_FL` | bool | yes | — | TODO |
+| `START_BAT_SCORE_CT` | int16 | yes | — | TODO |
+| `START_FLD_SCORE_CT` | int16 | yes | — | TODO |
+| `INN_RUNS_CT` | int16 | yes | — | TODO |
+| `GAME_PA_CT` | int16 | yes | — | TODO |
+| `INN_PA_CT` | int16 | yes | — | TODO |
+| `PA_NEW_FL` | bool | yes | — | TODO |
+| `PA_TRUNC_FL` | bool | yes | — | TODO |
+| `START_BASES_CD` | int16 | yes | — | TODO |
+| `END_BASES_CD` | int16 | yes | — | TODO |
+| `BAT_START_FL` | bool | yes | — | TODO |
+| `RESP_BAT_START_FL` | bool | yes | — | TODO |
+| `BAT_ON_DECK_ID` | string | yes | — | TODO |
+| `BAT_IN_HOLD_ID` | string | yes | — | TODO |
+| `PIT_START_FL` | bool | yes | — | TODO |
+| `RESP_PIT_START_FL` | bool | yes | — | TODO |
+| `RUN1_FLD_CD` | int16 | yes | — | TODO |
+| `RUN1_LINEUP_CD` | int16 | yes | — | TODO |
+| `RUN1_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
+| `RUN2_FLD_CD` | int16 | yes | — | TODO |
+| `RUN2_LINEUP_CD` | int16 | yes | — | TODO |
+| `RUN2_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
+| `RUN3_FLD_CD` | int16 | yes | — | TODO |
+| `RUN3_LINEUP_CD` | int16 | yes | — | TODO |
+| `RUN3_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
+| `RUN1_RESP_CAT_ID` | string | yes | — | TODO |
+| `RUN2_RESP_CAT_ID` | string | yes | — | TODO |
+| `RUN3_RESP_CAT_ID` | string | yes | — | TODO |
+| `PA_BALL_CT` | int16 | yes | — | TODO |
+| `PA_CALLED_BALL_CT` | int16 | yes | — | TODO |
+| `PA_INTENT_BALL_CT` | int16 | yes | — | TODO |
+| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | TODO |
+| `PA_HITBATTER_BALL_CT` | int16 | yes | — | TODO |
+| `PA_OTHER_BALL_CT` | int16 | yes | — | TODO |
+| `PA_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_CALLED_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_FOUL_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_OTHER_STRIKE_CT` | int16 | yes | — | TODO |
+| `EVENT_RUNS_CT` | int16 | yes | — | TODO |
+| `FLD_ID` | string | yes | — | TODO |
+| `BASE2_FORCE_FL` | bool | yes | — | TODO |
+| `BASE3_FORCE_FL` | bool | yes | — | TODO |
+| `BASE4_FORCE_FL` | bool | yes | — | TODO |
+| `BAT_SAFE_ERR_FL` | bool | yes | — | TODO |
+| `BAT_FATE_ID` | int16 | yes | — | TODO |
+| `RUN1_FATE_ID` | int16 | yes | — | TODO |
+| `RUN2_FATE_ID` | int16 | yes | — | TODO |
+| `RUN3_FATE_ID` | int16 | yes | — | TODO |
+| `FATE_RUNS_CT` | int16 | yes | — | TODO |
+| `ASS6_FLD_CD` | int16 | yes | — | TODO |
+| `ASS7_FLD_CD` | int16 | yes | — | TODO |
+| `ASS8_FLD_CD` | int16 | yes | — | TODO |
+| `ASS9_FLD_CD` | int16 | yes | — | TODO |
+| `ASS10_FLD_CD` | int16 | yes | — | TODO |
+| `UNKNOWN_OUT_EXC_FL` | bool | yes | — | TODO |
+| `UNCERTAIN_PLAY_EXC_FL` | bool | yes | — | TODO |
+| `COUNT_TX` | string | yes | — | TODO |
+| `RUN1_AUTO_FL` | bool | yes | — | TODO |
+| `RUN2_AUTO_FL` | bool | yes | — | TODO |
+| `RUN3_AUTO_FL` | bool | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.events_deduced -->
 
@@ -619,7 +753,7 @@ Postseason and all-star play-by-play events.
 - **View:** `retrosheet_events_postseason`
 - **Processed path:** `processed/retrosheet/events_postseason/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `GAME_ID`
+- **Key:** `GAME_ID`, `EVENT_ID`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -717,10 +851,77 @@ Postseason and all-star play-by-play events.
 | `ASS1_FLD_CD` | int8 | yes | — | Fielder with first assist (src: chadwick_cwevent) |
 | `ASS2_FLD_CD` | int8 | yes | — | Fielder with second assist (src: chadwick_cwevent) |
 | `ASS3_FLD_CD` | int8 | yes | — | Fielder with third assist (src: chadwick_cwevent) |
-| `ERR1_FLD_CD_NEW` | int8 | yes | — | TODO |
-| `ERR2_FLD_CD_NEW` | int8 | yes | — | TODO |
-| `ERR3_FLD_CD_NEW` | int8 | yes | — | TODO |
+| `ASS4_FLD_CD` | int16 | yes | — | TODO |
+| `ASS5_FLD_CD` | int16 | yes | — | TODO |
+| `EVENT_ID` | int16 | yes | — | TODO |
+| `HOME_TEAM_ID` | string | yes | — | TODO |
+| `BAT_TEAM_ID` | string | yes | — | TODO |
+| `FLD_TEAM_ID` | string | yes | — | TODO |
 | `BAT_LAST_ID` | int8 | yes | — | half inning (differs from batting team if home team bats first) (src: chadwick_cwevent) |
+| `INN_NEW_FL` | bool | yes | — | TODO |
+| `INN_END_FL` | bool | yes | — | TODO |
+| `START_BAT_SCORE_CT` | int16 | yes | — | TODO |
+| `START_FLD_SCORE_CT` | int16 | yes | — | TODO |
+| `INN_RUNS_CT` | int16 | yes | — | TODO |
+| `GAME_PA_CT` | int16 | yes | — | TODO |
+| `INN_PA_CT` | int16 | yes | — | TODO |
+| `PA_NEW_FL` | bool | yes | — | TODO |
+| `PA_TRUNC_FL` | bool | yes | — | TODO |
+| `START_BASES_CD` | int16 | yes | — | TODO |
+| `END_BASES_CD` | int16 | yes | — | TODO |
+| `BAT_START_FL` | bool | yes | — | TODO |
+| `RESP_BAT_START_FL` | bool | yes | — | TODO |
+| `BAT_ON_DECK_ID` | string | yes | — | TODO |
+| `BAT_IN_HOLD_ID` | string | yes | — | TODO |
+| `PIT_START_FL` | bool | yes | — | TODO |
+| `RESP_PIT_START_FL` | bool | yes | — | TODO |
+| `RUN1_FLD_CD` | int16 | yes | — | TODO |
+| `RUN1_LINEUP_CD` | int16 | yes | — | TODO |
+| `RUN1_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
+| `RUN2_FLD_CD` | int16 | yes | — | TODO |
+| `RUN2_LINEUP_CD` | int16 | yes | — | TODO |
+| `RUN2_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
+| `RUN3_FLD_CD` | int16 | yes | — | TODO |
+| `RUN3_LINEUP_CD` | int16 | yes | — | TODO |
+| `RUN3_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
+| `RUN1_RESP_CAT_ID` | string | yes | — | TODO |
+| `RUN2_RESP_CAT_ID` | string | yes | — | TODO |
+| `RUN3_RESP_CAT_ID` | string | yes | — | TODO |
+| `PA_BALL_CT` | int16 | yes | — | TODO |
+| `PA_CALLED_BALL_CT` | int16 | yes | — | TODO |
+| `PA_INTENT_BALL_CT` | int16 | yes | — | TODO |
+| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | TODO |
+| `PA_HITBATTER_BALL_CT` | int16 | yes | — | TODO |
+| `PA_OTHER_BALL_CT` | int16 | yes | — | TODO |
+| `PA_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_CALLED_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_FOUL_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | TODO |
+| `PA_OTHER_STRIKE_CT` | int16 | yes | — | TODO |
+| `EVENT_RUNS_CT` | int16 | yes | — | TODO |
+| `FLD_ID` | string | yes | — | TODO |
+| `BASE2_FORCE_FL` | bool | yes | — | TODO |
+| `BASE3_FORCE_FL` | bool | yes | — | TODO |
+| `BASE4_FORCE_FL` | bool | yes | — | TODO |
+| `BAT_SAFE_ERR_FL` | bool | yes | — | TODO |
+| `BAT_FATE_ID` | int16 | yes | — | TODO |
+| `RUN1_FATE_ID` | int16 | yes | — | TODO |
+| `RUN2_FATE_ID` | int16 | yes | — | TODO |
+| `RUN3_FATE_ID` | int16 | yes | — | TODO |
+| `FATE_RUNS_CT` | int16 | yes | — | TODO |
+| `ASS6_FLD_CD` | int16 | yes | — | TODO |
+| `ASS7_FLD_CD` | int16 | yes | — | TODO |
+| `ASS8_FLD_CD` | int16 | yes | — | TODO |
+| `ASS9_FLD_CD` | int16 | yes | — | TODO |
+| `ASS10_FLD_CD` | int16 | yes | — | TODO |
+| `UNKNOWN_OUT_EXC_FL` | bool | yes | — | TODO |
+| `UNCERTAIN_PLAY_EXC_FL` | bool | yes | — | TODO |
+| `COUNT_TX` | string | yes | — | TODO |
+| `RUN1_AUTO_FL` | bool | yes | — | TODO |
+| `RUN2_AUTO_FL` | bool | yes | — | TODO |
+| `RUN3_AUTO_FL` | bool | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.events_postseason -->
 

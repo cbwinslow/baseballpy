@@ -9,6 +9,7 @@ try:
     from chadwickpy.roster import League
     from chadwickpy.tools import daily, sub
     from chadwickpy.tools.daily import COLUMNS as DAILY_COLUMNS
+    from chadwickpy.tools.events import COLUMNS as EVENT_COLUMNS
     from chadwickpy.tools.events import event_rows
     from chadwickpy.tools.sub import COLUMNS as SUB_COLUMNS
     from chadwickpy.tools.tools import iterate_games
@@ -20,6 +21,7 @@ except ImportError as exc:  # pragma: no cover - exercised only without the depe
 
 __all__ = [
     "DAILY_COLUMNS",
+    "EVENT_COLUMNS",
     "SUB_COLUMNS",
     "League",
     "box_create",

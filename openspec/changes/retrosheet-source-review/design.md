@@ -67,3 +67,10 @@ The spec delta `specs/retrosheet-ingestion/spec.md` is written. Scenarios marked
 
 ## S7 access, export, descriptions, docs, close
 (not started)
+
+## 5.6 evidence (2026-10-30)
+- chadwickpy `COLUMNS` has 164 names (fields 0-96 plus extended 0-66); the old schema had 98, of which `ERR1/2/3_FLD_CD_NEW` do not exist in chadwickpy (always NULL, removed). 69 columns were new.
+- Types of the 69 new columns were inferred from 38,161 real rows (1925 PHA, 1935/1950/1975/2000/2023 BOS from the pinned ref): 17 flags (`T`/`F`) -> bool, 10 text ids/counts -> string, the rest integers (all within 0..96) -> int16.
+- `(GAME_ID, EVENT_ID)` unique in all six files, no NULL key cells; `_extras` NULL on every row (chadwickpy knows no extra field today); row count unchanged.
+- Tests: `tests/test_retrosheet_events.py` (3). Docs regenerated; `docs/sources/retrosheet.md` hand-written text corrected.
+- Not verified: the full re-parse of the 2015-2024 lake on the homelab (card R-11).

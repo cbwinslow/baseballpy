@@ -210,7 +210,7 @@ touches a source under review, do it inside that source's track.
 | B-116 | `retrosheet-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card R-12) | after B-115 | see the card |
 | B-117 | `retrosheet-source-review 3.3`: Cited column descriptions (card R-13) | after B-116 | see the card |
 | B-118 | `retrosheet-source-review 4.1`: Docs, decisions, spec merge, archive (card R-14) | after B-117 | see the card |
-| B-119 | `retrosheet-source-review 5.6`: Store every event field chadwickpy emits and key events on (GAME_ID, EVENT_ID) (card R-15) | after B-109 and B-110 | see the card |
+| B-119 | retrosheet-source-review 5.6: Store every event field chadwickpy emits and key events on (GAME_ID, EVENT_ID) (card R-15) | DONE | see the card |
 | B-120 | `retrosheet-source-review 5.7`: One declarative dataset-to-producer map: every registry name works with --datasets, one download per ingest (card R-16) | after B-109 and B-110 | see the card |
 | B-121 | `retrosheet-source-review 5.8`: No silent loss in game logs and rosters: quarantine short rows, keep extra fields in _extras (card R-17) | after B-109 and B-110 | see the card |
 | B-122 | `retrosheet-source-review 5.9`: Box parser: keep repeated info keys, safe dates, BoxParseError for bad numbers (card R-18) | after B-109 and B-110 | see the card |

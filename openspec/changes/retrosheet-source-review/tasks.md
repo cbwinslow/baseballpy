@@ -14,7 +14,7 @@ Findings of the review become tasks `5.n` (with cards) before the tests and veri
   - [ ] 5.3 Keep the provider's documentation files (R-07)
   - [ ] 5.4 Review the second way in (user-supplied files); N/A if the source has none (R-08)
   - [ ] 5.5 Make every dataset and column reachable from Python (R-09)
-  - [ ] 5.6 Store every event field chadwickpy emits and key events on (GAME_ID, EVENT_ID) (R-15)
+  - [x] 5.6 Store every event field chadwickpy emits and key events on (GAME_ID, EVENT_ID) (R-15)
   - [ ] 5.7 One declarative dataset-to-producer map: every registry name works with --datasets, one download per ingest (R-16)
   - [ ] 5.8 No silent loss in game logs and rosters: quarantine short rows, keep extra fields in _extras (R-17)
   - [ ] 5.9 Box parser: keep repeated info keys, safe dates, BoxParseError for bad numbers (R-18)
