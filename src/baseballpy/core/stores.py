@@ -37,14 +37,26 @@ def schema_fingerprint(schema: pa.Schema) -> str:
     return hashlib.sha256(text.encode()).hexdigest()
 
 
+def spec_fingerprint(spec: DatasetSpec) -> str:
+    """The digest stored with a chunk: the schema's, plus the spec's parser ``revision`` when it has one."""
+    digest = schema_fingerprint(spec.schema)
+    if not spec.revision:
+        return digest
+    return hashlib.sha256(f"{digest};revision={spec.revision}".encode()).hexdigest()
+
+
 def schema_matches(spec: DatasetSpec, entry: Mapping[str, Any] | None) -> bool:
     """False when the chunk was written under a different schema than ``spec`` has now.
 
     A chunk written before schemas were fingerprinted carries none and is trusted (like the other
-    legacy entries); everything written from now on is rebuilt after a schema change.
+    legacy entries); everything written from now on is rebuilt after a schema change. A spec with
+    a parser ``revision`` trusts no chunk that carries no digest, because the revision exists to
+    replace data an older parser wrote.
     """
     stored = (entry or {}).get("schema_sha256")
-    return not stored or stored == schema_fingerprint(spec.schema)
+    if not stored:
+        return not spec.revision
+    return bool(stored == spec_fingerprint(spec))
 
 
 def manifest_key(name: str, season: int | None) -> str:
@@ -166,7 +178,7 @@ class ProcessedStore:
             metadata={
                 "season": season,
                 "source_ref": source_ref,
-                "schema_sha256": schema_fingerprint(spec.schema),
+                "schema_sha256": spec_fingerprint(spec),
                 **(metadata or {}),
             },
         )
@@ -224,7 +236,7 @@ class ProcessedStore:
                 metadata={
                     "season": season,
                     "source_ref": source_ref,
-                    "schema_sha256": schema_fingerprint(spec.schema),
+                    "schema_sha256": spec_fingerprint(spec),
                     **(metadata or {}),
                 },
             )
@@ -235,7 +247,7 @@ class ProcessedStore:
             metadata={
                 "season": season,
                 "source_ref": source_ref,
-                "schema_sha256": schema_fingerprint(spec.schema),
+                "schema_sha256": spec_fingerprint(spec),
                 **(metadata or {}),
             },
         )

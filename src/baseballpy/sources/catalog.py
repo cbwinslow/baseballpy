@@ -45,6 +45,7 @@ def _add(
     partition: str = "none",
     ingest: IngestMode = "default",
     ingest_note: str = "",
+    revision: int = 0,
 ) -> None:
     part: Partition = "season" if partition == "season" else "none"
     register(
@@ -59,9 +60,14 @@ def _add(
             endpoint_doc=endpoint_doc,
             ingest=ingest,
             ingest_note=ingest_note,
+            revision=revision,
         )
     )
 
+
+#: parser-output revisions of Retrosheet datasets (see ``DatasetSpec.revision``):
+#: 1 = missing event text fields are NULL, no longer empty strings (task 3.2 export check)
+RETROSHEET_REVISIONS = {"events": 1, "events_postseason": 1, "events_deduced": 1}
 
 #: dataset keys registered by the last full pass (empty before the first one)
 _REGISTERED_KEYS: frozenset[str] = frozenset()
@@ -342,6 +348,7 @@ def register_all() -> dict[str, DatasetSpec]:
             f"{retro_doc}#{r_anchor}",
             r_part,
             ingest_note=RETROSHEET_COVERAGE_NOTES.get(r_name, ""),
+            revision=RETROSHEET_REVISIONS.get(r_name, 0),
         )
 
     flat_descriptions = {

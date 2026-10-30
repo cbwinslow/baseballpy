@@ -318,3 +318,14 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. web-search how dlt and others version transforms; 2. store a schema fingerprint in the chunk manifest and treat a mismatch as not current; 3. test; 4. ADR.
 - **Done when:** a test changes the schema and sees the chunk rebuilt without `--refresh`
 - **Record:** tick 3.4; ADR.
+
+### R-29 Event text fields: missing means NULL; a parser revision replaces older chunks
+- **Change task:** `retrosheet-source-review 5.19`
+- **Stage:** S7
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/retrosheet/parser.py, src/baseballpy/core/datasets.py (`revision`), src/baseballpy/core/stores.py (`spec_fingerprint`), src/baseballpy/sources/catalog.py, tests/test_retrosheet_events.py, tests/test_lake.py
+- **Tools (reuse check):** the export read-back verification found it; ADR 49 digest extended (a value fix keeps the columns, so the schema digest cannot see it)
+- **Inputs:** card R-12 run: `export --to csv` failed its read-back check for events and events_postseason in every season; 20 text columns hold `''` where the CSV round trip returns NULL
+- **Steps:** 1. empty text becomes NULL in the event parser; 2. `DatasetSpec.revision` goes into the stored digest, and a spec with a revision distrusts digest-less chunks; 3. rebuild events on the scratch lake through the normal ingest (no manual deletion); 4. rerun the CSV export.
+- **Done when:** `uv run pytest tests/test_retrosheet_events.py tests/test_lake.py -q` passes; the test fails without the fix; `export retrosheet --to csv` verifies events on the scratch lake
+- **Record:** tick 5.19; design.md; ADR 51.

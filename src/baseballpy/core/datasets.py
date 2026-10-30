@@ -33,6 +33,9 @@ class DatasetSpec:
     ingest: IngestMode = "default"
     #: what to do for ``opt_in``/``on_demand``, or why a ``default`` dataset can be empty
     ingest_note: str = ""
+    #: bump when the parser's output changes without a schema change (a value fix): stored chunks of
+    #: an older revision are rebuilt (0, the default, leaves the stored digest equal to the schema's)
+    revision: int = 0
 
     @property
     def key(self) -> str:

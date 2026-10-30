@@ -114,6 +114,8 @@ class RetrosheetEventParser:
                 values = [_safe_bool(v) for v in values]
             elif pa.types.is_integer(field.type):
                 values = [_safe_int(v) for v in values]
+            else:
+                values = [v if v != "" else None for v in values]  # cwevent: empty means no value
             arrays.append(_arr(values, field))
         arrays.append(_event_extras(rows, known))
         return pa.Table.from_arrays(arrays, schema=RETROSHEET_EVENT_SCHEMA)

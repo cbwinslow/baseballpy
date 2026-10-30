@@ -374,3 +374,23 @@ def test_merge_is_refused_when_a_key_column_has_empty_values(
         export_dataset(keyed, "duckdb", config=lake, out=tmp_path / "k.duckdb", mode="merge")
     assert not (tmp_path / "k.duckdb").exists()  # refused before anything was written
     assert export_dataset(keyed, "duckdb", config=lake, out=tmp_path / "k.duckdb").rows == 2
+
+
+def test_a_list_column_exports_to_duckdb_and_verifies(tmp_path: Path) -> None:
+    # retrosheet.box_records.fields is list<string>: DuckDB stores it as varchar[]
+    spec = DatasetSpec(
+        source="demo",
+        name="lists",
+        view="demo_lists",
+        schema=pa.schema([("key", pa.string()), ("fields", pa.list_(pa.string()))]),
+        partition="none",
+        keys=("key",),
+        description="list column",
+        endpoint_doc="",
+    )
+    config = LakeConfig(home=tmp_path / "lake")
+    ProcessedStore(config).put(
+        spec, pa.table({"key": ["a", "b"], "fields": [["x", "y"], []]}, schema=spec.schema)
+    )
+    result = export_dataset(spec, "duckdb", config=config, out=tmp_path / "l.duckdb")
+    assert result.rows == 2 and not result.problems

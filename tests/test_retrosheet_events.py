@@ -127,3 +127,18 @@ def test_boxscores_batting_key_is_unique_and_orders_a_slots_occupants(tmp_path: 
     assert (
         by_player["vis02"] == 1 and by_player["vis03"] == 2
     )  # the pinch hitter follows the starter
+
+
+def test_missing_text_fields_are_null_not_empty_strings_and_survive_a_csv_round_trip(
+    tmp_path: Path,
+) -> None:
+    from baseballpy.sinks.csv import CsvSink, read_csv_typed
+
+    table = _parse(tmp_path)
+    for name in table.schema.names:
+        if pa.types.is_string(table.schema.field(name).type):
+            assert "" not in table[name].to_pylist(), (
+                name
+            )  # empty means NULL, like every other dataset
+    CsvSink().write(table, str(tmp_path / "events.csv"))
+    assert read_csv_typed(tmp_path / "events.csv").equals(table)

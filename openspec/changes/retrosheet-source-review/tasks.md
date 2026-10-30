@@ -27,6 +27,7 @@ Findings of the review become tasks `5.n` (with cards) before the tests and veri
   - [x] 5.16 rosters key is not unique: the all-star rosters repeat club lines; add a roster column (R-25)
   - [x] 5.17 substitutions key is not unique: a player who changes position in one stoppage gets two rows; add SUB_FLD_CD to the key (R-26)
   - [x] 5.18 box_starters key is not unique: a two-way player is listed twice in a lineup; add position to the key (R-27)
+  - [x] 5.19 Event text fields: missing means NULL (not an empty string) so CSV round-trips; a parser revision replaces chunks an older parser wrote (R-29)
 - [ ] 2. Tests
   - [ ] 2.1 Close the spec and test gaps (R-10)
 - [ ] 3. Verify

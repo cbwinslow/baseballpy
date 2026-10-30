@@ -24,6 +24,11 @@ def allowed_sql_types(arrow_type: pa.DataType) -> frozenset[str]:
         return allowed_sql_types(arrow_type.value_type)
     if pa.types.is_string(arrow_type) or pa.types.is_large_string(arrow_type):
         return _TEXT
+    if pa.types.is_list(arrow_type) or pa.types.is_large_list(arrow_type):
+        # a list is a native array (DuckDB: ``varchar[]``) or JSON (dlt on PostgreSQL: ``jsonb``;
+        # retrosheet.box_records.fields is list<string>)
+        arrays = {f"{name}[]" for name in allowed_sql_types(arrow_type.value_type)}
+        return frozenset(arrays | {"json", "jsonb"})
     if pa.types.is_boolean(arrow_type):
         return frozenset({"boolean", "bool"})
     if pa.types.is_int8(arrow_type):
@@ -45,6 +50,14 @@ def allowed_sql_types(arrow_type: pa.DataType) -> frozenset[str]:
             return frozenset({"timestamp with time zone", "timestamptz"})
         return frozenset({"timestamp", "timestamp without time zone"})
     return frozenset()
+
+
+def _has_nested(schema: pa.Schema) -> bool:
+    """Whether a column is a list, struct or map (these cannot go through dlt's CSV loader)."""
+    return any(
+        pa.types.is_nested(field.type) or pa.types.is_dictionary(field.type) and False
+        for field in schema
+    )
 
 
 def type_mismatches(schema: pa.Schema, columns: Mapping[str, str]) -> list[str]:
@@ -123,6 +136,9 @@ class DltSink:
             raise ValueError(f"unsupported write_disposition {write_disposition!r}")
         if write_disposition == "merge" and not primary_key:
             raise ValueError("merge disposition requires primary_key")
+        if _has_nested(table.schema):
+            # dlt's default CSV loader for PostgreSQL cannot write list or struct columns
+            kwargs.setdefault("loader_file_format", "insert_values")
         resource_factory: Any = dlt.resource
         resource = resource_factory(
             [table],

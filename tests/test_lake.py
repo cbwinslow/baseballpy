@@ -269,3 +269,23 @@ def _spec_with(schema: pa.Schema) -> DatasetSpec:
         description="x",
         endpoint_doc="x",
     )
+
+
+def test_a_parser_revision_replaces_chunks_written_by_an_older_parser(tmp_path: Path) -> None:
+    import dataclasses
+
+    from baseballpy.core.stores import schema_matches
+
+    config = LakeConfig(home=tmp_path)
+    store = ProcessedStore(config)
+    v0 = _spec_with(pa.schema([("a", pa.int32())]))
+    store.put(v0, pa.table({"a": pa.array([1], pa.int32())}))
+    entry = config.dataset_manifest(v0.source, v0.name, "processed").get_chunk("data") or {}
+
+    v1 = dataclasses.replace(v0, revision=1)  # same columns, the parser now produces other values
+    assert store.is_cached(v0) and not store.is_cached(v1)
+    assert not schema_matches(v1, entry)
+    # a chunk with no digest at all (written before digests existed) is rebuilt too
+    assert not schema_matches(v1, {k: v for k, v in entry.items() if k != "schema_sha256"})
+    store.put(v1, pa.table({"a": pa.array([1], pa.int32())}))
+    assert store.is_cached(v1)

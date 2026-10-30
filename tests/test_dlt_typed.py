@@ -121,3 +121,21 @@ def test_mixed_case_and_digit_leading_names_survive_unchanged(sink: DltSink) -> 
     assert type_mismatches(table.schema, info.columns) == []
     assert sink.write(table, "probe", "merge", primary_key=["playerID", "yearID"]) == 2
     assert sink.table_info("probe").rows == 2  # merge on the original-case key does not duplicate
+
+
+def test_list_columns_are_accepted_as_database_arrays() -> None:
+    # retrosheet.box_records.fields is list<string>; DuckDB reports it as varchar[]
+    assert allowed_sql_types(pa.list_(pa.string())) >= {"varchar[]"}
+    schema = pa.schema([("fields", pa.list_(pa.string()))])
+    assert type_mismatches(schema, {"fields": "varchar[]"}) == []
+    assert type_mismatches(schema, {"fields": "varchar"}) != []
+
+
+def test_a_list_column_loads_into_either_database_and_reads_back_without_mismatch(
+    sink: DltSink,
+) -> None:
+    table = pa.table({"id": ["a", "b"], "fields": [["x", "y"], []]})
+    sink.write(table, "listprobe", "replace", primary_key=["id"])
+    info = sink.table_info("listprobe")
+    assert info.rows == 2
+    assert type_mismatches(table.schema, info.columns) == []

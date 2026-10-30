@@ -224,6 +224,7 @@ touches a source under review, do it inside that source's track.
 | B-130 | retrosheet-source-review 5.17: substitutions key is not unique; add SUB_FLD_CD (card R-26) | DONE | see the card |
 | B-131 | retrosheet-source-review 5.18: box_starters key is not unique; add position (card R-27) | DONE | see the card |
 | B-132 | retrosheet-source-review 3.4: Processed chunks are not rebuilt when the schema changes (card R-28) | DONE | see the card |
+| B-138 | retrosheet-source-review 5.19: Event text fields: missing means NULL so CSV round-trips; parser revision replaces older chunks (card R-29) | DONE | see the card |
 
 ## dlt processed-tier spike (`dlt-processed-tier-spike`)
 
