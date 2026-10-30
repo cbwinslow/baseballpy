@@ -16,16 +16,16 @@ Surveyed 2026-10-30 (facts only; the cards decide what is a finding).
 - **Lessons recorded before this review:** `year=` is silently ignored by some leaderboard routes (the probe compares payload hashes across seasons); Savant's minor-league pitches start in 2021; the 2023 season window also holds postseason and exhibition games (2,955 `game_pk` for 2,430 regular-season games), not duplicates.
 
 ## S1 inventory
-(not started)
+Checked 2026-10-30. `baseballpy catalog audit --source statcast` (live: the provider's leaderboard listing against the registry) reports "No findings": every leaderboard Savant lists is registered (36 datasets) or recorded `unsupported` with evidence; the pitch search (`statcast_search/csv`), its minor-league variant (`minors=true`) and the per-game feed (`/gf?game_pk=`, raw bytes by design) are the other three ways in. The data dictionary `https://baseballsavant.mlb.com/csv-docs` answers 200 and is the cited source of the pitch column descriptions (`docs/columns/statcast.json`, 110 + 110 + 17 shared). Licence: MLBAM's copyright notice limits bulk use (`docs/DATA_LICENSES.md`). There is no second way in (no user-supplied files). There is no git pin: upstream change detection is by response content (ADR 43).
 
 ## S2 conformance
-(not started)
+Registry and adapter conformance tests pass (`tests/test_statcast*.py`, `tests/test_architecture.py`, `tests/test_ingest_contract.py`: 5 Statcast test files plus the two architecture files, all green in the full suite). The adapter reaches the runner only through `IngestAdapter`; no other source imports Statcast code.
 
 ## S3 schema and types
 (not started)
 
 ## S4 code review against the designated tools
-(not started)
+Reuse check per module (`sources/statcast/`): `extractor.py` uses `HttpClient`, pyarrow and the shared audit logger (async track around each window plus a bisect event); `leaderboards.py` uses `HttpClient`, the registry (`lb_catalog.py`) and `track`; `lb_parse.py` uses stdlib `csv` and `json` for the small embedded-page payloads (pyarrow CSV is used on the pitch path); `game_feed.py` used `HttpClient` and `RawStore` but wrote no audit event: finding, fixed by task 5.6 (S-15, test fails without the change). No hard-coded season lists were found in `src/` (the seasons come from the caller or the MLB calendar).
 
 ## S5 tests and spec gaps
 (not started)

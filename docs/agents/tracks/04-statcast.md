@@ -164,3 +164,14 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. update the hand-written parts of the source page (keys, quirks, access, export, currency); 2. one ADR per decision; 3. merge the spec delta into openspec/specs; 4. run all gates; move the change to openspec/changes/archive/<date>-statcast-source-review; update BACKLOG, EXECUTION_ORDER, PROJECT_MAP.
 - **Done when:** gates green, `openspec validate --specs` passes, change archived, scorecard row complete.
 - **Record:** tick 4.1 and archive the change.
+
+### S-15 Audit-log and time the game-feed fetch and season ingest
+- **Change task:** `statcast-source-review 5.6`
+- **Stage:** S3
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/statcast/game_feed.py, tests/test_statcast_coverage.py
+- **Tools (reuse check):** `core/audit.py` `default_audit_logger.track` (used by the pitch search and the leaderboards already)
+- **Inputs:** card S-04 review: `game_feed.py` fetched over the network and wrote raw files with no audit event
+- **Steps:** 1. wrap the fetch and the season ingest in `track`; 2. a test reads the events back (fetch, season, cache hit).
+- **Done when:** `uv run pytest tests/test_statcast_coverage.py -q` passes and the test fails without the change
+- **Record:** tick 5.6; design.md S4.

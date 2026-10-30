@@ -305,3 +305,33 @@ def test_game_feed_season_ingest_is_resumable(tmp_path: Path) -> None:
     again = feed.ingest_season(2024)
     assert (again.fetched, again.cached, route.call_count) == (0, 2, 2)
     assert feed.ingest_season(2024, max_games=1, refresh=True).fetched == 1
+
+
+@respx.mock
+def test_game_feed_fetches_and_season_ingests_are_audit_logged(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from baseballpy.core.audit import AuditConfig, AuditLogger
+    from baseballpy.sources.statcast import game_feed as module
+
+    audit = AuditLogger(AuditConfig(base_dir=tmp_path / "audit"))
+    monkeypatch.setattr(module, "default_audit_logger", audit)
+    feed = module.StatcastGameFeed(cache_config=LakeConfig(home=tmp_path / "lake"))
+    body = {"game_status_code": "F", "scoreboard": {"gamePk": 7}, "game_date": "6/23/2024"}
+    respx.get(module.GAME_FEED_URL).mock(return_value=httpx.Response(200, json=body))
+    respx.get(module.MLB_SCHEDULE_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json={"dates": [{"games": [{"gamePk": 7, "status": {"abstractGameState": "Final"}}]}]},
+        )
+    )
+    feed.ingest_season(2024)
+    feed.ingest_season(2024)  # served from the raw store
+    events = audit.read_events(source="statcast")
+    assert [e.operation for e in events] == [
+        "statcast_game_feed",
+        "statcast_game_feed_season",
+        "statcast_game_feed_season",
+    ]
+    assert [e.cache_hit for e in events[1:]] == [False, True]
+    assert events[0].records_count == 1 and all(e.status == "SUCCESS" for e in events)

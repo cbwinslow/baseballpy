@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
+from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
@@ -69,24 +70,32 @@ class StatcastGameFeed:
             payload = json.loads(cached)
             if payload.get("game_status_code") == "F":
                 return payload  # type: ignore[no-any-return]
-        result = self.http.get_sync(GAME_FEED_URL, params={"game_pk": game_pk})
-        try:
-            payload = json.loads(result.content)
-        except json.JSONDecodeError as exc:
-            raise GameFeedError(f"game feed for {game_pk} is not JSON: {exc}") from exc
-        if not isinstance(payload, dict) or any(k not in payload for k in REQUIRED_KEYS):
-            raise GameFeedError(f"game feed for {game_pk} lacks {REQUIRED_KEYS}")
-        if self.cache_config.enabled:
-            self.raw.put(
-                "statcast",
-                "game_feed",
-                f"{game_pk}.json",
-                result.content,
-                season=self._season(payload),
-                source_ref=f"{GAME_FEED_URL}?game_pk={game_pk}",
-                etag=result.etag or "",
-            )
-        return payload
+        with default_audit_logger.track(
+            operation="statcast_game_feed",
+            source="statcast",
+            endpoint=f"{GAME_FEED_URL}?game_pk={game_pk}",
+            destination=str(self.cache_config.raw_dir("statcast", "game_feed", None)),
+        ) as tracker:
+            result = self.http.get_sync(GAME_FEED_URL, params={"game_pk": game_pk})
+            tracker.mark_download_complete()
+            try:
+                payload = json.loads(result.content)
+            except json.JSONDecodeError as exc:
+                raise GameFeedError(f"game feed for {game_pk} is not JSON: {exc}") from exc
+            if not isinstance(payload, dict) or any(k not in payload for k in REQUIRED_KEYS):
+                raise GameFeedError(f"game feed for {game_pk} lacks {REQUIRED_KEYS}")
+            if self.cache_config.enabled:
+                self.raw.put(
+                    "statcast",
+                    "game_feed",
+                    f"{game_pk}.json",
+                    result.content,
+                    season=self._season(payload),
+                    source_ref=f"{GAME_FEED_URL}?game_pk={game_pk}",
+                    etag=result.etag or "",
+                )
+            tracker.set_records(1)
+            return payload
 
     def season_game_pks(self, season: int) -> list[int]:
         """``game_pk`` of every final game of ``season`` (MLB schedule, all Savant game types)."""
@@ -109,16 +118,24 @@ class StatcastGameFeed:
         Resumable: a final game already in ``raw/`` is not fetched again. This is opt-in because a
         full season is several GB; ``max_games`` bounds it.
         """
-        pks = self.season_game_pks(season)
-        pks = pks[:max_games] if max_games is not None else pks
-        fetched = cached = 0
-        for pk in pks:
-            if not refresh and self._find_cached(pk) is not None:
-                cached += 1
-                continue
-            self.get(pk, refresh=refresh)
-            fetched += 1
-        return GameFeedReport(season=season, games=len(pks), fetched=fetched, cached=cached)
+        with default_audit_logger.track(
+            operation="statcast_game_feed_season",
+            source="statcast",
+            endpoint=f"{GAME_FEED_URL}?season={season}",
+            destination=str(self.cache_config.raw_dir("statcast", "game_feed", season)),
+        ) as tracker:
+            pks = self.season_game_pks(season)
+            pks = pks[:max_games] if max_games is not None else pks
+            fetched = cached = 0
+            for pk in pks:
+                if not refresh and self._find_cached(pk) is not None:
+                    cached += 1
+                    continue
+                self.get(pk, refresh=refresh)
+                fetched += 1
+            tracker.set_records(fetched)
+            tracker.set_cache_hit(fetched == 0)
+            return GameFeedReport(season=season, games=len(pks), fetched=fetched, cached=cached)
 
     def _find_cached(self, game_pk: int) -> bytes | None:
         root = self.cache_config.raw_dir("statcast", "game_feed", None)
