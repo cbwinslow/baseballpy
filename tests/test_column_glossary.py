@@ -64,3 +64,29 @@ def test_only_exact_metric_names_are_mapped() -> None:
     assert not [
         c for c in build.GLOSSARY_COLUMNS if c.startswith(("est_", "last_", "penultimate_"))
     ]
+
+
+def test_wrapped_rst_rows_and_the_fielding_matrix_are_described() -> None:
+    text = (
+        "   * - 33\n"
+        "     - :ref:`number of balls in plate appearance\n"
+        "       <cwtools.cwevent.pitchcounts>`\n"
+        "     - ``PA_BALL_CT``\n"
+        "   * - 34\n"
+        "     - Event number\n"
+        "     - ``EVENT_ID``\n"
+        "\n"
+        "- ``G``: games at the position;\n"
+        "- ``PO``: putouts;\n"
+        "\n"
+        "   * - Position\n"
+        "     - G\n"
+        "   * - Pitcher\n"
+        "     - 71 ``F_P_G``\n"
+        "     - 75 ``F_P_PO``\n"
+    )
+    fields = build.rst_fields(text)
+    assert fields["PA_BALL_CT"] == "number of balls in plate appearance"
+    assert fields["EVENT_ID"] == "Event number"
+    assert fields["F_P_G"] == "Games at the position (pitcher)"
+    assert fields["F_P_PO"] == "Putouts (pitcher)"

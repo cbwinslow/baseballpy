@@ -346,24 +346,39 @@ def build_chadwick(http: HttpClient) -> dict[str, Any]:
     return out
 
 
-CHADWICK_DOCS = "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/"
+CHADWICK_DOCS = "https://raw.githubusercontent.com/chadwickbureau/chadwick/b0002b6a0c98f800f899635f5de17ebfcc976333/doc/"
 #: Chadwick tool documents that define the field names Retrosheet datasets carry (cwevent, ...)
 RETRO_DOCS = {
     "cwevent": ("events", "events_postseason", "events_deduced"),
     "cwdaily": ("daily_splits",),
     "cwsub": ("substitutions",),
 }
+# a table row: number, description (it may wrap onto several lines), then the header in backticks
 _RST_ROW = re.compile(
-    r"^\s+\* - \S+\n\s+- (?P<text>.+?)\n\s+- ``(?P<col>[A-Za-z0-9_]+)``", re.MULTILINE
+    r"^\s+\* - \S+\n\s+- (?P<text>(?:(?!\n\s+\* - ).)+?)\n\s+- ``(?P<col>[A-Za-z0-9_]+)``",
+    re.MULTILINE | re.DOTALL,
 )
-_RST_REF = re.compile(r":ref:`([^<`]*?)\s*<[^>]*>`")
+_RST_REF = re.compile(r":ref:`([^<`]*?)\s*<[^>]*>`", re.DOTALL)
+# the cwdaily fielding table: one row per position, one cell per statistic ("71 ``F_P_G``")
+_RST_SUFFIX = re.compile(r"^- ``(?P<suffix>[A-Z]+)``: (?P<text>[^;.]+)[;.]", re.MULTILINE)
+_RST_POSITION_ROW = re.compile(
+    r"^\s+\* - (?P<position>[A-Za-z ]+)\n(?P<cells>(?:\s+- \d+ ``[A-Z0-9_]+``\n?)+)", re.MULTILINE
+)
+_RST_CELL = re.compile(r"``(?P<col>F_(?P<pos>[A-Z0-9]+)_(?P<suffix>[A-Z]+))``")
 
 
 def rst_fields(text: str) -> dict[str, str]:
     """``{FIELD_NAME: description}`` from the field tables of a Chadwick tool document."""
     out: dict[str, str] = {}
     for m in _RST_ROW.finditer(text):
-        out.setdefault(m.group("col"), _RST_REF.sub(r"\1", m.group("text")).strip())
+        description = " ".join(_RST_REF.sub(r"\1", m.group("text")).split())
+        out.setdefault(m.group("col"), description)
+    meanings = {m.group("suffix"): m.group("text").strip() for m in _RST_SUFFIX.finditer(text)}
+    for row in _RST_POSITION_ROW.finditer(text):
+        position = row.group("position").strip().lower()
+        for cell in _RST_CELL.finditer(row.group("cells")):
+            if meaning := meanings.get(cell.group("suffix")):
+                out.setdefault(cell.group("col"), f"{meaning[0].upper()}{meaning[1:]} ({position})")
     return out
 
 
@@ -388,7 +403,7 @@ def build_retrosheet(http: HttpClient) -> dict[str, Any]:
     return out
 
 
-GLFIELDS_URL = "https://raw.githubusercontent.com/maxtoki/baseball_R/master/data/glfields.txt"
+GLFIELDS_URL = "https://raw.githubusercontent.com/maxtoki/baseball_R/3117ffda2b8d33397095a74b3ab27b4bbb2df2a5/data/glfields.txt"
 GLFIELDS_NOTE = (
     "Retrosheet game-log field guide (glfields.txt), read from the copy in the book companion "
     f"repository maxtoki/baseball_R because retrosheet.org was unreachable: {GLFIELDS_URL}"

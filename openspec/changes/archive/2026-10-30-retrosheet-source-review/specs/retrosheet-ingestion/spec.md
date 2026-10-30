@@ -101,6 +101,14 @@ Every Retrosheet operation that lists the upstream tree, downloads a file, keeps
 - **THEN** the log holds one event per operation, and the second run's build events are cache hits with zero records
 - Verified by `tests/test_retrosheet_audit.py::test_a_season_and_the_reference_ingest_leave_an_audit_trail`.
 
+### Requirement: Missing Event Text Is NULL
+A text field that cwevent reports as empty MUST be stored as NULL, like every other Retrosheet dataset, so that a CSV round trip of `events`, `events_postseason` and `events_deduced` is exact.
+
+#### Scenario: Events survive a CSV round trip
+- **WHEN** parsed events are written to CSV and read back
+- **THEN** the table is equal and no text column holds an empty string
+- Verified by `tests/test_retrosheet_events.py::test_missing_text_fields_are_null_not_empty_strings_and_survive_a_csv_round_trip`.
+
 ## MODIFIED Requirements
 
 ### Requirement: Box-Score Game Accounts (interim)

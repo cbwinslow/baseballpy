@@ -9,19 +9,19 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 5 | 5 | 5 |
-| `caching-and-invalidation` | 14 | 24 | 31 |
+| `caching-and-invalidation` | 16 | 26 | 34 |
 | `catalog-audit` | 1 | 1 | 1 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 9 | 11 | 15 |
 | `concurrency-and-rate-limiting` | 3 | 5 | 6 |
 | `core-protocols` | 2 | 3 | 5 |
-| `data-export` | 4 | 7 | 20 |
+| `data-export` | 5 | 8 | 22 |
 | `docs-generation` | 1 | 1 | 1 |
 | `lahman-database` | 11 | 18 | 26 |
 | `mlb-api-ingestion` | 11 | 11 | 13 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 3 | 5 | 5 |
-| `retrosheet-ingestion` | 6 | 6 | 6 |
+| `retrosheet-ingestion` | 19 | 20 | 21 |
 | `statcast-ingestion` | 9 | 9 | 10 |
 
 ## Source review scorecard (where each source stands)
@@ -35,13 +35,13 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
-| `retrosheet` | 25 | in progress (20/29 tasks) | yes | yes | yes | 724/1280 (56%) | 6 |
+| `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 19 |
 | `statcast` | 38 | not started | no | no | no | 293/977 (29%) | 9 |
 | `mlb_api` | 366 | not started | no | no | no | 9462/16692 (56%) | 11 |
 
 ## Active changes (`openspec/changes/`)
 
-35 changes are archived under `openspec/changes/archive/`.
+36 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -52,7 +52,6 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `reference-docs` | 2 | 1 | 3 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
-| `retrosheet-source-review` | 21 | 13 | 1.1, 1.2, 1.3, 1.4, 2.1, 3.1, 3.2, 3.3, 4.1 |
 | `verify-optin-paths` | 7 | 1 | 7 |
 
 ## Decisions (`docs/DECISIONS.md`)

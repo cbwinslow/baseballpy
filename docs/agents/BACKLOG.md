@@ -196,20 +196,20 @@ touches a source under review, do it inside that source's track.
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-105 | `retrosheet-source-review 1.1`: Inventory the provider against the registry (card R-01) | READY | see the card |
-| B-106 | `retrosheet-source-review 1.2`: Check registry and adapter conformance (card R-02) | after B-105 | see the card |
-| B-107 | `retrosheet-source-review 1.3`: Compare the generated schema with real data (card R-03) | after B-106 | see the card |
-| B-108 | `retrosheet-source-review 1.4`: Review the code against the designated tools and decoupling rules (card R-04) | after B-107 | see the card |
+| B-105 | retrosheet-source-review 1.1: Inventory the provider against the registry (card R-01) | DONE | see the card |
+| B-106 | retrosheet-source-review 1.2: Check registry and adapter conformance (card R-02) | DONE | see the card |
+| B-107 | retrosheet-source-review 1.3: Compare the generated schema with real data (card R-03) | DONE | see the card |
+| B-108 | retrosheet-source-review 1.4: Review the code against the designated tools and decoupling rules (card R-04) | DONE | see the card |
 | B-109 | retrosheet-source-review 5.1: Record upstream fingerprints for every raw file (card R-05) | DONE | see the card |
 | B-110 | retrosheet-source-review 5.2: Decide currency with is_current() at every cache tier (card R-06) | DONE | see the card |
 | B-111 | retrosheet-source-review 5.3: Keep the provider's documentation files (card R-07) | DONE | see the card |
 | B-112 | retrosheet-source-review 5.4: Review the second way in (user-supplied files); N/A if the source has none (card R-08) | DONE | see the card |
 | B-113 | retrosheet-source-review 5.5: Make every dataset and column reachable from Python (card R-09) | DONE | see the card |
-| B-114 | `retrosheet-source-review 2.1`: Close the spec and test gaps (card R-10) | after B-113 and after every task 5.n found by the review (add its rows below) | see the card |
-| B-115 | `retrosheet-source-review 3.1`: Live verification on a clean scratch home (card R-11) | after B-114 | see the card |
-| B-116 | `retrosheet-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card R-12) | after B-115 | see the card |
-| B-117 | `retrosheet-source-review 3.3`: Cited column descriptions (card R-13) | after B-116 | see the card |
-| B-118 | `retrosheet-source-review 4.1`: Docs, decisions, spec merge, archive (card R-14) | after B-117 | see the card |
+| B-114 | retrosheet-source-review 2.1: Close the spec and test gaps (card R-10) | DONE | see the card |
+| B-115 | retrosheet-source-review 3.1: Live verification on a clean scratch home (card R-11) | DONE | see the card |
+| B-116 | retrosheet-source-review 3.2: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card R-12) | DONE | see the card |
+| B-117 | retrosheet-source-review 3.3: Cited column descriptions (card R-13) | DONE | see the card |
+| B-118 | retrosheet-source-review 4.1: Docs, decisions, spec merge, archive (card R-14) | DONE | see the card |
 | B-119 | retrosheet-source-review 5.6: Store every event field chadwickpy emits and key events on (GAME_ID, EVENT_ID) (card R-15) | DONE | see the card |
 | B-120 | retrosheet-source-review 5.7: One declarative dataset-to-producer map: every registry name works with --datasets, one download per ingest (card R-16) | DONE | see the card |
 | B-121 | retrosheet-source-review 5.8: No silent loss in game logs and rosters: quarantine short rows, keep extra fields in _extras (card R-17) | DONE | see the card |

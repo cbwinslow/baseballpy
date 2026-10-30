@@ -105,15 +105,17 @@ Retrosheet data is immutable at a pinned commit, and what is stored is judged by
 ## Data quality
 After the datasets of a season are stored, `ingest` checks them and records the findings in the processed manifest (shown by `baseballpy catalog status`; they never stop an ingest): duplicate keys, and player ids in events, box scores, daily splits, substitutions and rosters that match no roster of the same season (rosters themselves are compared with the Chadwick register's `key_retro` when it is cached). `boxscores_batting` is keyed `(game_id, team_id, slot, seq)`: `seq` numbers the occupants of a batting slot (starter first), so a player who re-enters in the same slot gets two rows (checked unique on 12,112 real rows).
 
+**Export** (`baseballpy export retrosheet --to parquet|csv|duckdb|postgres`, checked 2026-10-30 on the 2015-2026 lake with read-back verification): all 23 stored datasets verify as Parquet (6.67 million rows, 40 s, peak memory 1.3 GB); 22 verify as CSV, DuckDB and PostgreSQL. The one exception is `box_records` as CSV, which is refused because its `fields` column is a list (Parquet, DuckDB and PostgreSQL keep it; PostgreSQL stores it as JSON). Seasons are exported one after another, so a season subset with `--mode replace` leaves only those seasons in the table. `--mode merge` uses the registry keys, which are unique on the real data. Empty event text is stored as NULL so the CSV round trip is exact (ADR 51).
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:retrosheet.description_sources -->
 ### Description sources
 
-- `chadwick_cwdaily`: https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwdaily.rst
-- `chadwick_cwevent`: https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwevent.rst
-- `chadwick_cwsub`: https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwsub.rst
-- `retrosheet_glfields`: Retrosheet game-log field guide (glfields.txt), read from the copy in the book companion repository maxtoki/baseball_R because retrosheet.org was unreachable: https://raw.githubusercontent.com/maxtoki/baseball_R/master/data/glfields.txt
+- `chadwick_cwdaily`: https://raw.githubusercontent.com/chadwickbureau/chadwick/b0002b6a0c98f800f899635f5de17ebfcc976333/doc/cwdaily.rst
+- `chadwick_cwevent`: https://raw.githubusercontent.com/chadwickbureau/chadwick/b0002b6a0c98f800f899635f5de17ebfcc976333/doc/cwevent.rst
+- `chadwick_cwsub`: https://raw.githubusercontent.com/chadwickbureau/chadwick/b0002b6a0c98f800f899635f5de17ebfcc976333/doc/cwsub.rst
+- `retrosheet_glfields`: Retrosheet game-log field guide (glfields.txt), read from the copy in the book companion repository maxtoki/baseball_R because retrosheet.org was unreachable: https://raw.githubusercontent.com/maxtoki/baseball_R/3117ffda2b8d33397095a74b3ab27b4bbb2df2a5/data/glfields.txt
 
 <!-- END GENERATED:retrosheet.description_sources -->
 
@@ -280,89 +282,89 @@ Daily player appearance lines.
 | `P_AO` | int16 | yes | — | Air outs (src: chadwick_cwdaily) |
 | `P_PITCH` | int16 | yes | — | Pitches (src: chadwick_cwdaily) |
 | `P_STRIKE` | int16 | yes | — | Strikes (src: chadwick_cwdaily) |
-| `F_P_G` | int16 | yes | — | TODO |
-| `F_P_GS` | int16 | yes | — | TODO |
-| `F_P_OUT` | int16 | yes | — | TODO |
-| `F_P_TC` | int16 | yes | — | TODO |
-| `F_P_PO` | int16 | yes | — | TODO |
-| `F_P_A` | int16 | yes | — | TODO |
-| `F_P_E` | int16 | yes | — | TODO |
-| `F_P_DP` | int16 | yes | — | TODO |
-| `F_P_TP` | int16 | yes | — | TODO |
-| `F_C_G` | int16 | yes | — | TODO |
-| `F_C_GS` | int16 | yes | — | TODO |
-| `F_C_OUT` | int16 | yes | — | TODO |
-| `F_C_TC` | int16 | yes | — | TODO |
-| `F_C_PO` | int16 | yes | — | TODO |
-| `F_C_A` | int16 | yes | — | TODO |
-| `F_C_E` | int16 | yes | — | TODO |
-| `F_C_DP` | int16 | yes | — | TODO |
-| `F_C_TP` | int16 | yes | — | TODO |
+| `F_P_G` | int16 | yes | — | Games at the position (pitcher) (src: chadwick_cwdaily) |
+| `F_P_GS` | int16 | yes | — | Games started at the position (pitcher) (src: chadwick_cwdaily) |
+| `F_P_OUT` | int16 | yes | — | Outs recorded while at the position (pitcher) (src: chadwick_cwdaily) |
+| `F_P_TC` | int16 | yes | — | Total chances (pitcher) (src: chadwick_cwdaily) |
+| `F_P_PO` | int16 | yes | — | Putouts (pitcher) (src: chadwick_cwdaily) |
+| `F_P_A` | int16 | yes | — | Assists (pitcher) (src: chadwick_cwdaily) |
+| `F_P_E` | int16 | yes | — | Errors (pitcher) (src: chadwick_cwdaily) |
+| `F_P_DP` | int16 | yes | — | Double plays (pitcher) (src: chadwick_cwdaily) |
+| `F_P_TP` | int16 | yes | — | Triple plays (pitcher) (src: chadwick_cwdaily) |
+| `F_C_G` | int16 | yes | — | Games at the position (catcher) (src: chadwick_cwdaily) |
+| `F_C_GS` | int16 | yes | — | Games started at the position (catcher) (src: chadwick_cwdaily) |
+| `F_C_OUT` | int16 | yes | — | Outs recorded while at the position (catcher) (src: chadwick_cwdaily) |
+| `F_C_TC` | int16 | yes | — | Total chances (catcher) (src: chadwick_cwdaily) |
+| `F_C_PO` | int16 | yes | — | Putouts (catcher) (src: chadwick_cwdaily) |
+| `F_C_A` | int16 | yes | — | Assists (catcher) (src: chadwick_cwdaily) |
+| `F_C_E` | int16 | yes | — | Errors (catcher) (src: chadwick_cwdaily) |
+| `F_C_DP` | int16 | yes | — | Double plays (catcher) (src: chadwick_cwdaily) |
+| `F_C_TP` | int16 | yes | — | Triple plays (catcher) (src: chadwick_cwdaily) |
 | `F_C_PB` | int16 | yes | — | Passed balls (src: chadwick_cwdaily) |
 | `F_C_XI` | int16 | yes | — | Catcher's interference (src: chadwick_cwdaily) |
-| `F_1B_G` | int16 | yes | — | TODO |
-| `F_1B_GS` | int16 | yes | — | TODO |
-| `F_1B_OUT` | int16 | yes | — | TODO |
-| `F_1B_TC` | int16 | yes | — | TODO |
-| `F_1B_PO` | int16 | yes | — | TODO |
-| `F_1B_A` | int16 | yes | — | TODO |
-| `F_1B_E` | int16 | yes | — | TODO |
-| `F_1B_DP` | int16 | yes | — | TODO |
-| `F_1B_TP` | int16 | yes | — | TODO |
-| `F_2B_G` | int16 | yes | — | TODO |
-| `F_2B_GS` | int16 | yes | — | TODO |
-| `F_2B_OUT` | int16 | yes | — | TODO |
-| `F_2B_TC` | int16 | yes | — | TODO |
-| `F_2B_PO` | int16 | yes | — | TODO |
-| `F_2B_A` | int16 | yes | — | TODO |
-| `F_2B_E` | int16 | yes | — | TODO |
-| `F_2B_DP` | int16 | yes | — | TODO |
-| `F_2B_TP` | int16 | yes | — | TODO |
-| `F_3B_G` | int16 | yes | — | TODO |
-| `F_3B_GS` | int16 | yes | — | TODO |
-| `F_3B_OUT` | int16 | yes | — | TODO |
-| `F_3B_TC` | int16 | yes | — | TODO |
-| `F_3B_PO` | int16 | yes | — | TODO |
-| `F_3B_A` | int16 | yes | — | TODO |
-| `F_3B_E` | int16 | yes | — | TODO |
-| `F_3B_DP` | int16 | yes | — | TODO |
-| `F_3B_TP` | int16 | yes | — | TODO |
-| `F_SS_G` | int16 | yes | — | TODO |
-| `F_SS_GS` | int16 | yes | — | TODO |
-| `F_SS_OUT` | int16 | yes | — | TODO |
-| `F_SS_TC` | int16 | yes | — | TODO |
-| `F_SS_PO` | int16 | yes | — | TODO |
-| `F_SS_A` | int16 | yes | — | TODO |
-| `F_SS_E` | int16 | yes | — | TODO |
-| `F_SS_DP` | int16 | yes | — | TODO |
-| `F_SS_TP` | int16 | yes | — | TODO |
-| `F_LF_G` | int16 | yes | — | TODO |
-| `F_LF_GS` | int16 | yes | — | TODO |
-| `F_LF_OUT` | int16 | yes | — | TODO |
-| `F_LF_TC` | int16 | yes | — | TODO |
-| `F_LF_PO` | int16 | yes | — | TODO |
-| `F_LF_A` | int16 | yes | — | TODO |
-| `F_LF_E` | int16 | yes | — | TODO |
-| `F_LF_DP` | int16 | yes | — | TODO |
-| `F_LF_TP` | int16 | yes | — | TODO |
-| `F_CF_G` | int16 | yes | — | TODO |
-| `F_CF_GS` | int16 | yes | — | TODO |
-| `F_CF_OUT` | int16 | yes | — | TODO |
-| `F_CF_TC` | int16 | yes | — | TODO |
-| `F_CF_PO` | int16 | yes | — | TODO |
-| `F_CF_A` | int16 | yes | — | TODO |
-| `F_CF_E` | int16 | yes | — | TODO |
-| `F_CF_DP` | int16 | yes | — | TODO |
-| `F_CF_TP` | int16 | yes | — | TODO |
-| `F_RF_G` | int16 | yes | — | TODO |
-| `F_RF_GS` | int16 | yes | — | TODO |
-| `F_RF_OUT` | int16 | yes | — | TODO |
-| `F_RF_TC` | int16 | yes | — | TODO |
-| `F_RF_PO` | int16 | yes | — | TODO |
-| `F_RF_A` | int16 | yes | — | TODO |
-| `F_RF_E` | int16 | yes | — | TODO |
-| `F_RF_DP` | int16 | yes | — | TODO |
-| `F_RF_TP` | int16 | yes | — | TODO |
+| `F_1B_G` | int16 | yes | — | Games at the position (first base) (src: chadwick_cwdaily) |
+| `F_1B_GS` | int16 | yes | — | Games started at the position (first base) (src: chadwick_cwdaily) |
+| `F_1B_OUT` | int16 | yes | — | Outs recorded while at the position (first base) (src: chadwick_cwdaily) |
+| `F_1B_TC` | int16 | yes | — | Total chances (first base) (src: chadwick_cwdaily) |
+| `F_1B_PO` | int16 | yes | — | Putouts (first base) (src: chadwick_cwdaily) |
+| `F_1B_A` | int16 | yes | — | Assists (first base) (src: chadwick_cwdaily) |
+| `F_1B_E` | int16 | yes | — | Errors (first base) (src: chadwick_cwdaily) |
+| `F_1B_DP` | int16 | yes | — | Double plays (first base) (src: chadwick_cwdaily) |
+| `F_1B_TP` | int16 | yes | — | Triple plays (first base) (src: chadwick_cwdaily) |
+| `F_2B_G` | int16 | yes | — | Games at the position (second base) (src: chadwick_cwdaily) |
+| `F_2B_GS` | int16 | yes | — | Games started at the position (second base) (src: chadwick_cwdaily) |
+| `F_2B_OUT` | int16 | yes | — | Outs recorded while at the position (second base) (src: chadwick_cwdaily) |
+| `F_2B_TC` | int16 | yes | — | Total chances (second base) (src: chadwick_cwdaily) |
+| `F_2B_PO` | int16 | yes | — | Putouts (second base) (src: chadwick_cwdaily) |
+| `F_2B_A` | int16 | yes | — | Assists (second base) (src: chadwick_cwdaily) |
+| `F_2B_E` | int16 | yes | — | Errors (second base) (src: chadwick_cwdaily) |
+| `F_2B_DP` | int16 | yes | — | Double plays (second base) (src: chadwick_cwdaily) |
+| `F_2B_TP` | int16 | yes | — | Triple plays (second base) (src: chadwick_cwdaily) |
+| `F_3B_G` | int16 | yes | — | Games at the position (third base) (src: chadwick_cwdaily) |
+| `F_3B_GS` | int16 | yes | — | Games started at the position (third base) (src: chadwick_cwdaily) |
+| `F_3B_OUT` | int16 | yes | — | Outs recorded while at the position (third base) (src: chadwick_cwdaily) |
+| `F_3B_TC` | int16 | yes | — | Total chances (third base) (src: chadwick_cwdaily) |
+| `F_3B_PO` | int16 | yes | — | Putouts (third base) (src: chadwick_cwdaily) |
+| `F_3B_A` | int16 | yes | — | Assists (third base) (src: chadwick_cwdaily) |
+| `F_3B_E` | int16 | yes | — | Errors (third base) (src: chadwick_cwdaily) |
+| `F_3B_DP` | int16 | yes | — | Double plays (third base) (src: chadwick_cwdaily) |
+| `F_3B_TP` | int16 | yes | — | Triple plays (third base) (src: chadwick_cwdaily) |
+| `F_SS_G` | int16 | yes | — | Games at the position (shortstop) (src: chadwick_cwdaily) |
+| `F_SS_GS` | int16 | yes | — | Games started at the position (shortstop) (src: chadwick_cwdaily) |
+| `F_SS_OUT` | int16 | yes | — | Outs recorded while at the position (shortstop) (src: chadwick_cwdaily) |
+| `F_SS_TC` | int16 | yes | — | Total chances (shortstop) (src: chadwick_cwdaily) |
+| `F_SS_PO` | int16 | yes | — | Putouts (shortstop) (src: chadwick_cwdaily) |
+| `F_SS_A` | int16 | yes | — | Assists (shortstop) (src: chadwick_cwdaily) |
+| `F_SS_E` | int16 | yes | — | Errors (shortstop) (src: chadwick_cwdaily) |
+| `F_SS_DP` | int16 | yes | — | Double plays (shortstop) (src: chadwick_cwdaily) |
+| `F_SS_TP` | int16 | yes | — | Triple plays (shortstop) (src: chadwick_cwdaily) |
+| `F_LF_G` | int16 | yes | — | Games at the position (left field) (src: chadwick_cwdaily) |
+| `F_LF_GS` | int16 | yes | — | Games started at the position (left field) (src: chadwick_cwdaily) |
+| `F_LF_OUT` | int16 | yes | — | Outs recorded while at the position (left field) (src: chadwick_cwdaily) |
+| `F_LF_TC` | int16 | yes | — | Total chances (left field) (src: chadwick_cwdaily) |
+| `F_LF_PO` | int16 | yes | — | Putouts (left field) (src: chadwick_cwdaily) |
+| `F_LF_A` | int16 | yes | — | Assists (left field) (src: chadwick_cwdaily) |
+| `F_LF_E` | int16 | yes | — | Errors (left field) (src: chadwick_cwdaily) |
+| `F_LF_DP` | int16 | yes | — | Double plays (left field) (src: chadwick_cwdaily) |
+| `F_LF_TP` | int16 | yes | — | Triple plays (left field) (src: chadwick_cwdaily) |
+| `F_CF_G` | int16 | yes | — | Games at the position (center field) (src: chadwick_cwdaily) |
+| `F_CF_GS` | int16 | yes | — | Games started at the position (center field) (src: chadwick_cwdaily) |
+| `F_CF_OUT` | int16 | yes | — | Outs recorded while at the position (center field) (src: chadwick_cwdaily) |
+| `F_CF_TC` | int16 | yes | — | Total chances (center field) (src: chadwick_cwdaily) |
+| `F_CF_PO` | int16 | yes | — | Putouts (center field) (src: chadwick_cwdaily) |
+| `F_CF_A` | int16 | yes | — | Assists (center field) (src: chadwick_cwdaily) |
+| `F_CF_E` | int16 | yes | — | Errors (center field) (src: chadwick_cwdaily) |
+| `F_CF_DP` | int16 | yes | — | Double plays (center field) (src: chadwick_cwdaily) |
+| `F_CF_TP` | int16 | yes | — | Triple plays (center field) (src: chadwick_cwdaily) |
+| `F_RF_G` | int16 | yes | — | Games at the position (right field) (src: chadwick_cwdaily) |
+| `F_RF_GS` | int16 | yes | — | Games started at the position (right field) (src: chadwick_cwdaily) |
+| `F_RF_OUT` | int16 | yes | — | Outs recorded while at the position (right field) (src: chadwick_cwdaily) |
+| `F_RF_TC` | int16 | yes | — | Total chances (right field) (src: chadwick_cwdaily) |
+| `F_RF_PO` | int16 | yes | — | Putouts (right field) (src: chadwick_cwdaily) |
+| `F_RF_A` | int16 | yes | — | Assists (right field) (src: chadwick_cwdaily) |
+| `F_RF_E` | int16 | yes | — | Errors (right field) (src: chadwick_cwdaily) |
+| `F_RF_DP` | int16 | yes | — | Double plays (right field) (src: chadwick_cwdaily) |
+| `F_RF_TP` | int16 | yes | — | Triple plays (right field) (src: chadwick_cwdaily) |
 
 <!-- END GENERATED:retrosheet.daily_splits -->
 
@@ -503,76 +505,76 @@ Regular-season play-by-play events.
 | `ASS1_FLD_CD` | int8 | yes | — | Fielder with first assist (src: chadwick_cwevent) |
 | `ASS2_FLD_CD` | int8 | yes | — | Fielder with second assist (src: chadwick_cwevent) |
 | `ASS3_FLD_CD` | int8 | yes | — | Fielder with third assist (src: chadwick_cwevent) |
-| `ASS4_FLD_CD` | int16 | yes | — | TODO |
-| `ASS5_FLD_CD` | int16 | yes | — | TODO |
-| `EVENT_ID` | int16 | yes | — | TODO |
-| `HOME_TEAM_ID` | string | yes | — | TODO |
-| `BAT_TEAM_ID` | string | yes | — | TODO |
-| `FLD_TEAM_ID` | string | yes | — | TODO |
+| `ASS4_FLD_CD` | int16 | yes | — | Fielder with fourth assist (src: chadwick_cwevent) |
+| `ASS5_FLD_CD` | int16 | yes | — | Fielder with fifth assist (src: chadwick_cwevent) |
+| `EVENT_ID` | int16 | yes | — | Event number (src: chadwick_cwevent) |
+| `HOME_TEAM_ID` | string | yes | — | home team id (src: chadwick_cwevent) |
+| `BAT_TEAM_ID` | string | yes | — | batting team id (src: chadwick_cwevent) |
+| `FLD_TEAM_ID` | string | yes | — | fielding team id (src: chadwick_cwevent) |
 | `BAT_LAST_ID` | int8 | yes | — | half inning (differs from batting team if home team bats first) (src: chadwick_cwevent) |
-| `INN_NEW_FL` | bool | yes | — | TODO |
-| `INN_END_FL` | bool | yes | — | TODO |
-| `START_BAT_SCORE_CT` | int16 | yes | — | TODO |
-| `START_FLD_SCORE_CT` | int16 | yes | — | TODO |
-| `INN_RUNS_CT` | int16 | yes | — | TODO |
-| `GAME_PA_CT` | int16 | yes | — | TODO |
-| `INN_PA_CT` | int16 | yes | — | TODO |
-| `PA_NEW_FL` | bool | yes | — | TODO |
-| `PA_TRUNC_FL` | bool | yes | — | TODO |
-| `START_BASES_CD` | int16 | yes | — | TODO |
-| `END_BASES_CD` | int16 | yes | — | TODO |
-| `BAT_START_FL` | bool | yes | — | TODO |
-| `RESP_BAT_START_FL` | bool | yes | — | TODO |
-| `BAT_ON_DECK_ID` | string | yes | — | TODO |
-| `BAT_IN_HOLD_ID` | string | yes | — | TODO |
-| `PIT_START_FL` | bool | yes | — | TODO |
-| `RESP_PIT_START_FL` | bool | yes | — | TODO |
-| `RUN1_FLD_CD` | int16 | yes | — | TODO |
-| `RUN1_LINEUP_CD` | int16 | yes | — | TODO |
-| `RUN1_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
-| `RUN2_FLD_CD` | int16 | yes | — | TODO |
-| `RUN2_LINEUP_CD` | int16 | yes | — | TODO |
-| `RUN2_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
-| `RUN3_FLD_CD` | int16 | yes | — | TODO |
-| `RUN3_LINEUP_CD` | int16 | yes | — | TODO |
-| `RUN3_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
-| `RUN1_RESP_CAT_ID` | string | yes | — | TODO |
-| `RUN2_RESP_CAT_ID` | string | yes | — | TODO |
-| `RUN3_RESP_CAT_ID` | string | yes | — | TODO |
-| `PA_BALL_CT` | int16 | yes | — | TODO |
-| `PA_CALLED_BALL_CT` | int16 | yes | — | TODO |
-| `PA_INTENT_BALL_CT` | int16 | yes | — | TODO |
-| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | TODO |
-| `PA_HITBATTER_BALL_CT` | int16 | yes | — | TODO |
-| `PA_OTHER_BALL_CT` | int16 | yes | — | TODO |
-| `PA_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_CALLED_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_FOUL_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_OTHER_STRIKE_CT` | int16 | yes | — | TODO |
-| `EVENT_RUNS_CT` | int16 | yes | — | TODO |
-| `FLD_ID` | string | yes | — | TODO |
-| `BASE2_FORCE_FL` | bool | yes | — | TODO |
-| `BASE3_FORCE_FL` | bool | yes | — | TODO |
-| `BASE4_FORCE_FL` | bool | yes | — | TODO |
-| `BAT_SAFE_ERR_FL` | bool | yes | — | TODO |
-| `BAT_FATE_ID` | int16 | yes | — | TODO |
-| `RUN1_FATE_ID` | int16 | yes | — | TODO |
-| `RUN2_FATE_ID` | int16 | yes | — | TODO |
-| `RUN3_FATE_ID` | int16 | yes | — | TODO |
-| `FATE_RUNS_CT` | int16 | yes | — | TODO |
-| `ASS6_FLD_CD` | int16 | yes | — | TODO |
-| `ASS7_FLD_CD` | int16 | yes | — | TODO |
-| `ASS8_FLD_CD` | int16 | yes | — | TODO |
-| `ASS9_FLD_CD` | int16 | yes | — | TODO |
-| `ASS10_FLD_CD` | int16 | yes | — | TODO |
-| `UNKNOWN_OUT_EXC_FL` | bool | yes | — | TODO |
-| `UNCERTAIN_PLAY_EXC_FL` | bool | yes | — | TODO |
-| `COUNT_TX` | string | yes | — | TODO |
-| `RUN1_AUTO_FL` | bool | yes | — | TODO |
-| `RUN2_AUTO_FL` | bool | yes | — | TODO |
-| `RUN3_AUTO_FL` | bool | yes | — | TODO |
+| `INN_NEW_FL` | bool | yes | — | start of half inning flag (src: chadwick_cwevent) |
+| `INN_END_FL` | bool | yes | — | end of half inning flag (src: chadwick_cwevent) |
+| `START_BAT_SCORE_CT` | int16 | yes | — | score for team on offense (src: chadwick_cwevent) |
+| `START_FLD_SCORE_CT` | int16 | yes | — | score for team on defense (src: chadwick_cwevent) |
+| `INN_RUNS_CT` | int16 | yes | — | runs scored in this half inning (src: chadwick_cwevent) |
+| `GAME_PA_CT` | int16 | yes | — | number of plate appearances in game for team on offense (src: chadwick_cwevent) |
+| `INN_PA_CT` | int16 | yes | — | number of plate appearances in inning for team on offense (src: chadwick_cwevent) |
+| `PA_NEW_FL` | bool | yes | — | start of plate appearance flag (src: chadwick_cwevent) |
+| `PA_TRUNC_FL` | bool | yes | — | truncated plate appearance flag (src: chadwick_cwevent) |
+| `START_BASES_CD` | int16 | yes | — | base state at start of play (src: chadwick_cwevent) |
+| `END_BASES_CD` | int16 | yes | — | base state at end of play (src: chadwick_cwevent) |
+| `BAT_START_FL` | bool | yes | — | batter is starter flag (src: chadwick_cwevent) |
+| `RESP_BAT_START_FL` | bool | yes | — | result batter is starter flag (src: chadwick_cwevent) |
+| `BAT_ON_DECK_ID` | string | yes | — | ID of the batter on deck (src: chadwick_cwevent) |
+| `BAT_IN_HOLD_ID` | string | yes | — | ID of the batter in the hold (src: chadwick_cwevent) |
+| `PIT_START_FL` | bool | yes | — | pitcher is starter flag (src: chadwick_cwevent) |
+| `RESP_PIT_START_FL` | bool | yes | — | result pitcher is starter flag (src: chadwick_cwevent) |
+| `RUN1_FLD_CD` | int16 | yes | — | defensive position of runner on first (src: chadwick_cwevent) |
+| `RUN1_LINEUP_CD` | int16 | yes | — | lineup position of runner on first (src: chadwick_cwevent) |
+| `RUN1_ORIGIN_EVENT_ID` | int16 | yes | — | event number on which runner on first reached base (src: chadwick_cwevent) |
+| `RUN2_FLD_CD` | int16 | yes | — | defensive position of runner on second (src: chadwick_cwevent) |
+| `RUN2_LINEUP_CD` | int16 | yes | — | lineup position of runner on second (src: chadwick_cwevent) |
+| `RUN2_ORIGIN_EVENT_ID` | int16 | yes | — | event number on which runner on second reached base (src: chadwick_cwevent) |
+| `RUN3_FLD_CD` | int16 | yes | — | defensive position of runner on third (src: chadwick_cwevent) |
+| `RUN3_LINEUP_CD` | int16 | yes | — | lineup position of runner on third (src: chadwick_cwevent) |
+| `RUN3_ORIGIN_EVENT_ID` | int16 | yes | — | event number on which runner on third reached base (src: chadwick_cwevent) |
+| `RUN1_RESP_CAT_ID` | string | yes | — | Responsible catcher for runner on first (src: chadwick_cwevent) |
+| `RUN2_RESP_CAT_ID` | string | yes | — | Responsible catcher for runner on second (src: chadwick_cwevent) |
+| `RUN3_RESP_CAT_ID` | string | yes | — | Responsible catcher for runner on third (src: chadwick_cwevent) |
+| `PA_BALL_CT` | int16 | yes | — | number of balls in plate appearance (src: chadwick_cwevent) |
+| `PA_CALLED_BALL_CT` | int16 | yes | — | number of called balls in plate appearance (src: chadwick_cwevent) |
+| `PA_INTENT_BALL_CT` | int16 | yes | — | number of intentional balls in plate appearance (src: chadwick_cwevent) |
+| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | number of pitchouts in plate appearance (src: chadwick_cwevent) |
+| `PA_HITBATTER_BALL_CT` | int16 | yes | — | number of pitches hitting batter in plate appearance (src: chadwick_cwevent) |
+| `PA_OTHER_BALL_CT` | int16 | yes | — | number of other balls in plate appearance (src: chadwick_cwevent) |
+| `PA_STRIKE_CT` | int16 | yes | — | number of strikes in plate appearance (src: chadwick_cwevent) |
+| `PA_CALLED_STRIKE_CT` | int16 | yes | — | number of called strikes in plate appearance (src: chadwick_cwevent) |
+| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | number of swinging strikes in plate appearance (src: chadwick_cwevent) |
+| `PA_FOUL_STRIKE_CT` | int16 | yes | — | number of foul balls in plate appearance (src: chadwick_cwevent) |
+| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | number of balls in play in plate appearance (src: chadwick_cwevent) |
+| `PA_OTHER_STRIKE_CT` | int16 | yes | — | number of other strikes in plate appearance (src: chadwick_cwevent) |
+| `EVENT_RUNS_CT` | int16 | yes | — | number of runs on play (src: chadwick_cwevent) |
+| `FLD_ID` | string | yes | — | id of player fielding batted ball (src: chadwick_cwevent) |
+| `BASE2_FORCE_FL` | bool | yes | — | force play at second flag (src: chadwick_cwevent) |
+| `BASE3_FORCE_FL` | bool | yes | — | force play at third flag (src: chadwick_cwevent) |
+| `BASE4_FORCE_FL` | bool | yes | — | force play at home flag (src: chadwick_cwevent) |
+| `BAT_SAFE_ERR_FL` | bool | yes | — | batter safe on error flag (src: chadwick_cwevent) |
+| `BAT_FATE_ID` | int16 | yes | — | fate of batter (base ultimately advanced to) (src: chadwick_cwevent) |
+| `RUN1_FATE_ID` | int16 | yes | — | fate of runner on first (src: chadwick_cwevent) |
+| `RUN2_FATE_ID` | int16 | yes | — | fate of runner on second (src: chadwick_cwevent) |
+| `RUN3_FATE_ID` | int16 | yes | — | fate of runner on third (src: chadwick_cwevent) |
+| `FATE_RUNS_CT` | int16 | yes | — | runs scored in half inning after this event (src: chadwick_cwevent) |
+| `ASS6_FLD_CD` | int16 | yes | — | fielder with sixth assist (src: chadwick_cwevent) |
+| `ASS7_FLD_CD` | int16 | yes | — | fielder with seventh assist (src: chadwick_cwevent) |
+| `ASS8_FLD_CD` | int16 | yes | — | fielder with eighth assist (src: chadwick_cwevent) |
+| `ASS9_FLD_CD` | int16 | yes | — | fielder with ninth assist (src: chadwick_cwevent) |
+| `ASS10_FLD_CD` | int16 | yes | — | fielder with tenth assist (src: chadwick_cwevent) |
+| `UNKNOWN_OUT_EXC_FL` | bool | yes | — | unknown fielding credit flag (src: chadwick_cwevent) |
+| `UNCERTAIN_PLAY_EXC_FL` | bool | yes | — | uncertain play flag (src: chadwick_cwevent) |
+| `COUNT_TX` | string | yes | — | text of count as appears in event file (src: chadwick_cwevent) |
+| `RUN1_AUTO_FL` | bool | yes | — | whether runner on first is an automatic runner (src: chadwick_cwevent) |
+| `RUN2_AUTO_FL` | bool | yes | — | whether runner on second is an automatic runner (src: chadwick_cwevent) |
+| `RUN3_AUTO_FL` | bool | yes | — | whether runner on third is an automatic runner (src: chadwick_cwevent) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.events -->
@@ -683,76 +685,76 @@ Play-by-play events deduced from box scores (.ED* files).
 | `ASS1_FLD_CD` | int8 | yes | — | Fielder with first assist (src: chadwick_cwevent) |
 | `ASS2_FLD_CD` | int8 | yes | — | Fielder with second assist (src: chadwick_cwevent) |
 | `ASS3_FLD_CD` | int8 | yes | — | Fielder with third assist (src: chadwick_cwevent) |
-| `ASS4_FLD_CD` | int16 | yes | — | TODO |
-| `ASS5_FLD_CD` | int16 | yes | — | TODO |
-| `EVENT_ID` | int16 | yes | — | TODO |
-| `HOME_TEAM_ID` | string | yes | — | TODO |
-| `BAT_TEAM_ID` | string | yes | — | TODO |
-| `FLD_TEAM_ID` | string | yes | — | TODO |
+| `ASS4_FLD_CD` | int16 | yes | — | Fielder with fourth assist (src: chadwick_cwevent) |
+| `ASS5_FLD_CD` | int16 | yes | — | Fielder with fifth assist (src: chadwick_cwevent) |
+| `EVENT_ID` | int16 | yes | — | Event number (src: chadwick_cwevent) |
+| `HOME_TEAM_ID` | string | yes | — | home team id (src: chadwick_cwevent) |
+| `BAT_TEAM_ID` | string | yes | — | batting team id (src: chadwick_cwevent) |
+| `FLD_TEAM_ID` | string | yes | — | fielding team id (src: chadwick_cwevent) |
 | `BAT_LAST_ID` | int8 | yes | — | half inning (differs from batting team if home team bats first) (src: chadwick_cwevent) |
-| `INN_NEW_FL` | bool | yes | — | TODO |
-| `INN_END_FL` | bool | yes | — | TODO |
-| `START_BAT_SCORE_CT` | int16 | yes | — | TODO |
-| `START_FLD_SCORE_CT` | int16 | yes | — | TODO |
-| `INN_RUNS_CT` | int16 | yes | — | TODO |
-| `GAME_PA_CT` | int16 | yes | — | TODO |
-| `INN_PA_CT` | int16 | yes | — | TODO |
-| `PA_NEW_FL` | bool | yes | — | TODO |
-| `PA_TRUNC_FL` | bool | yes | — | TODO |
-| `START_BASES_CD` | int16 | yes | — | TODO |
-| `END_BASES_CD` | int16 | yes | — | TODO |
-| `BAT_START_FL` | bool | yes | — | TODO |
-| `RESP_BAT_START_FL` | bool | yes | — | TODO |
-| `BAT_ON_DECK_ID` | string | yes | — | TODO |
-| `BAT_IN_HOLD_ID` | string | yes | — | TODO |
-| `PIT_START_FL` | bool | yes | — | TODO |
-| `RESP_PIT_START_FL` | bool | yes | — | TODO |
-| `RUN1_FLD_CD` | int16 | yes | — | TODO |
-| `RUN1_LINEUP_CD` | int16 | yes | — | TODO |
-| `RUN1_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
-| `RUN2_FLD_CD` | int16 | yes | — | TODO |
-| `RUN2_LINEUP_CD` | int16 | yes | — | TODO |
-| `RUN2_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
-| `RUN3_FLD_CD` | int16 | yes | — | TODO |
-| `RUN3_LINEUP_CD` | int16 | yes | — | TODO |
-| `RUN3_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
-| `RUN1_RESP_CAT_ID` | string | yes | — | TODO |
-| `RUN2_RESP_CAT_ID` | string | yes | — | TODO |
-| `RUN3_RESP_CAT_ID` | string | yes | — | TODO |
-| `PA_BALL_CT` | int16 | yes | — | TODO |
-| `PA_CALLED_BALL_CT` | int16 | yes | — | TODO |
-| `PA_INTENT_BALL_CT` | int16 | yes | — | TODO |
-| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | TODO |
-| `PA_HITBATTER_BALL_CT` | int16 | yes | — | TODO |
-| `PA_OTHER_BALL_CT` | int16 | yes | — | TODO |
-| `PA_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_CALLED_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_FOUL_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_OTHER_STRIKE_CT` | int16 | yes | — | TODO |
-| `EVENT_RUNS_CT` | int16 | yes | — | TODO |
-| `FLD_ID` | string | yes | — | TODO |
-| `BASE2_FORCE_FL` | bool | yes | — | TODO |
-| `BASE3_FORCE_FL` | bool | yes | — | TODO |
-| `BASE4_FORCE_FL` | bool | yes | — | TODO |
-| `BAT_SAFE_ERR_FL` | bool | yes | — | TODO |
-| `BAT_FATE_ID` | int16 | yes | — | TODO |
-| `RUN1_FATE_ID` | int16 | yes | — | TODO |
-| `RUN2_FATE_ID` | int16 | yes | — | TODO |
-| `RUN3_FATE_ID` | int16 | yes | — | TODO |
-| `FATE_RUNS_CT` | int16 | yes | — | TODO |
-| `ASS6_FLD_CD` | int16 | yes | — | TODO |
-| `ASS7_FLD_CD` | int16 | yes | — | TODO |
-| `ASS8_FLD_CD` | int16 | yes | — | TODO |
-| `ASS9_FLD_CD` | int16 | yes | — | TODO |
-| `ASS10_FLD_CD` | int16 | yes | — | TODO |
-| `UNKNOWN_OUT_EXC_FL` | bool | yes | — | TODO |
-| `UNCERTAIN_PLAY_EXC_FL` | bool | yes | — | TODO |
-| `COUNT_TX` | string | yes | — | TODO |
-| `RUN1_AUTO_FL` | bool | yes | — | TODO |
-| `RUN2_AUTO_FL` | bool | yes | — | TODO |
-| `RUN3_AUTO_FL` | bool | yes | — | TODO |
+| `INN_NEW_FL` | bool | yes | — | start of half inning flag (src: chadwick_cwevent) |
+| `INN_END_FL` | bool | yes | — | end of half inning flag (src: chadwick_cwevent) |
+| `START_BAT_SCORE_CT` | int16 | yes | — | score for team on offense (src: chadwick_cwevent) |
+| `START_FLD_SCORE_CT` | int16 | yes | — | score for team on defense (src: chadwick_cwevent) |
+| `INN_RUNS_CT` | int16 | yes | — | runs scored in this half inning (src: chadwick_cwevent) |
+| `GAME_PA_CT` | int16 | yes | — | number of plate appearances in game for team on offense (src: chadwick_cwevent) |
+| `INN_PA_CT` | int16 | yes | — | number of plate appearances in inning for team on offense (src: chadwick_cwevent) |
+| `PA_NEW_FL` | bool | yes | — | start of plate appearance flag (src: chadwick_cwevent) |
+| `PA_TRUNC_FL` | bool | yes | — | truncated plate appearance flag (src: chadwick_cwevent) |
+| `START_BASES_CD` | int16 | yes | — | base state at start of play (src: chadwick_cwevent) |
+| `END_BASES_CD` | int16 | yes | — | base state at end of play (src: chadwick_cwevent) |
+| `BAT_START_FL` | bool | yes | — | batter is starter flag (src: chadwick_cwevent) |
+| `RESP_BAT_START_FL` | bool | yes | — | result batter is starter flag (src: chadwick_cwevent) |
+| `BAT_ON_DECK_ID` | string | yes | — | ID of the batter on deck (src: chadwick_cwevent) |
+| `BAT_IN_HOLD_ID` | string | yes | — | ID of the batter in the hold (src: chadwick_cwevent) |
+| `PIT_START_FL` | bool | yes | — | pitcher is starter flag (src: chadwick_cwevent) |
+| `RESP_PIT_START_FL` | bool | yes | — | result pitcher is starter flag (src: chadwick_cwevent) |
+| `RUN1_FLD_CD` | int16 | yes | — | defensive position of runner on first (src: chadwick_cwevent) |
+| `RUN1_LINEUP_CD` | int16 | yes | — | lineup position of runner on first (src: chadwick_cwevent) |
+| `RUN1_ORIGIN_EVENT_ID` | int16 | yes | — | event number on which runner on first reached base (src: chadwick_cwevent) |
+| `RUN2_FLD_CD` | int16 | yes | — | defensive position of runner on second (src: chadwick_cwevent) |
+| `RUN2_LINEUP_CD` | int16 | yes | — | lineup position of runner on second (src: chadwick_cwevent) |
+| `RUN2_ORIGIN_EVENT_ID` | int16 | yes | — | event number on which runner on second reached base (src: chadwick_cwevent) |
+| `RUN3_FLD_CD` | int16 | yes | — | defensive position of runner on third (src: chadwick_cwevent) |
+| `RUN3_LINEUP_CD` | int16 | yes | — | lineup position of runner on third (src: chadwick_cwevent) |
+| `RUN3_ORIGIN_EVENT_ID` | int16 | yes | — | event number on which runner on third reached base (src: chadwick_cwevent) |
+| `RUN1_RESP_CAT_ID` | string | yes | — | Responsible catcher for runner on first (src: chadwick_cwevent) |
+| `RUN2_RESP_CAT_ID` | string | yes | — | Responsible catcher for runner on second (src: chadwick_cwevent) |
+| `RUN3_RESP_CAT_ID` | string | yes | — | Responsible catcher for runner on third (src: chadwick_cwevent) |
+| `PA_BALL_CT` | int16 | yes | — | number of balls in plate appearance (src: chadwick_cwevent) |
+| `PA_CALLED_BALL_CT` | int16 | yes | — | number of called balls in plate appearance (src: chadwick_cwevent) |
+| `PA_INTENT_BALL_CT` | int16 | yes | — | number of intentional balls in plate appearance (src: chadwick_cwevent) |
+| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | number of pitchouts in plate appearance (src: chadwick_cwevent) |
+| `PA_HITBATTER_BALL_CT` | int16 | yes | — | number of pitches hitting batter in plate appearance (src: chadwick_cwevent) |
+| `PA_OTHER_BALL_CT` | int16 | yes | — | number of other balls in plate appearance (src: chadwick_cwevent) |
+| `PA_STRIKE_CT` | int16 | yes | — | number of strikes in plate appearance (src: chadwick_cwevent) |
+| `PA_CALLED_STRIKE_CT` | int16 | yes | — | number of called strikes in plate appearance (src: chadwick_cwevent) |
+| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | number of swinging strikes in plate appearance (src: chadwick_cwevent) |
+| `PA_FOUL_STRIKE_CT` | int16 | yes | — | number of foul balls in plate appearance (src: chadwick_cwevent) |
+| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | number of balls in play in plate appearance (src: chadwick_cwevent) |
+| `PA_OTHER_STRIKE_CT` | int16 | yes | — | number of other strikes in plate appearance (src: chadwick_cwevent) |
+| `EVENT_RUNS_CT` | int16 | yes | — | number of runs on play (src: chadwick_cwevent) |
+| `FLD_ID` | string | yes | — | id of player fielding batted ball (src: chadwick_cwevent) |
+| `BASE2_FORCE_FL` | bool | yes | — | force play at second flag (src: chadwick_cwevent) |
+| `BASE3_FORCE_FL` | bool | yes | — | force play at third flag (src: chadwick_cwevent) |
+| `BASE4_FORCE_FL` | bool | yes | — | force play at home flag (src: chadwick_cwevent) |
+| `BAT_SAFE_ERR_FL` | bool | yes | — | batter safe on error flag (src: chadwick_cwevent) |
+| `BAT_FATE_ID` | int16 | yes | — | fate of batter (base ultimately advanced to) (src: chadwick_cwevent) |
+| `RUN1_FATE_ID` | int16 | yes | — | fate of runner on first (src: chadwick_cwevent) |
+| `RUN2_FATE_ID` | int16 | yes | — | fate of runner on second (src: chadwick_cwevent) |
+| `RUN3_FATE_ID` | int16 | yes | — | fate of runner on third (src: chadwick_cwevent) |
+| `FATE_RUNS_CT` | int16 | yes | — | runs scored in half inning after this event (src: chadwick_cwevent) |
+| `ASS6_FLD_CD` | int16 | yes | — | fielder with sixth assist (src: chadwick_cwevent) |
+| `ASS7_FLD_CD` | int16 | yes | — | fielder with seventh assist (src: chadwick_cwevent) |
+| `ASS8_FLD_CD` | int16 | yes | — | fielder with eighth assist (src: chadwick_cwevent) |
+| `ASS9_FLD_CD` | int16 | yes | — | fielder with ninth assist (src: chadwick_cwevent) |
+| `ASS10_FLD_CD` | int16 | yes | — | fielder with tenth assist (src: chadwick_cwevent) |
+| `UNKNOWN_OUT_EXC_FL` | bool | yes | — | unknown fielding credit flag (src: chadwick_cwevent) |
+| `UNCERTAIN_PLAY_EXC_FL` | bool | yes | — | uncertain play flag (src: chadwick_cwevent) |
+| `COUNT_TX` | string | yes | — | text of count as appears in event file (src: chadwick_cwevent) |
+| `RUN1_AUTO_FL` | bool | yes | — | whether runner on first is an automatic runner (src: chadwick_cwevent) |
+| `RUN2_AUTO_FL` | bool | yes | — | whether runner on second is an automatic runner (src: chadwick_cwevent) |
+| `RUN3_AUTO_FL` | bool | yes | — | whether runner on third is an automatic runner (src: chadwick_cwevent) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.events_deduced -->
@@ -863,76 +865,76 @@ Postseason and all-star play-by-play events.
 | `ASS1_FLD_CD` | int8 | yes | — | Fielder with first assist (src: chadwick_cwevent) |
 | `ASS2_FLD_CD` | int8 | yes | — | Fielder with second assist (src: chadwick_cwevent) |
 | `ASS3_FLD_CD` | int8 | yes | — | Fielder with third assist (src: chadwick_cwevent) |
-| `ASS4_FLD_CD` | int16 | yes | — | TODO |
-| `ASS5_FLD_CD` | int16 | yes | — | TODO |
-| `EVENT_ID` | int16 | yes | — | TODO |
-| `HOME_TEAM_ID` | string | yes | — | TODO |
-| `BAT_TEAM_ID` | string | yes | — | TODO |
-| `FLD_TEAM_ID` | string | yes | — | TODO |
+| `ASS4_FLD_CD` | int16 | yes | — | Fielder with fourth assist (src: chadwick_cwevent) |
+| `ASS5_FLD_CD` | int16 | yes | — | Fielder with fifth assist (src: chadwick_cwevent) |
+| `EVENT_ID` | int16 | yes | — | Event number (src: chadwick_cwevent) |
+| `HOME_TEAM_ID` | string | yes | — | home team id (src: chadwick_cwevent) |
+| `BAT_TEAM_ID` | string | yes | — | batting team id (src: chadwick_cwevent) |
+| `FLD_TEAM_ID` | string | yes | — | fielding team id (src: chadwick_cwevent) |
 | `BAT_LAST_ID` | int8 | yes | — | half inning (differs from batting team if home team bats first) (src: chadwick_cwevent) |
-| `INN_NEW_FL` | bool | yes | — | TODO |
-| `INN_END_FL` | bool | yes | — | TODO |
-| `START_BAT_SCORE_CT` | int16 | yes | — | TODO |
-| `START_FLD_SCORE_CT` | int16 | yes | — | TODO |
-| `INN_RUNS_CT` | int16 | yes | — | TODO |
-| `GAME_PA_CT` | int16 | yes | — | TODO |
-| `INN_PA_CT` | int16 | yes | — | TODO |
-| `PA_NEW_FL` | bool | yes | — | TODO |
-| `PA_TRUNC_FL` | bool | yes | — | TODO |
-| `START_BASES_CD` | int16 | yes | — | TODO |
-| `END_BASES_CD` | int16 | yes | — | TODO |
-| `BAT_START_FL` | bool | yes | — | TODO |
-| `RESP_BAT_START_FL` | bool | yes | — | TODO |
-| `BAT_ON_DECK_ID` | string | yes | — | TODO |
-| `BAT_IN_HOLD_ID` | string | yes | — | TODO |
-| `PIT_START_FL` | bool | yes | — | TODO |
-| `RESP_PIT_START_FL` | bool | yes | — | TODO |
-| `RUN1_FLD_CD` | int16 | yes | — | TODO |
-| `RUN1_LINEUP_CD` | int16 | yes | — | TODO |
-| `RUN1_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
-| `RUN2_FLD_CD` | int16 | yes | — | TODO |
-| `RUN2_LINEUP_CD` | int16 | yes | — | TODO |
-| `RUN2_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
-| `RUN3_FLD_CD` | int16 | yes | — | TODO |
-| `RUN3_LINEUP_CD` | int16 | yes | — | TODO |
-| `RUN3_ORIGIN_EVENT_ID` | int16 | yes | — | TODO |
-| `RUN1_RESP_CAT_ID` | string | yes | — | TODO |
-| `RUN2_RESP_CAT_ID` | string | yes | — | TODO |
-| `RUN3_RESP_CAT_ID` | string | yes | — | TODO |
-| `PA_BALL_CT` | int16 | yes | — | TODO |
-| `PA_CALLED_BALL_CT` | int16 | yes | — | TODO |
-| `PA_INTENT_BALL_CT` | int16 | yes | — | TODO |
-| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | TODO |
-| `PA_HITBATTER_BALL_CT` | int16 | yes | — | TODO |
-| `PA_OTHER_BALL_CT` | int16 | yes | — | TODO |
-| `PA_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_CALLED_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_FOUL_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | TODO |
-| `PA_OTHER_STRIKE_CT` | int16 | yes | — | TODO |
-| `EVENT_RUNS_CT` | int16 | yes | — | TODO |
-| `FLD_ID` | string | yes | — | TODO |
-| `BASE2_FORCE_FL` | bool | yes | — | TODO |
-| `BASE3_FORCE_FL` | bool | yes | — | TODO |
-| `BASE4_FORCE_FL` | bool | yes | — | TODO |
-| `BAT_SAFE_ERR_FL` | bool | yes | — | TODO |
-| `BAT_FATE_ID` | int16 | yes | — | TODO |
-| `RUN1_FATE_ID` | int16 | yes | — | TODO |
-| `RUN2_FATE_ID` | int16 | yes | — | TODO |
-| `RUN3_FATE_ID` | int16 | yes | — | TODO |
-| `FATE_RUNS_CT` | int16 | yes | — | TODO |
-| `ASS6_FLD_CD` | int16 | yes | — | TODO |
-| `ASS7_FLD_CD` | int16 | yes | — | TODO |
-| `ASS8_FLD_CD` | int16 | yes | — | TODO |
-| `ASS9_FLD_CD` | int16 | yes | — | TODO |
-| `ASS10_FLD_CD` | int16 | yes | — | TODO |
-| `UNKNOWN_OUT_EXC_FL` | bool | yes | — | TODO |
-| `UNCERTAIN_PLAY_EXC_FL` | bool | yes | — | TODO |
-| `COUNT_TX` | string | yes | — | TODO |
-| `RUN1_AUTO_FL` | bool | yes | — | TODO |
-| `RUN2_AUTO_FL` | bool | yes | — | TODO |
-| `RUN3_AUTO_FL` | bool | yes | — | TODO |
+| `INN_NEW_FL` | bool | yes | — | start of half inning flag (src: chadwick_cwevent) |
+| `INN_END_FL` | bool | yes | — | end of half inning flag (src: chadwick_cwevent) |
+| `START_BAT_SCORE_CT` | int16 | yes | — | score for team on offense (src: chadwick_cwevent) |
+| `START_FLD_SCORE_CT` | int16 | yes | — | score for team on defense (src: chadwick_cwevent) |
+| `INN_RUNS_CT` | int16 | yes | — | runs scored in this half inning (src: chadwick_cwevent) |
+| `GAME_PA_CT` | int16 | yes | — | number of plate appearances in game for team on offense (src: chadwick_cwevent) |
+| `INN_PA_CT` | int16 | yes | — | number of plate appearances in inning for team on offense (src: chadwick_cwevent) |
+| `PA_NEW_FL` | bool | yes | — | start of plate appearance flag (src: chadwick_cwevent) |
+| `PA_TRUNC_FL` | bool | yes | — | truncated plate appearance flag (src: chadwick_cwevent) |
+| `START_BASES_CD` | int16 | yes | — | base state at start of play (src: chadwick_cwevent) |
+| `END_BASES_CD` | int16 | yes | — | base state at end of play (src: chadwick_cwevent) |
+| `BAT_START_FL` | bool | yes | — | batter is starter flag (src: chadwick_cwevent) |
+| `RESP_BAT_START_FL` | bool | yes | — | result batter is starter flag (src: chadwick_cwevent) |
+| `BAT_ON_DECK_ID` | string | yes | — | ID of the batter on deck (src: chadwick_cwevent) |
+| `BAT_IN_HOLD_ID` | string | yes | — | ID of the batter in the hold (src: chadwick_cwevent) |
+| `PIT_START_FL` | bool | yes | — | pitcher is starter flag (src: chadwick_cwevent) |
+| `RESP_PIT_START_FL` | bool | yes | — | result pitcher is starter flag (src: chadwick_cwevent) |
+| `RUN1_FLD_CD` | int16 | yes | — | defensive position of runner on first (src: chadwick_cwevent) |
+| `RUN1_LINEUP_CD` | int16 | yes | — | lineup position of runner on first (src: chadwick_cwevent) |
+| `RUN1_ORIGIN_EVENT_ID` | int16 | yes | — | event number on which runner on first reached base (src: chadwick_cwevent) |
+| `RUN2_FLD_CD` | int16 | yes | — | defensive position of runner on second (src: chadwick_cwevent) |
+| `RUN2_LINEUP_CD` | int16 | yes | — | lineup position of runner on second (src: chadwick_cwevent) |
+| `RUN2_ORIGIN_EVENT_ID` | int16 | yes | — | event number on which runner on second reached base (src: chadwick_cwevent) |
+| `RUN3_FLD_CD` | int16 | yes | — | defensive position of runner on third (src: chadwick_cwevent) |
+| `RUN3_LINEUP_CD` | int16 | yes | — | lineup position of runner on third (src: chadwick_cwevent) |
+| `RUN3_ORIGIN_EVENT_ID` | int16 | yes | — | event number on which runner on third reached base (src: chadwick_cwevent) |
+| `RUN1_RESP_CAT_ID` | string | yes | — | Responsible catcher for runner on first (src: chadwick_cwevent) |
+| `RUN2_RESP_CAT_ID` | string | yes | — | Responsible catcher for runner on second (src: chadwick_cwevent) |
+| `RUN3_RESP_CAT_ID` | string | yes | — | Responsible catcher for runner on third (src: chadwick_cwevent) |
+| `PA_BALL_CT` | int16 | yes | — | number of balls in plate appearance (src: chadwick_cwevent) |
+| `PA_CALLED_BALL_CT` | int16 | yes | — | number of called balls in plate appearance (src: chadwick_cwevent) |
+| `PA_INTENT_BALL_CT` | int16 | yes | — | number of intentional balls in plate appearance (src: chadwick_cwevent) |
+| `PA_PITCHOUT_BALL_CT` | int16 | yes | — | number of pitchouts in plate appearance (src: chadwick_cwevent) |
+| `PA_HITBATTER_BALL_CT` | int16 | yes | — | number of pitches hitting batter in plate appearance (src: chadwick_cwevent) |
+| `PA_OTHER_BALL_CT` | int16 | yes | — | number of other balls in plate appearance (src: chadwick_cwevent) |
+| `PA_STRIKE_CT` | int16 | yes | — | number of strikes in plate appearance (src: chadwick_cwevent) |
+| `PA_CALLED_STRIKE_CT` | int16 | yes | — | number of called strikes in plate appearance (src: chadwick_cwevent) |
+| `PA_SWINGMISS_STRIKE_CT` | int16 | yes | — | number of swinging strikes in plate appearance (src: chadwick_cwevent) |
+| `PA_FOUL_STRIKE_CT` | int16 | yes | — | number of foul balls in plate appearance (src: chadwick_cwevent) |
+| `PA_INPLAY_STRIKE_CT` | int16 | yes | — | number of balls in play in plate appearance (src: chadwick_cwevent) |
+| `PA_OTHER_STRIKE_CT` | int16 | yes | — | number of other strikes in plate appearance (src: chadwick_cwevent) |
+| `EVENT_RUNS_CT` | int16 | yes | — | number of runs on play (src: chadwick_cwevent) |
+| `FLD_ID` | string | yes | — | id of player fielding batted ball (src: chadwick_cwevent) |
+| `BASE2_FORCE_FL` | bool | yes | — | force play at second flag (src: chadwick_cwevent) |
+| `BASE3_FORCE_FL` | bool | yes | — | force play at third flag (src: chadwick_cwevent) |
+| `BASE4_FORCE_FL` | bool | yes | — | force play at home flag (src: chadwick_cwevent) |
+| `BAT_SAFE_ERR_FL` | bool | yes | — | batter safe on error flag (src: chadwick_cwevent) |
+| `BAT_FATE_ID` | int16 | yes | — | fate of batter (base ultimately advanced to) (src: chadwick_cwevent) |
+| `RUN1_FATE_ID` | int16 | yes | — | fate of runner on first (src: chadwick_cwevent) |
+| `RUN2_FATE_ID` | int16 | yes | — | fate of runner on second (src: chadwick_cwevent) |
+| `RUN3_FATE_ID` | int16 | yes | — | fate of runner on third (src: chadwick_cwevent) |
+| `FATE_RUNS_CT` | int16 | yes | — | runs scored in half inning after this event (src: chadwick_cwevent) |
+| `ASS6_FLD_CD` | int16 | yes | — | fielder with sixth assist (src: chadwick_cwevent) |
+| `ASS7_FLD_CD` | int16 | yes | — | fielder with seventh assist (src: chadwick_cwevent) |
+| `ASS8_FLD_CD` | int16 | yes | — | fielder with eighth assist (src: chadwick_cwevent) |
+| `ASS9_FLD_CD` | int16 | yes | — | fielder with ninth assist (src: chadwick_cwevent) |
+| `ASS10_FLD_CD` | int16 | yes | — | fielder with tenth assist (src: chadwick_cwevent) |
+| `UNKNOWN_OUT_EXC_FL` | bool | yes | — | unknown fielding credit flag (src: chadwick_cwevent) |
+| `UNCERTAIN_PLAY_EXC_FL` | bool | yes | — | uncertain play flag (src: chadwick_cwevent) |
+| `COUNT_TX` | string | yes | — | text of count as appears in event file (src: chadwick_cwevent) |
+| `RUN1_AUTO_FL` | bool | yes | — | whether runner on first is an automatic runner (src: chadwick_cwevent) |
+| `RUN2_AUTO_FL` | bool | yes | — | whether runner on second is an automatic runner (src: chadwick_cwevent) |
+| `RUN3_AUTO_FL` | bool | yes | — | whether runner on third is an automatic runner (src: chadwick_cwevent) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.events_postseason -->

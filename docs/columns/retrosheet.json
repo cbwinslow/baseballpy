@@ -1,9 +1,9 @@
 {
  "_sources": {
-  "chadwick_cwdaily": "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwdaily.rst",
-  "chadwick_cwevent": "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwevent.rst",
-  "chadwick_cwsub": "https://raw.githubusercontent.com/chadwickbureau/chadwick/master/doc/cwsub.rst",
-  "retrosheet_glfields": "Retrosheet game-log field guide (glfields.txt), read from the copy in the book companion repository maxtoki/baseball_R because retrosheet.org was unreachable: https://raw.githubusercontent.com/maxtoki/baseball_R/master/data/glfields.txt"
+  "chadwick_cwdaily": "https://raw.githubusercontent.com/chadwickbureau/chadwick/b0002b6a0c98f800f899635f5de17ebfcc976333/doc/cwdaily.rst",
+  "chadwick_cwevent": "https://raw.githubusercontent.com/chadwickbureau/chadwick/b0002b6a0c98f800f899635f5de17ebfcc976333/doc/cwevent.rst",
+  "chadwick_cwsub": "https://raw.githubusercontent.com/chadwickbureau/chadwick/b0002b6a0c98f800f899635f5de17ebfcc976333/doc/cwsub.rst",
+  "retrosheet_glfields": "Retrosheet game-log field guide (glfields.txt), read from the copy in the book companion repository maxtoki/baseball_R because retrosheet.org was unreachable: https://raw.githubusercontent.com/maxtoki/baseball_R/3117ffda2b8d33397095a74b3ab27b4bbb2df2a5/data/glfields.txt"
  },
  "daily_splits": {
   "APPEAR_DT": {
@@ -110,13 +110,337 @@
    "source": "chadwick_cwdaily",
    "text": "Reached on interference"
   },
+  "F_1B_A": {
+   "source": "chadwick_cwdaily",
+   "text": "Assists (first base)"
+  },
+  "F_1B_DP": {
+   "source": "chadwick_cwdaily",
+   "text": "Double plays (first base)"
+  },
+  "F_1B_E": {
+   "source": "chadwick_cwdaily",
+   "text": "Errors (first base)"
+  },
+  "F_1B_G": {
+   "source": "chadwick_cwdaily",
+   "text": "Games at the position (first base)"
+  },
+  "F_1B_GS": {
+   "source": "chadwick_cwdaily",
+   "text": "Games started at the position (first base)"
+  },
+  "F_1B_OUT": {
+   "source": "chadwick_cwdaily",
+   "text": "Outs recorded while at the position (first base)"
+  },
+  "F_1B_PO": {
+   "source": "chadwick_cwdaily",
+   "text": "Putouts (first base)"
+  },
+  "F_1B_TC": {
+   "source": "chadwick_cwdaily",
+   "text": "Total chances (first base)"
+  },
+  "F_1B_TP": {
+   "source": "chadwick_cwdaily",
+   "text": "Triple plays (first base)"
+  },
+  "F_2B_A": {
+   "source": "chadwick_cwdaily",
+   "text": "Assists (second base)"
+  },
+  "F_2B_DP": {
+   "source": "chadwick_cwdaily",
+   "text": "Double plays (second base)"
+  },
+  "F_2B_E": {
+   "source": "chadwick_cwdaily",
+   "text": "Errors (second base)"
+  },
+  "F_2B_G": {
+   "source": "chadwick_cwdaily",
+   "text": "Games at the position (second base)"
+  },
+  "F_2B_GS": {
+   "source": "chadwick_cwdaily",
+   "text": "Games started at the position (second base)"
+  },
+  "F_2B_OUT": {
+   "source": "chadwick_cwdaily",
+   "text": "Outs recorded while at the position (second base)"
+  },
+  "F_2B_PO": {
+   "source": "chadwick_cwdaily",
+   "text": "Putouts (second base)"
+  },
+  "F_2B_TC": {
+   "source": "chadwick_cwdaily",
+   "text": "Total chances (second base)"
+  },
+  "F_2B_TP": {
+   "source": "chadwick_cwdaily",
+   "text": "Triple plays (second base)"
+  },
+  "F_3B_A": {
+   "source": "chadwick_cwdaily",
+   "text": "Assists (third base)"
+  },
+  "F_3B_DP": {
+   "source": "chadwick_cwdaily",
+   "text": "Double plays (third base)"
+  },
+  "F_3B_E": {
+   "source": "chadwick_cwdaily",
+   "text": "Errors (third base)"
+  },
+  "F_3B_G": {
+   "source": "chadwick_cwdaily",
+   "text": "Games at the position (third base)"
+  },
+  "F_3B_GS": {
+   "source": "chadwick_cwdaily",
+   "text": "Games started at the position (third base)"
+  },
+  "F_3B_OUT": {
+   "source": "chadwick_cwdaily",
+   "text": "Outs recorded while at the position (third base)"
+  },
+  "F_3B_PO": {
+   "source": "chadwick_cwdaily",
+   "text": "Putouts (third base)"
+  },
+  "F_3B_TC": {
+   "source": "chadwick_cwdaily",
+   "text": "Total chances (third base)"
+  },
+  "F_3B_TP": {
+   "source": "chadwick_cwdaily",
+   "text": "Triple plays (third base)"
+  },
+  "F_CF_A": {
+   "source": "chadwick_cwdaily",
+   "text": "Assists (center field)"
+  },
+  "F_CF_DP": {
+   "source": "chadwick_cwdaily",
+   "text": "Double plays (center field)"
+  },
+  "F_CF_E": {
+   "source": "chadwick_cwdaily",
+   "text": "Errors (center field)"
+  },
+  "F_CF_G": {
+   "source": "chadwick_cwdaily",
+   "text": "Games at the position (center field)"
+  },
+  "F_CF_GS": {
+   "source": "chadwick_cwdaily",
+   "text": "Games started at the position (center field)"
+  },
+  "F_CF_OUT": {
+   "source": "chadwick_cwdaily",
+   "text": "Outs recorded while at the position (center field)"
+  },
+  "F_CF_PO": {
+   "source": "chadwick_cwdaily",
+   "text": "Putouts (center field)"
+  },
+  "F_CF_TC": {
+   "source": "chadwick_cwdaily",
+   "text": "Total chances (center field)"
+  },
+  "F_CF_TP": {
+   "source": "chadwick_cwdaily",
+   "text": "Triple plays (center field)"
+  },
+  "F_C_A": {
+   "source": "chadwick_cwdaily",
+   "text": "Assists (catcher)"
+  },
+  "F_C_DP": {
+   "source": "chadwick_cwdaily",
+   "text": "Double plays (catcher)"
+  },
+  "F_C_E": {
+   "source": "chadwick_cwdaily",
+   "text": "Errors (catcher)"
+  },
+  "F_C_G": {
+   "source": "chadwick_cwdaily",
+   "text": "Games at the position (catcher)"
+  },
+  "F_C_GS": {
+   "source": "chadwick_cwdaily",
+   "text": "Games started at the position (catcher)"
+  },
+  "F_C_OUT": {
+   "source": "chadwick_cwdaily",
+   "text": "Outs recorded while at the position (catcher)"
+  },
   "F_C_PB": {
    "source": "chadwick_cwdaily",
    "text": "Passed balls"
   },
+  "F_C_PO": {
+   "source": "chadwick_cwdaily",
+   "text": "Putouts (catcher)"
+  },
+  "F_C_TC": {
+   "source": "chadwick_cwdaily",
+   "text": "Total chances (catcher)"
+  },
+  "F_C_TP": {
+   "source": "chadwick_cwdaily",
+   "text": "Triple plays (catcher)"
+  },
   "F_C_XI": {
    "source": "chadwick_cwdaily",
    "text": "Catcher's interference"
+  },
+  "F_LF_A": {
+   "source": "chadwick_cwdaily",
+   "text": "Assists (left field)"
+  },
+  "F_LF_DP": {
+   "source": "chadwick_cwdaily",
+   "text": "Double plays (left field)"
+  },
+  "F_LF_E": {
+   "source": "chadwick_cwdaily",
+   "text": "Errors (left field)"
+  },
+  "F_LF_G": {
+   "source": "chadwick_cwdaily",
+   "text": "Games at the position (left field)"
+  },
+  "F_LF_GS": {
+   "source": "chadwick_cwdaily",
+   "text": "Games started at the position (left field)"
+  },
+  "F_LF_OUT": {
+   "source": "chadwick_cwdaily",
+   "text": "Outs recorded while at the position (left field)"
+  },
+  "F_LF_PO": {
+   "source": "chadwick_cwdaily",
+   "text": "Putouts (left field)"
+  },
+  "F_LF_TC": {
+   "source": "chadwick_cwdaily",
+   "text": "Total chances (left field)"
+  },
+  "F_LF_TP": {
+   "source": "chadwick_cwdaily",
+   "text": "Triple plays (left field)"
+  },
+  "F_P_A": {
+   "source": "chadwick_cwdaily",
+   "text": "Assists (pitcher)"
+  },
+  "F_P_DP": {
+   "source": "chadwick_cwdaily",
+   "text": "Double plays (pitcher)"
+  },
+  "F_P_E": {
+   "source": "chadwick_cwdaily",
+   "text": "Errors (pitcher)"
+  },
+  "F_P_G": {
+   "source": "chadwick_cwdaily",
+   "text": "Games at the position (pitcher)"
+  },
+  "F_P_GS": {
+   "source": "chadwick_cwdaily",
+   "text": "Games started at the position (pitcher)"
+  },
+  "F_P_OUT": {
+   "source": "chadwick_cwdaily",
+   "text": "Outs recorded while at the position (pitcher)"
+  },
+  "F_P_PO": {
+   "source": "chadwick_cwdaily",
+   "text": "Putouts (pitcher)"
+  },
+  "F_P_TC": {
+   "source": "chadwick_cwdaily",
+   "text": "Total chances (pitcher)"
+  },
+  "F_P_TP": {
+   "source": "chadwick_cwdaily",
+   "text": "Triple plays (pitcher)"
+  },
+  "F_RF_A": {
+   "source": "chadwick_cwdaily",
+   "text": "Assists (right field)"
+  },
+  "F_RF_DP": {
+   "source": "chadwick_cwdaily",
+   "text": "Double plays (right field)"
+  },
+  "F_RF_E": {
+   "source": "chadwick_cwdaily",
+   "text": "Errors (right field)"
+  },
+  "F_RF_G": {
+   "source": "chadwick_cwdaily",
+   "text": "Games at the position (right field)"
+  },
+  "F_RF_GS": {
+   "source": "chadwick_cwdaily",
+   "text": "Games started at the position (right field)"
+  },
+  "F_RF_OUT": {
+   "source": "chadwick_cwdaily",
+   "text": "Outs recorded while at the position (right field)"
+  },
+  "F_RF_PO": {
+   "source": "chadwick_cwdaily",
+   "text": "Putouts (right field)"
+  },
+  "F_RF_TC": {
+   "source": "chadwick_cwdaily",
+   "text": "Total chances (right field)"
+  },
+  "F_RF_TP": {
+   "source": "chadwick_cwdaily",
+   "text": "Triple plays (right field)"
+  },
+  "F_SS_A": {
+   "source": "chadwick_cwdaily",
+   "text": "Assists (shortstop)"
+  },
+  "F_SS_DP": {
+   "source": "chadwick_cwdaily",
+   "text": "Double plays (shortstop)"
+  },
+  "F_SS_E": {
+   "source": "chadwick_cwdaily",
+   "text": "Errors (shortstop)"
+  },
+  "F_SS_G": {
+   "source": "chadwick_cwdaily",
+   "text": "Games at the position (shortstop)"
+  },
+  "F_SS_GS": {
+   "source": "chadwick_cwdaily",
+   "text": "Games started at the position (shortstop)"
+  },
+  "F_SS_OUT": {
+   "source": "chadwick_cwdaily",
+   "text": "Outs recorded while at the position (shortstop)"
+  },
+  "F_SS_PO": {
+   "source": "chadwick_cwdaily",
+   "text": "Putouts (shortstop)"
+  },
+  "F_SS_TC": {
+   "source": "chadwick_cwdaily",
+   "text": "Total chances (shortstop)"
+  },
+  "F_SS_TP": {
+   "source": "chadwick_cwdaily",
+   "text": "Triple plays (shortstop)"
   },
   "GAME_CT": {
    "source": "chadwick_cwdaily",
@@ -304,6 +628,10 @@
    "source": "chadwick_cwevent",
    "text": "Official time at bat flag"
   },
+  "ASS10_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with tenth assist"
+  },
   "ASS1_FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Fielder with first assist"
@@ -315,6 +643,30 @@
   "ASS3_FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Fielder with third assist"
+  },
+  "ASS4_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "Fielder with fourth assist"
+  },
+  "ASS5_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "Fielder with fifth assist"
+  },
+  "ASS6_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with sixth assist"
+  },
+  "ASS7_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with seventh assist"
+  },
+  "ASS8_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with eighth assist"
+  },
+  "ASS9_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with ninth assist"
   },
   "AWAY_SCORE_CT": {
    "source": "chadwick_cwevent",
@@ -332,13 +684,25 @@
    "source": "chadwick_cwevent",
    "text": "Runner on first"
   },
+  "BASE2_FORCE_FL": {
+   "source": "chadwick_cwevent",
+   "text": "force play at second flag"
+  },
   "BASE2_RUN_ID": {
    "source": "chadwick_cwevent",
    "text": "Runner on second"
   },
+  "BASE3_FORCE_FL": {
+   "source": "chadwick_cwevent",
+   "text": "force play at third flag"
+  },
   "BASE3_RUN_ID": {
    "source": "chadwick_cwevent",
    "text": "Runner on third"
+  },
+  "BASE4_FORCE_FL": {
+   "source": "chadwick_cwevent",
+   "text": "force play at home flag"
   },
   "BATTEDBALL_CD": {
    "source": "chadwick_cwevent",
@@ -356,6 +720,10 @@
    "source": "chadwick_cwevent",
    "text": "Batter event flag"
   },
+  "BAT_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of batter (base ultimately advanced to)"
+  },
   "BAT_FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Defensive position"
@@ -372,6 +740,10 @@
    "source": "chadwick_cwevent",
    "text": "Batter"
   },
+  "BAT_IN_HOLD_ID": {
+   "source": "chadwick_cwevent",
+   "text": "ID of the batter in the hold"
+  },
   "BAT_LAST_ID": {
    "source": "chadwick_cwevent",
    "text": "half inning (differs from batting team if home team bats first)"
@@ -380,17 +752,41 @@
    "source": "chadwick_cwevent",
    "text": "Lineup position"
   },
+  "BAT_ON_DECK_ID": {
+   "source": "chadwick_cwevent",
+   "text": "ID of the batter on deck"
+  },
   "BAT_PLAY_TX": {
    "source": "chadwick_cwevent",
    "text": "Play on batter"
+  },
+  "BAT_SAFE_ERR_FL": {
+   "source": "chadwick_cwevent",
+   "text": "batter safe on error flag"
+  },
+  "BAT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "batter is starter flag"
+  },
+  "BAT_TEAM_ID": {
+   "source": "chadwick_cwevent",
+   "text": "batting team id"
   },
   "BUNT_FL": {
    "source": "chadwick_cwevent",
    "text": "Bunt flag"
   },
+  "COUNT_TX": {
+   "source": "chadwick_cwevent",
+   "text": "text of count as appears in event file"
+  },
   "DP_FL": {
    "source": "chadwick_cwevent",
    "text": "Double play flag"
+  },
+  "END_BASES_CD": {
+   "source": "chadwick_cwevent",
+   "text": "base state at end of play"
   },
   "ERR1_CD": {
    "source": "chadwick_cwevent",
@@ -424,17 +820,37 @@
    "source": "chadwick_cwevent",
    "text": "Event type"
   },
+  "EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Event number"
+  },
   "EVENT_OUTS_CT": {
    "source": "chadwick_cwevent",
    "text": "Outs on play"
+  },
+  "EVENT_RUNS_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of runs on play"
   },
   "EVENT_TX": {
    "source": "chadwick_cwevent",
    "text": "Event text"
   },
+  "FATE_RUNS_CT": {
+   "source": "chadwick_cwevent",
+   "text": "runs scored in half inning after this event"
+  },
   "FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Fielded by"
+  },
+  "FLD_ID": {
+   "source": "chadwick_cwevent",
+   "text": "id of player fielding batted ball"
+  },
+  "FLD_TEAM_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fielding team id"
   },
   "FOUL_FL": {
    "source": "chadwick_cwevent",
@@ -452,9 +868,17 @@
    "source": "chadwick_cwevent",
    "text": "New game flag"
   },
+  "GAME_PA_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of plate appearances in game for team on offense"
+  },
   "HOME_SCORE_CT": {
    "source": "chadwick_cwevent",
    "text": "Home score"
+  },
+  "HOME_TEAM_ID": {
+   "source": "chadwick_cwevent",
+   "text": "home team id"
   },
   "H_CD": {
    "source": "chadwick_cwevent",
@@ -464,6 +888,22 @@
    "source": "chadwick_cwevent",
    "text": "Inning"
   },
+  "INN_END_FL": {
+   "source": "chadwick_cwevent",
+   "text": "end of half inning flag"
+  },
+  "INN_NEW_FL": {
+   "source": "chadwick_cwevent",
+   "text": "start of half inning flag"
+  },
+  "INN_PA_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of plate appearances in inning for team on offense"
+  },
+  "INN_RUNS_CT": {
+   "source": "chadwick_cwevent",
+   "text": "runs scored in this half inning"
+  },
   "LEADOFF_FL": {
    "source": "chadwick_cwevent",
    "text": "Leadoff flag"
@@ -471,6 +911,62 @@
   "OUTS_CT": {
    "source": "chadwick_cwevent",
    "text": "Outs"
+  },
+  "PA_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of balls in plate appearance"
+  },
+  "PA_CALLED_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of called balls in plate appearance"
+  },
+  "PA_CALLED_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of called strikes in plate appearance"
+  },
+  "PA_FOUL_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of foul balls in plate appearance"
+  },
+  "PA_HITBATTER_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of pitches hitting batter in plate appearance"
+  },
+  "PA_INPLAY_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of balls in play in plate appearance"
+  },
+  "PA_INTENT_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of intentional balls in plate appearance"
+  },
+  "PA_NEW_FL": {
+   "source": "chadwick_cwevent",
+   "text": "start of plate appearance flag"
+  },
+  "PA_OTHER_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of other balls in plate appearance"
+  },
+  "PA_OTHER_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of other strikes in plate appearance"
+  },
+  "PA_PITCHOUT_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of pitchouts in plate appearance"
+  },
+  "PA_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of strikes in plate appearance"
+  },
+  "PA_SWINGMISS_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of swinging strikes in plate appearance"
+  },
+  "PA_TRUNC_FL": {
+   "source": "chadwick_cwevent",
+   "text": "truncated plate appearance flag"
   },
   "PB_FL": {
    "source": "chadwick_cwevent",
@@ -491,6 +987,10 @@
   "PIT_ID": {
    "source": "chadwick_cwevent",
    "text": "Pitcher"
+  },
+  "PIT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "pitcher is starter flag"
   },
   "PO1_FLD_CD": {
    "source": "chadwick_cwevent",
@@ -580,6 +1080,10 @@
    "source": "chadwick_cwevent",
    "text": "Result batter"
   },
+  "RESP_BAT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "result batter is starter flag"
+  },
   "RESP_PIT_HAND_CD": {
    "source": "chadwick_cwevent",
    "text": "Result pitcher hand"
@@ -587,6 +1091,14 @@
   "RESP_PIT_ID": {
    "source": "chadwick_cwevent",
    "text": "Result pitcher"
+  },
+  "RESP_PIT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "result pitcher is starter flag"
+  },
+  "RUN1_AUTO_FL": {
+   "source": "chadwick_cwevent",
+   "text": "whether runner on first is an automatic runner"
   },
   "RUN1_CS_FL": {
    "source": "chadwick_cwevent",
@@ -596,6 +1108,22 @@
    "source": "chadwick_cwevent",
    "text": "Runner on first destination"
   },
+  "RUN1_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of runner on first"
+  },
+  "RUN1_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "defensive position of runner on first"
+  },
+  "RUN1_LINEUP_CD": {
+   "source": "chadwick_cwevent",
+   "text": "lineup position of runner on first"
+  },
+  "RUN1_ORIGIN_EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "event number on which runner on first reached base"
+  },
   "RUN1_PK_FL": {
    "source": "chadwick_cwevent",
    "text": "Pickoff of runner on first"
@@ -603,6 +1131,10 @@
   "RUN1_PLAY_TX": {
    "source": "chadwick_cwevent",
    "text": "Play on runner on first"
+  },
+  "RUN1_RESP_CAT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Responsible catcher for runner on first"
   },
   "RUN1_RESP_PIT_ID": {
    "source": "chadwick_cwevent",
@@ -612,6 +1144,10 @@
    "source": "chadwick_cwevent",
    "text": "Stolen base for runner on first"
   },
+  "RUN2_AUTO_FL": {
+   "source": "chadwick_cwevent",
+   "text": "whether runner on second is an automatic runner"
+  },
   "RUN2_CS_FL": {
    "source": "chadwick_cwevent",
    "text": "Caught stealing for runner on second"
@@ -619,6 +1155,22 @@
   "RUN2_DEST_ID": {
    "source": "chadwick_cwevent",
    "text": "Runner on second destination"
+  },
+  "RUN2_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of runner on second"
+  },
+  "RUN2_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "defensive position of runner on second"
+  },
+  "RUN2_LINEUP_CD": {
+   "source": "chadwick_cwevent",
+   "text": "lineup position of runner on second"
+  },
+  "RUN2_ORIGIN_EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "event number on which runner on second reached base"
   },
   "RUN2_PK_FL": {
    "source": "chadwick_cwevent",
@@ -628,6 +1180,10 @@
    "source": "chadwick_cwevent",
    "text": "Play on runner on second"
   },
+  "RUN2_RESP_CAT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Responsible catcher for runner on second"
+  },
   "RUN2_RESP_PIT_ID": {
    "source": "chadwick_cwevent",
    "text": "Pitcher charged with runner on second"
@@ -635,6 +1191,10 @@
   "RUN2_SB_FL": {
    "source": "chadwick_cwevent",
    "text": "Stolen base for runner on second"
+  },
+  "RUN3_AUTO_FL": {
+   "source": "chadwick_cwevent",
+   "text": "whether runner on third is an automatic runner"
   },
   "RUN3_CS_FL": {
    "source": "chadwick_cwevent",
@@ -644,6 +1204,22 @@
    "source": "chadwick_cwevent",
    "text": "Runner on third destination"
   },
+  "RUN3_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of runner on third"
+  },
+  "RUN3_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "defensive position of runner on third"
+  },
+  "RUN3_LINEUP_CD": {
+   "source": "chadwick_cwevent",
+   "text": "lineup position of runner on third"
+  },
+  "RUN3_ORIGIN_EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "event number on which runner on third reached base"
+  },
   "RUN3_PK_FL": {
    "source": "chadwick_cwevent",
    "text": "Pickoff of runner on third"
@@ -651,6 +1227,10 @@
   "RUN3_PLAY_TX": {
    "source": "chadwick_cwevent",
    "text": "Play on runner on third"
+  },
+  "RUN3_RESP_CAT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Responsible catcher for runner on third"
   },
   "RUN3_RESP_PIT_ID": {
    "source": "chadwick_cwevent",
@@ -668,6 +1248,18 @@
    "source": "chadwick_cwevent",
    "text": "Sacrifice hit flag"
   },
+  "START_BASES_CD": {
+   "source": "chadwick_cwevent",
+   "text": "base state at start of play"
+  },
+  "START_BAT_SCORE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "score for team on offense"
+  },
+  "START_FLD_SCORE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "score for team on defense"
+  },
   "STRIKES_CT": {
    "source": "chadwick_cwevent",
    "text": "Strikes"
@@ -675,6 +1267,14 @@
   "TP_FL": {
    "source": "chadwick_cwevent",
    "text": "Triple play flag"
+  },
+  "UNCERTAIN_PLAY_EXC_FL": {
+   "source": "chadwick_cwevent",
+   "text": "uncertain play flag"
+  },
+  "UNKNOWN_OUT_EXC_FL": {
+   "source": "chadwick_cwevent",
+   "text": "unknown fielding credit flag"
   },
   "WP_FL": {
    "source": "chadwick_cwevent",
@@ -686,6 +1286,10 @@
    "source": "chadwick_cwevent",
    "text": "Official time at bat flag"
   },
+  "ASS10_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with tenth assist"
+  },
   "ASS1_FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Fielder with first assist"
@@ -697,6 +1301,30 @@
   "ASS3_FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Fielder with third assist"
+  },
+  "ASS4_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "Fielder with fourth assist"
+  },
+  "ASS5_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "Fielder with fifth assist"
+  },
+  "ASS6_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with sixth assist"
+  },
+  "ASS7_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with seventh assist"
+  },
+  "ASS8_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with eighth assist"
+  },
+  "ASS9_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with ninth assist"
   },
   "AWAY_SCORE_CT": {
    "source": "chadwick_cwevent",
@@ -714,13 +1342,25 @@
    "source": "chadwick_cwevent",
    "text": "Runner on first"
   },
+  "BASE2_FORCE_FL": {
+   "source": "chadwick_cwevent",
+   "text": "force play at second flag"
+  },
   "BASE2_RUN_ID": {
    "source": "chadwick_cwevent",
    "text": "Runner on second"
   },
+  "BASE3_FORCE_FL": {
+   "source": "chadwick_cwevent",
+   "text": "force play at third flag"
+  },
   "BASE3_RUN_ID": {
    "source": "chadwick_cwevent",
    "text": "Runner on third"
+  },
+  "BASE4_FORCE_FL": {
+   "source": "chadwick_cwevent",
+   "text": "force play at home flag"
   },
   "BATTEDBALL_CD": {
    "source": "chadwick_cwevent",
@@ -738,6 +1378,10 @@
    "source": "chadwick_cwevent",
    "text": "Batter event flag"
   },
+  "BAT_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of batter (base ultimately advanced to)"
+  },
   "BAT_FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Defensive position"
@@ -754,6 +1398,10 @@
    "source": "chadwick_cwevent",
    "text": "Batter"
   },
+  "BAT_IN_HOLD_ID": {
+   "source": "chadwick_cwevent",
+   "text": "ID of the batter in the hold"
+  },
   "BAT_LAST_ID": {
    "source": "chadwick_cwevent",
    "text": "half inning (differs from batting team if home team bats first)"
@@ -762,17 +1410,41 @@
    "source": "chadwick_cwevent",
    "text": "Lineup position"
   },
+  "BAT_ON_DECK_ID": {
+   "source": "chadwick_cwevent",
+   "text": "ID of the batter on deck"
+  },
   "BAT_PLAY_TX": {
    "source": "chadwick_cwevent",
    "text": "Play on batter"
+  },
+  "BAT_SAFE_ERR_FL": {
+   "source": "chadwick_cwevent",
+   "text": "batter safe on error flag"
+  },
+  "BAT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "batter is starter flag"
+  },
+  "BAT_TEAM_ID": {
+   "source": "chadwick_cwevent",
+   "text": "batting team id"
   },
   "BUNT_FL": {
    "source": "chadwick_cwevent",
    "text": "Bunt flag"
   },
+  "COUNT_TX": {
+   "source": "chadwick_cwevent",
+   "text": "text of count as appears in event file"
+  },
   "DP_FL": {
    "source": "chadwick_cwevent",
    "text": "Double play flag"
+  },
+  "END_BASES_CD": {
+   "source": "chadwick_cwevent",
+   "text": "base state at end of play"
   },
   "ERR1_CD": {
    "source": "chadwick_cwevent",
@@ -806,17 +1478,37 @@
    "source": "chadwick_cwevent",
    "text": "Event type"
   },
+  "EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Event number"
+  },
   "EVENT_OUTS_CT": {
    "source": "chadwick_cwevent",
    "text": "Outs on play"
+  },
+  "EVENT_RUNS_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of runs on play"
   },
   "EVENT_TX": {
    "source": "chadwick_cwevent",
    "text": "Event text"
   },
+  "FATE_RUNS_CT": {
+   "source": "chadwick_cwevent",
+   "text": "runs scored in half inning after this event"
+  },
   "FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Fielded by"
+  },
+  "FLD_ID": {
+   "source": "chadwick_cwevent",
+   "text": "id of player fielding batted ball"
+  },
+  "FLD_TEAM_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fielding team id"
   },
   "FOUL_FL": {
    "source": "chadwick_cwevent",
@@ -834,9 +1526,17 @@
    "source": "chadwick_cwevent",
    "text": "New game flag"
   },
+  "GAME_PA_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of plate appearances in game for team on offense"
+  },
   "HOME_SCORE_CT": {
    "source": "chadwick_cwevent",
    "text": "Home score"
+  },
+  "HOME_TEAM_ID": {
+   "source": "chadwick_cwevent",
+   "text": "home team id"
   },
   "H_CD": {
    "source": "chadwick_cwevent",
@@ -846,6 +1546,22 @@
    "source": "chadwick_cwevent",
    "text": "Inning"
   },
+  "INN_END_FL": {
+   "source": "chadwick_cwevent",
+   "text": "end of half inning flag"
+  },
+  "INN_NEW_FL": {
+   "source": "chadwick_cwevent",
+   "text": "start of half inning flag"
+  },
+  "INN_PA_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of plate appearances in inning for team on offense"
+  },
+  "INN_RUNS_CT": {
+   "source": "chadwick_cwevent",
+   "text": "runs scored in this half inning"
+  },
   "LEADOFF_FL": {
    "source": "chadwick_cwevent",
    "text": "Leadoff flag"
@@ -853,6 +1569,62 @@
   "OUTS_CT": {
    "source": "chadwick_cwevent",
    "text": "Outs"
+  },
+  "PA_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of balls in plate appearance"
+  },
+  "PA_CALLED_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of called balls in plate appearance"
+  },
+  "PA_CALLED_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of called strikes in plate appearance"
+  },
+  "PA_FOUL_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of foul balls in plate appearance"
+  },
+  "PA_HITBATTER_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of pitches hitting batter in plate appearance"
+  },
+  "PA_INPLAY_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of balls in play in plate appearance"
+  },
+  "PA_INTENT_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of intentional balls in plate appearance"
+  },
+  "PA_NEW_FL": {
+   "source": "chadwick_cwevent",
+   "text": "start of plate appearance flag"
+  },
+  "PA_OTHER_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of other balls in plate appearance"
+  },
+  "PA_OTHER_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of other strikes in plate appearance"
+  },
+  "PA_PITCHOUT_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of pitchouts in plate appearance"
+  },
+  "PA_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of strikes in plate appearance"
+  },
+  "PA_SWINGMISS_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of swinging strikes in plate appearance"
+  },
+  "PA_TRUNC_FL": {
+   "source": "chadwick_cwevent",
+   "text": "truncated plate appearance flag"
   },
   "PB_FL": {
    "source": "chadwick_cwevent",
@@ -873,6 +1645,10 @@
   "PIT_ID": {
    "source": "chadwick_cwevent",
    "text": "Pitcher"
+  },
+  "PIT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "pitcher is starter flag"
   },
   "PO1_FLD_CD": {
    "source": "chadwick_cwevent",
@@ -962,6 +1738,10 @@
    "source": "chadwick_cwevent",
    "text": "Result batter"
   },
+  "RESP_BAT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "result batter is starter flag"
+  },
   "RESP_PIT_HAND_CD": {
    "source": "chadwick_cwevent",
    "text": "Result pitcher hand"
@@ -969,6 +1749,14 @@
   "RESP_PIT_ID": {
    "source": "chadwick_cwevent",
    "text": "Result pitcher"
+  },
+  "RESP_PIT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "result pitcher is starter flag"
+  },
+  "RUN1_AUTO_FL": {
+   "source": "chadwick_cwevent",
+   "text": "whether runner on first is an automatic runner"
   },
   "RUN1_CS_FL": {
    "source": "chadwick_cwevent",
@@ -978,6 +1766,22 @@
    "source": "chadwick_cwevent",
    "text": "Runner on first destination"
   },
+  "RUN1_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of runner on first"
+  },
+  "RUN1_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "defensive position of runner on first"
+  },
+  "RUN1_LINEUP_CD": {
+   "source": "chadwick_cwevent",
+   "text": "lineup position of runner on first"
+  },
+  "RUN1_ORIGIN_EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "event number on which runner on first reached base"
+  },
   "RUN1_PK_FL": {
    "source": "chadwick_cwevent",
    "text": "Pickoff of runner on first"
@@ -985,6 +1789,10 @@
   "RUN1_PLAY_TX": {
    "source": "chadwick_cwevent",
    "text": "Play on runner on first"
+  },
+  "RUN1_RESP_CAT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Responsible catcher for runner on first"
   },
   "RUN1_RESP_PIT_ID": {
    "source": "chadwick_cwevent",
@@ -994,6 +1802,10 @@
    "source": "chadwick_cwevent",
    "text": "Stolen base for runner on first"
   },
+  "RUN2_AUTO_FL": {
+   "source": "chadwick_cwevent",
+   "text": "whether runner on second is an automatic runner"
+  },
   "RUN2_CS_FL": {
    "source": "chadwick_cwevent",
    "text": "Caught stealing for runner on second"
@@ -1001,6 +1813,22 @@
   "RUN2_DEST_ID": {
    "source": "chadwick_cwevent",
    "text": "Runner on second destination"
+  },
+  "RUN2_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of runner on second"
+  },
+  "RUN2_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "defensive position of runner on second"
+  },
+  "RUN2_LINEUP_CD": {
+   "source": "chadwick_cwevent",
+   "text": "lineup position of runner on second"
+  },
+  "RUN2_ORIGIN_EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "event number on which runner on second reached base"
   },
   "RUN2_PK_FL": {
    "source": "chadwick_cwevent",
@@ -1010,6 +1838,10 @@
    "source": "chadwick_cwevent",
    "text": "Play on runner on second"
   },
+  "RUN2_RESP_CAT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Responsible catcher for runner on second"
+  },
   "RUN2_RESP_PIT_ID": {
    "source": "chadwick_cwevent",
    "text": "Pitcher charged with runner on second"
@@ -1017,6 +1849,10 @@
   "RUN2_SB_FL": {
    "source": "chadwick_cwevent",
    "text": "Stolen base for runner on second"
+  },
+  "RUN3_AUTO_FL": {
+   "source": "chadwick_cwevent",
+   "text": "whether runner on third is an automatic runner"
   },
   "RUN3_CS_FL": {
    "source": "chadwick_cwevent",
@@ -1026,6 +1862,22 @@
    "source": "chadwick_cwevent",
    "text": "Runner on third destination"
   },
+  "RUN3_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of runner on third"
+  },
+  "RUN3_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "defensive position of runner on third"
+  },
+  "RUN3_LINEUP_CD": {
+   "source": "chadwick_cwevent",
+   "text": "lineup position of runner on third"
+  },
+  "RUN3_ORIGIN_EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "event number on which runner on third reached base"
+  },
   "RUN3_PK_FL": {
    "source": "chadwick_cwevent",
    "text": "Pickoff of runner on third"
@@ -1033,6 +1885,10 @@
   "RUN3_PLAY_TX": {
    "source": "chadwick_cwevent",
    "text": "Play on runner on third"
+  },
+  "RUN3_RESP_CAT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Responsible catcher for runner on third"
   },
   "RUN3_RESP_PIT_ID": {
    "source": "chadwick_cwevent",
@@ -1050,6 +1906,18 @@
    "source": "chadwick_cwevent",
    "text": "Sacrifice hit flag"
   },
+  "START_BASES_CD": {
+   "source": "chadwick_cwevent",
+   "text": "base state at start of play"
+  },
+  "START_BAT_SCORE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "score for team on offense"
+  },
+  "START_FLD_SCORE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "score for team on defense"
+  },
   "STRIKES_CT": {
    "source": "chadwick_cwevent",
    "text": "Strikes"
@@ -1057,6 +1925,14 @@
   "TP_FL": {
    "source": "chadwick_cwevent",
    "text": "Triple play flag"
+  },
+  "UNCERTAIN_PLAY_EXC_FL": {
+   "source": "chadwick_cwevent",
+   "text": "uncertain play flag"
+  },
+  "UNKNOWN_OUT_EXC_FL": {
+   "source": "chadwick_cwevent",
+   "text": "unknown fielding credit flag"
   },
   "WP_FL": {
    "source": "chadwick_cwevent",
@@ -1068,6 +1944,10 @@
    "source": "chadwick_cwevent",
    "text": "Official time at bat flag"
   },
+  "ASS10_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with tenth assist"
+  },
   "ASS1_FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Fielder with first assist"
@@ -1079,6 +1959,30 @@
   "ASS3_FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Fielder with third assist"
+  },
+  "ASS4_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "Fielder with fourth assist"
+  },
+  "ASS5_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "Fielder with fifth assist"
+  },
+  "ASS6_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with sixth assist"
+  },
+  "ASS7_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with seventh assist"
+  },
+  "ASS8_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with eighth assist"
+  },
+  "ASS9_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "fielder with ninth assist"
   },
   "AWAY_SCORE_CT": {
    "source": "chadwick_cwevent",
@@ -1096,13 +2000,25 @@
    "source": "chadwick_cwevent",
    "text": "Runner on first"
   },
+  "BASE2_FORCE_FL": {
+   "source": "chadwick_cwevent",
+   "text": "force play at second flag"
+  },
   "BASE2_RUN_ID": {
    "source": "chadwick_cwevent",
    "text": "Runner on second"
   },
+  "BASE3_FORCE_FL": {
+   "source": "chadwick_cwevent",
+   "text": "force play at third flag"
+  },
   "BASE3_RUN_ID": {
    "source": "chadwick_cwevent",
    "text": "Runner on third"
+  },
+  "BASE4_FORCE_FL": {
+   "source": "chadwick_cwevent",
+   "text": "force play at home flag"
   },
   "BATTEDBALL_CD": {
    "source": "chadwick_cwevent",
@@ -1120,6 +2036,10 @@
    "source": "chadwick_cwevent",
    "text": "Batter event flag"
   },
+  "BAT_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of batter (base ultimately advanced to)"
+  },
   "BAT_FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Defensive position"
@@ -1136,6 +2056,10 @@
    "source": "chadwick_cwevent",
    "text": "Batter"
   },
+  "BAT_IN_HOLD_ID": {
+   "source": "chadwick_cwevent",
+   "text": "ID of the batter in the hold"
+  },
   "BAT_LAST_ID": {
    "source": "chadwick_cwevent",
    "text": "half inning (differs from batting team if home team bats first)"
@@ -1144,17 +2068,41 @@
    "source": "chadwick_cwevent",
    "text": "Lineup position"
   },
+  "BAT_ON_DECK_ID": {
+   "source": "chadwick_cwevent",
+   "text": "ID of the batter on deck"
+  },
   "BAT_PLAY_TX": {
    "source": "chadwick_cwevent",
    "text": "Play on batter"
+  },
+  "BAT_SAFE_ERR_FL": {
+   "source": "chadwick_cwevent",
+   "text": "batter safe on error flag"
+  },
+  "BAT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "batter is starter flag"
+  },
+  "BAT_TEAM_ID": {
+   "source": "chadwick_cwevent",
+   "text": "batting team id"
   },
   "BUNT_FL": {
    "source": "chadwick_cwevent",
    "text": "Bunt flag"
   },
+  "COUNT_TX": {
+   "source": "chadwick_cwevent",
+   "text": "text of count as appears in event file"
+  },
   "DP_FL": {
    "source": "chadwick_cwevent",
    "text": "Double play flag"
+  },
+  "END_BASES_CD": {
+   "source": "chadwick_cwevent",
+   "text": "base state at end of play"
   },
   "ERR1_CD": {
    "source": "chadwick_cwevent",
@@ -1188,17 +2136,37 @@
    "source": "chadwick_cwevent",
    "text": "Event type"
   },
+  "EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Event number"
+  },
   "EVENT_OUTS_CT": {
    "source": "chadwick_cwevent",
    "text": "Outs on play"
+  },
+  "EVENT_RUNS_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of runs on play"
   },
   "EVENT_TX": {
    "source": "chadwick_cwevent",
    "text": "Event text"
   },
+  "FATE_RUNS_CT": {
+   "source": "chadwick_cwevent",
+   "text": "runs scored in half inning after this event"
+  },
   "FLD_CD": {
    "source": "chadwick_cwevent",
    "text": "Fielded by"
+  },
+  "FLD_ID": {
+   "source": "chadwick_cwevent",
+   "text": "id of player fielding batted ball"
+  },
+  "FLD_TEAM_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fielding team id"
   },
   "FOUL_FL": {
    "source": "chadwick_cwevent",
@@ -1216,9 +2184,17 @@
    "source": "chadwick_cwevent",
    "text": "New game flag"
   },
+  "GAME_PA_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of plate appearances in game for team on offense"
+  },
   "HOME_SCORE_CT": {
    "source": "chadwick_cwevent",
    "text": "Home score"
+  },
+  "HOME_TEAM_ID": {
+   "source": "chadwick_cwevent",
+   "text": "home team id"
   },
   "H_CD": {
    "source": "chadwick_cwevent",
@@ -1228,6 +2204,22 @@
    "source": "chadwick_cwevent",
    "text": "Inning"
   },
+  "INN_END_FL": {
+   "source": "chadwick_cwevent",
+   "text": "end of half inning flag"
+  },
+  "INN_NEW_FL": {
+   "source": "chadwick_cwevent",
+   "text": "start of half inning flag"
+  },
+  "INN_PA_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of plate appearances in inning for team on offense"
+  },
+  "INN_RUNS_CT": {
+   "source": "chadwick_cwevent",
+   "text": "runs scored in this half inning"
+  },
   "LEADOFF_FL": {
    "source": "chadwick_cwevent",
    "text": "Leadoff flag"
@@ -1235,6 +2227,62 @@
   "OUTS_CT": {
    "source": "chadwick_cwevent",
    "text": "Outs"
+  },
+  "PA_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of balls in plate appearance"
+  },
+  "PA_CALLED_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of called balls in plate appearance"
+  },
+  "PA_CALLED_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of called strikes in plate appearance"
+  },
+  "PA_FOUL_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of foul balls in plate appearance"
+  },
+  "PA_HITBATTER_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of pitches hitting batter in plate appearance"
+  },
+  "PA_INPLAY_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of balls in play in plate appearance"
+  },
+  "PA_INTENT_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of intentional balls in plate appearance"
+  },
+  "PA_NEW_FL": {
+   "source": "chadwick_cwevent",
+   "text": "start of plate appearance flag"
+  },
+  "PA_OTHER_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of other balls in plate appearance"
+  },
+  "PA_OTHER_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of other strikes in plate appearance"
+  },
+  "PA_PITCHOUT_BALL_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of pitchouts in plate appearance"
+  },
+  "PA_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of strikes in plate appearance"
+  },
+  "PA_SWINGMISS_STRIKE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "number of swinging strikes in plate appearance"
+  },
+  "PA_TRUNC_FL": {
+   "source": "chadwick_cwevent",
+   "text": "truncated plate appearance flag"
   },
   "PB_FL": {
    "source": "chadwick_cwevent",
@@ -1255,6 +2303,10 @@
   "PIT_ID": {
    "source": "chadwick_cwevent",
    "text": "Pitcher"
+  },
+  "PIT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "pitcher is starter flag"
   },
   "PO1_FLD_CD": {
    "source": "chadwick_cwevent",
@@ -1344,6 +2396,10 @@
    "source": "chadwick_cwevent",
    "text": "Result batter"
   },
+  "RESP_BAT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "result batter is starter flag"
+  },
   "RESP_PIT_HAND_CD": {
    "source": "chadwick_cwevent",
    "text": "Result pitcher hand"
@@ -1351,6 +2407,14 @@
   "RESP_PIT_ID": {
    "source": "chadwick_cwevent",
    "text": "Result pitcher"
+  },
+  "RESP_PIT_START_FL": {
+   "source": "chadwick_cwevent",
+   "text": "result pitcher is starter flag"
+  },
+  "RUN1_AUTO_FL": {
+   "source": "chadwick_cwevent",
+   "text": "whether runner on first is an automatic runner"
   },
   "RUN1_CS_FL": {
    "source": "chadwick_cwevent",
@@ -1360,6 +2424,22 @@
    "source": "chadwick_cwevent",
    "text": "Runner on first destination"
   },
+  "RUN1_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of runner on first"
+  },
+  "RUN1_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "defensive position of runner on first"
+  },
+  "RUN1_LINEUP_CD": {
+   "source": "chadwick_cwevent",
+   "text": "lineup position of runner on first"
+  },
+  "RUN1_ORIGIN_EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "event number on which runner on first reached base"
+  },
   "RUN1_PK_FL": {
    "source": "chadwick_cwevent",
    "text": "Pickoff of runner on first"
@@ -1367,6 +2447,10 @@
   "RUN1_PLAY_TX": {
    "source": "chadwick_cwevent",
    "text": "Play on runner on first"
+  },
+  "RUN1_RESP_CAT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Responsible catcher for runner on first"
   },
   "RUN1_RESP_PIT_ID": {
    "source": "chadwick_cwevent",
@@ -1376,6 +2460,10 @@
    "source": "chadwick_cwevent",
    "text": "Stolen base for runner on first"
   },
+  "RUN2_AUTO_FL": {
+   "source": "chadwick_cwevent",
+   "text": "whether runner on second is an automatic runner"
+  },
   "RUN2_CS_FL": {
    "source": "chadwick_cwevent",
    "text": "Caught stealing for runner on second"
@@ -1383,6 +2471,22 @@
   "RUN2_DEST_ID": {
    "source": "chadwick_cwevent",
    "text": "Runner on second destination"
+  },
+  "RUN2_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of runner on second"
+  },
+  "RUN2_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "defensive position of runner on second"
+  },
+  "RUN2_LINEUP_CD": {
+   "source": "chadwick_cwevent",
+   "text": "lineup position of runner on second"
+  },
+  "RUN2_ORIGIN_EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "event number on which runner on second reached base"
   },
   "RUN2_PK_FL": {
    "source": "chadwick_cwevent",
@@ -1392,6 +2496,10 @@
    "source": "chadwick_cwevent",
    "text": "Play on runner on second"
   },
+  "RUN2_RESP_CAT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Responsible catcher for runner on second"
+  },
   "RUN2_RESP_PIT_ID": {
    "source": "chadwick_cwevent",
    "text": "Pitcher charged with runner on second"
@@ -1399,6 +2507,10 @@
   "RUN2_SB_FL": {
    "source": "chadwick_cwevent",
    "text": "Stolen base for runner on second"
+  },
+  "RUN3_AUTO_FL": {
+   "source": "chadwick_cwevent",
+   "text": "whether runner on third is an automatic runner"
   },
   "RUN3_CS_FL": {
    "source": "chadwick_cwevent",
@@ -1408,6 +2520,22 @@
    "source": "chadwick_cwevent",
    "text": "Runner on third destination"
   },
+  "RUN3_FATE_ID": {
+   "source": "chadwick_cwevent",
+   "text": "fate of runner on third"
+  },
+  "RUN3_FLD_CD": {
+   "source": "chadwick_cwevent",
+   "text": "defensive position of runner on third"
+  },
+  "RUN3_LINEUP_CD": {
+   "source": "chadwick_cwevent",
+   "text": "lineup position of runner on third"
+  },
+  "RUN3_ORIGIN_EVENT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "event number on which runner on third reached base"
+  },
   "RUN3_PK_FL": {
    "source": "chadwick_cwevent",
    "text": "Pickoff of runner on third"
@@ -1415,6 +2543,10 @@
   "RUN3_PLAY_TX": {
    "source": "chadwick_cwevent",
    "text": "Play on runner on third"
+  },
+  "RUN3_RESP_CAT_ID": {
+   "source": "chadwick_cwevent",
+   "text": "Responsible catcher for runner on third"
   },
   "RUN3_RESP_PIT_ID": {
    "source": "chadwick_cwevent",
@@ -1432,6 +2564,18 @@
    "source": "chadwick_cwevent",
    "text": "Sacrifice hit flag"
   },
+  "START_BASES_CD": {
+   "source": "chadwick_cwevent",
+   "text": "base state at start of play"
+  },
+  "START_BAT_SCORE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "score for team on offense"
+  },
+  "START_FLD_SCORE_CT": {
+   "source": "chadwick_cwevent",
+   "text": "score for team on defense"
+  },
   "STRIKES_CT": {
    "source": "chadwick_cwevent",
    "text": "Strikes"
@@ -1439,6 +2583,14 @@
   "TP_FL": {
    "source": "chadwick_cwevent",
    "text": "Triple play flag"
+  },
+  "UNCERTAIN_PLAY_EXC_FL": {
+   "source": "chadwick_cwevent",
+   "text": "uncertain play flag"
+  },
+  "UNKNOWN_OUT_EXC_FL": {
+   "source": "chadwick_cwevent",
+   "text": "unknown fielding credit flag"
   },
   "WP_FL": {
    "source": "chadwick_cwevent",

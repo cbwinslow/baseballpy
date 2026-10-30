@@ -17,3 +17,6 @@ what a finding requires.
 
 ## Impact
 `src/baseballpy/sources/retrosheet/`, `docs/sources/retrosheet.md`, the `retrosheet-ingestion` spec, `docs/columns/retrosheet.json`.
+
+## As built (2026-10-30)
+All 19 fix tasks (5.1-5.19), the verification (3.1-3.4) and the close (4.1) are done. Differences from the plan: the review found four non-unique keys and one wrong value convention that only a real-data run could show (5.16-5.19); the processed tier now carries a schema digest and an optional dataset `revision` (ADR 49, 51); `box_records` is refused as CSV and PostgreSQL stores its list column as JSON; column descriptions cover 994 of 1,262 columns (the rest need retrosheet.org documents, B-18). dlt was evaluated as the processed-tier writer and rejected (ADR 50).

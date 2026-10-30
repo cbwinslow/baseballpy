@@ -3,11 +3,11 @@
 Cards with steps and files: `docs/agents/tracks/03-retrosheet.md` (card R-0N is the Nth task below).
 Findings of the review become tasks `5.n` (with cards) before the tests and verification tasks run.
 
-- [ ] 1. Review (look and report; no code changes)
-  - [ ] 1.1 Inventory the provider against the registry (R-01)
-  - [ ] 1.2 Check registry and adapter conformance (R-02)
-  - [ ] 1.3 Compare the generated schema with real data (R-03)
-  - [ ] 1.4 Review the code against the designated tools and decoupling rules (R-04)
+- [x] 1. Review (look and report; no code changes)
+  - [x] 1.1 Inventory the provider against the registry (R-01)
+  - [x] 1.2 Check registry and adapter conformance (R-02)
+  - [x] 1.3 Compare the generated schema with real data (R-03)
+  - [x] 1.4 Review the code against the designated tools and decoupling rules (R-04)
 - [x] 5. Fixes (the standard ones first, then one task per finding of the review)
   - [x] 5.1 Record upstream fingerprints for every raw file (R-05)
   - [x] 5.2 Decide currency with is_current() at every cache tier (R-06)
@@ -28,12 +28,12 @@ Findings of the review become tasks `5.n` (with cards) before the tests and veri
   - [x] 5.17 substitutions key is not unique: a player who changes position in one stoppage gets two rows; add SUB_FLD_CD to the key (R-26)
   - [x] 5.18 box_starters key is not unique: a two-way player is listed twice in a lineup; add position to the key (R-27)
   - [x] 5.19 Event text fields: missing means NULL (not an empty string) so CSV round-trips; a parser revision replaces chunks an older parser wrote (R-29)
-- [ ] 2. Tests
-  - [ ] 2.1 Close the spec and test gaps (R-10)
-- [ ] 3. Verify
-  - [ ] 3.1 Live verification on a clean scratch home (R-11)
-  - [ ] 3.2 Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (R-12)
-  - [ ] 3.3 Cited column descriptions (R-13)
+- [x] 2. Tests
+  - [x] 2.1 Close the spec and test gaps (R-10)
+- [x] 3. Verify
+  - [x] 3.1 Live verification on a clean scratch home (R-11)
+  - [x] 3.2 Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (R-12)
+  - [x] 3.3 Cited column descriptions (R-13)
   - [x] 3.4 Processed chunks are not rebuilt when the parser or schema changes (R-28)
-- [ ] 4. Close
-  - [ ] 4.1 Docs, decisions, spec merge, archive (R-14)
+- [x] 4. Close
+  - [x] 4.1 Docs, decisions, spec merge, archive (R-14)

@@ -1,6 +1,6 @@
 # Track 3: Retrosheet
 
-OpenSpec change: `openspec/changes/retrosheet-source-review/`. Spec: `openspec/specs/retrosheet-ingestion/`.
+OpenSpec change: `openspec/changes/archive/2026-10-30-retrosheet-source-review/`. Spec: `openspec/specs/retrosheet-ingestion/`.
 Docs: `docs/sources/retrosheet.md`. Code: `src/baseballpy/sources/retrosheet/`. Method: `docs/agents/WORK_BREAKDOWN.md`;
 standing standards: `docs/DATA_WORKFLOW.md` (currency, export, onboarding checklist), `docs/agents/TOOLING.md`.
 
@@ -114,7 +114,7 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Change task:** `retrosheet-source-review 2.1`
 - **Stage:** S5
 - **Executor:** agy writes tests from the findings, Claude reviews
-- **Files:** openspec/changes/retrosheet-source-review/specs/retrosheet-ingestion/spec.md (delta), tests/test_retrosheet*.py
+- **Files:** openspec/changes/archive/2026-10-30-retrosheet-source-review/specs/retrosheet-ingestion/spec.md (delta), tests/test_retrosheet*.py
 - **Tools (reuse check):** respx for HTTP, hypothesis for parsing and lookups, fixtures under tests/fixtures/
 - **Inputs:** the current spec requirements and every finding that changed behavior; start only when every task 5.n is done
 - **Steps:** 1. one scenario per finding and per requirement without one; each ends with a `Verified by` line; 2. property tests where parsing or lookups are lossy; 3. confirm unit tests make no network call.
