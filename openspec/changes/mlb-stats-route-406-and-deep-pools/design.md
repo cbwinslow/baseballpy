@@ -9,3 +9,6 @@ Searched for how other clients handle HTTP 406 on `statsapi.mlb.com/api/v1/stats
 
 ## 2.1 Generator guard (2026-10-30)
 `scripts/gen_mlb_schemas.py`: `get_json` logs every provider error (403, 406, 429, 500, 502, 503, 504) with its status and remembers it in `PROVIDER_ERRORS`; `probe_param_combos` does not mark a stat type `unsupported` when a provider error occurred during its probe protocol; `write_combos` refuses to replace `stat_combos.py` with an empty league-wide player or team table. Tests: `tests/test_gen_mlb_keys.py::test_a_provider_error_is_logged_and_remembered_never_read_as_no_data`, `::test_an_empty_league_wide_table_is_never_written` (both fail without the change).
+
+## 2.2 Deep pools (2026-10-30)
+The three single-season pools (`stats_stats_single_season_{hitting,fielding,advanced_fielding}`, about 190k rows) ignore the season, so a per-season split is impossible; the 503s came from deep offsets with 1,000-row pages. `MlbEndpointGeneric._get_pages` now halves the page size from the same offset after a 5xx (down to `MIN_PAGE_SIZE` = 125) and continues with the smaller page, logging each step. Test `tests/test_mlb_coverage.py::test_a_5xx_at_a_deep_offset_is_retried_with_smaller_pages` (fails without the change). Not verified live: the route answers 406 (task 1.2), so the pools cannot be re-run yet (task 3.1).

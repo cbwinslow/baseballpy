@@ -464,3 +464,32 @@ def test_sport_without_teams_is_counted_not_fatal(tmp_path: Path) -> None:
     )
     report = extractor.ingest("teams_season", Context(season=2024, sport_ids=(1, 31)))
     assert (report.requests, report.missing) == (2, 1) and report.rows >= 1
+
+
+@respx.mock
+def test_a_5xx_at_a_deep_offset_is_retried_with_smaller_pages(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    paginated = next((e for e in COVERED if e.paginated), None)
+    if paginated is None:
+        pytest.skip("no league-wide stats endpoint returned data when schemas were generated")
+    monkeypatch.setattr(generic, "PAGE_SIZE", 4)
+    monkeypatch.setattr(generic, "MIN_PAGE_SIZE", 1)
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    base = _fixture(paginated.name)
+    splits = base["stats"][0]["splits"]
+    assert len(splits) >= 3
+
+    def page(request: httpx.Request) -> httpx.Response:
+        limit, offset = int(request.url.params["limit"]), int(request.url.params["offset"])
+        if limit > 2:  # the provider gives up on big pages
+            return httpx.Response(503)
+        body = json.loads(json.dumps(base))
+        body["stats"][0]["splits"] = splits[offset : offset + limit]
+        body["stats"][0]["totalSplits"] = 3
+        return httpx.Response(200, json=body)
+
+    respx.get(f"{MLB_BASE_URL}/{paginated.path}").mock(side_effect=page)
+    report = extractor.ingest(paginated, Context(season=2024))
+    assert report.rows == 3

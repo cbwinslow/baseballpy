@@ -19,7 +19,7 @@ from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
-from baseballpy.core.http import HttpClient, HttpResult, get_http_client
+from baseballpy.core.http import HttpClient, HttpResult, HttpStatusError, get_http_client
 from baseballpy.core.quarantine import Quarantine, checked_cast, safe_array
 from baseballpy.core.schema_tools import EXTRAS, UPSTREAM_KEY, pa_type
 from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key, schema_matches
@@ -57,6 +57,9 @@ MAX_SPLITS = 20_000
 #: seconds a page of an all-time pool may take: deep offsets into a ~190k-row pool exceed the
 #: default 30 s request timeout upstream (a real run of ``stats_single_season_hitting`` timed out)
 HEAVY_PAGE_TIMEOUT = 180.0
+
+#: smallest page a paginated request falls back to after a 5xx (halving from ``PAGE_SIZE``)
+MIN_PAGE_SIZE = 125
 
 
 class HeavyEndpointError(RuntimeError):
@@ -218,11 +221,27 @@ class MlbEndpointExtractor:
             return [(f"{request.ident}.json", result)]
         pages: list[tuple[str, HttpResult]] = []
         offset = 0
+        size = PAGE_SIZE
         while True:
-            params = {**request.params, "limit": PAGE_SIZE, "offset": offset}
-            result = self.http.get_sync(
-                url, params=params, timeout=HEAVY_PAGE_TIMEOUT if allow_heavy else None
-            )
+            params = {**request.params, "limit": size, "offset": offset}
+            try:
+                result = self.http.get_sync(
+                    url, params=params, timeout=HEAVY_PAGE_TIMEOUT if allow_heavy else None
+                )
+            except HttpStatusError as exc:
+                # deep offsets of the ~190k-row pools make the provider answer 5xx: ask for
+                # smaller pages from the same offset before giving up
+                if exc.status < 500 or size // 2 < MIN_PAGE_SIZE:
+                    raise
+                size //= 2
+                logger.warning(
+                    "%s: HTTP %s at offset %s; retrying with pages of %s rows",
+                    endpoint.name,
+                    exc.status,
+                    offset,
+                    size,
+                )
+                continue
             pages.append((f"{request.ident}.p{len(pages)}.json", result))
             payload = result.json()
             got = sum(1 for _ in iter_records(payload, endpoint.records))
@@ -232,11 +251,11 @@ class MlbEndpointExtractor:
                     f"{endpoint.name} announces {total:,} rows (> {MAX_SPLITS:,}); it ignores the "
                     "season. Pass include_history=True / allow_heavy=True to download it anyway."
                 )
-            offset += PAGE_SIZE
+            offset += size
             if (
                 got == 0
                 or (total is not None and offset >= total)
-                or (total is None and got < PAGE_SIZE)
+                or (total is None and got < size)
             ):
                 return pages
 
