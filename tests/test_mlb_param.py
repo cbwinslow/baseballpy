@@ -184,3 +184,10 @@ def test_keys_never_contain_a_part_that_can_be_empty_in_the_payload() -> None:
     # jersey numbers are empty for some staff: an empty text is NULL and a NULL key part breaks merge
     assert all("jerseyNumber" not in ep.keys for ep in BY_NAME.values())
     assert BY_NAME["ref_metrics"].keys == ("metricId",)  # one metric has the empty name ''
+
+
+def test_the_team_expected_statistics_route_is_recorded_unsupported_with_evidence() -> None:
+    from baseballpy.sources.mlb_api.endpoints import BY_NAME
+
+    ep = BY_NAME["team_stats_expected_statistics_hitting"]
+    assert ep.unsupported and ep.verified_on == "2026-10-30" and len(ep.tried) >= 2

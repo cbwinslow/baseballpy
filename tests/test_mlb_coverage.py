@@ -589,3 +589,25 @@ def test_a_refused_league_wide_pool_is_fetched_through_people_hydrate(
     assert report.rows == 2 and hydrate.call_count == 2 and not report.errors
     raw = lake.raw_dir("mlb_api", ep.name, 2024)
     assert any(".hydrate." in p.name for p in raw.glob("*.json")), "the provider's bytes are kept"
+
+
+@respx.mock
+def test_a_season_less_pool_lists_players_for_the_request_season(tmp_path: Path) -> None:
+    from baseballpy.sources.mlb_api.endpoints import Request
+
+    extractor = MlbEndpointExtractor(cache_config=LakeConfig(home=tmp_path))
+    players = respx.get(f"{MLB_BASE_URL}/v1/sports/1/players").mock(
+        return_value=httpx.Response(200, json={"people": [{"id": 7}]})
+    )
+    respx.get(f"{MLB_BASE_URL}/v1/people").mock(
+        return_value=httpx.Response(200, json={"people": []})
+    )
+    request = Request(
+        "stats_projected_zips_hitting_2025_sport1",
+        "v1/stats",
+        {"stats": "projectedRos", "group": "hitting", "sportIds": "1", "playerPool": "ALL"},
+        2025,
+    )
+    ep = BY_NAME["stats_season_hitting"]
+    extractor._pool_pages_by_hydrate(ep, request)
+    assert dict(players.calls[0].request.url.params) == {"season": "2025"}

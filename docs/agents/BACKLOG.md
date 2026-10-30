@@ -150,7 +150,7 @@ touches a source under review, do it inside that source's track.
 | B-71 | data-workflow-standard 2.5: Lahman records fingerprints and decides with is_current() (done by lahman-source-review 5.1 and 5.2 = B-90 and B-91; tick both tasks when they finish) | DONE | upstream.is_current used, blob fingerprints in the raw manifests, `cache check --upstream` shows no unfingerprinted Lahman file |
 | B-72 | data-workflow-standard 2.6: Retrosheet records fingerprints and decides with is_current() | DONE (retrosheet-source-review 5.1, 5.2; ADR 48) | same as B-71 for Retrosheet |
 | B-73 | data-workflow-standard 2.7: Statcast records fingerprints and decides with is_current() | DONE (statcast-source-review 5.1, 5.2; ADR 52) | content or ETag fingerprints recorded, time-to-live kept for how often to ask |
-| B-74 | `data-workflow-standard 2.8`: MLB API records fingerprints and decides with is_current() | in the MLB API review | same as B-73 for the MLB API |
+| B-74 | data-workflow-standard 2.8: MLB API records fingerprints and decides with is_current() | DONE (mlb_api-source-review 5.1, 5.2; ADR 43, 49) | same as B-73 for the MLB API |
 | B-75 | chadwick-complete-access 1.1-3.1: process-wide register cache, full PlayerRecord, access to all four datasets, cited descriptions, docs, spec merge | DONE (archived 2026-10-29) | Chadwick has no open tasks; remaining Chadwick-adjacent work is only B-43 (export command, CSV/PostgreSQL) and the Retrosheet use of the Chadwick software tools |
 
 ## L. Export workflow, Chadwick as the model (`export-workflow`, replaces B-43 and B-44)
@@ -270,17 +270,17 @@ touches a source under review, do it inside that source's track.
 | B-161 | mlb_api-source-review 5.3: Keep the provider's documentation files (card M-07) | DONE | see the card |
 | B-162 | mlb_api-source-review 5.4: Review the second way in (user-supplied files); N/A if the source has none (card M-08) | DONE | see the card |
 | B-163 | mlb_api-source-review 5.5: Make every dataset and column reachable from Python (card M-09) | DONE | see the card |
-| B-164 | `mlb_api-source-review 2.1`: Close the spec and test gaps (card M-10) | after B-163 and after every task 5.n found by the review (add its rows below) | see the card |
-| B-165 | `mlb_api-source-review 3.1`: Live verification on a clean scratch home (card M-11) | after B-164 | see the card |
-| B-166 | `mlb_api-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card M-12) | after B-165 | see the card |
-| B-167 | `mlb_api-source-review 3.3`: Cited column descriptions (card M-13) | after B-166 | see the card |
-| B-168 | `mlb_api-source-review 4.1`: Docs, decisions, spec merge, archive (card M-14) | after B-167 | see the card |
+| B-164 | mlb_api-source-review 2.1: Close the spec and test gaps (card M-10) | DONE | see the card |
+| B-165 | mlb_api-source-review 3.1: Live verification on a clean scratch home (card M-11) | DONE | see the card |
+| B-166 | mlb_api-source-review 3.2: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card M-12) | DONE | see the card |
+| B-167 | mlb_api-source-review 3.3: Cited column descriptions (card M-13) | DONE | see the card |
+| B-168 | mlb_api-source-review 4.1: Docs, decisions, spec merge, archive (card M-14) | DONE | see the card |
 | B-169 | mlb_api-source-review 5.6: No hard-coded default season; standings honour refresh (card M-15) | DONE | see the card |
 | B-170 | mlb_api-source-review 5.7: One refused request must not abort the season job (card M-16) | DONE | see the card |
 | B-171 | mlb_api-source-review 5.8: Registered keys unique on real rows (card M-17) | DONE | see the card |
 | B-172 | mlb_api-source-review 5.9: `--datasets` accepts any registered dataset name (card M-18) | DONE | see the card |
 | B-173 | mlb_api-source-review 5.10: Empty text is NULL; parser revision (card M-19) | DONE | see the card |
-| B-174 | `mlb_api-source-review 5.11`: Remaining non-unique keys (card M-20) | READY | see the card |
-| B-175 | `mlb_api-source-review 5.12`: team_stats_expected_statistics_hitting holds the player list as JSON (card M-21) | READY | see the card |
+| B-174 | mlb_api-source-review 5.11: Remaining non-unique keys (card M-20) | DONE | see the card |
+| B-175 | mlb_api-source-review 5.12: team_stats_expected_statistics_hitting recorded unsupported (card M-21) | DONE | see the card |
 | B-176 | mlb_api-source-review 5.13: League-wide pools survive the provider's 406 (card M-22) | DONE | see the card |
 | B-177 | mlb_api-source-review 5.14: baseballpy probe (card M-23) | DONE | see the card |

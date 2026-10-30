@@ -438,6 +438,20 @@ _STATS = [
 #: Team stat types with one row per game: a doubleheader gives a club two rows on one date, so the
 #: game completes the key (checked unique on the 2025 rows of all three groups, 2026-10-30).
 _PER_GAME_TEAM_STATS = ("gameLog", "atGameStart")
+#: Team stat types the provider answers with nonsense (verified 2026-10-30): ``expectedStatistics``
+#: is a player statistic; on the team route it returns player splits, 1,000 rows of 34 distinct
+#: players with ``limit=1000`` while ``totalSplits`` says 673, and ``pitching`` answers HTTP 500.
+_TEAM_STATS_UNSUPPORTED: dict[tuple[str, str], tuple[str, str, tuple[str, ...]]] = {
+    ("expectedStatistics", "hitting"): (
+        "the team route returns repeated player splits, not team rows",
+        "2026-10-30",
+        (
+            "GET /v1/teams/stats?stats=expectedStatistics&group=hitting&season=2025&sportIds=1&limit=1000"
+            " -> 1000 splits, 34 distinct players, totalSplits 673",
+            "the same request for group=pitching -> HTTP 500",
+        ),
+    ),
+}
 _TEAM_STATS = [
     MlbEndpoint(
         f"team_stats_{snake(stat)}_{group}",
@@ -450,6 +464,15 @@ _TEAM_STATS = [
         "season",
         {"stats": stat, "group": group, "season": "{season}", "sportIds": "{sport_id}"},
         "stats",
+        unsupported=_TEAM_STATS_UNSUPPORTED[(stat, group)][0]
+        if (stat, group) in _TEAM_STATS_UNSUPPORTED
+        else None,
+        verified_on=_TEAM_STATS_UNSUPPORTED[(stat, group)][1]
+        if (stat, group) in _TEAM_STATS_UNSUPPORTED
+        else None,
+        tried=_TEAM_STATS_UNSUPPORTED[(stat, group)][2]
+        if (stat, group) in _TEAM_STATS_UNSUPPORTED
+        else (),
     )
     for stat, group, keys in TEAM_STAT_COMBOS
 ]
@@ -602,7 +625,7 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "team_coaches",
         "v1/teams/{team_id}/coaches",
         ("roster",),
-        "Coaching staff of a club-season.",
+        "Coaching staff of a club-season. A coach who changed jersey number appears twice (an empty jersey number is NULL, so it cannot be a key part): the key is not unique.",
         ("team_id", "person.id", "job"),
         "team_season",
         season="{season}",
@@ -611,7 +634,7 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "team_personnel",
         "v1/teams/{team_id}/personnel",
         ("roster",),
-        "Non-playing personnel of a club-season.",
+        "Non-playing personnel of a club-season. The provider repeats a row for one person: the key is not unique.",
         ("team_id", "person.id", "job"),
         "team_season",
         season="{season}",
@@ -649,7 +672,7 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "transactions_season",
         "v1/transactions",
         ("transactions",),
-        "Every transaction of a calendar year (trades, signings, DFAs, IL moves, ...), all fields.",
+        "Every transaction of a calendar year (trades, signings, DFAs, IL moves, ...), all fields. A trade has one id for several people and person_id can be empty, so the key is not unique: export with replace or append.",
         ("id",),
         "season",
         startDate="{season}-01-01",
@@ -728,7 +751,7 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "v1/draft/prospects/{year}",
         ("prospects",),
         "Draft prospects of a year.",
-        ("person.id", "bisPlayerId"),
+        ("person.id", "year"),
         "season",
     ),
     _ep(

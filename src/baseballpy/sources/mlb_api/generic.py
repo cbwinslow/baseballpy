@@ -265,7 +265,7 @@ class MlbEndpointExtractor:
         params = request.params
         sport = str(params.get("sportIds", "1"))
         expression = _hydrate_expression(params, sport)
-        ids = self._pool_player_ids(sport, params.get("season"))
+        ids = self._pool_player_ids(sport, params.get("season", request.season))
         logger.warning(
             "%s: /v1/stats refused; fetching %d players of sport %s by hydrate in batches of %d",
             endpoint.name,

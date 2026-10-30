@@ -17,3 +17,6 @@ what a finding requires.
 
 ## Impact
 `src/baseballpy/sources/mlb_api/`, `docs/sources/mlb_api.md`, the `mlb-api-ingestion` spec, `docs/columns/mlb_api.json`.
+
+## As built (2026-10-30)
+Findings 5.1-5.14: raw fingerprints, schema-following tables, no hard-coded default season (and standings honour refresh), a Python `table()` entry point, a refused request no longer aborts a season run, keys proven unique on real rows (9 datasets) with the rest documented, registry-name `--datasets`, empty text is NULL (parser revision 1), the unsupported team expectedStatistics route recorded with evidence, the league-wide pools survive the provider's 406 through people hydrate (ADR 53), and `baseballpy probe`. Not verified: a full default-season rerun after the fixes, the minor-league sports through the fallback, the all-time pools (blocked by the 406). Column descriptions cover 56% (no published definitions for the rest).

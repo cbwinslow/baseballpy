@@ -2050,12 +2050,8 @@
    "key_unique_per_request": true
   },
   "team_stats_expected_statistics_hitting": {
-   "status": "ok",
-   "requests_ok": 2,
-   "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 27,
-   "key_unique_per_request": false
+   "status": "unsupported",
+   "reason": "the team route returns repeated player splits, not team rows"
   },
   "team_stats_last_x_games_hitting": {
    "status": "ok",

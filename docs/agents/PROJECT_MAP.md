@@ -18,7 +18,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
 | `lahman-database` | 11 | 18 | 26 |
-| `mlb-api-ingestion` | 11 | 11 | 13 |
+| `mlb-api-ingestion` | 18 | 18 | 21 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 3 | 5 | 5 |
 | `retrosheet-ingestion` | 19 | 20 | 21 |
@@ -37,19 +37,17 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
 | `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 19 |
 | `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 14 |
-| `mlb_api` | 366 | in progress (16/23 tasks) | yes | yes | yes | 9462/16698 (56%) | 11 |
+| `mlb_api` | 365 | archived | yes | yes | yes | 9443/16670 (56%) | 18 |
 
 ## Active changes (`openspec/changes/`)
 
-39 changes are archived under `openspec/changes/archive/`.
+41 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `data-workflow-standard` | 12 | 2 | 2.8 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `mlb-stats-route-406-and-deep-pools` | 4 | 5 | 1.2, 3.1, 3.2 |
-| `mlb_api-source-review` | 17 | 11 | 5.11, 5.12, 2.1, 3.1, 3.2, 3.3, 4.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
 

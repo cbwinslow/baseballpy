@@ -540,7 +540,7 @@ Draft prospects of a year.
 - **View:** `mlb_draft_prospects`
 - **Processed path:** `processed/mlb_api/draft_prospects/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `person_id`, `bis_player_id`
+- **Key:** `person_id`, `year`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -5840,7 +5840,7 @@ Club alumni (hitting) of a season.
 <!-- BEGIN GENERATED:mlb_api.team_coaches -->
 ### Dataset: team_coaches
 
-Coaching staff of a club-season.
+Coaching staff of a club-season. A coach who changed jersey number appears twice (an empty jersey number is NULL, so it cannot be a key part): the key is not unique.
 
 - **View:** `mlb_team_coaches`
 - **Processed path:** `processed/mlb_api/team_coaches/season=YYYY/part-<chunk>.parquet`
@@ -5906,7 +5906,7 @@ Franchise history (names/locations by season).
 <!-- BEGIN GENERATED:mlb_api.team_personnel -->
 ### Dataset: team_personnel
 
-Non-playing personnel of a club-season.
+Non-playing personnel of a club-season. The provider repeats a row for one person: the key is not unique.
 
 - **View:** `mlb_team_personnel`
 - **Processed path:** `processed/mlb_api/team_personnel/season=YYYY/part-<chunk>.parquet`
@@ -18365,7 +18365,7 @@ League-wide game stats, type season (player pool ALL).
 <!-- BEGIN GENERATED:mlb_api.transactions_season -->
 ### Dataset: transactions_season
 
-Every transaction of a calendar year (trades, signings, DFAs, IL moves, ...), all fields.
+Every transaction of a calendar year (trades, signings, DFAs, IL moves, ...), all fields. A trade has one id for several people and person_id can be empty, so the key is not unique: export with replace or append.
 
 - **View:** `mlb_transactions_season`
 - **Processed path:** `processed/mlb_api/transactions_season/season=YYYY/part-<chunk>.parquet`
