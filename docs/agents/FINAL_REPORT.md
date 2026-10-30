@@ -10,7 +10,7 @@ backlog (`BACKLOG.md`); what is left needs the owner, an external host, or the n
   clean (run for commit `1729921`; the later commits are documentation only and re-ran the runbook tests).
 - Homelab, 2026-10-28/29: default `ingest all`, per-game and per-player families, on-demand datasets,
   the 2015-2024 window with resume, MLB API 1990 and 2024 (654,821 rows, 3,061 s after ADR 40);
-  numbers in `docs/BACKFILL.md`, evidence in `openspec/changes/verify-optin-paths/design.md`.
+  numbers in `docs/BACKFILL.md`, evidence in `openspec/changes/archive/2026-10-30-verify-optin-paths/design.md`.
 - All-time pools: 42 of 57 ingested (2,265,447 rows); 15 failed with root causes recorded (B-01 done).
 - The two `vs_player_*_opp_team` keys are unique on live data (B-03 done, `KEY_OVERRIDES`).
 - All 89 spec scenarios cite a test (`tests/test_spec_scenarios.py`).

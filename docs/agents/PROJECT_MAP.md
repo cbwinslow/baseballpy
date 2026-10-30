@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-36 changes are archived under `openspec/changes/archive/`.
+37 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -52,7 +52,6 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `reference-docs` | 2 | 1 | 3 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
-| `verify-optin-paths` | 7 | 1 | 7 |
 
 ## Decisions (`docs/DECISIONS.md`)
 

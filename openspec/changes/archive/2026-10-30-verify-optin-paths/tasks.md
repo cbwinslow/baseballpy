@@ -6,5 +6,5 @@
 - [x] 4. On-demand: `people_changes`, `game_changes` (`updated_since`), `people_search` (query): 128, 21 and 5+6 rows on the homelab; drift fixed by a wider search sample (design, Findings)
 - [x] 5. `StatcastGameFeed.ingest_season` with a small cap (`ingest statcast --datasets game_feed --limit 20`: 20 feeds, 50 MB raw, 25 s; see design, Findings)
 - [x] 6. CLI knobs for opt-in paths where missing, generated from the registry, with tests and `docs generate`
-- [ ] 7. Final report; archive
+- [x] 7. Final report; archive
 - [x] 8. Unique keys for `people_stats_vs_player_hitting_opp_team` and `people_stats_vs_player_pitching_opp_team` (find the split dimensions in the payloads, extend the key, regenerate, test; documented non-unique today)

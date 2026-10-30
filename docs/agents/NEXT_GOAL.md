@@ -28,7 +28,7 @@ Every backlog item is DONE, or every remaining item is OWNER/EXTERNAL/after-one-
 
 STATE AT START (all committed on `main` except this prompt's own commit; nothing pushed)
 - 14 specs; `unified-pipeline-and-cli` archived; the CLI (`ingest`, `catalog list|show|status|audit`, `db`, `stream`, `quarantine`, `audit`, `doctor`, `refs`, `migrate-layout`) and `docs/CLI.md` exist.
-- Verified on the homelab on 2026-10-28: default `ingest all` for 2023; per-game (13 datasets) and per-player (149 endpoints) opt-in families; on-demand datasets; Statcast game feed; 2015-2024 historical window with resume; clean-machine install; mkdocs strict; sdist and wheel. Evidence is in `openspec/changes/verify-optin-paths/design.md`. The all-time pools and the two vs_player keys are done (B-01, B-03); the 15 failed pools and the schema drift are in `mlb-stats-route-406-and-deep-pools` (B-30..B-36). The default User-Agent is pybaseball's (ADR 40).
+- Verified on the homelab on 2026-10-28: default `ingest all` for 2023; per-game (13 datasets) and per-player (149 endpoints) opt-in families; on-demand datasets; Statcast game feed; 2015-2024 historical window with resume; clean-machine install; mkdocs strict; sdist and wheel. Evidence is in `openspec/changes/archive/2026-10-30-verify-optin-paths/design.md`. The all-time pools and the two vs_player keys are done (B-01, B-03); the 15 failed pools and the schema drift are in `mlb-stats-route-406-and-deep-pools` (B-30..B-36). The default User-Agent is pybaseball's (ADR 40).
 - retrosheet.org times out from the PC and the homelab; `retrosheet-csv-bundles` was rejected (ADR 41); `boxfile.txt` is not available.
 
 STORAGE RULE (owner update 2026-10-29: about 120 GB is free on this PC's C: drive)
