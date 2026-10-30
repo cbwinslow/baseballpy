@@ -88,6 +88,7 @@ def test_substitution_and_daily_split_keys_survive_double_switches(tmp_path: Pat
         + b"play,1,0,vis01,00,,S8\n"
         + b"sub,visp2,Reliever,0,0,1\n"
         + b"sub,vis03,Pinch,0,2,11\n"
+        + b"sub,vis03,Pinch,0,2,6\n"
         + b"play,1,0,vis03,00,,K\n"
     )
     path = tmp_path / "2024BOS.EVA"
@@ -101,7 +102,8 @@ def test_substitution_and_daily_split_keys_survive_double_switches(tmp_path: Pat
         assert rows and len(set(rows)) == len(rows), name
     # two substitutions in front of the same play share (GAME_ID, EVENT_ID); SUB_ID tells them apart
     event_keys = set(zip(subs["GAME_ID"].to_pylist(), subs["EVENT_ID"].to_pylist(), strict=True))
-    assert len(subs) == 2 and len(event_keys) == 1
+    # a player who changes position in the same stoppage keeps his SUB_ID; SUB_FLD_CD tells the rows apart
+    assert len(subs) == 3 and len(event_keys) == 1
 
 
 def test_boxscores_batting_key_is_unique_and_orders_a_slots_occupants(tmp_path: Path) -> None:

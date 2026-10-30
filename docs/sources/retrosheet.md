@@ -1565,7 +1565,7 @@ In-game substitutions.
 - **View:** `retrosheet_substitutions`
 - **Processed path:** `processed/retrosheet/substitutions/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `GAME_ID`, `EVENT_ID`, `SUB_ID`
+- **Key:** `GAME_ID`, `EVENT_ID`, `SUB_ID`, `SUB_FLD_CD`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |

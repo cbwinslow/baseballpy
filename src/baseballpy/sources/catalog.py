@@ -302,7 +302,7 @@ def register_all() -> dict[str, DatasetSpec]:
         (
             "substitutions",
             retro.RETROSHEET_SUBSTITUTIONS_SCHEMA,
-            ("GAME_ID", "EVENT_ID", "SUB_ID"),
+            ("GAME_ID", "EVENT_ID", "SUB_ID", "SUB_FLD_CD"),
             "season",
             "5-substitutions-sub",
             "In-game substitutions.",

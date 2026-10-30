@@ -285,3 +285,14 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. add a roster column (file team code); 2. key (year, roster, player_id); 3. rebuild and re-measure.
 - **Done when:** `uv run pytest tests/test_retrosheet_rows.py -q` passes; the quality check reports no duplicate roster rows on the live lake
 - **Record:** tick 5.16; design.md.
+
+### R-26 substitutions key is not unique: a player who changes position in one stoppage gets two rows
+- **Change task:** `retrosheet-source-review 5.17`
+- **Stage:** S3
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/catalog.py, tests/test_retrosheet_events.py
+- **Tools (reuse check):** the existing quality check found it (no new code)
+- **Inputs:** live run: substitutions duplicate_key_rows=1 for 2018 (TBA201805080, event 53: wendj002 enters at 2B, then moves to SS in the same stoppage)
+- **Steps:** 1. add SUB_FLD_CD to the key; 2. test a position change; 3. re-measure on the live lake (the quality check stays the safety net).
+- **Done when:** `uv run pytest tests/test_retrosheet_events.py -q` passes; no duplicate substitution rows on the live lake
+- **Record:** tick 5.17; design.md.

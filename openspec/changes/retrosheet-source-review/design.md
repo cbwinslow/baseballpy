@@ -107,3 +107,7 @@ Before: only `download_season` wrote an audit event. Now one event per tree list
 ## Evidence for 5.16 (rosters key)
 
 The live 2015-2026 run reported `rosters duplicate_key_rows` of 76 (2015) and 79 (2016). Cause: `ALS<year>.ROS` and `NLS<year>.ROS` (all-star rosters) repeat each player's club line (`altuj001,...,HOU,2B` is in `HOU2015.ROS` and in `ALS2015.ROS`), so `(year, team, player_id)` is not unique. The new `roster` column (file team code) makes `(year, roster, player_id)` unique; no player appears twice inside one roster file in the downloaded seasons. Test: `tests/test_retrosheet_rows.py::test_all_star_roster_lines_are_told_apart_by_the_roster_they_came_from`.
+
+## Evidence for 5.17 (substitutions key)
+
+Live run, season 2018: `substitutions duplicate_key_rows=1`. Game TBA201805080, event 53: `wendj002` is substituted in at second base and moves to shortstop in the same stoppage, so `(GAME_ID, EVENT_ID, SUB_ID)` repeats while `SUB_FLD_CD` (4 and 6) and `REMOVED_ID` differ. The key is now `(GAME_ID, EVENT_ID, SUB_ID, SUB_FLD_CD)`. A player who returned to the same position in one stoppage would still collide; the quality check would report it. Test: `tests/test_retrosheet_events.py::test_substitution_and_daily_split_keys_survive_double_switches`.
