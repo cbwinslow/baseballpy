@@ -95,7 +95,7 @@ def _task_numbers(change: str) -> set[str]:
 def test_every_card_names_a_real_change_task() -> None:
     problems = []
     for path, title, body in _cards():
-        match = re.search(r"\*\*Change task:\*\* `([a-z][a-z0-9-]+) (\d+(?:\.\d+)?)`", body)
+        match = re.search(r"\*\*Change task:\*\* `([a-z][a-z0-9_-]+) (\d+(?:\.\d+)?)`", body)
         if not match:
             problems.append(f"{path.name} {title}: Change task is not `<change> <number>`")
         elif match.group(2) not in _task_numbers(match.group(1)):

@@ -41,7 +41,7 @@ class MlbApiSource:
         """Extract game boxscore as (batting_table, pitching_table)."""
         return self.extractor.extract_boxscore(game_pk=game_pk, refresh=refresh)
 
-    def standings(self, season: int = 2024, refresh: bool = False) -> pa.Table:
+    def standings(self, season: int | None = None, refresh: bool = False) -> pa.Table:
         """Extract league standings."""
         return self.extractor.extract_standings(season=season, refresh=refresh)
 
@@ -53,11 +53,11 @@ class MlbApiSource:
         """Extract team roster."""
         return self.extractor.extract_roster(team_id=team_id, refresh=refresh)
 
-    def transactions(self, season: int = 2024, refresh: bool = False) -> pa.Table:
+    def transactions(self, season: int | None = None, refresh: bool = False) -> pa.Table:
         """Extract season transactions."""
         return self.extractor.extract_transactions(season=season, refresh=refresh)
 
-    def draft(self, year: int = 2024, refresh: bool = False) -> pa.Table:
+    def draft(self, year: int | None = None, refresh: bool = False) -> pa.Table:
         """Extract draft picks."""
         return self.extractor.extract_draft(year=year, refresh=refresh)
 
@@ -312,7 +312,7 @@ def get_boxscore(game_pk: int, refresh: bool = False) -> tuple[pa.Table, pa.Tabl
     return get_default_source().boxscore(game_pk=game_pk, refresh=refresh)
 
 
-def get_standings(season: int = 2024, refresh: bool = False) -> pa.Table:
+def get_standings(season: int | None = None, refresh: bool = False) -> pa.Table:
     """Extract standings for a season."""
     return get_default_source().standings(season=season, refresh=refresh)
 
@@ -327,12 +327,12 @@ def get_roster(team_id: int, refresh: bool = False) -> pa.Table:
     return get_default_source().roster(team_id=team_id, refresh=refresh)
 
 
-def get_transactions(season: int = 2024, refresh: bool = False) -> pa.Table:
+def get_transactions(season: int | None = None, refresh: bool = False) -> pa.Table:
     """Extract transactions for a season."""
     return get_default_source().transactions(season=season, refresh=refresh)
 
 
-def get_draft(year: int = 2024, refresh: bool = False) -> pa.Table:
+def get_draft(year: int | None = None, refresh: bool = False) -> pa.Table:
     """Extract draft picks for a year."""
     return get_default_source().draft(year=year, refresh=refresh)
 

@@ -43,6 +43,10 @@ class MlbApiExtractor:
         cleanup_stale_parts(self.cache_config.raw_root / "mlb_api")
         cleanup_stale_parts(self.cache_config.processed_root / "mlb_api")
 
+    def _season(self, season: int | None) -> int:
+        """The given season, else the current one (no season is hard-coded)."""
+        return season if season is not None else self.cache_config.today_or_now().year
+
     @staticmethod
     def _spec(name: str) -> DatasetSpec:
         return get_dataset("mlb_api", name)
@@ -221,8 +225,9 @@ class MlbApiExtractor:
 
         return batting_table, pitching_table
 
-    def extract_standings(self, season: int = 2024, refresh: bool = False) -> pa.Table:
-        """Extract and normalize league/division standings."""
+    def extract_standings(self, season: int | None = None, refresh: bool = False) -> pa.Table:
+        """Extract and normalize league/division standings (default: the current season)."""
+        season = self._season(season)
         return self._extract(
             ident=f"standings_{season}",
             dataset="standings",
@@ -258,8 +263,9 @@ class MlbApiExtractor:
             refresh=refresh,
         )
 
-    def extract_transactions(self, season: int = 2024, refresh: bool = False) -> pa.Table:
-        """Extract and normalize roster transactions for a season."""
+    def extract_transactions(self, season: int | None = None, refresh: bool = False) -> pa.Table:
+        """Extract and normalize roster transactions for a season (default: the current one)."""
+        season = self._season(season)
         return self._extract(
             ident=f"transactions_{season}",
             dataset="transactions",
@@ -270,8 +276,9 @@ class MlbApiExtractor:
             refresh=refresh,
         )
 
-    def extract_draft(self, year: int = 2024, refresh: bool = False) -> pa.Table:
-        """Extract and normalize MLB first-year player draft."""
+    def extract_draft(self, year: int | None = None, refresh: bool = False) -> pa.Table:
+        """Extract and normalize the MLB first-year player draft (default: the current year)."""
+        year = self._season(year)
         return self._extract(
             ident=f"draft_{year}",
             dataset="draft",

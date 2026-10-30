@@ -273,3 +273,28 @@ def test_mlb_source_orchestrator(tmp_path: Path) -> None:
     assert len(table) == 1
     assert table["wins"].to_pylist() == [94]
     assert table["win_pct"].to_pylist()[0] == pytest.approx(0.580)
+
+
+@respx.mock
+def test_default_seasons_follow_the_calendar_and_standings_honour_refresh(tmp_path: Path) -> None:
+    from datetime import date
+
+    lake = LakeConfig(home=tmp_path, today=date(2031, 7, 1))
+    extractor = MlbApiExtractor(cache_config=lake)
+    seen: list[dict[str, str]] = []
+
+    def answer(request: httpx.Request) -> httpx.Response:
+        seen.append(dict(request.url.params))
+        return httpx.Response(200, json={"records": [], "dates": [], "drafts": {"rounds": []}})
+
+    for route in ("standings", "transactions"):
+        respx.get(f"{MLB_BASE_URL}/v1/{route}").mock(side_effect=answer)
+    respx.get(f"{MLB_BASE_URL}/v1/draft/2031").mock(side_effect=answer)
+    extractor.extract_standings()
+    extractor.extract_standings()  # served from the lake
+    count = len(seen)
+    extractor.extract_standings(refresh=True)
+    assert len(seen) == count + 1, "refresh reaches the network"
+    extractor.extract_transactions()
+    extractor.extract_draft()
+    assert {p.get("season") for p in seen if "season" in p} == {"2031"}

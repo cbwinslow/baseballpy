@@ -55,7 +55,7 @@ def test_backlog_names_no_task_that_is_done_or_unknown() -> None:
     project_map = _load_project_map()
     open_now = {f"{c} {n}" for c, n in project_map.open_tasks()}
     known = {c.name for c in project_map.active_changes()}
-    for ref in re.findall(r"`([a-z][a-z0-9-]+ \d+(?:\.\d+)?)`", backlog):
+    for ref in re.findall(r"`([a-z][a-z0-9_-]+ \d+(?:\.\d+)?)`", backlog):
         assert ref.split(" ")[0] in known, f"unknown change in backlog: {ref}"
         assert ref in open_now, f"backlog lists a finished task: {ref}"
 
