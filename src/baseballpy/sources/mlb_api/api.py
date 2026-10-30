@@ -137,7 +137,9 @@ class MlbApiSource:
         """Ingest every flat (season-independent) endpoint: reference lists, jobs, history."""
         ctx = Context()
         return [
-            self.endpoints.ingest(e, ctx, refresh=refresh) for e in SUPPORTED if e.scope == "flat"
+            self.endpoints.ingest(e, ctx, refresh=refresh, keep_going=True)
+            for e in SUPPORTED
+            if e.scope == "flat"
         ]
 
     def final_game_pks(self, season: int) -> tuple[int, ...]:
@@ -177,7 +179,9 @@ class MlbApiSource:
         reports = self.ingest_reference(refresh)
         sports = sport_ids if sport_ids is not None else self.all_sport_ids()
         reports.append(
-            self.endpoints.ingest("teams_season", self._context(season, sports), refresh=refresh)
+            self.endpoints.ingest(
+                "teams_season", self._context(season, sports), refresh=refresh, keep_going=True
+            )
         )
         ctx = self._context(season, sports)
         season_eps = [
@@ -191,7 +195,9 @@ class MlbApiSource:
             and (include_history or not e.heavy)
         ]
         reports.extend(
-            self.endpoints.ingest(e, ctx, refresh=refresh, allow_heavy=include_history)
+            self.endpoints.ingest(
+                e, ctx, refresh=refresh, allow_heavy=include_history, keep_going=True
+            )
             for e in season_eps
         )
         if include_people_stats:
@@ -205,7 +211,7 @@ class MlbApiSource:
             pks = pks[:max_games] if max_games is not None else pks
             game_ctx = self._context(season, sports, pks)
             reports.extend(
-                self.endpoints.ingest(e, game_ctx, refresh=refresh)
+                self.endpoints.ingest(e, game_ctx, refresh=refresh, keep_going=True)
                 for e in SUPPORTED
                 if e.scope == "game"
             )
@@ -225,7 +231,7 @@ class MlbApiSource:
         """
         ctx = self._context(season, self.all_sport_ids())
         return [
-            self.endpoints.ingest(e, ctx, refresh=refresh, allow_heavy=True)
+            self.endpoints.ingest(e, ctx, refresh=refresh, allow_heavy=True, keep_going=True)
             for e in SUPPORTED
             if e.heavy and e.scope != "person_season"
         ]
@@ -278,7 +284,7 @@ class MlbApiSource:
             return True
 
         return [
-            self.endpoints.ingest(e, ctx, refresh=refresh)
+            self.endpoints.ingest(e, ctx, refresh=refresh, keep_going=True)
             for e in SUPPORTED
             if e.scope == "person_season" and wanted(e)
         ]

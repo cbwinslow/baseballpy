@@ -493,3 +493,48 @@ def test_a_5xx_at_a_deep_offset_is_retried_with_smaller_pages(
     respx.get(f"{MLB_BASE_URL}/{paginated.path}").mock(side_effect=page)
     report = extractor.ingest(paginated, Context(season=2024))
     assert report.rows == 3
+
+
+@respx.mock
+def test_every_mlb_raw_file_records_an_upstream_fingerprint(tmp_path: Path) -> None:
+    from baseballpy.core.upstream import CONTENT_SHA256, stored_fingerprint
+
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    for pk in (745000, 775296):
+        respx.get(f"{MLB_BASE_URL}/v1/game/{pk}/linescore").mock(
+            return_value=httpx.Response(200, json=_fixture("game_linescore"))
+        )
+    extractor.ingest("game_linescore", Context(season=2024, game_pks=(745000, 775296)))
+    chunks = lake.dataset_manifest("mlb_api", "game_linescore", "raw", 2024).chunks()
+    assert chunks
+    assert all(
+        (fp := stored_fingerprint(entry)) is not None and fp.kind == CONTENT_SHA256
+        for entry in chunks.values()
+    )
+
+
+@respx.mock
+def test_one_refused_request_does_not_stop_the_others_and_fails_the_job_afterwards(
+    tmp_path: Path,
+) -> None:
+    from baseballpy.core.http import HttpStatusError
+    from baseballpy.ingest.types import JobStatus, make_job
+    from baseballpy.sources.mlb_api.adapter import _result
+
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    respx.get(f"{MLB_BASE_URL}/v1/game/745000/linescore").mock(return_value=httpx.Response(406))
+    respx.get(f"{MLB_BASE_URL}/v1/game/775296/linescore").mock(
+        return_value=httpx.Response(200, json=_fixture("game_linescore"))
+    )
+    with pytest.raises(HttpStatusError):
+        extractor.ingest("game_linescore", Context(season=2024, game_pks=(745000, 775296)))
+    report = extractor.ingest(
+        "game_linescore", Context(season=2024, game_pks=(745000, 775296)), keep_going=True
+    )
+    assert report.requests == 2 and report.rows > 0
+    assert len(report.errors) == 1 and "406" in report.errors[0]
+    result = _result(make_job("mlb_api", "season", season=2024), [report])
+    assert result.status == JobStatus.FAILED and result.rows == report.rows
+    assert "1 request(s) refused" in result.detail and "game_linescore" in (result.error or "")

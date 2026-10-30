@@ -13,7 +13,8 @@ from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.freshness import is_fresh
 from baseballpy.core.http import HttpClient, HttpResult, get_http_client
-from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
+from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key, schema_matches
+from baseballpy.core.upstream import response_fingerprint
 from baseballpy.sources import catalog
 from baseballpy.sources.mlb_api.normalizer import MlbApiNormalizer
 
@@ -96,7 +97,7 @@ class MlbApiExtractor:
         entry = self.store.config.dataset_manifest("mlb_api", dataset).get_chunk(
             manifest_key(ident, season)
         )
-        if cache_file.exists() and self.cache_config.is_fresh(
+        if (cache_file.exists() and schema_matches(spec, entry)) and self.cache_config.is_fresh(
             entry, freshness_key or dataset, season=season, refresh=refresh
         ):
             return self._read_cached(cache_file, endpoint)
@@ -111,6 +112,7 @@ class MlbApiExtractor:
                 result.content,
                 season=season,
                 etag=result.etag or "",
+                upstream=response_fingerprint(result.content, result.etag),
             )
             self.store.put(spec, table, chunk_id=ident, season=season)
         return table
@@ -216,6 +218,7 @@ class MlbApiExtractor:
                 result.content,
                 season=part_season,
                 etag=result.etag or "",
+                upstream=response_fingerprint(result.content, result.etag),
             )
             self.manifest_for("box_batting").set_completed(
                 ident,

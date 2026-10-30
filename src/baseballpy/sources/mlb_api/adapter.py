@@ -5,11 +5,28 @@ from datetime import datetime
 from typing import Any
 
 from baseballpy.ingest.results import counts_to_result
-from baseballpy.ingest.types import Job, JobResult, Selection, make_job
+from baseballpy.ingest.types import Job, JobResult, JobStatus, Selection, make_job
 
 FIRST_SEASON = 1876
 KNOWN_DATASETS = {"reference", "season", "games", "history", "people_stats"}
 DEFAULT_DATASETS = ("reference", "season")
+
+
+def _result(job: Job, reports: Sequence[Any]) -> JobResult:
+    """Row counts of the reports as a result; refused requests fail the job but keep the data."""
+    counts = [None if r.requests == r.cached else r.rows for r in reports]
+    result = counts_to_result(job, counts)
+    refused = [f"{r.name}: {e}" for r in reports for e in r.errors]
+    if not refused:
+        return result
+    shown = "; ".join(refused[:3]) + (f" (+{len(refused) - 3} more)" if len(refused) > 3 else "")
+    return JobResult(
+        job=job,
+        status=JobStatus.FAILED,
+        rows=result.rows,
+        detail=f"{len(refused)} request(s) refused by the provider, the rest were stored",
+        error=shown,
+    )
 
 
 class MlbApiAdapter:
@@ -77,8 +94,7 @@ class MlbApiAdapter:
 
         if job.task == "reference":
             reports = source.ingest_reference(refresh=refresh)
-            counts = [None if r.requests == r.cached else r.rows for r in reports]
-            return counts_to_result(job, counts)
+            return _result(job, reports)
 
         if job.task == "season":
             season_val = job.param("season")
@@ -89,8 +105,7 @@ class MlbApiAdapter:
             reports = source.ingest_season(
                 season, include_games=include_games, max_games=job.limit, refresh=refresh
             )
-            counts = [None if r.requests == r.cached else r.rows for r in reports]
-            return counts_to_result(job, counts)
+            return _result(job, reports)
 
         if job.task == "people_stats":
             season_val = job.param("season")
@@ -99,8 +114,7 @@ class MlbApiAdapter:
             reports = source.ingest_people_stats(
                 int(season_val), max_people=job.limit, refresh=refresh
             )
-            counts = [None if r.requests == r.cached else r.rows for r in reports]
-            return counts_to_result(job, counts)
+            return _result(job, reports)
 
         if job.task == "history":
             season_val = job.param("season")
@@ -108,8 +122,7 @@ class MlbApiAdapter:
                 raise ValueError(f"job {job.job_id} missing 'season' parameter")
             season = int(season_val)
             reports = source.ingest_history(season, refresh=refresh)
-            counts = [None if r.requests == r.cached else r.rows for r in reports]
-            return counts_to_result(job, counts)
+            return _result(job, reports)
 
         raise ValueError(f"unknown task {job.task!r} for mlb_api")
 

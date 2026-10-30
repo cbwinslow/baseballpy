@@ -34,3 +34,6 @@ Reuse check per module: `extractor.py` and `generic.py` use the shared `HttpClie
 
 ## S7 access, export, descriptions, docs, close
 (not started)
+
+## 5.1, 5.2, 5.3, 5.4, 5.5 evidence (2026-10-30)
+5.1: the four raw writes (`generic.py` x2, `extractor.py` x2) now pass `response_fingerprint` (ETag, else sha256); test fails without the change. 5.2: the generic fetcher already used `schema_matches` (ADR 49); the hand-written `_extract` cache check did not and now does; test fails without the change. 5.3: the MLB Stats API publishes no official documentation page (the references are third-party and listed in `docs/references/`); nothing to keep. 5.4: no second way in. 5.5: only the declarative endpoints had a by-name entry point (`get_endpoint`); `sources/mlb_api/access.py` adds `table(name, season, **arguments)` and `datasets()` over all 366 registered names (nine hand-written plus the declarative ones). 5.6: see S4.

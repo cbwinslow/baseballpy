@@ -8,13 +8,14 @@ Findings of the review become tasks `5.n` (with cards) before the tests and veri
   - [x] 1.2 Check registry and adapter conformance (M-02)
   - [ ] 1.3 Compare the generated schema with real data (M-03)
   - [x] 1.4 Review the code against the designated tools and decoupling rules (M-04)
-- [ ] 5. Fixes (the standard ones first, then one task per finding of the review)
-  - [ ] 5.1 Record upstream fingerprints for every raw file (M-05)
-  - [ ] 5.2 Decide currency with is_current() at every cache tier (M-06)
-  - [ ] 5.3 Keep the provider's documentation files (M-07)
-  - [ ] 5.4 Review the second way in (user-supplied files); N/A if the source has none (M-08)
-  - [ ] 5.5 Make every dataset and column reachable from Python (M-09)
+- [x] 5. Fixes (the standard ones first, then one task per finding of the review)
+  - [x] 5.1 Record upstream fingerprints for every raw file (M-05)
+  - [x] 5.2 Decide currency with is_current() at every cache tier (M-06)
+  - [x] 5.3 Keep the provider's documentation files (M-07)
+  - [x] 5.4 Review the second way in (user-supplied files); N/A if the source has none (M-08) <!-- N/A: the MLB Stats API has no import path -->
+  - [x] 5.5 Make every dataset and column reachable from Python (M-09)
   - [x] 5.6 No hard-coded default season; standings honour refresh (M-15)
+  - [x] 5.7 One refused request must not abort the season job: ingest the rest, fail the job at the end with detail (M-16)
 - [ ] 2. Tests
   - [ ] 2.1 Close the spec and test gaps (M-10)
 - [ ] 3. Verify

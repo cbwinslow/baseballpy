@@ -1,5 +1,6 @@
 """MLB Stats API extraction and live Gameday streaming module."""
 
+from baseballpy.sources.mlb_api.access import datasets, table
 from baseballpy.sources.mlb_api.api import (
     MlbApiSource,
     get_boxscore,
@@ -34,6 +35,8 @@ from baseballpy.sources.mlb_api.schemas import (
 from baseballpy.sources.mlb_api.stream import GamedayLiveStreamer
 
 __all__ = [
+    "datasets",
+    "table",
     "GameState",
     "GameType",
     "GamedayLiveStreamer",

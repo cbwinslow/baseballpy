@@ -282,6 +282,7 @@ class FakeEndpointReport:
     unsupported: str | None = None
     missing: int = 0
     raw_only: int = 0
+    errors: tuple[str, ...] = ()
 
 
 class FakeMlbApiSource:

@@ -175,3 +175,14 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. default to None and resolve the current season in the extractor; 2. pass `refresh` through; 3. a test with a fixed calendar.
 - **Done when:** `uv run pytest tests/test_mlb_api.py -q` passes and fails without the change
 - **Record:** tick 5.6; design.md S4.
+
+### M-16 One refused request must not abort the season job
+- **Change task:** `mlb_api-source-review 5.7`
+- **Stage:** S6
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/mlb_api/generic.py, adapter.py, tests/test_mlb_coverage.py
+- **Tools (reuse check):** existing `JobResult` failed status and `EndpointReport`; no new mechanism
+- **Inputs:** card M-11 live run 2026-10-30: the season job failed at the first league-wide `v1/stats` (HTTP 406) and stored nothing of the other default endpoints
+- **Steps:** 1. catch the refusal per request, keep going, report it; 2. the adapter ends the job as failed with detail and rows; 3. rerun the live season.
+- **Done when:** the test passes and fails without the change; the live 2025 season stores every endpoint the provider answers
+- **Record:** tick 5.7; design.md S6.

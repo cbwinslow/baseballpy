@@ -23,6 +23,7 @@ from baseballpy.core.http import HttpClient, HttpResult, HttpStatusError, get_ht
 from baseballpy.core.quarantine import Quarantine, checked_cast, safe_array
 from baseballpy.core.schema_tools import EXTRAS, UPSTREAM_KEY, pa_type
 from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key, schema_matches
+from baseballpy.core.upstream import response_fingerprint
 from baseballpy.sources import catalog
 from baseballpy.sources.mlb_api.endpoints import (
     BY_NAME,
@@ -166,6 +167,8 @@ class EndpointReport:
     unsupported: str | None = None
     missing: int = 0  # requests answered 404 and recorded as empty (``tolerate_missing``)
     raw_only: int = 0  # requests stored as raw JSON only (the probe found no records to type)
+    #: requests the provider refused ("HTTP 406 for <url>"); the other requests were still ingested
+    errors: tuple[str, ...] = ()
 
 
 class MlbEndpointExtractor:
@@ -321,6 +324,7 @@ class MlbEndpointExtractor:
                         season=request.season,
                         source_ref=url,
                         etag=result.etag or "",
+                        upstream=response_fingerprint(result.content, result.etag, url),
                     )
                 self.store.put(spec, table, chunk_id=request.ident, season=request.season)
             tracker.set_cache_hit(False)
@@ -357,6 +361,7 @@ class MlbEndpointExtractor:
                 season=request.season,
                 source_ref=url,
                 etag=result.etag or "",
+                upstream=response_fingerprint(result.content, result.etag, url),
             )
             stored += 1
         return EndpointReport(ep.name, n, 0, cached, raw_only=stored + cached)
@@ -367,8 +372,13 @@ class MlbEndpointExtractor:
         ctx: Context,
         refresh: bool = False,
         allow_heavy: bool = False,
+        keep_going: bool = False,
     ) -> EndpointReport:
-        """Ingest every request of ``endpoint`` for ``ctx`` (resumable; cached parts are skipped)."""
+        """Ingest every request of ``endpoint`` for ``ctx`` (resumable; cached parts are skipped).
+
+        A request the provider refuses raises, unless ``keep_going``: then the others are still
+        ingested and the refusals are listed in the report (a season run should not stop at one).
+        """
         ep = BY_NAME[endpoint] if isinstance(endpoint, str) else endpoint
         if ep.unsupported is not None:
             return EndpointReport(ep.name, 0, 0, 0, unsupported=ep.unsupported)
@@ -376,13 +386,22 @@ class MlbEndpointExtractor:
             return self._ingest_raw_only(ep, ctx, refresh)
         rows = cached = n = 0
         self.missing = 0
+        errors: list[str] = []
         for request in requests_for(ep, ctx):
             n += 1
             was_cached = self._is_cached(ep, request, refresh)
-            table = self.fetch_request(ep, request, refresh, allow_heavy)
+            try:
+                table = self.fetch_request(ep, request, refresh, allow_heavy)
+            except HttpStatusError as exc:
+                if not keep_going:
+                    raise
+                # one refused request (for example the league-wide 406) must not stop the rest
+                logger.warning("%s: %s", ep.name, exc)
+                errors.append(str(exc))
+                continue
             rows += table.num_rows
             cached += int(was_cached)
-        return EndpointReport(ep.name, n, rows, cached, missing=self.missing)
+        return EndpointReport(ep.name, n, rows, cached, missing=self.missing, errors=tuple(errors))
 
 
 def read_endpoint(

@@ -265,14 +265,15 @@ touches a source under review, do it inside that source's track.
 | B-156 | mlb_api-source-review 1.2: Check registry and adapter conformance (card M-02) | DONE | see the card |
 | B-157 | `mlb_api-source-review 1.3`: Compare the generated schema with real data (card M-03) | after B-156 | see the card |
 | B-158 | mlb_api-source-review 1.4: Review the code against the designated tools and decoupling rules (card M-04) | DONE | see the card |
-| B-159 | `mlb_api-source-review 5.1`: Record upstream fingerprints for every raw file (card M-05) | after B-158 | see the card |
-| B-160 | `mlb_api-source-review 5.2`: Decide currency with is_current() at every cache tier (card M-06) | after B-159 | see the card |
-| B-161 | `mlb_api-source-review 5.3`: Keep the provider's documentation files (card M-07) | after B-160 | see the card |
-| B-162 | `mlb_api-source-review 5.4`: Review the second way in (user-supplied files); N/A if the source has none (card M-08) | after B-161 | see the card |
-| B-163 | `mlb_api-source-review 5.5`: Make every dataset and column reachable from Python (card M-09) | after B-162 | see the card |
+| B-159 | mlb_api-source-review 5.1: Record upstream fingerprints for every raw file (card M-05) | DONE | see the card |
+| B-160 | mlb_api-source-review 5.2: Decide currency with is_current() at every cache tier (card M-06) | DONE | see the card |
+| B-161 | mlb_api-source-review 5.3: Keep the provider's documentation files (card M-07) | DONE | see the card |
+| B-162 | mlb_api-source-review 5.4: Review the second way in (user-supplied files); N/A if the source has none (card M-08) | DONE | see the card |
+| B-163 | mlb_api-source-review 5.5: Make every dataset and column reachable from Python (card M-09) | DONE | see the card |
 | B-164 | `mlb_api-source-review 2.1`: Close the spec and test gaps (card M-10) | after B-163 and after every task 5.n found by the review (add its rows below) | see the card |
 | B-165 | `mlb_api-source-review 3.1`: Live verification on a clean scratch home (card M-11) | after B-164 | see the card |
 | B-166 | `mlb_api-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card M-12) | after B-165 | see the card |
 | B-167 | `mlb_api-source-review 3.3`: Cited column descriptions (card M-13) | after B-166 | see the card |
 | B-168 | `mlb_api-source-review 4.1`: Docs, decisions, spec merge, archive (card M-14) | after B-167 | see the card |
 | B-169 | mlb_api-source-review 5.6: No hard-coded default season; standings honour refresh (card M-15) | DONE | see the card |
+| B-170 | mlb_api-source-review 5.7: One refused request must not abort the season job (card M-16) | DONE | see the card |

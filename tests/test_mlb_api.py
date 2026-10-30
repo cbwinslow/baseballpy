@@ -298,3 +298,37 @@ def test_default_seasons_follow_the_calendar_and_standings_honour_refresh(tmp_pa
     extractor.extract_transactions()
     extractor.extract_draft()
     assert {p.get("season") for p in seen if "season" in p} == {"2031"}
+
+
+@respx.mock
+def test_a_teams_table_written_under_another_schema_is_fetched_again(tmp_path: Path) -> None:
+    lake = LakeConfig(home=tmp_path)
+    extractor = MlbApiExtractor(cache_config=lake)
+    route = respx.get(f"{MLB_BASE_URL}/v1/teams").mock(
+        return_value=httpx.Response(200, json={"teams": [{"id": 1, "name": "A", "season": 2024}]})
+    )
+    extractor.extract_teams()
+    extractor.extract_teams()
+    assert route.call_count == 1
+    manifest = lake.dataset_manifest("mlb_api", "teams")
+    for key, entry in list(manifest.chunks().items()):
+        manifest.put_entry(key, {**entry, "schema_sha256": "0" * 64})
+    extractor.extract_teams()
+    assert route.call_count == 2
+
+
+@respx.mock
+def test_table_reaches_hand_written_and_declarative_datasets_by_name(tmp_path: Path) -> None:
+    from baseballpy.core.datasets import datasets_for
+    from baseballpy.sources.mlb_api import access
+
+    lake = LakeConfig(home=tmp_path)
+    assert {spec.name for spec in datasets_for("mlb_api")} == set(access.datasets())
+    assert set(access.HAND_WRITTEN) <= set(access.datasets())
+    respx.get(f"{MLB_BASE_URL}/v1/teams").mock(
+        return_value=httpx.Response(200, json={"teams": [{"id": 1, "name": "A", "season": 2024}]})
+    )
+    teams = access.table("teams", cache_config=lake)
+    assert teams.num_rows == 1
+    with pytest.raises(ValueError, match="unknown mlb_api dataset 'nope'.*teams"):
+        access.table("nope", cache_config=lake)

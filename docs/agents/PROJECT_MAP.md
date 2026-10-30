@@ -37,7 +37,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
 | `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 19 |
 | `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 14 |
-| `mlb_api` | 366 | in progress (4/15 tasks) | yes | no | no | 9462/16692 (56%) | 11 |
+| `mlb_api` | 366 | in progress (10/16 tasks) | yes | yes | yes | 9462/16692 (56%) | 11 |
 
 ## Active changes (`openspec/changes/`)
 
@@ -49,7 +49,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `data-workflow-standard` | 10 | 4 | 2.6, 2.7, 2.8 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `mlb-stats-route-406-and-deep-pools` | 4 | 5 | 1.2, 3.1, 3.2 |
-| `mlb_api-source-review` | 4 | 16 | 1.3, 5.1, 5.2, 5.3, 5.4, 5.5, 2.1, 3.1, 3.2, 3.3, 4.1 |
+| `mlb_api-source-review` | 11 | 10 | 1.3, 2.1, 3.1, 3.2, 3.3, 4.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
 
