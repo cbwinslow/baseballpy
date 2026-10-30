@@ -122,11 +122,27 @@ REF_FIXTURE_KEEP = 100  # reference lists are small; enum tests need them comple
 FIXTURES = Path("tests/fixtures/mlb")
 
 
+#: statuses that say the provider (not the data) is at fault: a probe that meets one proves nothing
+PROVIDER_ERROR_STATUSES = frozenset({403, 406, 429, 500, 502, 503, 504})
+#: every provider error met so far, as (path, status); a 406 on the league-wide route lasted days
+PROVIDER_ERRORS: list[tuple[str, int]] = []
+
+
 def get_json(http: HttpClient, path: str, params: dict[str, Any]) -> Any | None:
-    """Parsed JSON of a 200 response, else ``None`` (never raises on 4xx/5xx)."""
+    """Parsed JSON of a 200 response, else ``None`` (never raises on 4xx/5xx).
+
+    A provider error (see ``PROVIDER_ERROR_STATUSES``) is logged with its status and remembered in
+    ``PROVIDER_ERRORS`` so callers never read it as "no data".
+    """
     try:
-        res = http.get_sync(BASE + path, params=params, allow=(200, 400, 404, 500, 503))
+        res = http.get_sync(
+            BASE + path, params=params, allow=(200, 400, 404, *sorted(PROVIDER_ERROR_STATUSES))
+        )
     except (HttpStatusError, TransportError):
+        return None
+    if res.status in PROVIDER_ERROR_STATUSES:
+        PROVIDER_ERRORS.append((path, res.status))
+        print(f"  provider error HTTP {res.status} for {path} {params}")
         return None
     if res.status != 200:
         return None
@@ -259,6 +275,7 @@ def probe_param_combos(
     found: list[Any] = []
     unsupported: list[Any] = []
     for stat in stat_types:
+        errors_before = len(PROVIDER_ERRORS)
         if stat in productive:
             continue
         variants: list[tuple[str, tuple[tuple[str, str], ...], list[dict[str, Any]]]] = [
@@ -335,7 +352,10 @@ def probe_param_combos(
                 + ("/metrics" if "metric" in stat.lower() or "tracking" in stat.lower() else "")
                 + " variants returned nothing"
             )
-        if not hit:
+        if not hit and len(PROVIDER_ERRORS) > errors_before:
+            # the provider failed during the protocol: that is not evidence the stat type is empty
+            print(f"  param {stat}: provider errors, NOT marked unsupported (retry later)")
+        elif not hit:
             unsupported.append((stat, date.today().isoformat(), tuple(tried)))
             print(f"  param {stat}: NO DATA after the protocol")
     return found, unsupported
@@ -348,7 +368,14 @@ def write_combos(
     param: list[Any] | None = None,
     unsupported: list[Any] | None = None,
 ) -> None:
-    """Write ``stat_combos.py``."""
+    """Write ``stat_combos.py``; refuses to replace it with an empty league-wide table."""
+    if not players or not teams:
+        raise SystemExit(
+            "refusing to write stat_combos.py: the league-wide "
+            f"{'player' if not players else 'team'} combination table is empty "
+            f"(provider errors met: {sorted(set(PROVIDER_ERRORS))[:5]}); "
+            "retry later or use --only, never overwrite the table with nothing"
+        )
 
     def render(rows: list[Any], fallback: tuple[str, ...]) -> str:
         body = "".join(f"    ({s!r}, {g!r}, {(k or fallback)!r}),\n" for s, g, k in rows)

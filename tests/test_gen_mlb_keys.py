@@ -3,6 +3,8 @@
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 import gen_mlb_schemas as gen  # noqa: E402
@@ -56,3 +58,32 @@ def test_key_overrides_name_existing_endpoints_and_are_used() -> None:
     assert KEY_OVERRIDES
     for name, key in KEY_OVERRIDES.items():
         assert BY_NAME[name].keys == key
+
+
+def test_a_provider_error_is_logged_and_remembered_never_read_as_no_data(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    import httpx
+    import respx
+
+    from baseballpy.core.http import HttpClient
+
+    gen.PROVIDER_ERRORS.clear()
+    with respx.mock:
+        respx.get(url__startswith=gen.BASE + "v1/stats").mock(return_value=httpx.Response(406))
+        assert gen.get_json(HttpClient(), "v1/stats", {"stats": "season"}) is None
+    assert gen.PROVIDER_ERRORS == [("v1/stats", 406)]
+    assert "provider error HTTP 406" in capsys.readouterr().out
+    gen.PROVIDER_ERRORS.clear()
+
+
+def test_an_empty_league_wide_table_is_never_written(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    target = tmp_path / "src" / "baseballpy" / "sources" / "mlb_api" / "stat_combos.py"
+    target.parent.mkdir(parents=True)
+    target.write_text("KEEP = 1\n", encoding="utf-8")
+    with pytest.raises(SystemExit, match="refusing to write stat_combos.py"):
+        gen.write_combos([], [("season", "hitting", ("season",))], [])
+    assert target.read_text(encoding="utf-8") == "KEEP = 1\n"
