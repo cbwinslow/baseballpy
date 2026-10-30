@@ -10,6 +10,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 5 | 5 | 5 |
 | `caching-and-invalidation` | 14 | 24 | 31 |
+| `catalog-audit` | 1 | 1 | 1 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 9 | 11 | 15 |
 | `concurrency-and-rate-limiting` | 3 | 5 | 6 |
@@ -34,17 +35,16 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
-| `retrosheet` | 25 | not started | no | no | no | 718/1074 (66%) | 6 |
+| `retrosheet` | 25 | in progress (0/22 tasks) | yes | no | no | 718/1074 (66%) | 6 |
 | `statcast` | 38 | not started | no | no | no | 293/977 (29%) | 9 |
 | `mlb_api` | 366 | not started | no | no | no | 9462/16692 (56%) | 11 |
 
 ## Active changes (`openspec/changes/`)
 
-33 changes are archived under `openspec/changes/archive/`.
+34 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
-| `catalog-completeness-audit` | 10 | 1 | 4.2 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `data-workflow-standard` | 10 | 4 | 2.6, 2.7, 2.8 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
@@ -52,6 +52,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `reference-docs` | 2 | 1 | 3 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
+| `retrosheet-source-review` | 0 | 27 | 1.1, 1.2, 1.3, 1.4, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 5.10, 5.11, 5.12, 5.13, 2.1, 3.1, 3.2, 3.3, 4.1 |
 | `verify-optin-paths` | 7 | 1 | 7 |
 
 ## Decisions (`docs/DECISIONS.md`)
@@ -90,6 +91,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 32: Statcast Persisted Windows Lie on a Fixed Grid
 - ADR 33: Retrosheet Box-Score Game Accounts (Interim, Empirical Layouts)
 - ADR 34: Column Descriptions Come From Provider Metadata, With Cited Sources
+- ADR 35: A Completeness Audit Compares Every Provider List With the Registry
 - ADR 37: The First Catalog Audit Found Wrong `unsupported` Verdicts; Probe Protocol
 - ADR 38: Parameterized MLB Stat Types Are Registered as Fan-Out Dimensions
 - ADR 39: The IngestAdapter Is the Enforced Source Boundary; Extractor/Normalizer Protocols Are Optional
@@ -101,6 +103,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 45: The Chadwick Lookup Is Lazy, Nicknames Come From the Data, Fuzzy Search Is a Shared DuckDB Helper
 - ADR 46: Export Is Hybrid and Registry-Driven: pyarrow Files, dlt for Server Databases, Verified and Typed
 - ADR 47: Lahman Is Checked at Both Cache Tiers by Git Fingerprint; Database Exports Keep Identifier Names
+- ADR 48: Retrosheet Keeps Every Event Field, Is Checked by Git Fingerprint, Quarantines Broken Rows and Exports One Season at a Time
 
 ## Documentation pages (`docs/`)
 
@@ -126,6 +129,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/agents/WORK_BREAKDOWN.md`
 - `docs/agents/tracks/01-chadwick.md`
 - `docs/agents/tracks/02-lahman.md`
+- `docs/agents/tracks/03-retrosheet.md`
 - `docs/index.md`
 - `docs/references/README.md`
 - `docs/sources/chadwick.md`

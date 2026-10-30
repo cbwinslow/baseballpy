@@ -98,7 +98,7 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 | B-34 | `mlb-stats-route-406-and-deep-pools 2.2`: smaller pages or per-season split for the three deep pools | READY (delegate the code to agy, review the diff) | respx tests; the pools page without 503 in a later live run |
 | B-35 | `mlb-stats-route-406-and-deep-pools 3.1`: re-run the 15 failed pools and a modern season | after B-32 and B-34 (LONG, homelab) | rows and errors recorded in design.md |
 | B-36 | `mlb-stats-route-406-and-deep-pools 3.2`: regenerate the team_stats_year_by_year schemas | READY (confirm the route answers 200 first) | fields such as stat.flyHits are typed columns, test added, no full generator run |
-| B-37 | `catalog-completeness-audit 4.2`: ADR 35, spec merge, archive | READY | ADR 35 exists, the catalog-audit spec is in openspec/specs, the change is archived |
+| B-37 | catalog-completeness-audit 4.2: ADR 35, spec merge, archive | DONE | ADR 35 exists, the catalog-audit spec is in openspec/specs, the change is archived |
 | B-38 | `historical-backfill-plan 3.3`: ADR 36, backfill spec merge, archive | after B-10 | ADR 36 exists, the backfill spec is merged, the change is archived |
 
 ## J. dlt as the core (`dlt-pipeline-core`)
@@ -191,3 +191,30 @@ touches a source under review, do it inside that source's track.
 | B-102 | lahman-source-review 5.8: One consistent raw manifest entry per file; remove unused extractor code (card L-17) | DONE | see the card |
 | B-103 | lahman-source-review 5.9: Ingest jobs report cache hits (card L-18) | DONE | see the card |
 | B-104 | data-workflow-standard 2.9: `cache check --upstream` says so when nothing could be compared | DONE | message fixed, CliRunner test |
+
+## Source review: Retrosheet (`retrosheet-source-review`, track 3)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-105 | `retrosheet-source-review 1.1`: Inventory the provider against the registry (card R-01) | READY | see the card |
+| B-106 | `retrosheet-source-review 1.2`: Check registry and adapter conformance (card R-02) | after B-105 | see the card |
+| B-107 | `retrosheet-source-review 1.3`: Compare the generated schema with real data (card R-03) | after B-106 | see the card |
+| B-108 | `retrosheet-source-review 1.4`: Review the code against the designated tools and decoupling rules (card R-04) | after B-107 | see the card |
+| B-109 | `retrosheet-source-review 5.1`: Record upstream fingerprints for every raw file (card R-05) | after B-108 | see the card |
+| B-110 | `retrosheet-source-review 5.2`: Decide currency with is_current() at every cache tier (card R-06) | after B-109 | see the card |
+| B-111 | `retrosheet-source-review 5.3`: Keep the provider's documentation files (card R-07) | after B-110 | see the card |
+| B-112 | `retrosheet-source-review 5.4`: Review the second way in (user-supplied files); N/A if the source has none (card R-08) | after B-111 | see the card |
+| B-113 | `retrosheet-source-review 5.5`: Make every dataset and column reachable from Python (card R-09) | after B-112 | see the card |
+| B-114 | `retrosheet-source-review 2.1`: Close the spec and test gaps (card R-10) | after B-113 and after every task 5.n found by the review (add its rows below) | see the card |
+| B-115 | `retrosheet-source-review 3.1`: Live verification on a clean scratch home (card R-11) | after B-114 | see the card |
+| B-116 | `retrosheet-source-review 3.2`: Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (card R-12) | after B-115 | see the card |
+| B-117 | `retrosheet-source-review 3.3`: Cited column descriptions (card R-13) | after B-116 | see the card |
+| B-118 | `retrosheet-source-review 4.1`: Docs, decisions, spec merge, archive (card R-14) | after B-117 | see the card |
+| B-119 | `retrosheet-source-review 5.6`: Store every event field chadwickpy emits and key events on (GAME_ID, EVENT_ID) (card R-15) | after B-109 and B-110 | see the card |
+| B-120 | `retrosheet-source-review 5.7`: One declarative dataset-to-producer map: every registry name works with --datasets, one download per ingest (card R-16) | after B-109 and B-110 | see the card |
+| B-121 | `retrosheet-source-review 5.8`: No silent loss in game logs and rosters: quarantine short rows, keep extra fields in _extras (card R-17) | after B-109 and B-110 | see the card |
+| B-122 | `retrosheet-source-review 5.9`: Box parser: keep repeated info keys, safe dates, BoxParseError for bad numbers (card R-18) | after B-109 and B-110 | see the card |
+| B-123 | `retrosheet-source-review 5.10`: Shared stores: an empty rebuild removes the stale Parquet; stale .part files cleaned in processed/; quarantine follows the source's lake (card R-19) | after B-109 and B-110 | see the card |
+| B-124 | `retrosheet-source-review 5.11`: Export streams one season at a time (card R-20) | after B-109 and B-110 | see the card |
+| B-125 | `retrosheet-source-review 5.12`: Really stream box scores and box accounts; count rows without re-reading Parquet (card R-21) | after B-109 and B-110 | see the card |
+| B-126 | `retrosheet-source-review 5.13`: Data-quality checks across datasets, shown by catalog status (card R-22) | after B-109 and B-110 | see the card |
