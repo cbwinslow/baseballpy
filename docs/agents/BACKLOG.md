@@ -111,7 +111,7 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 | B-42 | dlt-pipeline-core 2.1: ADR 42 adopt or reject | DONE: ADR 42 | ADR 42 cites the numbers |
 | B-43 | dlt-pipeline-core 3.1: DltAdapter behind IngestAdapter (design REJECTED by the owner 2026-10-29; redesign first, see docs/agents/HANDOFF_B43.md) | DONE (superseded by ADR 44 and export-workflow, B-76..B-85) | a new design the owner approves: existing tools used better (Arrow interchange, SinkProtocol sinks incl. CSV, dlt, narwhals), uniform and registry-driven |
 | B-44 | dlt-pipeline-core 3.2: retire flatten, _extras and drift paths replaced by contracts | DONE (superseded by ADR 44 and export-workflow, B-76..B-85) | tests, docs generate, gates green |
-| B-45 | `reference-docs 3`: cross-check endpoints and column types against the reference docs | READY (agy can extract the endpoint and type tables from the cloned docs, Claude verifies against live data) | `docs/references/ENDPOINT_CROSSCHECK.md` lists every registry endpoint with its documented route and types in each reference and any disagreement with the live-probed schema |
+| B-45 | reference-docs 3: cross-check endpoints and column types against the reference docs | DONE (routes cross-checked by `scripts/endpoint_crosscheck.py`; the references document parameters, not response column types, so types stay confirmed by live-probed samples) | `docs/references/ENDPOINT_CROSSCHECK.md` lists every registry endpoint with its documented route and types in each reference and any disagreement with the live-probed schema |
 
 ## K. Source-by-source review (owner request 2026-10-29; method in `docs/agents/WORK_BREAKDOWN.md`)
 

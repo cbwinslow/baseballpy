@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-37 changes are archived under `openspec/changes/archive/`.
+38 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -49,7 +49,6 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `data-workflow-standard` | 10 | 4 | 2.6, 2.7, 2.8 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `mlb-stats-route-406-and-deep-pools` | 4 | 5 | 1.2, 3.1, 3.2 |
-| `reference-docs` | 2 | 1 | 3 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
 | `statcast-source-review` | 0 | 19 | 1.1, 1.2, 1.3, 1.4, 5.1, 5.2, 5.3, 5.4, 5.5, 2.1, 3.1, 3.2, 3.3, 4.1 |
@@ -135,6 +134,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/agents/tracks/03-retrosheet.md`
 - `docs/agents/tracks/04-statcast.md`
 - `docs/index.md`
+- `docs/references/ENDPOINT_CROSSCHECK.md`
 - `docs/references/README.md`
 - `docs/sources/chadwick.md`
 - `docs/sources/lahman.md`
