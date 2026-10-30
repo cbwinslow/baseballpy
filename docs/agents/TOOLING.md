@@ -25,7 +25,7 @@ something a designated tool does is a defect, even if its tests pass. This file 
 | Dataframe-agnostic code | `narwhals` | `frames.py`, register lookups | write the same logic twice for polars and pandas |
 | Local analytics, views, SQL | `duckdb` (views over Parquet only) | `database.py`, `sinks/duckdb.py` | copy data into DuckDB tables; build SQL by string concatenation (use `core/sql.py`) |
 | In-memory transforms, joins, group-by | `polars` (or Arrow compute) | lazy where possible | row loops, `iterrows`, hand-written group-by |
-| Destinations beyond files (Postgres, BigQuery, Snowflake, MotherDuck) | `dlt` through `sinks/dlt.py` behind `SinkProtocol` | sources never import `dlt` | add a per-destination writer inside a source |
+| Destinations beyond files (Postgres, BigQuery, Snowflake, MotherDuck) | `dlt` through `sinks/dlt.py` behind `SinkProtocol` | sources never import `dlt` | add a per-destination writer inside a source (ADR 50: dlt does not write the processed tier; a spike found it cannot rebuild one season of a partitioned dataset) |
 | Configuration | `pydantic` + `pydantic-settings` (`BASEBALLPY_*` env) | `core/config.py` | read `os.environ` ad hoc; hard-code paths |
 | CLI and terminal output | `click` + `rich` | `cli*.py` | `print()` tables, `argparse` |
 | Tests | `pytest`, `respx`, `hypothesis`, `pytest-socket` | fixtures in `tests/fixtures/` | touch the real network in unit tests; hand-roll HTTP mocks |

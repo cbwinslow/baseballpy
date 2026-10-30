@@ -224,3 +224,13 @@ touches a source under review, do it inside that source's track.
 | B-130 | retrosheet-source-review 5.17: substitutions key is not unique; add SUB_FLD_CD (card R-26) | DONE | see the card |
 | B-131 | retrosheet-source-review 5.18: box_starters key is not unique; add position (card R-27) | DONE | see the card |
 | B-132 | retrosheet-source-review 3.4: Processed chunks are not rebuilt when the schema changes (card R-28) | DONE | see the card |
+
+## dlt processed-tier spike (`dlt-processed-tier-spike`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-133 | dlt-processed-tier-spike 1.1: ingest Lahman with the current path into a scratch lake and record the numbers | DONE | see design.md |
+| B-134 | dlt-processed-tier-spike 1.2: write the dlt loader script for the same tables | DONE | see design.md |
+| B-135 | dlt-processed-tier-spike 1.3: compare layout, types, row equality, seconds, code size | DONE | see design.md |
+| B-136 | dlt-processed-tier-spike 1.4: schema change, interrupt and resume, repeat run, partition layout, what is lost | DONE | see design.md |
+| B-137 | dlt-processed-tier-spike 2.1: ADR 50, recommendation, TOOLING.md, archive | DONE | see design.md |

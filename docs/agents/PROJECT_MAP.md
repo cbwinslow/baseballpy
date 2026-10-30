@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-34 changes are archived under `openspec/changes/archive/`.
+35 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -105,6 +105,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 47: Lahman Is Checked at Both Cache Tiers by Git Fingerprint; Database Exports Keep Identifier Names
 - ADR 48: Retrosheet Keeps Every Event Field, Is Checked by Git Fingerprint, Quarantines Broken Rows and Exports One Season at a Time
 - ADR 49: A Schema Change Invalidates Stored Chunks (schema digest in the manifest)
+- ADR 50: dlt Does Not Write the Processed Tier; It Stays the Delivery Layer
 
 ## Documentation pages (`docs/`)
 
