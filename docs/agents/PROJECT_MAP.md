@@ -124,6 +124,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/agents/FINAL_REPORT.md`
 - `docs/agents/GOAL_SEEK_PROMPT.md`
 - `docs/agents/HANDOFF_B43.md`
+- `docs/agents/LOOP_PROMPT.md`
 - `docs/agents/NEXT_GOAL.md`
 - `docs/agents/PROJECT_MAP.md`
 - `docs/agents/TOOLING.md`
