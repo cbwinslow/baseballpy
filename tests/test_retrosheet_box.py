@@ -214,3 +214,20 @@ def test_non_integer_numbers_raise_box_parse_error() -> None:
     )
     with pytest.raises(BoxParseError):
         parse_box_text(bad_bline)
+
+
+def test_two_way_player_listed_twice_in_a_lineup_has_unique_starter_keys() -> None:
+    from baseballpy.core.datasets import get_dataset
+    from baseballpy.sources import catalog
+
+    text = (
+        "id,NLS202107130\nversion,3\ninfo,visteam,ALS\ninfo,hometeam,NLS\ninfo,date,2021/07/13\n"
+        'start,ohtas001,"Shohei Ohtani",0,1,10\n'
+        'start,ohtas001,"Shohei Ohtani",0,0,1\n'
+    )
+    starters = parse_box_text(text, "2021.EBE").by_name()["box_starters"]
+    catalog.register_all()
+    keys = get_dataset("retrosheet", "box_starters").keys
+    assert keys == ("game_id", "player_id", "side", "position")
+    rows = list(zip(*[starters[k].to_pylist() for k in keys], strict=True))
+    assert len(rows) == 2 and len(set(rows)) == 2

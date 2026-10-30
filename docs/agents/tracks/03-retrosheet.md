@@ -296,3 +296,25 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. add SUB_FLD_CD to the key; 2. test a position change; 3. re-measure on the live lake (the quality check stays the safety net).
 - **Done when:** `uv run pytest tests/test_retrosheet_events.py -q` passes; no duplicate substitution rows on the live lake
 - **Record:** tick 5.17; design.md.
+
+### R-27 box_starters key is not unique: a two-way player is listed twice in a lineup
+- **Change task:** `retrosheet-source-review 5.18`
+- **Stage:** S3
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/catalog.py, tests/test_retrosheet_box.py
+- **Tools (reuse check):** the existing quality check found it
+- **Inputs:** live run: box_starters duplicate_key_rows of 1 (2021), 28 (2022), 23 (2023), 18 (2025); 2021 all-star game lists Ohtani as DH (order 1, position 10) and as pitcher (order 0, position 1)
+- **Steps:** 1. add position to the key; 2. test; 3. rebuild the scratch lake and re-check.
+- **Done when:** `uv run pytest tests/test_retrosheet_box.py -q` passes; no duplicates on the live lake 2015-2025 (checked 2026-10-30: none)
+- **Record:** tick 5.18; design.md.
+
+### R-28 Processed chunks are not rebuilt when the parser or schema changes
+- **Change task:** `retrosheet-source-review 3.4`
+- **Stage:** S3
+- **Executor:** Claude
+- **Files:** src/baseballpy/core/stores.py, src/baseballpy/sources/retrosheet/api.py, openspec spec delta, ADR
+- **Tools (reuse check):** core/upstream.py Fingerprint (add a schema/parser fingerprint kind); check how Lahman and Chadwick handle it
+- **Inputs:** after the 5.16-5.18 schema and key changes the unchanged raw files still looked current, so the stale Parquet had to be deleted by hand in the scratch lake; a user upgrading would silently keep old-shaped files
+- **Steps:** 1. web-search how dlt and others version transforms; 2. store a schema fingerprint in the chunk manifest and treat a mismatch as not current; 3. test; 4. ADR.
+- **Done when:** a test changes the schema and sees the chunk rebuilt without `--refresh`
+- **Record:** tick 3.4; ADR.

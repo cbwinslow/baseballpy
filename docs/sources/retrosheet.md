@@ -1759,7 +1759,7 @@ Starting lineups of the box-score accounts (start lines).
 - **View:** `retrosheet_box_starters`
 - **Processed path:** `processed/retrosheet/box_starters/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `game_id`, `player_id`, `side`
+- **Key:** `game_id`, `player_id`, `side`, `position`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |

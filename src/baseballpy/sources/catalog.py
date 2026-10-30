@@ -376,7 +376,7 @@ def register_all() -> dict[str, DatasetSpec]:
         ("box_games", ("game_id",), "Games of the box-score accounts (id, version, info lines)."),
         (
             "box_starters",
-            ("game_id", "player_id", "side"),
+            ("game_id", "player_id", "side", "position"),
             "Starting lineups of the box-score accounts (start lines).",
         ),
         (

@@ -26,11 +26,13 @@ Findings of the review become tasks `5.n` (with cards) before the tests and veri
   - [x] 5.15 Audit-log and time every Retrosheet operation (tree listing, file download, documents, unit build, quality check, season and reference ingest) (R-24)
   - [x] 5.16 rosters key is not unique: the all-star rosters repeat club lines; add a roster column (R-25)
   - [x] 5.17 substitutions key is not unique: a player who changes position in one stoppage gets two rows; add SUB_FLD_CD to the key (R-26)
+  - [x] 5.18 box_starters key is not unique: a two-way player is listed twice in a lineup; add position to the key (R-27)
 - [ ] 2. Tests
   - [ ] 2.1 Close the spec and test gaps (R-10)
 - [ ] 3. Verify
   - [ ] 3.1 Live verification on a clean scratch home (R-11)
   - [ ] 3.2 Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (R-12)
   - [ ] 3.3 Cited column descriptions (R-13)
+  - [ ] 3.4 Processed chunks are not rebuilt when the parser or schema changes (R-28)
 - [ ] 4. Close
   - [ ] 4.1 Docs, decisions, spec merge, archive (R-14)

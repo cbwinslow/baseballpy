@@ -222,3 +222,5 @@ touches a source under review, do it inside that source's track.
 | B-128 | retrosheet-source-review 5.15: Audit-log and time every Retrosheet operation (card R-24) | DONE | see the card |
 | B-129 | retrosheet-source-review 5.16: rosters key is not unique; add a roster column (card R-25) | DONE | see the card |
 | B-130 | retrosheet-source-review 5.17: substitutions key is not unique; add SUB_FLD_CD (card R-26) | DONE | see the card |
+| B-131 | retrosheet-source-review 5.18: box_starters key is not unique; add position (card R-27) | DONE | see the card |
+| B-132 | `retrosheet-source-review 3.4`: Processed chunks are not rebuilt when the parser or schema changes (card R-28) | READY | see the card |
