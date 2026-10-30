@@ -145,3 +145,21 @@ def test_roster_rows_short_quarantined_and_extra_fields_kept(
         assert "roster row has 5 fields, expected at least 6" in record["payload"]["error"]
     finally:
         get_quarantine.reset()
+
+
+def test_all_star_roster_lines_are_told_apart_by_the_roster_they_came_from(tmp_path: Path) -> None:
+    from baseballpy.core.datasets import get_dataset
+    from baseballpy.sources import catalog
+    from baseballpy.sources.retrosheet.parser import RetrosheetRosterParser
+
+    line = b"altuj001,Altuve,Jose,R,R,HOU,2B\n"
+    (tmp_path / "HOU2015.ROS").write_bytes(line)
+    (tmp_path / "ALS2015.ROS").write_bytes(line)  # the all-star roster repeats the club line
+    table = RetrosheetRosterParser().parse_files(
+        [tmp_path / "ALS2015.ROS", tmp_path / "HOU2015.ROS"], year=2015
+    )
+    catalog.register_all()
+    keys = get_dataset("retrosheet", "rosters").keys
+    assert keys == ("year", "roster", "player_id")
+    rows = list(zip(*[table[k].to_pylist() for k in keys], strict=True))
+    assert sorted(rows) == [(2015, "ALS", "altuj001"), (2015, "HOU", "altuj001")]

@@ -79,7 +79,7 @@ Derived with `chadwickpy.tools.daily.daily_lines` (154 columns) — dataset `dai
 Derived with `chadwickpy.tools.sub.sub_lines` (26 columns) — dataset `substitutions`.
 
 ### 6. Rosters, schedules, umpires, discrepancies
-- `rosters`: `.ROS` files are header-less (`player_id,last,first,bats,throws,team,position`).
+- `rosters`: `.ROS` files are header-less (`player_id,last,first,bats,throws,team,position`). The `roster` column holds the file's team code (`HOU`, or `ALS`/`NLS` for the all-star rosters, which repeat each player's club line), so the key is `(year, roster, player_id)`.
 - `schedule`: header-based; a few old files (1904, 1921, 1933) ship **without a header row** and get the documented default header; 2022 has two doubleheader games numbered `0` (the key includes the per-team game number); only the schedule exists for 2026.
 - `umpires`: `UMPIRES<year>.txt` (`ID,last,first`), one file per season, so `umpire_id` repeats across seasons.
 - `discrepancies`: the AL/NL/federal discrepancy lists. About 5,300 rows in the 1900–1949 files have 14 instead of 15 fields and are padded with NULLs (logged); an unnamed 13th column is exposed as `flag`.
@@ -1511,7 +1511,7 @@ Team rosters per season.
 - **View:** `retrosheet_rosters`
 - **Processed path:** `processed/retrosheet/rosters/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `year`, `team`, `player_id`
+- **Key:** `year`, `roster`, `player_id`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -1523,6 +1523,7 @@ Team rosters per season.
 | `team` | string | yes | — | TODO |
 | `position` | string | yes | — | TODO |
 | `year` | int16 | yes | — | TODO |
+| `roster` | string | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.rosters -->

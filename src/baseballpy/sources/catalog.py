@@ -326,7 +326,7 @@ def register_all() -> dict[str, DatasetSpec]:
         (
             "rosters",
             retro.RETROSHEET_ROSTER_SCHEMA,
-            ("year", "team", "player_id"),
+            ("year", "roster", "player_id"),
             "season",
             "1-play-by-play-event-data-eva-evn-eve-eb",
             "Team rosters per season.",

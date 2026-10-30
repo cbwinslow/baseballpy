@@ -417,6 +417,9 @@ class RetrosheetRosterParser:
         records: list[dict[str, Any]] = []
 
         for path in paths:
+            # the roster the row came from (HOU2015.ROS -> HOU, ALS2015.ROS -> ALS): the all-star
+            # rosters repeat each player's club line, so (team, player) alone is not unique
+            roster = path.stem.rstrip("0123456789")
             lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
             for line in lines:
                 line = line.strip()
@@ -447,6 +450,7 @@ class RetrosheetRosterParser:
                         "team": parts[5],
                         "position": parts[6] if len(parts) > 6 else "",
                         "year": year,
+                        "roster": roster,
                         "_extras": extras_val,
                     }
                 )

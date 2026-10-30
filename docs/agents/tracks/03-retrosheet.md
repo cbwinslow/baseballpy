@@ -274,3 +274,14 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. wrap each operation in `track`; 2. one test that reads the events back; 3. use the events to read timings from the live run in card R-11.
 - **Done when:** `uv run pytest tests/test_retrosheet_audit.py -q` passes; `baseballpy audit` shows the new operations after an ingest
 - **Record:** tick 5.15; design.md.
+
+### R-25 rosters key is not unique: the all-star rosters repeat club lines
+- **Change task:** `retrosheet-source-review 5.16`
+- **Stage:** S3
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/retrosheet/parser.py, schema.py, src/baseballpy/sources/catalog.py, tests/test_retrosheet_rows.py
+- **Tools (reuse check):** core/quality.py duplicate_rows (found it)
+- **Inputs:** the live 2015-2026 run reported rosters duplicate_key_rows=76 (2015) and 79 (2016); ALS and NLS roster files repeat each player's club line exactly
+- **Steps:** 1. add a roster column (file team code); 2. key (year, roster, player_id); 3. rebuild and re-measure.
+- **Done when:** `uv run pytest tests/test_retrosheet_rows.py -q` passes; the quality check reports no duplicate roster rows on the live lake
+- **Record:** tick 5.16; design.md.

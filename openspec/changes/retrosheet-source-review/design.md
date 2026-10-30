@@ -103,3 +103,7 @@ The spec delta `specs/retrosheet-ingestion/spec.md` is written. Scenarios marked
 ## Evidence for 5.15 (audit logging of every operation)
 
 Before: only `download_season` wrote an audit event. Now one event per tree listing, file download, document keeping, unit build (parse and store), quality check, season ingest and reference ingest, all through `core/audit.py` `default_audit_logger.track` (no new mechanism). `tests/test_retrosheet_audit.py` reads the events back, including a cache-hit second run. Gates: 1135 passed, 5 skipped; ruff, format, mypy --strict, docs --check, project map --check, openspec validate --specs 16 passed. Timings from the live 2015-2026 run are recorded under card R-11.
+
+## Evidence for 5.16 (rosters key)
+
+The live 2015-2026 run reported `rosters duplicate_key_rows` of 76 (2015) and 79 (2016). Cause: `ALS<year>.ROS` and `NLS<year>.ROS` (all-star rosters) repeat each player's club line (`altuj001,...,HOU,2B` is in `HOU2015.ROS` and in `ALS2015.ROS`), so `(year, team, player_id)` is not unique. The new `roster` column (file team code) makes `(year, roster, player_id)` unique; no player appears twice inside one roster file in the downloaded seasons. Test: `tests/test_retrosheet_rows.py::test_all_star_roster_lines_are_told_apart_by_the_roster_they_came_from`.

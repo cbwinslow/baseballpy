@@ -220,3 +220,4 @@ touches a source under review, do it inside that source's track.
 | B-126 | retrosheet-source-review 5.13: Data-quality checks across datasets, shown by catalog status (card R-22) | DONE | see the card |
 | B-127 | retrosheet-source-review 5.14: boxscores_batting has no unique key (card R-23) | DONE | see the card |
 | B-128 | retrosheet-source-review 5.15: Audit-log and time every Retrosheet operation (card R-24) | DONE | see the card |
+| B-129 | retrosheet-source-review 5.16: rosters key is not unique; add a roster column (card R-25) | DONE | see the card |

@@ -425,6 +425,7 @@ RETROSHEET_ROSTER_SCHEMA = pa.schema(
         ("team", pa.string()),
         ("position", pa.string()),
         ("year", pa.int16()),
+        ("roster", pa.string()),
         ("_extras", pa.string()),
     ]
 )
