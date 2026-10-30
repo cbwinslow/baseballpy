@@ -263,3 +263,14 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. look at the two games in the raw files and decide what the second row means (a second stint); 2. add a per-(game, team, slot) appearance sequence column so the key is unique, or document why not; 3. measure on the homelab lake; 4. update the registry key and the generated docs.
 - **Done when:** `uv run pytest tests/test_retrosheet_events.py -q` passes with a test of a re-entering player, and the key is unique on the six sample files.
 - **Record:** tick 5.14; design.md.
+
+### R-24 Audit-log and time every Retrosheet operation
+- **Change task:** `retrosheet-source-review 5.15`
+- **Stage:** S3
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/retrosheet/downloader.py, api.py, tests/test_retrosheet_audit.py (new)
+- **Tools (reuse check):** `core/audit.py` `default_audit_logger.track` (already used by Lahman, Chadwick, MLB API, Statcast); no new code path
+- **Inputs:** before this task only `download_season` was logged; tree listing, single files, documents, unit builds (parse and store), quality checks and the season and reference ingests were not
+- **Steps:** 1. wrap each operation in `track`; 2. one test that reads the events back; 3. use the events to read timings from the live run in card R-11.
+- **Done when:** `uv run pytest tests/test_retrosheet_audit.py -q` passes; `baseballpy audit` shows the new operations after an ingest
+- **Record:** tick 5.15; design.md.

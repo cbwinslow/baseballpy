@@ -15,6 +15,7 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec, datasets_for, get_dataset
 from baseballpy.core.github_tree import TreeTruncatedError
@@ -331,6 +332,18 @@ class RetrosheetSource:
 
     def _unit_write(self, unit: str, year: int, refresh: bool) -> dict[str, int | None]:
         """Build the chunks of a unit; rows written per dataset (``None`` = already current)."""
+        with default_audit_logger.track(
+            operation=f"retrosheet_build_{unit}",
+            source="retrosheet",
+            endpoint=f"{unit}:{year}",
+            destination=str(self.cache_config.processed_root / "retrosheet"),
+        ) as tracker:
+            written = self._unit_build(unit, year, refresh)
+            tracker.set_records(sum(n or 0 for n in written.values()))
+            tracker.set_cache_hit(all(n is None for n in written.values()))
+            return written
+
+    def _unit_build(self, unit: str, year: int, refresh: bool) -> dict[str, int | None]:
         if unit == "boxscores":
             return self._boxscores_write(year, refresh)
         if unit == "box_accounts":
@@ -605,6 +618,15 @@ class RetrosheetSource:
 
     def _quality(self, year: int, units: Sequence[str]) -> None:
         """Check the stored chunks of ``units``; findings go to the manifest and are logged."""
+        with default_audit_logger.track(
+            operation="retrosheet_quality_check",
+            source="retrosheet",
+            endpoint=f"quality:{year}",
+            destination=str(self.cache_config.processed_root / "retrosheet"),
+        ):
+            self._quality_check(year, units)
+
+    def _quality_check(self, year: int, units: Sequence[str]) -> None:
         for unit in units:
             for dataset, chunk in UNITS[unit][1]:
                 spec, chunk_id = _spec(dataset), chunk.format(y=year)
@@ -646,6 +668,20 @@ class RetrosheetSource:
         units = units_for(datasets) if datasets else SEASON_DATASETS
         if bad := [u for u in units if u not in UNITS]:
             raise ValueError(f"unknown season datasets {bad}; valid: {sorted(DATASET_UNIT)}")
+        with default_audit_logger.track(
+            operation="retrosheet_ingest_season",
+            source="retrosheet",
+            endpoint=f"season:{year}",
+            destination=str(self.cache_config.processed_root / "retrosheet"),
+        ) as tracker:
+            report = self._ingest_season(year, units, datasets, refresh)
+            tracker.set_records(sum(n or 0 for n in report.datasets.values()))
+            tracker.set_cache_hit(all(n is None for n in report.datasets.values()))
+            return report
+
+    def _ingest_season(
+        self, year: int, units: Sequence[str], datasets: tuple[str, ...] | None, refresh: bool
+    ) -> SeasonReport:
         report = SeasonReport(year=year)
         if datasets:
             kinds = tuple(dict.fromkeys(k for u in units for k in UNITS[u][0]))
@@ -669,6 +705,18 @@ class RetrosheetSource:
 
         The repository's README and any file no dataset covers are kept raw as well.
         """
+        with default_audit_logger.track(
+            operation="retrosheet_ingest_reference",
+            source="retrosheet",
+            endpoint="reference",
+            destination=str(self.cache_config.processed_root / "retrosheet"),
+        ) as tracker:
+            done = self._ingest_reference(refresh)
+            tracker.set_records(sum(n or 0 for n in done.values()))
+            tracker.set_cache_hit(all(n is None for n in done.values()))
+            return done
+
+    def _ingest_reference(self, refresh: bool) -> dict[str, int | None]:
         done: dict[str, int | None] = {}
         tree = self.downloader.tree()
         self.downloader.ensure_documents(refresh=refresh)

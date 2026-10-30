@@ -99,3 +99,7 @@ The spec delta `specs/retrosheet-ingestion/spec.md` is written. Scenarios marked
 
 ## 5.14 evidence (2026-10-30)
 - The duplicates were real second stints (the same player twice in one slot and position in a 1925 game). `boxscores_batting` gets a `seq` column (order of a slot's occupants, starter first; pitching already had one) and the key `(game_id, team_id, slot, seq)`, which is unique by construction and was checked on the six sample files (12,112 rows, 0 duplicates, max seq 10). Test: `test_boxscores_batting_key_is_unique_and_orders_a_slots_occupants`. Existing `boxscores_batting` Parquet must be rebuilt (`ingest --refresh -d boxscores`).
+
+## Evidence for 5.15 (audit logging of every operation)
+
+Before: only `download_season` wrote an audit event. Now one event per tree listing, file download, document keeping, unit build (parse and store), quality check, season ingest and reference ingest, all through `core/audit.py` `default_audit_logger.track` (no new mechanism). `tests/test_retrosheet_audit.py` reads the events back, including a cache-hit second run. Gates: 1135 passed, 5 skipped; ruff, format, mypy --strict, docs --check, project map --check, openspec validate --specs 16 passed. Timings from the live 2015-2026 run are recorded under card R-11.

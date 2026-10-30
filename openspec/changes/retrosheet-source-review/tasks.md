@@ -23,6 +23,7 @@ Findings of the review become tasks `5.n` (with cards) before the tests and veri
   - [x] 5.12 Really stream box scores and box accounts; count rows without re-reading Parquet (R-21)
   - [x] 5.13 Data-quality checks across datasets, shown by catalog status (R-22)
   - [x] 5.14 boxscores_batting has no unique key: a player who re-enters in the same slot gets two rows (R-23)
+  - [x] 5.15 Audit-log and time every Retrosheet operation (tree listing, file download, documents, unit build, quality check, season and reference ingest) (R-24)
 - [ ] 2. Tests
   - [ ] 2.1 Close the spec and test gaps (R-10)
 - [ ] 3. Verify

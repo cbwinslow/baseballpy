@@ -89,7 +89,14 @@ class RetrosheetDownloader:
     def tree(self, refresh: bool = False) -> RetroTree:
         """The classified repository tree (cached in memory and under ``cache/http``)."""
         if self._tree is None or refresh:
-            entries = fetch_tree(self.source_ref, self.cache_config, self.http, refresh=refresh)
+            with default_audit_logger.track(
+                operation="retrosheet_list_tree",
+                source="retrosheet",
+                endpoint=f"{self.source_ref.repo}@{self.source_ref.ref}",
+                destination=str(self.cache_config.home / "cache" / "http"),
+            ) as tracker:
+                entries = fetch_tree(self.source_ref, self.cache_config, self.http, refresh=refresh)
+                tracker.set_records(len(entries))
             self._tree = classify(entries)
             if self._tree.uncovered:
                 logger.warning(
@@ -127,21 +134,29 @@ class RetrosheetDownloader:
         """
         tree = self.tree()
         kept: list[str] = []
-        for dataset, entries in (
-            ("documents", tree.documents),
-            ("unclassified", tree.unclassified),
-        ):
-            kept += keep_documents(
-                raw=self.raw,
-                http=self.http,
-                ref=self.source_ref,
-                entries=entries,
-                source="retrosheet",
-                dataset=dataset,
-                patterns=[e.path for e in entries],
-                source_ref=self.source_ref.ref,
-                only_missing=not refresh,
-            )
+        with default_audit_logger.track(
+            operation="retrosheet_keep_documents",
+            source="retrosheet",
+            endpoint=f"{self.base_url}/",
+            destination=str(self.cache_config.raw_root / "retrosheet"),
+        ) as tracker:
+            for dataset, entries in (
+                ("documents", tree.documents),
+                ("unclassified", tree.unclassified),
+            ):
+                kept += keep_documents(
+                    raw=self.raw,
+                    http=self.http,
+                    ref=self.source_ref,
+                    entries=entries,
+                    source="retrosheet",
+                    dataset=dataset,
+                    patterns=[e.path for e in entries],
+                    source_ref=self.source_ref.ref,
+                    only_missing=not refresh,
+                )
+            tracker.set_records(len(kept))
+            tracker.set_cache_hit(not kept)
         return kept
 
     # ------------------------------------------------------------------ files
@@ -179,23 +194,31 @@ class RetrosheetDownloader:
         """Atomically fetch one tree-listed file; 404 is recorded ``ABSENT``."""
         if not refresh and self._is_cached(file):
             return FetchOutcome.CACHED
-        result = self.http.get_sync(f"{self.base_url}/{file.path}", allow=(200, 404))
-        if result.status == 404:
-            self.cache_config.dataset_manifest(
-                "retrosheet", file.raw_dataset, "raw", file.season
-            ).set_absent(file.name, "listed in the git tree but not served")
-            return FetchOutcome.ABSENT
-        self.raw.put(
-            "retrosheet",
-            file.raw_dataset,
-            file.name,
-            result.content,
-            season=file.season,
-            source_ref=self.source_ref.ref,
-            etag=result.etag or "",
-            upstream=self.blob_fingerprint(file),
-        )
-        return FetchOutcome.DOWNLOADED
+        with default_audit_logger.track(
+            operation="retrosheet_download_file",
+            source="retrosheet",
+            endpoint=f"{self.base_url}/{file.path}",
+            destination=str(self.raw_path(file)),
+        ) as tracker:
+            result = self.http.get_sync(f"{self.base_url}/{file.path}", allow=(200, 404))
+            tracker.mark_download_complete()
+            if result.status == 404:
+                self.cache_config.dataset_manifest(
+                    "retrosheet", file.raw_dataset, "raw", file.season
+                ).set_absent(file.name, "listed in the git tree but not served")
+                return FetchOutcome.ABSENT
+            self.raw.put(
+                "retrosheet",
+                file.raw_dataset,
+                file.name,
+                result.content,
+                season=file.season,
+                source_ref=self.source_ref.ref,
+                etag=result.etag or "",
+                upstream=self.blob_fingerprint(file),
+            )
+            tracker.set_records(1)
+            return FetchOutcome.DOWNLOADED
 
     def download_files(
         self, files: Sequence[RetroFile], refresh: bool = False

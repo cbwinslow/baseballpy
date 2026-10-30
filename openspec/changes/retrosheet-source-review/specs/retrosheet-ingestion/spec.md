@@ -93,6 +93,14 @@ Ingest MUST check key uniqueness, player ids against the Chadwick register and `
 - **THEN** the finding is reported with a count and examples
 - Verified by `tests/test_retrosheet_quality.py::test_orphan_player_ids_are_reported` (written by task 5.13).
 
+### Requirement: Every Operation Is Audit-Logged and Timed
+Every Retrosheet operation that lists the upstream tree, downloads a file, keeps provider documents, builds a dataset unit, checks data quality or ingests a season or the reference tables MUST write one structured event (operation, endpoint, destination, record count, duration, cache hit, status) to `logs/audit.jsonl`; a failure MUST be logged with status FAILURE and re-raised.
+
+#### Scenario: A season and the reference ingest leave a trail
+- **WHEN** a season and the reference tables are ingested, and the season is ingested again
+- **THEN** the log holds one event per operation, and the second run's build events are cache hits with zero records
+- Verified by `tests/test_retrosheet_audit.py::test_a_season_and_the_reference_ingest_leave_an_audit_trail`.
+
 ## MODIFIED Requirements
 
 ### Requirement: Box-Score Game Accounts (interim)
