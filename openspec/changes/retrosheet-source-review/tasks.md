@@ -18,8 +18,8 @@ Findings of the review become tasks `5.n` (with cards) before the tests and veri
   - [ ] 5.7 One declarative dataset-to-producer map: every registry name works with --datasets, one download per ingest (R-16)
   - [ ] 5.8 No silent loss in game logs and rosters: quarantine short rows, keep extra fields in _extras (R-17)
   - [ ] 5.9 Box parser: keep repeated info keys, safe dates, BoxParseError for bad numbers (R-18)
-  - [ ] 5.10 Shared stores: an empty rebuild removes the stale Parquet; stale .part files cleaned in processed/; quarantine follows the source's lake (R-19)
-  - [ ] 5.11 Export streams one season at a time (R-20)
+  - [x] 5.10 Shared stores: an empty rebuild removes the stale Parquet; stale .part files cleaned in processed/; quarantine follows the source's lake (R-19)
+  - [x] 5.11 Export streams one season at a time (R-20)
   - [ ] 5.12 Really stream box scores and box accounts; count rows without re-reading Parquet (R-21)
   - [ ] 5.13 Data-quality checks across datasets, shown by catalog status (R-22)
 - [ ] 2. Tests

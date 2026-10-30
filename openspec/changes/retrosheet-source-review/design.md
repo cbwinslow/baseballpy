@@ -74,3 +74,7 @@ The spec delta `specs/retrosheet-ingestion/spec.md` is written. Scenarios marked
 - `(GAME_ID, EVENT_ID)` unique in all six files, no NULL key cells; `_extras` NULL on every row (chadwickpy knows no extra field today); row count unchanged.
 - Tests: `tests/test_retrosheet_events.py` (3). Docs regenerated; `docs/sources/retrosheet.md` hand-written text corrected.
 - Not verified: the full re-parse of the 2015-2024 lake on the homelab (card R-11).
+
+## 5.10 and 5.11 evidence (2026-10-30)
+- 5.10: `ProcessedStore.put_stream` now deletes the old part when the new stream is empty (`test_an_empty_rebuild_removes_the_old_part_so_old_rows_are_not_served`); the Retrosheet downloader also clears stale `.part` files under `processed/retrosheet` (`test_stale_processed_part_files_are_discarded_too`). **Deferred (shared, recorded not fixed):** R-F18, the quarantine singleton writes to the default `LakeConfig`, so a source built with `LakeConfig(home=X)` quarantines into the default home; users who set `BASEBALLPY_HOME` are not affected. It needs a per-call quarantine location in `collect_bad_values` and every parser decorator; it belongs to a cross-source change.
+- 5.11: export builds one lazy `_Slice` per season (row count from Parquet footers) and loads, writes and verifies one season at a time; merge key checks read only the key columns. `test_export_holds_one_season_at_a_time` pins the read/write order. Memory of a real many-season export was not measured (see R-11).

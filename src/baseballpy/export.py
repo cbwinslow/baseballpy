@@ -12,7 +12,7 @@ Files (Parquet, CSV) are written by pyarrow through our sinks; DuckDB through th
 
 import os
 import time
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal
@@ -99,10 +99,23 @@ def available_seasons(config: LakeConfig, spec: DatasetSpec) -> list[int]:
     return sorted(found)
 
 
+@dataclass(frozen=True)
+class _Slice:
+    """One season (or the whole dataset) to export: its row count is known, its table is loaded on demand.
+
+    Only one slice is held in memory at a time, so a many-season dataset such as ``events`` is exported
+    without ever loading all seasons together.
+    """
+
+    season: int | None
+    rows: int
+    load: Callable[[], pa.Table]
+
+
 def _slices(
     store: ProcessedStore, config: LakeConfig, spec: DatasetSpec, seasons: Sequence[int] | None
-) -> list[tuple[int | None, pa.Table]]:
-    """``(season, table)`` pairs to export, one per season (a single ``None`` season otherwise)."""
+) -> list[_Slice]:
+    """The slices to export, one per season (a single ``None`` season otherwise)."""
     hint = f"run `baseballpy ingest {spec.source} -d {spec.name}` first"
     if spec.partition == "season":
         have = available_seasons(config, spec)
@@ -111,20 +124,30 @@ def _slices(
         wanted = sorted(seasons) if seasons else have
         if missing := [s for s in wanted if s not in have]:
             raise NoCachedDataError(f"{spec.key} has no cached season(s) {missing}: {hint}")
-        return [(season, store.read(spec, season)) for season in wanted]
+        return [
+            _Slice(s, store.row_count(spec, s), lambda s=s: store.read(spec, s))  # type: ignore[misc]
+            for s in wanted
+        ]
     if not store.is_cached(spec) and not store.files(spec):
         raise NoCachedDataError(f"{spec.key} has no cached data: {hint}")
-    return [(None, store.read(spec))]
+    return [_Slice(None, store.row_count(spec), lambda: store.read(spec))]
 
 
-def _require_matchable_keys(spec: DatasetSpec, slices: list[tuple[int | None, pa.Table]]) -> None:
-    """A merge matches rows by the registry key; rows with an empty key value cannot be matched."""
-    for key in spec.keys:
-        if any(table[key].null_count for _, table in slices):
-            raise ExportError(
-                f"{spec.key} cannot be merged: key column {key!r} has empty (NULL) values, so its "
-                "rows cannot be matched; use --mode replace or --mode append"
-            )
+def _require_matchable_keys(
+    store: ProcessedStore, spec: DatasetSpec, seasons: list[int | None]
+) -> None:
+    """A merge matches rows by the registry key; rows with an empty key value cannot be matched.
+
+    Only the key columns are read, one season at a time.
+    """
+    for season in seasons:
+        keys = store.read(spec, season, columns=list(spec.keys))
+        for key in spec.keys:
+            if keys[key].null_count:
+                raise ExportError(
+                    f"{spec.key} cannot be merged: key column {key!r} has empty (NULL) values, so "
+                    "its rows cannot be matched; use --mode replace or --mode append"
+                )
 
 
 def _out_root(config: LakeConfig, out: Path | str | None) -> Path:
@@ -141,13 +164,14 @@ def _file_path(root: Path, spec: DatasetSpec, target: ExportTarget, season: int 
 def _export_files(
     spec: DatasetSpec,
     target: ExportTarget,
-    slices: list[tuple[int | None, pa.Table]],
+    slices: list[_Slice],
     root: Path,
     verify: bool,
 ) -> tuple[str, list[str]]:
     problems: list[str] = []
-    for season, table in slices:
-        path = _file_path(root, spec, target, season)
+    for piece in slices:
+        table = piece.load()
+        path = _file_path(root, spec, target, piece.season)
         if target.name == "parquet":
             atomic_write_parquet(table, path, compression=PARQUET_COMPRESSION)
         else:
@@ -174,7 +198,7 @@ def _duckdb_path(config: LakeConfig, out: Path | str | None) -> Path:
 
 def _export_duckdb(
     spec: DatasetSpec,
-    slices: list[tuple[int | None, pa.Table]],
+    slices: list[_Slice],
     config: LakeConfig,
     out: Path | str | None,
     mode: str,
@@ -183,9 +207,9 @@ def _export_duckdb(
     path = _duckdb_path(config, out)
     path.parent.mkdir(parents=True, exist_ok=True)
     sink_modes = {"replace": "replace", "append": "append", "merge": "upsert"}
-    for index, (_, table) in enumerate(slices):
+    for index, piece in enumerate(slices):
         DuckDBSink().write(
-            table,
+            piece.load(),
             str(path),
             table_name=spec.view,
             mode=sink_modes[_season_mode(mode, index)],
@@ -204,7 +228,7 @@ def _export_duckdb(
         finally:
             con.close()
         problems = _database_problems(
-            spec, sum(len(t) for _, t in slices), int(rows[0]) if rows else -1, columns, mode
+            spec, sum(s.rows for s in slices), int(rows[0]) if rows else -1, columns, mode
         )
     return f"{path}:{spec.view}", problems
 
@@ -228,7 +252,7 @@ def _database_problems(
 
 def _export_postgres(
     spec: DatasetSpec,
-    slices: list[tuple[int | None, pa.Table]],
+    slices: list[_Slice],
     config: LakeConfig,
     url: str | None,
     schema: str,
@@ -251,10 +275,10 @@ def _export_postgres(
         pipeline_name="baseballpy_export_direct",
     )
     if mode == "replace" and slices:
-        sink.drop_if_columns_differ(spec.view, slices[0][1].schema)
-    for index, (_, table) in enumerate(slices):
+        sink.drop_if_columns_differ(spec.view, spec.schema)
+    for index, piece in enumerate(slices):
         sink.write(
-            table,
+            piece.load(),
             spec.view,
             write_disposition=_season_mode(mode, index),
             primary_key=spec.keys if mode == "merge" else None,
@@ -263,7 +287,7 @@ def _export_postgres(
     if verify:
         info = sink.table_info(spec.view)
         problems = _database_problems(
-            spec, sum(len(t) for _, t in slices), info.rows, list(info.columns.items()), mode
+            spec, sum(s.rows for s in slices), info.rows, list(info.columns.items()), mode
         )
     return f"postgres:{schema}.{spec.view}", problems
 
@@ -297,8 +321,8 @@ def export_dataset(
     cfg = config or LakeConfig()
     slices = _slices(ProcessedStore(cfg), cfg, spec, seasons)
     if mode == "merge":
-        _require_matchable_keys(spec, slices)
-    rows = sum(len(table) for _, table in slices)
+        _require_matchable_keys(ProcessedStore(cfg), spec, [s.season for s in slices])
+    rows = sum(s.rows for s in slices)
     started = time.perf_counter()
     with default_audit_logger.track(
         operation="export", source=spec.source, endpoint=spec.name, destination=target
@@ -318,7 +342,7 @@ def export_dataset(
         target=target,
         destination=destination,
         rows=rows,
-        seasons=tuple(s for s, _ in slices if s is not None),
+        seasons=tuple(s.season for s in slices if s.season is not None),
         seconds=round(time.perf_counter() - started, 3),
         verified=verify,
     )

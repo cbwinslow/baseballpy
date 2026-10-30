@@ -214,7 +214,7 @@ touches a source under review, do it inside that source's track.
 | B-120 | `retrosheet-source-review 5.7`: One declarative dataset-to-producer map: every registry name works with --datasets, one download per ingest (card R-16) | after B-109 and B-110 | see the card |
 | B-121 | `retrosheet-source-review 5.8`: No silent loss in game logs and rosters: quarantine short rows, keep extra fields in _extras (card R-17) | after B-109 and B-110 | see the card |
 | B-122 | `retrosheet-source-review 5.9`: Box parser: keep repeated info keys, safe dates, BoxParseError for bad numbers (card R-18) | after B-109 and B-110 | see the card |
-| B-123 | `retrosheet-source-review 5.10`: Shared stores: an empty rebuild removes the stale Parquet; stale .part files cleaned in processed/; quarantine follows the source's lake (card R-19) | after B-109 and B-110 | see the card |
-| B-124 | `retrosheet-source-review 5.11`: Export streams one season at a time (card R-20) | after B-109 and B-110 | see the card |
+| B-123 | retrosheet-source-review 5.10: Shared stores: an empty rebuild removes the stale Parquet; stale .part files cleaned in processed/; quarantine follows the source's lake (card R-19) | DONE | see the card |
+| B-124 | retrosheet-source-review 5.11: Export streams one season at a time (card R-20) | DONE | see the card |
 | B-125 | `retrosheet-source-review 5.12`: Really stream box scores and box accounts; count rows without re-reading Parquet (card R-21) | after B-109 and B-110 | see the card |
 | B-126 | `retrosheet-source-review 5.13`: Data-quality checks across datasets, shown by catalog status (card R-22) | after B-109 and B-110 | see the card |

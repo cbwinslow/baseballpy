@@ -35,7 +35,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
-| `retrosheet` | 25 | in progress (1/22 tasks) | yes | no | no | 721/1275 (56%) | 6 |
+| `retrosheet` | 25 | in progress (3/22 tasks) | yes | no | no | 721/1275 (56%) | 6 |
 | `statcast` | 38 | not started | no | no | no | 293/977 (29%) | 9 |
 | `mlb_api` | 366 | not started | no | no | no | 9462/16692 (56%) | 11 |
 
@@ -52,7 +52,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `reference-docs` | 2 | 1 | 3 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
-| `retrosheet-source-review` | 1 | 26 | 1.1, 1.2, 1.3, 1.4, 5.1, 5.2, 5.3, 5.4, 5.5, 5.7, 5.8, 5.9, 5.10, 5.11, 5.12, 5.13, 2.1, 3.1, 3.2, 3.3, 4.1 |
+| `retrosheet-source-review` | 3 | 24 | 1.1, 1.2, 1.3, 1.4, 5.1, 5.2, 5.3, 5.4, 5.5, 5.7, 5.8, 5.9, 5.12, 5.13, 2.1, 3.1, 3.2, 3.3, 4.1 |
 | `verify-optin-paths` | 7 | 1 | 7 |
 
 ## Decisions (`docs/DECISIONS.md`)

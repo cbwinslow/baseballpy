@@ -194,6 +194,8 @@ class ProcessedStore:
                 if footer_rows != total:
                     raise ValueError(f"parquet footer row count {footer_rows} != {total} written")
         except _EmptyStreamError:
+            # a rebuild that now has no rows must not leave the old rows behind
+            path.unlink(missing_ok=True)
             # remember that this chunk legitimately has no rows so it is not re-parsed every run
             self.config.dataset_manifest(spec.source, spec.name, "processed").set_completed(
                 manifest_key(chunk_id, season),
@@ -234,17 +236,28 @@ class ProcessedStore:
         root = self.dataset_dir(spec)
         return sorted(root.rglob("*.parquet")) if root.exists() else []
 
-    def read(self, spec: DatasetSpec, season: int | None = None) -> pa.Table:
-        """Concatenate the stored parts (optionally one season) into one table."""
+    def read(
+        self, spec: DatasetSpec, season: int | None = None, columns: list[str] | None = None
+    ) -> pa.Table:
+        """Concatenate the stored parts (optionally one season, optionally some columns) into one table."""
         root = self.dataset_dir(spec, season)
         parts = sorted(root.rglob("*.parquet")) if root.exists() else []
         if not parts:
-            return spec.schema.empty_table()
-        return pa.concat_tables([pq.read_table(p) for p in parts], promote_options="permissive")
+            schema = (
+                spec.schema
+                if columns is None
+                else pa.schema([spec.schema.field(c) for c in columns])
+            )
+            return schema.empty_table()
+        return pa.concat_tables(
+            [pq.read_table(p, columns=columns) for p in parts], promote_options="permissive"
+        )
 
-    def row_count(self, spec: DatasetSpec) -> int:
-        """Total rows across all parts, read from parquet footers."""
-        return sum(pq.ParquetFile(p).metadata.num_rows for p in self.files(spec))
+    def row_count(self, spec: DatasetSpec, season: int | None = None) -> int:
+        """Total rows across all parts (of one season if given), read from parquet footers."""
+        root = self.dataset_dir(spec, season)
+        parts = sorted(root.rglob("*.parquet")) if root.exists() else []
+        return sum(pq.ParquetFile(p).metadata.num_rows for p in parts)
 
 
 def reprocess(

@@ -81,6 +81,7 @@ class RetrosheetDownloader:
         self._tree: RetroTree | None = None
         # discard orphaned .part files from killed runs
         cleanup_stale_parts(self.cache_config.raw_root / "retrosheet")
+        cleanup_stale_parts(self.cache_config.processed_root / "retrosheet")
 
     # ------------------------------------------------------------------ discovery
     def tree(self, refresh: bool = False) -> RetroTree:

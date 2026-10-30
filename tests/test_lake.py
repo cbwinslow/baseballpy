@@ -179,6 +179,25 @@ def test_put_stream_writes_row_groups_atomically_and_skips_empty_streams(tmp_pat
     assert list(tmp_path.rglob("*.part")) == []
 
 
+def test_an_empty_rebuild_removes_the_old_part_so_old_rows_are_not_served(tmp_path: Path) -> None:
+    catalog.register_all()
+    store = ProcessedStore(LakeConfig(home=tmp_path))
+    spec = get_dataset("retrosheet", "reference_relatives")
+    batch = pa.table(
+        {
+            "person_id_1": ["a"],
+            "relation": ["Brother"],
+            "person_id_2": ["c"],
+            "_extras": pa.array([None], pa.string()),
+        }
+    )
+    assert store.put_stream(spec, iter([batch])) == 1
+    assert store.read_part(spec).num_rows == 1
+    assert store.put_stream(spec, iter([])) == 0  # upstream no longer has any rows
+    assert not store.part_path(spec, "data").exists()
+    assert store.is_cached(spec) and store.read_part(spec).num_rows == 0
+
+
 def test_put_stream_failure_leaves_no_part_or_final_file(tmp_path: Path) -> None:
     catalog.register_all()
     store = ProcessedStore(LakeConfig(home=tmp_path))

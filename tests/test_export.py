@@ -115,6 +115,28 @@ def test_out_overrides_the_folder_and_seasons_get_season_folders(
     assert not (lake.exports_root / "demo" / "games" / "season=2023").exists()
 
 
+def test_export_holds_one_season_at_a_time(
+    lake: LakeConfig, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    events: list[str] = []
+    real_read = ProcessedStore.read
+    real_write = export_module.atomic_write_parquet
+
+    def read(self: ProcessedStore, spec: DatasetSpec, season: int | None = None, columns=None):  # type: ignore[no-untyped-def]
+        events.append(f"read {season}" if columns is None else f"keys {season}")
+        return real_read(self, spec, season, columns)
+
+    def write(table: pa.Table, path: Path, **kwargs: object) -> None:
+        events.append("write")
+        real_write(table, path, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(ProcessedStore, "read", read)
+    monkeypatch.setattr(export_module, "atomic_write_parquet", write)
+    export_dataset(GAMES, "parquet", config=lake)
+    # each season is read and written before the next one is read
+    assert events == ["read 2023", "write", "read 2024", "write"]
+
+
 def test_the_exports_folder_can_be_moved_by_environment(
     lake: LakeConfig, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
