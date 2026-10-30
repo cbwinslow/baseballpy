@@ -1,6 +1,6 @@
 # Goal-Seek Prompt (deployable)
 
-Use this prompt to start a long, autonomous run on `baseballpy`. Fill in the three `<<...>>` blanks, paste everything below the line, and let it run. It is versioned with the repository (OpenSpec change `agent-goal-seek-runbook`); update it whenever `AGENTS.md` or the OpenSpec protocol changes.
+Use this prompt to start a long, autonomous run on `baseballpy`. Fill in the three `<<...>>` blanks, paste everything below the line, and let it run. For a run with the full toolbox, a testing strategy and a default goal, use `docs/agents/LOOP_PROMPT.md`, which builds on this file. It is versioned with the repository (OpenSpec change `agent-goal-seek-runbook`); update it whenever `AGENTS.md` or the OpenSpec protocol changes.
 
 ---
 
