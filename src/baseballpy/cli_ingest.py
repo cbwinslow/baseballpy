@@ -21,6 +21,7 @@ from baseballpy.ingest.adapters import ADAPTERS, get_adapters
 from baseballpy.ingest.runner import plan_jobs, run_jobs
 from baseballpy.ingest.selection import parse_seasons
 from baseballpy.ingest.types import Job, JobStatus, Selection
+from baseballpy.probe import probe_cmd
 from baseballpy.sources.adapters import register_all_adapters
 from baseballpy.sources.catalog import register_all
 
@@ -621,6 +622,7 @@ def register_commands(main: click.Group, catalog_group: click.Group) -> None:
     """
     main.add_command(ingest_cmd, "ingest")
     main.add_command(doctor_cmd, "doctor")
+    main.add_command(probe_cmd, "probe")
     catalog_group.add_command(catalog_status_cmd, "status")
 
 

@@ -39,3 +39,19 @@ A single-endpoint call MUST raise when the provider refuses a request (HTTP erro
 - **WHEN** one of two game requests answers 406 and the other succeeds
 - **THEN** the report has rows and one error, and the job result is failed with the rows of the successful request
 - Verified by `tests/test_mlb_coverage.py::test_one_refused_request_does_not_stop_the_others_and_fails_the_job_afterwards`.
+
+### Requirement: League-Wide Pools Survive A Refused Pool Route
+When `/v1/stats` answers HTTP 406 for a league-wide player pool, the pool MUST be fetched through `/v1/people?personIds=...&hydrate=stats(...)` in batches of the sport's players, every provider response MUST be kept as raw bytes, and the splits MUST be normalised with the same schema as the direct route.
+
+#### Scenario: A 406 on the pool route
+- **WHEN** the direct route answers 406 and the people route answers 200
+- **THEN** the pool's rows are stored and the raw hydrate pages are kept
+- Verified by `tests/test_mlb_coverage.py::test_a_refused_league_wide_pool_is_fetched_through_people_hydrate`.
+
+### Requirement: A Probe Reports Provider Health
+`baseballpy probe` MUST send one small request to each provider route the project depends on, print the status and time of each, name a fallback where one exists, and exit with code 1 when any route does not answer 200.
+
+#### Scenario: One route is down
+- **WHEN** the league-wide pool route answers 406 and the others 200
+- **THEN** the table marks that route FAILED with its fallback and the exit code is 1
+- Verified by `tests/test_probe.py::test_probe_names_the_failing_route_and_its_fallback` and `tests/test_probe.py::test_probe_passes_when_every_route_answers`.

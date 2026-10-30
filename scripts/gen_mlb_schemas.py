@@ -52,6 +52,11 @@ def sample_contexts(ep: Any, ctxs: list[Any], all_sports: tuple[int, ...]) -> li
     ``parentOrgId``).
     """
     use = ctxs if ep.scope != "teams_season" else [ctxs[-1]]
+    if any("{team_ids}" in str(value) for value in ep.params.values()):
+        # the request needs team ids: sample the contexts that have them (found by team_affiliates)
+        use = [c for c in ctxs if c.team_ids] or use
+    if extra_teams := PLACEHOLDER_TEAMS.get(ep.name):
+        use = [replace(c, team_ids=(*c.team_ids, *extra_teams)) for c in use]
     if ep.scope == "season" and any(
         "{sport_id}" in text for text in (ep.path, *map(str, ep.params.values()))
     ):
@@ -92,9 +97,11 @@ EXTRA_SEASONS = {
     # recent alumni are alive: the death fields only appear in older rosters (found by a 1990 run)
     "team_alumni": (1990, 1965),
     # `notes` appears on some older awards (found by the same 1990 run)
-    "award_recipients": (1990, 1969),
+    "award_recipients": (1990, 1969, 2025),
 }
 SAMPLE_TEAMS = (147, 119)
+#: placeholder teams ("AL Champion", id 21) carry fields real teams lack (`placeholder`), found by a 2025 run
+PLACEHOLDER_TEAMS = {"team_affiliates": (21,)}
 SAMPLE_GAMES = (745000, 775296)
 SAMPLE_PEOPLE = tuple(
     (pid, "")

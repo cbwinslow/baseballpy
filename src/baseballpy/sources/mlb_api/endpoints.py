@@ -308,7 +308,7 @@ _REFERENCE: tuple[tuple[str, tuple[str, ...], str, tuple[str, ...]], ...] = (
     ("platforms", (), "Platforms.", ("platformCode",)),
     ("reviewReasons", (), "Replay review reasons.", ("code",)),
     ("logicalEvents", (), "Logical event types.", ("code",)),
-    ("metrics", (), "Tracking metrics.", ("name",)),
+    ("metrics", (), "Tracking metrics.", ("metricId",)),
     (
         "baseballStats",
         (),
@@ -435,13 +435,18 @@ _STATS = [
     )
     for stat, group, keys in PLAYER_STAT_COMBOS
 ]
+#: Team stat types with one row per game: a doubleheader gives a club two rows on one date, so the
+#: game completes the key (checked unique on the 2025 rows of all three groups, 2026-10-30).
+_PER_GAME_TEAM_STATS = ("gameLog", "atGameStart")
 _TEAM_STATS = [
     MlbEndpoint(
         f"team_stats_{snake(stat)}_{group}",
         "v1/teams/stats",
         ("stats", "*", "splits"),
         f"Team {group} stats, type {stat}.",
-        keys,
+        (*keys, "game.gamePk")
+        if stat in _PER_GAME_TEAM_STATS and "game.gamePk" not in keys
+        else keys,
         "season",
         {"stats": stat, "group": group, "season": "{season}", "sportIds": "{sport_id}"},
         "stats",
@@ -627,7 +632,7 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "v1/sports/{sport_id}/players",
         ("people",),
         "Every player of a sport-season with biographical fields.",
-        ("id",),
+        ("id", "sport_id"),
         "season",
         season="{season}",
     ),
@@ -748,8 +753,16 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "stats_leaders",
         "v1/stats/leaders",
         ("leagueLeaders", "*", "leaders"),
-        "League leaders for every category of a season (ties repeat a rank, so the key is not unique).",
-        ("leagueLeaders.leaderCategory", "leagueLeaders.statGroup", "rank"),
+        "League leaders for every category of a season-sport (ties repeat a rank; the person completes the key, a few provider rows are repeated).",
+        (
+            "sport_id",
+            "leagueLeaders.season",
+            "leagueLeaders.gameType.id",
+            "leagueLeaders.leaderCategory",
+            "leagueLeaders.statGroup",
+            "rank",
+            "person.id",
+        ),
         "season",
         leaderCategories="{leader_categories}",
         season="{season}",
@@ -761,7 +774,7 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "v1/schedule",
         ("dates", "*", "games"),
         "Season schedule with team, linescore, decisions, probable pitchers, officials, weather, venue, broadcasts, series and flags hydrated.",
-        ("gamePk", "dates.date"),
+        ("gamePk", "dates.date", "sport_id"),
         "season",
         sportId="{sport_id}",
         season="{season}",

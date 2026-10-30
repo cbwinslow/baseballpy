@@ -26,6 +26,7 @@ Commands:
   export          Export cached datasets: SPECS are `source` or `source:dataset[,dataset]`.
   ingest          Execute ingestion jobs across registered adapters with planning and concurrency.
   migrate-layout  Migrate a v1 data lake (cache/<source>/...) to layout v2 (raw/ + processed/).
+  probe           Check every provider route in seconds (run it before a long ingest).
   quarantine      Inspect and display dead-letter quarantine files and unparseable records.
   refs            Show or update the pinned upstream commit SHAs (reproducible GitHub sources).
   statcast        Download Statcast pitch-level tracking data with chunking and rate limits.
@@ -401,6 +402,18 @@ Options:
   --dry-run     Print the plan without touching any file.
   --delete-old  Delete migrated v1 files after verification (unknown files are never touched).
   --help        Show this message and exit.
+```
+
+## `baseballpy probe`
+
+```text
+Usage: baseballpy probe [OPTIONS]
+
+  Check every provider route in seconds (run it before a long ingest).
+
+Options:
+  --season INTEGER  Season to probe (default: last year).
+  --help            Show this message and exit.
 ```
 
 ## `baseballpy quarantine`

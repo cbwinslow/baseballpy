@@ -65,6 +65,10 @@ def _add(
     )
 
 
+#: parser-output revision of the declarative MLB datasets: 1 = an empty text value is NULL, no longer an
+#: empty string (found by the CSV export read-back, mlb_api-source-review 5.9)
+MLB_REVISION = 1
+
 #: parser-output revisions of Retrosheet datasets (see ``DatasetSpec.revision``):
 #: 1 = missing event text fields are NULL, no longer empty strings (task 3.2 export check)
 RETROSHEET_REVISIONS = {"events": 1, "events_postseason": 1, "events_deduced": 1}
@@ -222,6 +226,7 @@ def register_all() -> dict[str, DatasetSpec]:
             "season" if endpoint.partitioned else "none",
             mode,
             note,
+            revision=MLB_REVISION,
         )
 
     for table, schema in LAHMAN_SCHEMAS.items():

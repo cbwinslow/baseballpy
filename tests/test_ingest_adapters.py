@@ -590,3 +590,19 @@ def test_unbounded_selection_plans_jobs_without_a_limit() -> None:
     )
     assert jobs
     assert all(job.limit is None and job.param("limit") is None for job in jobs)
+
+
+def test_mlb_adapter_selects_any_registered_dataset_by_name() -> None:
+    from baseballpy.sources.mlb_api.adapter import MlbApiAdapter
+
+    adapter = MlbApiAdapter()
+    jobs = adapter.plan(Selection(seasons=(2025,), datasets=("team_alumni", "ref_sports")))
+    assert [(j.task, j.param("name"), j.param("season")) for j in jobs] == [
+        ("endpoint", "team_alumni", 2025),
+        ("endpoint", "ref_sports", None),
+    ]
+    assert [j.task for j in adapter.plan(Selection(seasons=(2025,), datasets=("season",)))] == [
+        "season"
+    ]
+    with pytest.raises(ValueError, match=r"unknown dataset\(s\) for mlb_api.*'nope'"):
+        adapter.plan(Selection(seasons=(2025,), datasets=("nope",)))

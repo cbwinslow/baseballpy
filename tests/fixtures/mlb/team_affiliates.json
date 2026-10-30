@@ -2,113 +2,115 @@
  "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
  "teams": [
   {
-   "allStarStatus": "N",
-   "id": 524,
-   "name": "Stockton Ports",
-   "link": "/api/v1/teams/524",
+   "allStarStatus": "F",
+   "id": 386,
+   "name": "New York Yankees Prospects",
+   "link": "/api/v1/teams/386",
    "season": 2024,
    "venue": {
-    "id": 2731,
-    "name": "Banner Island Ballpark",
-    "link": "/api/v1/venues/2731"
+    "id": 2523,
+    "name": "George M. Steinbrenner Field",
+    "link": "/api/v1/venues/2523"
    },
-   "teamCode": "sto",
-   "fileCode": "t524",
-   "abbreviation": "STK",
-   "teamName": "Ports",
-   "locationName": "Stockton",
-   "firstYearOfPlay": "1946",
-   "league": {
-    "id": 110,
-    "name": "California League",
-    "link": "/api/v1/league/110"
-   },
-   "division": {
-    "id": 208,
-    "name": "California League North",
-    "link": "/api/v1/divisions/208"
-   },
-   "sport": {
-    "id": 14,
-    "link": "/api/v1/sports/14",
-    "name": "Single-A"
-   },
-   "shortName": "Stockton",
-   "parentOrgName": "Oakland Athletics",
-   "parentOrgId": 133,
-   "franchiseName": "Stockton",
-   "clubName": "Ports",
-   "active": true
-  },
-  {
-   "allStarStatus": "N",
-   "id": 602,
-   "name": "DSL Athletics",
-   "link": "/api/v1/teams/602",
-   "season": 2024,
-   "venue": {
-    "id": 6094,
-    "name": "Oakland Athletics DR Complex",
-    "link": "/api/v1/venues/6094"
-   },
-   "teamCode": "dat",
-   "fileCode": "t602",
-   "abbreviation": "D-ATH",
-   "teamName": "DSL Athletics",
-   "locationName": "Boca Chica",
-   "firstYearOfPlay": "1987",
-   "league": {
-    "id": 130,
-    "name": "Dominican Summer League",
-    "link": "/api/v1/league/130"
-   },
-   "division": {
-    "id": 250,
-    "name": "Dominican Summer League West",
-    "link": "/api/v1/divisions/250"
-   },
-   "sport": {
-    "id": 16,
-    "link": "/api/v1/sports/16",
-    "name": "Rookie"
-   },
-   "shortName": "DSL Athletics",
-   "parentOrgName": "Oakland Athletics",
-   "parentOrgId": 133,
-   "franchiseName": "DSL Athletics",
-   "clubName": "DSL Athletics",
-   "active": true
-  },
-  {
-   "allStarStatus": "N",
-   "id": 3254,
-   "name": "Athletics Alternate Training Site",
-   "link": "/api/v1/teams/3254",
-   "season": 2024,
-   "venue": {
-    "id": 2731,
-    "name": "Banner Island Ballpark",
-    "link": "/api/v1/venues/2731"
-   },
-   "teamCode": "oas",
-   "fileCode": "t3254",
-   "abbreviation": "OAK",
-   "teamName": "Athletics Alt. Site",
-   "locationName": "Stockton",
+   "teamCode": "nyp",
+   "fileCode": "t386",
+   "abbreviation": "NYP",
+   "teamName": "Yankees Prospects",
+   "locationName": "Tampa",
    "firstYearOfPlay": "2001",
    "league": {
-    "id": 5468,
-    "name": "Extended Spring Training",
-    "link": "/api/v1/league/5468"
+    "id": 590,
+    "name": "Futures Game",
+    "link": "/api/v1/league/590"
    },
    "sport": {
     "id": 21,
     "link": "/api/v1/sports/21",
     "name": "Minor League Baseball"
    },
-   "shortName": "Athletics Alternate Training Site",
-   "parentOrgName": "Oakland Athletics",
-   "parentOrgId": 133,
+   "shortName": "Yankees Prospects",
+   "parentOrgName": "New York Yankees",
+   "parentOrgId": 147,
+   "franchiseName": "Yankees Prospects",
+   "clubName": "Yankees Prospects",
+   "active": true
+  },
+  {
+   "allStarStatus": "N",
+   "id": 531,
+   "name": "Scranton/Wilkes-Barre RailRiders",
+   "link": "/api/v1/teams/531",
+   "season": 2024,
+   "venue": {
+    "id": 2797,
+    "name": "PNC Field",
+    "link": "/api/v1/venues/2797"
+   },
+   "teamCode": "swb",
+   "fileCode": "t531",
+   "abbreviation": "SWB",
+   "teamName": "RailRiders",
+   "locationName": "Moosic",
+   "firstYearOfPlay": "1989",
+   "league": {
+    "id": 117,
+    "name": "International League",
+    "link": "/api/v1/league/117"
+   },
+   "division": {
+    "id": 219,
+    "name": "International League East",
+    "link": "/api/v1/divisions/219"
+   },
+   "sport": {
+    "id": 11,
+    "link": "/api/v1/sports/11",
+    "name": "Triple-A"
+   },
+   "shortName": "Scranton/WB",
+   "parentOrgName": "New York Yankees",
+   "parentOrgId": 147,
+   "franchiseName": "Scranton/WB",
+   "clubName": "RailRiders",
+   "active": true
+  },
+  {
+   "allStarStatus": "N",
+   "id": 1956,
+   "name": "Somerset Patriots",
+   "link": "/api/v1/teams/1956",
+   "season": 2024,
+   "venue": {
+    "id": 5418,
+    "name": "TD Bank Ballpark",
+    "link": "/api/v1/venues/5418"
+   },
+   "teamCode": "som",
+   "fileCode": "t1956",
+   "abbreviation": "SOM",
+   "teamName": "Patriots",
+   "locationName": "Bridgewater",
+   "firstYearOfPlay": "1998",
+   "league": {
+    "id": 113,
+    "name": "Eastern League",
+    "link": "/api/v1/league/113"
+   },
+   "division": {
+    "id": 212,
+    "name": "Eastern League Northeast",
+    "link": "/api/v1/divisions/212"
+   },
+   "sport": {
+    "id": 12,
+    "link": "/api/v1/sports/12",
+    "name": "Double-A"
+   },
+   "shortName": "Somerset",
+   "parentOrgName": "New York Yankees",
+   "parentOrgId": 147,
+   "franchiseName": "Somerset",
+   "clubName": "Patriots",
    "active": true
   }
  ]

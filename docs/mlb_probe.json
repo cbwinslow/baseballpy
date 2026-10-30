@@ -1,5 +1,5 @@
 {
- "probed_on": "2026-10-29",
+ "probed_on": "2026-10-30",
  "endpoints": {
   "stats_projected_hitting": {
    "status": "ok",
@@ -2427,10 +2427,10 @@
   },
   "team_affiliates": {
    "status": "ok",
-   "requests_ok": 1,
+   "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 321,
-   "columns": 35,
+   "sample_rows": 1371,
+   "columns": 36,
    "key_unique_per_request": true
   },
   "team_history": {
@@ -2459,10 +2459,10 @@
   },
   "team_alumni": {
    "status": "ok",
-   "requests_ok": 30,
+   "requests_ok": 34,
    "requests_failed": 0,
-   "sample_rows": 833,
-   "columns": 49,
+   "sample_rows": 966,
+   "columns": 53,
    "key_unique_per_request": true
   },
   "team_roster_active": {
@@ -2579,10 +2579,10 @@
   },
   "award_recipients": {
    "status": "ok",
-   "requests_ok": 12,
-   "requests_failed": 2,
-   "sample_rows": 34,
-   "columns": 15,
+   "requests_ok": 30,
+   "requests_failed": 5,
+   "sample_rows": 85,
+   "columns": 16,
    "key_unique_per_request": false
   },
   "people_changes": {

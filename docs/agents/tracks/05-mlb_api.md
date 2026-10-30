@@ -186,3 +186,80 @@ Suspected findings to verify (not yet confirmed; the cards decide):
 - **Steps:** 1. catch the refusal per request, keep going, report it; 2. the adapter ends the job as failed with detail and rows; 3. rerun the live season.
 - **Done when:** the test passes and fails without the change; the live 2025 season stores every endpoint the provider answers
 - **Record:** tick 5.7; design.md S6.
+
+### M-17 Registered keys unique on real rows
+- **Change task:** `mlb_api-source-review 5.8`
+- **Stage:** S6
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/mlb_api/endpoints.py, tests/test_mlb_param.py
+- **Tools (reuse check):** registry-driven code and the generator's --only mode; no new mechanism
+- **Inputs:** live 2025 lake: 17 datasets had non-unique registered keys (pitch of the Retrosheet lesson); candidates were tested on the real rows
+- **Steps:** extend the keys that real rows prove unique; list the rest as 5.11.
+- **Done when:** the tests pass and fail without the change; the live 2025 lake is re-measured
+- **Record:** tick 5.8; design.md.
+
+### M-18 `--datasets` accepts any registered dataset name
+- **Change task:** `mlb_api-source-review 5.9`
+- **Stage:** S6
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/mlb_api/adapter.py, tests/test_ingest_adapters.py
+- **Tools (reuse check):** registry-driven code and the generator's --only mode; no new mechanism
+- **Inputs:** `ingest mlb_api -d team_alumni` was refused ('known: games, history, people_stats, reference, season')
+- **Steps:** plan one endpoint job per named dataset.
+- **Done when:** the tests pass and fail without the change; the live 2025 lake is re-measured
+- **Record:** tick 5.9; design.md.
+
+### M-19 Empty text is NULL; parser revision
+- **Change task:** `mlb_api-source-review 5.10`
+- **Stage:** S6
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/mlb_api/generic.py, src/baseballpy/sources/catalog.py, tests/test_mlb_coverage.py
+- **Tools (reuse check):** registry-driven code and the generator's --only mode; no new mechanism
+- **Inputs:** CSV export read-back refused 14 datasets whose text columns held empty strings
+- **Steps:** `_as_string` returns NULL for ''; MLB_REVISION = 1 rebuilds stored chunks.
+- **Done when:** the tests pass and fail without the change; the live 2025 lake is re-measured
+- **Record:** tick 5.10; design.md.
+
+### M-20 Remaining non-unique keys
+- **Change task:** `mlb_api-source-review 5.11`
+- **Stage:** S6
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/mlb_api/endpoints.py
+- **Tools (reuse check):** registry-driven code and the generator's --only mode; no new mechanism
+- **Inputs:** after M-17: transactions_season (1,048 repeats of an id), stats_leaders 180, team_coaches 7, jobs_* repeated rows, draft_prospects bis_player_id NULL
+- **Steps:** decide per dataset: key with a nullable part is not allowed for merge; document repeated provider rows.
+- **Done when:** the tests pass and fail without the change; the live 2025 lake is re-measured
+- **Record:** tick 5.11; design.md.
+
+### M-21 team_stats_expected_statistics_hitting holds the player list as JSON
+- **Change task:** `mlb_api-source-review 5.12`
+- **Stage:** S6
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/mlb_api/endpoints.py, flatten.py
+- **Tools (reuse check):** registry-driven code and the generator's --only mode; no new mechanism
+- **Inputs:** 600 rows, 579 identical, column stats_splits_tied_with_limit holds the whole list
+- **Steps:** find the right records path from a real response; regenerate that schema with --only.
+- **Done when:** the tests pass and fail without the change; the live 2025 lake is re-measured
+- **Record:** tick 5.12; design.md.
+
+### M-22 League-wide pools survive the provider's 406
+- **Change task:** `mlb_api-source-review 5.13`
+- **Stage:** S6
+- **Executor:** Claude
+- **Files:** src/baseballpy/sources/mlb_api/generic.py, tests/test_mlb_coverage.py
+- **Tools (reuse check):** the shared HttpClient and the existing flattening; no new mechanism
+- **Inputs:** root cause found 2026-10-30 by probing: `/api/v1/stats` answers a Spring 'Not Acceptable' 406 for every parameter, Accept header and user agent, while `/v1/teams/stats`, `/v1/people/{id}/stats` and `/v1/stats/leaders` answer 200; `/v1/people?hydrate=stats(...)` returns the same split objects
+- **Steps:** 1. on a 406 fetch the sport's player ids and hydrate their stats in batches of 150; 2. keep each response as raw bytes; 3. test; 4. live check.
+- **Done when:** the test passes and fails without the change; live: `stats_season_hitting` 2025 sport 1 stores 921 rows in 3 s
+- **Record:** tick 5.13; design.md; ADR 53.
+
+### M-23 baseballpy probe
+- **Change task:** `mlb_api-source-review 5.14`
+- **Stage:** S6
+- **Executor:** Claude
+- **Files:** src/baseballpy/probe.py, src/baseballpy/cli_ingest.py, tests/test_probe.py
+- **Tools (reuse check):** HttpClient, click, rich (as the other commands)
+- **Inputs:** the owner lost hours to a provider fault that a ten-second check would have shown
+- **Steps:** 1. a declarative canary table (no fixed season); 2. one command; 3. tests.
+- **Done when:** `uv run pytest tests/test_probe.py -q` passes; `baseballpy probe` runs in seconds
+- **Record:** tick 5.14; ADR 53.

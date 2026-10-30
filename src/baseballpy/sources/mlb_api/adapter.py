@@ -12,6 +12,20 @@ KNOWN_DATASETS = {"reference", "season", "games", "history", "people_stats"}
 DEFAULT_DATASETS = ("reference", "season")
 
 
+def _registered() -> set[str]:
+    """Every registered MLB dataset name (what ``--datasets`` accepts besides the units)."""
+    from baseballpy.sources.mlb_api.access import datasets
+
+    return set(datasets())
+
+
+def _partitioned() -> set[str]:
+    """Names of the season-partitioned MLB datasets."""
+    from baseballpy.core.datasets import datasets_for
+
+    return {spec.name for spec in datasets_for("mlb_api") if spec.partition == "season"}
+
+
 def _result(job: Job, reports: Sequence[Any]) -> JobResult:
     """Row counts of the reports as a result; refused requests fail the job but keep the data."""
     counts = [None if r.requests == r.cached else r.rows for r in reports]
@@ -50,17 +64,32 @@ class MlbApiAdapter:
 
     def plan(self, selection: Selection) -> list[Job]:
         """Generate planned jobs matching the given selection."""
+        named: list[str] = []
         if selection.datasets:
-            unknown = [d for d in selection.datasets if d not in KNOWN_DATASETS]
+            # a unit (reference, season, ...) or any registered dataset name (one endpoint job)
+            named = [
+                d for d in selection.datasets if d not in KNOWN_DATASETS and d in _registered()
+            ]
+            unknown = [d for d in selection.datasets if d not in KNOWN_DATASETS and d not in named]
             if unknown:
                 raise ValueError(
-                    f"unknown dataset(s) for mlb_api: {unknown}; known: {sorted(KNOWN_DATASETS)}"
+                    f"unknown dataset(s) for mlb_api: {unknown}; known: units "
+                    f"{sorted(KNOWN_DATASETS)} or any registered dataset name (see `catalog list`)"
                 )
-            wanted = set(selection.datasets)
+            wanted = set(selection.datasets) & KNOWN_DATASETS
         else:
             wanted = set(DEFAULT_DATASETS)
 
         jobs: list[Job] = []
+        for name in named:
+            partitioned = name in _partitioned()
+            if partitioned and not selection.seasons:
+                continue
+            for season in selection.seasons if partitioned else (None,):
+                params: dict[str, Any] = {"name": name}
+                if season is not None:
+                    params["season"] = season
+                jobs.append(make_job("mlb_api", "endpoint", **params))
         if "reference" in wanted:
             jobs.append(make_job("mlb_api", "reference"))
 
@@ -91,6 +120,14 @@ class MlbApiAdapter:
     def run(self, job: Job, *, refresh: bool = False) -> JobResult:
         """Execute a single MLB Stats API ingest job."""
         source = self._get_source()
+
+        if job.task == "endpoint":
+            name = str(job.param("name"))
+            season_val = job.param("season")
+            table = source.endpoint(
+                name, season=int(season_val) if season_val is not None else None, refresh=refresh
+            )
+            return JobResult(job=job, status=JobStatus.COMPLETED, rows=table.num_rows)
 
         if job.task == "reference":
             reports = source.ingest_reference(refresh=refresh)

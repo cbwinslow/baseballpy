@@ -109,7 +109,6 @@
    "link": "/api/v1/people/641343",
    "firstName": "Jakob",
    "lastName": "Bauers",
-   "primaryNumber": "9",
    "birthDate": "1995-10-06",
    "currentAge": 31,
    "birthCity": "Newport Beach",
@@ -117,7 +116,7 @@
    "birthCountry": "USA",
    "height": "6' 0\"",
    "weight": 216,
-   "active": true,
+   "active": false,
    "primaryPosition": {
     "code": "3",
     "name": "First Base",
@@ -133,6 +132,7 @@
    "isPlayer": true,
    "isVerified": true,
    "draftYear": 2013,
+   "lastPlayedDate": "2026-09-27",
    "mlbDebutDate": "2018-06-07",
    "batSide": {
     "code": "L",

@@ -538,3 +538,54 @@ def test_one_refused_request_does_not_stop_the_others_and_fails_the_job_afterwar
     result = _result(make_job("mlb_api", "season", season=2024), [report])
     assert result.status == JobStatus.FAILED and result.rows == report.rows
     assert "1 request(s) refused" in result.detail and "game_linescore" in (result.error or "")
+
+
+def test_empty_text_in_a_payload_is_null_and_survives_a_csv_round_trip(tmp_path: Path) -> None:
+    from baseballpy.sinks.csv import CsvSink, read_csv_typed
+    from baseballpy.sources.mlb_api.generic import MlbRecordNormalizer
+
+    schema = MLB_SCHEMAS["ref_sports"]
+    first = next(f for f in schema if f.type == pa.string() and f.name != "_extras")
+    key = (first.metadata or {}).get(b"upstream", first.name.encode()).decode()
+    table = MlbRecordNormalizer().from_records([{key: ""}, {key: "x"}], schema, "ref_sports")
+    assert table[first.name].to_pylist() == [None, "x"]
+    CsvSink().write(table, str(tmp_path / "t.csv"))
+    assert read_csv_typed(tmp_path / "t.csv").equals(table)
+
+
+@respx.mock
+def test_a_refused_league_wide_pool_is_fetched_through_people_hydrate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    ep = next((e for e in COVERED if e.paginated and e.path == "v1/stats"), None)
+    if ep is None:
+        pytest.skip("no league-wide pool was typed when the schemas were generated")
+    monkeypatch.setattr(generic, "POOL_BATCH", 1)
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    splits = _fixture(ep.name)["stats"][0]["splits"]
+    assert len(splits) >= 2
+    first, second = splits[0], splits[1]
+    ids = [int(first["player"]["id"]), int(second["player"]["id"])]
+    if ids[0] == ids[1]:
+        second = {**second, "player": {**second["player"], "id": ids[0] + 1}}
+        ids[1] = ids[0] + 1
+    respx.get(f"{MLB_BASE_URL}/{ep.path}").mock(return_value=httpx.Response(406))
+    respx.get(f"{MLB_BASE_URL}/v1/sports/1/players").mock(
+        return_value=httpx.Response(200, json={"people": [{"id": i} for i in ids]})
+    )
+    by_id = {ids[0]: first, ids[1]: second}
+
+    def people(request: httpx.Request) -> httpx.Response:
+        wanted = [int(i) for i in request.url.params["personIds"].split(",")]
+        assert "stats(" in request.url.params["hydrate"]
+        return httpx.Response(
+            200,
+            json={"people": [{"id": i, "stats": [{"splits": [by_id[i]]}]} for i in wanted]},
+        )
+
+    hydrate = respx.get(f"{MLB_BASE_URL}/v1/people").mock(side_effect=people)
+    report = extractor.ingest(ep, Context(season=2024, sport_ids=(1,)))
+    assert report.rows == 2 and hydrate.call_count == 2 and not report.errors
+    raw = lake.raw_dir("mlb_api", ep.name, 2024)
+    assert any(".hydrate." in p.name for p in raw.glob("*.json")), "the provider's bytes are kept"

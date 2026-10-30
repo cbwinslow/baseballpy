@@ -166,3 +166,21 @@ def test_sport_and_team_fan_out_endpoints_tolerate_the_providers_404() -> None:
     ]
     assert {e.name for e in fanned} >= {"teams_season", "team_alumni"}
     assert all(e.tolerate_missing for e in fanned)
+
+
+def test_per_game_team_stats_and_multi_level_datasets_carry_the_extra_key_part() -> None:
+    from baseballpy.sources.mlb_api.endpoints import BY_NAME
+
+    for stat in ("game_log", "at_game_start"):
+        for group in ("hitting", "pitching", "fielding"):
+            assert "game.gamePk" in BY_NAME[f"team_stats_{stat}_{group}"].keys, (stat, group)
+    assert "sport_id" in BY_NAME["players_season"].keys
+    assert "sport_id" in BY_NAME["schedule_hydrated"].keys
+
+
+def test_keys_never_contain_a_part_that_can_be_empty_in_the_payload() -> None:
+    from baseballpy.sources.mlb_api.endpoints import BY_NAME
+
+    # jersey numbers are empty for some staff: an empty text is NULL and a NULL key part breaks merge
+    assert all("jerseyNumber" not in ep.keys for ep in BY_NAME.values())
+    assert BY_NAME["ref_metrics"].keys == ("metricId",)  # one metric has the empty name ''

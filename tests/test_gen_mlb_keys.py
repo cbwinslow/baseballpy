@@ -87,3 +87,13 @@ def test_an_empty_league_wide_table_is_never_written(
     with pytest.raises(SystemExit, match="refusing to write stat_combos.py"):
         gen.write_combos([], [("season", "hitting", ("season",))], [])
     assert target.read_text(encoding="utf-8") == "KEEP = 1\n"
+
+
+def test_an_endpoint_that_needs_team_ids_is_sampled_with_the_contexts_that_have_them() -> None:
+    from baseballpy.sources.mlb_api.endpoints import BY_NAME, Context
+
+    affiliates = BY_NAME["team_affiliates"]
+    with_teams = Context(season=2024, sport_ids=(1,), team_ids=(147, 119))
+    without = Context(season=2015, sport_ids=(1,))
+    sampled = gen.sample_contexts(affiliates, [with_teams, without], (1,))
+    assert [c.team_ids for c in sampled] == [(147, 119, 21)]  # 21 is a placeholder team

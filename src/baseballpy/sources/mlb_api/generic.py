@@ -63,6 +63,35 @@ HEAVY_PAGE_TIMEOUT = 180.0
 MIN_PAGE_SIZE = 125
 
 
+#: people per request of the hydrate fallback for the league-wide player pools
+POOL_BATCH = 150
+#: query parameters of ``/v1/stats`` that are not part of a ``hydrate=stats(...)`` request
+_POOL_ONLY_PARAMS = frozenset({"sportIds", "playerPool", "limit", "offset", "stats", "group"})
+#: raw page names of the fallback carry this marker (the payload is people, not splits)
+HYDRATE_MARKER = ".hydrate."
+
+
+def _hydrate_expression(params: Mapping[str, Any], sport_id: str) -> str:
+    """``stats(group=[g],type=[t],season=Y,sportId=S,...)`` for the request's stat parameters."""
+    parts = [f"group=[{params['group']}]", f"type=[{params['stats']}]"]
+    parts += [f"{k}={v}" for k, v in params.items() if k not in _POOL_ONLY_PARAMS]
+    parts.append(f"sportId={sport_id}")
+    return "stats(" + ",".join(parts) + ")"
+
+
+def stats_payload(payload: Any) -> dict[str, Any]:
+    """A ``/v1/people?hydrate=stats(...)`` payload as the ``/v1/stats`` shape (``stats[].splits``).
+
+    Both carry the same split objects (player, team, league, sport, stat); the splits of every
+    person are gathered into one list so the normal flattening and schemas apply.
+    """
+    splits: list[Any] = []
+    for person in payload.get("people", []) if isinstance(payload, dict) else []:
+        for block in person.get("stats", []):
+            splits.extend(block.get("splits", []))
+    return {"stats": [{"splits": splits, "totalSplits": len(splits)}]}
+
+
 class HeavyEndpointError(RuntimeError):
     """A paginated request would download an unexpectedly huge result (all-time stat pools)."""
 
@@ -72,7 +101,8 @@ class UnsupportedEndpointError(NotImplementedError):
 
 
 def _as_string(value: Scalar) -> str | None:
-    if value is None:
+    """Text of a scalar; an empty string means no value (NULL), like every other source."""
+    if value is None or value == "":
         return None
     if isinstance(value, bool):
         return "true" if value else "false"
@@ -191,6 +221,7 @@ class MlbEndpointExtractor:
         cleanup_stale_parts(self.cache_config.raw_root / "mlb_api")
         cleanup_stale_parts(self.cache_config.processed_root / "mlb_api")
         self.missing = 0
+        self._pool_ids: dict[tuple[str, str], list[int]] = {}
 
     @staticmethod
     def spec(endpoint: MlbEndpoint) -> DatasetSpec:
@@ -211,7 +242,62 @@ class MlbEndpointExtractor:
             )
         )
 
+    def _pool_player_ids(self, sport_id: str, season: Any) -> list[int]:
+        """Every player id of a sport-season (``/v1/sports/{id}/players``), for the hydrate fallback."""
+        key = (str(sport_id), str(season))
+        if key not in self._pool_ids:
+            result = self.http.get_sync(
+                f"{MLB_BASE_URL}/v1/sports/{sport_id}/players", params={"season": season}
+            )
+            people = result.json().get("people", [])
+            self._pool_ids[key] = sorted({int(p["id"]) for p in people if "id" in p})
+        return self._pool_ids[key]
+
+    def _pool_pages_by_hydrate(
+        self, endpoint: MlbEndpoint, request: Request
+    ) -> list[tuple[str, HttpResult]]:
+        """The league-wide pool through ``/v1/people?hydrate=stats(...)`` in batches of players.
+
+        Used when the provider refuses ``/v1/stats`` (HTTP 406 on every query, 2026-10-29 to
+        2026-10-30 while ``/v1/teams/stats`` and ``/v1/people/{id}/stats`` answered 200). The split
+        objects are identical, so the same schema applies; each batch is kept as raw bytes.
+        """
+        params = request.params
+        sport = str(params.get("sportIds", "1"))
+        expression = _hydrate_expression(params, sport)
+        ids = self._pool_player_ids(sport, params.get("season"))
+        logger.warning(
+            "%s: /v1/stats refused; fetching %d players of sport %s by hydrate in batches of %d",
+            endpoint.name,
+            len(ids),
+            sport,
+            POOL_BATCH,
+        )
+        pages: list[tuple[str, HttpResult]] = []
+        for start in range(0, len(ids), POOL_BATCH):
+            batch = ids[start : start + POOL_BATCH]
+            result = self.http.get_sync(
+                f"{MLB_BASE_URL}/v1/people",
+                params={"personIds": ",".join(map(str, batch)), "hydrate": expression},
+                timeout=HEAVY_PAGE_TIMEOUT,
+            )
+            pages.append((f"{request.ident}{HYDRATE_MARKER}p{len(pages)}.json", result))
+        return pages
+
     def _get_pages(
+        self, endpoint: MlbEndpoint, request: Request, url: str, allow_heavy: bool = False
+    ) -> list[tuple[str, HttpResult]]:
+        """The response(s) of a request as ``(raw file name, result)``; paginated ones loop."""
+        if endpoint.paginated and endpoint.path == "v1/stats":
+            try:
+                return self._get_paginated(endpoint, request, url, allow_heavy)
+            except HttpStatusError as exc:
+                if exc.status != 406:
+                    raise
+                return self._pool_pages_by_hydrate(endpoint, request)
+        return self._get_paginated(endpoint, request, url, allow_heavy)
+
+    def _get_paginated(
         self, endpoint: MlbEndpoint, request: Request, url: str, allow_heavy: bool = False
     ) -> list[tuple[str, HttpResult]]:
         """The response(s) of a request as ``(raw file name, result)``; paginated ones loop."""
@@ -310,8 +396,12 @@ class MlbEndpointExtractor:
                 tracker.set_records(0)
                 return empty
             tables = [
-                self.normalizer.normalize(endpoint, result.json(), extra=request.extra)
-                for _, result in pages
+                self.normalizer.normalize(
+                    endpoint,
+                    stats_payload(result.json()) if HYDRATE_MARKER in name else result.json(),
+                    extra=request.extra,
+                )
+                for name, result in pages
             ]
             table = pa.concat_tables(tables) if len(tables) > 1 else tables[0]
             if self.cache_config.enabled:

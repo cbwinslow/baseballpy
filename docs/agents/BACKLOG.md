@@ -148,8 +148,8 @@ touches a source under review, do it inside that source's track.
 | B-69 | data-workflow-standard 3.1: `docs/DATA_WORKFLOW.md` | DONE | five-step workflow, cache folders and overrides, every read and export path, linked from README and ARCHITECTURE |
 | B-70 | data-workflow-standard 2.4: ingest jobs report skipped work in the audit log (cache_hit) | DONE | a cached rerun logs cache_hit=true; test added |
 | B-71 | data-workflow-standard 2.5: Lahman records fingerprints and decides with is_current() (done by lahman-source-review 5.1 and 5.2 = B-90 and B-91; tick both tasks when they finish) | DONE | upstream.is_current used, blob fingerprints in the raw manifests, `cache check --upstream` shows no unfingerprinted Lahman file |
-| B-72 | `data-workflow-standard 2.6`: Retrosheet records fingerprints and decides with is_current() | in the Retrosheet review | same as B-71 for Retrosheet |
-| B-73 | `data-workflow-standard 2.7`: Statcast records fingerprints and decides with is_current() | in the Statcast review | content or ETag fingerprints recorded, time-to-live kept for how often to ask |
+| B-72 | data-workflow-standard 2.6: Retrosheet records fingerprints and decides with is_current() | DONE (retrosheet-source-review 5.1, 5.2; ADR 48) | same as B-71 for Retrosheet |
+| B-73 | data-workflow-standard 2.7: Statcast records fingerprints and decides with is_current() | DONE (statcast-source-review 5.1, 5.2; ADR 52) | content or ETag fingerprints recorded, time-to-live kept for how often to ask |
 | B-74 | `data-workflow-standard 2.8`: MLB API records fingerprints and decides with is_current() | in the MLB API review | same as B-73 for the MLB API |
 | B-75 | chadwick-complete-access 1.1-3.1: process-wide register cache, full PlayerRecord, access to all four datasets, cited descriptions, docs, spec merge | DONE (archived 2026-10-29) | Chadwick has no open tasks; remaining Chadwick-adjacent work is only B-43 (export command, CSV/PostgreSQL) and the Retrosheet use of the Chadwick software tools |
 
@@ -263,7 +263,7 @@ touches a source under review, do it inside that source's track.
 |---|---|---|---|
 | B-155 | mlb_api-source-review 1.1: Inventory the provider against the registry (card M-01) | DONE | see the card |
 | B-156 | mlb_api-source-review 1.2: Check registry and adapter conformance (card M-02) | DONE | see the card |
-| B-157 | `mlb_api-source-review 1.3`: Compare the generated schema with real data (card M-03) | after B-156 | see the card |
+| B-157 | mlb_api-source-review 1.3: Compare the generated schema with real data (card M-03) | DONE | see the card |
 | B-158 | mlb_api-source-review 1.4: Review the code against the designated tools and decoupling rules (card M-04) | DONE | see the card |
 | B-159 | mlb_api-source-review 5.1: Record upstream fingerprints for every raw file (card M-05) | DONE | see the card |
 | B-160 | mlb_api-source-review 5.2: Decide currency with is_current() at every cache tier (card M-06) | DONE | see the card |
@@ -277,3 +277,10 @@ touches a source under review, do it inside that source's track.
 | B-168 | `mlb_api-source-review 4.1`: Docs, decisions, spec merge, archive (card M-14) | after B-167 | see the card |
 | B-169 | mlb_api-source-review 5.6: No hard-coded default season; standings honour refresh (card M-15) | DONE | see the card |
 | B-170 | mlb_api-source-review 5.7: One refused request must not abort the season job (card M-16) | DONE | see the card |
+| B-171 | mlb_api-source-review 5.8: Registered keys unique on real rows (card M-17) | DONE | see the card |
+| B-172 | mlb_api-source-review 5.9: `--datasets` accepts any registered dataset name (card M-18) | DONE | see the card |
+| B-173 | mlb_api-source-review 5.10: Empty text is NULL; parser revision (card M-19) | DONE | see the card |
+| B-174 | `mlb_api-source-review 5.11`: Remaining non-unique keys (card M-20) | READY | see the card |
+| B-175 | `mlb_api-source-review 5.12`: team_stats_expected_statistics_hitting holds the player list as JSON (card M-21) | READY | see the card |
+| B-176 | mlb_api-source-review 5.13: League-wide pools survive the provider's 406 (card M-22) | DONE | see the card |
+| B-177 | mlb_api-source-review 5.14: baseballpy probe (card M-23) | DONE | see the card |

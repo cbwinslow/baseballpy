@@ -12,3 +12,6 @@ Searched for how other clients handle HTTP 406 on `statsapi.mlb.com/api/v1/stats
 
 ## 2.2 Deep pools (2026-10-30)
 The three single-season pools (`stats_stats_single_season_{hitting,fielding,advanced_fielding}`, about 190k rows) ignore the season, so a per-season split is impossible; the 503s came from deep offsets with 1,000-row pages. `MlbEndpointGeneric._get_pages` now halves the page size from the same offset after a 5xx (down to `MIN_PAGE_SIZE` = 125) and continues with the smaller page, logging each step. Test `tests/test_mlb_coverage.py::test_a_5xx_at_a_deep_offset_is_retried_with_smaller_pages` (fails without the change). Not verified live: the route answers 406 (task 1.2), so the pools cannot be re-run yet (task 3.1).
+
+## Root cause and fix (2026-10-30)
+Not the user agent, the `Accept` header, the parameters or the rate: the whole `GET /api/v1/stats` route answers 406 for every request (evidence in `mlb_api-source-review/design.md`, 5.13). Task 5.13 of `mlb_api-source-review` fetches the league-wide player pools through `/v1/people?hydrate=stats(...)` when the direct route is refused, so tasks 3.1 and 3.2 no longer wait for the provider; the all-time pools without a season stay blocked.

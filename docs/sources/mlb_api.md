@@ -1003,7 +1003,7 @@ Every player of a sport-season with biographical fields.
 - **View:** `mlb_players_season`
 - **Processed path:** `processed/mlb_api/players_season/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `id`
+- **Key:** `id`, `sport_id`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -1388,7 +1388,7 @@ Tracking metrics.
 - **View:** `mlb_ref_metrics`
 - **Processed path:** `processed/mlb_api/ref_metrics/part-<chunk>.parquet`
 - **Partitioning:** none (flat)
-- **Key:** `name`
+- **Key:** `metric_id`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -1661,7 +1661,7 @@ Season schedule with team, linescore, decisions, probable pitchers, officials, w
 - **View:** `mlb_schedule_hydrated`
 - **Processed path:** `processed/mlb_api/schedule_hydrated/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `game_pk`, `dates_date`
+- **Key:** `game_pk`, `dates_date`, `sport_id`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -3764,12 +3764,12 @@ League-wide pitching stats, type lastXGames (player pool ALL).
 <!-- BEGIN GENERATED:mlb_api.stats_leaders -->
 ### Dataset: stats_leaders
 
-League leaders for every category of a season (ties repeat a rank, so the key is not unique).
+League leaders for every category of a season-sport (ties repeat a rank; the person completes the key, a few provider rows are repeated).
 
 - **View:** `mlb_stats_leaders`
 - **Processed path:** `processed/mlb_api/stats_leaders/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `league_leaders_leader_category`, `league_leaders_stat_group`, `rank`
+- **Key:** `sport_id`, `league_leaders_season`, `league_leaders_game_type_id`, `league_leaders_leader_category`, `league_leaders_stat_group`, `rank`, `person_id`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -5745,9 +5745,6 @@ Minor-league affiliates of every MLB club.
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
-| `division_id` | int32 | yes | `division.id` | MLBAM identifier of the division. (authored) |
-| `division_name` | string | yes | `division.name` | Name of the division. (authored) |
-| `division_link` | string | yes | `division.link` | Relative MLB Stats API path of the division resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_id` | int32 | yes | `sport.id` | MLBAM identifier of the sport. (authored) |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
@@ -5757,12 +5754,16 @@ Minor-league affiliates of every MLB club.
 | `franchise_name` | string | yes | `franchiseName` | Name of the franchise. (authored) |
 | `club_name` | string | yes | `clubName` | Name of the club. (authored) |
 | `active` | bool | yes | — | TODO |
+| `division_id` | int32 | yes | `division.id` | MLBAM identifier of the division. (authored) |
+| `division_name` | string | yes | `division.name` | Name of the division. (authored) |
+| `division_link` | string | yes | `division.link` | Relative MLB Stats API path of the division resource (prefix https://statsapi.mlb.com). (authored) |
 | `spring_league_id` | int32 | yes | `springLeague.id` | MLBAM identifier of the spring league. (authored) |
 | `spring_league_name` | string | yes | `springLeague.name` | Name of the spring league. (authored) |
 | `spring_league_link` | string | yes | `springLeague.link` | Relative MLB Stats API path of the spring league resource (prefix https://statsapi.mlb.com). (authored) |
 | `spring_league_abbreviation` | string | yes | `springLeague.abbreviation` | Abbreviation of the spring league. (authored) |
 | `spring_venue_id` | int32 | yes | `springVenue.id` | MLBAM identifier of the spring venue. (authored) |
 | `spring_venue_link` | string | yes | `springVenue.link` | Relative MLB Stats API path of the spring venue resource (prefix https://statsapi.mlb.com). (authored) |
+| `placeholder` | bool | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_affiliates -->
@@ -5828,6 +5829,10 @@ Club alumni (hitting) of a season.
 | `name_matrilineal` | string | yes | `nameMatrilineal` | TODO |
 | `name_title` | string | yes | `nameTitle` | TODO |
 | `name_suffix` | string | yes | `nameSuffix` | TODO |
+| `death_date` | date32[day] | yes | `deathDate` | TODO |
+| `death_city` | string | yes | `deathCity` | TODO |
+| `death_state_province` | string | yes | `deathStateProvince` | TODO |
+| `death_country` | string | yes | `deathCountry` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_alumni -->
@@ -6156,7 +6161,7 @@ Team fielding stats, type atGameStart.
 - **View:** `mlb_team_stats_at_game_start_fielding`
 - **Processed path:** `processed/mlb_api/team_stats_at_game_start_fielding/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`
+- **Key:** `team_id`, `season`, `date`, `game_game_pk`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -6208,7 +6213,7 @@ Team hitting stats, type atGameStart.
 - **View:** `mlb_team_stats_at_game_start_hitting`
 - **Processed path:** `processed/mlb_api/team_stats_at_game_start_hitting/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`
+- **Key:** `team_id`, `season`, `date`, `game_game_pk`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -6278,7 +6283,7 @@ Team pitching stats, type atGameStart.
 - **View:** `mlb_team_stats_at_game_start_pitching`
 - **Processed path:** `processed/mlb_api/team_stats_at_game_start_pitching/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`
+- **Key:** `team_id`, `season`, `date`, `game_game_pk`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -7614,7 +7619,7 @@ Team fielding stats, type gameLog.
 - **View:** `mlb_team_stats_game_log_fielding`
 - **Processed path:** `processed/mlb_api/team_stats_game_log_fielding/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`
+- **Key:** `team_id`, `season`, `date`, `game_game_pk`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -7666,7 +7671,7 @@ Team hitting stats, type gameLog.
 - **View:** `mlb_team_stats_game_log_hitting`
 - **Processed path:** `processed/mlb_api/team_stats_game_log_hitting/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`
+- **Key:** `team_id`, `season`, `date`, `game_game_pk`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -7736,7 +7741,7 @@ Team pitching stats, type gameLog.
 - **View:** `mlb_team_stats_game_log_pitching`
 - **Processed path:** `processed/mlb_api/team_stats_game_log_pitching/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `team_id`, `season`, `date`
+- **Key:** `team_id`, `season`, `date`, `game_game_pk`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -9756,6 +9761,7 @@ Recipients of every award for a season (one request per award id; several rows p
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
 | `player_name_first_last` | string | yes | `player.nameFirstLast` | TODO |
 | `votes` | int32 | yes | — | TODO |
+| `notes` | string | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.award_recipients -->
