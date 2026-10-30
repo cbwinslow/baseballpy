@@ -31,6 +31,13 @@ def _isolated_baseballpy_home(
     reset_config()
 
 
+def _git_blob_sha(content: bytes) -> str:
+    """The SHA git gives a file of this content, so a changed file has a different blob SHA."""
+    import hashlib
+
+    return hashlib.sha1(b"blob %d\x00" % len(content) + content).hexdigest()  # noqa: S324
+
+
 class RetroRepo:
     """A fake ``chadwickbureau/retrosheet`` repo: serves the git tree and raw files via respx."""
 
@@ -57,7 +64,7 @@ class RetroRepo:
                 json={
                     "truncated": False,
                     "tree": [
-                        {"path": p, "type": "blob", "size": len(c), "sha": "x"}
+                        {"path": p, "type": "blob", "size": len(c), "sha": _git_blob_sha(c)}
                         for p, c in self.files.items()
                     ],
                 },

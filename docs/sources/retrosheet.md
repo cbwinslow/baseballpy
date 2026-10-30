@@ -92,7 +92,11 @@ Every CSV in the tree's `reference/` directory is ingested by header name: `ball
 - Column order never matters: columns are matched by upstream header name, unknown columns land in `_extras` (JSON) with a one-time `schema_drift` warning.
 
 ## Freshness
-Retrosheet data is immutable at a pinned commit: raw files and processed chunks are never re-fetched unless the pin moves (`baseballpy refs update`) or `refresh=True` is passed.
+Retrosheet data is immutable at a pinned commit, and what is stored is judged by git fingerprints (ADR 43, ADR 48):
+- **Raw files:** each file records the git blob SHA the pinned tree lists for it. When the pin moves (`baseballpy refs update`) only files whose blob SHA changed are downloaded again; unchanged files are kept. A file stored before fingerprints existed is judged by the pinned commit it was recorded at.
+- **Processed chunks:** each chunk records one fingerprint (a digest of the blob SHAs of the raw files it was built from). It is served only while that fingerprint matches the tree; after a pin move, only chunks built from changed files are rebuilt. When the tree cannot be listed (offline) the chunk's recorded pinned commit decides.
+- `refresh=True` (or `ingest --refresh`) downloads each needed file once and rebuilds the selected chunks. `baseballpy cache check` compares the stored fingerprints with upstream.
+- **Kept documents:** the repository's `README.md` (the Retrosheet copyright and terms-of-use notice), `.gitattributes` and any file under the data folders that no pattern covers are stored raw in `raw/retrosheet/documents/` and `raw/retrosheet/unclassified/`.
 
 ## Dataset reference (generated)
 
@@ -1098,6 +1102,7 @@ Regular-season game logs.
 | `h_b9_pos` | int8 | yes | — | Home starting players, batting order 9: defensive position (src: retrosheet_glfields) |
 | `additional_info` | string | yes | — | Additional information (src: retrosheet_glfields) |
 | `acquisition_info` | string | yes | — | Acquisition information (src: retrosheet_glfields) |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.gamelogs -->
 
@@ -1274,6 +1279,7 @@ Postseason and all-star game logs.
 | `h_b9_pos` | int8 | yes | — | Home starting players, batting order 9: defensive position (src: retrosheet_glfields) |
 | `additional_info` | string | yes | — | Additional information (src: retrosheet_glfields) |
 | `acquisition_info` | string | yes | — | Acquisition information (src: retrosheet_glfields) |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.gamelogs_postseason -->
 
@@ -1509,6 +1515,7 @@ Team rosters per season.
 | `team` | string | yes | — | TODO |
 | `position` | string | yes | — | TODO |
 | `year` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.rosters -->
 

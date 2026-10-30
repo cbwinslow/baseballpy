@@ -351,14 +351,21 @@ class RetrosheetGameLogParser:
 
         text = path.read_text(encoding="utf-8", errors="replace")
         reader = csv.reader(io.StringIO(text, newline=""))
-        schema_fields = list(RETROSHEET_GAMELOG_SCHEMA)
+        standard_fields = [f for f in RETROSHEET_GAMELOG_SCHEMA if f.name != "_extras"]
 
         records: list[dict[str, Any]] = []
         for row in reader:
-            if not row or len(row) < 10:
+            if not row or (len(row) == 1 and not row[0].strip()):
+                continue
+            if len(row) < 10:
+                record_bad_value(
+                    "row",
+                    ",".join(row),
+                    f"game log row has {len(row)} fields, expected at least 10",
+                )
                 continue
             rec: dict[str, Any] = {}
-            for i, field in enumerate(schema_fields):
+            for i, field in enumerate(standard_fields):
                 val = row[i] if i < len(row) else None
                 name = field.name
                 target_type = field.type
@@ -374,6 +381,14 @@ class RetrosheetGameLogParser:
                     rec[name] = _safe_bool(val)
                 else:
                     rec[name] = val if val else None
+
+            if len(row) > len(standard_fields):
+                extras = {
+                    f"field_{idx + 1}": row[idx] for idx in range(len(standard_fields), len(row))
+                }
+                rec["_extras"] = json.dumps(extras)
+            else:
+                rec["_extras"] = None
 
             records.append(rec)
 
@@ -399,26 +414,39 @@ class RetrosheetRosterParser:
         records: list[dict[str, Any]] = []
 
         for path in paths:
-            team_code = path.name[:3].upper() if len(path.name) >= 3 else ""
             lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
             for line in lines:
                 line = line.strip()
                 if not line:
                     continue
                 parts = [p.strip() for p in line.split(",")]
-                if len(parts) >= 6:
-                    records.append(
-                        {
-                            "player_id": parts[0],
-                            "last_name": parts[1],
-                            "first_name": parts[2],
-                            "bats": parts[3],
-                            "throws": parts[4],
-                            "team": parts[5] if len(parts) > 5 else team_code,
-                            "position": parts[6] if len(parts) > 6 else "",
-                            "year": year,
-                        }
+                if len(parts) < 6:
+                    record_bad_value(
+                        "row",
+                        line,
+                        f"roster row has {len(parts)} fields, expected at least 6",
                     )
+                    continue
+
+                if len(parts) > 7:
+                    extras = {f"field_{idx + 1}": parts[idx] for idx in range(7, len(parts))}
+                    extras_val: str | None = json.dumps(extras)
+                else:
+                    extras_val = None
+
+                records.append(
+                    {
+                        "player_id": parts[0],
+                        "last_name": parts[1],
+                        "first_name": parts[2],
+                        "bats": parts[3],
+                        "throws": parts[4],
+                        "team": parts[5],
+                        "position": parts[6] if len(parts) > 6 else "",
+                        "year": year,
+                        "_extras": extras_val,
+                    }
+                )
 
         if not records:
             return pa.Table.from_batches([], schema=RETROSHEET_ROSTER_SCHEMA)

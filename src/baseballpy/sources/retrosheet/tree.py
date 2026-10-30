@@ -65,6 +65,8 @@ class RetroFile:
     name: str
     season: int | None
     size: int = 0
+    #: git blob SHA the tree lists for this file (the currency fingerprint, ADR 43)
+    sha: str = ""
 
     @property
     def raw_dataset(self) -> str:
@@ -84,6 +86,10 @@ class RetroTree:
     reference: list[RetroFile] = field(default_factory=list)
     postseason_gamelogs: list[RetroFile] = field(default_factory=list)
     uncovered: list[str] = field(default_factory=list)
+    #: repository files outside the data folders (README with the Retrosheet notice, ...)
+    documents: list[TreeEntry] = field(default_factory=list)
+    #: the entries behind ``uncovered`` (kept raw so nothing upstream is left behind)
+    unclassified: list[TreeEntry] = field(default_factory=list)
 
     def seasons(self) -> list[int]:
         """Seasons that have at least one file, ascending."""
@@ -114,17 +120,21 @@ def classify(entries: Iterable[TreeEntry]) -> RetroTree:
             kind = next((k for k, rx in _SEASON_RULES if rx.search(name)), None)
             if kind is None:
                 tree.uncovered.append(path)
+                tree.unclassified.append(entry)
                 continue
-            tree.by_season[year].append(RetroFile(path, kind, name, year, entry.size))
+            tree.by_season[year].append(RetroFile(path, kind, name, year, entry.size, entry.sha))
         elif match := _POSTSEASON_GAMELOG.match(path):
             name = f"{match.group(1)}.TXT"
             tree.postseason_gamelogs.append(
-                RetroFile(path, "gamelog_postseason", name, None, entry.size)
+                RetroFile(path, "gamelog_postseason", name, None, entry.size, entry.sha)
             )
         elif match := _REFERENCE.match(path):
             tree.reference.append(
-                RetroFile(path, "reference", f"{match.group(1)}.csv", None, entry.size)
+                RetroFile(path, "reference", f"{match.group(1)}.csv", None, entry.size, entry.sha)
             )
         elif path.startswith(("seasons/", "gamelog/", "reference/", "misc/")):
             tree.uncovered.append(path)
+            tree.unclassified.append(entry)
+        elif "/" not in path:
+            tree.documents.append(entry)
     return tree

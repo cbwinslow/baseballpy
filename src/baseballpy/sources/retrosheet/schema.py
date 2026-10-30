@@ -410,6 +410,7 @@ RETROSHEET_GAMELOG_SCHEMA = pa.schema(
         ("h_b9_pos", pa.int8()),
         ("additional_info", pa.string()),
         ("acquisition_info", pa.string()),
+        ("_extras", pa.string()),
     ]
 )
 
@@ -424,6 +425,7 @@ RETROSHEET_ROSTER_SCHEMA = pa.schema(
         ("team", pa.string()),
         ("position", pa.string()),
         ("year", pa.int16()),
+        ("_extras", pa.string()),
     ]
 )
 

@@ -222,7 +222,9 @@ def test_stale_part_files_are_discarded_at_startup(tmp_path: Path, retro_repo: R
     assert not leftover.exists()
 
 
-def test_stale_processed_part_files_are_discarded_too(tmp_path: Path, retro_repo: RetroRepo) -> None:
+def test_stale_processed_part_files_are_discarded_too(
+    tmp_path: Path, retro_repo: RetroRepo
+) -> None:
     full_season(retro_repo).mount()
     cfg = LakeConfig(home=tmp_path)
     folder = cfg.processed_root / "retrosheet" / "events" / "season=2024"

@@ -3,11 +3,16 @@
 from collections.abc import Sequence
 from typing import Any
 
+from baseballpy.core.datasets import datasets_for
 from baseballpy.ingest.results import counts_to_result
 from baseballpy.ingest.types import Job, JobResult, Selection, make_job
-from baseballpy.sources.retrosheet.api import SEASON_DATASETS
+from baseballpy.sources.retrosheet.api import REFERENCE_UNIT, UNITS, unit_of, units_for
 
-KNOWN_DATASETS = {"reference"} | set(SEASON_DATASETS)
+
+def known_datasets() -> list[str]:
+    """Every name ``--datasets`` accepts: registry dataset names, ingest units and ``reference``."""
+    names = {d.name for d in datasets_for("retrosheet")}
+    return sorted(names | set(UNITS) | {REFERENCE_UNIT})
 
 
 class RetrosheetAdapter:
@@ -31,37 +36,46 @@ class RetrosheetAdapter:
         return seasons
 
     def plan(self, selection: Selection) -> list[Job]:
-        """Generate planned jobs matching the given selection."""
+        """Generate planned jobs matching the given selection.
+
+        ``--datasets`` takes any registered dataset name (``box_games``, ``boxscores_batting``,
+        ``reference_teams``, ...) or an ingest unit (``box_accounts``, ``reference``); a name is
+        resolved to the unit that writes it, so ``-d reference_teams`` ingests every reference table.
+        """
         if selection.datasets:
-            unknown = [d for d in selection.datasets if d not in KNOWN_DATASETS]
-            if unknown:
+            if unknown := [d for d in selection.datasets if unit_of(d) is None]:
                 raise ValueError(
-                    f"unknown dataset(s) for retrosheet: {unknown}; known: {sorted(KNOWN_DATASETS)}"
+                    f"unknown dataset(s) for retrosheet: {unknown}; known: {known_datasets()}"
                 )
-            has_reference = "reference" in selection.datasets
-            season_datasets = tuple(d for d in selection.datasets if d != "reference")
+            units = units_for(selection.datasets)
+            has_reference = REFERENCE_UNIT in units
+            season_units = tuple(u for u in units if u != REFERENCE_UNIT)
+            if season_units and not selection.seasons:
+                raise ValueError(
+                    f"retrosheet dataset(s) {list(season_units)} are stored per season: "
+                    "pass --seasons (for example --seasons 2023)"
+                )
         else:
             has_reference = True
-            season_datasets = ()
+            season_units = ()
 
         jobs: list[Job] = []
         if has_reference:
             jobs.append(make_job("retrosheet", "reference"))
 
-        if selection.seasons:
-            for season in selection.seasons:
-                if selection.datasets:
-                    if season_datasets:
-                        jobs.append(
-                            make_job(
-                                "retrosheet",
-                                "season",
-                                datasets=",".join(season_datasets),
-                                season=season,
-                            )
+        for season in selection.seasons or ():
+            if selection.datasets:
+                if season_units:
+                    jobs.append(
+                        make_job(
+                            "retrosheet",
+                            "season",
+                            datasets=",".join(season_units),
+                            season=season,
                         )
-                else:
-                    jobs.append(make_job("retrosheet", "season", season=season))
+                    )
+            else:
+                jobs.append(make_job("retrosheet", "season", season=season))
         return jobs
 
     def run(self, job: Job, *, refresh: bool = False) -> JobResult:
@@ -85,4 +99,4 @@ class RetrosheetAdapter:
         raise ValueError(f"unknown task {job.task!r} for retrosheet")
 
 
-__all__ = ["RetrosheetAdapter"]
+__all__ = ["RetrosheetAdapter", "known_datasets"]

@@ -16,10 +16,12 @@ from pathlib import Path
 from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
+from baseballpy.core.documents import keep_documents
 from baseballpy.core.github_tree import fetch_tree
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.sources_lock import SourceRef, get_source_ref
 from baseballpy.core.stores import RawStore
+from baseballpy.core.upstream import GIT_BLOB, Fingerprint, stored_fingerprint
 from baseballpy.sources.retrosheet.tree import (
     POSTSEASON_GAMELOG_KINDS,
     RetroFile,
@@ -115,6 +117,33 @@ class RetrosheetDownloader:
         """``raw/retrosheet/rosters/season=YYYY`` (the ``*.ROS`` files)."""
         return self.cache_config.raw_dir("retrosheet", "rosters", year)
 
+    # ------------------------------------------------------------------ documents
+    def ensure_documents(self, refresh: bool = False) -> list[str]:
+        """Keep the repository's README (the Retrosheet notice) and any file no dataset covers.
+
+        Root files go to ``raw/retrosheet/documents/``, files under the data folders that no
+        pattern recognises to ``raw/retrosheet/unclassified/``; names of newly stored files are
+        returned. A file already stored is left alone unless ``refresh``.
+        """
+        tree = self.tree()
+        kept: list[str] = []
+        for dataset, entries in (
+            ("documents", tree.documents),
+            ("unclassified", tree.unclassified),
+        ):
+            kept += keep_documents(
+                raw=self.raw,
+                http=self.http,
+                ref=self.source_ref,
+                entries=entries,
+                source="retrosheet",
+                dataset=dataset,
+                patterns=[e.path for e in entries],
+                source_ref=self.source_ref.ref,
+                only_missing=not refresh,
+            )
+        return kept
+
     # ------------------------------------------------------------------ files
     def _chunk_current(self, manifest: ManifestTracker, chunk_id: str) -> bool:
         """COMPLETED and not recorded at a different upstream ref (legacy entries are trusted)."""
@@ -132,11 +161,19 @@ class RetrosheetDownloader:
         ).get_chunk(file.name)
         if entry is None:
             return False  # not recorded: could be a partial leftover from an old layout
-        return bool(
-            entry.get("status") == "COMPLETED"
-            and entry.get("source_ref") in (None, self.source_ref.ref)
-            and entry.get("bytes") == path.stat().st_size
-        )
+        if entry.get("status") != "COMPLETED" or entry.get("bytes") != path.stat().st_size:
+            return False
+        stored = stored_fingerprint(entry)
+        if file.sha and stored is not None and stored.kind == GIT_BLOB:
+            return stored.value == file.sha  # unchanged blob: kept across pin moves (ADR 43)
+        # no blob fingerprint stored (older entry): the pinned commit identifies the content
+        return entry.get("source_ref") in (None, self.source_ref.ref)
+
+    def blob_fingerprint(self, file: RetroFile) -> Fingerprint | None:
+        """The git blob fingerprint the pinned tree lists for ``file`` (``None`` if it lists none)."""
+        if not file.sha:
+            return None
+        return Fingerprint(GIT_BLOB, file.sha, origin=f"{self.source_ref.repo}:{file.path}")
 
     def download_file(self, file: RetroFile, refresh: bool = False) -> FetchOutcome:
         """Atomically fetch one tree-listed file; 404 is recorded ``ABSENT``."""
@@ -156,6 +193,7 @@ class RetrosheetDownloader:
             season=file.season,
             source_ref=self.source_ref.ref,
             etag=result.etag or "",
+            upstream=self.blob_fingerprint(file),
         )
         return FetchOutcome.DOWNLOADED
 
