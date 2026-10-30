@@ -96,3 +96,6 @@ The spec delta `specs/retrosheet-ingestion/spec.md` is written. Scenarios marked
 
 ## 5.9 evidence (2026-10-30)
 - Written by agy, reviewed line by line, then simplified by Claude (three helper functions) to satisfy the lint limits: a repeated `info` key keeps its first value in `box_games` and every later line in `box_records`; dates parse with `strptime` (`1950/4/1` works) and bad ones are quarantined; non-integers raise `BoxParseError` naming the line; the docstring says 17 counting stats. Tests: `test_repeated_info_keys_are_kept` and two more in `tests/test_retrosheet_box.py`.
+
+## 5.14 evidence (2026-10-30)
+- The duplicates were real second stints (the same player twice in one slot and position in a 1925 game). `boxscores_batting` gets a `seq` column (order of a slot's occupants, starter first; pitching already had one) and the key `(game_id, team_id, slot, seq)`, which is unique by construction and was checked on the six sample files (12,112 rows, 0 duplicates, max seq 10). Test: `test_boxscores_batting_key_is_unique_and_orders_a_slots_occupants`. Existing `boxscores_batting` Parquet must be rebuilt (`ingest --refresh -d boxscores`).

@@ -102,3 +102,26 @@ def test_substitution_and_daily_split_keys_survive_double_switches(tmp_path: Pat
     # two substitutions in front of the same play share (GAME_ID, EVENT_ID); SUB_ID tells them apart
     event_keys = set(zip(subs["GAME_ID"].to_pylist(), subs["EVENT_ID"].to_pylist(), strict=True))
     assert len(subs) == 2 and len(event_keys) == 1
+
+
+def test_boxscores_batting_key_is_unique_and_orders_a_slots_occupants(tmp_path: Path) -> None:
+    from baseballpy.sources.retrosheet.parser import RetrosheetBoxScoreParser
+
+    game = (
+        GAME.split(b"play,")[0]
+        + b"play,1,0,vis01,00,,S8\n"
+        + b"sub,vis03,Pinch,0,2,11\n"
+        + b"play,1,0,vis03,00,,K\n"
+    )
+    path = tmp_path / "2024BOS.EVA"
+    path.write_bytes(game)
+    catalog.register_all()
+    batting, _ = RetrosheetBoxScoreParser().parse_files([path], year=2024)
+    keys = get_dataset("retrosheet", "boxscores_batting").keys
+    assert keys == ("game_id", "team_id", "slot", "seq")
+    rows = list(zip(*[batting[k].to_pylist() for k in keys], strict=True))
+    assert len(set(rows)) == len(rows)
+    by_player = dict(zip(batting["player_id"].to_pylist(), batting["seq"].to_pylist(), strict=True))
+    assert (
+        by_player["vis02"] == 1 and by_player["vis03"] == 2
+    )  # the pinch hitter follows the starter

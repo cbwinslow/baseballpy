@@ -437,6 +437,7 @@ RETROSHEET_BOX_BATTING_SCHEMA = pa.schema(
         ("player_id", pa.string()),
         ("player_name", pa.string()),
         ("slot", pa.int8()),
+        ("seq", pa.int8()),
         ("pos", pa.int8()),
         ("ab", pa.int16()),
         ("r", pa.int16()),

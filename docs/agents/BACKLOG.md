@@ -218,4 +218,4 @@ touches a source under review, do it inside that source's track.
 | B-124 | retrosheet-source-review 5.11: Export streams one season at a time (card R-20) | DONE | see the card |
 | B-125 | retrosheet-source-review 5.12: Really stream box scores and box accounts; count rows without re-reading Parquet (card R-21) | DONE | see the card |
 | B-126 | retrosheet-source-review 5.13: Data-quality checks across datasets, shown by catalog status (card R-22) | DONE | see the card |
-| B-127 | `retrosheet-source-review 5.14`: boxscores_batting has no unique key (card R-23) | READY | see the card |
+| B-127 | retrosheet-source-review 5.14: boxscores_batting has no unique key (card R-23) | DONE | see the card |

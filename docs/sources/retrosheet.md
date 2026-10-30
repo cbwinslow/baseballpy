@@ -103,7 +103,7 @@ Retrosheet data is immutable at a pinned commit, and what is stored is judged by
 - **Python:** `baseballpy.sources.retrosheet.table(name, season)` returns any registered dataset (`table("box_games", 2023)`, `table("reference_teams")`, `table("gamelogs_postseason", kind="world_series")`); the named functions (`events`, `rosters`, ...) remain.
 
 ## Data quality
-After the datasets of a season are stored, `ingest` checks them and records the findings in the processed manifest (shown by `baseballpy catalog status`; they never stop an ingest): duplicate keys, and player ids in events, box scores, daily splits, substitutions and rosters that match no roster of the same season (rosters themselves are compared with the Chadwick register's `key_retro` when it is cached). Known limit: `boxscores_batting` is not unique by `(game_id, team_id, player_id, slot)` when a player re-enters in the same slot (task 5.14).
+After the datasets of a season are stored, `ingest` checks them and records the findings in the processed manifest (shown by `baseballpy catalog status`; they never stop an ingest): duplicate keys, and player ids in events, box scores, daily splits, substitutions and rosters that match no roster of the same season (rosters themselves are compared with the Chadwick register's `key_retro` when it is cached). `boxscores_batting` is keyed `(game_id, team_id, slot, seq)`: `seq` numbers the occupants of a batting slot (starter first), so a player who re-enters in the same slot gets two rows (checked unique on 12,112 real rows).
 
 ## Dataset reference (generated)
 
@@ -125,7 +125,7 @@ Batting box score lines.
 - **View:** `retrosheet_boxscores_batting`
 - **Processed path:** `processed/retrosheet/boxscores_batting/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `game_id`, `team_id`, `player_id`, `slot`
+- **Key:** `game_id`, `team_id`, `slot`, `seq`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
@@ -134,6 +134,7 @@ Batting box score lines.
 | `player_id` | string | yes | — | TODO |
 | `player_name` | string | yes | — | TODO |
 | `slot` | int8 | yes | — | TODO |
+| `seq` | int8 | yes | — | TODO |
 | `pos` | int8 | yes | — | TODO |
 | `ab` | int16 | yes | — | TODO |
 | `r` | int16 | yes | — | TODO |

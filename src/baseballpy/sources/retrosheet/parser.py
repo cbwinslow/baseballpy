@@ -164,7 +164,9 @@ class RetrosheetBoxScoreParser:
                     for slot_idx in range(len(box.slots)):
                         # chadwick keeps the *latest* occupant of a slot; rewind to the starter
                         player = _chain_head(box.slots[slot_idx][team_idx])
+                        appearance = 0  # order of the slot's occupants: starter first
                         while player is not None:
+                            appearance += 1
                             b = player.batting
                             pos = player.positions[0] if player.positions else player.start_position
                             batting_records.append(
@@ -174,6 +176,7 @@ class RetrosheetBoxScoreParser:
                                     "player_id": player.player_id,
                                     "player_name": player.name,
                                     "slot": slot_idx,
+                                    "seq": appearance,
                                     "pos": pos,
                                     "ab": b.ab,
                                     "r": b.r,

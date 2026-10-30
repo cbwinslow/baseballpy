@@ -278,7 +278,7 @@ def register_all() -> dict[str, DatasetSpec]:
         (
             "boxscores_batting",
             retro.RETROSHEET_BOX_BATTING_SCHEMA,
-            ("game_id", "team_id", "player_id", "slot"),
+            ("game_id", "team_id", "slot", "seq"),
             "season",
             "a-batting-box-score-table-retrosheet_box_batting",
             "Batting box score lines.",
