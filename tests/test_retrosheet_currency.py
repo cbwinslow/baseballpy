@@ -109,3 +109,20 @@ def retro_api_spec(name: str):  # type: ignore[no-untyped-def]
     from baseballpy.core.datasets import get_dataset
 
     return get_dataset("retrosheet", name)
+
+
+@respx.mock
+def test_a_chunk_written_under_another_schema_is_rebuilt_without_refresh(
+    tmp_path: Path, retro_repo: RetroRepo
+) -> None:
+    full_season(retro_repo).mount()
+    cfg = LakeConfig(home=tmp_path)
+    source = RetrosheetSource(cache_config=cfg)
+    source.ingest_season(2024, datasets=("rosters",))
+    manifest = cfg.dataset_manifest("retrosheet", "rosters", "processed")
+    key = next(k for k in manifest.chunks() if "rosters" in k)
+    entry = dict(manifest.get_chunk(key) or {})
+    manifest.put_entry(key, {**entry, "schema_sha256": "0" * 64})  # as if an older release wrote it
+
+    assert source.ingest_season(2024, datasets=("rosters",)).datasets["rosters"] is not None
+    assert source.ingest_season(2024, datasets=("rosters",)).datasets["rosters"] is None

@@ -14,7 +14,7 @@ import pyarrow.parquet as pq
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS, DatasetSpec
-from baseballpy.core.stores import ProcessedStore, RawStore
+from baseballpy.core.stores import ProcessedStore, RawStore, schema_matches
 from baseballpy.core.upstream import CONTENT_SHA256, Fingerprint, is_current, stored_fingerprint
 from baseballpy.sources import catalog
 from baseballpy.sources.lahman.extractor import (
@@ -319,7 +319,9 @@ class LahmanSource:
         if raw_fingerprint is None or not parquet.exists():
             return False
         processed = self.cache_config.dataset_manifest("lahman", name).get_chunk("data")
-        return is_current(processed, expected=raw_fingerprint)
+        return schema_matches(lahman_spec(name), processed) and is_current(
+            processed, expected=raw_fingerprint
+        )
 
     def load_table(self, table_name: str | LahmanTable, refresh: bool = False) -> LoadedTable:
         """Extract, normalize, and cache any Lahman table; says whether a cache served it.

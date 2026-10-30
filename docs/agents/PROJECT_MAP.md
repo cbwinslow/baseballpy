@@ -35,7 +35,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
-| `retrosheet` | 25 | in progress (18/28 tasks) | yes | yes | yes | 724/1280 (56%) | 6 |
+| `retrosheet` | 25 | in progress (19/28 tasks) | yes | yes | yes | 724/1280 (56%) | 6 |
 | `statcast` | 38 | not started | no | no | no | 293/977 (29%) | 9 |
 | `mlb_api` | 366 | not started | no | no | no | 9462/16692 (56%) | 11 |
 
@@ -52,7 +52,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `reference-docs` | 2 | 1 | 3 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
-| `retrosheet-source-review` | 19 | 14 | 1.1, 1.2, 1.3, 1.4, 2.1, 3.1, 3.2, 3.3, 3.4, 4.1 |
+| `retrosheet-source-review` | 20 | 13 | 1.1, 1.2, 1.3, 1.4, 2.1, 3.1, 3.2, 3.3, 4.1 |
 | `verify-optin-paths` | 7 | 1 | 7 |
 
 ## Decisions (`docs/DECISIONS.md`)
@@ -104,6 +104,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 46: Export Is Hybrid and Registry-Driven: pyarrow Files, dlt for Server Databases, Verified and Typed
 - ADR 47: Lahman Is Checked at Both Cache Tiers by Git Fingerprint; Database Exports Keep Identifier Names
 - ADR 48: Retrosheet Keeps Every Event Field, Is Checked by Git Fingerprint, Quarantines Broken Rows and Exports One Season at a Time
+- ADR 49: A Schema Change Invalidates Stored Chunks (schema digest in the manifest)
 
 ## Documentation pages (`docs/`)
 

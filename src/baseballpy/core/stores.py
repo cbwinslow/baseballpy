@@ -31,6 +31,22 @@ class _EmptyStreamError(Exception):  # noqa: N818 - internal control flow
     """Raised inside ``put_stream`` when no rows arrived (the part file is discarded)."""
 
 
+def schema_fingerprint(schema: pa.Schema) -> str:
+    """Digest of a schema's column names and types (order matters); stored with every chunk."""
+    text = ";".join(f"{field.name}:{field.type}" for field in schema)
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def schema_matches(spec: DatasetSpec, entry: Mapping[str, Any] | None) -> bool:
+    """False when the chunk was written under a different schema than ``spec`` has now.
+
+    A chunk written before schemas were fingerprinted carries none and is trusted (like the other
+    legacy entries); everything written from now on is rebuilt after a schema change.
+    """
+    stored = (entry or {}).get("schema_sha256")
+    return not stored or stored == schema_fingerprint(spec.schema)
+
+
 def manifest_key(name: str, season: int | None) -> str:
     """Manifest key for a chunk: ``season=YYYY/<name>`` when season-partitioned."""
     return f"season={season}/{name}" if season is not None else name
@@ -147,7 +163,12 @@ class ProcessedStore:
         self.config.dataset_manifest(spec.source, spec.name, "processed").set_completed(
             manifest_key(chunk_id, season),
             records_count=table.num_rows,
-            metadata={"season": season, "source_ref": source_ref, **(metadata or {})},
+            metadata={
+                "season": season,
+                "source_ref": source_ref,
+                "schema_sha256": schema_fingerprint(spec.schema),
+                **(metadata or {}),
+            },
         )
         return path
 
@@ -200,13 +221,23 @@ class ProcessedStore:
             self.config.dataset_manifest(spec.source, spec.name, "processed").set_completed(
                 manifest_key(chunk_id, season),
                 records_count=0,
-                metadata={"season": season, "source_ref": source_ref, **(metadata or {})},
+                metadata={
+                    "season": season,
+                    "source_ref": source_ref,
+                    "schema_sha256": schema_fingerprint(spec.schema),
+                    **(metadata or {}),
+                },
             )
             return 0
         self.config.dataset_manifest(spec.source, spec.name, "processed").set_completed(
             manifest_key(chunk_id, season),
             records_count=total,
-            metadata={"season": season, "source_ref": source_ref, **(metadata or {})},
+            metadata={
+                "season": season,
+                "source_ref": source_ref,
+                "schema_sha256": schema_fingerprint(spec.schema),
+                **(metadata or {}),
+            },
         )
         return total
 
@@ -216,7 +247,7 @@ class ProcessedStore:
         """True when the manifest recorded the chunk COMPLETED and its part (if any rows) exists."""
         manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
         entry = manifest.get_chunk(manifest_key(chunk_id, season))
-        if entry is None or entry.get("status") != "COMPLETED":
+        if entry is None or entry.get("status") != "COMPLETED" or not schema_matches(spec, entry):
             return False
         if self.part_path(spec, chunk_id, season).exists():
             return True

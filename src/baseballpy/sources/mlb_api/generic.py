@@ -22,7 +22,7 @@ from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.http import HttpClient, HttpResult, get_http_client
 from baseballpy.core.quarantine import Quarantine, checked_cast, safe_array
 from baseballpy.core.schema_tools import EXTRAS, UPSTREAM_KEY, pa_type
-from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
+from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key, schema_matches
 from baseballpy.sources import catalog
 from baseballpy.sources.mlb_api.endpoints import (
     BY_NAME,
@@ -197,8 +197,12 @@ class MlbEndpointExtractor:
         entry = self.cache_config.dataset_manifest("mlb_api", endpoint.name).get_chunk(
             manifest_key(request.ident, request.season)
         )
-        return path.exists() and self.cache_config.is_fresh(
-            entry, endpoint.freshness, season=request.season, refresh=refresh
+        return (
+            path.exists()
+            and schema_matches(spec, entry)
+            and self.cache_config.is_fresh(
+                entry, endpoint.freshness, season=request.season, refresh=refresh
+            )
         )
 
     def _get_pages(

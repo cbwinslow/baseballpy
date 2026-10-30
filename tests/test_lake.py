@@ -238,3 +238,34 @@ def test_register_all_is_cheap_after_the_first_pass_and_recovers_a_cleared_regis
     assert (time.perf_counter() - start) / 50 < 0.001  # was about 5 ms per call
     monkeypatch.setattr(datasets, "DATASETS", {})  # a replaced, empty registry is refilled
     assert len(catalog.register_all()) == len(first)
+
+
+def test_a_schema_change_makes_a_stored_chunk_stale_without_refresh(tmp_path: Path) -> None:
+    from baseballpy.core.stores import schema_fingerprint, schema_matches
+
+    config = LakeConfig(home=tmp_path)
+    store = ProcessedStore(config)
+    old = _spec_with(pa.schema([("a", pa.int32())]))
+    store.put(old, pa.table({"a": pa.array([1], pa.int32())}))
+    assert store.is_cached(old)
+    entry = config.dataset_manifest(old.source, old.name, "processed").get_chunk("data")
+    assert entry is not None and entry["schema_sha256"] == schema_fingerprint(old.schema)
+
+    new = _spec_with(pa.schema([("a", pa.int32()), ("b", pa.string())]))
+    assert not store.is_cached(new)  # a column was added: the chunk must be rebuilt
+    assert not schema_matches(new, entry) and schema_matches(old, entry)
+    # a chunk written before schemas were fingerprinted is trusted
+    assert schema_matches(new, {k: v for k, v in entry.items() if k != "schema_sha256"})
+
+
+def _spec_with(schema: pa.Schema) -> DatasetSpec:
+    return DatasetSpec(
+        source="testsrc",
+        name="things",
+        view="testsrc_things",
+        schema=schema,
+        partition="none",
+        keys=("a",),
+        description="x",
+        endpoint_doc="x",
+    )

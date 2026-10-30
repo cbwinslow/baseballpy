@@ -33,6 +33,6 @@ Findings of the review become tasks `5.n` (with cards) before the tests and veri
   - [ ] 3.1 Live verification on a clean scratch home (R-11)
   - [ ] 3.2 Export checklist (docs/DATA_WORKFLOW.md, Onboarding a source) (R-12)
   - [ ] 3.3 Cited column descriptions (R-13)
-  - [ ] 3.4 Processed chunks are not rebuilt when the parser or schema changes (R-28)
+  - [x] 3.4 Processed chunks are not rebuilt when the parser or schema changes (R-28)
 - [ ] 4. Close
   - [ ] 4.1 Docs, decisions, spec merge, archive (R-14)
