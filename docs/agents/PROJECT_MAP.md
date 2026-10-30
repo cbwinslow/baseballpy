@@ -36,7 +36,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
 | `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 19 |
-| `statcast` | 38 | not started | no | no | no | 293/977 (29%) | 9 |
+| `statcast` | 38 | in progress (0/14 tasks) | yes | no | no | 293/977 (29%) | 9 |
 | `mlb_api` | 366 | not started | no | no | no | 9462/16692 (56%) | 11 |
 
 ## Active changes (`openspec/changes/`)
@@ -52,6 +52,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `reference-docs` | 2 | 1 | 3 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
+| `statcast-source-review` | 0 | 19 | 1.1, 1.2, 1.3, 1.4, 5.1, 5.2, 5.3, 5.4, 5.5, 2.1, 3.1, 3.2, 3.3, 4.1 |
 
 ## Decisions (`docs/DECISIONS.md`)
 
@@ -132,6 +133,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/agents/tracks/01-chadwick.md`
 - `docs/agents/tracks/02-lahman.md`
 - `docs/agents/tracks/03-retrosheet.md`
+- `docs/agents/tracks/04-statcast.md`
 - `docs/index.md`
 - `docs/references/README.md`
 - `docs/sources/chadwick.md`
