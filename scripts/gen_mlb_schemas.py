@@ -480,6 +480,35 @@ SAMPLE_SEARCH_NAMES = ("Smith", "Garcia", "Ohtani")
 #: offsets of the extra 50-row samples taken from paginated endpoints
 DEEP_PAGE_OFFSETS = (500, 5_000, 40_000)
 
+#: hydrate batches sampled when the pool route refuses the probe: the split fields are structural and
+#: repeat across players, so two batches of ``POOL_BATCH`` discover them without a full ingest
+HYDRATE_SAMPLE_BATCHES = 2
+
+
+def hydrate_sample(http: HttpClient, params: dict[str, Any]) -> dict[str, Any] | None:
+    """A refused pool sampled through the same hydrate route the runtime fallback uses."""
+    from baseballpy.sources.mlb_api.generic import (
+        POOL_BATCH,
+        hydrate_request_params,
+        stats_payload,
+    )
+
+    sport = str(params.get("sportIds", "1"))
+    people = get_json(http, f"v1/sports/{sport}/players", {"season": params.get("season")}) or {}
+    ids = sorted({int(p["id"]) for p in people.get("people", []) if "id" in p})
+    if not ids:
+        return None
+    limit = min(len(ids), POOL_BATCH * HYDRATE_SAMPLE_BATCHES)
+    splits: list[Any] = []
+    for start in range(0, limit, POOL_BATCH):
+        batch = ids[start : start + POOL_BATCH]
+        data = get_json(http, "v1/people", hydrate_request_params(params, sport, batch))
+        if data:
+            splits.extend(stats_payload(data)["stats"][0]["splits"])
+    if not splits:
+        return None
+    return {"stats": [{"splits": splits, "totalSplits": len(splits)}]}
+
 
 def iter_games(data: Any) -> Any:
     """Yield the game list of each schedule date."""
@@ -489,9 +518,11 @@ def iter_games(data: Any) -> Any:
 
 def profile(http: HttpClient, ep: Any, ctxs: list[Any], requests_for: Any) -> dict[str, Any]:
     """Fetch the sample requests of an endpoint and pool the flattened records."""
+    from baseballpy.sources.catalog import MLB_POOL_PATH
+
     records: list[dict[str, Scalar]] = []
     fixture: Any = None
-    ok = errors = 0
+    ok = errors = fallbacks = 0
     seen: set[str] = set()
     per_request: list[list[dict[str, Scalar]]] = []
     for ctx in ctxs:
@@ -508,6 +539,11 @@ def profile(http: HttpClient, ep: Any, ctxs: list[Any], requests_for: Any) -> di
             if ep.paginated:
                 params["limit"] = 50
             data = get_json(http, request.path, params)
+            if data is None and ep.paginated and ep.path == MLB_POOL_PATH:
+                # the pool route is refused (HTTP 406 since 2026-10-29): sample the same stat type
+                # through the hydrate route the runtime fallback uses, so its fields are typed
+                data = hydrate_sample(http, params)
+                fallbacks += int(data is not None)
             if data is None:
                 errors += 1
                 continue
@@ -532,6 +568,7 @@ def profile(http: HttpClient, ep: Any, ctxs: list[Any], requests_for: Any) -> di
         "fixture": fixture,
         "ok": ok,
         "errors": errors,
+        "fallback_pages": fallbacks,
         "per_request": per_request,
     }
 
@@ -699,6 +736,8 @@ def main() -> int:
             key_ok = key_unique_per_request(result["per_request"], ep.keys)
         probe[ep.name] = {
             "status": status,
+            "route": "hydrate" if result["fallback_pages"] else "direct",
+            "fallback_pages": result["fallback_pages"],
             "requests_ok": result["ok"],
             "requests_failed": result["errors"],
             "sample_rows": len(records),

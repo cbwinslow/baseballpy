@@ -115,6 +115,16 @@ def _hydrate_expression(params: Mapping[str, Any], sport_id: str) -> str:
     return "stats(" + ",".join(parts) + ")"
 
 
+def hydrate_request_params(
+    params: Mapping[str, Any], sport_id: str, person_ids: Sequence[int]
+) -> dict[str, str]:
+    """Query parameters of one ``/v1/people?hydrate=stats(...)`` batch (the pool fallback's wire form)."""
+    return {
+        "personIds": ",".join(map(str, person_ids)),
+        "hydrate": _hydrate_expression(params, sport_id),
+    }
+
+
 def stats_payload(payload: Any) -> dict[str, Any]:
     """A ``/v1/people?hydrate=stats(...)`` payload as the ``/v1/stats`` shape (``stats[].splits``).
 
@@ -304,7 +314,6 @@ class MlbEndpointExtractor:
         """
         params = request.params
         sport = str(params.get("sportIds", "1"))
-        expression = _hydrate_expression(params, sport)
         ids = self._pool_player_ids(sport, params.get("season", request.season))
         logger.warning(
             "%s: /v1/stats refused; fetching %d players of sport %s by hydrate in batches of %d",
@@ -321,7 +330,7 @@ class MlbEndpointExtractor:
             try:
                 result = self.http.get_sync(
                     f"{MLB_BASE_URL}/v1/people",
-                    params={"personIds": ",".join(map(str, batch)), "hydrate": expression},
+                    params=hydrate_request_params(params, sport, batch),
                     timeout=HEAVY_PAGE_TIMEOUT,
                 )
             except HttpStatusError as exc:
