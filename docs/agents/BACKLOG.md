@@ -57,7 +57,7 @@ numbers are in `verify-optin-paths/design.md`.
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-13 | retrosheet-box-accounts 4.3: live check on the 2015-2024 lake | DONE | on the homelab lake `home_hist`: every `gamelogs` game is in `box_games`, the extra rows (All-Star, postseason) are explained, no quarantine, counts in `design.md` |
-| B-14 | `retrosheet-box-accounts 1.1`: the official `boxfile.txt` | OWNER / EXTERNAL | the file is supplied by the owner or retrosheet.org becomes reachable (`curl -I https://www.retrosheet.org/` from the homelab; retry once per session); stored with the Retrosheet notice under `docs/sources/` and the layouts reconciled in `design.md` |
+| B-14 | `retrosheet-box-accounts 1.1`: the official `boxfile.txt` | OWNER / EXTERNAL (file blocked from the build env; code verified, interim parser in `box_parser.py` keeps all untyped kinds losslessly in `box_records`; retry when the owner supplies the file or `retrosheet.org` is reachable) | the file is supplied by the owner or retrosheet.org becomes reachable (`curl -I https://www.retrosheet.org/` from the homelab; retry once per session); stored with the Retrosheet notice under `docs/sources/` and the layouts reconciled in `design.md` |
 | B-15 | `retrosheet-box-accounts 2.3`: typed datasets for the remaining kinds | after B-14 | one strict dataset per record kind still in `box_records`, layouts taken only from the document, generator or spec-driven, tests per kind, `box_records` keeps unknown kinds only |
 | B-16 | `retrosheet-box-accounts 1.2`: final ADR and spec merge | after B-14 and B-15 (OWNER / EXTERNAL) | ADR 33 updated for the final layout, spec delta merged, change archived |
 
@@ -284,3 +284,24 @@ touches a source under review, do it inside that source's track.
 | B-175 | mlb_api-source-review 5.12: team_stats_expected_statistics_hitting recorded unsupported (card M-21) | DONE | see the card |
 | B-176 | mlb_api-source-review 5.13: League-wide pools survive the provider's 406 (card M-22) | DONE | see the card |
 | B-177 | mlb_api-source-review 5.14: baseballpy probe (card M-23) | DONE | see the card |
+
+## N. MLB live feed and pool completion (owner approved the full plan, 2026-10-31)
+
+Two changes from the 2026-10-31 investigation. The single-season family stays blocked; the
+season-by-season rebuild becomes its own change when `mlb-pool-fallback-completion 2.5` records the
+evidence (not a task here yet).
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-178 | `mlb-live-feed-projection 1.1`: field-set table and parent-key expansion | READY | `LIVE_FIELD_SETS` holds the five measured sets, a bare string is a set name, an unknown name lists the valid ones, every dotted path expands to all parent keys; the three named tests pass |
+| B-179 | `mlb-live-feed-projection 1.2`: `snapshot()` and `snapshot_bytes()` | READY | one request, no watermark, `timecode` validated, audit event, `SnapshotError` + quarantine on a missing container; the five named tests pass with fixtures, no network |
+| B-180 | `mlb-live-feed-projection 1.3`: the stream refuses a projection | READY | `stream_live_events`/`stream_events` raise `ValueError` naming `diffPatch` and `snapshot`; the test passes |
+| B-181 | `mlb-live-feed-projection 1.4`: live check of every set | READY (needs B-178, B-179) | all five sets answer 200, are smaller than 663,043 bytes and carry the keys they promise; numbers under "As built" in `design.md` |
+| B-182 | `mlb-live-feed-projection 1.5`: docs, ADR 54, spec merge, archive | DONE-WHEN-LAST | the projection section is in `docs/sources/mlb_api.md`, the delta is merged, the change is archived, gates green |
+| B-183 | `mlb-pool-fallback-completion 2.1`: list-encode multi-value hydrate parameters | READY | `sitCodes=[vr,vl]` is sent, two splits are stored, an empty list is omitted; the two named tests pass |
+| B-184 | `mlb-pool-fallback-completion 2.2`: per-stat-type revision for split pools | READY | a stored split part is stale and refetched without `--refresh`, a non-split part is still served; the test passes |
+| B-185 | `mlb-pool-fallback-completion 2.3`: refuse a stat type with no person equivalent | READY | a 406 on `statsSingleSeason` raises naming the type and evidence, no empty part is stored; the test passes |
+| B-186 | `mlb-pool-fallback-completion 2.4`: halve a hydrate batch on 414 | READY | batches halve down to one id, then raise; every 200 page is kept raw with a unique name; the test passes |
+| B-187 | `mlb-pool-fallback-completion 2.5`: live proof of every split pool | LONG (homelab) | every `stats_stat_splits_*` pool is stored with the codes the person route serves, or has a recorded non-list root cause; rows, requests, seconds and quarantine are in `design.md` |
+| B-188 | `mlb-pool-fallback-completion 2.6`: probe covers the fallback shape | READY | the canary sends `sitCodes=[vr,vl]`, answers 200 in a live probe and fails the probe when refused; the test passes |
+| B-189 | `mlb-pool-fallback-completion 2.7`: docs, ADR 55, spec merge, archive | DONE-WHEN-LAST | the pool section is in `docs/sources/mlb_api.md`, ADR 53's consequences are updated, the delta is merged, the change is archived, gates green |

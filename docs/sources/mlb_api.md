@@ -183,65 +183,39 @@ typed Parquet part per request.
 - **People and awards:** `people_stats_<statType>_<group>` (`/v1/people/{id}/stats`, one request per person, 81 combinations that returned data for the sample players; opt-in through `ingest_people_stats` because it is thousands of requests), `award_recipients` (`/v1/awards/{id}/recipients`, one request per award id of `ref_awards`; several recipients per award-season are normal), `people_changes`/`game_changes` (`updatedSince=`, append-only incremental logs) and `people_search` (`names=`). Scopes `since` and `query` datasets are unpartitioned.
 - **Not covered here:** boxscore players (a dict keyed by player id, not a list, so the record walker does not apply); stat combinations that exist only for specific player ids are limited to the sampled players' results.
 
-| Dataset family | Datasets | Status (probe 2026-10-27) |
-|---|---|---|
-| `stats_*` | 39 | ok: 39 |
-| `team_stats_*` | 56 | ok: 56 |
-| `ref_*` | 28 | ok: 27, unsupported: 1 |
-| `seasons_all` | 1 | ok: 1 |
-| `teams_season` | 1 | ok: 1 |
-| `divisions_season` | 1 | ok: 1 |
-| `leagues_season` | 1 | ok: 1 |
-| `team_affiliates` | 1 | ok: 1 |
-| `team_history` | 1 | ok: 1 |
-| `team_coaches` | 1 | ok: 1 |
-| `team_personnel` | 1 | ok: 1 |
-| `team_alumni` | 1 | ok: 1 |
-| `team_roster_active` | 1 | ok: 1 |
-| `team_roster_40_man` | 1 | ok: 1 |
-| `team_roster_full_season` | 1 | ok: 1 |
-| `team_roster_full_roster` | 1 | ok: 1 |
-| `team_roster_non_roster_invitees` | 1 | ok: 1 |
-| `team_roster_depth_chart` | 1 | ok: 1 |
-| `players_season` | 1 | ok: 1 |
-| `free_agents` | 1 | ok: 1 |
-| `jobs_umpires` | 1 | ok: 1 |
-| `jobs_datacasters` | 1 | ok: 1 |
-| `jobs_official_scorers` | 1 | ok: 1 |
-| `draft_prospects` | 1 | ok: 1 |
-| `schedule_postseason` | 1 | ok: 1 |
-| `schedule_postseason_series` | 1 | ok: 1 |
-| `stats_leaders` | 1 | ok: 1 |
-| `schedule_hydrated` | 1 | ok: 1 |
-| `standings_regular_season` | 1 | ok: 1 |
-| `standings_wild_card` | 1 | ok: 1 |
-| `standings_division_leaders` | 1 | ok: 1 |
-| `standings_wild_card_with_leaders` | 1 | ok: 1 |
-| `standings_first_half` | 1 | empty: 1 |
-| `standings_second_half` | 1 | empty: 1 |
-| `standings_spring_training` | 1 | ok: 1 |
-| `standings_postseason` | 1 | empty: 1 |
-| `standings_by_division` | 1 | ok: 1 |
-| `standings_by_conference` | 1 | ok: 1 |
-| `standings_by_league` | 1 | ok: 1 |
-| `standings_by_organization` | 1 | ok: 1 |
-| `game_linescore` | 1 | ok: 1 |
-| `game_win_probability` | 1 | ok: 1 |
-| `game_play_by_play` | 1 | ok: 1 |
-| `attendance` | 1 | unsupported: 1 |
-| `game_color` | 1 | unsupported: 1 |
-| `home_run_derby` | 1 | unsupported: 1 |
+### Per-endpoint status
 
-### Probed and not ingested
+The status of every registered endpoint is recorded in `docs/mlb_probe.json` (written by
+`scripts/gen_mlb_schemas.py`, schema `{"probed_on": <date>, "endpoints": {<name>: {"status": ...}}}`),
+and `baseballpy datasets` reads the same registry. Neither this document nor the registry repeats a
+count by hand: query the JSON or the registry.
 
-| Dataset | Reason |
-|---|---|
-| `attendance` | probe returned HTTP 400 with leagueId/season; see docs/mlb_probe.json |
-| `game_color` | route answers 404 for a final game (probed 2026-10-27) |
-| `home_run_derby` | route answers 404 for the probed game (probed 2026-10-27) |
-| `ref_sky_conditions` | route answers 404 (probed 2026-10-27) |
+Read the JSON with:
 
-Endpoints that answered 200 with no records for the sampled seasons (typed on first non-empty run): `standings_first_half`, `standings_second_half`, `standings_postseason`.
+```
+uv run python -c "import json; d=json.load(open('docs/mlb_probe.json',encoding='utf-8')); \
+print(d['probed_on'], len(d['endpoints'])); \
+print([(n,e['status']) for n,e in d['endpoints'].items() if e['status']!='ok'])"
+```
+
+Three statuses occur:
+
+- **`ok`** — the route answered and the payload was typed into the endpoint's schema.
+- **`unsupported`** — the route answers an error for every probed parameter set, or its payload is not
+  the data the route name promises. The entry's `reason` carries the probe evidence; the raw payloads
+  are kept. These are `attendance` (HTTP 400 for the probed `leagueId`/`season`), `game_color` (404),
+  `home_run_derby` (404), `ref_sky_conditions` (404) and
+  `team_stats_expected_statistics_hitting` (the team route returns repeated player splits, not team
+  rows).
+- **`empty`** — HTTP 200 with no records for the sampled seasons; the schema is typed on the first
+  non-empty run. These are `people_stats_metric_log_hitting`, `people_stats_metric_averages_hitting`
+  and `standings_postseason`.
+
+`/v1/stats` (the league-wide player pools) is not itself listed as a status: the route answers HTTP 406
+from the provider since 2026-10-29 (B-30/B-32, evidence in
+`openspec/changes/mlb-stats-route-406-and-deep-pools/design.md`). Pools with a per-person equivalent are
+fetched through `/v1/people?hydrate=stats(...)` instead (ADR 53, ADR 55); the single-season family stays
+blocked until the provider answers or a season-by-season rebuild lands.
 
 ## Storage Layout (lake v2)
 - Raw JSON payloads: `raw/mlb_api/<dataset>/[season=YYYY/]<ident>.json`.

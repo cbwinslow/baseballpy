@@ -47,6 +47,8 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
+| `mlb-live-feed-projection` | 0 | 5 | 1.1, 1.2, 1.3, 1.4, 1.5 |
+| `mlb-pool-fallback-completion` | 0 | 7 | 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
@@ -105,6 +107,8 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 51: Retrosheet Event Text Is NULL When Missing; a Dataset Revision Replaces Chunks an Older Parser Wrote
 - ADR 52: Statcast Applies the Source-Review Standard: Content Fingerprints, Kept Dictionary Page, Schema-Following Chunks, One Python Entry Point
 - ADR 53: League-Wide MLB Pools Fall Back to People Hydrate; A Probe Command Shows Provider Health
+- ADR 54: The Live Feed's `fields=` Is a Snapshot Ability, Never a Streaming Mode; Field Sets Are Data
+- ADR 55: Multi-Value Hydrate Parameters Are List-Encoded; a Pool With No Person Equivalent Is Refused
 
 ## Documentation pages (`docs/`)
 
