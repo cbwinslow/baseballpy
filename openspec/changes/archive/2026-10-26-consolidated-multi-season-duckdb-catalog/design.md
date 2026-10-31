@@ -78,7 +78,7 @@ class BaseballDatabase:
 ### Cross-System SQL Joins:
 DuckDB can execute queries joining these datasets directly:
 ```sql
-SELECT 
+SELECT
     p.game_year,
     p.pitcher,
     reg.name_last,

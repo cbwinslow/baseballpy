@@ -1189,7 +1189,7 @@ matlabTable =
 
 >> arrowRecordBatch = arrow.recordBatch(matlabTable)
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 2 columns:
 
@@ -1203,7 +1203,7 @@ arrowRecordBatch =
 
 >> arrowSchema = arrowRecordBatch.Schema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -7542,7 +7542,7 @@ Gets the Schema of an Arrow RecordBatch.
 ```matlab
 >> arrowSchema = arrowRecordBatch.Schema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -11187,7 +11187,7 @@ Connects to an S3 bucket through a local proxy server by passing a URI of the fo
 
 ```r
 bucket <- s3_bucket(
-  bucket = "arrow-datasets", 
+  bucket = "arrow-datasets",
   proxy_options = "http://localhost:1316"
 )
 ```
@@ -11465,7 +11465,7 @@ Extract a column from an Arrow RecordBatch by index using the column method. The
 ```matlab
 >> arrowRecordBatch = arrow.tabular.RecordBatch.fromArrays(stringArray, timestampArray, booleanArray)
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 3 columns:
 
@@ -11479,7 +11479,7 @@ arrowRecordBatch =
 
 >> timestampArray = arrowRecordBatch.column(2)
 
-timestampArray = 
+timestampArray =
 
   TimestampArray with 3 elements and 0 null values:
 
@@ -12135,7 +12135,7 @@ Creates an Arrow Schema from multiple Arrow Fields using the arrow.schema() func
 ```matlab
 >> letter = arrow.field("Letter", arrow.string())
 
-letter = 
+letter =
 
   Field with properties:
 
@@ -12144,7 +12144,7 @@ letter =
 
 >> number = arrow.field("Number", arrow.int8())
 
-number = 
+number =
 
   Field with properties:
 
@@ -12153,7 +12153,7 @@ number =
 
 >> schema = arrow.schema([letter, number])
 
-schema = 
+schema =
 
   Arrow Schema with 2 fields:
 
@@ -12171,7 +12171,7 @@ Extracts an Arrow Field from an Arrow Schema by name using the field() method. T
 ```matlab
 >> arrowSchema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -12180,7 +12180,7 @@ arrowSchema =
 % Specify the field to extract by its name (i.e. "Letter")
 >> field = arrowSchema.field("Letter")
 
-field = 
+field =
 
   Field with properties:
 
@@ -12317,7 +12317,7 @@ Source: https://github.com/apache/arrow/blob/main/r/vignettes/fs.Rmd
 Example error message that may appear when existing AWS environment variables interfere with connection details passed via URI or alternative methods.
 
 ```r
-Error: IOError: When resolving region for bucket 'analysis': AWS Error [code 99]: curlCode: 6, Couldn't resolve host name 
+Error: IOError: When resolving region for bucket 'analysis': AWS Error [code 99]: curlCode: 6, Couldn't resolve host name
 ```
 
 --------------------------------
@@ -12929,7 +12929,7 @@ Extracts an Arrow Field from an Arrow Schema by index using the field() method. 
 ```matlab
 >> arrowSchema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -12938,7 +12938,7 @@ arrowSchema =
 % Specify the field to extract by its index (i.e. 2)
 >> field = arrowSchema.field(2)
 
-field = 
+field =
 
   Field with properties:
 
@@ -20049,17 +20049,17 @@ PA._export_to_c(arrayMemoryAddress, schemaMemoryAddress)
 ```
 
 ```matlab
-% Make a pyarrow.Array. 
->> PA = py.pyarrow.array([1, 2, 3, 4, 5]); 
+% Make a pyarrow.Array.
+>> PA = py.pyarrow.array([1, 2, 3, 4, 5]);
 
-% Create ArrowArray and ArrowSchema C-style structs adhering to the Arrow C Data Interface format. 
+% Create ArrowArray and ArrowSchema C-style structs adhering to the Arrow C Data Interface format.
 >> cArray = arrow.c.Array();
 >> cSchema = arrow.c.Schema();
 
-% Export the pyarrow.Array to the C Data Interface format, populating the required ArrowArray and ArrowShema structs. 
+% Export the pyarrow.Array to the C Data Interface format, populating the required ArrowArray and ArrowShema structs.
 >> pyrunfile("export_to_c.py", PA=PA, arrayMemoryAddress=cArray.Address, schemaMemoryAddress=cSchema.Address);
 
-% Import the C Data Interface structs to create a MATLAB arrow.Array. 
+% Import the C Data Interface structs to create a MATLAB arrow.Array.
 >> AA = arrow.array.Array.import(cArray, cSchema);
 ```
 
@@ -20390,7 +20390,7 @@ Creates an Arrow Field with type StringType using the arrow.field() function. Th
 ```matlab
 >> field = arrow.field("Letter", arrow.string())
 
-field = 
+field =
 
   Field with properties:
 
@@ -20437,7 +20437,7 @@ Creates an Arrow Field with type Int8Type using the arrow.field() function. The 
 ```matlab
 >> field = arrow.field("Number", arrow.int8())
 
-field = 
+field =
 
   Field with properties:
 
@@ -21136,7 +21136,7 @@ Creates an Arrow Schema from multiple Arrow Fields.
 >> number = arrow.field("Number", arrow.int8());
 >> schema = arrow.schema([letter, number])
 
-schema = 
+schema =
 
   Arrow Schema with 2 fields:
 
@@ -21922,16 +21922,16 @@ Source: https://github.com/apache/arrow/blob/main/matlab/doc/matlab_interface_fo
 Shares Arrow memory between MATLAB and PyArrow in a separate process by writing a MATLAB arrow.Table to an Arrow IPC file and memory-mapping it with pyarrow. Requires MATLAB's Python interface with OutOfProcess execution mode. The writer must be closed to flush data. The final read_all() returns a pyarrow.Table.
 
 ```matlab
-% Create a MATLAB arrow.Table. 
->> Var1 = arrow.array(["foo", "bar", "baz"]); 
+% Create a MATLAB arrow.Table.
+>> Var1 = arrow.array(["foo", "bar", "baz"]);
 
->> Var2 = arrow.array([today, today + 1, today + 2]); 
+>> Var2 = arrow.array([today, today + 1, today + 2]);
 
->> Var3 = arrow.array([10, 20, 30]); 
+>> Var3 = arrow.array([10, 20, 30]);
 
->> AT = arrow.Table(Var1, Var2, Var3); 
+>> AT = arrow.Table(Var1, Var2, Var3);
 
-% Write the MATLAB arrow.Table to the Arrow IPC File Format on disk. 
+% Write the MATLAB arrow.Table to the Arrow IPC File Format on disk.
 >> recordBatch = arrow.recordBatch(AT);
 
 >> filename = "data.arrow"
@@ -21945,17 +21945,17 @@ Shares Arrow memory between MATLAB and PyArrow in a separate process by writing 
 % Close the writer -- don't forget this step!
 >> writer.close()
 
-% Run Python in a separate process. 
->> pyenv("ExecutionMode", "OutOfProcess");  
+% Run Python in a separate process.
+>> pyenv("ExecutionMode", "OutOfProcess");
 
-% Memory map the Arrow IPC File. 
->> memoryMappedFile = py.pyarrow.memory_map("data.arrow"); 
+% Memory map the Arrow IPC File.
+>> memoryMappedFile = py.pyarrow.memory_map("data.arrow");
 
-% Construct pyarrow.ipc.RecordBatchFileReader to read the Arrow IPC File. 
->> recordBatchFileReader = py.pyarrow.ipc.open_file(memoryMappedFile); 
+% Construct pyarrow.ipc.RecordBatchFileReader to read the Arrow IPC File.
+>> recordBatchFileReader = py.pyarrow.ipc.open_file(memoryMappedFile);
 
-% Read all record batches from the Arrow IPC File in one-shot and return a pyarrow.Table. 
->> PAT = recordBatchFileReader.read_all() 
+% Read all record batches from the Arrow IPC File in one-shot and return a pyarrow.Table.
+>> PAT = recordBatchFileReader.read_all()
 ```
 
 --------------------------------
@@ -21996,7 +21996,7 @@ matlabTable =
 
 >> arrowRecordBatch = arrow.recordBatch(matlabTable)
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 2 columns:
 
@@ -22010,7 +22010,7 @@ arrowRecordBatch =
 
 >> arrowSchema = arrowRecordBatch.Schema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -22041,7 +22041,7 @@ Gets the Schema of an Arrow RecordBatch.
 ```matlab
 >> arrowSchema = arrowRecordBatch.Schema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -22523,7 +22523,7 @@ Extracts an Arrow Field from an Arrow Schema by index or name.
 % Extract by index
 >> field = arrowSchema.field(2)
 
-field = 
+field =
 
   Field with properties:
 
@@ -22535,7 +22535,7 @@ field =
 % Extract by name
 >> field = arrowSchema.field("Letter")
 
-field = 
+field =
 
   Field with properties:
 
@@ -22651,7 +22651,7 @@ Creates an Arrow Schema from multiple Arrow Fields using the arrow.schema() func
 ```matlab
 >> letter = arrow.field("Letter", arrow.string())
 
-letter = 
+letter =
 
   Field with properties:
 
@@ -22660,7 +22660,7 @@ letter =
 
 >> number = arrow.field("Number", arrow.int8())
 
-number = 
+number =
 
   Field with properties:
 
@@ -22669,7 +22669,7 @@ number =
 
 >> schema = arrow.schema([letter, number])
 
-schema = 
+schema =
 
   Arrow Schema with 2 fields:
 
@@ -22687,7 +22687,7 @@ Extracts an Arrow Field from an Arrow Schema by name using the field() method. T
 ```matlab
 >> arrowSchema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -22696,7 +22696,7 @@ arrowSchema =
 % Specify the field to extract by its name (i.e. "Letter")
 >> field = arrowSchema.field("Letter")
 
-field = 
+field =
 
   Field with properties:
 
@@ -22823,18 +22823,18 @@ array = pa.Array._import_from_c(arrayMemoryAddress, schemaMemoryAddress)
 ```
 
 ```matlab
-% Create a MATLAB arrow.Array. 
->> AA = arrow.array([1, 2, 3, 4, 5]); 
+% Create a MATLAB arrow.Array.
+>> AA = arrow.array([1, 2, 3, 4, 5]);
 
 % Export C Data Interface C-style structs for `arrow.array.Array` values and schema
 >> cArray = arrow.c.Array();
 >> cSchema = arrow.c.Schema();
 
-% Export the MATLAB arrow.Array to the C Data Interface format, returning the 
-% memory addresses of the required ArrowArray and ArrowSchema C-style structs. 
->> AA.export(cArray.Address, cSchema.Address); 
+% Export the MATLAB arrow.Array to the C Data Interface format, returning the
+% memory addresses of the required ArrowArray and ArrowSchema C-style structs.
+>> AA.export(cArray.Address, cSchema.Address);
 
-% Import the memory addresses of the C Data Interface format structs to create a pyarrow.Array. 
+% Import the memory addresses of the C Data Interface format structs to create a pyarrow.Array.
 >> PA = pyrunfile("import_from_c.py", "array", arrayMemoryAddress=cArray.Address, schemaMemoryAddress=cSchema.Address);
 ```
 
@@ -23389,7 +23389,7 @@ Extracts an Arrow Field from an Arrow Schema by index using the field() method. 
 ```matlab
 >> arrowSchema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -23398,7 +23398,7 @@ arrowSchema =
 % Specify the field to extract by its index (i.e. 2)
 >> field = arrowSchema.field(2)
 
-field = 
+field =
 
   Field with properties:
 
@@ -24524,7 +24524,7 @@ Creates an Arrow Field object with a specified name and type.
 ```matlab
 >> field = arrow.field("Number", arrow.int8())
 
-field = 
+field =
 
   Field with properties:
 
@@ -24535,7 +24535,7 @@ field =
 ```matlab
 >> field = arrow.field("Letter", arrow.string())
 
-field = 
+field =
 
   Field with properties:
 
@@ -26230,7 +26230,7 @@ read_csv_arrow(
 
 ### Arguments
 - **file** (character/connection/raw/InputStream/FileSystem) - Required - A character file name or URI, connection, literal data (wrapped with I()), an Arrow input stream, or a FileSystem with path. If a file name, a memory-mapped Arrow InputStream will be opened and closed when finished; compression is detected from file extension. If an input stream is provided, it will be left open.
-- **quote** (character) - Optional - Single character used to quote strings. Default is '"'. 
+- **quote** (character) - Optional - Single character used to quote strings. Default is '"'.
 - **escape_double** (logical) - Optional - Does the file escape quotes by doubling them? If TRUE, the value """" represents a single quote, \". Default is TRUE.
 - **escape_backslash** (logical) - Optional - Does the file use backslashes to escape special characters? More general than escape_double. Default is FALSE.
 - **schema** (Schema) - Optional - Arrow Schema that describes the table. If provided, it satisfies both col_names and col_types.
@@ -26467,7 +26467,7 @@ read_tsv_arrow(
 
 ### Arguments
 - **file** (character/connection/raw/InputStream/FileSystem) - Required - A character file name or URI, connection, literal data (wrapped with I()), an Arrow input stream, or a FileSystem with path. If a file name, a memory-mapped Arrow InputStream will be opened and closed when finished; compression is detected from file extension. If an input stream is provided, it will be left open.
-- **quote** (character) - Optional - Single character used to quote strings. Default is '"'. 
+- **quote** (character) - Optional - Single character used to quote strings. Default is '"'.
 - **escape_double** (logical) - Optional - Does the file escape quotes by doubling them? If TRUE, the value """" represents a single quote, \". Default is TRUE.
 - **escape_backslash** (logical) - Optional - Does the file use backslashes to escape special characters? More general than escape_double. Default is FALSE.
 - **schema** (Schema) - Optional - Arrow Schema that describes the table. If provided, it satisfies both col_names and col_types.
@@ -26536,7 +26536,7 @@ read_delim_arrow(
 ### Arguments
 - **file** (character/connection/raw/InputStream/FileSystem) - Required - A character file name or URI, connection, literal data (wrapped with I()), an Arrow input stream, or a FileSystem with path. If a file name, a memory-mapped Arrow InputStream will be opened and closed when finished; compression is detected from file extension. If an input stream is provided, it will be left open.
 - **delim** (character) - Optional - Single character used to separate fields within a record. Default is ",".
-- **quote** (character) - Optional - Single character used to quote strings. Default is '"'. 
+- **quote** (character) - Optional - Single character used to quote strings. Default is '"'.
 - **escape_double** (logical) - Optional - Does the file escape quotes by doubling them? If TRUE, the value """" represents a single quote, \". Default is TRUE.
 - **escape_backslash** (logical) - Optional - Does the file use backslashes to escape special characters? More general than escape_double. Default is FALSE.
 - **schema** (Schema) - Optional - Arrow Schema that describes the table. If provided, it satisfies both col_names and col_types.
@@ -26860,7 +26860,7 @@ read_csv2_arrow(
 
 ### Arguments
 - **file** (character/connection/raw/InputStream/FileSystem) - Required - A character file name or URI, connection, literal data (wrapped with I()), an Arrow input stream, or a FileSystem with path. If a file name, a memory-mapped Arrow InputStream will be opened and closed when finished; compression is detected from file extension. If an input stream is provided, it will be left open.
-- **quote** (character) - Optional - Single character used to quote strings. Default is '"'. 
+- **quote** (character) - Optional - Single character used to quote strings. Default is '"'.
 - **escape_double** (logical) - Optional - Does the file escape quotes by doubling them? If TRUE, the value """" represents a single quote, \". Default is TRUE.
 - **escape_backslash** (logical) - Optional - Does the file use backslashes to escape special characters? More general than escape_double. Default is FALSE.
 - **schema** (Schema) - Optional - Arrow Schema that describes the table. If provided, it satisfies both col_names and col_types.
@@ -30300,7 +30300,7 @@ diamonds_good
 ##  1  0.23 E     VS1      56.9    65   327  4.05  4.07  2.31
 ##  2  0.31 J     SI2      63.3    58   335  4.34  4.35  2.75
 ##  3  0.3  J     SI1      64      55   339  4.25  4.28  2.73
-##  4  0.3  J     SI1      63.4    54   351  4.23  4.29  2.7 
+##  4  0.3  J     SI1      63.4    54   351  4.23  4.29  2.7
 ##  5  0.3  J     SI1      63.8    56   351  4.23  4.26  2.71
 ##  6  0.3  I     SI2      63.3    56   351  4.26  4.3   2.71
 ##  7  0.23 F     VS1      58.2    59   402  4.06  4.08  2.37
@@ -35403,16 +35403,16 @@ Source: https://github.com/apache/arrow/blob/main/matlab/doc/matlab_interface_fo
 Shares Arrow memory between MATLAB and PyArrow in a separate process by writing a MATLAB arrow.Table to an Arrow IPC file and memory-mapping it with pyarrow. Requires MATLAB's Python interface with OutOfProcess execution mode. The writer must be closed to flush data. The final read_all() returns a pyarrow.Table.
 
 ```matlab
-% Create a MATLAB arrow.Table. 
->> Var1 = arrow.array(["foo", "bar", "baz"]); 
+% Create a MATLAB arrow.Table.
+>> Var1 = arrow.array(["foo", "bar", "baz"]);
 
->> Var2 = arrow.array([today, today + 1, today + 2]); 
+>> Var2 = arrow.array([today, today + 1, today + 2]);
 
->> Var3 = arrow.array([10, 20, 30]); 
+>> Var3 = arrow.array([10, 20, 30]);
 
->> AT = arrow.Table(Var1, Var2, Var3); 
+>> AT = arrow.Table(Var1, Var2, Var3);
 
-% Write the MATLAB arrow.Table to the Arrow IPC File Format on disk. 
+% Write the MATLAB arrow.Table to the Arrow IPC File Format on disk.
 >> recordBatch = arrow.recordBatch(AT);
 
 >> filename = "data.arrow"
@@ -35426,17 +35426,17 @@ Shares Arrow memory between MATLAB and PyArrow in a separate process by writing 
 % Close the writer -- don't forget this step!
 >> writer.close()
 
-% Run Python in a separate process. 
->> pyenv("ExecutionMode", "OutOfProcess");  
+% Run Python in a separate process.
+>> pyenv("ExecutionMode", "OutOfProcess");
 
-% Memory map the Arrow IPC File. 
->> memoryMappedFile = py.pyarrow.memory_map("data.arrow"); 
+% Memory map the Arrow IPC File.
+>> memoryMappedFile = py.pyarrow.memory_map("data.arrow");
 
-% Construct pyarrow.ipc.RecordBatchFileReader to read the Arrow IPC File. 
->> recordBatchFileReader = py.pyarrow.ipc.open_file(memoryMappedFile); 
+% Construct pyarrow.ipc.RecordBatchFileReader to read the Arrow IPC File.
+>> recordBatchFileReader = py.pyarrow.ipc.open_file(memoryMappedFile);
 
-% Read all record batches from the Arrow IPC File in one-shot and return a pyarrow.Table. 
->> PAT = recordBatchFileReader.read_all() 
+% Read all record batches from the Arrow IPC File in one-shot and return a pyarrow.Table.
+>> PAT = recordBatchFileReader.read_all()
 ```
 
 --------------------------------
@@ -36742,10 +36742,10 @@ bucket$ls("diamonds", recursive = TRUE)
 ```
 
 ```r
-## [1] "diamonds/cut=Fair/part-0.parquet"     
-## [2] "diamonds/cut=Good/part-0.parquet"     
-## [3] "diamonds/cut=Ideal/part-0.parquet"    
-## [4] "diamonds/cut=Premium/part-0.parquet"  
+## [1] "diamonds/cut=Fair/part-0.parquet"
+## [2] "diamonds/cut=Good/part-0.parquet"
+## [3] "diamonds/cut=Ideal/part-0.parquet"
+## [4] "diamonds/cut=Premium/part-0.parquet"
 ## [5] "diamonds/cut=Very Good/part-0.parquet"
 ```
 
@@ -37072,17 +37072,17 @@ PA._export_to_c(arrayMemoryAddress, schemaMemoryAddress)
 ```
 
 ```matlab
-% Make a pyarrow.Array. 
->> PA = py.pyarrow.array([1, 2, 3, 4, 5]); 
+% Make a pyarrow.Array.
+>> PA = py.pyarrow.array([1, 2, 3, 4, 5]);
 
-% Create ArrowArray and ArrowSchema C-style structs adhering to the Arrow C Data Interface format. 
+% Create ArrowArray and ArrowSchema C-style structs adhering to the Arrow C Data Interface format.
 >> cArray = arrow.c.Array();
 >> cSchema = arrow.c.Schema();
 
-% Export the pyarrow.Array to the C Data Interface format, populating the required ArrowArray and ArrowShema structs. 
+% Export the pyarrow.Array to the C Data Interface format, populating the required ArrowArray and ArrowShema structs.
 >> pyrunfile("export_to_c.py", PA=PA, arrayMemoryAddress=cArray.Address, schemaMemoryAddress=cSchema.Address);
 
-% Import the C Data Interface structs to create a MATLAB arrow.Array. 
+% Import the C Data Interface structs to create a MATLAB arrow.Array.
 >> AA = arrow.array.Array.import(cArray, cSchema);
 ```
 
@@ -37981,18 +37981,18 @@ array = pa.Array._import_from_c(arrayMemoryAddress, schemaMemoryAddress)
 ```
 
 ```matlab
-% Create a MATLAB arrow.Array. 
->> AA = arrow.array([1, 2, 3, 4, 5]); 
+% Create a MATLAB arrow.Array.
+>> AA = arrow.array([1, 2, 3, 4, 5]);
 
 % Export C Data Interface C-style structs for `arrow.array.Array` values and schema
 >> cArray = arrow.c.Array();
 >> cSchema = arrow.c.Schema();
 
-% Export the MATLAB arrow.Array to the C Data Interface format, returning the 
-% memory addresses of the required ArrowArray and ArrowSchema C-style structs. 
->> AA.export(cArray.Address, cSchema.Address); 
+% Export the MATLAB arrow.Array to the C Data Interface format, returning the
+% memory addresses of the required ArrowArray and ArrowSchema C-style structs.
+>> AA.export(cArray.Address, cSchema.Address);
 
-% Import the memory addresses of the C Data Interface format structs to create a pyarrow.Array. 
+% Import the memory addresses of the C Data Interface format structs to create a pyarrow.Array.
 >> PA = pyrunfile("import_from_c.py", "array", arrayMemoryAddress=cArray.Address, schemaMemoryAddress=cSchema.Address);
 ```
 
@@ -41930,7 +41930,7 @@ Creates an Arrow RecordBatch from a MATLAB table.
 >> matlabTable = table(["A"; "B"; "C"], [1; 2; 3], VariableNames=["Letter", "Number"]);
 >> arrowRecordBatch = arrow.recordBatch(matlabTable)
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 2 columns:
 
@@ -45264,17 +45264,17 @@ PA._export_to_c(arrayMemoryAddress, schemaMemoryAddress)
 ```
 
 ```matlab
-% Make a pyarrow.Array. 
->> PA = py.pyarrow.array([1, 2, 3, 4, 5]); 
+% Make a pyarrow.Array.
+>> PA = py.pyarrow.array([1, 2, 3, 4, 5]);
 
-% Create ArrowArray and ArrowSchema C-style structs adhering to the Arrow C Data Interface format. 
+% Create ArrowArray and ArrowSchema C-style structs adhering to the Arrow C Data Interface format.
 >> cArray = arrow.c.Array();
 >> cSchema = arrow.c.Schema();
 
-% Export the pyarrow.Array to the C Data Interface format, populating the required ArrowArray and ArrowShema structs. 
+% Export the pyarrow.Array to the C Data Interface format, populating the required ArrowArray and ArrowShema structs.
 >> pyrunfile("export_to_c.py", PA=PA, arrayMemoryAddress=cArray.Address, schemaMemoryAddress=cSchema.Address);
 
-% Import the C Data Interface structs to create a MATLAB arrow.Array. 
+% Import the C Data Interface structs to create a MATLAB arrow.Array.
 >> AA = arrow.array.Array.import(cArray, cSchema);
 ```
 
@@ -46164,18 +46164,18 @@ array = pa.Array._import_from_c(arrayMemoryAddress, schemaMemoryAddress)
 ```
 
 ```matlab
-% Create a MATLAB arrow.Array. 
->> AA = arrow.array([1, 2, 3, 4, 5]); 
+% Create a MATLAB arrow.Array.
+>> AA = arrow.array([1, 2, 3, 4, 5]);
 
 % Export C Data Interface C-style structs for `arrow.array.Array` values and schema
 >> cArray = arrow.c.Array();
 >> cSchema = arrow.c.Schema();
 
-% Export the MATLAB arrow.Array to the C Data Interface format, returning the 
-% memory addresses of the required ArrowArray and ArrowSchema C-style structs. 
->> AA.export(cArray.Address, cSchema.Address); 
+% Export the MATLAB arrow.Array to the C Data Interface format, returning the
+% memory addresses of the required ArrowArray and ArrowSchema C-style structs.
+>> AA.export(cArray.Address, cSchema.Address);
 
-% Import the memory addresses of the C Data Interface format structs to create a pyarrow.Array. 
+% Import the memory addresses of the C Data Interface format structs to create a pyarrow.Array.
 >> PA = pyrunfile("import_from_c.py", "array", arrayMemoryAddress=cArray.Address, schemaMemoryAddress=cSchema.Address);
 ```
 
@@ -47260,16 +47260,16 @@ Source: https://github.com/apache/arrow/blob/main/matlab/doc/matlab_interface_fo
 Shares Arrow memory between MATLAB and PyArrow in a separate process by writing a MATLAB arrow.Table to an Arrow IPC file and memory-mapping it with pyarrow. Requires MATLAB's Python interface with OutOfProcess execution mode. The writer must be closed to flush data. The final read_all() returns a pyarrow.Table.
 
 ```matlab
-% Create a MATLAB arrow.Table. 
->> Var1 = arrow.array(["foo", "bar", "baz"]); 
+% Create a MATLAB arrow.Table.
+>> Var1 = arrow.array(["foo", "bar", "baz"]);
 
->> Var2 = arrow.array([today, today + 1, today + 2]); 
+>> Var2 = arrow.array([today, today + 1, today + 2]);
 
->> Var3 = arrow.array([10, 20, 30]); 
+>> Var3 = arrow.array([10, 20, 30]);
 
->> AT = arrow.Table(Var1, Var2, Var3); 
+>> AT = arrow.Table(Var1, Var2, Var3);
 
-% Write the MATLAB arrow.Table to the Arrow IPC File Format on disk. 
+% Write the MATLAB arrow.Table to the Arrow IPC File Format on disk.
 >> recordBatch = arrow.recordBatch(AT);
 
 >> filename = "data.arrow"
@@ -47283,17 +47283,17 @@ Shares Arrow memory between MATLAB and PyArrow in a separate process by writing 
 % Close the writer -- don't forget this step!
 >> writer.close()
 
-% Run Python in a separate process. 
->> pyenv("ExecutionMode", "OutOfProcess");  
+% Run Python in a separate process.
+>> pyenv("ExecutionMode", "OutOfProcess");
 
-% Memory map the Arrow IPC File. 
->> memoryMappedFile = py.pyarrow.memory_map("data.arrow"); 
+% Memory map the Arrow IPC File.
+>> memoryMappedFile = py.pyarrow.memory_map("data.arrow");
 
-% Construct pyarrow.ipc.RecordBatchFileReader to read the Arrow IPC File. 
->> recordBatchFileReader = py.pyarrow.ipc.open_file(memoryMappedFile); 
+% Construct pyarrow.ipc.RecordBatchFileReader to read the Arrow IPC File.
+>> recordBatchFileReader = py.pyarrow.ipc.open_file(memoryMappedFile);
 
-% Read all record batches from the Arrow IPC File in one-shot and return a pyarrow.Table. 
->> PAT = recordBatchFileReader.read_all() 
+% Read all record batches from the Arrow IPC File in one-shot and return a pyarrow.Table.
+>> PAT = recordBatchFileReader.read_all()
 ```
 
 --------------------------------
@@ -55224,7 +55224,7 @@ Creates a random data frame with 100 million rows and converts it to an Arrow Ta
 set.seed(1234)
 nrows <- 10^8
 df_random <- data.frame(
-  x = rnorm(nrows), 
+  x = rnorm(nrows),
   y = rnorm(nrows),
   subset = sample(10, nrows, replace = TRUE)
 )
@@ -57455,7 +57455,7 @@ summarize(InMemoryDataset$create(tbl), distinct = n_distinct(int, lgl))
 ```
 
 ```text
-In n_distinct(int, lgl): 
+In n_distinct(int, lgl):
 i Multiple arguments to n_distinct() not supported in Arrow
 > Pulling data into R
 ```
@@ -60478,7 +60478,7 @@ Creates an Arrow RecordBatch from a MATLAB table.
 >> matlabTable = table(["A"; "B"; "C"], [1; 2; 3], VariableNames=["Letter", "Number"]);
 >> arrowRecordBatch = arrow.recordBatch(matlabTable)
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 2 columns:
 
@@ -61184,7 +61184,7 @@ Create an Arrow RecordBatch from multiple Arrow arrays (StringArray, TimestampAr
 ```matlab
 >> stringArray = arrow.array(["A", "B", "C"])
 
-stringArray = 
+stringArray =
 
   StringArray with 3 elements and 0 null values:
 
@@ -61192,7 +61192,7 @@ stringArray =
 
 >> timestampArray = arrow.array([datetime(1997, 01, 01), datetime(1998, 01, 01), datetime(1999, 01, 01)])
 
-timestampArray = 
+timestampArray =
 
   TimestampArray with 3 elements and 0 null values:
 
@@ -61200,7 +61200,7 @@ timestampArray =
 
 >> booleanArray = arrow.array([true, false, true])
 
-booleanArray = 
+booleanArray =
 
   BooleanArray with 3 elements and 0 null values:
 
@@ -61208,7 +61208,7 @@ booleanArray =
 
 >> arrowRecordBatch = arrow.tabular.RecordBatch.fromArrays(stringArray, timestampArray, booleanArray)
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 3 columns:
 
@@ -61645,7 +61645,7 @@ Convert an Arrow RecordBatch to a MATLAB table using the table constructor. The 
 ```matlab
 >> arrowRecordBatch
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 3 columns:
 
@@ -61748,7 +61748,7 @@ matlabTable =
 
 >> arrowRecordBatch = arrow.recordBatch(matlabTable)
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 3 columns:
 
@@ -62062,7 +62062,7 @@ Extract a column from an Arrow RecordBatch by index using the column method. The
 ```matlab
 >> arrowRecordBatch = arrow.tabular.RecordBatch.fromArrays(stringArray, timestampArray, booleanArray)
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 3 columns:
 
@@ -62076,7 +62076,7 @@ arrowRecordBatch =
 
 >> timestampArray = arrowRecordBatch.column(2)
 
-timestampArray = 
+timestampArray =
 
   TimestampArray with 3 elements and 0 null values:
 
@@ -62824,7 +62824,7 @@ Gets the Schema of an Arrow RecordBatch.
 ```matlab
 >> arrowSchema = arrowRecordBatch.Schema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -63762,7 +63762,7 @@ summarise(record_batch(tbl), any(any(lgl)))
 
 ```text
 Warning:
-In any(any(lgl)): 
+In any(any(lgl)):
 i aggregate within aggregate expression not supported in Arrow
 > Pulling data into R
 ```
@@ -63770,8 +63770,8 @@ i aggregate within aggregate expression not supported in Arrow
 ```text
 # A tibble: 1 x 1
   `any(any(lgl))`
-  <lgl>          
-1 TRUE           
+  <lgl>
+1 TRUE
 ```
 
 --------------------------------
@@ -63933,7 +63933,7 @@ read_delim_arrow(
 ### Arguments
 - **file** (character/connection/raw/InputStream/FileSystem) - Required - A character file name or URI, connection, literal data (wrapped with I()), an Arrow input stream, or a FileSystem with path. If a file name, a memory-mapped Arrow InputStream will be opened and closed when finished; compression is detected from file extension. If an input stream is provided, it will be left open.
 - **delim** (character) - Optional - Single character used to separate fields within a record. Default is ",".
-- **quote** (character) - Optional - Single character used to quote strings. Default is '"'. 
+- **quote** (character) - Optional - Single character used to quote strings. Default is '"'.
 - **escape_double** (logical) - Optional - Does the file escape quotes by doubling them? If TRUE, the value """" represents a single quote, \". Default is TRUE.
 - **escape_backslash** (logical) - Optional - Does the file use backslashes to escape special characters? More general than escape_double. Default is FALSE.
 - **schema** (Schema) - Optional - Arrow Schema that describes the table. If provided, it satisfies both col_names and col_types.
@@ -64097,7 +64097,7 @@ diamonds_good
 ##  1  0.23 E     VS1      56.9    65   327  4.05  4.07  2.31
 ##  2  0.31 J     SI2      63.3    58   335  4.34  4.35  2.75
 ##  3  0.3  J     SI1      64      55   339  4.25  4.28  2.73
-##  4  0.3  J     SI1      63.4    54   351  4.23  4.29  2.7 
+##  4  0.3  J     SI1      63.4    54   351  4.23  4.29  2.7
 ##  5  0.3  J     SI1      63.8    56   351  4.23  4.26  2.71
 ##  6  0.3  I     SI2      63.3    56   351  4.26  4.3   2.71
 ##  7  0.23 F     VS1      58.2    59   402  4.06  4.08  2.37
@@ -64774,7 +64774,7 @@ read_tsv_arrow(
 
 ### Arguments
 - **file** (character/connection/raw/InputStream/FileSystem) - Required - A character file name or URI, connection, literal data (wrapped with I()), an Arrow input stream, or a FileSystem with path. If a file name, a memory-mapped Arrow InputStream will be opened and closed when finished; compression is detected from file extension. If an input stream is provided, it will be left open.
-- **quote** (character) - Optional - Single character used to quote strings. Default is '"'. 
+- **quote** (character) - Optional - Single character used to quote strings. Default is '"'.
 - **escape_double** (logical) - Optional - Does the file escape quotes by doubling them? If TRUE, the value """" represents a single quote, \". Default is TRUE.
 - **escape_backslash** (logical) - Optional - Does the file use backslashes to escape special characters? More general than escape_double. Default is FALSE.
 - **schema** (Schema) - Optional - Arrow Schema that describes the table. If provided, it satisfies both col_names and col_types.
@@ -65403,7 +65403,7 @@ matlabTable =
 
 >> arrowRecordBatch = arrow.recordBatch(matlabTable)
 
-arrowRecordBatch = 
+arrowRecordBatch =
 
   Arrow RecordBatch with 3 rows and 2 columns:
 
@@ -65417,7 +65417,7 @@ arrowRecordBatch =
 
 >> arrowSchema = arrowRecordBatch.Schema
 
-arrowSchema = 
+arrowSchema =
 
   Arrow Schema with 2 fields:
 
@@ -65488,7 +65488,7 @@ read_csv_arrow(
 
 ### Arguments
 - **file** (character/connection/raw/InputStream/FileSystem) - Required - A character file name or URI, connection, literal data (wrapped with I()), an Arrow input stream, or a FileSystem with path. If a file name, a memory-mapped Arrow InputStream will be opened and closed when finished; compression is detected from file extension. If an input stream is provided, it will be left open.
-- **quote** (character) - Optional - Single character used to quote strings. Default is '"'. 
+- **quote** (character) - Optional - Single character used to quote strings. Default is '"'.
 - **escape_double** (logical) - Optional - Does the file escape quotes by doubling them? If TRUE, the value """" represents a single quote, \". Default is TRUE.
 - **escape_backslash** (logical) - Optional - Does the file use backslashes to escape special characters? More general than escape_double. Default is FALSE.
 - **schema** (Schema) - Optional - Arrow Schema that describes the table. If provided, it satisfies both col_names and col_types.
@@ -66492,7 +66492,7 @@ read_csv2_arrow(
 
 ### Arguments
 - **file** (character/connection/raw/InputStream/FileSystem) - Required - A character file name or URI, connection, literal data (wrapped with I()), an Arrow input stream, or a FileSystem with path. If a file name, a memory-mapped Arrow InputStream will be opened and closed when finished; compression is detected from file extension. If an input stream is provided, it will be left open.
-- **quote** (character) - Optional - Single character used to quote strings. Default is '"'. 
+- **quote** (character) - Optional - Single character used to quote strings. Default is '"'.
 - **escape_double** (logical) - Optional - Does the file escape quotes by doubling them? If TRUE, the value """" represents a single quote, \". Default is TRUE.
 - **escape_backslash** (logical) - Optional - Does the file use backslashes to escape special characters? More general than escape_double. Default is FALSE.
 - **schema** (Schema) - Optional - Arrow Schema that describes the table. If provided, it satisfies both col_names and col_types.
@@ -69739,7 +69739,7 @@ summarize(InMemoryDataset$create(tbl), distinct = n_distinct(int, lgl))
 ```
 
 ```text
-In n_distinct(int, lgl): 
+In n_distinct(int, lgl):
 i Multiple arguments to n_distinct() not supported in Arrow
 > Pulling data into R
 ```

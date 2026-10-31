@@ -3,4 +3,3 @@ Evidence: curl of the seven sport ids returned HTTP 404 with body `Object not fo
 
 ## As built
 The rule lives in `MlbEndpoint.__post_init__` (covers the generated stats endpoints too, which are not built by `_ep`) and applies to sport and team placeholders. Paginated endpoints are excluded: their loop does not handle 404 and none has been observed to fail. A 404 is recorded as an empty part and counted in `EndpointReport.missing`, so it stays visible.
-

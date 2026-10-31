@@ -4191,7 +4191,7 @@ Converts a struct instance to a dict, preserving field values exactly without an
 ## asdict(struct)
 
 ### Description
-Converts a struct instance to a dict, ignoring serialization-specific settings and nested conversion. 
+Converts a struct instance to a dict, ignoring serialization-specific settings and nested conversion.
 
 ### Parameters
 #### Parameters
