@@ -15,6 +15,7 @@ from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_S
 from baseballpy.sources.lahman.schema import LAHMAN_PRIMARY_KEYS, LAHMAN_SCHEMAS
 from baseballpy.sources.mlb_api import schemas as mlb
 from baseballpy.sources.mlb_api.endpoints import SUPPORTED as MLB_ENDPOINTS
+from baseballpy.sources.mlb_api.endpoints import MlbEndpoint
 from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
 from baseballpy.sources.retrosheet import schema as retro
 from baseballpy.sources.retrosheet.box_parser import SCHEMAS as BOX_SCHEMAS
@@ -68,6 +69,22 @@ def _add(
 #: parser-output revision of the declarative MLB datasets: 1 = an empty text value is NULL, no longer an
 #: empty string (found by the CSV export read-back, mlb_api-source-review 5.9)
 MLB_REVISION = 1
+
+#: parser-output revisions that apply to one stat type only (the ADR 51 mechanism): 2 = a split pool
+#: whose hydrate fallback stores every situation code, so a part written by the older fallback (one
+#: code per subject) is stale and is fetched again without ``--refresh`` (ADR 55)
+MLB_STAT_TYPE_REVISIONS = {"statSplits": 2, "statSplitsAdvanced": 2}
+
+#: the league-wide player pool route; only these datasets are built by the hydrate fallback
+MLB_POOL_PATH = "v1/stats"
+
+
+def _mlb_revision(endpoint: MlbEndpoint) -> int:
+    """Parser revision of one declarative endpoint (its stat type's, else ``MLB_REVISION``)."""
+    if endpoint.path != MLB_POOL_PATH:
+        return MLB_REVISION
+    return MLB_STAT_TYPE_REVISIONS.get(str(endpoint.params.get("stats", "")), MLB_REVISION)
+
 
 #: parser-output revisions of Retrosheet datasets (see ``DatasetSpec.revision``):
 #: 1 = missing event text fields are NULL, no longer empty strings (task 3.2 export check)
@@ -226,7 +243,7 @@ def register_all() -> dict[str, DatasetSpec]:
             "season" if endpoint.partitioned else "none",
             mode,
             note,
-            revision=MLB_REVISION,
+            revision=_mlb_revision(endpoint),
         )
 
     for table, schema in LAHMAN_SCHEMAS.items():

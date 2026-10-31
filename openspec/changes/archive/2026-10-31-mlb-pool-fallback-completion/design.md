@@ -101,8 +101,77 @@ of codes and is rejected.
 
 ## 3. As built
 
-Fill in when the tasks land: the shipped table, the live re-run numbers for every `stats_stat_splits_*`
-pool, the sampled-code comparison, and the recorded block for the single-season family.
+### 3.1 The shipped code
+
+- `sources/mlb_api/generic.py`: `HYDRATE_LIST_PARAMS = {group, type, sitCodes, metrics}` and
+  `_hydrate_value()`; a comma-joined value is split first and each list parameter is bracket-encoded.
+  An empty parameter is omitted (not sent as `sitCodes=[]`). `NO_PERSON_EQUIVALENT` holds
+  `statsSingleSeason`/`statsSingleSeasonAdvanced` with their measured evidence;
+  `PoolFallbackUnavailableError` raises before the people route is called, and `ingest()` records the
+  refusal under `keep_going` so the rest of the run continues and the job ends failed.
+  `_pool_pages_by_hydrate` keeps `POOL_BATCH = 150` as a ceiling, halves the batch on HTTP 414 and
+  retries the same players (`offset` only advances after a 200), raising at one id.
+- `sources/catalog.py`: `MLB_STAT_TYPE_REVISIONS = {"statSplits": 2, "statSplitsAdvanced": 2}` and
+  `_mlb_revision(endpoint)`, keyed on the endpoint's `stats` parameter and only on the `v1/stats` path.
+- `src/baseballpy/probe.py`: canary `statsapi people hydrate list (fallback shape)` with
+  `sitCodes=[vr,vl]` and the fallback text "the split pools cannot be rebuilt while this route fails".
+
+### 3.2 Live re-run of every `stats_stat_splits_*` pool
+
+2025, sport 1, `sit_codes` = all 602 codes from `/v1/situationCodes`, scratch lake
+`%TEMP%\baseballpy-pool-20261031`, 1,470 players in the sport-season (10 hydrate pages of 150 per
+pool), one logical request per pool, `allow_heavy=True`, 2026-10-31.
+
+| Pool | Rows | Hydrate pages | Raw MB | Seconds | Errors | Quarantine |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `stats_stat_splits_hitting` | 104,547 | 10 | 107.8 | 21.5 | 0 | 0 |
+| `stats_stat_splits_pitching` | 126,676 | 10 | 168.6 | 58.0 | 0 | 0 |
+| `stats_stat_splits_fielding` | 158,697 | 10 | 81.9 | 71.2 | 0 | 0 |
+| `stats_stat_splits_catching` | 25,451 | 10 | 14.6 | 42.5 | 0 | 0 |
+| `stats_stat_splits_running` | 104,882 | 10 | 55.9 | 27.5 | 0 | 0 |
+| `stats_stat_splits_advanced_hitting` | 104,547 | 10 | 92.4 | 33.5 | 0 | 0 |
+| `stats_stat_splits_advanced_pitching` | 126,676 | 10 | 134.0 | 42.7 | 0 | 0 |
+| `stats_stat_splits_advanced_fielding` | 158,697 | 10 | 81.9 | 32.5 | 0 | 0 |
+| `stats_stat_splits_advanced_catching` | 25,451 | 10 | 14.6 | 25.8 | 0 | 0 |
+| `stats_stat_splits_advanced_running` | 104,882 | 10 | 55.9 | 26.0 | 0 | 0 |
+
+Every pool answered 406 on `/v1/stats`, fell back to the people hydrate, stored 10 raw pages and
+reported no refusal and no quarantine. The advanced family holds the same rows as its plain twin (it
+adds columns, not subjects), which is what the provider answers.
+
+- **Resume:** re-running `stats_stat_splits_hitting` on the same lake reported `cached=1` in 0.7 s and
+  stored nothing again (manifest resume of the 10 pages); the driver exited 0 both times (the
+  `schema_drift` lines on stderr are warnings, not errors).
+- **No 414 in the live run:** the 602-code expression with 150 ids stayed inside the provider's limit;
+  the halving path is exercised by `test_a_414_on_a_hydrate_batch_halves_it` only.
+- **Schema drift:** the run found `gameType`, `numTeams` and `sport.abbreviation` (the latter two in the
+  fielding pool) and preserved them in `_extras` with a `schema_drift` warning; a regeneration of
+  `mlb_tables.py` through the fallback shape is a separate card (B-190).
+
+### 3.3 Sampled-code comparison (acceptance rule of D4)
+
+The busiest subject of each compared pool, 2025, all 602 situation codes on the person route:
+
+| Pool | Stat type compared | Subject | Stored codes | Served codes | Missing | Extra | Verdict |
+| :--- | :--- | ---: | ---: | ---: | ---: | ---: | :--- |
+| `stats_stat_splits_hitting` | `statSplits` | 641658 | 125 | 125 | – | – | MATCH |
+| `stats_stat_splits_advanced_hitting` | `statSplitsAdvanced` | 641658 | 125 | 125 | – | – | MATCH |
+| `stats_stat_splits_pitching` | `statSplits` | 570632 | 120 | 120 | – | – | MATCH |
+
+The pool-wide code set (136 codes for hitting, 126 for pitching) is wider than any one subject's,
+because a subject only has splits for the codes he faced; the comparison is per subject, per D4.
+
+### 3.4 The single-season family (recorded block, D5)
+
+- `/v1/stats` answers 406 there too, and the person route cannot replace it:
+  `stats=statsSingleSeason` and `statsSingleSeasonAdvanced` return `"stats":[]` (design 1.2), so the
+  fallback now refuses instead of storing an empty part.
+- The direct route's own failure is unchanged: deep offsets answer 503 and halving the page to
+  `MIN_PAGE_SIZE = 125` rows does not help (evidence in
+  `openspec/changes/mlb-stats-route-406-and-deep-pools/design.md`), so it is not a page-size defect.
+- Both pools stay registered and are not marked `unsupported` (the provider's data exists). They are
+  skipped by `ingest_season` as `heavy`. The season-by-season rebuild (`/v1/sports/1/players?season=Y`
+  plus `type=[season],season=Y` per batch) is B-191, a new change.
 
 ## 4. Not verified
 

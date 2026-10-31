@@ -70,11 +70,47 @@ _POOL_ONLY_PARAMS = frozenset({"sportIds", "playerPool", "limit", "offset", "sta
 #: raw page names of the fallback carry this marker (the payload is people, not splits)
 HYDRATE_MARKER = ".hydrate."
 
+#: hydrate-expression parameters that take a list. Inside ``stats(...)`` the provider silently keeps
+#: only the **first** value of a comma list (``sitCodes=vr,vl`` answers one split, ``[vr,vl]`` two),
+#: so every multi-value parameter is bracket-encoded (ADR 55); the person route keeps commas.
+HYDRATE_LIST_PARAMS = frozenset({"group", "type", "sitCodes", "metrics"})
+
+#: stat types with no person-level equivalent, and the measured evidence for each. The person route
+#: answers 200 with ``"stats": []`` for these, so running the fallback would store zero rows and report
+#: success — the silent loss AGENTS.md 7.1 forbids (ADR 55, design.md 1.2).
+NO_PERSON_EQUIVALENT: Mapping[str, str] = {
+    "statsSingleSeason": (
+        'GET /v1/people/116539/stats?stats=statsSingleSeason answers 200 with "stats":[] while '
+        "stats=career returns a split (measured 2026-10-31)"
+    ),
+    "statsSingleSeasonAdvanced": (
+        'GET /v1/people/116539/stats?stats=statsSingleSeasonAdvanced answers 200 with "stats":[] while '
+        "stats=careerAdvanced returns a split (measured 2026-10-31)"
+    ),
+}
+
+
+def _hydrate_value(name: str, value: Any) -> str:
+    """The wire form of one hydrate parameter: ``[a,b]`` for a list parameter, ``v`` otherwise."""
+    if name not in HYDRATE_LIST_PARAMS:
+        return str(value)
+    items = [item.strip() for item in str(value).split(",") if item.strip()]
+    if not items:
+        raise ValueError(f"hydrate parameter {name!r} has no value; omit it instead")
+    return "[" + ",".join(items) + "]"
+
 
 def _hydrate_expression(params: Mapping[str, Any], sport_id: str) -> str:
     """``stats(group=[g],type=[t],season=Y,sportId=S,...)`` for the request's stat parameters."""
-    parts = [f"group=[{params['group']}]", f"type=[{params['stats']}]"]
-    parts += [f"{k}={v}" for k, v in params.items() if k not in _POOL_ONLY_PARAMS]
+    parts = [
+        f"group={_hydrate_value('group', params['group'])}",
+        f"type={_hydrate_value('type', params['stats'])}",
+    ]
+    parts += [
+        f"{name}={_hydrate_value(name, value)}"
+        for name, value in params.items()
+        if name not in _POOL_ONLY_PARAMS and value is not None and value != ""
+    ]
     parts.append(f"sportId={sport_id}")
     return "stats(" + ",".join(parts) + ")"
 
@@ -94,6 +130,10 @@ def stats_payload(payload: Any) -> dict[str, Any]:
 
 class HeavyEndpointError(RuntimeError):
     """A paginated request would download an unexpectedly huge result (all-time stat pools)."""
+
+
+class PoolFallbackUnavailableError(NotImplementedError):
+    """A refused league-wide pool has no per-person equivalent, so the fallback cannot build it."""
 
 
 class UnsupportedEndpointError(NotImplementedError):
@@ -274,14 +314,31 @@ class MlbEndpointExtractor:
             POOL_BATCH,
         )
         pages: list[tuple[str, HttpResult]] = []
-        for start in range(0, len(ids), POOL_BATCH):
-            batch = ids[start : start + POOL_BATCH]
-            result = self.http.get_sync(
-                f"{MLB_BASE_URL}/v1/people",
-                params={"personIds": ",".join(map(str, batch)), "hydrate": expression},
-                timeout=HEAVY_PAGE_TIMEOUT,
-            )
+        offset = 0
+        size = POOL_BATCH
+        while offset < len(ids):
+            batch = ids[offset : offset + size]
+            try:
+                result = self.http.get_sync(
+                    f"{MLB_BASE_URL}/v1/people",
+                    params={"personIds": ",".join(map(str, batch)), "hydrate": expression},
+                    timeout=HEAVY_PAGE_TIMEOUT,
+                )
+            except HttpStatusError as exc:
+                # a long hydrate expression plus many ids exceeds the provider's URL limit (414);
+                # halve the batch and ask for the same players again (ADR 55)
+                if exc.status != 414 or size == 1:
+                    raise
+                size = max(1, size // 2)
+                logger.warning(
+                    "%s: HTTP 414 for %d players; retrying with batches of %d",
+                    endpoint.name,
+                    len(batch),
+                    size,
+                )
+                continue
             pages.append((f"{request.ident}{HYDRATE_MARKER}p{len(pages)}.json", result))
+            offset += len(batch)
         return pages
 
     def _get_pages(
@@ -294,6 +351,16 @@ class MlbEndpointExtractor:
             except HttpStatusError as exc:
                 if exc.status != 406:
                     raise
+                stat_type = str(request.params.get("stats", ""))
+                evidence = NO_PERSON_EQUIVALENT.get(stat_type)
+                if evidence is not None:
+                    raise PoolFallbackUnavailableError(
+                        f"{endpoint.name}: /v1/stats answers HTTP 406 and stat type {stat_type} has "
+                        f"no person-level equivalent ({evidence}); rebuild this pool season by "
+                        "season instead "
+                        "(openspec/changes/archive/2026-10-31-mlb-pool-fallback-completion/design.md "
+                        "D3/D5)"
+                    ) from exc
                 return self._pool_pages_by_hydrate(endpoint, request)
         return self._get_paginated(endpoint, request, url, allow_heavy)
 
@@ -482,10 +549,11 @@ class MlbEndpointExtractor:
             was_cached = self._is_cached(ep, request, refresh)
             try:
                 table = self.fetch_request(ep, request, refresh, allow_heavy)
-            except HttpStatusError as exc:
+            except (HttpStatusError, PoolFallbackUnavailableError) as exc:
                 if not keep_going:
                     raise
-                # one refused request (for example the league-wide 406) must not stop the rest
+                # one refused request (for example the league-wide 406, or a pool the fallback
+                # cannot reproduce) must not stop the rest
                 logger.warning("%s: %s", ep.name, exc)
                 errors.append(str(exc))
                 continue
@@ -515,6 +583,8 @@ __all__ = [
     "EndpointReport",
     "MlbEndpointExtractor",
     "MlbRecordNormalizer",
+    "NO_PERSON_EQUIVALENT",
+    "PoolFallbackUnavailableError",
     "UnsupportedEndpointError",
     "endpoints_matching",
     "pa_type",

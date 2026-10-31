@@ -30,3 +30,12 @@ def test_probe_names_the_failing_route_and_its_fallback() -> None:
     assert result.exit_code == 1
     assert "406" in result.output and "FAILED" in result.output
     assert "hydrate" in result.output  # the fallback is named
+
+
+def test_probe_checks_the_hydrate_list_syntax() -> None:
+    hydrate = [
+        c for c in canaries(2025) if c.name == "statsapi people hydrate list (fallback shape)"
+    ]
+    assert len(hydrate) == 1, "the probe sends the request the split-pool fallback really makes"
+    assert hydrate[0].params["hydrate"].endswith("sitCodes=[vr,vl])")
+    assert hydrate[0].fallback, "a failure says which data cannot be rebuilt"

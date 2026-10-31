@@ -611,3 +611,151 @@ def test_a_season_less_pool_lists_players_for_the_request_season(tmp_path: Path)
     ep = BY_NAME["stats_season_hitting"]
     extractor._pool_pages_by_hydrate(ep, request)
     assert dict(players.calls[0].request.url.params) == {"season": "2025"}
+
+
+# ------------------------------------------------------------------ hydrate fallback (ADR 55)
+
+
+def test_hydrate_expression_list_encodes_multi_value_parameters() -> None:
+    expression = generic._hydrate_expression(
+        {"stats": "statSplits", "group": "hitting", "season": 2025, "sitCodes": "vr,vl"}, "1"
+    )
+    assert expression == (
+        "stats(group=[hitting],type=[statSplits],season=2025,sitCodes=[vr,vl],sportId=1)"
+    )
+    empty = generic._hydrate_expression(
+        {"stats": "statSplits", "group": "hitting", "season": 2025, "sitCodes": ""}, "1"
+    )
+    assert "sitCodes" not in empty, "an empty multi-value parameter is omitted, not sent empty"
+
+
+@respx.mock
+def test_hydrate_fallback_keeps_every_split_code(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from baseballpy.sources.mlb_api.generic import read_endpoint
+
+    ep = BY_NAME["stats_stat_splits_hitting"]
+    monkeypatch.setattr(generic, "POOL_BATCH", 10)
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    base = _fixture("stats_stat_splits_hitting")["stats"][0]["splits"][0]
+    player_id = int(base["player"]["id"])
+    codes = ["vr", "vl"]
+    splits = [{**base, "split": {**base.get("split", {}), "code": code}} for code in codes]
+    respx.get(f"{MLB_BASE_URL}/v1/stats").mock(return_value=httpx.Response(406))
+    respx.get(f"{MLB_BASE_URL}/v1/sports/1/players").mock(
+        return_value=httpx.Response(200, json={"people": [{"id": player_id}]})
+    )
+    seen: dict[str, str] = {}
+
+    def people(request: httpx.Request) -> httpx.Response:
+        seen["hydrate"] = request.url.params["hydrate"]
+        return httpx.Response(
+            200, json={"people": [{"id": player_id, "stats": [{"splits": splits}]}]}
+        )
+
+    respx.get(f"{MLB_BASE_URL}/v1/people").mock(side_effect=people)
+    report = extractor.ingest(ep, Context(season=2024, sport_ids=(1,), sit_codes=("vr", "vl")))
+    assert report.rows == 2 and not report.errors
+    assert "sitCodes=[vr,vl]" in seen["hydrate"], "the list form, not the comma form"
+    table = read_endpoint(ep.name, 2024, lake)
+    assert set(table.column("split_code").to_pylist()) == set(codes), "both situation codes kept"
+
+
+def test_a_split_pool_written_before_the_list_fix_is_fetched_again(tmp_path: Path) -> None:
+    import dataclasses
+
+    from baseballpy.core.stores import ProcessedStore
+
+    catalog.register_all()
+    split = get_dataset("mlb_api", "stats_stat_splits_hitting")
+    other = get_dataset("mlb_api", "stats_season_hitting")
+    assert split.revision == 2, "the split pools carry the list-fix revision"
+    assert other.revision == 1, "every other MLB dataset keeps its revision"
+    store = ProcessedStore(LakeConfig(home=tmp_path))
+    store.put(dataclasses.replace(split, revision=1), split.schema.empty_table(), season=2024)
+    assert not store.is_cached(split, season=2024), "a part written by the older fallback is stale"
+    store.put(other, other.schema.empty_table(), season=2024)
+    assert store.is_cached(other, season=2024), (
+        "a non-split part under the same revision is still served"
+    )
+
+
+@respx.mock
+def test_a_pool_stat_type_without_a_person_equivalent_is_refused(tmp_path: Path) -> None:
+    from baseballpy.sources.mlb_api.generic import PoolFallbackUnavailableError
+
+    ep = BY_NAME["stats_stats_single_season_hitting"]
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    refused = respx.get(f"{MLB_BASE_URL}/v1/stats").mock(return_value=httpx.Response(406))
+    people = respx.get(f"{MLB_BASE_URL}/v1/people").mock(
+        return_value=httpx.Response(200, json={"people": []})
+    )
+    with pytest.raises(PoolFallbackUnavailableError) as error:
+        extractor.ingest(ep, Context(season=2024, sport_ids=(1,)))
+    assert "statsSingleSeason" in str(error.value)
+    assert "no person-level equivalent" in str(error.value)
+    assert people.call_count == 0, "the person route is not called"
+    assert refused.call_count == 1
+    report = extractor.ingest(ep, Context(season=2024, sport_ids=(1,)), keep_going=True)
+    assert report.rows == 0 and report.errors, "a keep_going run reports the refusal"
+    assert not lake.processed_dir("mlb_api", ep.name, 2024).exists(), "no empty part is stored"
+
+
+@respx.mock
+def test_a_414_on_a_hydrate_batch_halves_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    ep = BY_NAME["stats_stat_splits_hitting"]
+    monkeypatch.setattr(generic, "POOL_BATCH", 4)
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    ids = [11, 12, 13, 14, 15]
+    respx.get(f"{MLB_BASE_URL}/v1/stats").mock(return_value=httpx.Response(406))
+    respx.get(f"{MLB_BASE_URL}/v1/sports/1/players").mock(
+        return_value=httpx.Response(200, json={"people": [{"id": i} for i in ids]})
+    )
+    requested: list[list[int]] = []
+
+    def people(request: httpx.Request) -> httpx.Response:
+        batch = [int(i) for i in request.url.params["personIds"].split(",")]
+        requested.append(batch)
+        if len(batch) > 2:
+            return httpx.Response(414)
+        return httpx.Response(
+            200, json={"people": [{"id": i, "stats": [{"splits": []}]} for i in batch]}
+        )
+
+    respx.get(f"{MLB_BASE_URL}/v1/people").mock(side_effect=people)
+    extractor.ingest(ep, Context(season=2024, sport_ids=(1,), sit_codes=("vr",)))
+    assert requested == [[11, 12, 13, 14], [11, 12], [13, 14], [15]], "halved, same players once"
+    pages = sorted(p.name for p in lake.raw_dir("mlb_api", ep.name, 2024).glob("*hydrate*"))
+    assert len(pages) == 3, "every accepted page is kept as raw bytes under a unique name"
+
+
+@respx.mock
+def test_a_414_on_a_single_player_batch_propagates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from baseballpy.core.http import HttpStatusError
+    from baseballpy.sources.mlb_api.endpoints import Request
+
+    ep = BY_NAME["stats_stat_splits_hitting"]
+    monkeypatch.setattr(generic, "POOL_BATCH", 2)
+    extractor = MlbEndpointExtractor(cache_config=LakeConfig(home=tmp_path))
+    respx.get(f"{MLB_BASE_URL}/v1/sports/1/players").mock(
+        return_value=httpx.Response(200, json={"people": [{"id": 11}, {"id": 12}]})
+    )
+    respx.get(f"{MLB_BASE_URL}/v1/people").mock(return_value=httpx.Response(414))
+    with pytest.raises(HttpStatusError):
+        extractor._pool_pages_by_hydrate(
+            ep,
+            Request(
+                "stats_stat_splits_hitting_2024_sport1",
+                "v1/stats",
+                {"stats": "statSplits", "group": "hitting", "season": "2024", "sportIds": "1"},
+                2024,
+            ),
+        )

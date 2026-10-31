@@ -61,6 +61,17 @@ def canaries(season: int) -> list[Canary]:
             },
         ),
         Canary(
+            "statsapi people hydrate list (fallback shape)",
+            f"{STATSAPI}/v1/people",
+            {
+                "personIds": str(CANARY_PERSON),
+                "hydrate": (
+                    f"stats(group=[hitting],type=[statSplits],season={season},sitCodes=[vr,vl])"
+                ),
+            },
+            fallback="the split pools cannot be rebuilt while this route fails",
+        ),
+        Canary(
             "statsapi leaders",
             f"{STATSAPI}/v1/stats/leaders",
             {"leaderCategories": "homeRuns", "season": str(season)},

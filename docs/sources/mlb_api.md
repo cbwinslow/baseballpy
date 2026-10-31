@@ -210,6 +210,45 @@ typed Parquet part per request.
 - **People and awards:** `people_stats_<statType>_<group>` (`/v1/people/{id}/stats`, one request per person, 81 combinations that returned data for the sample players; opt-in through `ingest_people_stats` because it is thousands of requests), `award_recipients` (`/v1/awards/{id}/recipients`, one request per award id of `ref_awards`; several recipients per award-season are normal), `people_changes`/`game_changes` (`updatedSince=`, append-only incremental logs) and `people_search` (`names=`). Scopes `since` and `query` datasets are unpartitioned.
 - **Not covered here:** boxscore players (a dict keyed by player id, not a list, so the record walker does not apply); stat combinations that exist only for specific player ids are limited to the sampled players' results.
 
+### League-wide player pools and the hydrate fallback (ADR 53, ADR 55)
+
+`/v1/stats` with `playerPool=ALL` answered **HTTP 406** from 2026-10-29 (path-level; see
+`openspec/changes/mlb-stats-route-406-and-deep-pools/design.md`). When a pool's stat type has a
+per-person equivalent, the extractor builds the same pool from
+`GET /v1/people?personIds=<ids>&hydrate=stats(...)`:
+
+- **Batches of `POOL_BATCH` (150) players** of the sport-season, taken from `/v1/sports/{id}/players`;
+  the season comes from the request, never from "today".
+- **Every multi-value parameter is list-encoded** (`group=[hitting]`, `type=[statSplits]`,
+  `sitCodes=[vr,vl]`). Inside `stats(...)` the provider silently keeps only the first value of a comma
+  list: `sitCodes=vr,vl` answered one split, `sitCodes=[vr,vl]` two. An empty multi-value parameter is
+  omitted rather than sent as `sitCodes=[]` (which returns no splits).
+- **A stat type with no person-level equivalent is refused**, not attempted:
+  `/v1/people/{id}/stats?stats=statsSingleSeason` (and `statsSingleSeasonAdvanced`) answers 200 with
+  `"stats": []`, so the fallback would store zero rows silently. `NO_PERSON_EQUIVALENT` holds the
+  measured evidence and `PoolFallbackUnavailableError` names it; a `keep_going` run records the refusal
+  in the endpoint report and the job ends failed, with the data it already stored kept.
+- **HTTP 414 halves the batch.** A long hydrate expression plus many ids exceeds the provider's URL
+  limit (1,200 ids with a short expression = 8,399 characters answered 414; 800 ids = 5,599 characters
+  answered 200). The batch is halved and the same players are asked for again, down to one id; at one
+  id the error propagates. Every accepted page is kept as raw bytes under a unique `.hydrate.pN.json`
+  name, so a resumed run reuses them.
+- **Split pools carry parser revision 2** (`MLB_STAT_TYPE_REVISIONS`): a part written by the older
+  fallback holds one situation code per subject, so it is stale and is fetched again without
+  `--refresh` (the ADR 51 mechanism). Every other MLB dataset keeps `MLB_REVISION = 1`.
+- **The single-season family stays on the direct route.** `stats_stats_single_season_*` and
+  `..._advanced_*` are `heavy`, are skipped by `ingest_season`, and their deep-offset 503s are not a
+  page-size problem (halving to 125 rows still fails). Rebuilding them season by season
+  (`/v1/sports/1/players?season=Y` plus `type=[season],season=Y`) is its own change.
+- **`baseballpy probe` sends the fallback's real shape** (`sitCodes=[vr,vl]`), so a broken list syntax
+  or an unavailable people route fails the probe in seconds.
+
+Live proof (2025, sport 1, scratch lake, 2026-10-31) stored every `stats_stat_splits_*` pool through
+this path, and a sampled subject's stored split codes equalled the codes the person route serves. The
+run's row, page and timing numbers are evidence in
+`openspec/changes/archive/2026-10-31-mlb-pool-fallback-completion/design.md` ("As built"), not here: a
+count typed into this page goes stale, while the probe JSON is generated and that evidence is dated.
+
 ### Per-endpoint status
 
 The status of every registered endpoint is recorded in `docs/mlb_probe.json` (written by

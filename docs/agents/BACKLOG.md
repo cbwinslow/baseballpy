@@ -287,9 +287,9 @@ touches a source under review, do it inside that source's track.
 
 ## N. MLB live feed and pool completion (owner approved the full plan, 2026-10-31)
 
-Two changes from the 2026-10-31 investigation. The single-season family stays blocked; the
-season-by-season rebuild becomes its own change when `mlb-pool-fallback-completion 2.5` records the
-evidence (not a task here yet).
+Two changes from the 2026-10-31 investigation, both closed in this section. The single-season family
+stays blocked; the season-by-season rebuild is B-191 (its own change, not a task of the finished one).
+B-190 is the schema-drift regeneration the live split run found.
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
@@ -298,10 +298,12 @@ evidence (not a task here yet).
 | B-180 | mlb-live-feed-projection 1.3: the stream refuses a projection | DONE | `stream_live_events`/`stream_events` raise `ValueError` naming `diffPatch` and `snapshot`; the test passes |
 | B-181 | mlb-live-feed-projection 1.4: live check of every set | DONE | all five sets answer 200, are smaller than 663,043 bytes and carry the keys they promise; numbers under "As built" in `design.md` |
 | B-182 | mlb-live-feed-projection 1.5: docs, ADR 54, spec merge, archive | DONE | the projection section is in `docs/sources/mlb_api.md`, the delta is merged, the change is archived, gates green |
-| B-183 | `mlb-pool-fallback-completion 2.1`: list-encode multi-value hydrate parameters | READY | `sitCodes=[vr,vl]` is sent, two splits are stored, an empty list is omitted; the two named tests pass |
-| B-184 | `mlb-pool-fallback-completion 2.2`: per-stat-type revision for split pools | READY | a stored split part is stale and refetched without `--refresh`, a non-split part is still served; the test passes |
-| B-185 | `mlb-pool-fallback-completion 2.3`: refuse a stat type with no person equivalent | READY | a 406 on `statsSingleSeason` raises naming the type and evidence, no empty part is stored; the test passes |
-| B-186 | `mlb-pool-fallback-completion 2.4`: halve a hydrate batch on 414 | READY | batches halve down to one id, then raise; every 200 page is kept raw with a unique name; the test passes |
-| B-187 | `mlb-pool-fallback-completion 2.5`: live proof of every split pool | LONG (homelab) | every `stats_stat_splits_*` pool is stored with the codes the person route serves, or has a recorded non-list root cause; rows, requests, seconds and quarantine are in `design.md` |
-| B-188 | `mlb-pool-fallback-completion 2.6`: probe covers the fallback shape | READY | the canary sends `sitCodes=[vr,vl]`, answers 200 in a live probe and fails the probe when refused; the test passes |
-| B-189 | `mlb-pool-fallback-completion 2.7`: docs, ADR 55, spec merge, archive | DONE-WHEN-LAST | the pool section is in `docs/sources/mlb_api.md`, ADR 53's consequences are updated, the delta is merged, the change is archived, gates green |
+| B-183 | mlb-pool-fallback-completion 2.1: list-encode multi-value hydrate parameters | DONE | `HYDRATE_LIST_PARAMS`/`_hydrate_value` bracket-encode `group`, `type`, `sitCodes` and `metrics`, an empty one is omitted; a mocked `vr,vl` answer stores two split codes (two named tests) |
+| B-184 | mlb-pool-fallback-completion 2.2: per-stat-type revision for split pools | DONE | `MLB_STAT_TYPE_REVISIONS` keys `statSplits`/`statSplitsAdvanced` on the endpoint's `stats` parameter (revision 2), every other MLB dataset keeps 1; a part written under revision 1 is stale, a non-split part is still served (test passes) |
+| B-185 | mlb-pool-fallback-completion 2.3: refuse a stat type with no person equivalent | DONE | a 406 on `statsSingleSeason` raises `PoolFallbackUnavailableError` naming the type, the measured evidence and the design section; the people route is not called, no empty part is stored, a `keep_going` run reports it (test passes) |
+| B-186 | mlb-pool-fallback-completion 2.4: halve a hydrate batch on 414 | DONE | a 414 halves the batch and asks for the same players again, down to one id where the error propagates; every 200 page is kept raw under a unique `.hydrate.pN.json` name (two tests) |
+| B-187 | mlb-pool-fallback-completion 2.5: live proof of every split pool | DONE | all 10 `stats_stat_splits_*` pools stored on a scratch lake (2025, sport 1, 1,470 players, 10 hydrate pages each) with 0 errors and 0 quarantine; the busiest subject's codes equal the person route's for `statSplits` and `statSplitsAdvanced`; rows, pages, MB, seconds and the single-season block are under "As built" in `design.md` |
+| B-188 | mlb-pool-fallback-completion 2.6: probe covers the fallback shape | DONE | the new canary sends `sitCodes=[vr,vl]` with the fallback text, answered 200 in a live `baseballpy probe --season 2025` and is visible in the CLI table; the test passes |
+| B-189 | mlb-pool-fallback-completion 2.7: docs, ADR 55, spec merge, archive | DONE | the pool section is in `docs/sources/mlb_api.md`, ADR 53's consequences are updated, the delta is merged, the change is archived, gates green |
+| B-190 | Regenerate the typed schemas through the hydrate fallback (new, found by the 2026-10-31 live split run) | READY (needs its own change first) | `stats_stat_splits_*` carry `gameType`, `numTeams` and `sport.abbreviation` as typed columns instead of `_extras`, generated by `scripts/gen_mlb_schemas.py` from hydrate payloads (the direct `/v1/stats` route is still refused); the probe JSON and fixtures it writes are committed and `docs generate --check` is green |
+| B-191 | Season-by-season rebuild of the single-season pools (new, design D5) | READY (needs its own change: season enumeration, first season, era-sport mapping) | `stats_stats_single_season_*` and `..._advanced_*` are built from `/v1/sports/{id}/players?season=Y` plus `type=[season],season=Y` in hydrate batches, with rows, requests and the 503 block recorded; the pools stop depending on the refused deep-offset direct route |
