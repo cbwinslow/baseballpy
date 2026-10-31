@@ -130,8 +130,8 @@ teams_df = bp.LahmanSource().get_table(bp.LahmanTable.TEAMS)
 con = duckdb.connect()
 con.register("batting", bat_df)
 leaders = con.execute("""
-    SELECT playerID, yearID, teamID, HR, SB 
-    FROM batting 
+    SELECT playerID, yearID, teamID, HR, SB
+    FROM batting
     WHERE HR >= 50 AND SB >= 50
 """).fetchdf()
 print(leaders)
@@ -147,7 +147,7 @@ con = bp.connect_db()
 
 # 2. Query across ALL downloaded seasons as a single unified PostgreSQL-style table
 pitches_summary = con.sql("""
-    SELECT 
+    SELECT
         season,
         pitch_type,
         COUNT(*) as total_pitches,
@@ -160,7 +160,7 @@ print(pitches_summary)
 
 # 3. Cross-source SQL Join (Statcast + Chadwick Crosswalk + Lahman Master Directory)
 cross_join = con.sql("""
-    SELECT 
+    SELECT
         p.season,
         p.pitch_type,
         reg.name_last,

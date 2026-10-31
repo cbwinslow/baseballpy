@@ -1,7 +1,7 @@
 # Change Proposal: Chadwick Player Register & Master Crosswalk
 
 ## Why
-Baseball data across Statcast, MLB Stats API, Retrosheet, Baseball-Reference, FanGraphs, and Lahman use conflicting player identifier schemes (`mlbam` vs `retro` vs `bbref` vs `fangraphs`). 
+Baseball data across Statcast, MLB Stats API, Retrosheet, Baseball-Reference, FanGraphs, and Lahman use conflicting player identifier schemes (`mlbam` vs `retro` vs `bbref` vs `fangraphs`).
 A master player resolution system is required so that:
 1. Users and models can look up players by any ID, slug, or name.
 2. Ingestion pipelines can automatically enrich and crosswalk player IDs across disparate databases.
