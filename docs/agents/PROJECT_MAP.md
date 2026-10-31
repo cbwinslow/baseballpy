@@ -20,7 +20,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `lahman-database` | 11 | 18 | 26 |
 | `mlb-api-ingestion` | 18 | 18 | 21 |
 | `multi-target-sinks` | 3 | 4 | 4 |
-| `real-time-streaming` | 3 | 5 | 5 |
+| `real-time-streaming` | 7 | 12 | 12 |
 | `retrosheet-ingestion` | 19 | 20 | 21 |
 | `statcast-ingestion` | 14 | 14 | 20 |
 
@@ -41,13 +41,12 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-41 changes are archived under `openspec/changes/archive/`.
+42 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
-| `mlb-live-feed-projection` | 0 | 5 | 1.1, 1.2, 1.3, 1.4, 1.5 |
 | `mlb-pool-fallback-completion` | 0 | 7 | 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |

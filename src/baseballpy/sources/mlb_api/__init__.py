@@ -16,6 +16,7 @@ from baseballpy.sources.mlb_api.api import (
     stream_game,
 )
 from baseballpy.sources.mlb_api.extractor import MlbApiExtractor
+from baseballpy.sources.mlb_api.field_sets import LIVE_FIELD_SETS, expand_fields
 from baseballpy.sources.mlb_api.normalizer import MlbApiNormalizer
 from baseballpy.sources.mlb_api.schemas import (
     MLB_BOX_BATTING_SCHEMA,
@@ -32,7 +33,7 @@ from baseballpy.sources.mlb_api.schemas import (
     GameType,
     SportId,
 )
-from baseballpy.sources.mlb_api.stream import GamedayLiveStreamer
+from baseballpy.sources.mlb_api.stream import GamedayLiveStreamer, SnapshotError
 
 __all__ = [
     "datasets",
@@ -40,6 +41,7 @@ __all__ = [
     "GameState",
     "GameType",
     "GamedayLiveStreamer",
+    "LIVE_FIELD_SETS",
     "MLB_BOX_BATTING_SCHEMA",
     "MLB_BOX_PITCHING_SCHEMA",
     "MLB_DRAFT_SCHEMA",
@@ -53,7 +55,9 @@ __all__ = [
     "MlbApiExtractor",
     "MlbApiNormalizer",
     "MlbApiSource",
+    "SnapshotError",
     "SportId",
+    "expand_fields",
     "get_boxscore",
     "get_draft",
     "get_endpoint",

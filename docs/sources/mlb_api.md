@@ -58,6 +58,33 @@ Implemented in `sources/mlb_api/stream.py` (`GamedayLiveStreamer`, verified 2026
 - **Errors:** network failures are retried by `HttpClient` and then propagate (audit status `FAILURE`); undecodable payloads are quarantined and polling continues; a patch that cannot be applied logs a warning and uses the full feed. Half-inning ends are not emitted as events (derivable from `about.halfInning`).
 - **Replay check:** 24 real patches of game 745000 through the streamer: 1 full fetch, 40 events equal to the 40 events of the full feed, no duplicates.
 
+### Projected snapshots (`fields=`, ADR 54)
+
+`GamedayLiveStreamer.snapshot(game_pk, fields=None, timecode=None)` performs exactly one `feed/live`
+request and returns the decoded document; `snapshot_bytes()` returns the same response undecoded.
+Neither reads nor writes the stream watermark. `fields` names a projection from
+`sources/mlb_api/field_sets.py` (`LIVE_FIELD_SETS`); `timecode` (`YYYYMMDD_HHMMSS`) reads the feed as
+it was at that instant, so a post-game review uses the same shapes as a live read.
+
+| Set | What it promises | Measured bytes (game 745000, 2026-10-31) |
+| :--- | :--- | ---: |
+| `state` | abstract/detailed/coded game state and the feed timestamp | 141 |
+| `score` | inning, half, count, outs and both teams' line | 368 |
+| `pitch` | the current plate appearance: batter/pitcher, the pitch events with speed, location, breaks and batted-ball data | 4,377 |
+| `boxscore` | team ids and both teams' batting runs/hits/home runs | 12,500 |
+| `decisions` | winner, loser and save pitcher ids | 94 |
+
+The complete document on the same game is 663,043 bytes. Three provider rules the code enforces:
+
+- **Every parent key is required.** The wire format is a flat list of key names; `fields=status,detailedState,linescore,runs` answered 17 bytes because neither `gameData` nor `liveData` was named, and `fields=gameData.status.detailedState` (a dotted path) answered 2 bytes. A set is therefore written as dotted paths and `expand_fields()` adds every segment, parents first, each name once.
+- **A name matches globally, not by path.** Naming a key that occurs throughout the document pulls in a whole branch: a `plays` projection measured 144,027 bytes and is deliberately not shipped (the stored `game_play_by_play` dataset serves that need).
+- **A missing container is a failure.** A decoded answer that lacks a container the set names raises `SnapshotError` and the raw bytes go to quarantine; an empty snapshot is never returned.
+
+A bare string without a comma or a dot is a set name (an unknown one raises with the valid names); a sequence, or a string containing a comma or a dot, is a raw projection. `fields=` is **ignored by
+`diffPatch`** (the same patch answers 38,541 bytes with and without it and addresses paths a projection
+lacks), so a projection is never polled: `stream_live_events(..., fields=...)` raises `ValueError`
+pointing at `snapshot()`, rather than falling back to the complete feed on every poll.
+
 ---
 
 ## 3. Official Boxscores (`/v1/game/{game_pk}/boxscore`)

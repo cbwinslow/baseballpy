@@ -4,7 +4,7 @@ Order: 1.1 -> 1.2 -> 1.3 can land together; 1.4 needs 1.1 and 1.2; 1.5 closes th
 
 ## 1. The projection ability
 
-- [ ] 1.1 `sources/mlb_api/field_sets.py`: `LIVE_FIELD_SETS` (the five measured sets of dotted
+- [x] 1.1 `sources/mlb_api/field_sets.py`: `LIVE_FIELD_SETS` (the five measured sets of dotted
   paths), `DOCUMENT_CONTAINERS`, `set_name()`/`expand_fields()` and `required_containers()`.
   A bare string is a set name (unknown -> `ValueError` listing the valid names); a sequence or a
   comma/dotted string is a raw projection; every parent segment is added once, in order.
@@ -14,7 +14,7 @@ Order: 1.1 -> 1.2 -> 1.3 can land together; 1.4 needs 1.1 and 1.2; 1.5 closes th
   `test_a_raw_projection_is_accepted_as_a_sequence_or_a_comma_string`.
   Done when the tests pass and every shipped set expands to the key names measured in `design.md`.
 
-- [ ] 1.2 `GamedayLiveStreamer.snapshot(game_pk, fields=None, *, timecode=None)` and
+- [x] 1.2 `GamedayLiveStreamer.snapshot(game_pk, fields=None, *, timecode=None)` and
   `snapshot_bytes(...)`: one request, no watermark read/write, `fields=None` = the complete feed,
   `timecode` validated as `YYYYMMDD_HHMMSS`, audit event with the projection name and elapsed seconds,
   `SnapshotError` + quarantine when the payload does not decode or lacks a required container.
@@ -25,12 +25,12 @@ Order: 1.1 -> 1.2 -> 1.3 can land together; 1.4 needs 1.1 and 1.2; 1.5 closes th
   `test_a_malformed_timecode_is_refused_before_the_request`.
   Done when the tests pass with a recorded fixture and no test makes a network call.
 
-- [ ] 1.3 `stream_live_events(..., fields=...)` and `stream_events(..., fields=...)` MUST raise
+- [x] 1.3 `stream_live_events(..., fields=...)` and `stream_events(..., fields=...)` MUST raise
   `ValueError` naming the reason and pointing at `snapshot()`; the error is never swallowed.
   Test: `test_streaming_refuses_a_projection_instead_of_degrading`.
   Done when the test passes and the message names `diffPatch` and `snapshot`.
 
-- [ ] 1.4 Live check of all five sets on a final game (game 745000 is the reference): status, bytes and
+- [x] 1.4 Live check of all five sets on a final game (game 745000 is the reference): status, bytes and
   the values of the keys the set promises (status text, both teams' runs, current-play pitch speed,
   decisions ids). Record the numbers under "As built" in `design.md`; a set the provider answers empty
   is removed or fixed before the change closes.
@@ -38,7 +38,7 @@ Order: 1.1 -> 1.2 -> 1.3 can land together; 1.4 needs 1.1 and 1.2; 1.5 closes th
 
 ## 2. Close the change
 
-- [ ] 1.5 Docs and close-out: a "Projected snapshots" section in `docs/sources/mlb_api.md` (the five
+- [x] 1.5 Docs and close-out: a "Projected snapshots" section in `docs/sources/mlb_api.md` (the five
   sets, the measured bytes, the rule that a projection is never patched); ADR 54 (written 2026-10-31);
   merge this delta into `openspec/specs/real-time-streaming/spec.md`; move the change to
   `openspec/changes/archive/<date>-mlb-live-feed-projection/`; update the BACKLOG rows.

@@ -12,8 +12,9 @@ import asyncio
 import copy
 import json
 import logging
+import re
 import time
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator, Iterator, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, cast
@@ -26,6 +27,7 @@ from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, StreamingConfig
 from baseballpy.core.http import HttpClient, HttpStatusError, get_http_client
 from baseballpy.core.quarantine import Quarantine, get_quarantine
+from baseballpy.sources.mlb_api.field_sets import expand_fields, required_containers
 
 logger = logging.getLogger(__name__)
 
@@ -44,10 +46,16 @@ _SUBSTITUTIONS = frozenset(
         "defensive_switch",
     }
 )
+#: the provider's own timecode format (``feed/live?timecode=``)
+TIMECODE_PATTERN = re.compile(r"^\d{8}_\d{6}$")
 
 
 class PatchError(ValueError):
     """A JSON patch could not be applied to the local feed copy (forces a full-feed resync)."""
+
+
+class SnapshotError(ValueError):
+    """A game-feed snapshot is unusable: undecodable, not an object, or missing a named container."""
 
 
 class LiveEvent(msgspec.Struct, frozen=True, kw_only=True):
@@ -346,6 +354,15 @@ class _State(msgspec.Struct):
     timestamp: str | None = None
 
 
+def _projection_label(fields: str | Sequence[str] | None) -> str:
+    """Audit destination label of a snapshot: the set name, ``custom`` or ``complete``."""
+    if fields is None:
+        return "complete"
+    if isinstance(fields, str) and "," not in fields and "." not in fields:
+        return fields.strip()
+    return "custom"
+
+
 class GamedayLiveStreamer:
     """Streams live events of any game; implements ``StreamExtractorProtocol`` (``stream_events``)."""
 
@@ -510,17 +527,119 @@ class GamedayLiveStreamer:
             return None
         return cast(dict[str, Any], updated)
 
+    # -- projected snapshots (ADR 54) ---------------------------------------------------------
+
+    async def snapshot(
+        self,
+        game_pk: int,
+        fields: str | Sequence[str] | None = None,
+        *,
+        timecode: str | None = None,
+    ) -> dict[str, Any]:
+        """The game's feed as exactly one request, optionally projected to a set of keys.
+
+        ``fields`` is a set name (``state``, ``score``, ``pitch``, ``boxscore``, ``decisions``), a
+        sequence of dotted paths/key names, or ``None`` for the complete document. ``timecode`` reads
+        the feed as it was at that instant (``YYYYMMDD_HHMMSS``). Nothing is cached and the stream
+        watermark is neither read nor written; a projection is only ever a snapshot, because
+        ``diffPatch`` ignores ``fields`` (ADR 54).
+        """
+        _, doc = await self._snapshot("mlb_snapshot", game_pk, fields, timecode, decode=True)
+        return cast(dict[str, Any], doc)
+
+    async def snapshot_bytes(
+        self,
+        game_pk: int,
+        fields: str | Sequence[str] | None = None,
+        *,
+        timecode: str | None = None,
+    ) -> bytes:
+        """The undecoded upstream bytes of :meth:`snapshot` (same request, no decoding)."""
+        content, _ = await self._snapshot(
+            "mlb_snapshot_bytes", game_pk, fields, timecode, decode=False
+        )
+        return content
+
+    async def _snapshot(
+        self,
+        operation: str,
+        game_pk: int,
+        fields: str | Sequence[str] | None,
+        timecode: str | None,
+        *,
+        decode: bool,
+    ) -> tuple[bytes, dict[str, Any] | None]:
+        keys = expand_fields(fields) if fields is not None else ()
+        params: dict[str, str] = {}
+        if keys:
+            params["fields"] = ",".join(keys)
+        if timecode is not None:
+            if not TIMECODE_PATTERN.match(timecode):
+                raise SnapshotError(f"timecode {timecode!r} is not YYYYMMDD_HHMMSS")
+            params["timecode"] = timecode
+        url = MLB_FEED_URL.format(game_pk=game_pk)
+        async with default_audit_logger.async_track(
+            operation=operation,
+            source="mlb_api",
+            endpoint=url,
+            destination=_projection_label(fields),
+        ) as tracker:
+            result = await self.http.get(url, params=params or None)
+            tracker.mark_download_complete()
+            tracker.set_records(1)
+            doc = self._snapshot_document(game_pk, result.content, keys) if decode else None
+            return result.content, doc
+
+    def _snapshot_document(
+        self, game_pk: int, content: bytes, keys: Sequence[str]
+    ) -> dict[str, Any]:
+        """Decode a snapshot, quarantining (and refusing) an answer that cannot be what was asked."""
+        try:
+            doc = msgspec.json.decode(content)
+        except msgspec.DecodeError as exc:
+            raise self._quarantined(
+                game_pk, content, f"undecodable snapshot payload: {exc}"
+            ) from exc
+        if not isinstance(doc, dict):
+            raise self._quarantined(game_pk, content, "snapshot payload is not a JSON object")
+        missing = [name for name in required_containers(keys) if name not in doc]
+        if missing:
+            raise self._quarantined(
+                game_pk,
+                content,
+                f"snapshot lacks the projected container(s) {', '.join(missing)}; "
+                "the provider needs every parent key of a projection",
+            )
+        return doc
+
+    def _quarantined(self, game_pk: int, content: bytes, reason: str) -> SnapshotError:
+        """Keep the raw bytes in quarantine and return the error to raise."""
+        (self._quarantine or get_quarantine()).write(
+            "mlb_api", "live_feed", [content], reason, {"game_pk": game_pk}
+        )
+        return SnapshotError(f"game {game_pk}: {reason}")
+
     # -- public -------------------------------------------------------------------------------
 
     async def stream_live_events(
-        self, game_pk: int, resume: bool = True
+        self,
+        game_pk: int,
+        resume: bool = True,
+        fields: str | Sequence[str] | None = None,
     ) -> AsyncIterator[LiveEvent]:
         """Yield every NEW :class:`LiveEvent` of ``game_pk`` until the game ends or goes quiet.
 
         Network failures are retried by the shared client; after the retries the error propagates
         (the audit record is ``FAILURE``). Malformed payloads are quarantined and polling continues.
         With ``resume`` a stored watermark suppresses everything already emitted in a past stream.
+        A projection is refused (:meth:`snapshot` is the projected read; ADR 54).
         """
+        if fields is not None:
+            raise ValueError(
+                "the stream cannot poll a projection: feed/live/diffPatch ignores fields= and "
+                "addresses paths a projection lacks, so a projected document would force the "
+                "complete feed on every poll. Use snapshot(game_pk, fields=...) for a projected read."
+            )
         url = MLB_FEED_URL.format(game_pk=game_pk)
         state = self._load(game_pk, resume)
         doc: dict[str, Any] | None = None
@@ -595,6 +714,12 @@ class GamedayLiveStreamer:
         self, game_pk: int, *args: Any, **kwargs: Any
     ) -> AsyncIterator[dict[str, Any]]:
         """``StreamExtractorProtocol``: the same events as plain dicts (see :class:`LiveEvent`)."""
+        if kwargs.get("fields") is not None:
+            raise ValueError(
+                "the stream cannot poll a projection: feed/live/diffPatch ignores fields= and "
+                "addresses paths a projection lacks, so a projected document would force the "
+                "complete feed on every poll. Use snapshot(game_pk, fields=...) for a projected read."
+            )
         resume = bool(kwargs.get("resume", True))
         async for event in self.stream_live_events(game_pk, resume=resume):
             yield event.to_dict()

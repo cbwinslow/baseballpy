@@ -9,15 +9,18 @@ import httpx
 import pytest
 import respx
 
-from baseballpy.core.config import LakeConfig, RateLimitConfig, StreamingConfig
+from baseballpy.core.config import LakeConfig, QuarantineConfig, RateLimitConfig, StreamingConfig
 from baseballpy.core.http import HttpClient
 from baseballpy.core.protocols import StreamExtractorProtocol
+from baseballpy.core.quarantine import Quarantine
 from baseballpy.sources.mlb_api import stream as stream_mod
+from baseballpy.sources.mlb_api.field_sets import expand_fields, set_names
 from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
 from baseballpy.sources.mlb_api.stream import (
     GamedayLiveStreamer,
     LiveEvent,
     PatchError,
+    SnapshotError,
     apply_patch,
     patch_ops,
     to_arrow,
@@ -484,3 +487,157 @@ async def test_third_out_emits_a_half_inning_end_once(tmp_path: Path, http: Http
         e async for e in _streamer(tmp_path, http, use_diff_patch=False).stream_live_events(12)
     ]
     assert again == [], "a resumed stream re-emits nothing, including the half-inning end"
+
+
+# ------------------------------------------------------------------ projected snapshots (ADR 54)
+
+
+def test_named_field_sets_expand_to_every_parent_key() -> None:
+    keys = expand_fields("score")
+    for name in ("gameData", "liveData", "linescore", "teams", "away", "home", "runs"):
+        assert name in keys, name
+    assert len(keys) == len(set(keys)), "every key name appears once"
+    assert expand_fields("state") == (
+        "gameData",
+        "status",
+        "abstractGameState",
+        "detailedState",
+        "codedGameState",
+        "metaData",
+        "timeStamp",
+    )
+    # the measured key counts of the shipped sets (design.md of mlb-live-feed-projection)
+    assert [
+        len(expand_fields(name)) for name in ("state", "score", "pitch", "boxscore", "decisions")
+    ] == [
+        7,
+        20,
+        40,
+        12,
+        6,
+    ]
+
+
+def test_an_unknown_field_set_lists_the_valid_names() -> None:
+    with pytest.raises(ValueError) as error:
+        expand_fields("scroe")
+    for name in set_names():
+        assert name in str(error.value), name
+
+
+def test_a_raw_projection_is_accepted_as_a_sequence_or_a_comma_string() -> None:
+    assert expand_fields(["gameData", "status", "detailedState"]) == (
+        "gameData",
+        "status",
+        "detailedState",
+    )
+    assert expand_fields("gameData.status.detailedState") == (
+        "gameData",
+        "status",
+        "detailedState",
+    )
+    assert expand_fields("gameData,status,detailedState") == (
+        "gameData",
+        "status",
+        "detailedState",
+    )
+    with pytest.raises(ValueError):
+        expand_fields([])
+
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_snapshot_returns_the_projected_score_in_one_request(
+    tmp_path: Path, http: HttpClient
+) -> None:
+    url = FEED.format(pk=7)
+    doc = {
+        "gameData": {"status": {"abstractGameState": "Live", "detailedState": "In Progress"}},
+        "liveData": {
+            "linescore": {
+                "currentInning": 5,
+                "teams": {"away": {"runs": 2}, "home": {"runs": 3}},
+            }
+        },
+    }
+    route = respx.get(url).mock(return_value=httpx.Response(200, json=doc))
+    out = await _streamer(tmp_path, http).snapshot(7, fields="score")
+    assert out == doc
+    assert route.call_count == 1
+    fields = route.calls.last.request.url.params["fields"].split(",")
+    assert fields == list(expand_fields("score"))
+    assert not (tmp_path / "cache" / "stream").exists(), "a snapshot writes no watermark"
+
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_snapshot_with_a_timecode_reads_the_historical_feed(
+    tmp_path: Path, http: HttpClient
+) -> None:
+    url = FEED.format(pk=8)
+    doc = {
+        "metaData": {"timeStamp": "20240623_183855"},
+        "gameData": {"status": {"abstractGameState": "Live", "detailedState": "In Progress"}},
+    }
+    route = respx.get(url).mock(return_value=httpx.Response(200, json=doc))
+    out = await _streamer(tmp_path, http).snapshot(8, fields="state", timecode="20240623_183855")
+    assert route.calls.last.request.url.params["timecode"] == "20240623_183855"
+    assert out["gameData"]["status"]["detailedState"] == "In Progress"
+
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_snapshot_bytes_returns_the_upstream_bytes(tmp_path: Path, http: HttpClient) -> None:
+    raw = b'{"gameData": {"status": {"detailedState": "Final"}}}'
+    route = respx.get(FEED.format(pk=9)).mock(return_value=httpx.Response(200, content=raw))
+    assert await _streamer(tmp_path, http).snapshot_bytes(9) == raw
+    assert "fields" not in route.calls.last.request.url.params, "no projection = complete feed"
+
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_a_projection_that_lacks_its_container_raises_and_is_quarantined(
+    tmp_path: Path, http: HttpClient
+) -> None:
+    route = respx.get(FEED.format(pk=10)).mock(
+        return_value=httpx.Response(200, json={"gamePk": 10})
+    )
+    quarantine = Quarantine(QuarantineConfig(base_dir=tmp_path / "q"))
+    streamer = _streamer(tmp_path, http, quarantine=quarantine)
+    with pytest.raises(SnapshotError) as error:
+        await streamer.snapshot(10, fields="score")
+    assert "gameData" in str(error.value) and "liveData" in str(error.value)
+    assert route.call_count == 1
+    assert list((tmp_path / "q").rglob("*.jsonl")), "the raw bytes are kept"
+
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_a_malformed_timecode_is_refused_before_the_request(
+    tmp_path: Path, http: HttpClient
+) -> None:
+    route = respx.get(FEED.format(pk=11)).mock(
+        return_value=httpx.Response(200, json={"metaData": {}})
+    )
+    with pytest.raises(SnapshotError):
+        await _streamer(tmp_path, http).snapshot(11, timecode="yesterday")
+    assert route.call_count == 0
+
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_streaming_refuses_a_projection_instead_of_degrading(
+    tmp_path: Path, http: HttpClient
+) -> None:
+    route = respx.get(FEED.format(pk=12)).mock(
+        return_value=httpx.Response(200, json=_feed("t1", "In Progress", []))
+    )
+    streamer = _streamer(tmp_path, http)
+    with pytest.raises(ValueError) as error:
+        async for _ in streamer.stream_live_events(12, fields="score"):
+            pass
+    assert "diffPatch" in str(error.value) and "snapshot" in str(error.value)
+    with pytest.raises(ValueError):
+        async for _ in streamer.stream_events(12, fields="score"):
+            pass
+    assert route.call_count == 0, "the refusal happens before the first request"

@@ -94,8 +94,25 @@ nothing to borrow for the 406 or the feed.
 
 ## 4. As built
 
-Fill in when the tasks land: the set table as shipped, the bytes each live check measured, and any set
-the provider answered empty.
+Shipped 2026-10-31 in `sources/mlb_api/field_sets.py` (table + `expand_fields`/`required_containers`)
+and `GamedayLiveStreamer.snapshot`/`snapshot_bytes` (one request, no watermark, audited as
+`mlb_snapshot`/`mlb_snapshot_bytes` with the set name as the destination).
+
+Live check of every set through the shipped API (game 745000, 2026-10-31, one request each, `uv run
+python` against the package):
+
+| Set | Status | Bytes | Seconds | Keys returned | Promised values found |
+|---|---|---|---|---|---|
+| (complete) | 200 | 663,043 | – | `copyright, gamePk, link, metaData, gameData, liveData` | – |
+| `state` | 200 | 141 | 0.089 | `gameData, metaData` | `Final`/`Final`/`F`, timestamp `20240623_204225` |
+| `score` | 200 | 368 | 0.082 | `gameData, liveData` | inning 9 Top, away 0, home 4 |
+| `pitch` | 200 | 4,377 | 0.108 | `liveData` | at-bat 64, batter Nick Loftin, 5 pitches, last CH 88.3 mph at pX −0.289 / pZ 1.639 |
+| `boxscore` | 200 | 12,500 | 0.071 | `liveData` | away team 118: 0 runs, 2 hits; home team 140: 4 runs, 10 hits |
+| `decisions` | 200 | 94 | 0.082 | `liveData` | winner 453286, loser 679525, save 570632 |
+
+Every set is smaller than the complete document and carries the values it promises; the measured byte
+counts are identical to section 1, so the shipped table and the measurement agree. The key counts after
+expansion (7 / 20 / 40 / 12 / 6) are asserted in `test_named_field_sets_expand_to_every_parent_key`.
 
 ## 5. Reproduction
 

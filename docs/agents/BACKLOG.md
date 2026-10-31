@@ -293,11 +293,11 @@ evidence (not a task here yet).
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-178 | `mlb-live-feed-projection 1.1`: field-set table and parent-key expansion | READY | `LIVE_FIELD_SETS` holds the five measured sets, a bare string is a set name, an unknown name lists the valid ones, every dotted path expands to all parent keys; the three named tests pass |
-| B-179 | `mlb-live-feed-projection 1.2`: `snapshot()` and `snapshot_bytes()` | READY | one request, no watermark, `timecode` validated, audit event, `SnapshotError` + quarantine on a missing container; the five named tests pass with fixtures, no network |
-| B-180 | `mlb-live-feed-projection 1.3`: the stream refuses a projection | READY | `stream_live_events`/`stream_events` raise `ValueError` naming `diffPatch` and `snapshot`; the test passes |
-| B-181 | `mlb-live-feed-projection 1.4`: live check of every set | READY (needs B-178, B-179) | all five sets answer 200, are smaller than 663,043 bytes and carry the keys they promise; numbers under "As built" in `design.md` |
-| B-182 | `mlb-live-feed-projection 1.5`: docs, ADR 54, spec merge, archive | DONE-WHEN-LAST | the projection section is in `docs/sources/mlb_api.md`, the delta is merged, the change is archived, gates green |
+| B-178 | mlb-live-feed-projection 1.1: field-set table and parent-key expansion | DONE | `LIVE_FIELD_SETS` holds the five measured sets, a bare string is a set name, an unknown name lists the valid ones, every dotted path expands to all parent keys; the three named tests pass |
+| B-179 | mlb-live-feed-projection 1.2: `snapshot()` and `snapshot_bytes()` | DONE | one request, no watermark, `timecode` validated, audit event, `SnapshotError` + quarantine on a missing container; the five named tests pass with fixtures, no network |
+| B-180 | mlb-live-feed-projection 1.3: the stream refuses a projection | DONE | `stream_live_events`/`stream_events` raise `ValueError` naming `diffPatch` and `snapshot`; the test passes |
+| B-181 | mlb-live-feed-projection 1.4: live check of every set | DONE | all five sets answer 200, are smaller than 663,043 bytes and carry the keys they promise; numbers under "As built" in `design.md` |
+| B-182 | mlb-live-feed-projection 1.5: docs, ADR 54, spec merge, archive | DONE | the projection section is in `docs/sources/mlb_api.md`, the delta is merged, the change is archived, gates green |
 | B-183 | `mlb-pool-fallback-completion 2.1`: list-encode multi-value hydrate parameters | READY | `sitCodes=[vr,vl]` is sent, two splits are stored, an empty list is omitted; the two named tests pass |
 | B-184 | `mlb-pool-fallback-completion 2.2`: per-stat-type revision for split pools | READY | a stored split part is stale and refetched without `--refresh`, a non-split part is still served; the test passes |
 | B-185 | `mlb-pool-fallback-completion 2.3`: refuse a stat type with no person equivalent | READY | a 406 on `statsSingleSeason` raises naming the type and evidence, no empty part is stored; the test passes |
