@@ -283,6 +283,36 @@ from the provider since 2026-10-29 (B-30/B-32, evidence in
 fetched through `/v1/people?hydrate=stats(...)` instead (ADR 53, ADR 55); the single-season family stays
 blocked until the provider answers or a season-by-season rebuild lands.
 
+## Telemetry
+
+Every download, parse and store of this source writes one structured event per logical operation to
+`$BASEBALLPY_HOME/logs/audit.jsonl` (default `~/.baseballpy`, ADR 22). The event carries
+`operation`, `source="mlb_api"`, `endpoint`, `destination`, `records_count`, `duration_seconds`,
+`download_seconds`, `processing_seconds`, `throughput_rps`, `cache_hit`, `status` and `error`.
+
+| Operation | Written by | Records counted | Cache flag |
+|---|---|---|---|
+| `mlb_api_fetch` | `MlbApiExtractor._fetch` (schedule, boxscores, standings, teams, rosters, transactions, draft, venues) | response bytes | always false |
+| `mlb_api_cache_read` | `MlbApiExtractor._read_cached` | rows read | true |
+| `mlb_<endpoint>` | `MlbEndpointExtractor.fetch_request` / `_ingest_raw_only` (every declarative endpoint, the hydrate pool fallback and the raw-only endpoints) | rows stored (raw files for a raw-only endpoint) | true when the answer came from the lake |
+| `mlb_snapshot` | `GamedayLiveStreamer.snapshot(fields=...)` | 1 | false |
+| `mlb_snapshot_bytes` | `GamedayLiveStreamer.snapshot_bytes` | 1 | false |
+| `mlb_stream` | `GamedayLiveStreamer.stream_live_events` | events emitted by that run | false |
+
+A pool fallback records the refused pool URL (`/v1/stats`) as its endpoint, and a projected snapshot
+records the set name (`score`, ...) or `complete` as its destination, so a reader can tell which
+request was made. Above these, `baseballpy ingest` adds one `ingest` event per job.
+
+Read them back with:
+
+```
+baseballpy audit summary --source mlb_api
+baseballpy audit tail --source mlb_api --status FAILURE
+baseballpy audit stats
+```
+
+Verified by `tests/test_mlb_audit.py` (one test per operation above).
+
 ## Storage Layout (lake v2)
 - Raw JSON payloads: `raw/mlb_api/<dataset>/[season=YYYY/]<ident>.json`.
 - Typed Parquet: `processed/mlb_api/<dataset>/[season=YYYY/]part-<ident>.parquet` for `schedule`, `box_batting`, `box_pitching`, `standings`, `teams`, `rosters`, `transactions`, `draft`, `venues` (views `mlb_<dataset>`).

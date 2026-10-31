@@ -695,6 +695,7 @@ class GamedayLiveStreamer:
                             )
                             state.status_seq += 1
                             emitted += 1
+                            tracker.set_records(emitted)
                             last_activity = time.monotonic()
                         state.timestamp = doc.get("metaData", {}).get("timeStamp")
                         self._save(game_pk, state)

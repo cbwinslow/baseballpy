@@ -495,32 +495,40 @@ class MlbEndpointExtractor:
         there is nothing to type yet; the raw files are typed later by regenerating the schemas.
         """
         n = stored = cached = 0
-        for request in requests_for(ep, ctx):
-            n += 1
-            name = f"{request.ident}.json"
-            path = self.raw.path_for("mlb_api", ep.name, name, request.season)
-            if path.exists() and not refresh:
-                cached += 1
-                continue
-            url = f"{MLB_BASE_URL}/{request.path}"
-            result = self.http.get_sync(
-                url,
-                params=request.params,
-                allow=(200, 404) if ep.tolerate_missing else (200,),
-            )
-            if result.status != 200:
-                continue
-            self.raw.put(
-                "mlb_api",
-                ep.name,
-                name,
-                result.content,
-                season=request.season,
-                source_ref=url,
-                etag=result.etag or "",
-                upstream=response_fingerprint(result.content, result.etag, url),
-            )
-            stored += 1
+        with default_audit_logger.track(
+            operation=f"mlb_{ep.name}",
+            source="mlb_api",
+            endpoint=f"{MLB_BASE_URL}/{ep.path}",
+        ) as tracker:
+            for request in requests_for(ep, ctx):
+                n += 1
+                name = f"{request.ident}.json"
+                path = self.raw.path_for("mlb_api", ep.name, name, request.season)
+                tracker.set_destination(str(path.parent))
+                if path.exists() and not refresh:
+                    cached += 1
+                    continue
+                url = f"{MLB_BASE_URL}/{request.path}"
+                result = self.http.get_sync(
+                    url,
+                    params=request.params,
+                    allow=(200, 404) if ep.tolerate_missing else (200,),
+                )
+                if result.status != 200:
+                    continue
+                self.raw.put(
+                    "mlb_api",
+                    ep.name,
+                    name,
+                    result.content,
+                    season=request.season,
+                    source_ref=url,
+                    etag=result.etag or "",
+                    upstream=response_fingerprint(result.content, result.etag, url),
+                )
+                stored += 1
+            tracker.set_cache_hit(stored == 0 and cached > 0)
+            tracker.set_records(stored + cached)
         return EndpointReport(ep.name, n, 0, cached, raw_only=stored + cached)
 
     def ingest(
