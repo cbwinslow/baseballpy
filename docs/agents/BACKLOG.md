@@ -321,3 +321,13 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-197 | cross-source-catalog-audit 1.3: coverage matrix tests | DONE | tests/test_coverage_matrix.py passes asserting 100% of DATASETS and external references accounted for |
 | B-198 | cross-source-catalog-audit 1.4: spec merge, archive, gates | DONE | spec delta merged, change archived, all gates green |
 
+## P. V1 Coverage, completeness, and smart concurrency (`v1-coverage-and-smart-concurrency`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-199 | v1-coverage-and-smart-concurrency 1.1: author proposal, design, tasks, spec deltas | DONE | proposal.md, design.md, tasks.md, spec deltas in place, openspec validate passes |
+| B-200 | `v1-coverage-and-smart-concurrency 1.2`: smart concurrency for MLB API hydrate batches and season endpoints | READY | hydrate batches in _pool_pages_by_hydrate and season endpoints run concurrently bounded by max_concurrency and 8 req/s token bucket |
+| B-201 | `v1-coverage-and-smart-concurrency 1.3`: concurrency verification across Statcast and Retrosheet | after B-200 | Statcast and Retrosheet multi-chunk / multi-season runs verified with bounded workers and rate limit adherence |
+| B-202 | `v1-coverage-and-smart-concurrency 1.4`: `baseballpy catalog coverage` expected-vs-held CLI command | after B-201 | command outputs expected vs held games, % held, missing IDs, and copy-paste remediation commands |
+| B-203 | `v1-coverage-and-smart-concurrency 1.5`: tests, documentation, gates, spec merge, and archive | after B-202 | unit/integration tests pass, all gates green, spec deltas merged into openspec/specs, change archived |
+
