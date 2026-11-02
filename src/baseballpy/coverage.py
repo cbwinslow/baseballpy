@@ -104,7 +104,7 @@ def check_mlb_games(season: int, config: LakeConfig) -> CoverageItem:
                 for pk, is_final in zip(pks, final_mask, strict=False)
                 if is_final and pk is not None
             }
-        except Exception as exc:
+        except (pa.ArrowInvalid, OSError, ValueError, KeyError) as exc:
             logger.debug("could not read schedule_hydrated for %s: %s", season, exc)
 
     expected_count = len(expected_pks) if expected_pks else 2430
@@ -116,7 +116,7 @@ def check_mlb_games(season: int, config: LakeConfig) -> CoverageItem:
         try:
             tbl = pa.concat_tables([pq.read_table(f, columns=["game_pk"]) for f in held_files])
             held_pks = {pk for pk in tbl.column("game_pk").to_pylist() if pk is not None}
-        except Exception as exc:
+        except (pa.ArrowInvalid, OSError, ValueError, KeyError) as exc:
             logger.debug("could not read game_boxscores for %s: %s", season, exc)
 
     held_count = len(held_pks)
@@ -154,7 +154,7 @@ def check_retrosheet_games(season: int, config: LakeConfig) -> CoverageItem:
         try:
             for f in gl_files:
                 expected_count += pq.ParquetFile(f).metadata.num_rows
-        except Exception as exc:
+        except (pa.ArrowInvalid, OSError, ValueError, KeyError) as exc:
             logger.debug("could not read gamelogs for %s: %s", season, exc)
     if expected_count == 0:
         expected_count = 2430
@@ -166,7 +166,7 @@ def check_retrosheet_games(season: int, config: LakeConfig) -> CoverageItem:
         try:
             for f in box_files:
                 held_count += pq.ParquetFile(f).metadata.num_rows
-        except Exception as exc:
+        except (pa.ArrowInvalid, OSError, ValueError, KeyError) as exc:
             logger.debug("could not read box_games for %s: %s", season, exc)
 
     missing_count = max(0, expected_count - held_count)
