@@ -340,7 +340,8 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-206 | v1-ergonomics-and-e2e-verification 1.3: catalog coverage --fix auto-remediation | DONE | catalog coverage --fix executes remediation jobs directly and updates coverage report, test passes |
 | B-207 | v1-ergonomics-and-e2e-verification 1.4: live end-to-end test on 2024 MLB data | DONE | live ingest of 2024 season and sample games completes, DuckDB views queryable via SQL, coverage verifies |
 
-| B-208 | `v1-ergonomics-and-e2e-verification 1.5`: tests, gates, documentation, spec merge, and archive | READY | all gates green, spec deltas merged into openspec/specs, change archived |
+| B-208 | v1-ergonomics-and-e2e-verification 1.5: tests, gates, documentation, spec merge, and archive | DONE | all gates green, spec deltas merged into openspec/specs, change archived |
+
 
 
 

@@ -187,6 +187,7 @@ Options:
   -s, --season INTEGER  Season year to audit (default: current year).
   --source TEXT         Filter by source (repeatable, e.g. --source mlb_api).
   --json                Output coverage audit as a JSON object.
+  --fix                 Automatically execute remediation ingest jobs for missing entities.
   --help                Show this message and exit.
 ```
 
@@ -403,6 +404,8 @@ Options:
                                   datasets (default: all).  [x>=1]
   --stop-on-error                 Halt execution immediately when a job raises an error.
   --json                          Output results as newline-delimited JSON objects.
+  --sync-db / --no-sync-db        Automatically update DuckDB views after successful ingestion
+                                  (default: true).
   --help                          Show this message and exit.
 ```
 
