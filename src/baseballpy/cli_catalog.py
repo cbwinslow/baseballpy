@@ -211,17 +211,93 @@ def catalog_show_cmd(
     ctx.exit(0)
 
 
+@click.command("coverage")
+@click.option(
+    "--season",
+    "-s",
+    type=int,
+    default=None,
+    help="Season year to audit (default: current year).",
+)
+@click.option(
+    "--source",
+    "sources",
+    multiple=True,
+    help="Filter by source (repeatable, e.g. --source mlb_api).",
+)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output coverage audit as a JSON object.",
+)
+@click.pass_context
+def catalog_coverage_cmd(
+    ctx: click.Context,
+    season: int | None,
+    sources: tuple[str, ...],
+    as_json: bool,
+) -> None:
+    """Audit expected vs held entities (games, pitches, datasets) and show fix commands."""
+    from baseballpy.coverage import audit_season_coverage
+
+    report = audit_season_coverage(season=season, sources=sources)
+
+    if as_json:
+        click.echo(json.dumps(report.to_dict(), indent=2))
+    else:
+        table = Table(
+            title=f"Season {report.season} Coverage Audit (Overall Held: {report.overall_percent}%)"
+        )
+        table.add_column("Source", style="cyan")
+        table.add_column("Entity")
+        table.add_column("Expected", justify="right")
+        table.add_column("Held", justify="right")
+        table.add_column("Held %", justify="right")
+        table.add_column("Remediation Command", style="yellow")
+
+        for item in report.items:
+            pct_style = (
+                "bold green"
+                if item.held_percent >= 100.0
+                else ("yellow" if item.held_percent > 0 else "dim red")
+            )
+            cmd_style = "dim" if item.missing_count == 0 else "bold yellow"
+            table.add_row(
+                item.source,
+                item.entity,
+                f"{item.expected_count:,}",
+                f"{item.held_count:,}",
+                f"[{pct_style}]{item.held_percent:.1f}%[/{pct_style}]",
+                f"[{cmd_style}]{item.remediation_cmd}[/{cmd_style}]",
+            )
+        console.print(table)
+        for item in report.items:
+            if item.missing_ids:
+                sample_ids = ", ".join(str(i) for i in item.missing_ids[:10])
+                suffix = f" (+{item.missing_count - 10} more)" if item.missing_count > 10 else ""
+                console.print(
+                    f"  [dim]Missing {item.source} {item.entity}: {sample_ids}{suffix}[/dim]"
+                )
+            if item.note:
+                console.print(f"  [dim cyan]Note ({item.source}): {item.note}[/dim cyan]")
+
+    ctx.exit(0)
+
+
 def register_catalog_commands(catalog_group: click.Group) -> None:
-    """Register catalog list and show subcommands on a Click catalog group.
+    """Register catalog list, show, and coverage subcommands on a Click catalog group.
 
     Args:
         catalog_group: Click command group to receive the subcommands.
     """
     catalog_group.add_command(catalog_list_cmd, "list")
     catalog_group.add_command(catalog_show_cmd, "show")
+    catalog_group.add_command(catalog_coverage_cmd, "coverage")
 
 
 __all__ = [
+    "catalog_coverage_cmd",
     "catalog_list_cmd",
     "catalog_show_cmd",
     "register_catalog_commands",
