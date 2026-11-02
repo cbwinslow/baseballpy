@@ -25,6 +25,7 @@ from typing import Any
 from baseballpy.core.config import RateLimitConfig
 from baseballpy.core.http import HttpClient, HttpStatusError, TransportError
 from baseballpy.core.schema_tools import snake
+from baseballpy.sources.catalog import MLB_POOL_PATH
 from baseballpy.sources.mlb_api.flatten import Scalar, infer_type, iter_records, trim_payload
 
 BASE = "https://statsapi.mlb.com/api/"
@@ -57,8 +58,10 @@ def sample_contexts(ep: Any, ctxs: list[Any], all_sports: tuple[int, ...]) -> li
         use = [c for c in ctxs if c.team_ids] or use
     if extra_teams := PLACEHOLDER_TEAMS.get(ep.name):
         use = [replace(c, team_ids=(*c.team_ids, *extra_teams)) for c in use]
-    if ep.scope == "season" and any(
-        "{sport_id}" in text for text in (ep.path, *map(str, ep.params.values()))
+    if (
+        ep.scope == "season"
+        and ep.path != MLB_POOL_PATH
+        and any("{sport_id}" in text for text in (ep.path, *map(str, ep.params.values())))
     ):
         use = [replace(c, sport_ids=all_sports) for c in use]
     return use
@@ -539,7 +542,8 @@ def profile(http: HttpClient, ep: Any, ctxs: list[Any], requests_for: Any) -> di
             if ep.paginated:
                 params["limit"] = 50
             data = get_json(http, request.path, params)
-            if data is None and ep.paginated and ep.path == MLB_POOL_PATH:
+            direct_ok = data is not None
+            if not direct_ok and ep.paginated and ep.path == MLB_POOL_PATH:
                 # the pool route is refused (HTTP 406 since 2026-10-29): sample the same stat type
                 # through the hydrate route the runtime fallback uses, so its fields are typed
                 data = hydrate_sample(http, params)
@@ -554,7 +558,7 @@ def profile(http: HttpClient, ep: Any, ctxs: list[Any], requests_for: Any) -> di
                 keep = REF_FIXTURE_KEEP if ep.name.startswith("ref_") else FIXTURE_KEEP
                 fixture = trim_payload(data, ep.records, keep)
             records.extend(got)
-            if ep.paginated:
+            if ep.paginated and direct_ok:
                 # fields that only some rows carry (a catcher's stats inside the fielding pools)
                 # may sit beyond the first page: sample deeper pages as well
                 for offset in DEEP_PAGE_OFFSETS:

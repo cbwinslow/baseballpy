@@ -1,44 +1,37 @@
 {
- "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
  "stats": [
   {
-   "type": {
-    "displayName": "statSplits"
-   },
-   "group": {
-    "displayName": "fielding"
-   },
-   "totalSplits": 109502,
-   "exemptions": [],
    "splits": [
     {
      "season": "2024",
      "team": {
-      "id": 115,
-      "name": "Colorado Rockies",
-      "link": "/api/v1/teams/115"
+      "id": 117,
+      "name": "Houston Astros",
+      "link": "/api/v1/teams/117"
      },
      "player": {
-      "id": 663562,
-      "fullName": "Noah Davis",
-      "link": "/api/v1/people/663562",
-      "firstName": "Noah",
-      "lastName": "Davis"
+      "id": 434378,
+      "fullName": "Justin Verlander",
+      "link": "/api/v1/people/434378",
+      "firstName": "Justin",
+      "lastName": "Verlander"
      },
      "league": {
-      "id": 104,
-      "name": "National League",
-      "link": "/api/v1/league/104"
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
      },
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
+     "gameType": "R",
      "split": {
-      "code": "fp",
-      "description": "First Pitch",
-      "sortOrder": 221
+      "code": "sah",
+      "description": "Team is ahead",
+      "sortOrder": 92
      },
      "position": {
       "code": "1",
@@ -50,31 +43,33 @@
     {
      "season": "2024",
      "team": {
-      "id": 115,
-      "name": "Colorado Rockies",
-      "link": "/api/v1/teams/115"
+      "id": 117,
+      "name": "Houston Astros",
+      "link": "/api/v1/teams/117"
      },
      "player": {
-      "id": 663562,
-      "fullName": "Noah Davis",
-      "link": "/api/v1/people/663562",
-      "firstName": "Noah",
-      "lastName": "Davis"
+      "id": 434378,
+      "fullName": "Justin Verlander",
+      "link": "/api/v1/people/434378",
+      "firstName": "Justin",
+      "lastName": "Verlander"
      },
      "league": {
-      "id": 104,
-      "name": "National League",
-      "link": "/api/v1/league/104"
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
      },
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
+     "gameType": "R",
      "split": {
-      "code": "pi001",
-      "description": "Pitches 1-15",
-      "sortOrder": 175
+      "code": "sbh",
+      "description": "Team is behind",
+      "sortOrder": 93
      },
      "position": {
       "code": "1",
@@ -86,31 +81,33 @@
     {
      "season": "2024",
      "team": {
-      "id": 115,
-      "name": "Colorado Rockies",
-      "link": "/api/v1/teams/115"
+      "id": 117,
+      "name": "Houston Astros",
+      "link": "/api/v1/teams/117"
      },
      "player": {
-      "id": 663562,
-      "fullName": "Noah Davis",
-      "link": "/api/v1/people/663562",
-      "firstName": "Noah",
-      "lastName": "Davis"
+      "id": 434378,
+      "fullName": "Justin Verlander",
+      "link": "/api/v1/people/434378",
+      "firstName": "Justin",
+      "lastName": "Verlander"
      },
      "league": {
-      "id": 104,
-      "name": "National League",
-      "link": "/api/v1/league/104"
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
      },
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
+     "gameType": "R",
      "split": {
-      "code": "pi000",
-      "description": "First 75 Pitches",
-      "sortOrder": 171
+      "code": "sti",
+      "description": "Score is tied",
+      "sortOrder": 94
      },
      "position": {
       "code": "1",
@@ -120,7 +117,7 @@
      }
     }
    ],
-   "playerPool": "ALL"
+   "totalSplits": 33753
   }
  ]
 }

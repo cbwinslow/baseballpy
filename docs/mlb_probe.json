@@ -1,5 +1,5 @@
 {
- "probed_on": "2026-10-30",
+ "probed_on": "2026-11-02",
  "endpoints": {
   "stats_projected_hitting": {
    "status": "ok",
@@ -587,10 +587,12 @@
   },
   "stats_stat_splits_hitting": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 68,
+   "sample_rows": 54942,
+   "columns": 64,
    "key_unique_per_request": false
   },
   "people_stats_stat_splits_pitching": {
@@ -603,10 +605,12 @@
   },
   "stats_stat_splits_pitching": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 98,
+   "sample_rows": 52312,
+   "columns": 93,
    "key_unique_per_request": false
   },
   "people_stats_stat_splits_fielding": {
@@ -619,18 +623,22 @@
   },
   "stats_stat_splits_fielding": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 215466,
-   "columns": 29,
+   "sample_rows": 67457,
+   "columns": 27,
    "key_unique_per_request": true
   },
   "stats_stat_splits_catching": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 27136,
-   "columns": 32,
+   "sample_rows": 11934,
+   "columns": 30,
    "key_unique_per_request": false
   },
   "people_stats_stat_splits_running": {
@@ -643,10 +651,12 @@
   },
   "stats_stat_splits_running": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 189806,
-   "columns": 32,
+   "sample_rows": 53209,
+   "columns": 30,
    "key_unique_per_request": false
   },
   "people_stats_stat_splits_advanced_hitting": {
@@ -659,10 +669,12 @@
   },
   "stats_stat_splits_advanced_hitting": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 53,
+   "sample_rows": 54942,
+   "columns": 49,
    "key_unique_per_request": false
   },
   "people_stats_stat_splits_advanced_pitching": {
@@ -675,11 +687,13 @@
   },
   "stats_stat_splits_advanced_pitching": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 66,
-   "key_unique_per_request": true
+   "sample_rows": 52312,
+   "columns": 62,
+   "key_unique_per_request": false
   },
   "people_stats_stat_splits_advanced_fielding": {
    "status": "ok",
@@ -691,18 +705,22 @@
   },
   "stats_stat_splits_advanced_fielding": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 215466,
-   "columns": 29,
+   "sample_rows": 67457,
+   "columns": 27,
    "key_unique_per_request": true
   },
   "stats_stat_splits_advanced_catching": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 26701,
-   "columns": 32,
+   "sample_rows": 11934,
+   "columns": 30,
    "key_unique_per_request": false
   },
   "people_stats_stat_splits_advanced_running": {
@@ -715,10 +733,12 @@
   },
   "stats_stat_splits_advanced_running": {
    "status": "ok",
+   "route": "hydrate",
+   "fallback_pages": 2,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 189806,
-   "columns": 32,
+   "sample_rows": 53209,
+   "columns": 30,
    "key_unique_per_request": false
   },
   "people_stats_projected_zips_hitting": {

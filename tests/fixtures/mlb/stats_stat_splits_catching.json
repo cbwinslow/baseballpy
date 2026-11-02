@@ -1,44 +1,37 @@
 {
- "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
  "stats": [
   {
-   "type": {
-    "displayName": "statSplits"
-   },
-   "group": {
-    "displayName": "catching"
-   },
-   "totalSplits": 13315,
-   "exemptions": [],
    "splits": [
     {
      "season": "2024",
      "team": {
-      "id": 113,
-      "name": "Cincinnati Reds",
-      "link": "/api/v1/teams/113"
+      "id": 145,
+      "name": "Chicago White Sox",
+      "link": "/api/v1/teams/145"
      },
      "player": {
-      "id": 571912,
-      "fullName": "Luke Maile",
-      "link": "/api/v1/people/571912",
-      "firstName": "Luke",
-      "lastName": "Maile"
+      "id": 455117,
+      "fullName": "Martín Maldonado",
+      "link": "/api/v1/people/455117",
+      "firstName": "Martín",
+      "lastName": "Maldonado"
      },
      "league": {
-      "id": 104,
-      "name": "National League",
-      "link": "/api/v1/league/104"
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
      },
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
+     "gameType": "R",
      "split": {
-      "code": "preas",
-      "description": "Pre All-Star",
-      "sortOrder": 44
+      "code": "h",
+      "description": "Home Games",
+      "sortOrder": 1
      },
      "position": {
       "code": "2",
@@ -50,31 +43,33 @@
     {
      "season": "2024",
      "team": {
-      "id": 113,
-      "name": "Cincinnati Reds",
-      "link": "/api/v1/teams/113"
+      "id": 145,
+      "name": "Chicago White Sox",
+      "link": "/api/v1/teams/145"
      },
      "player": {
-      "id": 571912,
-      "fullName": "Luke Maile",
-      "link": "/api/v1/people/571912",
-      "firstName": "Luke",
-      "lastName": "Maile"
+      "id": 455117,
+      "fullName": "Martín Maldonado",
+      "link": "/api/v1/people/455117",
+      "firstName": "Martín",
+      "lastName": "Maldonado"
      },
      "league": {
-      "id": 104,
-      "name": "National League",
-      "link": "/api/v1/league/104"
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
      },
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
+     "gameType": "R",
      "split": {
-      "code": "sti",
-      "description": "Score is tied",
-      "sortOrder": 94
+      "code": "a",
+      "description": "Away Games",
+      "sortOrder": 2
      },
      "position": {
       "code": "2",
@@ -86,31 +81,33 @@
     {
      "season": "2024",
      "team": {
-      "id": 113,
-      "name": "Cincinnati Reds",
-      "link": "/api/v1/teams/113"
+      "id": 145,
+      "name": "Chicago White Sox",
+      "link": "/api/v1/teams/145"
      },
      "player": {
-      "id": 571912,
-      "fullName": "Luke Maile",
-      "link": "/api/v1/people/571912",
-      "firstName": "Luke",
-      "lastName": "Maile"
+      "id": 455117,
+      "fullName": "Martín Maldonado",
+      "link": "/api/v1/people/455117",
+      "firstName": "Martín",
+      "lastName": "Maldonado"
      },
      "league": {
-      "id": 104,
-      "name": "National League",
-      "link": "/api/v1/league/104"
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
      },
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
+     "gameType": "R",
      "split": {
-      "code": "pH",
-      "description": "Pinch Hitter",
-      "sortOrder": 134
+      "code": "d",
+      "description": "Day Games",
+      "sortOrder": 3
      },
      "position": {
       "code": "2",
@@ -120,7 +117,7 @@
      }
     }
    ],
-   "playerPool": "ALL"
+   "totalSplits": 6807
   }
  ]
 }

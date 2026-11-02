@@ -56,4 +56,10 @@ hydrate keys.
 
 ## 5. As built
 
-Filled in after the regeneration run.
+- `scripts/gen_mlb_schemas.py`:
+  - When the direct `MLB_POOL_PATH` request returns 406, `profile()` falls back to `hydrate_sample()` (2 batches of `POOL_BATCH` players across seasons 2024 and 2015).
+  - Pre-flight fix: `profile()` only attempts `DEEP_PAGE_OFFSETS` when the direct request was successful (`direct_ok`), preventing dozens of doomed HTTP 406 requests.
+  - `sample_contexts()` excludes `MLB_POOL_PATH` from the 20-sport fan-out since situational split stats are structural across levels and MLB (sport 1) discovers all fields.
+- `endpoints.py`: `KEY_OVERRIDES` overrides `stats_stat_splits_advanced_pitching` key to `("season",)` because `rank` was only present in the legacy direct route and is absent in hydrate payloads.
+- Regeneration: all 10 `stats_stat_splits_*` datasets regenerated in `mlb_tables.py`, fixtures and `docs/mlb_probe.json` (`route: "hydrate"`, `fallback_pages: 2`, `game_type`, `num_teams`, `sport_abbreviation` typed).
+- Anti-drift test: `tests/test_mlb_coverage.py::test_every_fixture_key_has_a_typed_column` passes for all covered endpoints.

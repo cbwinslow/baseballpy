@@ -1,29 +1,20 @@
 {
- "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
  "stats": [
   {
-   "type": {
-    "displayName": "statSplits"
-   },
-   "group": {
-    "displayName": "running"
-   },
-   "totalSplits": 84402,
-   "exemptions": [],
    "splits": [
     {
      "season": "2024",
      "team": {
-      "id": 119,
-      "name": "Los Angeles Dodgers",
-      "link": "/api/v1/teams/119"
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
      },
      "player": {
-      "id": 500743,
-      "fullName": "Miguel Rojas",
-      "link": "/api/v1/people/500743",
-      "firstName": "Miguel",
-      "lastName": "Rojas"
+      "id": 444482,
+      "fullName": "David Peralta",
+      "link": "/api/v1/people/444482",
+      "firstName": "Senger",
+      "lastName": "Peralta"
      },
      "league": {
       "id": 104,
@@ -33,33 +24,35 @@
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
+     "gameType": "R",
      "split": {
-      "code": "bc",
-      "description": "Behind in Count",
-      "sortOrder": 223
+      "code": "h",
+      "description": "Home Games",
+      "sortOrder": 1
      },
      "position": {
-      "code": "4",
-      "name": "Second Base",
-      "type": "Infielder",
-      "abbreviation": "2B"
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
      }
     },
     {
      "season": "2024",
      "team": {
-      "id": 119,
-      "name": "Los Angeles Dodgers",
-      "link": "/api/v1/teams/119"
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
      },
      "player": {
-      "id": 500743,
-      "fullName": "Miguel Rojas",
-      "link": "/api/v1/people/500743",
-      "firstName": "Miguel",
-      "lastName": "Rojas"
+      "id": 444482,
+      "fullName": "David Peralta",
+      "link": "/api/v1/people/444482",
+      "firstName": "Senger",
+      "lastName": "Peralta"
      },
      "league": {
       "id": 104,
@@ -69,33 +62,35 @@
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
+     "gameType": "R",
      "split": {
-      "code": "rp",
-      "description": "Reliever",
-      "sortOrder": 132
+      "code": "a",
+      "description": "Away Games",
+      "sortOrder": 2
      },
      "position": {
-      "code": "4",
-      "name": "Second Base",
-      "type": "Infielder",
-      "abbreviation": "2B"
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
      }
     },
     {
      "season": "2024",
      "team": {
-      "id": 119,
-      "name": "Los Angeles Dodgers",
-      "link": "/api/v1/teams/119"
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
      },
      "player": {
-      "id": 500743,
-      "fullName": "Miguel Rojas",
-      "link": "/api/v1/people/500743",
-      "firstName": "Miguel",
-      "lastName": "Rojas"
+      "id": 444482,
+      "fullName": "David Peralta",
+      "link": "/api/v1/people/444482",
+      "firstName": "Senger",
+      "lastName": "Peralta"
      },
      "league": {
       "id": 104,
@@ -105,22 +100,24 @@
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
+     "gameType": "R",
      "split": {
-      "code": "dsu",
-      "description": "On Sundays",
-      "sortOrder": 57
+      "code": "d",
+      "description": "Day Games",
+      "sortOrder": 3
      },
      "position": {
-      "code": "4",
-      "name": "Second Base",
-      "type": "Infielder",
-      "abbreviation": "2B"
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
      }
     }
    ],
-   "playerPool": "ALL"
+   "totalSplits": 22205
   }
  ]
 }

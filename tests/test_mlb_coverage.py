@@ -247,6 +247,18 @@ def test_unknown_upstream_field_goes_to_extras_and_bad_cells_to_quarantine(tmp_p
     assert table.column("_extras")[1].as_py() is None
 
 
+def test_every_fixture_key_has_a_typed_column() -> None:
+    """Every flattened field of every committed fixture must have a typed column in its schema."""
+    for ep in COVERED:
+        fixture = _fixture(ep.name)
+        schema = MLB_SCHEMAS[ep.name]
+        names = set(schema.names)
+        for record in iter_records(fixture, ep.records):
+            for key in record:
+                col = snake(key)
+                assert col in names, f"{ep.name}: fixture key {key!r} ({col}) not in schema"
+
+
 # ------------------------------------------------------------------ enum vs live data (1.2)
 
 

@@ -24,11 +24,11 @@ Evidence for custom code: none needed — the fix is using the existing `hydrate
 
 ## Slice 1: Commit existing task 1.1 code (done by opencode)
 
-Status: IN PROGRESS.
+Status: DONE (committed fda453e). Evidence pasted above. Not verified: live generator run (slice 2).
 Files: `scripts/gen_mlb_schemas.py`, `src/baseballpy/sources/mlb_api/generic.py`.
 Task: 1.1 of `tasks.md` (`hydrate_request_params()` public helper; generator maps direct refusal to hydrate sample).
 Evidence needed: `git diff`, `ruff check`, `mypy --strict src`, `pytest` (at least the generator-related tests).
-Not verified: the live generator run (needs network; 406 is known; will be verified in slice 2).
+Not verified: the full live generator run for all 10 split pools (timed out at 300s and 600s; mechanism verified by partial fixtures for `stats_stat_splits_hitting` and `stats_stat_splits_pitching` which carry `gameType` and `sport.abbreviation`; `numTeams` expected for multi-team rows). The fixtures were overwritten (shorter: 230 and 317 lines vs original larger direct-route fixtures). `mlb_tables.py` and `docs/mlb_probe.json` were NOT updated (timeout killed before write phase). The direct route is refused (406, ADR 53); the hydrate fallback answers 200.
 
 ## Next slices (planned order)
 

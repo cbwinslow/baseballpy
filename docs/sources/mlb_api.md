@@ -21982,11 +21982,7 @@ League-wide catching stats, type statSplitsAdvanced, parameters {'season': '{sea
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
 | `team_name` | string | yes | `team.name` | Name of the team. (authored) |
@@ -22002,6 +21998,8 @@ League-wide catching stats, type statSplitsAdvanced, parameters {'season': '{sea
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |
@@ -22030,11 +22028,7 @@ League-wide fielding stats, type statSplitsAdvanced, parameters {'season': '{sea
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
 | `team_name` | string | yes | `team.name` | Name of the team. (authored) |
@@ -22050,6 +22044,8 @@ League-wide fielding stats, type statSplitsAdvanced, parameters {'season': '{sea
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |
@@ -22075,13 +22071,7 @@ League-wide hitting stats, type statSplitsAdvanced, parameters {'season': '{seas
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
@@ -22093,6 +22083,8 @@ League-wide hitting stats, type statSplitsAdvanced, parameters {'season': '{seas
 | `stat_hit_by_pitch` | int32 | yes | `stat.hitByPitch` | TODO |
 | `stat_gidp` | int32 | yes | `stat.gidp` | GIDP: counting statistic (hitting, pitching); lookup parameter `gidp`. (src: mlb_baseball_stats) |
 | `stat_gidp_opp` | int32 | yes | `stat.gidpOpp` | groundIntoDoublePlayOpportunities: counting statistic (hitting, pitching); lookup parameter `gidp_opp`. (src: mlb_baseball_stats) |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
+| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_walks_per_plate_appearance` | string | yes | `stat.walksPerPlateAppearance` | walksPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_strikeouts_per_plate_appearance` | string | yes | `stat.strikeoutsPerPlateAppearance` | strikeoutsPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `stat_home_runs_per_plate_appearance` | string | yes | `stat.homeRunsPerPlateAppearance` | homeRunsPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -22114,7 +22106,8 @@ League-wide hitting stats, type statSplitsAdvanced, parameters {'season': '{seas
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
-| `rank` | int32 | yes | — | TODO |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |
@@ -22122,11 +22115,10 @@ League-wide hitting stats, type statSplitsAdvanced, parameters {'season': '{seas
 | `position_name` | string | yes | `position.name` | Name of the position. (authored) |
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
-| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_pitches_per_plate_appearance` | string | yes | `stat.pitchesPerPlateAppearance` | pitchesPerPlateAppearance: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
 | `opponent_id` | int32 | yes | `opponent.id` | MLBAM identifier of the opponent. (authored) |
 | `opponent_name` | string | yes | `opponent.name` | Name of the opponent. (authored) |
 | `opponent_link` | string | yes | `opponent.link` | Relative MLB Stats API path of the opponent resource (prefix https://statsapi.mlb.com). (authored) |
+| `num_teams` | int32 | yes | `numTeams` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.stats_stat_splits_advanced_hitting -->
@@ -22139,18 +22131,12 @@ League-wide pitching stats, type statSplitsAdvanced, parameters {'season': '{sea
 - **View:** `mlb_stats_stat_splits_advanced_pitching`
 - **Processed path:** `processed/mlb_api/stats_stat_splits_advanced_pitching/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
-- **Key:** `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `split_code`, `split_description`, `rank`
+- **Key:** `season`
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_winning_percentage` | string | yes | `stat.winningPercentage` | TODO |
 | `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` | TODO |
@@ -22198,7 +22184,8 @@ League-wide pitching stats, type statSplitsAdvanced, parameters {'season': '{sea
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
-| `rank` | int32 | yes | — | TODO |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |
@@ -22209,6 +22196,7 @@ League-wide pitching stats, type statSplitsAdvanced, parameters {'season': '{sea
 | `opponent_id` | int32 | yes | `opponent.id` | MLBAM identifier of the opponent. (authored) |
 | `opponent_name` | string | yes | `opponent.name` | Name of the opponent. (authored) |
 | `opponent_link` | string | yes | `opponent.link` | Relative MLB Stats API path of the opponent resource (prefix https://statsapi.mlb.com). (authored) |
+| `num_teams` | int32 | yes | `numTeams` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.stats_stat_splits_advanced_pitching -->
@@ -22226,11 +22214,7 @@ League-wide running stats, type statSplitsAdvanced, parameters {'season': '{seas
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
 | `team_name` | string | yes | `team.name` | Name of the team. (authored) |
@@ -22246,6 +22230,8 @@ League-wide running stats, type statSplitsAdvanced, parameters {'season': '{seas
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |
@@ -22274,11 +22260,7 @@ League-wide catching stats, type statSplits, parameters {'season': '{season}', '
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
 | `team_name` | string | yes | `team.name` | Name of the team. (authored) |
@@ -22294,6 +22276,8 @@ League-wide catching stats, type statSplits, parameters {'season': '{season}', '
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |
@@ -22322,11 +22306,7 @@ League-wide fielding stats, type statSplits, parameters {'season': '{season}', '
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
 | `team_name` | string | yes | `team.name` | Name of the team. (authored) |
@@ -22342,6 +22322,8 @@ League-wide fielding stats, type statSplits, parameters {'season': '{season}', '
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |
@@ -22367,17 +22349,12 @@ League-wide hitting stats, type statSplits, parameters {'season': '{season}', 's
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
 | `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
+| `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
 | `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
 | `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
 | `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
@@ -22391,8 +22368,13 @@ League-wide hitting stats, type statSplits, parameters {'season': '{season}', 's
 | `stat_obp` | string | yes | `stat.obp` | TODO |
 | `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
 | `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
 | `stat_ground_into_triple_play` | int32 | yes | `stat.groundIntoTriplePlay` | TODO |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_rbi` | int32 | yes | `stat.rbi` | RBI: counting statistic (hitting); lookup parameter `rbi`. (src: mlb_baseball_stats) |
@@ -22417,7 +22399,8 @@ League-wide hitting stats, type statSplits, parameters {'season': '{season}', 's
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
-| `rank` | int32 | yes | — | TODO |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |
@@ -22425,15 +22408,10 @@ League-wide hitting stats, type statSplits, parameters {'season': '{season}', 's
 | `position_name` | string | yes | `position.name` | Name of the position. (authored) |
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
-| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
-| `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
-| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
-| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
-| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
-| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `opponent_id` | int32 | yes | `opponent.id` | MLBAM identifier of the opponent. (authored) |
 | `opponent_name` | string | yes | `opponent.name` | Name of the opponent. (authored) |
 | `opponent_link` | string | yes | `opponent.link` | Relative MLB Stats API path of the opponent resource (prefix https://statsapi.mlb.com). (authored) |
+| `num_teams` | int32 | yes | `numTeams` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.stats_stat_splits_hitting -->
@@ -22451,13 +22429,7 @@ League-wide pitching stats, type statSplits, parameters {'season': '{season}', '
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -22536,10 +22508,8 @@ League-wide pitching stats, type statSplits, parameters {'season': '{season}', '
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
-| `opponent_id` | int32 | yes | `opponent.id` | MLBAM identifier of the opponent. (authored) |
-| `opponent_name` | string | yes | `opponent.name` | Name of the opponent. (authored) |
-| `opponent_link` | string | yes | `opponent.link` | Relative MLB Stats API path of the opponent resource (prefix https://statsapi.mlb.com). (authored) |
-| `rank` | int32 | yes | — | TODO |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |
@@ -22547,6 +22517,9 @@ League-wide pitching stats, type statSplits, parameters {'season': '{season}', '
 | `position_name` | string | yes | `position.name` | Name of the position. (authored) |
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
+| `opponent_id` | int32 | yes | `opponent.id` | MLBAM identifier of the opponent. (authored) |
+| `opponent_name` | string | yes | `opponent.name` | Name of the opponent. (authored) |
+| `opponent_link` | string | yes | `opponent.link` | Relative MLB Stats API path of the opponent resource (prefix https://statsapi.mlb.com). (authored) |
 | `num_teams` | int32 | yes | `numTeams` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -22565,11 +22538,7 @@ League-wide running stats, type statSplits, parameters {'season': '{season}', 's
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `sport_id` | int32 | yes | — | MLBAM identifier of the sport. (authored) |
-| `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
-| `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
-| `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
 | `team_name` | string | yes | `team.name` | Name of the team. (authored) |
@@ -22585,6 +22554,8 @@ League-wide running stats, type statSplits, parameters {'season': '{season}', 's
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
+| `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
+| `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
 | `split_sort_order` | int32 | yes | `split.sortOrder` | TODO |

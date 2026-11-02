@@ -508,6 +508,9 @@ KEY_OVERRIDES: dict[str, tuple[str, ...]] = {
     )
     for group in ("hitting", "pitching")
 }
+#: stats_stat_splits_advanced_pitching: the old direct route included 'rank', which is absent
+#: from hydrate payloads; like other split pools its declared key is ('season',)
+KEY_OVERRIDES["stats_stat_splits_advanced_pitching"] = ("season",)
 
 _FAN_OUT_PLACEHOLDERS = ("metric", "opposing_team_id", "opposing_player_id")
 
@@ -547,7 +550,7 @@ def _param_stats() -> list[MlbEndpoint]:
                     "v1/stats",
                     ("stats", "*", "splits"),
                     f"League-wide {group} stats, type {stat}, parameters {dict(params)} (player pool ALL).",
-                    keys,
+                    KEY_OVERRIDES.get(f"stats_{snake(stat)}_{group}", keys),
                     "season",
                     {**merged, "sportIds": "{sport_id}", "playerPool": "ALL"},
                     "stats",

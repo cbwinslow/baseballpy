@@ -1,79 +1,71 @@
 {
- "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
  "stats": [
   {
-   "type": {
-    "displayName": "statSplitsAdvanced"
-   },
-   "group": {
-    "displayName": "pitching"
-   },
-   "totalSplits": 97694,
-   "exemptions": [],
    "splits": [
     {
      "season": "2024",
      "stat": {
-      "winningPercentage": ".---",
-      "runsScoredPer9": "0.00",
-      "battersFaced": 18,
-      "babip": ".333",
-      "obp": ".353",
-      "slg": ".333",
-      "ops": ".686",
-      "homeRunsPer9": "0.00",
-      "inheritedRunners": 1,
+      "winningPercentage": ".000",
+      "runsScoredPer9": "7.98",
+      "battersFaced": 134,
+      "babip": ".313",
+      "obp": ".366",
+      "slg": ".554",
+      "ops": ".920",
+      "homeRunsPer9": "2.15",
+      "inheritedRunners": 0,
       "inheritedRunnersScored": 0,
-      "bequeathedRunners": 0,
-      "bequeathedRunnersScored": 0,
-      "stolenBases": 0,
-      "caughtStealing": 0,
-      "qualityStarts": 0,
-      "gamesFinished": 1,
-      "doubles": 1,
-      "triples": 0,
+      "bequeathedRunners": 2,
+      "bequeathedRunnersScored": 2,
+      "stolenBases": 3,
+      "caughtStealing": 1,
+      "qualityStarts": 1,
+      "gamesFinished": 0,
+      "doubles": 5,
+      "triples": 2,
       "gidp": 1,
-      "wildPitches": 0,
-      "balks": 0,
-      "swingAndMisses": 5,
-      "strikeoutsMinusWalksPercentage": ".056",
-      "whiffPercentage": ".139",
-      "strikePercentage": ".620",
-      "pitchesPerInning": "15.69",
-      "pitchesPerPlateAppearance": "3.778",
-      "walksPerPlateAppearance": ".111",
-      "strikeoutsPerPlateAppearance": ".167",
-      "homeRunsPerPlateAppearance": ".000",
-      "walksPerStrikeout": ".667",
-      "iso": ".067"
+      "wildPitches": 1,
+      "balks": 1,
+      "swingAndMisses": 51,
+      "strikeoutsMinusWalksPercentage": ".067",
+      "whiffPercentage": ".202",
+      "strikePercentage": ".650",
+      "pitchesPerInning": "18.27",
+      "pitchesPerPlateAppearance": "4.000",
+      "walksPerPlateAppearance": ".075",
+      "strikeoutsPerPlateAppearance": ".142",
+      "homeRunsPerPlateAppearance": ".052",
+      "walksPerStrikeout": ".526",
+      "iso": ".248"
      },
      "team": {
-      "id": 115,
-      "name": "Colorado Rockies",
-      "link": "/api/v1/teams/115"
+      "id": 117,
+      "name": "Houston Astros",
+      "link": "/api/v1/teams/117"
      },
      "player": {
-      "id": 663562,
-      "fullName": "Noah Davis",
-      "link": "/api/v1/people/663562",
-      "firstName": "Noah",
-      "lastName": "Davis"
+      "id": 434378,
+      "fullName": "Justin Verlander",
+      "link": "/api/v1/people/434378",
+      "firstName": "Justin",
+      "lastName": "Verlander"
      },
      "league": {
-      "id": 104,
-      "name": "National League",
-      "link": "/api/v1/league/104"
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
      },
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
-     "rank": 1,
+     "gameType": "R",
      "split": {
-      "code": "dtu",
-      "description": "On Tuesdays",
-      "sortOrder": 52
+      "code": "h",
+      "description": "Home Games",
+      "sortOrder": 1
      },
      "position": {
       "code": "1",
@@ -85,56 +77,67 @@
     {
      "season": "2024",
      "stat": {
-      "battersFaced": 16,
-      "babip": ".400",
+      "winningPercentage": ".625",
+      "runsScoredPer9": "4.43",
+      "battersFaced": 262,
+      "babip": ".298",
       "obp": ".313",
-      "slg": ".625",
-      "ops": ".938",
-      "homeRunsPer9": "2.25",
-      "doubles": 2,
+      "slg": ".397",
+      "ops": ".710",
+      "homeRunsPer9": "1.18",
+      "inheritedRunners": 0,
+      "inheritedRunnersScored": 0,
+      "bequeathedRunners": 3,
+      "bequeathedRunnersScored": 1,
+      "stolenBases": 5,
+      "caughtStealing": 2,
+      "qualityStarts": 5,
+      "gamesFinished": 0,
+      "doubles": 9,
       "triples": 0,
-      "gidp": 1,
-      "wildPitches": 0,
+      "gidp": 2,
+      "wildPitches": 1,
       "balks": 0,
-      "swingAndMisses": 5,
-      "strikeoutsMinusWalksPercentage": ".313",
-      "whiffPercentage": ".250",
-      "strikePercentage": ".770",
-      "pitchesPerInning": "6.50",
-      "pitchesPerPlateAppearance": "1.625",
-      "walksPerPlateAppearance": ".000",
-      "strikeoutsPerPlateAppearance": ".313",
-      "homeRunsPerPlateAppearance": ".063",
-      "walksPerStrikeout": ".---",
-      "iso": ".313"
+      "swingAndMisses": 113,
+      "strikeoutsMinusWalksPercentage": ".145",
+      "whiffPercentage": ".219",
+      "strikePercentage": ".650",
+      "pitchesPerInning": "17.11",
+      "pitchesPerPlateAppearance": "3.985",
+      "walksPerPlateAppearance": ".065",
+      "strikeoutsPerPlateAppearance": ".210",
+      "homeRunsPerPlateAppearance": ".031",
+      "walksPerStrikeout": ".309",
+      "iso": ".139"
      },
      "team": {
-      "id": 115,
-      "name": "Colorado Rockies",
-      "link": "/api/v1/teams/115"
+      "id": 117,
+      "name": "Houston Astros",
+      "link": "/api/v1/teams/117"
      },
      "player": {
-      "id": 663562,
-      "fullName": "Noah Davis",
-      "link": "/api/v1/people/663562",
-      "firstName": "Noah",
-      "lastName": "Davis"
+      "id": 434378,
+      "fullName": "Justin Verlander",
+      "link": "/api/v1/people/434378",
+      "firstName": "Justin",
+      "lastName": "Verlander"
      },
      "league": {
-      "id": 104,
-      "name": "National League",
-      "link": "/api/v1/league/104"
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
      },
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
-     "rank": 2,
+     "gameType": "R",
      "split": {
-      "code": "c22",
-      "description": "2-2 Count",
-      "sortOrder": 236
+      "code": "a",
+      "description": "Away Games",
+      "sortOrder": 2
      },
      "position": {
       "code": "1",
@@ -146,56 +149,67 @@
     {
      "season": "2024",
      "stat": {
-      "battersFaced": 12,
-      "babip": ".400",
-      "obp": ".455",
-      "slg": ".818",
-      "ops": "1.273",
-      "homeRunsPer9": "3.86",
-      "doubles": 1,
+      "winningPercentage": ".333",
+      "runsScoredPer9": "3.81",
+      "battersFaced": 114,
+      "babip": ".329",
+      "obp": ".333",
+      "slg": ".309",
+      "ops": ".642",
+      "homeRunsPer9": "0.00",
+      "inheritedRunners": 0,
+      "inheritedRunnersScored": 0,
+      "bequeathedRunners": 3,
+      "bequeathedRunnersScored": 1,
+      "stolenBases": 4,
+      "caughtStealing": 1,
+      "qualityStarts": 1,
+      "gamesFinished": 0,
+      "doubles": 6,
       "triples": 0,
-      "gidp": 0,
-      "wildPitches": 0,
+      "gidp": 1,
+      "wildPitches": 2,
       "balks": 0,
-      "swingAndMisses": 8,
-      "strikeoutsMinusWalksPercentage": ".000",
-      "whiffPercentage": ".205",
-      "strikePercentage": ".670",
-      "pitchesPerInning": "42.43",
-      "pitchesPerPlateAppearance": "8.250",
-      "walksPerPlateAppearance": ".000",
-      "strikeoutsPerPlateAppearance": ".000",
-      "homeRunsPerPlateAppearance": ".083",
-      "walksPerStrikeout": ".---",
-      "iso": ".364"
+      "swingAndMisses": 53,
+      "strikeoutsMinusWalksPercentage": ".140",
+      "whiffPercentage": ".265",
+      "strikePercentage": ".620",
+      "pitchesPerInning": "18.23",
+      "pitchesPerPlateAppearance": "4.158",
+      "walksPerPlateAppearance": ".096",
+      "strikeoutsPerPlateAppearance": ".237",
+      "homeRunsPerPlateAppearance": ".000",
+      "walksPerStrikeout": ".407",
+      "iso": ".062"
      },
      "team": {
-      "id": 115,
-      "name": "Colorado Rockies",
-      "link": "/api/v1/teams/115"
+      "id": 117,
+      "name": "Houston Astros",
+      "link": "/api/v1/teams/117"
      },
      "player": {
-      "id": 663562,
-      "fullName": "Noah Davis",
-      "link": "/api/v1/people/663562",
-      "firstName": "Noah",
-      "lastName": "Davis"
+      "id": 434378,
+      "fullName": "Justin Verlander",
+      "link": "/api/v1/people/434378",
+      "firstName": "Justin",
+      "lastName": "Verlander"
      },
      "league": {
-      "id": 104,
-      "name": "National League",
-      "link": "/api/v1/league/104"
+      "id": 103,
+      "name": "American League",
+      "link": "/api/v1/league/103"
      },
      "sport": {
       "id": 1,
       "link": "/api/v1/sports/1",
-      "name": "Major League Baseball"
+      "name": "Major League Baseball",
+      "abbreviation": "MLB"
      },
-     "rank": 3,
+     "gameType": "R",
      "split": {
-      "code": "fp",
-      "description": "First Pitch",
-      "sortOrder": 221
+      "code": "d",
+      "description": "Day Games",
+      "sortOrder": 3
      },
      "position": {
       "code": "1",
@@ -205,9 +219,7 @@
      }
     }
    ],
-   "splitsTiedWithOffset": [],
-   "splitsTiedWithLimit": [],
-   "playerPool": "ALL"
+   "totalSplits": 28892
   }
  ]
 }
