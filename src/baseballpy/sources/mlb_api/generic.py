@@ -455,6 +455,19 @@ class MlbEndpointExtractor:
             destination=str(part),
         ) as tracker:
             pages = self._get_pages(endpoint, request, url, allow_heavy)
+            if not pages:
+                empty = spec.schema.empty_table()
+                if self.cache_config.enabled:
+                    self.store.put(
+                        spec,
+                        empty,
+                        chunk_id=request.ident,
+                        season=request.season,
+                        metadata={"empty": True},
+                    )
+                tracker.set_cache_hit(False)
+                tracker.set_records(0)
+                return empty
             if pages[0][1].status == 404:
                 # nothing there (e.g. an award without a recipients list): keep an empty typed part
                 self.missing += 1
