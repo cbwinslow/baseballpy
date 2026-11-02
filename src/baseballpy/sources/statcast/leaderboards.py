@@ -7,6 +7,7 @@ that deviate from the variant's canonical parameters (a different ``min`` qualif
 dataset, so a dataset always holds one consistent population.
 """
 
+import concurrent.futures
 import logging
 from dataclasses import dataclass
 from typing import Any
@@ -263,7 +264,14 @@ class StatcastLeaderboardExtractor:
         self, years: list[int] | None = None, refresh: bool = False
     ) -> list[LeaderboardReport]:
         """Ingest every supported variant (unsupported ones are reported with their reason)."""
-        reports = [self.ingest_leaderboard(d.slug, years, refresh) for d in SUPPORTED]
+        max_workers = min(max(self.http.rate.max_concurrency, 1), 4)
+        if max_workers > 1 and len(SUPPORTED) > 1:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
+                reports = list(
+                    pool.map(lambda d: self.ingest_leaderboard(d.slug, years, refresh), SUPPORTED)
+                )
+        else:
+            reports = [self.ingest_leaderboard(d.slug, years, refresh) for d in SUPPORTED]
         reports.extend(
             LeaderboardReport(d.slug, {}, unsupported=d.unsupported)
             for d in BY_SLUG.values()

@@ -50,7 +50,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
-| `v1-coverage-and-smart-concurrency` | 2 | 3 | 1.3, 1.4, 1.5 |
+| `v1-coverage-and-smart-concurrency` | 3 | 2 | 1.4, 1.5 |
 
 ## Decisions (`docs/DECISIONS.md`)
 
