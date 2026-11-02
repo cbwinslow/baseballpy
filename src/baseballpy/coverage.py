@@ -109,8 +109,13 @@ def check_mlb_games(season: int, config: LakeConfig) -> CoverageItem:
 
     expected_count = len(expected_pks) if expected_pks else 2430
 
-    box_dir = config.processed_dir("mlb_api", "game_boxscores", season)
+    box_dir = config.processed_dir("mlb_api", "game_boxscore_teams", season)
+    if not box_dir.is_dir() or not any(box_dir.glob("part-*.parquet")):
+        box_dir = config.processed_dir("mlb_api", "game_linescore", season)
+    if not box_dir.is_dir() or not any(box_dir.glob("part-*.parquet")):
+        box_dir = config.processed_dir("mlb_api", "game_boxscores", season)
     held_files = sorted(box_dir.glob("part-*.parquet")) if box_dir.is_dir() else []
+
     held_pks: set[int] = set()
     if held_files:
         try:
