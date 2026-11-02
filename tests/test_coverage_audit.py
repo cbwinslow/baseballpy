@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.parquet as pq
+import pytest
 from click.testing import CliRunner
 
 from baseballpy.cli import main
@@ -101,3 +102,24 @@ def test_catalog_coverage_cli(monkeypatch: object, tmp_path: Path) -> None:
     assert data["season"] == 2024
     assert "items" in data
     assert any(item["source"] == "mlb_api" for item in data["items"])
+
+
+def test_catalog_coverage_fix_flag(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Verify that --fix invokes remediation when gaps exist."""
+    remediated_reports = []
+
+    def fake_remediate(report: object, **kwargs: object) -> object:
+        from baseballpy.ingest.types import JobResult, JobStatus, RunReport, make_job
+
+        remediated_reports.append(report)
+        job = make_job("mlb_api", "season", season=2024)
+        return RunReport(results=[JobResult(job=job, status=JobStatus.COMPLETED, rows=10)])
+
+    monkeypatch.setattr("baseballpy.coverage.remediate_coverage_gaps", fake_remediate)
+
+    runner = CliRunner()
+    res = runner.invoke(main, ["catalog", "coverage", "--season", "2024", "--fix"])
+    assert res.exit_code == 0, res.output
+    assert len(remediated_reports) == 1
+    assert "Executing coverage remediation jobs" in res.output
+    assert "Remediation finished: 1 job(s) run" in res.output

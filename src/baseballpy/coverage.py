@@ -279,6 +279,58 @@ def audit_season_coverage(
     return SeasonCoverageReport(season=target_season, items=items)
 
 
+def remediate_coverage_gaps(
+    report: SeasonCoverageReport,
+    config: LakeConfig | None = None,
+    concurrency: int = 1,
+) -> Any:
+    """Execute remediation jobs for missing entities reported in SeasonCoverageReport."""
+    from baseballpy.ingest.adapters import get_adapters
+    from baseballpy.ingest.runner import plan_jobs, run_jobs
+    from baseballpy.ingest.types import RunReport, Selection
+    from baseballpy.sources.adapters import register_all_adapters
+
+    register_all_adapters()
+
+    all_jobs = []
+    adapters_map = get_adapters()
+
+    for item in report.items:
+        if item.missing_count <= 0 or item.remediation_cmd == "(up to date)":
+            continue
+
+        datasets: tuple[str, ...] = ()
+        if item.source == "mlb_api" and "games" in item.entity:
+            datasets = ("games",)
+        elif item.source == "retrosheet" and "games" in item.entity:
+            datasets = ("events", "boxscores")
+
+        sel = Selection(
+            sources=(item.source,),
+            seasons=(item.season,),
+            datasets=datasets,
+        )
+        source_adapters = (
+            {item.source: adapters_map[item.source]}
+            if item.source in adapters_map
+            else adapters_map
+        )
+        jobs = plan_jobs(source_adapters, sel)
+        all_jobs.extend(jobs)
+
+    if not all_jobs:
+        return RunReport()
+
+    seen: set[str] = set()
+    unique_jobs = []
+    for job in all_jobs:
+        if job.job_id not in seen:
+            seen.add(job.job_id)
+            unique_jobs.append(job)
+
+    return run_jobs(unique_jobs, adapters_map, concurrency=concurrency)
+
+
 __all__ = [
     "CoverageItem",
     "SeasonCoverageReport",
@@ -287,4 +339,5 @@ __all__ = [
     "check_mlb_games",
     "check_retrosheet_games",
     "check_statcast_pitches",
+    "remediate_coverage_gaps",
 ]

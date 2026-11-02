@@ -231,17 +231,42 @@ def catalog_show_cmd(
     is_flag=True,
     help="Output coverage audit as a JSON object.",
 )
+@click.option(
+    "--fix",
+    is_flag=True,
+    help="Automatically execute remediation ingest jobs for missing entities.",
+)
 @click.pass_context
 def catalog_coverage_cmd(
     ctx: click.Context,
     season: int | None,
     sources: tuple[str, ...],
     as_json: bool,
+    fix: bool = False,
 ) -> None:
     """Audit expected vs held entities (games, pitches, datasets) and show fix commands."""
     from baseballpy.coverage import audit_season_coverage
 
     report = audit_season_coverage(season=season, sources=sources)
+
+    if fix:
+        has_gaps = any(item.missing_count > 0 for item in report.items)
+        if has_gaps:
+            if not as_json:
+                console.print("[bold cyan]Executing coverage remediation jobs...[/bold cyan]")
+            from baseballpy.coverage import remediate_coverage_gaps
+
+            run_report = remediate_coverage_gaps(report)
+            if not as_json:
+                console.print(
+                    f"[green]Remediation finished:[/green] {len(run_report.results)} job(s) run.\n"
+                )
+            report = audit_season_coverage(season=season, sources=sources)
+        else:
+            if not as_json:
+                console.print(
+                    "[green]All entities are already up to date. No remediation needed.[/green]\n"
+                )
 
     if as_json:
         click.echo(json.dumps(report.to_dict(), indent=2))
