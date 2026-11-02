@@ -429,3 +429,29 @@ def test_limit_option_reaches_the_planned_opt_in_jobs() -> None:
 def test_limit_must_be_positive() -> None:
     result = CliRunner().invoke(main, ["ingest", "mlb_api", "--limit", "0", "--dry-run"])
     assert result.exit_code == 2
+
+
+def test_ingest_auto_syncs_database(monkeypatch: pytest.MonkeyPatch) -> None:
+    spy = SpyAdapter()
+    ADAPTERS[spy.source] = lambda: spy
+
+    synced_calls = []
+
+    def fake_sync() -> int:
+        synced_calls.append(True)
+        return 3
+
+    monkeypatch.setattr("baseballpy.database.sync_database", fake_sync)
+
+    runner = CliRunner()
+    res = runner.invoke(main, ["ingest", "spy_source", "--seasons", "2023"])
+    assert res.exit_code == 0, res.output
+    assert len(synced_calls) == 1
+    assert "DuckDB catalog synced: 3 view(s) active." in res.output
+
+    # With --no-sync-db, sync_database is skipped
+    synced_calls.clear()
+    res_no_sync = runner.invoke(main, ["ingest", "spy_source", "--seasons", "2023", "--no-sync-db"])
+    assert res_no_sync.exit_code == 0, res_no_sync.output
+    assert len(synced_calls) == 0
+    assert "DuckDB catalog synced" not in res_no_sync.output

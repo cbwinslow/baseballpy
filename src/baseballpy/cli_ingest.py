@@ -2,6 +2,7 @@
 
 import importlib.metadata
 import json
+import logging
 import os
 import shutil
 import sys
@@ -25,6 +26,7 @@ from baseballpy.probe import probe_cmd
 from baseballpy.sources.adapters import register_all_adapters
 from baseballpy.sources.catalog import register_all
 
+logger = logging.getLogger(__name__)
 console = Console()
 
 
@@ -251,6 +253,12 @@ def split_datasets(tokens: Sequence[str], sources: Sequence[str]) -> dict[str, t
     is_flag=True,
     help="Output results as newline-delimited JSON objects.",
 )
+@click.option(
+    "--sync-db/--no-sync-db",
+    "sync_db",
+    default=True,
+    help="Automatically update DuckDB views after successful ingestion (default: true).",
+)
 @click.pass_context
 def ingest_cmd(
     ctx: click.Context,
@@ -263,8 +271,10 @@ def ingest_cmd(
     limit: int | None,
     stop_on_error: bool,
     as_json: bool,
+    sync_db: bool = True,
 ) -> None:
     """Execute ingestion jobs across registered adapters with planning and concurrency."""
+
     register_all_adapters()
 
     target_sources = () if not sources or "all" in sources else tuple(sources)
@@ -385,6 +395,20 @@ def ingest_cmd(
         summary_parts = [f"{status}: {count}" for status, count in sorted(counts.items())]
         summary_str = ", ".join(summary_parts) if summary_parts else "0 jobs"
         console.print(f"Summary: {summary_str}")
+
+    if (
+        sync_db
+        and report.exit_code == 0
+        and any(r.status == JobStatus.COMPLETED for r in report.results)
+    ):
+        try:
+            from baseballpy.database import sync_database
+
+            synced = sync_database()
+            if not as_json and synced > 0:
+                console.print(f"[cyan]DuckDB catalog synced:[/cyan] {synced} view(s) active.")
+        except (OSError, RuntimeError, ValueError) as exc:
+            logger.warning("failed to sync DuckDB views: %s", exc)
 
     ctx.exit(report.exit_code)
 
