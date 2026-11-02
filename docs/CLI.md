@@ -155,10 +155,11 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  audit   Compare provider-listed items with the registry (exit 1 on MISSING/REVIVED/ERROR).
-  list    List registered datasets with schema, partition, and primary key metadata.
-  show    Show detailed metadata, schema columns, and lake status for a registered dataset.
-  status  Inspect local lake processed Parquet datasets and reporting status.
+  audit     Compare provider-listed items with the registry (exit 1 on MISSING/REVIVED/ERROR).
+  coverage  Audit expected vs held entities (games, pitches, datasets) and show fix commands.
+  list      List registered datasets with schema, partition, and primary key metadata.
+  show      Show detailed metadata, schema columns, and lake status for a registered dataset.
+  status    Inspect local lake processed Parquet datasets and reporting status.
 ```
 
 ## `baseballpy catalog audit`
@@ -173,6 +174,20 @@ Options:
                                sources.
   --json                       Print the findings as JSON.
   --help                       Show this message and exit.
+```
+
+## `baseballpy catalog coverage`
+
+```text
+Usage: baseballpy catalog coverage [OPTIONS]
+
+  Audit expected vs held entities (games, pitches, datasets) and show fix commands.
+
+Options:
+  -s, --season INTEGER  Season year to audit (default: current year).
+  --source TEXT         Filter by source (repeatable, e.g. --source mlb_api).
+  --json                Output coverage audit as a JSON object.
+  --help                Show this message and exit.
 ```
 
 ## `baseballpy catalog list`

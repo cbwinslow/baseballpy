@@ -329,5 +329,6 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-200 | v1-coverage-and-smart-concurrency 1.2: smart concurrency for MLB API hydrate batches and season endpoints | DONE | hydrate batches in _pool_pages_by_hydrate and season endpoints run concurrently bounded by max_concurrency and 8 req/s token bucket |
 | B-201 | v1-coverage-and-smart-concurrency 1.3: concurrency verification across Statcast and Retrosheet | DONE | Statcast and Retrosheet multi-chunk / multi-season runs verified with bounded workers and rate limit adherence |
 | B-202 | v1-coverage-and-smart-concurrency 1.4: `baseballpy catalog coverage` expected-vs-held CLI command | DONE | command outputs expected vs held games, % held, missing IDs, and copy-paste remediation commands |
-| B-203 | `v1-coverage-and-smart-concurrency 1.5`: tests, documentation, gates, spec merge, and archive | READY | unit/integration tests pass, all gates green, spec deltas merged into openspec/specs, change archived |
+| B-203 | v1-coverage-and-smart-concurrency 1.5: tests, documentation, gates, spec merge, and archive | DONE | unit/integration tests pass, all gates green, spec deltas merged into openspec/specs, change archived |
+
 

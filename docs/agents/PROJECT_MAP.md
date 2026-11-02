@@ -10,10 +10,10 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 5 | 5 | 5 |
 | `caching-and-invalidation` | 16 | 26 | 34 |
-| `catalog-audit` | 2 | 2 | 2 |
+| `catalog-audit` | 3 | 3 | 3 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 9 | 11 | 15 |
-| `concurrency-and-rate-limiting` | 3 | 5 | 6 |
+| `concurrency-and-rate-limiting` | 4 | 6 | 7 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-46 changes are archived under `openspec/changes/archive/`.
+47 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -50,7 +50,6 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
-| `v1-coverage-and-smart-concurrency` | 4 | 1 | 1.5 |
 
 ## Decisions (`docs/DECISIONS.md`)
 
