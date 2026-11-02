@@ -331,4 +331,16 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-202 | v1-coverage-and-smart-concurrency 1.4: `baseballpy catalog coverage` expected-vs-held CLI command | DONE | command outputs expected vs held games, % held, missing IDs, and copy-paste remediation commands |
 | B-203 | v1-coverage-and-smart-concurrency 1.5: tests, documentation, gates, spec merge, and archive | DONE | unit/integration tests pass, all gates green, spec deltas merged into openspec/specs, change archived |
 
+## Q. V1 Ergonomics, auto-sync, and end-to-end verification (`v1-ergonomics-and-e2e-verification`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-204 | v1-ergonomics-and-e2e-verification 1.1: author proposal, design, tasks, spec deltas | DONE | proposal.md, design.md, tasks.md, spec deltas in place, openspec validate passes |
+| B-205 | `v1-ergonomics-and-e2e-verification 1.2`: automatic DuckDB catalog sync on ingest | READY | baseballpy ingest automatically updates DuckDB views upon completion with --sync-db/--no-sync-db, test passes |
+
+| B-206 | `v1-ergonomics-and-e2e-verification 1.3`: `catalog coverage --fix` auto-remediation | after B-205 | catalog coverage --fix executes remediation jobs directly and updates coverage report, test passes |
+| B-207 | `v1-ergonomics-and-e2e-verification 1.4`: live end-to-end test on 2024 MLB data | after B-206 | live ingest of 2024 season and sample games completes, DuckDB views queryable via SQL, coverage verifies |
+| B-208 | `v1-ergonomics-and-e2e-verification 1.5`: tests, gates, documentation, spec merge, and archive | after B-207 | all gates green, spec deltas merged into openspec/specs, change archived |
+
+
 
