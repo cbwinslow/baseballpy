@@ -12,14 +12,14 @@ Examples demonstrating how to check for the Chadwick installation and conditiona
 
 ```r
 chadwick_path()
-#> ! cwevent is not installed. Please see https://github.com/chadwickbureau/chadwick/releases for installation instructions. 
+#> ! cwevent is not installed. Please see https://github.com/chadwickbureau/chadwick/releases for installation instructions.
 
 chadwick_is_installed()
-#> ! cwevent is not installed. Please see https://github.com/chadwickbureau/chadwick/releases for installation instructions. 
+#> ! cwevent is not installed. Please see https://github.com/chadwickbureau/chadwick/releases for installation instructions.
 #> [1] FALSE
 
 chadwick_find_lib()
-#> ! cwevent is not installed. Please see https://github.com/chadwickbureau/chadwick/releases for installation instructions. 
+#> ! cwevent is not installed. Please see https://github.com/chadwickbureau/chadwick/releases for installation instructions.
 if (FALSE) { # \dontrun{
 if (chadwick_ld_library_path()) {
   retrosheet_data(tempdir())
@@ -65,14 +65,14 @@ Retrieves play-by-play differences for game 632970 between the given start and e
 
 ```r
 # \donttest{
-  try(mlb_pbp_diff(game_pk = 632970, 
-                   start_timecode = "20210808_231704", 
+  try(mlb_pbp_diff(game_pk = 632970,
+                   start_timecode = "20210808_231704",
                    end_timecode = "20210808_233711"))
 #> ── MLB Play-by-Play diff data from MLB.com ────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:46 UTC
 #> # A tibble: 50 × 141
 #>    game_pk game_date  index startTime       endTime isPitch type  playId
-#>      <dbl> <chr>      <int> <chr>           <chr>   <lgl>   <chr> <chr> 
+#>      <dbl> <chr>      <int> <chr>           <chr>   <lgl>   <chr> <chr>
 #>  1  632970 2021-08-08     2 2021-08-08T23:… 2021-0… TRUE    pitch 0c67e…
 #>  2  632970 2021-08-08     1 2021-08-08T23:… 2021-0… TRUE    pitch 51631…
 #>  3  632970 2021-08-08     0 2021-08-08T23:… 2021-0… TRUE    pitch e3edf…
@@ -108,17 +108,17 @@ Example call wrapped in try() to handle errors. The output shows a tibble with 1
 #> ℹ Data updated: 2026-09-30 14:30:56 UTC
 #> # A tibble: 152 × 21
 #>    season_id has_wildcard pre_season_start_date season_start_date
-#>    <chr>     <lgl>        <chr>                 <chr>            
-#>  1 1876      FALSE        1876-01-01            1876-04-22       
-#>  2 1877      FALSE        1877-01-01            1877-04-30       
-#>  3 1878      FALSE        1878-01-01            1878-05-01       
-#>  4 1879      FALSE        1879-01-01            1879-05-01       
-#>  5 1880      FALSE        1880-01-01            1880-05-01       
-#>  6 1881      FALSE        1881-01-01            1881-04-30       
-#>  7 1882      FALSE        1882-01-01            1882-05-01       
-#>  8 1883      FALSE        1883-01-01            1883-05-01       
-#>  9 1884      FALSE        1884-01-01            1884-05-01       
-#> 10 1885      FALSE        1885-01-01            1885-04-30       
+#>    <chr>     <lgl>        <chr>                 <chr>
+#>  1 1876      FALSE        1876-01-01            1876-04-22
+#>  2 1877      FALSE        1877-01-01            1877-04-30
+#>  3 1878      FALSE        1878-01-01            1878-05-01
+#>  4 1879      FALSE        1879-01-01            1879-05-01
+#>  5 1880      FALSE        1880-01-01            1880-05-01
+#>  6 1881      FALSE        1881-01-01            1881-04-30
+#>  7 1882      FALSE        1882-01-01            1882-05-01
+#>  8 1883      FALSE        1883-01-01            1883-05-01
+#>  9 1884      FALSE        1884-01-01            1884-05-01
+#> 10 1885      FALSE        1885-01-01            1885-04-30
 #> # ℹ 142 more rows
 #> # ℹ 17 more variables: regular_season_start_date <chr>,
 #> #   regular_season_end_date <chr>, season_end_date <chr>,
@@ -143,26 +143,26 @@ Calls mlb_batting_orders with game_pk=566001. The output is a tibble with 18 row
 #> ── MLB Game Starting Batting Order data from MLB.com ───────────────────
 #> ℹ Data updated: 2026-09-30 14:30:21 UTC
 #> # A tibble: 18 × 8
-#>        id fullName abbreviation batting_order batting_position_num team 
+#>        id fullName abbreviation batting_order batting_position_num team
 #>     <int> <chr>    <chr>        <chr>         <chr>                <chr>
-#>  1 606299 José Pe… 2B           1             0                    away 
-#>  2 458015 Joey Vo… 1B           2             0                    away 
-#>  3 553993 Eugenio… 3B           3             0                    away 
-#>  4 608385 Jesse W… LF           4             0                    away 
-#>  5 624577 Yasiel … RF           5             0                    away 
-#>  6 594988 Scott S… CF           6             0                    away 
-#>  7 578428 Jose Ig… SS           7             0                    away 
-#>  8 571466 Tucker … C            8             0                    away 
-#>  9 543699 Tanner … P            9             0                    away 
-#> 10 643446 Jeff Mc… 2B           1             0                    home 
-#> 11 624413 Pete Al… 1B           2             0                    home 
-#> 12 607043 Brandon… LF           3             0                    home 
-#> 13 624424 Michael… RF           4             0                    home 
-#> 14 453943 Todd Fr… 3B           5             0                    home 
-#> 15 467092 Wilson … C            6             0                    home 
-#> 16 642708 Amed Ro… SS           7             0                    home 
-#> 17 501571 Juan La… CF           8             0                    home 
-#> 18 554430 Zack Wh… P            9             0                    home 
+#>  1 606299 José Pe… 2B           1             0                    away
+#>  2 458015 Joey Vo… 1B           2             0                    away
+#>  3 553993 Eugenio… 3B           3             0                    away
+#>  4 608385 Jesse W… LF           4             0                    away
+#>  5 624577 Yasiel … RF           5             0                    away
+#>  6 594988 Scott S… CF           6             0                    away
+#>  7 578428 Jose Ig… SS           7             0                    away
+#>  8 571466 Tucker … C            8             0                    away
+#>  9 543699 Tanner … P            9             0                    away
+#> 10 643446 Jeff Mc… 2B           1             0                    home
+#> 11 624413 Pete Al… 1B           2             0                    home
+#> 12 607043 Brandon… LF           3             0                    home
+#> 13 624424 Michael… RF           4             0                    home
+#> 14 453943 Todd Fr… 3B           5             0                    home
+#> 15 467092 Wilson … C            6             0                    home
+#> 16 642708 Amed Ro… SS           7             0                    home
+#> 17 501571 Juan La… CF           8             0                    home
+#> 18 554430 Zack Wh… P            9             0                    home
 #> # ℹ 2 more variables: teamName <chr>, teamID <int>
 # }
 ```
@@ -182,17 +182,17 @@ Example usage of mlb_sky() wrapped in try() to handle potential errors, showing 
 #> ℹ Data updated: 2026-09-30 14:30:57 UTC
 #> # A tibble: 10 × 2
 #>    sky_code      sky_description
-#>    <chr>         <chr>          
-#>  1 Clear         Clear          
-#>  2 Cloudy        Cloudy         
-#>  3 Dome          Dome           
-#>  4 Drizzle       Drizzle        
-#>  5 Overcast      Overcast       
-#>  6 Partly Cloudy Partly Cloudy  
-#>  7 Rain          Rain           
-#>  8 Roof Closed   Roof Closed    
-#>  9 Snow          Snow           
-#> 10 Sunny         Sunny          
+#>    <chr>         <chr>
+#>  1 Clear         Clear
+#>  2 Cloudy        Cloudy
+#>  3 Dome          Dome
+#>  4 Drizzle       Drizzle
+#>  5 Overcast      Overcast
+#>  6 Partly Cloudy Partly Cloudy
+#>  7 Rain          Rain
+#>  8 Roof Closed   Roof Closed
+#>  9 Snow          Snow
+#> 10 Sunny         Sunny
 # }
 ```
 
@@ -224,17 +224,17 @@ Example usage of mlb_metrics() wrapped in try() and donttest. Shows the function
 #> ℹ Data updated: 2026-09-30 14:30:42 UTC
 #> # A tibble: 22 × 4
 #>    metric_name        metric_id stat_group        metric_unit
-#>    <chr>                  <int> <chr>             <chr>      
-#>  1 ""                         0 NA                NA         
-#>  2 "releaseSpinRate"       1000 pitching          RPM        
-#>  3 "releaseExtension"      1001 pitching          FT         
-#>  4 "releaseSpeed"          1002 pitching          MPH        
-#>  5 "effectiveSpeed"        1028 pitching          MPH        
-#>  6 "launchSpeed"           1003 hitting, pitching MPH        
-#>  7 "launchAngle"           1005 hitting, pitching DEG        
-#>  8 "generatedSpeed"        1044 hitting, pitching MPH        
-#>  9 "maxHeight"             1039 hitting           FT         
-#> 10 "travelTime"            1049 hitting           SEC        
+#>    <chr>                  <int> <chr>             <chr>
+#>  1 ""                         0 NA                NA
+#>  2 "releaseSpinRate"       1000 pitching          RPM
+#>  3 "releaseExtension"      1001 pitching          FT
+#>  4 "releaseSpeed"          1002 pitching          MPH
+#>  5 "effectiveSpeed"        1028 pitching          MPH
+#>  6 "launchSpeed"           1003 hitting, pitching MPH
+#>  7 "launchAngle"           1005 hitting, pitching DEG
+#>  8 "generatedSpeed"        1044 hitting, pitching MPH
+#>  9 "maxHeight"             1039 hitting           FT
+#> 10 "travelTime"            1049 hitting           SEC
 #> # ℹ 12 more rows
 # }
 ```
@@ -302,19 +302,19 @@ Example workflow: search Statcast data for a batter, compute run expectancy, the
 ```r
 # \donttest{
  try({
-   df <- statcast_search(start_date = "2016-04-06", end_date = "2016-04-15", 
-                         playerid = 621043, player_type = 'batter') 
+   df <- statcast_search(start_date = "2016-04-06", end_date = "2016-04-15",
+                         playerid = 621043, player_type = 'batter')
    df <- run_expectancy_code(df, level = "plate appearances")
    linear_weights_savant(df, level = "plate appearance")
  })
 #> # A tibble: 5 × 3
 #>   events   linear_weights_above_average linear_weights_above_outs
 #>   <chr>                           <dbl>                     <dbl>
-#> 1 home_run                         1                         1   
-#> 2 double                           0.5                       0.5 
+#> 1 home_run                         1                         1
+#> 2 double                           0.5                       0.5
 #> 3 single                           0.17                      0.17
-#> 4 walk                             0                         0   
-#> 5 outs                             0                         0   
+#> 4 walk                             0                         0
+#> 5 outs                             0                         0
 # }
 ```
 
@@ -340,7 +340,7 @@ Example call to mlb_game_wp with game_pk 531060, wrapped in try() and \donttest.
 #>  4                    54.8                   45.2                    2.2
 #>  5                    52.6                   47.4                   -2.2
 #>  6                    51                     49                     -1.6
-#>  7                    50                     50                     -1  
+#>  7                    50                     50                     -1
 #>  8                    46.2                   53.8                   -3.8
 #>  9                    49.7                   50.3                    3.5
 #> 10                    52.8                   47.2                    3.1
@@ -422,17 +422,17 @@ Example call to mlb_teams for the 2021 season with sport_ids = c(1). The output 
 #> ℹ Data updated: 2026-09-30 14:31:04 UTC
 #> # A tibble: 30 × 33
 #>    all_star_status team_id team_full_name       link    season team_code
-#>    <chr>             <int> <chr>                <chr>    <int> <chr>    
-#>  1 N                   133 Oakland Athletics    /api/v…   2021 oak      
-#>  2 N                   134 Pittsburgh Pirates   /api/v…   2021 pit      
-#>  3 N                   135 San Diego Padres     /api/v…   2021 sdn      
-#>  4 N                   136 Seattle Mariners     /api/v…   2021 sea      
-#>  5 N                   137 San Francisco Giants /api/v…   2021 sfn      
-#>  6 N                   138 St. Louis Cardinals  /api/v…   2021 sln      
-#>  7 N                   139 Tampa Bay Rays       /api/v…   2021 tba      
-#>  8 N                   140 Texas Rangers        /api/v…   2021 tex      
-#>  9 N                   141 Toronto Blue Jays    /api/v…   2021 tor      
-#> 10 N                   142 Minnesota Twins      /api/v…   2021 min      
+#>    <chr>             <int> <chr>                <chr>    <int> <chr>
+#>  1 N                   133 Oakland Athletics    /api/v…   2021 oak
+#>  2 N                   134 Pittsburgh Pirates   /api/v…   2021 pit
+#>  3 N                   135 San Diego Padres     /api/v…   2021 sdn
+#>  4 N                   136 Seattle Mariners     /api/v…   2021 sea
+#>  5 N                   137 San Francisco Giants /api/v…   2021 sfn
+#>  6 N                   138 St. Louis Cardinals  /api/v…   2021 sln
+#>  7 N                   139 Tampa Bay Rays       /api/v…   2021 tba
+#>  8 N                   140 Texas Rangers        /api/v…   2021 tex
+#>  9 N                   141 Toronto Blue Jays    /api/v…   2021 tor
+#> 10 N                   142 Minnesota Twins      /api/v…   2021 min
 #> # ℹ 20 more rows
 #> # ℹ 27 more variables: file_code <chr>, team_abbreviation <chr>,
 #> #   team_name <chr>, location_name <chr>, first_year_of_play <chr>,
@@ -458,15 +458,15 @@ Example call wrapped in try() and \donttest{} to avoid errors during testing. Th
 #> ℹ Data updated: 2026-09-30 14:30:29 UTC
 #> # A tibble: 8 × 21
 #>   title       call_letters espn_auth_required tbs_auth_required
-#>   <chr>       <chr>        <lgl>              <lgl>            
-#> 1 MLBTV       SNY          FALSE              FALSE            
-#> 2 MLBTV       FSO          FALSE              FALSE            
-#> 3 MLBTV-Audio NA           NA                 NA               
-#> 4 MLBTV-Audio NA           NA                 NA               
-#> 5 MLBTV-Audio NA           NA                 NA               
-#> 6 Audio       WCBS 880     NA                 NA               
-#> 7 Audio       WLW          NA                 NA               
-#> 8 Audio       ESPN-1050    NA                 NA               
+#>   <chr>       <chr>        <lgl>              <lgl>
+#> 1 MLBTV       SNY          FALSE              FALSE
+#> 2 MLBTV       FSO          FALSE              FALSE
+#> 3 MLBTV-Audio NA           NA                 NA
+#> 4 MLBTV-Audio NA           NA                 NA
+#> 5 MLBTV-Audio NA           NA                 NA
+#> 6 Audio       WCBS 880     NA                 NA
+#> 7 Audio       WLW          NA                 NA
+#> 8 Audio       ESPN-1050    NA                 NA
 #> # ℹ 17 more variables: espn2auth_required <lgl>, game_date <chr>,
 #> #   content_id <chr>, fs1auth_required <lgl>, media_id <chr>,
 #> #   media_feed_type <chr>, mlbn_auth_required <lgl>,
@@ -491,19 +491,19 @@ Example call wrapped in try() and \donttest{} that prints a tibble of 11 game ty
 #> ── MLB Game Types data from MLB.com ───────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:35 UTC
 #> # A tibble: 11 × 2
-#>    game_type_id game_type_description     
-#>    <chr>        <chr>                     
-#>  1 S            Spring Training           
-#>  2 R            Regular Season            
-#>  3 F            Wild Card                 
-#>  4 D            Division Series           
+#>    game_type_id game_type_description
+#>    <chr>        <chr>
+#>  1 S            Spring Training
+#>  2 R            Regular Season
+#>  3 F            Wild Card
+#>  4 D            Division Series
 #>  5 L            League Championship Series
-#>  6 W            World Series              
-#>  7 C            Championship              
-#>  8 P            Postseason                
-#>  9 A            All-Star Game             
-#> 10 I            Intrasquad                
-#> 11 E            Exhibition                
+#>  6 W            World Series
+#>  7 C            Championship
+#>  8 P            Postseason
+#>  9 A            All-Star Game
+#> 10 I            Intrasquad
+#> 11 E            Exhibition
 # }
 ```
 
@@ -565,18 +565,18 @@ Example call to mlb_team_affiliates with team_ids = 147, wrapped in try() and \d
 #> ℹ Data updated: 2026-09-30 14:31:01 UTC
 #> # A tibble: 11 × 35
 #>    all_star_status team_id team_full_name         link  season team_code
-#>    <chr>             <int> <chr>                  <chr>  <int> <chr>    
-#>  1 F                   386 New York Yankees Pros… /api…   2026 nyp      
-#>  2 N                   531 Scranton/Wilkes-Barre… /api…   2026 swb      
-#>  3 N                  1956 Somerset Patriots      /api…   2026 som      
-#>  4 N                   537 Hudson Valley Renegad… /api…   2026 hdv      
-#>  5 N                   634 DSL NYY Bombers        /api…   2026 dyb      
-#>  6 N                   635 DSL NYY Yankees        /api…   2026 dya      
-#>  7 N                   475 FCL Yankees            /api…   2026 fya      
-#>  8 N                   587 Tampa Tarpons          /api…   2026 tpa      
-#>  9 N                  3308 Yankees Alternate Tra… /api…   2026 nys      
-#> 10 O                  3309 Yankees Organization   /api…   2026 nyo      
-#> 11 N                   147 New York Yankees       /api…   2026 nya      
+#>    <chr>             <int> <chr>                  <chr>  <int> <chr>
+#>  1 F                   386 New York Yankees Pros… /api…   2026 nyp
+#>  2 N                   531 Scranton/Wilkes-Barre… /api…   2026 swb
+#>  3 N                  1956 Somerset Patriots      /api…   2026 som
+#>  4 N                   537 Hudson Valley Renegad… /api…   2026 hdv
+#>  5 N                   634 DSL NYY Bombers        /api…   2026 dyb
+#>  6 N                   635 DSL NYY Yankees        /api…   2026 dya
+#>  7 N                   475 FCL Yankees            /api…   2026 fya
+#>  8 N                   587 Tampa Tarpons          /api…   2026 tpa
+#>  9 N                  3308 Yankees Alternate Tra… /api…   2026 nys
+#> 10 O                  3309 Yankees Organization   /api…   2026 nyo
+#> 11 N                   147 New York Yankees       /api…   2026 nya
 #> # ℹ 29 more variables: file_code <chr>, team_abbreviation <chr>,
 #> #   team_name <chr>, location_name <chr>, first_year_of_play <chr>,
 #> #   short_name <chr>, parent_org_name <chr>, parent_org_id <int>,
@@ -655,17 +655,17 @@ Example usage of mlb_review_reasons() wrapped in try() to handle potential error
 #> ℹ Data updated: 2026-09-30 14:30:50 UTC
 #> # A tibble: 27 × 2
 #>    review_reason_code review_reason_description
-#>    <chr>              <chr>                    
-#>  1 A                  Tag play                 
-#>  2 F                  Close play at 1st        
-#>  3 C                  Force play               
-#>  4 H                  Home run                 
-#>  5 O                  Fair/foul in outfield    
-#>  6 D                  Catch/drop in outfield   
-#>  7 T                  Trap play in outfield    
-#>  8 J                  Pitch result             
-#>  9 I                  Hit by pitch             
-#> 10 P                  Home-plate collision     
+#>    <chr>              <chr>
+#>  1 A                  Tag play
+#>  2 F                  Close play at 1st
+#>  3 C                  Force play
+#>  4 H                  Home run
+#>  5 O                  Fair/foul in outfield
+#>  6 D                  Catch/drop in outfield
+#>  7 T                  Trap play in outfield
+#>  8 J                  Pitch result
+#>  9 I                  Hit by pitch
+#> 10 P                  Home-plate collision
 #> # ℹ 17 more rows
 # }
 ```
@@ -685,7 +685,7 @@ Example call to mlb_teams_stats_leaders for home runs in the 2021 season with sp
 #> ℹ Data updated: 2026-09-30 14:31:05 UTC
 #> # A tibble: 90 × 11
 #>    leader_category  rank value season team_id team_name        team_link
-#>    <chr>           <int> <chr> <chr>    <int> <chr>            <chr>    
+#>    <chr>           <int> <chr> <chr>    <int> <chr>            <chr>
 #>  1 homeRuns            1 262   2021       141 Toronto Blue Ja… /api/v1/…
 #>  2 homeRuns            2 241   2021       137 San Francisco G… /api/v1/…
 #>  3 homeRuns            3 239   2021       144 Atlanta Braves   /api/v1/…
@@ -779,18 +779,18 @@ Example of calling mlb_runner_detail_types() wrapped in try() and \donttest{}. T
 #> ── MLB Runner Detail Types data from MLB.com ──────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:50 UTC
 #> # A tibble: 31 × 1
-#>    stat_name          
-#>    <chr>              
-#>  1 r_force_out        
-#>  2 r_adv_force        
-#>  3 r_adv_throw        
-#>  4 r_doubled_off      
-#>  5 r_thrown_out       
-#>  6 r_tagged_out       
-#>  7 r_out_stretching   
+#>    stat_name
+#>    <chr>
+#>  1 r_force_out
+#>  2 r_adv_force
+#>  3 r_adv_throw
+#>  4 r_doubled_off
+#>  5 r_thrown_out
+#>  6 r_tagged_out
+#>  7 r_out_stretching
 #>  8 r_appeal_left_early
-#>  9 r_rfc              
-#> 10 r_out_appeal       
+#>  9 r_rfc
+#> 10 r_out_appeal
 #> # ℹ 21 more rows
 # }
 ```
@@ -826,12 +826,12 @@ Example call to mlb_team_history with team_ids = 147, wrapped in try() and \dont
 #> ℹ Data updated: 2026-09-30 14:31:02 UTC
 #> # A tibble: 5 × 26
 #>   all_star_status team_id team_full_name       link     season team_code
-#>   <chr>             <int> <chr>                <chr>     <int> <chr>    
-#> 1 N                   147 New York Yankees     /api/v1…   2009 nya      
-#> 2 N                   147 New York Yankees     /api/v1…   1974 nya      
-#> 3 N                   147 New York Yankees     /api/v1…   1923 nya      
-#> 4 N                   147 New York Yankees     /api/v1…   1913 nya      
-#> 5 N                   147 New York Highlanders /api/v1…   1903 nya      
+#>   <chr>             <int> <chr>                <chr>     <int> <chr>
+#> 1 N                   147 New York Yankees     /api/v1…   2009 nya
+#> 2 N                   147 New York Yankees     /api/v1…   1974 nya
+#> 3 N                   147 New York Yankees     /api/v1…   1923 nya
+#> 4 N                   147 New York Yankees     /api/v1…   1913 nya
+#> 5 N                   147 New York Highlanders /api/v1…   1903 nya
 #> # ℹ 20 more variables: file_code <chr>, team_abbreviation <chr>,
 #> #   team_name <chr>, location_name <chr>, first_year_of_play <chr>,
 #> #   short_name <chr>, franchise_name <chr>, club_name <chr>,
@@ -856,18 +856,18 @@ Example usage wrapped in try() to handle errors. The output shows a tibble with 
 #> ── MLB League Leader Types data from MLB.com ──────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:41 UTC
 #> # A tibble: 70 × 1
-#>    leader_type           
-#>    <chr>                 
-#>  1 assists               
-#>  2 shutouts              
-#>  3 homeRuns              
-#>  4 sacrificeBunts        
-#>  5 sacrificeFlies        
-#>  6 runs                  
+#>    leader_type
+#>    <chr>
+#>  1 assists
+#>  2 shutouts
+#>  3 homeRuns
+#>  4 sacrificeBunts
+#>  5 sacrificeFlies
+#>  6 runs
 #>  7 groundoutToFlyoutRatio
-#>  8 stolenBases           
-#>  9 battingAverage        
-#> 10 groundOuts            
+#>  8 stolenBases
+#>  9 battingAverage
+#> 10 groundOuts
 #> # ℹ 60 more rows
 # }
 ```
@@ -907,27 +907,27 @@ Example usage wrapped in try() to handle potential errors. The output shows the 
 #> ── MLB Schedule Event Types data from MLB.com ─────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:54 UTC
 #> # A tibble: 19 × 2
-#>    schedule_event_type_code schedule_event_type_name          
-#>    <chr>                    <chr>                             
-#>  1 A                        All-Star Weekend Event            
-#>  2 T                        Team Event                        
-#>  3 E                        Exhibition                        
-#>  4 Z                        Postseason Games                  
-#>  5 Y                        Spring Training Games             
-#>  6 W                        Pitchers & Catchers Report        
-#>  7 X                        Full Squad Reports                
-#>  8 H                        STH Events                        
-#>  9 B                        Ballpark Tours                    
-#> 10 I                        Important Dates                   
-#> 11 O                        Other                             
-#> 12 C                        Cultural Events                   
-#> 13 D                        Tracking Data Events              
-#> 14 F                        Festival                          
-#> 15 K                        Kids & Family                     
-#> 16 M                        Music                             
-#> 17 P                        Promotion Logo - Background Image 
+#>    schedule_event_type_code schedule_event_type_name
+#>    <chr>                    <chr>
+#>  1 A                        All-Star Weekend Event
+#>  2 T                        Team Event
+#>  3 E                        Exhibition
+#>  4 Z                        Postseason Games
+#>  5 Y                        Spring Training Games
+#>  6 W                        Pitchers & Catchers Report
+#>  7 X                        Full Squad Reports
+#>  8 H                        STH Events
+#>  9 B                        Ballpark Tours
+#> 10 I                        Important Dates
+#> 11 O                        Other
+#> 12 C                        Cultural Events
+#> 13 D                        Tracking Data Events
+#> 14 F                        Festival
+#> 15 K                        Kids & Family
+#> 16 M                        Music
+#> 17 P                        Promotion Logo - Background Image
 #> 18 Q                        Promotion Logo - Single Date Image
-#> 19 S                        Studio Event                      
+#> 19 S                        Studio Event
 # }
 ```
 
@@ -952,21 +952,21 @@ Source: https://billpetti.github.io/baseballr/reference/statcast_search
 Three examples of statcast_search() calls: one for a batter (playerid 547180), one for a pitcher (playerid 664285), and one for all players over a date range. Each returns a tibble with 119 columns; the batter example returns 82 rows, the pitcher example 92 rows, and the daily example 250 rows. The calls are wrapped in try() and enclosed in \donttest{}.
 
 ```r
-try(statcast_search(start_date = "2022-10-06", 
-                      end_date = "2022-10-16", 
-                      playerid = 547180, 
+try(statcast_search(start_date = "2022-10-06",
+                      end_date = "2022-10-16",
+                      playerid = 547180,
                       player_type = 'batter'))
 ```
 
 ```r
-try(statcast_search(start_date = "2022-10-06", 
-                      end_date = "2022-10-16", 
-                      playerid = 664285, 
+try(statcast_search(start_date = "2022-10-06",
+                      end_date = "2022-10-16",
+                      playerid = 664285,
                       player_type = 'pitcher'))
 ```
 
 ```r
-try(statcast_search(start_date = "2022-11-04", 
+try(statcast_search(start_date = "2022-11-04",
                       end_date = "2022-11-06"))
 ```
 
@@ -985,17 +985,17 @@ Example usage of mlb_pitch_types() wrapped in try() to handle potential errors. 
 #> ℹ Data updated: 2026-09-30 14:30:47 UTC
 #> # A tibble: 24 × 2
 #>    pitch_type_code pitch_type_description
-#>    <chr>           <chr>                 
-#>  1 FA              Fastball              
-#>  2 FF              Four-seam FB          
-#>  3 FT              Two-seam FB           
-#>  4 FC              Cutter                
-#>  5 FS              Splitter              
-#>  6 FO              Forkball              
-#>  7 SI              Sinker                
-#>  8 ST              Sweeper               
-#>  9 SL              Slider                
-#> 10 CU              Curveball             
+#>    <chr>           <chr>
+#>  1 FA              Fastball
+#>  2 FF              Four-seam FB
+#>  3 FT              Two-seam FB
+#>  4 FC              Cutter
+#>  5 FS              Splitter
+#>  6 FO              Forkball
+#>  7 SI              Sinker
+#>  8 ST              Sweeper
+#>  9 SL              Slider
+#> 10 CU              Curveball
 #> # ℹ 14 more rows
 # }
 ```
@@ -1015,17 +1015,17 @@ Example usage of load_game_info_sup() wrapped in try() to handle potential error
 #> ℹ Data updated: 2026-09-30 14:28:13 UTC
 #> # A tibble: 41,946 × 18
 #>    game_date  game_pk venue_name      venue_id temperature other_weather
-#>    <IDate>      <int> <chr>              <int>       <int> <chr>        
-#>  1 2022-10-05  663451 Oriole Park at…        2          59 Overcast     
-#>  2 2022-10-05  663272 Oriole Park at…        2          59 Overcast     
-#>  3 2022-10-05  662421 Oakland Colise…       10          69 Sunny        
-#>  4 2022-10-05  662304 PNC Park              31          72 Sunny        
-#>  5 2022-10-05  661996 Globe Life Fie…     5325          86 Sunny        
-#>  6 2022-10-05  663131 Great American…     2602          76 Sunny        
-#>  7 2022-10-05  663095 Progressive Fi…        5          68 Sunny        
-#>  8 2022-10-05  662488 Citi Field          3289          59 Overcast     
-#>  9 2022-10-05  662195 T-Mobile Park        680          57 Cloudy       
-#> 10 2022-10-05  662238 Petco Park          2680          68 Cloudy       
+#>    <IDate>      <int> <chr>              <int>       <int> <chr>
+#>  1 2022-10-05  663451 Oriole Park at…        2          59 Overcast
+#>  2 2022-10-05  663272 Oriole Park at…        2          59 Overcast
+#>  3 2022-10-05  662421 Oakland Colise…       10          69 Sunny
+#>  4 2022-10-05  662304 PNC Park              31          72 Sunny
+#>  5 2022-10-05  661996 Globe Life Fie…     5325          86 Sunny
+#>  6 2022-10-05  663131 Great American…     2602          76 Sunny
+#>  7 2022-10-05  663095 Progressive Fi…        5          68 Sunny
+#>  8 2022-10-05  662488 Citi Field          3289          59 Overcast
+#>  9 2022-10-05  662195 T-Mobile Park        680          57 Cloudy
+#> 10 2022-10-05  662238 Petco Park          2680          68 Cloudy
 #> # ℹ 41,936 more rows
 #> # ℹ 12 more variables: wind <chr>, attendance <chr>, start_time <chr>,
 #> #   elapsed_time <chr>, game_id <chr>, game_type <chr>,
@@ -1049,24 +1049,24 @@ Example call to mlb_team_coaches with team_id 137 and season 2021, wrapped in tr
 #> ℹ Data updated: 2026-09-30 14:31:01 UTC
 #> # A tibble: 17 × 7
 #>    jersey_number job             job_id title person_id person_full_name
-#>    <chr>         <chr>           <chr>  <chr>     <int> <chr>           
-#>  1 19            Manager         MNGR   Mana…    137002 Gabe Kapler     
-#>  2 0             Bullpen Coach   COAU   Bull…    503360 Craig Albernaz  
-#>  3 84            Pitching Coach  COAP   Pitc…    457732 Andrew Bailey   
-#>  4 97            Pitching Coach  COAP   Dire…    446454 Brian Bannister 
-#>  5 50            Bench Coach     COAB   Benc…    678989 Kai Correa      
-#>  6 82            Hitting Coach   COAT   Hitt…    452778 Donnie Ecker    
-#>  7 88            Assistant Hitt… COAA   Dire…    682508 Dustin Lind     
-#>  8 87            Assistant Pitc… COPA   Assi…    448258 J.P. Martinez   
-#>  9 92            Major League C… MAJC   Majo…    693136 Alyssa Nakken   
-#> 10 98            Coach           COAC   Dire…    445010 Fernando Perez  
-#> 11 21            Quality Contro… QUAC   Qual…    455512 Nick Ortiz      
+#>    <chr>         <chr>           <chr>  <chr>     <int> <chr>
+#>  1 19            Manager         MNGR   Mana…    137002 Gabe Kapler
+#>  2 0             Bullpen Coach   COAU   Bull…    503360 Craig Albernaz
+#>  3 84            Pitching Coach  COAP   Pitc…    457732 Andrew Bailey
+#>  4 97            Pitching Coach  COAP   Dire…    446454 Brian Bannister
+#>  5 50            Bench Coach     COAB   Benc…    678989 Kai Correa
+#>  6 82            Hitting Coach   COAT   Hitt…    452778 Donnie Ecker
+#>  7 88            Assistant Hitt… COAA   Dire…    682508 Dustin Lind
+#>  8 87            Assistant Pitc… COPA   Assi…    448258 J.P. Martinez
+#>  9 92            Major League C… MAJC   Majo…    693136 Alyssa Nakken
+#> 10 98            Coach           COAC   Dire…    445010 Fernando Perez
+#> 11 21            Quality Contro… QUAC   Qual…    455512 Nick Ortiz
 #> 12 0             First Base Coa… COA1   Firs…    460322 Antoan Richards…
-#> 13 77            Hitting Coach   COAT   Hitt…    643585 Justin Viele    
-#> 14 96            Assistant Coach ASSC   Assi…    657804 Brant Whiting   
-#> 15 23            Third Base Coa… COA3   Thir…    124588 Ron Wotus       
-#> 16 91            Major League C… MAJC   Majo…    506912 Mark Hallberg   
-#> 17 99            Bullpen Catcher BCAT   Bull…    666065 Taira Uematsu   
+#> 13 77            Hitting Coach   COAT   Hitt…    643585 Justin Viele
+#> 14 96            Assistant Coach ASSC   Assi…    657804 Brant Whiting
+#> 15 23            Third Base Coa… COA3   Thir…    124588 Ron Wotus
+#> 16 91            Major League C… MAJC   Majo…    506912 Mark Hallberg
+#> 17 99            Bullpen Catcher BCAT   Bull…    666065 Taira Uematsu
 #> # ℹ 1 more variable: person_link <chr>
 # }
 ```
@@ -1104,27 +1104,27 @@ Example call to mlb_sports() wrapped in try() and \donttest{}. The output shows 
 #> ℹ Data updated: 2026-09-30 14:30:57 UTC
 #> # A tibble: 20 × 7
 #>    sport_id sport_code sport_link          sport_name sport_abbreviation
-#>       <int> <chr>      <chr>               <chr>      <chr>             
-#>  1        1 mlb        /api/v1/sports/1    Major Lea… MLB               
-#>  2       11 aaa        /api/v1/sports/11   Triple-A   AAA               
-#>  3       12 aax        /api/v1/sports/12   Double-A   AA                
-#>  4       13 afa        /api/v1/sports/13   High-A     A+                
-#>  5       14 afx        /api/v1/sports/14   Single-A   A                 
-#>  6       16 rok        /api/v1/sports/16   Rookie     ROK               
-#>  7       17 win        /api/v1/sports/17   Winter Le… WIN               
-#>  8       21 min        /api/v1/sports/21   Minor Lea… Minors            
-#>  9       23 ind        /api/v1/sports/23   Independe… IND               
-#> 10       61 nlb        /api/v1/sports/61   Negro Lea… NLB               
-#> 11       32 kor        /api/v1/sports/32   Korean Ba… KOR               
-#> 12       31 jml        /api/v1/sports/31   Nippon Pr… NPB               
-#> 13       51 int        /api/v1/sports/51   Internati… INT               
-#> 14      509 nae        /api/v1/sports/509  Internati… 18U               
-#> 15      510 nas        /api/v1/sports/510  Internati… 16U               
-#> 16     6005 ame        /api/v1/sports/6005 Internati… AME               
-#> 17       52 oly        /api/v1/sports/52   Olympic B… OLY               
-#> 18       22 bbc        /api/v1/sports/22   College B… College           
-#> 19      586 hsb        /api/v1/sports/586  High Scho… H.S.              
-#> 20      576 wps        /api/v1/sports/576  Women's P… WPS               
+#>       <int> <chr>      <chr>               <chr>      <chr>
+#>  1        1 mlb        /api/v1/sports/1    Major Lea… MLB
+#>  2       11 aaa        /api/v1/sports/11   Triple-A   AAA
+#>  3       12 aax        /api/v1/sports/12   Double-A   AA
+#>  4       13 afa        /api/v1/sports/13   High-A     A+
+#>  5       14 afx        /api/v1/sports/14   Single-A   A
+#>  6       16 rok        /api/v1/sports/16   Rookie     ROK
+#>  7       17 win        /api/v1/sports/17   Winter Le… WIN
+#>  8       21 min        /api/v1/sports/21   Minor Lea… Minors
+#>  9       23 ind        /api/v1/sports/23   Independe… IND
+#> 10       61 nlb        /api/v1/sports/61   Negro Lea… NLB
+#> 11       32 kor        /api/v1/sports/32   Korean Ba… KOR
+#> 12       31 jml        /api/v1/sports/31   Nippon Pr… NPB
+#> 13       51 int        /api/v1/sports/51   Internati… INT
+#> 14      509 nae        /api/v1/sports/509  Internati… 18U
+#> 15      510 nas        /api/v1/sports/510  Internati… 16U
+#> 16     6005 ame        /api/v1/sports/6005 Internati… AME
+#> 17       52 oly        /api/v1/sports/52   Olympic B… OLY
+#> 18       22 bbc        /api/v1/sports/22   College B… College
+#> 19      586 hsb        /api/v1/sports/586  High Scho… H.S.
+#> 20      576 wps        /api/v1/sports/576  Women's P… WPS
 #> # ℹ 2 more variables: sort_order <int>, active_status <lgl>
 # }
 ```
@@ -1144,14 +1144,14 @@ Example usage of mlb_hit_trajectories() wrapped in try() to handle errors. The o
 #> ℹ Data updated: 2026-09-30 14:30:36 UTC
 #> # A tibble: 7 × 2
 #>   hit_trajectory_code hit_trajectory_description
-#>   <chr>               <chr>                     
-#> 1 bunt_grounder       Bunt - Ground Ball        
-#> 2 bunt_popup          Bunt - Popup              
-#> 3 bunt_line_drive     Bunt - Line Drive         
-#> 4 line_drive          Line Drive                
-#> 5 ground_ball         Ground Ball               
-#> 6 fly_ball            Fly Ball                  
-#> 7 popup               Popup                     
+#>   <chr>               <chr>
+#> 1 bunt_grounder       Bunt - Ground Ball
+#> 2 bunt_popup          Bunt - Popup
+#> 3 bunt_line_drive     Bunt - Line Drive
+#> 4 line_drive          Line Drive
+#> 5 ground_ball         Ground Ball
+#> 6 fly_ball            Fly Ball
+#> 7 popup               Popup
 # }
 ```
 
@@ -1163,7 +1163,7 @@ Source: https://billpetti.github.io/baseballr/reference/espn_mlb_news
 
 This example demonstrates the use of the espc_2.0.0, output includes a tibble with 5 rows and  nine columns including id, tyep,headline, description, published, premium, byline, link_
 
-``` # 
+``` #
 # \donttest{
  espc_mlb_news(limit = 动作5; output output output
 ```
@@ -1183,18 +1183,18 @@ Example usage of mlb_wind_direction_codes() wrapped in try() and \donttest. Show
 #> ℹ Data updated: 2026-09-30 14:31:05 UTC
 #> # A tibble: 11 × 2
 #>    wind_direction_code wind_direction_description
-#>    <chr>               <chr>                     
-#>  1 Calm                Calm                      
-#>  2 In From CF          In From CF                
-#>  3 In From LF          In From LF                
-#>  4 In From RF          In From RF                
-#>  5 L To R              L To R                    
-#>  6 None                None                      
-#>  7 Out To CF           Out To CF                 
-#>  8 Out To LF           Out To LF                 
-#>  9 Out To RF           Out To RF                 
-#> 10 R To L              R To L                    
-#> 11 Varies              Varies                    
+#>    <chr>               <chr>
+#>  1 Calm                Calm
+#>  2 In From CF          In From CF
+#>  3 In From LF          In From LF
+#>  4 In From RF          In From RF
+#>  5 L To R              L To R
+#>  6 None                None
+#>  7 Out To CF           Out To CF
+#>  8 Out To LF           Out To LF
+#>  9 Out To RF           Out To RF
+#> 10 R To L              R To L
+#> 11 Varies              Varies
 # }
 ```
 
@@ -1209,21 +1209,21 @@ Example that calls chadwick_player_lu() inside try() to handle potential errors.
 ```R
 # \donttest{
   try(chadwick_player_lu())
-#> ── Player Lookup from the Chadwick Bureau's public register of baseball 
+#> ── Player Lookup from the Chadwick Bureau's public register of baseball
 #> ℹ Data updated: 2026-09-30 14:26:03 UTC
 #> # A tibble: 520,934 × 40
 #>    key_person key_uuid    key_mlbam key_retro key_bbref key_bbref_minors
-#>    <chr>      <chr>           <int> <chr>     <chr>     <chr>           
-#>  1 000007d9   000007d9-a…    472542 ""        ""        garcia001ado    
-#>  2 000018b8   000018b8-a…    572962 ""        ""        kaupan001ste    
-#>  3 00002834   00002834-f…    533242 ""        ""        smith-001ado    
-#>  4 00002901   00002901-1…        NA ""        ""        decarl000lou    
-#>  5 000045b3   000045b3-e…        NA ""        ""        spaine001har    
-#>  6 00006177   00006177-b…        NA ""        ""        battle001elg    
-#>  7 00007bd0   00007bd0-4…        NA ""        ""        desous000jam    
-#>  8 0000815e   0000815e-3…        NA ""        ""        burr--001rob    
-#>  9 0000ba28   0000ba28-8…        NA ""        ""        love--001jac    
-#> 10 0000e73a   0000e73a-6…        NA ""        ""        hewitt000ale    
+#>    <chr>      <chr>           <int> <chr>     <chr>     <chr>
+#>  1 000007d9   000007d9-a…    472542 ""        ""        garcia001ado
+#>  2 000018b8   000018b8-a…    572962 ""        ""        kaupan001ste
+#>  3 00002834   00002834-f…    533242 ""        ""        smith-001ado
+#>  4 00002901   00002901-1…        NA ""        ""        decarl000lou
+#>  5 000045b3   000045b3-e…        NA ""        ""        spaine001har
+#>  6 00006177   00006177-b…        NA ""        ""        battle001elg
+#>  7 00007bd0   00007bd0-4…        NA ""        ""        desous000jam
+#>  8 0000815e   0000815e-3…        NA ""        ""        burr--001rob
+#>  9 0000ba28   0000ba28-8…        NA ""        ""        love--001jac
+#> 10 0000e73a   0000e73a-6…        NA ""        ""        hewitt000ale
 #> # ℹ 520,924 more rows
 #> # ℹ 34 more variables: key_fangraphs <int>, key_npb <int>,
 #> #   key_sr_nfl <chr>, key_sr_nba <chr>, key_sr_nhl <chr>,
@@ -1249,8 +1249,8 @@ Example call to mlb_seasons wrapped in try() to handle potential errors. The out
 #> ℹ Data updated: 2026-09-30 14:30:56 UTC
 #> # A tibble: 1 × 21
 #>   season_id has_wildcard pre_season_start_date pre_season_end_date
-#>   <chr>     <lgl>        <chr>                 <chr>              
-#> 1 2026      TRUE         2026-01-01            2026-02-19         
+#>   <chr>     <lgl>        <chr>                 <chr>
+#> 1 2026      TRUE         2026-01-01            2026-02-19
 #> # ℹ 17 more variables: season_start_date <chr>,
 #> #   spring_start_date <chr>, spring_end_date <chr>,
 #> #   regular_season_start_date <chr>, last_date1st_half <chr>,
@@ -1445,18 +1445,18 @@ Example wrapped in \donttest that calls the function inside try() and prints the
 #> ── MLB Logical Events data from MLB.com ───────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:41 UTC
 #> # A tibble: 73 × 1
-#>    event_code                     
-#>    <chr>                          
-#>  1 sceneStateUpdate               
-#>  2 newBatter                      
-#>  3 newLeftHandedBatter            
-#>  4 newLeftHandedBatterWithPitches 
-#>  5 newRightHandedBatter           
+#>    event_code
+#>    <chr>
+#>  1 sceneStateUpdate
+#>  2 newBatter
+#>  3 newLeftHandedBatter
+#>  4 newLeftHandedBatterWithPitches
+#>  5 newRightHandedBatter
 #>  6 newRightHandedBatterWithPitches
-#>  7 newRightHandedHit              
-#>  8 newLeftHandedHit               
-#>  9 batterSwitchedToLeftHanded     
-#> 10 batterSwitchedToRightHanded    
+#>  7 newRightHandedHit
+#>  8 newLeftHandedHit
+#>  9 batterSwitchedToLeftHanded
+#> 10 batterSwitchedToRightHanded
 #> # ℹ 63 more rows
 # }
 ```
@@ -1493,17 +1493,17 @@ Example usage wrapped in try() to handle potential errors. The output shows a ti
 #> ℹ Data updated: 2026-09-30 14:30:34 UTC
 #> # A tibble: 210 × 6
 #>    abstract_game_state coded_game_state detailed_state       status_code
-#>    <chr>               <chr>            <chr>                <chr>      
-#>  1 Preview             S                Scheduled            S          
-#>  2 Preview             P                Pre-Game             P          
-#>  3 Live                P                Warmup               PW         
-#>  4 Preview             P                Delayed Start: Rain  PR         
-#>  5 Preview             P                Delayed Start: Snow  PS         
-#>  6 Preview             P                Delayed Start: Wet … PG         
-#>  7 Preview             P                Delayed Start: Venue PV         
-#>  8 Preview             P                Delayed Start: Fog   PF         
-#>  9 Preview             P                Delayed Start: Cold  PC         
-#> 10 Preview             P                Delayed Start: Air … PD         
+#>    <chr>               <chr>            <chr>                <chr>
+#>  1 Preview             S                Scheduled            S
+#>  2 Preview             P                Pre-Game             P
+#>  3 Live                P                Warmup               PW
+#>  4 Preview             P                Delayed Start: Rain  PR
+#>  5 Preview             P                Delayed Start: Snow  PS
+#>  6 Preview             P                Delayed Start: Wet … PG
+#>  7 Preview             P                Delayed Start: Venue PV
+#>  8 Preview             P                Delayed Start: Fog   PF
+#>  9 Preview             P                Delayed Start: Cold  PC
+#> 10 Preview             P                Delayed Start: Air … PD
 #> # ℹ 200 more rows
 #> # ℹ 2 more variables: abstract_game_code <chr>, reason <chr>
 # }
@@ -1648,8 +1648,8 @@ Example usage of run_expectancy_code with a statcast_search call for a specific 
 ```r
 # \donttest{
  try({
-   df <- statcast_search(start_date = "2016-04-06", end_date = "2016-04-15", 
-                         playerid = 621043, player_type = 'batter') 
+   df <- statcast_search(start_date = "2016-04-06", end_date = "2016-04-15",
+                         playerid = 621043, player_type = 'batter')
    run_expectancy_code(df, level = "plate appearances")
  })
 #> # A tibble: 159 × 134
@@ -1664,7 +1664,7 @@ Example usage of run_expectancy_code with a statcast_search call for a specific 
 #>  7 CH         2016-04-06          91.7         -2.25          6.64
 #>  8 CH         2016-04-06          86.1         -2.07          6.93
 #>  9 SI         2016-04-06          91.4         -1.89          6.71
-#> 10 SI         2016-04-06          91.6         -1.73          6.8 
+#> 10 SI         2016-04-06          91.6         -1.73          6.8
 #> # ℹ 149 more rows
 #> # ℹ 129 more variables: player_name <chr>, batter <dbl>, pitcher <dbl>,
 #> #   events <chr>, description <chr>, spin_dir <lgl>,
@@ -1690,9 +1690,9 @@ Retrieves probable pitchers for a given ESPN MLB game ID. The output is a tibble
 #> ℹ Data updated: 2026-09-30 14:27:09 UTC
 #> # A tibble: 2 × 15
 #>   game_id season season_type team_id team_abbreviation team_display_name
-#>     <int>  <int>       <int>   <int> <chr>             <chr>            
-#> 1  4.02e8   2024           2      27 COL               Colorado Rockies 
-#> 2  4.02e8   2024           2       2 BOS               Boston Red Sox   
+#>     <int>  <int>       <int>   <int> <chr>             <chr>
+#> 1  4.02e8   2024           2      27 COL               Colorado Rockies
+#> 2  4.02e8   2024           2       2 BOS               Boston Red Sox
 #> # ℹ 9 more variables: home_away <chr>, athlete_id <int>,
 #> #   athlete_full_name <chr>, athlete_display_name <chr>,
 #> #   athlete_short_name <chr>, jersey <chr>, position <chr>,
@@ -1715,17 +1715,17 @@ Example call wrapped in try() and \donttest{}. The output shows a tibble with 1,
 #> ℹ Data updated: 2026-09-30 14:28:18 UTC
 #> # A tibble: 1,709 × 9
 #>    league        group_id     season level name  short_name abbreviation
-#>    <chr>         <chr>         <int> <chr> <chr> <chr>      <chr>       
-#>  1 ncaa_baseball ncaa_baseba…   2010 conf… Atla… ACC        ACC         
-#>  2 ncaa_baseball ncaa_baseba…   2011 conf… Atla… ACC        ACC         
-#>  3 ncaa_baseball ncaa_baseba…   2012 conf… Atla… ACC        ACC         
-#>  4 ncaa_baseball ncaa_baseba…   2013 conf… Atla… ACC        ACC         
-#>  5 ncaa_baseball ncaa_baseba…   2014 conf… Atla… ACC        ACC         
-#>  6 ncaa_baseball ncaa_baseba…   2015 conf… Atla… ACC        ACC         
-#>  7 ncaa_baseball ncaa_baseba…   2016 conf… Atla… ACC        ACC         
-#>  8 ncaa_baseball ncaa_baseba…   2017 conf… Atla… ACC        ACC         
-#>  9 ncaa_baseball ncaa_baseba…   2018 conf… Atla… ACC        ACC         
-#> 10 ncaa_baseball ncaa_baseba…   2019 conf… Atla… ACC        ACC         
+#>    <chr>         <chr>         <int> <chr> <chr> <chr>      <chr>
+#>  1 ncaa_baseball ncaa_baseba…   2010 conf… Atla… ACC        ACC
+#>  2 ncaa_baseball ncaa_baseba…   2011 conf… Atla… ACC        ACC
+#>  3 ncaa_baseball ncaa_baseba…   2012 conf… Atla… ACC        ACC
+#>  4 ncaa_baseball ncaa_baseba…   2013 conf… Atla… ACC        ACC
+#>  5 ncaa_baseball ncaa_baseba…   2014 conf… Atla… ACC        ACC
+#>  6 ncaa_baseball ncaa_baseba…   2015 conf… Atla… ACC        ACC
+#>  7 ncaa_baseball ncaa_baseba…   2016 conf… Atla… ACC        ACC
+#>  8 ncaa_baseball ncaa_baseba…   2017 conf… Atla… ACC        ACC
+#>  9 ncaa_baseball ncaa_baseba…   2018 conf… Atla… ACC        ACC
+#> 10 ncaa_baseball ncaa_baseba…   2019 conf… Atla… ACC        ACC
 #> # ℹ 1,699 more rows
 #> # ℹ 2 more variables: parent_group_id <chr>, n_teams <int>
 # }
@@ -1797,7 +1797,7 @@ Call the function with an event ID and team ID to get a tibble of competitor rec
 #> ℹ Data updated: 2026-09-30 14:26:33 UTC
 #> # A tibble: 1 × 11
 #>   league      event_id team_id record_id name  abbreviation display_name
-#>   <chr>       <chr>    <chr>   <chr>     <chr> <chr>        <chr>       
+#>   <chr>       <chr>    <chr>   <chr>     <chr> <chr>        <chr>
 #> 1 college-ba… 4017780… 113     1         over… Ytd          Record Year…
 #> # ℹ 4 more variables: short_display_name <chr>, type <chr>,
 #> #   summary <chr>, value <dbl>
@@ -1835,8 +1835,8 @@ Example call to mlb_team_info with team_id = 147, wrapped in try() and \donttest
 #> ℹ Data updated: 2026-09-30 14:31:02 UTC
 #> # A tibble: 1 × 33
 #>   all_star_status team_id team_full_name   link         season team_code
-#>   <chr>             <int> <chr>            <chr>         <int> <chr>    
-#> 1 N                   147 New York Yankees /api/v1/tea…   2026 nya      
+#>   <chr>             <int> <chr>            <chr>         <int> <chr>
+#> 1 N                   147 New York Yankees /api/v1/tea…   2026 nya
 #> # ℹ 27 more variables: file_code <chr>, team_abbreviation <chr>,
 #> #   team_name <chr>, location_name <chr>, first_year_of_play <chr>,
 #> #   short_name <chr>, franchise_name <chr>, club_name <chr>,
@@ -1940,7 +1940,7 @@ Example of using woba_plus with data from bref_daily_batter for the 2015 season.
 ```r
 # \donttest{
  try({
-   df <- bref_daily_batter("2015-08-01", "2015-10-03") 
+   df <- bref_daily_batter("2015-08-01", "2015-10-03")
    woba_plus(df)
  })
 #> ── MLB Daily Batter data from baseball-reference.com ───────────────────
@@ -1981,17 +1981,17 @@ Example usage wrapped in try() to handle potential errors. The output shows the 
 #> ℹ Data updated: 2026-09-30 14:30:57 UTC
 #> # A tibble: 602 × 8
 #>    situation_code sort_order navigation_menu situation_code_description
-#>    <chr>               <int> <chr>           <chr>                     
-#>  1 h                       1 Game            Home Games                
-#>  2 a                       2 Game            Away Games                
-#>  3 d                       3 Game            Day Games                 
-#>  4 n                       4 Game            Night Games               
-#>  5 g                       5 Game            On Grass                  
-#>  6 t                       6 Game            On Turf                   
-#>  7 2                      20 Month           February                  
-#>  8 3                      21 Month           March                     
-#>  9 4                      22 Month           April                     
-#> 10 5                      23 Month           May                       
+#>    <chr>               <int> <chr>           <chr>
+#>  1 h                       1 Game            Home Games
+#>  2 a                       2 Game            Away Games
+#>  3 d                       3 Game            Day Games
+#>  4 n                       4 Game            Night Games
+#>  5 g                       5 Game            On Grass
+#>  6 t                       6 Game            On Turf
+#>  7 2                      20 Month           February
+#>  8 3                      21 Month           March
+#>  9 4                      22 Month           April
+#> 10 5                      23 Month           May
 #> # ℹ 592 more rows
 #> # ℹ 4 more variables: team <lgl>, batting <lgl>, fielding <lgl>,
 #> #   pitching <lgl>
@@ -2013,15 +2013,15 @@ Example that wraps the call in try() to handle potential errors. The output show
 #> ℹ Data updated: 2026-09-30 14:30:59 UTC
 #> # A tibble: 8 × 1
 #>   stat_group_name
-#>   <chr>          
-#> 1 hitting        
-#> 2 pitching       
-#> 3 fielding       
-#> 4 catching       
-#> 5 running        
-#> 6 game           
-#> 7 team           
-#> 8 streak         
+#>   <chr>
+#> 1 hitting
+#> 2 pitching
+#> 3 fielding
+#> 4 catching
+#> 5 running
+#> 6 game
+#> 7 team
+#> 8 streak
 # }
 ```
 
@@ -2040,41 +2040,41 @@ Examples showing how to call mlb_venues with no arguments, with a specific venue
 #> ℹ Data updated: 2026-09-30 14:31:05 UTC
 #> # A tibble: 1,671 × 5
 #>    venue_id venue_name                venue_link          active season
-#>       <int> <chr>                     <chr>               <lgl>  <chr> 
-#>  1     2857 Veterans Memorial Stadium /api/v1/venues/2857 TRUE   2026  
-#>  2     7253 ONT Field                 /api/v1/venues/7253 TRUE   2026  
-#>  3     7258 Sun Marine Stadium        /api/v1/venues/7258 TRUE   2026  
-#>  4     7260 Coloso del Pacifico       /api/v1/venues/7260 TRUE   2026  
-#>  5     7261 Petco Park Events         /api/v1/venues/7261 TRUE   2026  
-#>  6     7262 Esmond Athletic Field     /api/v1/venues/7262 FALSE  2026  
-#>  7     3089 Kyocera Dome              /api/v1/venues/3089 TRUE   2026  
-#>  8     2835 Valley Strong Ballpark    /api/v1/venues/2835 TRUE   2026  
-#>  9     6137 NEW VENUE TBD             /api/v1/venues/6137 TRUE   2026  
-#> 10     7269 US Bank Stadium           /api/v1/venues/7269 FALSE  2026  
+#>       <int> <chr>                     <chr>               <lgl>  <chr>
+#>  1     2857 Veterans Memorial Stadium /api/v1/venues/2857 TRUE   2026
+#>  2     7253 ONT Field                 /api/v1/venues/7253 TRUE   2026
+#>  3     7258 Sun Marine Stadium        /api/v1/venues/7258 TRUE   2026
+#>  4     7260 Coloso del Pacifico       /api/v1/venues/7260 TRUE   2026
+#>  5     7261 Petco Park Events         /api/v1/venues/7261 TRUE   2026
+#>  6     7262 Esmond Athletic Field     /api/v1/venues/7262 FALSE  2026
+#>  7     3089 Kyocera Dome              /api/v1/venues/3089 TRUE   2026
+#>  8     2835 Valley Strong Ballpark    /api/v1/venues/2835 TRUE   2026
+#>  9     6137 NEW VENUE TBD             /api/v1/venues/6137 TRUE   2026
+#> 10     7269 US Bank Stadium           /api/v1/venues/7269 FALSE  2026
 #> # ℹ 1,661 more rows
   try(mlb_venues(venue_ids = 4781))
 #> ── MLB Venues data from MLB.com ───────────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:31:05 UTC
 #> # A tibble: 1 × 5
 #>   venue_id venue_name venue_link          active season
-#>      <int> <chr>      <chr>               <lgl>  <chr> 
-#> 1     4781 Bush Field /api/v1/venues/4781 FALSE  1995  
+#>      <int> <chr>      <chr>               <lgl>  <chr>
+#> 1     4781 Bush Field /api/v1/venues/4781 FALSE  1995
   try(mlb_venues(sport_ids = 1))
 #> ── MLB Venues data from MLB.com ───────────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:31:05 UTC
 #> # A tibble: 62 × 5
 #>    venue_id venue_name                     venue_link      active season
-#>       <int> <chr>                          <chr>           <lgl>  <chr> 
-#>  1        1 Angel Stadium                  /api/v1/venues… TRUE   2026  
-#>  2        2 Oriole Park at Camden Yards    /api/v1/venues… TRUE   2026  
-#>  3        3 Fenway Park                    /api/v1/venues… TRUE   2026  
-#>  4     5380 CoolToday Park                 /api/v1/venues… TRUE   2026  
-#>  5        4 Rate Field                     /api/v1/venues… TRUE   2026  
-#>  6        5 Progressive Field              /api/v1/venues… TRUE   2026  
-#>  7        7 Kauffman Stadium               /api/v1/venues… TRUE   2026  
-#>  8     5000 CACTI Park of the Palm Beaches /api/v1/venues… TRUE   2026  
-#>  9       12 Tropicana Field                /api/v1/venues… TRUE   2026  
-#> 10     2700 BayCare Ballpark               /api/v1/venues… TRUE   2026  
+#>       <int> <chr>                          <chr>           <lgl>  <chr>
+#>  1        1 Angel Stadium                  /api/v1/venues… TRUE   2026
+#>  2        2 Oriole Park at Camden Yards    /api/v1/venues… TRUE   2026
+#>  3        3 Fenway Park                    /api/v1/venues… TRUE   2026
+#>  4     5380 CoolToday Park                 /api/v1/venues… TRUE   2026
+#>  5        4 Rate Field                     /api/v1/venues… TRUE   2026
+#>  6        5 Progressive Field              /api/v1/venues… TRUE   2026
+#>  7        7 Kauffman Stadium               /api/v1/venues… TRUE   2026
+#>  8     5000 CACTI Park of the Palm Beaches /api/v1/venues… TRUE   2026
+#>  9       12 Tropicana Field                /api/v1/venues… TRUE   2026
+#> 10     2700 BayCare Ballpark               /api/v1/venues… TRUE   2026
 #> # ℹ 52 more rows
 # }
 ```
@@ -2095,16 +2095,16 @@ Example call wrapped in try() to handle potential errors. The output shows a tib
 #> # A tibble: 682 × 10
 #>    award_id       award_name   award_description sort_order active notes
 #>    <chr>          <chr>        <chr>                  <int> <lgl>  <chr>
-#>  1 MLBHOF         Hall Of Fame Member of Hall o…          1 TRUE   NA   
-#>  2 RETIREDUNI_108 Uniform num… NA                         4 TRUE   NA   
-#>  3 RETIREDUNI_109 Uniform num… NA                         4 TRUE   NA   
-#>  4 RETIREDUNI_110 Uniform num… NA                         4 TRUE   NA   
-#>  5 RETIREDUNI_111 Uniform num… NA                         4 TRUE   NA   
-#>  6 RETIREDUNI_112 Uniform num… NA                         4 TRUE   NA   
-#>  7 RETIREDUNI_113 Uniform num… NA                         4 TRUE   NA   
-#>  8 RETIREDUNI_114 Uniform num… NA                         4 TRUE   NA   
-#>  9 RETIREDUNI_115 Uniform num… NA                         4 TRUE   NA   
-#> 10 RETIREDUNI_116 Uniform num… NA                         4 TRUE   NA   
+#>  1 MLBHOF         Hall Of Fame Member of Hall o…          1 TRUE   NA
+#>  2 RETIREDUNI_108 Uniform num… NA                         4 TRUE   NA
+#>  3 RETIREDUNI_109 Uniform num… NA                         4 TRUE   NA
+#>  4 RETIREDUNI_110 Uniform num… NA                         4 TRUE   NA
+#>  5 RETIREDUNI_111 Uniform num… NA                         4 TRUE   NA
+#>  6 RETIREDUNI_112 Uniform num… NA                         4 TRUE   NA
+#>  7 RETIREDUNI_113 Uniform num… NA                         4 TRUE   NA
+#>  8 RETIREDUNI_114 Uniform num… NA                         4 TRUE   NA
+#>  9 RETIREDUNI_115 Uniform num… NA                         4 TRUE   NA
+#> 10 RETIREDUNI_116 Uniform num… NA                         4 TRUE   NA
 #> # ℹ 672 more rows
 #> # ℹ 4 more variables: sport_id <int>, sport_link <chr>,
 #> #   league_id <int>, league_link <chr>
@@ -2150,17 +2150,17 @@ Example call wrapped in try() to handle errors, showing the returned tibble with
 #> ℹ Data updated: 2026-09-30 14:30:49 UTC
 #> # A tibble: 37 × 11
 #>    position_short_name position_full_name position_abbreviation
-#>    <chr>               <chr>              <chr>                
-#>  1 Pitcher             Pitcher            P                    
-#>  2 Catcher             Catcher            C                    
-#>  3 1st Base            First Base         1B                   
-#>  4 2nd Base            Second Base        2B                   
-#>  5 3rd Base            Third Base         3B                   
-#>  6 Shortstop           Shortstop          SS                   
-#>  7 Left Field          Outfielder         LF                   
-#>  8 Center Field        Outfielder         CF                   
-#>  9 Right Field         Outfielder         RF                   
-#> 10 Designated Hitter   Designated Hitter  DH                   
+#>    <chr>               <chr>              <chr>
+#>  1 Pitcher             Pitcher            P
+#>  2 Catcher             Catcher            C
+#>  3 1st Base            First Base         1B
+#>  4 2nd Base            Second Base        2B
+#>  5 3rd Base            Third Base         3B
+#>  6 Shortstop           Shortstop          SS
+#>  7 Left Field          Outfielder         LF
+#>  8 Center Field        Outfielder         CF
+#>  9 Right Field         Outfielder         RF
+#> 10 Designated Hitter   Designated Hitter  DH
 #> # ℹ 27 more rows
 #> # ℹ 8 more variables: position_code <chr>, position_type <chr>,
 #> #   position_formal_name <chr>, position_display_name <chr>,
@@ -2181,8 +2181,8 @@ statcast_pitch_colors()
 #> ── MLB Baseball Savant pitch-type colors ──────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:31:12 UTC
 #> # A tibble: 18 × 3
-#>    pitch_type pitch_name       color  
-#>    <chr>      <chr>            <chr>  
+#>    pitch_type pitch_name       color
+#>    <chr>      <chr>            <chr>
 #>  1 FF         4-Seam Fastball  #D22D49
 #>  2 SI         Sinker           #FE9D00
 #>  3 FC         Cutter           #933F2C
@@ -2218,23 +2218,23 @@ Example usage of mlb_languages() wrapped in try() to handle potential errors. Th
 #> ℹ Data updated: 2026-09-30 14:30:41 UTC
 #> # A tibble: 16 × 4
 #>    language_id language_code language_name locale
-#>          <int> <chr>         <chr>         <chr> 
-#>  1           1 en            English       en_US 
-#>  2           2 xe            Elias         en_US 
-#>  3           3 es            Spanish       es_ES 
-#>  4           4 xc            English       en_US 
-#>  5           5 ja            Japanese      ja_JA 
-#>  6           6 ko            Korean        ko_KO 
-#>  7           7 zh            Chinese       zh_ZH 
-#>  8           8 fr            French        fr_FR 
-#>  9           9 de            German        de_DE 
-#> 10          10 it            Italian       it_IT 
-#> 11          11 nl            Dutch         nl_NL 
-#> 12          12 pt            Portuguese    pt_PT 
-#> 13          13 el            Greek         el_EL 
-#> 14          14 tl            Tagalog       tl_TL 
-#> 15          21 j2            Japanese 2    j2_J2 
-#> 16          22 ov            English       en_US 
+#>          <int> <chr>         <chr>         <chr>
+#>  1           1 en            English       en_US
+#>  2           2 xe            Elias         en_US
+#>  3           3 es            Spanish       es_ES
+#>  4           4 xc            English       en_US
+#>  5           5 ja            Japanese      ja_JA
+#>  6           6 ko            Korean        ko_KO
+#>  7           7 zh            Chinese       zh_ZH
+#>  8           8 fr            French        fr_FR
+#>  9           9 de            German        de_DE
+#> 10          10 it            Italian       it_IT
+#> 11          11 nl            Dutch         nl_NL
+#> 12          12 pt            Portuguese    pt_PT
+#> 13          13 el            Greek         el_EL
+#> 14          14 tl            Tagalog       tl_TL
+#> 15          21 j2            Japanese 2    j2_J2
+#> 16          22 ov            English       en_US
 # }
 ```
 
@@ -2325,8 +2325,8 @@ Example usage of the espn_college_baseball_game_team_score function, wrapped in 
 #> ℹ Data updated: 2026-09-30 14:26:34 UTC
 #> # A tibble: 1 × 8
 #>   league           event_id team_id value display_value winner source_id
-#>   <chr>            <chr>    <chr>   <dbl> <chr>         <lgl>  <chr>    
-#> 1 college-baseball 4017780… 113         2 2             FALSE  1        
+#>   <chr>            <chr>    <chr>   <dbl> <chr>         <lgl>  <chr>
+#> 1 college-baseball 4017780… 113         2 2             FALSE  1
 #> # ℹ 1 more variable: source_description <chr>
 # }
 ```
@@ -2356,7 +2356,7 @@ Example of using statcast_search_wbc to fetch World Baseball Classic Statcast da
 
 ```r
   try(statcast_search_wbc(start_date = "2023-03-21", end_date = "2023-03-21"))
-#> ── MLB Baseball Savant Statcast Search data from baseballsavant.mlb.com 
+#> ── MLB Baseball Savant Statcast Search data from baseballsavant.mlb.com
 #> ℹ Data updated: 2026-09-30 14:31:15 UTC
 #> # A tibble: 2,673 × 119
 #>    pitch_type game_date  release_speed release_pos_x release_pos_z
@@ -2365,12 +2365,12 @@ Example of using statcast_search_wbc to fetch World Baseball Classic Statcast da
 #>  2 KC         2023-03-21          77.7         -2.51          5.33
 #>  3 FF         2023-03-21          94.6         -2.54          5.31
 #>  4 CH         2023-03-21          89.3         -2.63          5.19
-#>  5 KC         2023-03-21          77.2         -2.46          5.5 
+#>  5 KC         2023-03-21          77.2         -2.46          5.5
 #>  6 FC         2023-03-21          90           -1.58          5.09
 #>  7 SL         2023-03-21          84           -2.54          5.25
 #>  8 CH         2023-03-21          87.2         -2.64          5.13
 #>  9 CU         2023-03-21          82.9         -1.84          5.19
-#> 10 NA         2023-03-21          NA           NA            NA   
+#> 10 NA         2023-03-21          NA           NA            NA
 #> # ℹ 2,663 more rows
 #> # ℹ 114 more variables: player_name <chr>, batter <dbl>, pitcher <dbl>,
 #> #   events <chr>, description <chr>, spin_dir <lgl>,
@@ -2419,9 +2419,9 @@ Example call to mlb_probables with game_pk 566001, wrapped in try() and \donttes
 #> ℹ Data updated: 2026-09-30 14:30:49 UTC
 #> # A tibble: 2 × 8
 #>   game_pk game_date  fullName      id team  team_id home_plate_full_name
-#>     <int> <chr>      <chr>      <int> <chr>   <int> <chr>               
-#> 1  566001 2019-04-29 Tanner R… 543699 Cinc…     113 Gabe Morales        
-#> 2  566001 2019-04-29 Zack Whe… 554430 New …     121 Gabe Morales        
+#>     <int> <chr>      <chr>      <int> <chr>   <int> <chr>
+#> 1  566001 2019-04-29 Tanner R… 543699 Cinc…     113 Gabe Morales
+#> 2  566001 2019-04-29 Zack Whe… 554430 New …     121 Gabe Morales
 #> # ℹ 1 more variable: home_plate_id <int>
 # }
 ```
@@ -2461,7 +2461,7 @@ Calls espn_mlb_season_week with week = 5 and season = 2025. The output shows a t
 #> ℹ Data updated: 2026-09-30 14:27:26 UTC
 #> # A tibble: 1 × 8
 #>   league season season_type  week text  start_date end_date rankings_ref
-#>   <chr>   <int>       <int> <int> <chr> <chr>      <chr>    <chr>       
+#>   <chr>   <int>       <int> <int> <chr> <chr>      <chr>    <chr>
 #> 1 mlb      2025           2     5 Week… 2025-04-1… 2025-04… http://spor…
 # }
 ```
@@ -2482,15 +2482,15 @@ Example call to load_mlb_expected_stats() for the 2024 season, wrapped in try() 
 #> # A tibble: 1,777 × 9
 #>    batter season    pa    ab  xwoba    xba   xslg  woba    ba
 #>     <int>  <int> <int> <int>  <dbl>  <dbl>  <dbl> <dbl> <dbl>
-#>  1 681044   2024     1     1 0      0      0      0     0    
-#>  2 703202   2024     1     1 0      0      0      0     0    
-#>  3 677341   2024     2     2 0.0363 0.0200 0.0211 0     0    
-#>  4 643348   2024    15    11 0.187  0      0      0.187 0    
+#>  1 681044   2024     1     1 0      0      0      0     0
+#>  2 703202   2024     1     1 0      0      0      0     0
+#>  3 677341   2024     2     2 0.0363 0.0200 0.0211 0     0
+#>  4 643348   2024    15    11 0.187  0      0      0.187 0
 #>  5 676053   2024     3     3 0.3    0.333  0.333  0.3   0.333
-#>  6 663979   2024     4     3 0.197  0.0280 0.0373 0.175 0    
-#>  7 696145   2024     4     3 0.268  0.122  0.144  0.175 0    
+#>  6 663979   2024     4     3 0.197  0.0280 0.0373 0.175 0
+#>  7 696145   2024     4     3 0.268  0.122  0.144  0.175 0
 #>  8 645801   2024    98    94 0.351  0.297  0.470  0.301 0.255
-#>  9 687526   2024     1     1 0      0      0      0     0    
+#>  9 687526   2024     1     1 0      0      0      0     0
 #> 10 642451   2024    33    30 0.232  0.159  0.260  0.233 0.167
 #> # ℹ 1,767 more rows
 # }
@@ -2510,8 +2510,8 @@ Example call to mlb_stats_leaders with leader_categories='homeRuns', sport_id=1,
 #> ── MLB Stats Leaders data from MLB.com ────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:31:00 UTC
 #> # A tibble: 306 × 23
-#>    leader_category  rank value season num_teams team_id team_name       
-#>    <chr>           <int> <chr> <chr>      <int>   <int> <chr>           
+#>    leader_category  rank value season num_teams team_id team_name
+#>    <chr>           <int> <chr> <chr>      <int>   <int> <chr>
 #>  1 homeRuns            1 48    2021           1     141 Toronto Blue Ja…
 #>  2 homeRuns            1 48    2021           1     118 Kansas City Roy…
 #>  3 homeRuns            3 46    2021           1     108 Los Angeles Ang…
@@ -2519,9 +2519,9 @@ Example call to mlb_stats_leaders with leader_categories='homeRuns', sport_id=1,
 #>  5 homeRuns            5 42    2021           1     135 San Diego Padres
 #>  6 homeRuns            6 39    2021           1     136 Seattle Mariners
 #>  7 homeRuns            6 39    2021           1     147 New York Yankees
-#>  8 homeRuns            6 39    2021           1     139 Tampa Bay Rays  
+#>  8 homeRuns            6 39    2021           1     139 Tampa Bay Rays
 #>  9 homeRuns            6 39    2021           1     133 Oakland Athleti…
-#> 10 homeRuns           10 38    2021           1     111 Boston Red Sox  
+#> 10 homeRuns           10 38    2021           1     111 Boston Red Sox
 #> # ℹ 296 more rows
 #> # ℹ 16 more variables: team_link <chr>, league_id <int>,
 #> #   league_name <chr>, league_link <chr>, person_id <int>,
@@ -2546,18 +2546,18 @@ Example call to mlb_jobs_datacasters with sport_id=1, wrapped in try() and \dont
 #> ── MLB Jobs Datacasters data from MLB.com ─────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:40 UTC
 #> # A tibble: 215 × 7
-#>    jersey_number job      job_code title    person_id person_full_name  
-#>    <chr>         <chr>    <chr>    <chr>        <int> <chr>             
-#>  1 ""            Stringer MSTR     Stringer    666938 Edward Alvarez    
-#>  2 ""            Stringer MSTR     Stringer    684798 David Amoriello   
-#>  3 ""            Stringer MSTR     Stringer    632811 Doug Anderson     
-#>  4 ""            Stringer MSTR     Stringer    584273 Andy Andres       
-#>  5 ""            Stringer MSTR     Stringer    511710 Troy Andre        
+#>    jersey_number job      job_code title    person_id person_full_name
+#>    <chr>         <chr>    <chr>    <chr>        <int> <chr>
+#>  1 ""            Stringer MSTR     Stringer    666938 Edward Alvarez
+#>  2 ""            Stringer MSTR     Stringer    684798 David Amoriello
+#>  3 ""            Stringer MSTR     Stringer    632811 Doug Anderson
+#>  4 ""            Stringer MSTR     Stringer    584273 Andy Andres
+#>  5 ""            Stringer MSTR     Stringer    511710 Troy Andre
 #>  6 ""            Stringer MSTR     Stringer    584288 Jose Isabel Angui…
-#>  7 ""            Stringer MSTR     Stringer    800990 Terri Arms        
-#>  8 ""            Stringer MSTR     Stringer    821942 Amanda Bachelder  
-#>  9 ""            Stringer MSTR     Stringer    670060 Keith Barnes      
-#> 10 ""            Stringer MSTR     Stringer    427022 Matt Bartlett     
+#>  7 ""            Stringer MSTR     Stringer    800990 Terri Arms
+#>  8 ""            Stringer MSTR     Stringer    821942 Amanda Bachelder
+#>  9 ""            Stringer MSTR     Stringer    670060 Keith Barnes
+#> 10 ""            Stringer MSTR     Stringer    427022 Matt Bartlett
 #> # ℹ 205 more rows
 #> # ℹ 1 more variable: person_link <chr>
 # }
@@ -2577,8 +2577,8 @@ Example usage of load_umpire_ids() wrapped in try() to handle potential errors. 
 #> ── MLB Umpire IDs data from baseballr-data repository ──────────────────
 #> ℹ Data updated: 2026-09-30 14:30:14 UTC
 #> # A tibble: 140,609 × 5
-#>        id position name           game_pk game_date 
-#>     <int> <chr>    <chr>            <int> <IDate>   
+#>        id position name           game_pk game_date
+#>     <int> <chr>    <chr>            <int> <IDate>
 #>  1 644760 3B       Adam Beck       662601 2022-09-07
 #>  2 427533 2B       Mark Wegner     662601 2022-09-07
 #>  3 429805 1B       Todd Tichenor   662601 2022-09-07
@@ -2607,17 +2607,17 @@ Example usage of mlb_stat_types() wrapped in try() and \donttest{}. The output s
 #> ── MLB Stat Types data from MLB.com ───────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:59 UTC
 #> # A tibble: 61 × 1
-#>    stat_type_name     
-#>    <chr>              
-#>  1 projected          
-#>  2 projectedRos       
-#>  3 yearByYear         
-#>  4 yearByYearAdvanced 
-#>  5 yearByYearPlayoffs 
-#>  6 season             
-#>  7 standard           
-#>  8 advanced           
-#>  9 career             
+#>    stat_type_name
+#>    <chr>
+#>  1 projected
+#>  2 projectedRos
+#>  3 yearByYear
+#>  4 yearByYearAdvanced
+#>  5 yearByYearPlayoffs
+#>  6 season
+#>  7 standard
+#>  8 advanced
+#>  9 career
 #> 10 careerRegularSeason
 #> # ℹ 51 more rows
 # }
@@ -2637,8 +2637,8 @@ Calls espn_mlb_season_weeks with season = 2025 to retrieve the season weeks inde
 #> ── ESPN MLB Season Weeks Index ────────────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:27:27 UTC
 #> # A tibble: 27 × 5
-#>    league season season_type  week ref                                  
-#>    <chr>   <int>       <int> <int> <chr>                                
+#>    league season season_type  week ref
+#>    <chr>   <int>       <int> <int> <chr>
 #>  1 mlb      2025           2     1 http://sports.core.api.espn.com/v2/s…
 #>  2 mlb      2025           2     2 http://sports.core.api.espn.com/v2/s…
 #>  3 mlb      2025           2     3 http://sports.core.api.espn.com/v2/s…
@@ -2668,16 +2668,16 @@ Example usage of mlb_roster_types() wrapped in try() to handle errors. The outpu
 #> ℹ Data updated: 2026-09-30 14:30:50 UTC
 #> # A tibble: 9 × 3
 #>   roster_type_description   roster_type_lookup_n…¹ roster_type_parameter
-#>   <chr>                     <chr>                  <chr>                
-#> 1 40 man roster for a team  40man                  40Man                
-#> 2 Full roster including ac… fullSeason             fullSeason           
-#> 3 Full roster including ac… full                   fullRoster           
-#> 4 Non-Roster Invitees       nonRosterInvitees      nonRosterInvitees    
-#> 5 Active roster for a team  active                 active               
-#> 6 All Time roster for a te… alltime                allTime              
-#> 7 Depth chart for a team    active                 depthChart           
-#> 8 Roster for day of game    active                 gameday              
-#> 9 Coach roster for a team   active                 coach                
+#>   <chr>                     <chr>                  <chr>
+#> 1 40 man roster for a team  40man                  40Man
+#> 2 Full roster including ac… fullSeason             fullSeason
+#> 3 Full roster including ac… full                   fullRoster
+#> 4 Non-Roster Invitees       nonRosterInvitees      nonRosterInvitees
+#> 5 Active roster for a team  active                 active
+#> 6 All Time roster for a te… alltime                allTime
+#> 7 Depth chart for a team    active                 depthChart
+#> 8 Roster for day of game    active                 gameday
+#> 9 Coach roster for a team   active                 coach
 #> # ℹ abbreviated name: ¹​roster_type_lookup_name
 # }
 ```
@@ -2751,18 +2751,18 @@ Retrieves team linescores for a specific ESPN college baseball game using the ev
 #> ── ESPN COLLEGE-BASEBALL Competitor Linescores ────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:26:33 UTC
 #> # A tibble: 27 × 7
-#>    league           event_id  team_id period value display_value source 
-#>    <chr>            <chr>     <chr>    <int> <dbl> <chr>         <chr>  
-#>  1 college-baseball 401778093 113          1     0 0             1      
+#>    league           event_id  team_id period value display_value source
+#>    <chr>            <chr>     <chr>    <int> <dbl> <chr>         <chr>
+#>  1 college-baseball 401778093 113          1     0 0             1
 #>  2 college-baseball 401778093 113          1     0 0             basic/…
-#>  3 college-baseball 401778093 113          1     0 0             basic  
-#>  4 college-baseball 401778093 113          2     0 0             1      
+#>  3 college-baseball 401778093 113          1     0 0             basic
+#>  4 college-baseball 401778093 113          2     0 0             1
 #>  5 college-baseball 401778093 113          2     0 0             basic/…
-#>  6 college-baseball 401778093 113          2     0 0             basic  
-#>  7 college-baseball 401778093 113          3     1 1             1      
+#>  6 college-baseball 401778093 113          2     0 0             basic
+#>  7 college-baseball 401778093 113          3     1 1             1
 #>  8 college-baseball 401778093 113          3     1 1             basic/…
-#>  9 college-baseball 401778093 113          3     1 1             basic  
-#> 10 college-baseball 401778093 113          4     0 0             1      
+#>  9 college-baseball 401778093 113          3     1 1             basic
+#> 10 college-baseball 401778093 113          4     0 0             1
 #> # ℹ 17 more rows
 # }
 ```
@@ -2782,17 +2782,17 @@ Example call to mlb_all_star_write_ins with league_id = 103 and season = 2021, w
 #> ℹ Data updated: 2026-09-30 14:30:17 UTC
 #> # A tibble: 490 × 45
 #>    player_id full_name      link     first_name last_name primary_number
-#>        <int> <chr>          <chr>    <chr>      <chr>     <chr>         
-#>  1    595978 Austin Hedges  /api/v1… Austin     Hedges    27            
-#>  2    605194 Jharel Cotton  /api/v1… Jharel     Cotton    NA            
-#>  3    451584 Wade Davis     /api/v1… Wade       Davis     40            
-#>  4    663554 Casey Mize     /api/v1… Casey      Mize      32            
-#>  5    609280 Miguel Andujar /api/v1… Miguel     Andujar   41            
-#>  6    521230 Liam Hendriks  /api/v1… Liam       Hendriks  31            
-#>  7    642048 Tayler Saucedo /api/v1… Tayler     Saucedo   55            
-#>  8    451594 Dexter Fowler  /api/v1… William    Fowler    25            
-#>  9    667674 Jack Kruger    /api/v1… Timothy    Kruger    NA            
-#> 10    667670 Brent Rooker   /api/v1… Terry      Rooker    25            
+#>        <int> <chr>          <chr>    <chr>      <chr>     <chr>
+#>  1    595978 Austin Hedges  /api/v1… Austin     Hedges    27
+#>  2    605194 Jharel Cotton  /api/v1… Jharel     Cotton    NA
+#>  3    451584 Wade Davis     /api/v1… Wade       Davis     40
+#>  4    663554 Casey Mize     /api/v1… Casey      Mize      32
+#>  5    609280 Miguel Andujar /api/v1… Miguel     Andujar   41
+#>  6    521230 Liam Hendriks  /api/v1… Liam       Hendriks  31
+#>  7    642048 Tayler Saucedo /api/v1… Tayler     Saucedo   55
+#>  8    451594 Dexter Fowler  /api/v1… William    Fowler    25
+#>  9    667674 Jack Kruger    /api/v1… Timothy    Kruger    NA
+#> 10    667670 Brent Rooker   /api/v1… Terry      Rooker    25
 #> # ℹ 480 more rows
 #> # ℹ 39 more variables: birth_date <chr>, current_age <int>,
 #> #   birth_city <chr>, birth_state_province <chr>, birth_country <chr>,
@@ -2817,7 +2817,7 @@ try(espn_college_baseball_teams())
 #> ℹ Data updated: 2026-09-30 14:26:55 UTC
 #> # A tibble: 437 × 22
 #>    abbreviation color  display_name        team_id team  logo  logo_dark
-#>    <chr>        <chr>  <chr>                 <int> <chr> <chr> <chr>    
+#>    <chr>        <chr>  <chr>                 <int> <chr> <chr> <chr>
 #>  1 ACU          000000 Abilene Christian …     315 Abil… http… https://…
 #>  2 AFA          004A7B Air Force Falcons       155 Air … http… https://…
 #>  3 AKR          0A1E5B Akron Zips              316 Akron http… https://…
@@ -2895,7 +2895,7 @@ Example call to mlb_divisions with sport_id = 1, wrapped in try() and \donttest{
 #> ℹ Data updated: 2026-09-30 14:30:21 UTC
 #> # A tibble: 6 × 14
 #>   division_id division_name     season division_name_short division_link
-#>         <int> <chr>             <chr>  <chr>               <chr>        
+#>         <int> <chr>             <chr>  <chr>               <chr>
 #> 1         200 American League … 2026   AL West             /api/v1/divi…
 #> 2         201 American League … 2026   AL East             /api/v1/divi…
 #> 3         202 American League … 2026   AL Central          /api/v1/divi…
@@ -2923,8 +2923,8 @@ Retrieves the season roster for an MLB team from ESPN. The example uses team_id 
 #> ── ESPN MLB Team Season Roster ────────────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:27:36 UTC
 #> # A tibble: 200 × 5
-#>    league team_id season athlete_id ref                                 
-#>    <chr>  <chr>    <int> <chr>      <chr>                               
+#>    league team_id season athlete_id ref
+#>    <chr>  <chr>    <int> <chr>      <chr>
 #>  1 mlb    13        2025 4321454    http://sports.core.api.espn.com/v2/…
 #>  2 mlb    13        2025 5270677    http://sports.core.api.espn.com/v2/…
 #>  3 mlb    13        2025 4832142    http://sports.core.api.espn.com/v2/…
@@ -3010,17 +3010,17 @@ Example call to mlb_people_free_agents with season = 2018, wrapped in try() and 
 #> ℹ Data updated: 2026-09-30 14:30:47 UTC
 #> # A tibble: 515 × 17
 #>    notes date_signed date_declared sort_order player_id player_full_name
-#>    <chr> <chr>       <chr>              <int>     <int> <chr>           
-#>  1 Mino… 2018-12-17  2018-11-30            NA    592094 Jason Adam      
-#>  2 One-… 2018-12-18  2018-10-29            NA    571431 Matt Adams      
-#>  3 Mino… 2019-01-02  2018-10-24            NA    451192 James Adduci    
-#>  4 Clai… 2019-03-01  2019-03-01            NA    593643 Hanser Alberto  
-#>  5 NA    NA          2018-10-05            NA    593417 Raúl Alcántara  
-#>  6 Trad… 2018-02-07  2018-02-07            NA    595751 Jorge Alfaro    
-#>  7 One-… 2019-01-20  2018-10-29            NA    592102 Cody Allen      
-#>  8 Mino… 2018-11-06  2018-07-18            NA    501659 Abraham Almonte 
-#>  9 Trad… 2018-12-15  2018-12-15            NA    475174 Yonder Alonso   
-#> 10 Trad… 2018-12-06  2018-12-06            NA    501625 Jose Alvarez    
+#>    <chr> <chr>       <chr>              <int>     <int> <chr>
+#>  1 Mino… 2018-12-17  2018-11-30            NA    592094 Jason Adam
+#>  2 One-… 2018-12-18  2018-10-29            NA    571431 Matt Adams
+#>  3 Mino… 2019-01-02  2018-10-24            NA    451192 James Adduci
+#>  4 Clai… 2019-03-01  2019-03-01            NA    593643 Hanser Alberto
+#>  5 NA    NA          2018-10-05            NA    593417 Raúl Alcántara
+#>  6 Trad… 2018-02-07  2018-02-07            NA    595751 Jorge Alfaro
+#>  7 One-… 2019-01-20  2018-10-29            NA    592102 Cody Allen
+#>  8 Mino… 2018-11-06  2018-07-18            NA    501659 Abraham Almonte
+#>  9 Trad… 2018-12-15  2018-12-15            NA    475174 Yonder Alonso
+#> 10 Trad… 2018-12-06  2018-12-06            NA    501625 Jose Alvarez
 #> # ℹ 505 more rows
 #> # ℹ 11 more variables: player_link <chr>, original_team_id <int>,
 #> #   original_team_name <chr>, original_team_link <chr>,
@@ -3040,7 +3040,7 @@ Example of using statcast_search_minors to fetch minor league Statcast data for 
 
 ```r
   try(statcast_search_minors(start_date = "2024-06-01", end_date = "2024-06-01"))
-#> ── MLB Baseball Savant Statcast Search data from baseballsavant.mlb.com 
+#> ── MLB Baseball Savant Statcast Search data from baseballsavant.mlb.com
 #> ℹ Data updated: 2026-09-30 14:31:14 UTC
 #> # A tibble: 4,399 × 119
 #>    pitch_type game_date  release_speed release_pos_x release_pos_z
@@ -3077,7 +3077,7 @@ fox_mlb_odds(game_id)
 ```
 
 ```r
- try(fox_mlb_odds("95687")) 
+ try(fox_mlb_odds("95687"))
 #> ── Fox Sports MLB odds ────────────────────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:28:03 UTC
 #> # A tibble: 2 × 5
@@ -3171,8 +3171,8 @@ Example usage wrapped in \donttest to avoid CRAN test failures. The try() call s
 #> ℹ Data updated: 2026-09-30 14:30:57 UTC
 #> # A tibble: 1 × 7
 #>   sport_id sport_code sport_link       sport_name     sport_abbreviation
-#>      <int> <chr>      <chr>            <chr>          <chr>             
-#> 1        1 mlb        /api/v1/sports/1 Major League … MLB               
+#>      <int> <chr>      <chr>            <chr>          <chr>
+#> 1        1 mlb        /api/v1/sports/1 Major League … MLB
 #> # ℹ 2 more variables: sort_order <int>, active_status <lgl>
 # }
 ```
@@ -3192,17 +3192,17 @@ Example usage of mlb_event_types() wrapped in try() to handle potential errors. 
 #> ℹ Data updated: 2026-09-30 14:30:25 UTC
 #> # A tibble: 74 × 5
 #>    plate_appearance hit   event_code       base_running_event
-#>    <lgl>            <lgl> <chr>            <lgl>             
-#>  1 FALSE            FALSE pickoff_1b       TRUE              
-#>  2 FALSE            FALSE pickoff_2b       TRUE              
-#>  3 FALSE            FALSE pickoff_3b       TRUE              
-#>  4 FALSE            FALSE pitcher_step_off FALSE             
-#>  5 FALSE            FALSE pickoff_error_1b TRUE              
-#>  6 FALSE            FALSE pickoff_error_2b TRUE              
-#>  7 FALSE            FALSE pickoff_error_3b TRUE              
-#>  8 FALSE            FALSE batter_timeout   FALSE             
-#>  9 FALSE            FALSE mound_visit      FALSE             
-#> 10 FALSE            FALSE no_pitch         FALSE             
+#>    <lgl>            <lgl> <chr>            <lgl>
+#>  1 FALSE            FALSE pickoff_1b       TRUE
+#>  2 FALSE            FALSE pickoff_2b       TRUE
+#>  3 FALSE            FALSE pickoff_3b       TRUE
+#>  4 FALSE            FALSE pitcher_step_off FALSE
+#>  5 FALSE            FALSE pickoff_error_1b TRUE
+#>  6 FALSE            FALSE pickoff_error_2b TRUE
+#>  7 FALSE            FALSE pickoff_error_3b TRUE
+#>  8 FALSE            FALSE batter_timeout   FALSE
+#>  9 FALSE            FALSE mound_visit      FALSE
+#> 10 FALSE            FALSE no_pitch         FALSE
 #> # ℹ 64 more rows
 #> # ℹ 1 more variable: event_description <chr>
 # }
@@ -3210,15 +3210,15 @@ Example usage of mlb_event_types() wrapped in try() to handle potential errors. 
 
 --------------------------------
 
-### Calling espc_mlb_ticks(limit=5) and its output showing output format and output format and output format and output format and output format and 
+### Calling espc_mlb_ticks(limit=5) and its output showing output format and output format and output format and output format and output format and
 
 Source: https://billpetti.github.io/baseballr/reference/espn_mlb_news
 
-This example shows the result of calling espn_ 
+This example shows the result of calling espn_
 
 ```r-html
-# 
-opposite of 
+#
+opposite of
 ```
 
 --------------------------------
@@ -3235,20 +3235,20 @@ Example usage wrapped in \donttest to avoid CRAN test failures. The try() call s
 #> ── MLB Standings Types data from MLB.com ──────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:58 UTC
 #> # A tibble: 13 × 2
-#>    standings_type_name standings_type_description                       
-#>    <chr>               <chr>                                            
-#>  1 regularSeason       Regular Season Standings                         
-#>  2 wildCard            Wild card standings                              
-#>  3 divisionLeaders     Division Leader standings                        
-#>  4 wildCardWithLeaders Wild card standings with Division Leaders        
+#>    standings_type_name standings_type_description
+#>    <chr>               <chr>
+#>  1 regularSeason       Regular Season Standings
+#>  2 wildCard            Wild card standings
+#>  3 divisionLeaders     Division Leader standings
+#>  4 wildCardWithLeaders Wild card standings with Division Leaders
 #>  5 firstHalf           First half standings.  Only valid for leagues wi…
 #>  6 secondHalf          Second half standings. Only valid for leagues wi…
-#>  7 springTraining      Spring Training Standings                        
-#>  8 postseason          Postseason Standings                             
-#>  9 byDivision          Standings by Division                            
-#> 10 byConference        Standings by Conference                          
-#> 11 byLeague            Standings by League                              
-#> 12 byOrganization      Standing by Organization                         
+#>  7 springTraining      Spring Training Standings
+#>  8 postseason          Postseason Standings
+#>  9 byDivision          Standings by Division
+#> 10 byConference        Standings by Conference
+#> 11 byLeague            Standings by League
+#> 12 byOrganization      Standing by Organization
 #> 13 currentHalf         Current Half Standings. Returns standings in the…
 # }
 ```
@@ -3268,17 +3268,17 @@ Example usage of mlb_player_status_codes() wrapped in try() to handle potential 
 #> ℹ Data updated: 2026-09-30 14:30:48 UTC
 #> # A tibble: 36 × 2
 #>    player_status_code player_status_description
-#>    <chr>              <chr>                    
-#>  1 A                  Active                   
-#>  2 D7                 7-day IL                 
-#>  3 D10                10-day IL                
-#>  4 D15                15-day IL                
-#>  5 D60                60-day IL                
-#>  6 D0                 IL                       
-#>  7 ILF                Full Season IL           
-#>  8 RM                 Reassigned               
-#>  9 RA                 Rehab                    
-#> 10 DEV                Development List         
+#>    <chr>              <chr>
+#>  1 A                  Active
+#>  2 D7                 7-day IL
+#>  3 D10                10-day IL
+#>  4 D15                15-day IL
+#>  5 D60                60-day IL
+#>  6 D0                 IL
+#>  7 ILF                Full Season IL
+#>  8 RM                 Reassigned
+#>  9 RA                 Rehab
+#> 10 DEV                Development List
 #> # ℹ 26 more rows
 # }
 ```
@@ -3318,17 +3318,17 @@ Example usage of mlb_baseball_stats() wrapped in try() to handle potential error
 #> ℹ Data updated: 2026-09-30 14:30:19 UTC
 #> # A tibble: 330 × 5
 #>    stat_name        stat_lookup_param is_counting stat_label stat_group
-#>    <chr>            <chr>             <lgl>       <chr>      <chr>     
-#>  1 airOuts          ao                TRUE        Airouts    pitching  
-#>  2 assists          a                 TRUE        Assist     fielding  
-#>  3 assists          a                 TRUE        Assist     catching  
-#>  4 atBats           ab                TRUE        NA         hitting   
-#>  5 atBats           ab                TRUE        NA         catching  
-#>  6 atBatsPerHomeRun NA                FALSE       NA         hitting   
-#>  7 balk             bk                TRUE        Balk       pitching  
-#>  8 battingAverage   avg               FALSE       NA         hitting   
-#>  9 battingAverage   avg               FALSE       NA         pitching  
-#> 10 battingAverage   avg               FALSE       NA         catching  
+#>    <chr>            <chr>             <lgl>       <chr>      <chr>
+#>  1 airOuts          ao                TRUE        Airouts    pitching
+#>  2 assists          a                 TRUE        Assist     fielding
+#>  3 assists          a                 TRUE        Assist     catching
+#>  4 atBats           ab                TRUE        NA         hitting
+#>  5 atBats           ab                TRUE        NA         catching
+#>  6 atBatsPerHomeRun NA                FALSE       NA         hitting
+#>  7 balk             bk                TRUE        Balk       pitching
+#>  8 battingAverage   avg               FALSE       NA         hitting
+#>  9 battingAverage   avg               FALSE       NA         pitching
+#> 10 battingAverage   avg               FALSE       NA         catching
 #> # ℹ 320 more rows
 # }
 ```
@@ -3348,17 +3348,17 @@ Example call to mlb_jobs_umpires with sport_id=1, wrapped in try() and donttest.
 #> ℹ Data updated: 2026-09-30 14:30:40 UTC
 #> # A tibble: 98 × 7
 #>    jersey_number job    job_code title  person_id person_full_name
-#>    <chr>         <chr>  <chr>    <chr>      <int> <chr>           
-#>  1 67            Umpire UMPR     Umpire    596809 Ryan Additon    
-#>  2 12            Umpire UMPR     Umpire    623938 Erich Bacchus   
-#>  3 70            Umpire UMPR     Umpire    545402 John Bacon      
-#>  4 71            Umpire UMPR     Umpire    490319 Jordan Baker    
-#>  5 41            Umpire UMPR     Umpire    665576 Brock Ballou    
-#>  6 29            Umpire UMPR     Umpire    503493 Sean Barber     
-#>  7 23            Umpire UMPR     Umpire    427013 Lance Barksdale 
-#>  8 16            Umpire UMPR     Umpire    483561 Lance Barrett   
-#>  9 87            Umpire UMPR     Umpire    482608 Scott Barry     
-#> 10 38            Umpire UMPR     Umpire    644760 Adam Beck       
+#>    <chr>         <chr>  <chr>    <chr>      <int> <chr>
+#>  1 67            Umpire UMPR     Umpire    596809 Ryan Additon
+#>  2 12            Umpire UMPR     Umpire    623938 Erich Bacchus
+#>  3 70            Umpire UMPR     Umpire    545402 John Bacon
+#>  4 71            Umpire UMPR     Umpire    490319 Jordan Baker
+#>  5 41            Umpire UMPR     Umpire    665576 Brock Ballou
+#>  6 29            Umpire UMPR     Umpire    503493 Sean Barber
+#>  7 23            Umpire UMPR     Umpire    427013 Lance Barksdale
+#>  8 16            Umpire UMPR     Umpire    483561 Lance Barrett
+#>  9 87            Umpire UMPR     Umpire    482608 Scott Barry
+#> 10 38            Umpire UMPR     Umpire    644760 Adam Beck
 #> # ℹ 88 more rows
 #> # ℹ 1 more variable: person_link <chr>
 # }
@@ -3379,17 +3379,17 @@ Example call to mlb_jobs_official_scorers with sport_id=1, wrapped in try() and 
 #> ℹ Data updated: 2026-09-30 14:30:40 UTC
 #> # A tibble: 235 × 7
 #>    jersey_number job           job_code title person_id person_full_name
-#>    <chr>         <chr>         <chr>    <chr>     <int> <chr>           
-#>  1 ""            Official Sco… SCOR     Offi…    582413 Fernando Alcala 
-#>  2 ""            Official Sco… SCOR     Offi…    434138 Billy Altman    
-#>  3 ""            Official Sco… SCOR     Offi…    679924 Kenny Ayres     
-#>  4 ""            Official Sco… SCOR     Offi…    839313 Zach Bamberger  
-#>  5 ""            Official Sco… SCOR     Offi…    478601 Tyler Barton    
-#>  6 ""            Official Sco… SCOR     Offi…    493719 Bob Beghtol     
-#>  7 ""            Official Sco… SCOR     Offi…    679730 Devin Benson    
-#>  8 ""            Official Sco… SCOR     Offi…    482136 Brian Berger    
+#>    <chr>         <chr>         <chr>    <chr>     <int> <chr>
+#>  1 ""            Official Sco… SCOR     Offi…    582413 Fernando Alcala
+#>  2 ""            Official Sco… SCOR     Offi…    434138 Billy Altman
+#>  3 ""            Official Sco… SCOR     Offi…    679924 Kenny Ayres
+#>  4 ""            Official Sco… SCOR     Offi…    839313 Zach Bamberger
+#>  5 ""            Official Sco… SCOR     Offi…    478601 Tyler Barton
+#>  6 ""            Official Sco… SCOR     Offi…    493719 Bob Beghtol
+#>  7 ""            Official Sco… SCOR     Offi…    679730 Devin Benson
+#>  8 ""            Official Sco… SCOR     Offi…    482136 Brian Berger
 #>  9 ""            Official Sco… SCOR     Offi…    550488 Court Berry-Tri…
-#> 10 ""            Official Sco… SCOR     Offi…    602880 Matt Birch      
+#> 10 ""            Official Sco… SCOR     Offi…    602880 Matt Birch
 #> # ℹ 225 more rows
 #> # ℹ 1 more variable: person_link <chr>
 # }
@@ -3421,22 +3421,22 @@ Source: https://billpetti.github.io/baseballr/reference/fox_mlb_league_leaders
 Example call to fox_mlb_league_leaders with the default batting category. The output shows a baseballr_data tibble with 100 rows and columns including players, entity_id, pa, ab, and h.
 
 ```r
-try(fox_mlb_league_leaders("batting")) 
+try(fox_mlb_league_leaders("batting"))
 #> ── Fox Sports MLB league_leaders ──────────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:28:02 UTC
 #> # A tibble: 100 × 7
-#>    players v2             g     entity_id pa    ab    h    
+#>    players v2             g     entity_id pa    ab    h
 #>    <chr>   <chr>          <chr> <chr>     <chr> <chr> <chr>
-#>  1 1       P. Goldschmidt 1     5016      NA    NA    NA   
-#>  2 2       J. Altuve      1     5058      NA    NA    NA   
-#>  3 3       M. Machado     1     5147      NA    NA    NA   
-#>  4 4       B. Harper      1     5349      NA    NA    NA   
-#>  5 5       X. Bogaerts    1     5359      NA    NA    NA   
-#>  6 6       T. Story       1     5645      NA    NA    NA   
-#>  7 7       D. Smith       1     5657      NA    NA    NA   
-#>  8 8       M. Olson       1     5666      NA    NA    NA   
-#>  9 9       J. Realmuto    1     5752      NA    NA    NA   
-#> 10 10      R. Grichuk     1     5805      NA    NA    NA   
+#>  1 1       P. Goldschmidt 1     5016      NA    NA    NA
+#>  2 2       J. Altuve      1     5058      NA    NA    NA
+#>  3 3       M. Machado     1     5147      NA    NA    NA
+#>  4 4       B. Harper      1     5349      NA    NA    NA
+#>  5 5       X. Bogaerts    1     5359      NA    NA    NA
+#>  6 6       T. Story       1     5645      NA    NA    NA
+#>  7 7       D. Smith       1     5657      NA    NA    NA
+#>  8 8       M. Olson       1     5666      NA    NA    NA
+#>  9 9       J. Realmuto    1     5752      NA    NA    NA
+#> 10 10      R. Grichuk     1     5805      NA    NA    NA
 #> # ℹ 90 more rows
 ```
 
@@ -3485,17 +3485,17 @@ Example usage of load_mlb_group_seasons() wrapped in try() to handle potential e
 #> ℹ Data updated: 2026-09-30 14:28:14 UTC
 #> # A tibble: 727 × 9
 #>    league group_id season level      name        short_name abbreviation
-#>    <chr>  <chr>     <int> <chr>      <chr>       <chr>      <chr>       
-#>  1 mlb    mlb:al     1901 conference American L… American   AL          
-#>  2 mlb    mlb:al     1902 conference American L… American   AL          
-#>  3 mlb    mlb:al     1903 conference American L… American   AL          
-#>  4 mlb    mlb:al     1904 conference American L… American   AL          
-#>  5 mlb    mlb:al     1905 conference American L… American   AL          
-#>  6 mlb    mlb:al     1906 conference American L… American   AL          
-#>  7 mlb    mlb:al     1907 conference American L… American   AL          
-#>  8 mlb    mlb:al     1908 conference American L… American   AL          
-#>  9 mlb    mlb:al     1909 conference American L… American   AL          
-#> 10 mlb    mlb:al     1910 conference American L… American   AL          
+#>    <chr>  <chr>     <int> <chr>      <chr>       <chr>      <chr>
+#>  1 mlb    mlb:al     1901 conference American L… American   AL
+#>  2 mlb    mlb:al     1902 conference American L… American   AL
+#>  3 mlb    mlb:al     1903 conference American L… American   AL
+#>  4 mlb    mlb:al     1904 conference American L… American   AL
+#>  5 mlb    mlb:al     1905 conference American L… American   AL
+#>  6 mlb    mlb:al     1906 conference American L… American   AL
+#>  7 mlb    mlb:al     1907 conference American L… American   AL
+#>  8 mlb    mlb:al     1908 conference American L… American   AL
+#>  9 mlb    mlb:al     1909 conference American L… American   AL
+#> 10 mlb    mlb:al     1910 conference American L… American   AL
 #> # ℹ 717 more rows
 #> # ℹ 2 more variables: parent_group_id <chr>, n_teams <int>
 # }
@@ -3528,15 +3528,15 @@ Generates the run expectancy table from data already processed by run_expectancy
 
 base_out_state     avg_re
 <chr>               <dbl>
-1 0  outs,  1b 2b 3b  2.13 
-2 0  outs,  _ 2b 3b   1.95 
-3 0  outs,  1b _ 3b   1.76 
-4 1  outs,  1b 2b 3b  1.55 
-5 0  outs,  1b 2b _   1.42 
-6 1  outs,  _ 2b 3b   1.36 
-7 0  outs,  _ _ 3b    1.36 
-8 1  outs,  1b _ 3b   1.18 
-9 0  outs,  _ 2b _    1.14 
+1 0  outs,  1b 2b 3b  2.13
+2 0  outs,  _ 2b 3b   1.95
+3 0  outs,  1b _ 3b   1.76
+4 1  outs,  1b 2b 3b  1.55
+5 0  outs,  1b 2b _   1.42
+6 1  outs,  _ 2b 3b   1.36
+7 0  outs,  _ _ 3b    1.36
+8 1  outs,  1b _ 3b   1.18
+9 0  outs,  _ 2b _    1.14
 10 1  outs,  _ _ 3b    0.951
 11 1  outs,  1b 2b _   0.906
 12 0  outs,  1b _ _    0.863
@@ -3673,17 +3673,17 @@ try(espn_college_baseball_game_all(game_id = "401778093"))
 #> ℹ Data updated: 2026-09-30 14:26:27 UTC
 #> # A tibble: 581 × 72
 #>    id           sequence_number text  away_score home_score scoring_play
-#>    <chr>        <chr>           <chr>      <int>      <int> <lgl>       
-#>  1 40177809300… 1               "Top…          0          0 FALSE       
-#>  2 40177809300… 1               "E. …          0          0 FALSE       
-#>  3 40177809300… 2               "Pit…          0          0 FALSE       
-#>  4 40177809300… 3               "Pit…          0          0 FALSE       
-#>  5 40177809300… 4               "Pit…          0          0 FALSE       
-#>  6 40177809300… 5               "C. …          0          0 FALSE       
-#>  7 40177809300… 6                NA            0          0 FALSE       
-#>  8 40177809300… 1               "E. …          0          0 FALSE       
-#>  9 40177809300… 2               "C. …          1          0 FALSE       
-#> 10 40177809300… 3               "C. …          1          0 FALSE       
+#>    <chr>        <chr>           <chr>      <int>      <int> <lgl>
+#>  1 40177809300… 1               "Top…          0          0 FALSE
+#>  2 40177809300… 1               "E. …          0          0 FALSE
+#>  3 40177809300… 2               "Pit…          0          0 FALSE
+#>  4 40177809300… 3               "Pit…          0          0 FALSE
+#>  5 40177809300… 4               "Pit…          0          0 FALSE
+#>  6 40177809300… 5               "C. …          0          0 FALSE
+#>  7 40177809300… 6                NA            0          0 FALSE
+#>  8 40177809300… 1               "E. …          0          0 FALSE
+#>  9 40177809300… 2               "C. …          1          0 FALSE
+#> 10 40177809300… 3               "C. …          1          0 FALSE
 #> # ℹ 571 more rows
 #> # ℹ 66 more variables: score_value <int>, wallclock <chr>,
 #> #   at_bat_id <chr>, summary_type <chr>, outs <int>, type <list<chr>>,
@@ -3691,7 +3691,7 @@ try(espn_college_baseball_game_all(game_id = "401778093"))
 #> #   type_id <int>, type_text <chr>, type_abbreviation <chr>,
 #> #   period_type <chr>, period_number <int>, period_display_value <chr>,
 #> #   team_id <int>, pitch_count_balls <int>, …
-#> 
+#>
 #> $Team
 #> ── ESPN MLB Team Box Information from ESPN.com ────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:26:27 UTC
@@ -3707,23 +3707,23 @@ try(espn_college_baseball_game_all(game_id = "401778093"))
 #> #   batting_hit_by_pitch <chr>, batting_strikeouts <chr>,
 #> #   batting_rb_is <chr>, batting_sac_hits <chr>, batting_hits <chr>,
 #> #   batting_stolen_bases <chr>, batting_walks <chr>, …
-#> 
+#>
 #> $Player
 #> ── ESPN MLB Player Box Information from ESPN.com ──── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:26:27 UTC
 #> # A tibble: 25 × 35
 #>     game_id season season_type game_date  game_date_time      stat_group
-#>       <int>  <int>       <int> <date>     <dttm>              <chr>     
-#>  1   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting   
-#>  2   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting   
-#>  3   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting   
-#>  4   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting   
-#>  5   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting   
-#>  6   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting   
-#>  7   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting   
-#>  8   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting   
-#>  9   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting   
-#> 10   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 pitching  
+#>       <int>  <int>       <int> <date>     <dttm>              <chr>
+#>  1   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting
+#>  2   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting
+#>  3   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting
+#>  4   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting
+#>  5   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting
+#>  6   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting
+#>  7   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting
+#>  8   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting
+#>  9   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 batting
+#> 10   4.02e8   2025           5 2025-06-15 2025-06-15 19:00:00 pitching
 #> # ℹ 15 more rows
 #> # ℹ 29 more variables: team_id <int>, team_name <chr>,
 #> #   team_abbreviation <chr>, team_display_name <chr>, athlete_id <int>,
@@ -3731,7 +3731,7 @@ try(espn_college_baseball_game_all(game_id = "401778093"))
 #> #   athlete_position_name <chr>, athlete_position_abbreviation <chr>,
 #> #   starter <lgl>, bat_order <int>, active <lgl>, h_ab <chr>, ab <chr>,
 #> #   r <chr>, h <chr>, rbi <chr>, hr <chr>, bb <chr>, k <chr>, …
-#> 
+#>
 # }
 ```
 
@@ -3744,22 +3744,22 @@ Source: https://billpetti.github.io/baseballr/reference/fox_mlb_team_roster
 Example call to fox_mlb_team_roster with team_id "1", wrapped in try() to handle potential errors. The output shows a baseballr_data tibble with 28 rows and 9 columns, including team_id, position_group, player, pos, age, ht, wt, school, and athlete_id.
 
 ```r
- try(fox_mlb_team_roster("1")) 
+ try(fox_mlb_team_roster("1"))
 #> ── Fox Sports MLB roster ──────────────────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:28:05 UTC
 #> # A tibble: 28 × 9
 #>    team_id position_group player          pos   age   ht    wt    school
-#>    <chr>   <chr>          <chr>           <chr> <chr> <chr> <chr> <chr> 
-#>  1 1       PITCHER        Chris Bassitt   P     37    "6'5… 220 … Akron 
-#>  2 1       PITCHER        Félix Bautista  P     31    "6'8… 285 … -     
+#>    <chr>   <chr>          <chr>           <chr> <chr> <chr> <chr> <chr>
+#>  1 1       PITCHER        Chris Bassitt   P     37    "6'5… 220 … Akron
+#>  2 1       PITCHER        Félix Bautista  P     31    "6'8… 285 … -
 #>  3 1       PITCHER        Shane Baz       P     27    "6'3… 200 … Conco…
-#>  4 1       PITCHER        Yennier Cano    P     32    "6'4… 245 … -     
+#>  4 1       PITCHER        Yennier Cano    P     32    "6'4… 245 … -
 #>  5 1       PITCHER        Rico Garcia     P     32    "5'9… 215 … Hawai…
 #>  6 1       PITCHER        Alex Hoppe      P     27    "6'1… 200 … UNC G…
 #>  7 1       PITCHER        Andrew Kittred… P     36    "6'1… 235 … Washi…
-#>  8 1       PITCHER        Anthony Nunez   P     25    "6'2… 220 … Tampa 
+#>  8 1       PITCHER        Anthony Nunez   P     25    "6'2… 220 … Tampa
 #>  9 1       PITCHER        Trevor Rogers   P     28    "6'5… 230 … Carls…
-#> 10 1       PITCHER        Cam Sanders     P     29    "6'2… 215 … LSU   
+#> 10 1       PITCHER        Cam Sanders     P     29    "6'2… 215 … LSU
 #> # ℹ 18 more rows
 #> # ℹ 1 more variable: athlete_id <chr>
 ```
@@ -3779,7 +3779,7 @@ Example call to mlb_awards_recipient with award_id 'MLBHOF' and season 2020, wra
 #> ℹ Data updated: 2026-09-30 14:30:18 UTC
 #> # A tibble: 4 × 15
 #>   award_id award_name   date    season votes notes player_id player_link
-#>   <chr>    <chr>        <chr>   <chr>  <int> <chr>     <int> <chr>      
+#>   <chr>    <chr>        <chr>   <chr>  <int> <chr>     <int> <chr>
 #> 1 MLBHOF   Hall Of Fame 2020-0… 2020      12 Mode…    692968 /api/v1/pe…
 #> 2 MLBHOF   Hall Of Fame 2020-0… 2020      13 Mode…    122247 /api/v1/pe…
 #> 3 MLBHOF   Hall Of Fame 2020-0… 2020     396 NA       116539 /api/v1/pe…
@@ -3831,8 +3831,8 @@ Example call to bref_standings_on_date for the AL East on 2015-08-04, wrapped in
 #> 1 NYY      60    45  0.571 --      525   455      0.565
 #> 2 TOR      56    52  0.519 5.5     569   457      0.599
 #> 3 BAL      54    52  0.509 6.5     464   415      0.551
-#> 4 TBR      54    54  0.5   7.5     399   408      0.49 
-#> 5 BOS      47    60  0.439 14.0    449   524      0.43 
+#> 4 TBR      54    54  0.5   7.5     399   408      0.49
+#> 5 BOS      47    60  0.439 14.0    449   524      0.43
 # }
 ```
 
@@ -3884,8 +3884,8 @@ At the plate-appearance level the analogous state columns are named `base_out_st
 ```r
 # \donttest{
 try({
-  df <- statcast_search(start_date = "2016-04-06", end_date = "2016-04-15", 
-                        playerid = 621043, player_type = 'batter') 
+  df <- statcast_search(start_date = "2016-04-06", end_date = "2016-04-15",
+                        playerid = 621043, player_type = 'batter')
   run_expectancy_code(df, level = "plate appearances")
 })
 #}
@@ -3922,22 +3922,22 @@ Example call to mlb_team_personnel with team_id = 137 and date = "08/28/2016", w
 #> ℹ Data updated: 2026-09-30 14:31:03 UTC
 #> # A tibble: 15 × 7
 #>    jersey_number job             job_id title person_id person_full_name
-#>    <chr>         <chr>           <chr>  <chr>     <int> <chr>           
-#>  1 "21"          Special Assist… SASU   Spec…    113645 Shawon Dunston  
-#>  2 "91"          Special Assist… SASU   Spec…    666066 Chad Chop       
-#>  3 ""            General Manager GMGR   Gene…    699624 Bobby Evans     
-#>  4 ""            Head Athletic … HATR   Seni…    599861 Dave Groeschner 
-#>  5 ""            Assistant Trai… ATRA   Head…    579868 Anthony Reyes   
-#>  6 ""            Strength and C… SCCC   Stre…    580105 Carl Kochan     
-#>  7 ""            Physical Thera… PTHR   Phys…    580103 Tony Reale      
-#>  8 ""            Director of Te… DTET   Seni…    640157 Bret Alexander  
-#>  9 ""            Equipment Mana… EQUP   Equi…    599864 Mike Murphy     
+#>    <chr>         <chr>           <chr>  <chr>     <int> <chr>
+#>  1 "21"          Special Assist… SASU   Spec…    113645 Shawon Dunston
+#>  2 "91"          Special Assist… SASU   Spec…    666066 Chad Chop
+#>  3 ""            General Manager GMGR   Gene…    699624 Bobby Evans
+#>  4 ""            Head Athletic … HATR   Seni…    599861 Dave Groeschner
+#>  5 ""            Assistant Trai… ATRA   Head…    579868 Anthony Reyes
+#>  6 ""            Strength and C… SCCC   Stre…    580105 Carl Kochan
+#>  7 ""            Physical Thera… PTHR   Phys…    580103 Tony Reale
+#>  8 ""            Director of Te… DTET   Seni…    640157 Bret Alexander
+#>  9 ""            Equipment Mana… EQUP   Equi…    599864 Mike Murphy
 #> 10 ""            Coordinator, O… CORT   Coor…    599866 Michael Scardino
-#> 11 ""            Coordinator, B… CBAS   Coor…    112724 Henry Cotto     
-#> 12 ""            Coordinator, C… CCAT   Coor…    118267 Kirt Manwaring  
-#> 13 ""            Coordinator, P… CPIT   Coor…    111351 Bert Bradley    
-#> 14 ""            Strength and C… SCCR   Stre…    580104 Geoff Head      
-#> 15 ""            Assistant Trai… ATRA   Assi…    599862 Mark Gruesbeck  
+#> 11 ""            Coordinator, B… CBAS   Coor…    112724 Henry Cotto
+#> 12 ""            Coordinator, C… CCAT   Coor…    118267 Kirt Manwaring
+#> 13 ""            Coordinator, P… CPIT   Coor…    111351 Bert Bradley
+#> 14 ""            Strength and C… SCCR   Stre…    580104 Geoff Head
+#> 15 ""            Assistant Trai… ATRA   Assi…    599862 Mark Gruesbeck
 #> # ℹ 1 more variable: person_link <chr>
 # }
 ```
@@ -3957,17 +3957,17 @@ Example call to mlb_all_star_final_vote with league_id 103 and season 2021, wrap
 #> ℹ Data updated: 2026-09-30 14:30:16 UTC
 #> # A tibble: 25 × 49
 #>    player_id full_name         link  first_name last_name primary_number
-#>        <int> <chr>             <chr> <chr>      <chr>     <chr>         
-#>  1    547989 José Abreu        /api… José       Abreu     79            
-#>  2    665489 Vladimir Guerrer… /api… Vladimir   Guerrero  27            
-#>  3    493329 Yuli Gurriel      /api… Yulieski   Gurriel   10            
-#>  4    518934 DJ LeMahieu       /api… David      LeMahieu  NA            
-#>  5    543760 Marcus Semien     /api… Marcus     Semien    10            
-#>  6    666182 Bo Bichette       /api… Bo         Bichette  19            
-#>  7    593428 Xander Bogaerts   /api… Xander     Bogaerts  2             
-#>  8    621043 Carlos Correa     /api… Carlos     Correa    1             
-#>  9    608324 Alex Bregman      /api… Alexander  Bregman   3             
-#> 10    646240 Rafael Devers     /api… Rafael     Devers    16            
+#>        <int> <chr>             <chr> <chr>      <chr>     <chr>
+#>  1    547989 José Abreu        /api… José       Abreu     79
+#>  2    665489 Vladimir Guerrer… /api… Vladimir   Guerrero  27
+#>  3    493329 Yuli Gurriel      /api… Yulieski   Gurriel   10
+#>  4    518934 DJ LeMahieu       /api… David      LeMahieu  NA
+#>  5    543760 Marcus Semien     /api… Marcus     Semien    10
+#>  6    666182 Bo Bichette       /api… Bo         Bichette  19
+#>  7    593428 Xander Bogaerts   /api… Xander     Bogaerts  2
+#>  8    621043 Carlos Correa     /api… Carlos     Correa    1
+#>  9    608324 Alex Bregman      /api… Alexander  Bregman   3
+#> 10    646240 Rafael Devers     /api… Rafael     Devers    16
 #> # ℹ 15 more rows
 #> # ℹ 43 more variables: birth_date <chr>, current_age <int>,
 #> #   birth_city <chr>, birth_country <chr>, height <chr>, weight <int>,
@@ -4126,11 +4126,11 @@ Example call to mlb_league for the 2021 season with sport_id 1. The output shows
 #> ℹ Data updated: 2026-09-30 14:30:41 UTC
 #> # A tibble: 4 × 40
 #>   league_id league_name       league_link        league_abbreviation
-#>       <int> <chr>             <chr>              <chr>              
-#> 1       103 American League   /api/v1/league/103 AL                 
-#> 2       104 National League   /api/v1/league/104 NL                 
-#> 3       114 Cactus League     /api/v1/league/114 CL                 
-#> 4       115 Grapefruit League /api/v1/league/115 GL                 
+#>       <int> <chr>             <chr>              <chr>
+#> 1       103 American League   /api/v1/league/103 AL
+#> 2       104 National League   /api/v1/league/104 NL
+#> 3       114 Cactus League     /api/v1/league/114 CL
+#> 4       115 Grapefruit League /api/v1/league/115 GL
 #> # ℹ 36 more variables: league_name_short <chr>,
 #> #   league_season_state <chr>, league_has_wild_card <lgl>,
 #> #   league_has_split_season <lgl>, league_num_games <int>,
@@ -4323,7 +4323,7 @@ Calls mlb_pbp with a game_pk value to retrieve play-by-play data. The output is 
 #> ℹ Data updated: 2026-09-30 14:30:45 UTC
 #> # A tibble: 336 × 151
 #>    game_pk game_date  index startTime       endTime isPitch type  playId
-#>      <dbl> <chr>      <int> <chr>           <chr>   <lgl>   <chr> <chr> 
+#>      <dbl> <chr>      <int> <chr>           <chr>   <lgl>   <chr> <chr>
 #>  1  632970 2021-08-08     2 2021-08-08T23:… 2021-0… TRUE    pitch 6fce9…
 #>  2  632970 2021-08-08     1 2021-08-08T23:… 2021-0… TRUE    pitch 61bad…
 #>  3  632970 2021-08-08     0 2021-08-08T23:… 2021-0… TRUE    pitch 433eb…
@@ -4332,7 +4332,7 @@ Calls mlb_pbp with a game_pk value to retrieve play-by-play data. The output is 
 #>  6  632970 2021-08-08     3 2021-08-09T02:… 2021-0… TRUE    pitch 932a8…
 #>  7  632970 2021-08-08     2 2021-08-09T02:… 2021-0… TRUE    pitch e9403…
 #>  8  632970 2021-08-08     1 2021-08-09T02:… 2021-0… TRUE    pitch 01e5d…
-#>  9  632970 2021-08-08     0 2021-08-09T02:… 2021-0… FALSE   acti… NA    
+#>  9  632970 2021-08-08     0 2021-08-09T02:… 2021-0… FALSE   acti… NA
 #> 10  632970 2021-08-08     5 2021-08-09T02:… 2021-0… TRUE    pitch f0450…
 #> # ℹ 326 more rows
 #> # ℹ 143 more variables: pitchNumber <int>, details.description <chr>,
@@ -4359,17 +4359,17 @@ Retrieves ESPN MLB team record details for a given team, season, and record ID. 
 #> ℹ Data updated: 2026-09-30 14:27:34 UTC
 #> # A tibble: 33 × 15
 #>    league team_id season season_type record_id record_name record_abbrev
-#>    <chr>  <chr>    <int>       <int> <chr>     <chr>       <chr>        
-#>  1 mlb    13        2024           2 0         overall     Total        
-#>  2 mlb    13        2024           2 0         overall     Total        
-#>  3 mlb    13        2024           2 0         overall     Total        
-#>  4 mlb    13        2024           2 0         overall     Total        
-#>  5 mlb    13        2024           2 0         overall     Total        
-#>  6 mlb    13        2024           2 0         overall     Total        
-#>  7 mlb    13        2024           2 0         overall     Total        
-#>  8 mlb    13        2024           2 0         overall     Total        
-#>  9 mlb    13        2024           2 0         overall     Total        
-#> 10 mlb    13        2024           2 0         overall     Total        
+#>    <chr>  <chr>    <int>       <int> <chr>     <chr>       <chr>
+#>  1 mlb    13        2024           2 0         overall     Total
+#>  2 mlb    13        2024           2 0         overall     Total
+#>  3 mlb    13        2024           2 0         overall     Total
+#>  4 mlb    13        2024           2 0         overall     Total
+#>  5 mlb    13        2024           2 0         overall     Total
+#>  6 mlb    13        2024           2 0         overall     Total
+#>  7 mlb    13        2024           2 0         overall     Total
+#>  8 mlb    13        2024           2 0         overall     Total
+#>  9 mlb    13        2024           2 0         overall     Total
+#> 10 mlb    13        2024           2 0         overall     Total
 #> # ℹ 23 more rows
 #> # ℹ 8 more variables: record_display <chr>, record_type <chr>,
 #> #   record_summary <chr>, stat_name <chr>, stat_abbrev <chr>,
@@ -4426,17 +4426,17 @@ Example call to mlb_team_alumni with team_id 137, stat_group 'hitting', and seas
 #> ℹ Data updated: 2026-09-30 14:31:01 UTC
 #> # A tibble: 43 × 46
 #>    player_id player_full_name  link  first_name last_name primary_number
-#>        <int> <chr>             <chr> <chr>      <chr>     <chr>         
-#>  1    501303 Ehire Adrianza    /api… Ehire      Adrianza  6             
-#>  2    542881 Tyler Anderson    /api… Tyler      Anderson  31            
-#>  3    641312 Shaun Anderson    /api… Shaun      Anderson  NA            
-#>  4    624414 Christian Arroyo  /api… Christian  Arroyo    39            
-#>  5    623214 Abiatal Avelino   /api… Abiatal    Avelino   NA            
-#>  6    642772 Luis Alexander B… /api… Luis       Basabe    NA            
-#>  7    542963 Rob Brantly       /api… Robert     Brantly   NA            
-#>  8    518516 Madison Bumgarner /api… Madison    Bumgarner 40            
-#>  9    502239 Trevor Cahill     /api… Trevor     Cahill    NA            
-#> 10    593525 Orlando Calixte   /api… Orlando    Calixte   16            
+#>        <int> <chr>             <chr> <chr>      <chr>     <chr>
+#>  1    501303 Ehire Adrianza    /api… Ehire      Adrianza  6
+#>  2    542881 Tyler Anderson    /api… Tyler      Anderson  31
+#>  3    641312 Shaun Anderson    /api… Shaun      Anderson  NA
+#>  4    624414 Christian Arroyo  /api… Christian  Arroyo    39
+#>  5    623214 Abiatal Avelino   /api… Abiatal    Avelino   NA
+#>  6    642772 Luis Alexander B… /api… Luis       Basabe    NA
+#>  7    542963 Rob Brantly       /api… Robert     Brantly   NA
+#>  8    518516 Madison Bumgarner /api… Madison    Bumgarner 40
+#>  9    502239 Trevor Cahill     /api… Trevor     Cahill    NA
+#> 10    593525 Orlando Calixte   /api… Orlando    Calixte   16
 #> # ℹ 33 more rows
 #> # ℹ 40 more variables: birth_date <chr>, current_age <int>,
 #> #   birth_city <chr>, birth_country <chr>, height <chr>, weight <int>,
@@ -4593,10 +4593,10 @@ Source: https://billpetti.github.io/baseballr
 Generate wOBA-based stats and FIP for pitchers using fip_plus(). The example pulls daily pitcher data for April 5-30, 2015, computes FIP and wOBA against, selects relevant columns, sorts by innings pitched descending, and shows the top 10.
 
 ```r
-bref_daily_pitcher("2015-04-05", "2015-04-30") %>% 
-  fip_plus() %>% 
+bref_daily_pitcher("2015-04-05", "2015-04-30") %>%
+  fip_plus() %>%
   dplyr::select(season, Name, IP, ERA, SO, uBB, HBP, HR, FIP, wOBA_against, wOBA_CON_against) %>%
-  dplyr::arrange(dplyr::desc(IP)) %>% 
+  dplyr::arrange(dplyr::desc(IP)) %>%
   head(10)
 ```
 
@@ -4636,7 +4636,7 @@ espn_mlb_wp(game_id = 401283399)
 #> ✖ Error: `clean_names()` requires that either names or dimnames be non-null.
 #> $code
 #> [1] 404
-#> 
+#>
 #> $message
 #> [1] "Error invoking GET: http://sports.core.api.espn.pvt/v2/sports/baseball/leagues/mlb/events/401283399/competitions/401283399/status, status=404, duration=2 ms, message=null, cache=CACHE_MISS"
 # }
@@ -4694,17 +4694,17 @@ A `baseballr_data` tibble with columns:
 #> ℹ Data updated: 2026-09-30 14:28:16 UTC
 #> # A tibble: 30 × 11
 #>    league season team_id team_id_source team_name         subdivision_id
-#>    <chr>   <int> <chr>   <chr>          <chr>             <chr>         
-#>  1 mlb      2013 1       espn           Baltimore Orioles NA            
-#>  2 mlb      2013 10      espn           New York Yankees  NA            
-#>  3 mlb      2013 11      espn           Oakland Athletics NA            
-#>  4 mlb      2013 12      espn           Seattle Mariners  NA            
-#>  5 mlb      2013 13      espn           Texas Rangers     NA            
-#>  6 mlb      2013 14      espn           Toronto Blue Jays NA            
-#>  7 mlb      2013 15      espn           Atlanta Braves    NA            
-#>  8 mlb      2013 16      espn           Chicago Cubs      NA            
-#>  9 mlb      2013 17      espn           Cincinnati Reds   NA            
-#> 10 mlb      2013 18      espn           Houston Astros    NA            
+#>    <chr>   <int> <chr>   <chr>          <chr>             <chr>
+#>  1 mlb      2013 1       espn           Baltimore Orioles NA
+#>  2 mlb      2013 10      espn           New York Yankees  NA
+#>  3 mlb      2013 11      espn           Oakland Athletics NA
+#>  4 mlb      2013 12      espn           Seattle Mariners  NA
+#>  5 mlb      2013 13      espn           Texas Rangers     NA
+#>  6 mlb      2013 14      espn           Toronto Blue Jays NA
+#>  7 mlb      2013 15      espn           Atlanta Braves    NA
+#>  8 mlb      2013 16      espn           Chicago Cubs      NA
+#>  9 mlb      2013 17      espn           Cincinnati Reds   NA
+#> 10 mlb      2013 18      espn           Houston Astros    NA
 #> # ℹ 20 more rows
 #> # ℹ 5 more variables: conference_id <chr>, division_id <chr>,
 #> #   source <chr>, sources_agree <lgl>, notes <chr>
@@ -4791,17 +4791,17 @@ Calls the ESPN College Baseball venues endpoint and prints a tibble with 955 row
 #> ℹ Data updated: 2026-09-30 14:26:57 UTC
 #> # A tibble: 955 × 9
 #>    venue_id name  full_name address_city address_state capacity indoor
-#>    <chr>    <chr> <chr>     <chr>        <chr>            <int> <lgl> 
-#>  1 NA       NA    NA        NA           NA                  NA NA    
-#>  2 NA       NA    NA        NA           NA                  NA NA    
-#>  3 NA       NA    NA        NA           NA                  NA NA    
-#>  4 NA       NA    NA        NA           NA                  NA NA    
-#>  5 NA       NA    NA        NA           NA                  NA NA    
-#>  6 NA       NA    NA        NA           NA                  NA NA    
-#>  7 NA       NA    NA        NA           NA                  NA NA    
-#>  8 NA       NA    NA        NA           NA                  NA NA    
-#>  9 NA       NA    NA        NA           NA                  NA NA    
-#> 10 NA       NA    NA        NA           NA                  NA NA    
+#>    <chr>    <chr> <chr>     <chr>        <chr>            <int> <lgl>
+#>  1 NA       NA    NA        NA           NA                  NA NA
+#>  2 NA       NA    NA        NA           NA                  NA NA
+#>  3 NA       NA    NA        NA           NA                  NA NA
+#>  4 NA       NA    NA        NA           NA                  NA NA
+#>  5 NA       NA    NA        NA           NA                  NA NA
+#>  6 NA       NA    NA        NA           NA                  NA NA
+#>  7 NA       NA    NA        NA           NA                  NA NA
+#>  8 NA       NA    NA        NA           NA                  NA NA
+#>  9 NA       NA    NA        NA           NA                  NA NA
+#> 10 NA       NA    NA        NA           NA                  NA NA
 #> # ℹ 945 more rows
 #> # ℹ 2 more variables: grass <lgl>, images_url <chr>
 # }
@@ -4862,7 +4862,7 @@ Returns a tibble with the following columns:
 #> ── MLB Game Info data from MLB.com ────────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:31 UTC
 #> # A tibble: 1 × 18
-#>   game_date  game_pk venue_name venue_id temperature other_weather wind 
+#>   game_date  game_pk venue_name venue_id temperature other_weather wind
 #>   <chr>        <dbl> <chr>         <int> <chr>       <chr>         <chr>
 #> 1 2019-04-29  566001 Citi Field     3289 51          Cloudy        10 m…
 #> # ℹ 11 more variables: attendance <chr>, start_time <chr>,
@@ -5001,8 +5001,8 @@ Example usage of mlb_game_timecodes with game_pk 632970. The output shows a tibb
 #> ── MLB Game Timecodes data from MLB.com ───────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:30:34 UTC
 #> # A tibble: 473 × 1
-#>    timecodes      
-#>    <chr>          
+#>    timecodes
+#>    <chr>
 #>  1 20210808_213535
 #>  2 20210808_224317
 #>  3 20210808_230851
@@ -5167,7 +5167,7 @@ A `baseballr_data` tibble with the following columns:
 #> ℹ Data updated: 2026-09-30 14:30:13 UTC
 #> # A tibble: 943 × 11
 #>    league        season team_id team_id_source team_name  subdivision_id
-#>    <chr>          <int> <chr>   <chr>          <chr>      <chr>         
+#>    <chr>          <int> <chr>   <chr>          <chr>      <chr>
 #>  1 ncaa_baseball   2025 10      ncaa_org       UAH        ncaa_baseball…
 #>  2 ncaa_baseball   2025 100     ncaa_org       Cal State… ncaa_baseball…
 #>  3 ncaa_baseball   2025 1000    ncaa_org       Carson-Ne… ncaa_baseball…
@@ -5200,17 +5200,17 @@ Example usage of the espn_mlb_team_schedule function to retrieve the 2025 schedu
 #> ℹ Data updated: 2026-09-30 14:27:35 UTC
 #> # A tibble: 162 × 21
 #>    event_id  season season_type  week date  name  short_name opponent_id
-#>    <chr>      <int>       <int> <int> <chr> <chr> <chr>      <chr>      
-#>  1 401694916   2025          NA    13 2025… Bost… BOS @ TEX  NA         
-#>  2 401694926   2025          NA    13 2025… Bost… BOS @ TEX  NA         
-#>  3 401694938   2025          NA    13 2025… Bost… BOS @ TEX  NA         
-#>  4 401694953   2025          NA    13 2025… Bost… BOS @ TEX  NA         
-#>  5 401694964   2025          NA    13 2025… Texa… TEX @ CIN  NA         
-#>  6 401694977   2025          NA    13 2025… Texa… TEX @ CIN  NA         
-#>  7 401694992   2025          NA    14 2025… Texa… TEX @ CIN  NA         
-#>  8 401695017   2025          NA    14 2025… Tamp… TB @ TEX   NA         
-#>  9 401695032   2025          NA    14 2025… Tamp… TB @ TEX   NA         
-#> 10 401695047   2025          NA    14 2025… Tamp… TB @ TEX   NA         
+#>    <chr>      <int>       <int> <int> <chr> <chr> <chr>      <chr>
+#>  1 401694916   2025          NA    13 2025… Bost… BOS @ TEX  NA
+#>  2 401694926   2025          NA    13 2025… Bost… BOS @ TEX  NA
+#>  3 401694938   2025          NA    13 2025… Bost… BOS @ TEX  NA
+#>  4 401694953   2025          NA    13 2025… Bost… BOS @ TEX  NA
+#>  5 401694964   2025          NA    13 2025… Texa… TEX @ CIN  NA
+#>  6 401694977   2025          NA    13 2025… Texa… TEX @ CIN  NA
+#>  7 401694992   2025          NA    14 2025… Texa… TEX @ CIN  NA
+#>  8 401695017   2025          NA    14 2025… Tamp… TB @ TEX   NA
+#>  9 401695032   2025          NA    14 2025… Tamp… TB @ TEX   NA
+#> 10 401695047   2025          NA    14 2025… Tamp… TB @ TEX   NA
 #> # ℹ 152 more rows
 #> # ℹ 13 more variables: opponent_abbrev <chr>, home_away <chr>,
 #> #   neutral_site <lgl>, conference_competition <lgl>, venue_id <chr>,
@@ -5294,9 +5294,9 @@ Calls mlb_conferences() without arguments to return a tibble of all conferences.
 #> ℹ Data updated: 2026-09-30 14:30:21 UTC
 #> # A tibble: 2 × 10
 #>   conference_id conference_name         link      conference_abbreviat…¹
-#>           <int> <chr>                   <chr>     <chr>                 
-#> 1           301 PCL American Conference /api/v1/… PCLA                  
-#> 2           302 PCL Pacific Conference  /api/v1/… PCLP                  
+#>           <int> <chr>                   <chr>     <chr>
+#> 1           301 PCL American Conference /api/v1/… PCLA
+#> 2           302 PCL Pacific Conference  /api/v1/… PCLP
 #> # ℹ abbreviated name: ¹​conference_abbreviation
 #> # ℹ 6 more variables: has_wildcard <lgl>, conference_name_short <chr>,
 #> #   league_id <int>, league_link <chr>, sport_id <int>,
@@ -5306,8 +5306,8 @@ Calls mlb_conferences() without arguments to return a tibble of all conferences.
 #> ℹ Data updated: 2026-09-30 14:30:21 UTC
 #> # A tibble: 1 × 10
 #>   conference_id conference_name         link      conference_abbreviat…¹
-#>           <int> <chr>                   <chr>     <chr>                 
-#> 1           301 PCL American Conference /api/v1/… PCLA                  
+#>           <int> <chr>                   <chr>     <chr>
+#> 1           301 PCL American Conference /api/v1/… PCLA
 #> # ℹ abbreviated name: ¹​conference_abbreviation
 #> # ℹ 6 more variables: has_wildcard <lgl>, conference_name_short <chr>,
 #> #   league_id <int>, league_link <chr>, sport_id <int>,
@@ -5342,8 +5342,8 @@ Calls mlb_game_context_metrics with a specific game_pk and timecode. The output 
 #> ℹ Data updated: 2026-09-30 14:30:30 UTC
 #> # A tibble: 1 × 66
 #>   game_pk game_guid       link  game_type season game_date official_date
-#>     <int> <chr>           <chr> <chr>     <chr>  <chr>     <chr>        
-#>  1  531060 053ddbf2-26e1-… /api… R         2018   2018-08-… 2018-08-03   
+#>     <int> <chr>           <chr> <chr>     <chr>  <chr>     <chr>
+#>  1  531060 053ddbf2-26e1-… /api… R         2018   2018-08-… 2018-08-03
 #> # ℹ 59 more variables: status_abstract_game_state <chr>,
 #> #   status_coded_game_state <chr>, status_detailed_state <chr>,
 #> #   status_status_code <chr>, status_start_time_tbd <lgl>,
@@ -5363,12 +5363,12 @@ Source: https://billpetti.github.io/baseballr/news/index.html
 Retrieves Statcast data for a specific batter using the MLBAMID. The function prints a message that it may take a few seconds and then returns a data frame. The example filters for batted balls (type == "X") and selects columns 3, 7, and 54-56, showing the last six rows.
 
 ```R
-> scrape_statcast_savant_batter(start_date = "2016-04-06", end_date = "2016-04-15", batterid = 621043) %>% 
+> scrape_statcast_savant_batter(start_date = "2016-04-06", end_date = "2016-04-15", batterid = 621043) %>%
      filter(type == "X") %>%
      select(3,7,54:56) %>%
      tail()
 [1] "Be patient, this may take a few seconds..."
-[1] "Data courtesy of Baseball Savant and MLBAM  (baseballsavant.mlb.com)"     
+[1] "Data courtesy of Baseball Savant and MLBAM  (baseballsavant.mlb.com)"
     game_date   player_name hit_distance_sc hit_speed hit_angle
 26 2016-04-07 Carlos Correa             385    103.33     31.10
 27 2016-04-07 Carlos Correa             288     87.25     27.77
@@ -5586,8 +5586,8 @@ Returns a tibble with the following columns:
 #> ℹ Data updated: 2026-09-30 14:31:02 UTC
 #> # A tibble: 1 × 33
 #>   all_star_status team_id team_full_name   link         season team_code
-#>   <chr>             <int> <chr>            <chr>         <int> <chr>    
-#> 1 N                   147 New York Yankees /api/v1/tea…   2026 nya      
+#>   <chr>             <int> <chr>            <chr>         <int> <chr>
+#> 1 N                   147 New York Yankees /api/v1/tea…   2026 nya
 #> # ℹ 27 more variables: file_code <chr>, team_abbreviation <chr>,
 #> #   team_name <chr>, location_name <chr>, first_year_of_play <chr>,
 #> #   short_name <chr>, franchise_name <chr>, club_name <chr>,
@@ -5707,8 +5707,8 @@ try(mlb_seasons(sport_id = 1))
 #> ℹ Data updated: 2026-09-30 14:30:56 UTC
 #> # A tibble: 1 × 21
 #>   season_id has_wildcard pre_season_start_date pre_season_end_date
-#>   <chr>     <lgl>        <chr>                 <chr>              
-#> 1 2026      TRUE         2026-01-01            2026-02-19         
+#>   <chr>     <lgl>        <chr>                 <chr>
+#> 1 2026      TRUE         2026-01-01            2026-02-19
 #> # ℹ 17 more variables: season_start_date <chr>,
 #> #   spring_start_date <chr>, spring_end_date <chr>,
 #> #   regular_season_start_date <chr>, last_date1st_half <chr>,
@@ -6284,17 +6284,17 @@ Calls load_mlb_team_group_seasons with seasons = 2013, wrapped in try() and dont
 #> ℹ Data updated: 2026-09-30 14:28:16 UTC
 #> # A tibble: 30 × 11
 #>    league season team_id team_id_source team_name         subdivision_id
-#>    <chr>   <int> <chr>   <chr>          <chr>             <chr>         
-#>  1 mlb      2013 1       espn           Baltimore Orioles NA            
-#>  2 mlb      2013 10      espn           New York Yankees  NA            
-#>  3 mlb      2013 11      espn           Oakland Athletics NA            
-#>  4 mlb      2013 12      espn           Seattle Mariners  NA            
-#>  5 mlb      2013 13      espn           Texas Rangers     NA            
-#>  6 mlb      2013 14      espn           Toronto Blue Jays NA            
-#>  7 mlb      2013 15      espn           Atlanta Braves    NA            
-#>  8 mlb      2013 16      espn           Chicago Cubs      NA            
-#>  9 mlb      2013 17      espn           Cincinnati Reds   NA            
-#> 10 mlb      2013 18      espn           Houston Astros    NA            
+#>    <chr>   <int> <chr>   <chr>          <chr>             <chr>
+#>  1 mlb      2013 1       espn           Baltimore Orioles NA
+#>  2 mlb      2013 10      espn           New York Yankees  NA
+#>  3 mlb      2013 11      espn           Oakland Athletics NA
+#>  4 mlb      2013 12      espn           Seattle Mariners  NA
+#>  5 mlb      2013 13      espn           Texas Rangers     NA
+#>  6 mlb      2013 14      espn           Toronto Blue Jays NA
+#>  7 mlb      2013 15      espn           Atlanta Braves    NA
+#>  8 mlb      2013 16      espn           Chicago Cubs      NA
+#>  9 mlb      2013 17      espn           Cincinnati Reds   NA
+#> 10 mlb      2013 18      espn           Houston Astros    NA
 #> # ℹ 20 more rows
 #> # ℹ 5 more variables: conference_id <chr>, division_id <chr>,
 #> #   source <chr>, sources_agree <lgl>, notes <chr>
@@ -6490,17 +6490,17 @@ Call espn_mlb_venues() to retrieve a tibble of 172 venues with columns like venu
 #> ℹ Data updated: 2026-09-30 14:27:39 UTC
 #> # A tibble: 172 × 9
 #>    venue_id name  full_name address_city address_state capacity indoor
-#>    <chr>    <chr> <chr>     <chr>        <chr>            <int> <lgl> 
-#>  1 NA       NA    NA        NA           NA                  NA NA    
-#>  2 NA       NA    NA        NA           NA                  NA NA    
-#>  3 NA       NA    NA        NA           NA                  NA NA    
-#>  4 NA       NA    NA        NA           NA                  NA NA    
-#>  5 NA       NA    NA        NA           NA                  NA NA    
-#>  6 NA       NA    NA        NA           NA                  NA NA    
-#>  7 NA       NA    NA        NA           NA                  NA NA    
-#>  8 NA       NA    NA        NA           NA                  NA NA    
-#>  9 NA       NA    NA        NA           NA                  NA NA    
-#> 10 NA       NA    NA        NA           NA                  NA NA    
+#>    <chr>    <chr> <chr>     <chr>        <chr>            <int> <lgl>
+#>  1 NA       NA    NA        NA           NA                  NA NA
+#>  2 NA       NA    NA        NA           NA                  NA NA
+#>  3 NA       NA    NA        NA           NA                  NA NA
+#>  4 NA       NA    NA        NA           NA                  NA NA
+#>  5 NA       NA    NA        NA           NA                  NA NA
+#>  6 NA       NA    NA        NA           NA                  NA NA
+#>  7 NA       NA    NA        NA           NA                  NA NA
+#>  8 NA       NA    NA        NA           NA                  NA NA
+#>  9 NA       NA    NA        NA           NA                  NA NA
+#> 10 NA       NA    NA        NA           NA                  NA NA
 #> # ℹ 162 more rows
 #> # ℹ 2 more variables: grass <lgl>, images_url <chr>
 # }
@@ -6582,17 +6582,17 @@ Example call to mlb_all_star_ballots with league_id = 103 and season = 2021. The
 #> ℹ Data updated: 2026-09-30 14:30:16 UTC
 #> # A tibble: 136 × 49
 #>    player_id full_name         link  first_name last_name primary_number
-#>        <int> <chr>             <chr> <chr>      <chr>     <chr>         
-#>  1    547989 José Abreu        /api… José       Abreu     79            
-#>  2    596847 Ji Man Choi       /api… Ji Man     Choi      26            
-#>  3    666915 Bobby Dalbec      /api… Robert     Dalbec    29            
-#>  4    665489 Vladimir Guerrer… /api… Vladimir   Guerrero  27            
-#>  5    493329 Yuli Gurriel      /api… Yulieski   Gurriel   10            
-#>  6    663993 Nathaniel Lowe    /api… David      Lowe      46            
-#>  7    641820 Trey Mancini      /api… Joseph     Mancini   16            
-#>  8    647304 Josh Naylor       /api… Joshua-Do… Naylor    12            
-#>  9    621566 Matt Olson        /api… Matthew    Olson     28            
-#> 10    593934 Miguel Sanó       /api… Miguel     Sanó      22            
+#>        <int> <chr>             <chr> <chr>      <chr>     <chr>
+#>  1    547989 José Abreu        /api… José       Abreu     79
+#>  2    596847 Ji Man Choi       /api… Ji Man     Choi      26
+#>  3    666915 Bobby Dalbec      /api… Robert     Dalbec    29
+#>  4    665489 Vladimir Guerrer… /api… Vladimir   Guerrero  27
+#>  5    493329 Yuli Gurriel      /api… Yulieski   Gurriel   10
+#>  6    663993 Nathaniel Lowe    /api… David      Lowe      46
+#>  7    641820 Trey Mancini      /api… Joseph     Mancini   16
+#>  8    647304 Josh Naylor       /api… Joshua-Do… Naylor    12
+#>  9    621566 Matt Olson        /api… Matthew    Olson     28
+#> 10    593934 Miguel Sanó       /api… Miguel     Sanó      22
 #> # ℹ 126 more rows
 #> # ℹ 43 more variables: birth_date <chr>, current_age <int>,
 #> #   birth_city <chr>, birth_country <chr>, height <chr>, weight <int>,
@@ -6617,18 +6617,18 @@ Fetches MLB pitcher game logs from FanGraphs for a given player ID and season. T
 #> ── MLB Pitcher Game Log data from FanGraphs.com ───── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:27:48 UTC
 #> # A tibble: 23 × 369
-#>    PlayerName    playerid Date      hometeamid Opp   teamid season Team 
+#>    PlayerName    playerid Date      hometeamid Opp   teamid season Team
 #>    <chr>            <int> <chr>          <int> <chr>  <int>  <int> <chr>
-#>  1 Shohei Ohtani    19755 2023-08-…          1 CIN        1   2023 LAA  
-#>  2 Shohei Ohtani    19755 2023-08-…          1 SFG        1   2023 LAA  
-#>  3 Shohei Ohtani    19755 2023-08-…          1 SEA        1   2023 LAA  
-#>  4 Shohei Ohtani    19755 2023-07-…          6 @DET       1   2023 LAA  
-#>  5 Shohei Ohtani    19755 2023-07-…          1 PIT        1   2023 LAA  
-#>  6 Shohei Ohtani    19755 2023-07-…          1 HOU        1   2023 LAA  
-#>  7 Shohei Ohtani    19755 2023-07-…         29 @SDP       1   2023 LAA  
-#>  8 Shohei Ohtani    19755 2023-06-…          1 CHW        1   2023 LAA  
-#>  9 Shohei Ohtani    19755 2023-06-…          1 LAD        1   2023 LAA  
-#> 10 Shohei Ohtani    19755 2023-06-…         13 @TEX       1   2023 LAA  
+#>  1 Shohei Ohtani    19755 2023-08-…          1 CIN        1   2023 LAA
+#>  2 Shohei Ohtani    19755 2023-08-…          1 SFG        1   2023 LAA
+#>  3 Shohei Ohtani    19755 2023-08-…          1 SEA        1   2023 LAA
+#>  4 Shohei Ohtani    19755 2023-07-…          6 @DET       1   2023 LAA
+#>  5 Shohei Ohtani    19755 2023-07-…          1 PIT        1   2023 LAA
+#>  6 Shohei Ohtani    19755 2023-07-…          1 HOU        1   2023 LAA
+#>  7 Shohei Ohtani    19755 2023-07-…         29 @SDP       1   2023 LAA
+#>  8 Shohei Ohtani    19755 2023-06-…          1 CHW        1   2023 LAA
+#>  9 Shohei Ohtani    19755 2023-06-…          1 LAD        1   2023 LAA
+#> 10 Shohei Ohtani    19755 2023-06-…         13 @TEX       1   2023 LAA
 #> # ℹ 13 more rows
 #> # ℹ 361 more variables: HomeAway <chr>, Age <int>, W <dbl>, L <dbl>,
 #> #   ERA <dbl>, G <dbl>, GS <dbl>, QS <dbl>, CG <dbl>, ShO <dbl>,
@@ -7262,17 +7262,17 @@ Calls the function with team_id = "59" and season = 2025. The output is a tibble
 #> ℹ Data updated: 2026-09-30 14:26:52 UTC
 #> # A tibble: 100 × 15
 #>    athlete_id full_name      jersey position_abbrev position_name height
-#>    <chr>      <chr>          <chr>  <chr>           <chr>         <chr> 
-#>  1 3730       J Aboites      0      UN              Unspecified …  NA   
-#>  2 10616      J Aboites      0      UN              Unspecified …  NA   
-#>  3 15102      J. Aboites     0      UN              Unspecified …  NA   
+#>    <chr>      <chr>          <chr>  <chr>           <chr>         <chr>
+#>  1 3730       J Aboites      0      UN              Unspecified …  NA
+#>  2 10616      J Aboites      0      UN              Unspecified …  NA
+#>  3 15102      J. Aboites     0      UN              Unspecified …  NA
 #>  4 31563      Carter Aldrete 0      UN              Unspecified … "6' 1…
-#>  5 2680       T Allen        0      UN              Unspecified …  NA   
-#>  6 1036       A Aplin        0      UN              Unspecified …  NA   
+#>  5 2680       T Allen        0      UN              Unspecified …  NA
+#>  6 1036       A Aplin        0      UN              Unspecified …  NA
 #>  7 1037       Austin Barnes  0      UN              Unspecified … "5' 9…
-#>  8 1106       J Barrett      0      UN              Unspecified …  NA   
-#>  9 4004       C Beall        0      UN              Unspecified …  NA   
-#> 10 1400       M Benjamin     0      UN              Unspecified …  NA   
+#>  8 1106       J Barrett      0      UN              Unspecified …  NA
+#>  9 4004       C Beall        0      UN              Unspecified …  NA
+#> 10 1400       M Benjamin     0      UN              Unspecified …  NA
 #> # ℹ 90 more rows
 #> # ℹ 9 more variables: weight <chr>, age <chr>, birth_date <chr>,
 #> #   birth_place <chr>, headshot <chr>, link_web <chr>, status <chr>,
@@ -7350,13 +7350,13 @@ try(espn_mlb_game_all(game_id = 401283399))
 #> ✖ Error: The API returned an error, HTTP Response Code 404
 #> $Plays
 #> NULL
-#> 
+#>
 #> $Team
 #> NULL
-#> 
+#>
 #> $Player
 #> NULL
-#> 
+#>
 # }
 ```
 
@@ -7603,8 +7603,8 @@ Fetches ESPN college baseball season rankings for a given season. The example us
 #> ── ESPN COLLEGE-BASEBALL Season Rankings Index ────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:26:46 UTC
 #> # A tibble: 1 × 4
-#>   league           season ranking_id ref                                
-#>   <chr>             <int> <chr>      <chr>                              
+#>   league           season ranking_id ref
+#>   <chr>             <int> <chr>      <chr>
 #> 1 college-baseball   2025 10543      http://sports.core.api.espn.com/v2…
 # }
 ```
@@ -7838,22 +7838,22 @@ Source: https://billpetti.github.io/baseballr/reference/fox_mlb_team_gamelog
 Example call to fox_mlb_team_gamelog with team_id "1", wrapped in try() to handle errors. The output shows a baseballr_data tibble with 95 rows and columns team_id, season_type, category, game_id, game_date, opponent, stat, and value.
 
 ```r
-try(fox_mlb_team_gamelog("1")) 
+try(fox_mlb_team_gamelog("1"))
 #> ── Fox Sports MLB gamelog ─────────────────────────── baseballr 2.0.0 ──
 #> ℹ Data updated: 2026-09-30 14:28:05 UTC
 #> # A tibble: 95 × 8
 #>    team_id season_type   category game_id game_date opponent stat  value
 #>    <chr>   <chr>         <chr>    <chr>   <chr>     <chr>    <chr> <chr>
-#>  1 1       REGULAR SEAS… hitting  97044   9/25      @NYY     ab    38   
-#>  2 1       REGULAR SEAS… hitting  97044   9/25      @NYY     h     11   
-#>  3 1       REGULAR SEAS… hitting  97044   9/25      @NYY     r     3    
-#>  4 1       REGULAR SEAS… hitting  97044   9/25      @NYY     x2b   2    
-#>  5 1       REGULAR SEAS… hitting  97044   9/25      @NYY     x3b   0    
-#>  6 1       REGULAR SEAS… hitting  97044   9/25      @NYY     hr    1    
-#>  7 1       REGULAR SEAS… hitting  97044   9/25      @NYY     rbi   3    
-#>  8 1       REGULAR SEAS… hitting  97044   9/25      @NYY     bb    4    
-#>  9 1       REGULAR SEAS… hitting  97044   9/25      @NYY     so    17   
-#> 10 1       REGULAR SEAS… hitting  97044   9/25      @NYY     sb    2    
+#>  1 1       REGULAR SEAS… hitting  97044   9/25      @NYY     ab    38
+#>  2 1       REGULAR SEAS… hitting  97044   9/25      @NYY     h     11
+#>  3 1       REGULAR SEAS… hitting  97044   9/25      @NYY     r     3
+#>  4 1       REGULAR SEAS… hitting  97044   9/25      @NYY     x2b   2
+#>  5 1       REGULAR SEAS… hitting  97044   9/25      @NYY     x3b   0
+#>  6 1       REGULAR SEAS… hitting  97044   9/25      @NYY     hr    1
+#>  7 1       REGULAR SEAS… hitting  97044   9/25      @NYY     rbi   3
+#>  8 1       REGULAR SEAS… hitting  97044   9/25      @NYY     bb    4
+#>  9 1       REGULAR SEAS… hitting  97044   9/25      @NYY     so    17
+#> 10 1       REGULAR SEAS… hitting  97044   9/25      @NYY     sb    2
 #> # ℹ 85 more rows
 ```
 
@@ -7872,30 +7872,30 @@ Example of calling espn_college_baseball_player_overview with athlete_id "3730" 
 #> ── ESPN COLLEGE-BASEBALL Athlete Overview Statistics from ESPN.com ─────
 #> ℹ Data updated: 2026-09-30 14:26:40 UTC
 #> # A tibble: 0 × 0
-#> 
+#>
 #> $NextGame
 #> ── ESPN COLLEGE-BASEBALL Athlete Overview NextGame from ESPN.com ───────
 #> ℹ Data updated: 2026-09-30 14:26:40 UTC
 #> # A tibble: 1 × 4
 #>   id    date  name  short_name
-#>   <chr> <chr> <chr> <chr>     
-#> 1 NA    NA    NA    NA        
-#> 
+#>   <chr> <chr> <chr> <chr>
+#> 1 NA    NA    NA    NA
+#>
 #> $Last5Games
 #> ── ESPN COLLEGE-BASEBALL Athlete Overview Last5Games from ESPN.com ─────
 #> ℹ Data updated: 2026-09-30 14:26:40 UTC
 #> # A tibble: 0 × 0
-#> 
+#>
 #> $Headlines
 #> ── ESPN COLLEGE-BASEBALL Athlete Overview Headlines from ESPN.com ──────
 #> ℹ Data updated: 2026-09-30 14:26:40 UTC
 #> # A tibble: 0 × 0
-#> 
+#>
 #> $FantasyOutlook
 #> ── ESPN COLLEGE-BASEBALL Athlete Overview FantasyOutlook from ESPN.com ─
 #> ℹ Data updated: 2026-09-30 14:26:40 UTC
 #> # A tibble: 0 × 0
-#> 
+#>
 # }
 ```
 
