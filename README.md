@@ -239,6 +239,7 @@ To relocate the lake: `export BASEBALLPY_HOME=/path/to/lake` (individual tiers c
 
 ## Architecture & Specifications
 
+- **Master Dataset Coverage Matrix:** Exhaustive cross-source comparison against `pybaseball`, `baseballr`, and `MLB-StatsAPI` in [docs/MASTER_COVERAGE_MATRIX.md](docs/MASTER_COVERAGE_MATRIX.md).
 - **Architecture Decision Records (ADRs):** Documented in [docs/DECISIONS.md](docs/DECISIONS.md).
 - **Source Endpoint Catalogs:** Exhaustive column-by-column schemas in [docs/sources/](docs/sources/).
 - **OpenSpec Living Specs:** Managed under [openspec/specs/](openspec/).

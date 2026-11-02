@@ -10,7 +10,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 5 | 5 | 5 |
 | `caching-and-invalidation` | 16 | 26 | 34 |
-| `catalog-audit` | 1 | 1 | 1 |
+| `catalog-audit` | 2 | 2 | 2 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 9 | 11 | 15 |
 | `concurrency-and-rate-limiting` | 3 | 5 | 6 |
@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-45 changes are archived under `openspec/changes/archive/`.
+46 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -118,6 +118,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/DATA_WORKFLOW.md`
 - `docs/DECISIONS.md`
 - `docs/ENDPOINT_CATALOG.md`
+- `docs/MASTER_COVERAGE_MATRIX.md`
 - `docs/QUICKSTART.md`
 - `docs/RELEASING.md`
 - `docs/ROADMAP.md`

@@ -311,3 +311,13 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-192 | mlb-api-audit-trail 3.1: one test per MLB download path | DONE | `tests/test_mlb_audit.py` reads the events back for a declarative endpoint (cold and cached), a raw-only endpoint, the pool fallback, a projected snapshot, a finished stream and a refused request; all six pass |
 | B-193 | mlb-api-audit-trail 3.2: Telemetry section in `docs/sources/mlb_api.md` | DONE | every operation the code emits is listed once with what it records, plus the three reader commands |
 | B-194 | mlb-api-audit-trail 3.3: spec merge, archive, gates | DONE | the delta is merged into the mlb-api-ingestion spec, the change is archived, gates green |
+
+## O. Cross-source catalog audit and master coverage matrix
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-195 | cross-source-catalog-audit 1.1: master coverage scanner | DONE | scripts/master_coverage_audit.py parses reference files and extracts capabilities mapped to DATASETS |
+| B-196 | cross-source-catalog-audit 1.2: master coverage matrix | DONE | docs/MASTER_COVERAGE_MATRIX.md generated with domain mappings, dataset names, endpoints, and evidence notes |
+| B-197 | cross-source-catalog-audit 1.3: coverage matrix tests | DONE | tests/test_coverage_matrix.py passes asserting 100% of DATASETS and external references accounted for |
+| B-198 | cross-source-catalog-audit 1.4: spec merge, archive, gates | DONE | spec delta merged, change archived, all gates green |
+
