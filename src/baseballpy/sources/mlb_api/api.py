@@ -1,5 +1,6 @@
 """Public interface for MLB Stats API data extraction and live streaming."""
 
+import concurrent.futures
 from collections.abc import AsyncIterator
 from typing import Any
 
@@ -136,11 +137,17 @@ class MlbApiSource:
     def ingest_reference(self, refresh: bool = False) -> list[EndpointReport]:
         """Ingest every flat (season-independent) endpoint: reference lists, jobs, history."""
         ctx = Context()
-        return [
-            self.endpoints.ingest(e, ctx, refresh=refresh, keep_going=True)
-            for e in SUPPORTED
-            if e.scope == "flat"
-        ]
+        flat_eps = [e for e in SUPPORTED if e.scope == "flat"]
+        max_workers = min(max(self.endpoints.http.rate.max_concurrency, 1), 8)
+        if max_workers > 1 and len(flat_eps) > 1:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
+                return list(
+                    pool.map(
+                        lambda e: self.endpoints.ingest(e, ctx, refresh=refresh, keep_going=True),
+                        flat_eps,
+                    )
+                )
+        return [self.endpoints.ingest(e, ctx, refresh=refresh, keep_going=True) for e in flat_eps]
 
     def final_game_pks(self, season: int) -> tuple[int, ...]:
         """``game_pk`` of every final game of a season, from ``schedule_hydrated``."""
@@ -194,12 +201,25 @@ class MlbApiSource:
             and (include_awards or e.scope != "award_season")
             and (include_history or not e.heavy)
         ]
-        reports.extend(
-            self.endpoints.ingest(
-                e, ctx, refresh=refresh, allow_heavy=include_history, keep_going=True
+        max_workers = min(max(self.endpoints.http.rate.max_concurrency, 1), 8)
+        if max_workers > 1 and len(season_eps) > 1:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
+                season_reports = list(
+                    pool.map(
+                        lambda e: self.endpoints.ingest(
+                            e, ctx, refresh=refresh, allow_heavy=include_history, keep_going=True
+                        ),
+                        season_eps,
+                    )
+                )
+            reports.extend(season_reports)
+        else:
+            reports.extend(
+                self.endpoints.ingest(
+                    e, ctx, refresh=refresh, allow_heavy=include_history, keep_going=True
+                )
+                for e in season_eps
             )
-            for e in season_eps
-        )
         if include_people_stats:
             reports.extend(
                 self.ingest_people_stats(
@@ -210,11 +230,23 @@ class MlbApiSource:
             pks = self.final_game_pks(season)
             pks = pks[:max_games] if max_games is not None else pks
             game_ctx = self._context(season, sports, pks)
-            reports.extend(
-                self.endpoints.ingest(e, game_ctx, refresh=refresh, keep_going=True)
-                for e in SUPPORTED
-                if e.scope == "game"
-            )
+            game_eps = [e for e in SUPPORTED if e.scope == "game"]
+            if max_workers > 1 and len(game_eps) > 1:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
+                    game_reports = list(
+                        pool.map(
+                            lambda e: self.endpoints.ingest(
+                                e, game_ctx, refresh=refresh, keep_going=True
+                            ),
+                            game_eps,
+                        )
+                    )
+                reports.extend(game_reports)
+            else:
+                reports.extend(
+                    self.endpoints.ingest(e, game_ctx, refresh=refresh, keep_going=True)
+                    for e in game_eps
+                )
         return reports
 
     def all_sport_ids(self) -> tuple[int, ...]:

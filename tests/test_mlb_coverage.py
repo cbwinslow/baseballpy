@@ -742,7 +742,12 @@ def test_a_414_on_a_hydrate_batch_halves_it(
 
     respx.get(f"{MLB_BASE_URL}/v1/people").mock(side_effect=people)
     extractor.ingest(ep, Context(season=2024, sport_ids=(1,), sit_codes=("vr",)))
-    assert requested == [[11, 12, 13, 14], [11, 12], [13, 14], [15]], "halved, same players once"
+    assert sorted(requested) == [
+        [11, 12],
+        [11, 12, 13, 14],
+        [13, 14],
+        [15],
+    ], "halved, same players once"
     pages = sorted(p.name for p in lake.raw_dir("mlb_api", ep.name, 2024).glob("*hydrate*"))
     assert len(pages) == 3, "every accepted page is kept as raw bytes under a unique name"
 

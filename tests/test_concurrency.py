@@ -3,8 +3,10 @@
 import asyncio
 import threading
 import time
+from pathlib import Path
 
 import httpx
+import pytest
 import respx
 
 from baseballpy.core.config import RateLimitConfig
@@ -111,3 +113,52 @@ def test_a_per_call_timeout_overrides_the_configured_one() -> None:
     default, override = (call.request.extensions["timeout"] for call in route.calls)
     assert default["read"] == 30.0
     assert override["read"] == 180.0
+
+
+@respx.mock
+def test_hydrate_batches_execute_concurrently(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from baseballpy.core.config import LakeConfig, RateLimitConfig
+    from baseballpy.core.http import HttpClient
+    from baseballpy.sources.mlb_api import generic
+    from baseballpy.sources.mlb_api.endpoints import BY_NAME, Request
+    from baseballpy.sources.mlb_api.generic import MlbEndpointExtractor
+
+    active = 0
+    peak = 0
+    lock = threading.Lock()
+
+    async def people_handler(request: httpx.Request) -> httpx.Response:
+        nonlocal active, peak
+        with lock:
+            active += 1
+            peak = max(peak, active)
+        await asyncio.sleep(0.03)
+        with lock:
+            active -= 1
+        return httpx.Response(200, json={"people": [{"id": 1, "stats": [{"splits": []}]}]})
+
+    respx.get("https://statsapi.mlb.com/api/v1/people").mock(side_effect=people_handler)
+    respx.get("https://statsapi.mlb.com/api/v1/sports/1/players").mock(
+        return_value=httpx.Response(200, json={"people": [{"id": i} for i in range(1, 21)]})
+    )
+
+    monkeypatch.setattr(generic, "POOL_BATCH", 2)
+    rate_cfg = RateLimitConfig(max_concurrency=4, statsapi_rps=100.0)
+    http_client = HttpClient(rate_cfg, http2=False)
+    lake = LakeConfig(home=tmp_path)
+    extractor = MlbEndpointExtractor(cache_config=lake, http=http_client)
+
+    ep = BY_NAME["stats_stat_splits_hitting"]
+    req = Request(
+        "stats_stat_splits_hitting_2024_sport1",
+        "v1/stats",
+        {"stats": "statSplits", "group": "hitting", "season": "2024", "sportIds": "1"},
+        2024,
+    )
+    pages = extractor._pool_pages_by_hydrate(ep, req)
+    http_client.close()
+    assert len(pages) == 10
+    assert peak >= 2, f"expected concurrent execution across batches, got peak={peak}"
+    assert peak <= 4, f"expected concurrency to be bounded by max_concurrency 4, got peak={peak}"

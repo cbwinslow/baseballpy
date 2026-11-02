@@ -6,8 +6,10 @@ The extractor fetches every request an endpoint needs (``requests_for``), stores
 sha256, writes one typed part per request and skips requests whose part is still fresh.
 """
 
+import concurrent.futures
 import json
 import logging
+import threading
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
@@ -270,8 +272,19 @@ class MlbEndpointExtractor:
         self.raw = RawStore(self.cache_config)
         cleanup_stale_parts(self.cache_config.raw_root / "mlb_api")
         cleanup_stale_parts(self.cache_config.processed_root / "mlb_api")
-        self.missing = 0
+        self._local = threading.local()
+        self._local.missing = 0
+        self._pool_lock = threading.Lock()
         self._pool_ids: dict[tuple[str, str], list[int]] = {}
+
+    @property
+    def missing(self) -> int:
+        """Count of 404 responses encountered in the current thread."""
+        return int(getattr(self._local, "missing", 0))
+
+    @missing.setter
+    def missing(self, val: int) -> None:
+        self._local.missing = val
 
     @staticmethod
     def spec(endpoint: MlbEndpoint) -> DatasetSpec:
@@ -295,13 +308,17 @@ class MlbEndpointExtractor:
     def _pool_player_ids(self, sport_id: str, season: Any) -> list[int]:
         """Every player id of a sport-season (``/v1/sports/{id}/players``), for the hydrate fallback."""
         key = (str(sport_id), str(season))
-        if key not in self._pool_ids:
-            result = self.http.get_sync(
-                f"{MLB_BASE_URL}/v1/sports/{sport_id}/players", params={"season": season}
-            )
-            people = result.json().get("people", [])
-            self._pool_ids[key] = sorted({int(p["id"]) for p in people if "id" in p})
-        return self._pool_ids[key]
+        with self._pool_lock:
+            if key in self._pool_ids:
+                return self._pool_ids[key]
+        result = self.http.get_sync(
+            f"{MLB_BASE_URL}/v1/sports/{sport_id}/players", params={"season": season}
+        )
+        people = result.json().get("people", [])
+        ids = sorted({int(p["id"]) for p in people if "id" in p})
+        with self._pool_lock:
+            self._pool_ids[key] = ids
+            return ids
 
     def _pool_pages_by_hydrate(
         self, endpoint: MlbEndpoint, request: Request
@@ -322,33 +339,42 @@ class MlbEndpointExtractor:
             sport,
             POOL_BATCH,
         )
-        pages: list[tuple[str, HttpResult]] = []
-        offset = 0
-        size = POOL_BATCH
-        while offset < len(ids):
-            batch = ids[offset : offset + size]
+        if not ids:
+            return []
+
+        batches = [ids[i : i + POOL_BATCH] for i in range(0, len(ids), POOL_BATCH)]
+
+        def _fetch_subbatch(sub: Sequence[int]) -> list[HttpResult]:
             try:
-                result = self.http.get_sync(
+                res = self.http.get_sync(
                     f"{MLB_BASE_URL}/v1/people",
-                    params=hydrate_request_params(params, sport, batch),
+                    params=hydrate_request_params(params, sport, sub),
                     timeout=HEAVY_PAGE_TIMEOUT,
                 )
+                return [res]
             except HttpStatusError as exc:
-                # a long hydrate expression plus many ids exceeds the provider's URL limit (414);
-                # halve the batch and ask for the same players again (ADR 55)
-                if exc.status != 414 or size == 1:
+                if exc.status != 414 or len(sub) <= 1:
                     raise
-                size = max(1, size // 2)
+                mid = len(sub) // 2
                 logger.warning(
                     "%s: HTTP 414 for %d players; retrying with batches of %d",
                     endpoint.name,
-                    len(batch),
-                    size,
+                    len(sub),
+                    mid,
                 )
-                continue
-            pages.append((f"{request.ident}{HYDRATE_MARKER}p{len(pages)}.json", result))
-            offset += len(batch)
-        return pages
+                return _fetch_subbatch(sub[:mid]) + _fetch_subbatch(sub[mid:])
+
+        max_workers = min(max(self.http.rate.max_concurrency, 1), 8)
+        if max_workers > 1 and len(batches) > 1:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
+                all_results = list(pool.map(_fetch_subbatch, batches))
+        else:
+            all_results = [_fetch_subbatch(b) for b in batches]
+
+        results = [res for sub in all_results for res in sub]
+        return [
+            (f"{request.ident}{HYDRATE_MARKER}p{idx}.json", res) for idx, res in enumerate(results)
+        ]
 
     def _get_pages(
         self, endpoint: MlbEndpoint, request: Request, url: str, allow_heavy: bool = False
