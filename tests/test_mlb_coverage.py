@@ -300,8 +300,9 @@ def test_ingest_flat_endpoint_stores_raw_and_typed_then_serves_from_cache(tmp_pa
     first = extractor.ingest("ref_game_types", Context())
     assert (first.requests, first.cached) == (1, 0) and first.rows >= 3
     assert extractor.raw.verify("mlb_api", "ref_game_types", "ref_game_types.json")
+    assert route.call_count == 2  # a small one-request answer is fetched twice (ADR 60)
     again = extractor.ingest("ref_game_types", Context())
-    assert (again.cached, route.call_count) == (1, 1)
+    assert (again.cached, route.call_count) == (1, 2), "the cached run makes no request"
     stored = generic.read_endpoint("ref_game_types", config=lake)
     assert stored.schema == MLB_SCHEMAS["ref_game_types"] and stored.num_rows == first.rows
 

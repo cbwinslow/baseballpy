@@ -321,6 +321,16 @@ class RateLimitConfig(EnvSettings):
         default_factory=dict,
         description="Host-specific in-flight limits that override the defaults above",
     )
+    verify_max_requests: int = Field(
+        default=5,
+        description=(
+            "An MLB call of at most this many requests has each small answer fetched twice and "
+            "compared (partial provider answers, ADR 60); 0 disables the check"
+        ),
+    )
+    verify_max_bytes: int = Field(
+        default=1_000_000, description="Only answers up to this many bytes are verified"
+    )
     max_retries: int = Field(default=5, description="Maximum retry attempts on 429/5xx errors")
     backoff_factor: float = Field(default=1.5, description="Exponential backoff factor")
     timeout_seconds: float = Field(default=30.0, description="HTTP request timeout in seconds")

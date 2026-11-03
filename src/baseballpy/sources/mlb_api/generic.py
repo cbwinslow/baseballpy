@@ -386,8 +386,47 @@ class MlbEndpointExtractor:
             (f"{request.ident}{HYDRATE_MARKER}p{idx}.json", res) for idx, res in enumerate(results)
         ]
 
+    def _verified_get(
+        self,
+        endpoint: MlbEndpoint,
+        url: str,
+        params: Mapping[str, Any],
+        allow: tuple[int, ...],
+    ) -> HttpResult:
+        """A small answer fetched twice; differing bodies get a third fetch and the largest wins.
+
+        The provider once served a valid but partial standings document (106 of 201 records) and
+        the full one on every later call (ADR 60). A partial answer is a subset of the full one,
+        so the largest body is the most complete; a legitimate update between two fetches changes
+        the size little and upwards. Only answers up to ``verify_max_bytes`` are repeated.
+        """
+        first = self.http.get_sync(url, params=params, allow=allow)
+        if first.status != 200 or len(first.content) > self.http.rate.verify_max_bytes:
+            return first
+        second = self.http.get_sync(url, params=params, allow=allow)
+        if second.content == first.content:
+            return first
+        third = self.http.get_sync(url, params=params, allow=allow)
+        answers = [first, second, third]
+        best = first
+        for answer in answers:  # ties keep the latest
+            if len(answer.content) >= len(best.content):
+                best = answer
+        logger.warning(
+            "provider_inconsistent: %s answered %d different bodies (%s bytes); kept the largest",
+            endpoint.name,
+            len({a.content for a in answers}),
+            ", ".join(str(len(a.content)) for a in answers),
+        )
+        return best
+
     def _get_pages(
-        self, endpoint: MlbEndpoint, request: Request, url: str, allow_heavy: bool = False
+        self,
+        endpoint: MlbEndpoint,
+        request: Request,
+        url: str,
+        allow_heavy: bool = False,
+        verify: bool = False,
     ) -> list[tuple[str, HttpResult]]:
         """The response(s) of a request as ``(raw file name, result)``; paginated ones loop."""
         if endpoint.paginated and endpoint.path == "v1/stats":
@@ -407,18 +446,23 @@ class MlbEndpointExtractor:
                         "D3/D5)"
                     ) from exc
                 return self._pool_pages_by_hydrate(endpoint, request)
-        return self._get_paginated(endpoint, request, url, allow_heavy)
+        return self._get_paginated(endpoint, request, url, allow_heavy, verify)
 
     def _get_paginated(
-        self, endpoint: MlbEndpoint, request: Request, url: str, allow_heavy: bool = False
+        self,
+        endpoint: MlbEndpoint,
+        request: Request,
+        url: str,
+        allow_heavy: bool = False,
+        verify: bool = False,
     ) -> list[tuple[str, HttpResult]]:
         """The response(s) of a request as ``(raw file name, result)``; paginated ones loop."""
         if not endpoint.paginated:
-            result = self.http.get_sync(
-                url,
-                params=request.params,
-                allow=(200, 404) if endpoint.tolerate_missing else (200,),
-            )
+            allow = (200, 404) if endpoint.tolerate_missing else (200,)
+            if verify:
+                result = self._verified_get(endpoint, url, request.params, allow)
+            else:
+                result = self.http.get_sync(url, params=request.params, allow=allow)
             return [(f"{request.ident}.json", result)]
         pages: list[tuple[str, HttpResult]] = []
         offset = 0
@@ -466,8 +510,12 @@ class MlbEndpointExtractor:
         request: Request,
         refresh: bool = False,
         allow_heavy: bool = False,
+        verify: bool = False,
     ) -> pa.Table:
-        """One request -> typed table (cache-or-fetch; raw JSON + typed part are stored)."""
+        """One request -> typed table (cache-or-fetch; raw JSON + typed part are stored).
+
+        ``verify``: the call is low-volume, so a small answer is fetched twice and compared.
+        """
         if endpoint.unsupported is not None:
             raise UnsupportedEndpointError(f"{endpoint.name}: {endpoint.unsupported}")
         spec = self.spec(endpoint)
@@ -490,7 +538,7 @@ class MlbEndpointExtractor:
             endpoint=url,
             destination=str(part),
         ) as tracker:
-            pages = self._get_pages(endpoint, request, url, allow_heavy)
+            pages = self._get_pages(endpoint, request, url, allow_heavy, verify)
             if not pages:
                 empty = spec.schema.empty_table()
                 if self.cache_config.enabled:
@@ -658,12 +706,13 @@ class MlbEndpointExtractor:
             return self._ingest_raw_only(ep, ctx, refresh)
         requests = list(requests_for(ep, ctx))
         self._warn_if_nothing_to_request(ep, requests)
+        verify = 0 < len(requests) <= self.http.rate.verify_max_requests
 
         def one(request: Request) -> _Outcome:
             self.missing = 0
             was_cached = self._is_cached(ep, request, refresh)
             try:
-                table = self.fetch_request(ep, request, refresh, allow_heavy)
+                table = self.fetch_request(ep, request, refresh, allow_heavy, verify)
             except (HttpStatusError, PoolFallbackUnavailableError) as exc:
                 if not keep_going:
                     raise

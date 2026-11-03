@@ -6,6 +6,7 @@
 - **Method:** `GET`
 - **Response Format:** JSON (JavaScript Object Notation)
 - **Rate Limit Policy:** Max 10.0 requests/second (default; `BASEBALLPY_RATE_STATSAPI_RPS` overrides) (token bucket enforced via `aiolimiter`)
+- **Partial answers (ADR 60):** the provider once answered a standings request with a valid but partial document. A call of at most `verify_max_requests` requests (default 5) fetches each answer of at most `verify_max_bytes` (default 1,000,000) twice; differing bodies get a third fetch and the largest is kept with a `provider_inconsistent` warning (about 0.7 percent more requests per season; `BASEBALLPY_RATE_VERIFY_MAX_REQUESTS=0` disables it).
 - **Transport Strategy:** HTTP/2 connection pooling with persistent keep-alive (`httpx.AsyncClient(http2=True)`).
 - **Optimization Strategy:**
   - High-performance deserialization via `msgspec.Struct` (10–20x faster than standard library `json`).

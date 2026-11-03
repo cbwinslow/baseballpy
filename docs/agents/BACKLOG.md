@@ -407,4 +407,13 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-235 | detect valid-but-partial provider answers for fixed-size endpoints | READY (needs its own change: which endpoints have a known size, where the expectation lives; web-search how pybaseball/baseballr handle it first) | `standings_by_organization` returned 106 of 201 team records (19 of 30 organizations) in one run and the full answer five times afterwards; a check or a documented re-fetch rule exists and a test shows a partial answer is reported, not stored as complete |
+| B-235 | detect valid-but-partial provider answers for fixed-size endpoints | DONE (change `verify-small-answers`, owner chose the verify option 2026-11-03) | low-volume small answers are fetched twice and the largest kept; see B-236..B-239 |
+
+## Y. Verify small answers (`verify-small-answers`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-236 | verify-small-answers 1.1: settings and `_verified_get` | DONE | `verify_max_requests`, `verify_max_bytes`, the verified fetch used by low-volume single requests |
+| B-237 | verify-small-answers 1.2: tests | DONE | four tests in `tests/test_verify_small_answers.py` pass, one mutation-checked |
+| B-238 | verify-small-answers 1.3: live check and extra-request count | DONE | the standings request verified live, extra requests of a season counted in design.md |
+| B-239 | verify-small-answers 1.4: spec, doc, ADR 60, gates, archive | DONE | spec merged, ADR 60, gates green, change archived |
