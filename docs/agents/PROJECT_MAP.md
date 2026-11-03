@@ -22,7 +22,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 7 | 12 | 12 |
 | `retrosheet-ingestion` | 19 | 20 | 21 |
-| `statcast-ingestion` | 14 | 14 | 20 |
+| `statcast-ingestion` | 15 | 18 | 24 |
 
 ## Source review scorecard (where each source stands)
 
@@ -36,12 +36,12 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
 | `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 19 |
-| `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 14 |
+| `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 15 |
 | `mlb_api` | 365 | archived | yes | yes | yes | 9486/16719 (56%) | 25 |
 
 ## Active changes (`openspec/changes/`)
 
-49 changes are archived under `openspec/changes/archive/`.
+50 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -107,6 +107,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 53: League-Wide MLB Pools Fall Back to People Hydrate; A Probe Command Shows Provider Health
 - ADR 54: The Live Feed's `fields=` Is a Snapshot Ability, Never a Streaming Mode; Field Sets Are Data
 - ADR 55: Multi-Value Hydrate Parameters Are List-Encoded; a Pool With No Person Equivalent Is Refused
+- ADR 56: Statcast Starts in 2008 for Every Dataset; the Top End Follows the Clock
 
 ## Documentation pages (`docs/`)
 

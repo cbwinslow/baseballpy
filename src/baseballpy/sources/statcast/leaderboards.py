@@ -9,7 +9,7 @@ dataset, so a dataset always holds one consistent population.
 
 import concurrent.futures
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 import pyarrow as pa
@@ -39,6 +39,7 @@ from baseballpy.sources.statcast.lb_schema import (
     default_min,
     min_year,
 )
+from baseballpy.sources.statcast.seasons import check_season, season_skip_reason
 
 logger = logging.getLogger(__name__)
 
@@ -127,6 +128,8 @@ class LeaderboardReport:
     slug: str
     seasons: dict[int, int | None]
     unsupported: str | None = None
+    #: seasons not requested because they are outside the bounds (season -> reason, ADR 56)
+    skipped: dict[int, str] = field(default_factory=dict)
 
 
 class StatcastLeaderboardExtractor:
@@ -183,6 +186,10 @@ class StatcastLeaderboardExtractor:
                 f"Savant leaderboard {defn.slug!r} is unsupported: {defn.unsupported}"
             )
         year = year if year is not None else self.cache_config.today_or_now().year
+        if defn.year_style != "none":
+            check_season(
+                year, self.cache_config.today_or_now(), first_with_data=min_year(defn.slug)
+            )
         persisted = not {k for k in overrides if k != "type"}
         min_value = str(overrides["min"]) if "min" in overrides else default_min(defn.slug)
         spec = get_dataset("statcast", defn.dataset)
@@ -241,6 +248,17 @@ class StatcastLeaderboardExtractor:
         if defn.unsupported is not None:
             return LeaderboardReport(defn.slug, {}, unsupported=defn.unsupported)
         if defn.year_style == "none":
+            if years:
+                # a flat snapshot is not tied to a season, but a request that names only excluded
+                # seasons must not reach the provider either (ADR 56)
+                today = self.cache_config.today_or_now()
+                reasons = {y: season_skip_reason(y, today) for y in years}
+                if all(reason is not None for reason in reasons.values()):
+                    return LeaderboardReport(
+                        defn.slug,
+                        {},
+                        skipped={y: r for y, r in reasons.items() if r is not None},
+                    )
             wanted = [self.cache_config.today_or_now().year]
         elif years is not None:
             wanted = years
@@ -248,7 +266,15 @@ class StatcastLeaderboardExtractor:
             first = min_year(defn.slug) or self.cache_config.today_or_now().year
             wanted = list(range(first, self.cache_config.today_or_now().year + 1))
         seasons: dict[int, int | None] = {}
+        skipped: dict[int, str] = {}
         for year in wanted:
+            if defn.year_style != "none":
+                reason = season_skip_reason(
+                    year, self.cache_config.today_or_now(), first_with_data=min_year(defn.slug)
+                )
+                if reason is not None:
+                    skipped[year] = reason
+                    continue
             spec = get_dataset("statcast", defn.dataset)
             season = self._season_of(defn, year)
             chunk_id = self._chunk_id(defn.slug, season)
@@ -258,7 +284,7 @@ class StatcastLeaderboardExtractor:
             )
             table = self.get_leaderboard(defn.slug, year=year, refresh=refresh)
             seasons[year] = None if cached else table.num_rows
-        return LeaderboardReport(defn.slug, seasons)
+        return LeaderboardReport(defn.slug, seasons, skipped=skipped)
 
     def ingest_all(
         self, years: list[int] | None = None, refresh: bool = False

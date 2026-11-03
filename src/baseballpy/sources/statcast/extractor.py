@@ -24,6 +24,11 @@ from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key, schem
 from baseballpy.core.upstream import response_fingerprint
 from baseballpy.sources import catalog
 from baseballpy.sources.statcast.normalizer import StatcastNormalizer
+from baseballpy.sources.statcast.seasons import (
+    FIRST_MINORS_SEASON,
+    FIRST_SEASON,
+    season_skip_reason,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -37,10 +42,6 @@ class TruncatedResultError(RuntimeError):
     """Raised when a single day still hits Savant's row cap (data would be silently truncated)."""
 
 
-#: first season Savant serves pitch-level data for (PITCHf/x era; probed 2026-10-27)
-FIRST_SEASON = 2008
-#: first season with minor-league tracking data (probed 2026-10-27: nothing in 2014-2020)
-FIRST_MINORS_SEASON = 2021
 #: affiliated minor-league sports whose calendars bound the minor-league season
 MINOR_SPORTS = (11, 12, 13, 14)
 MLB_SEASONS_URL = "https://statsapi.mlb.com/api/v1/seasons"
@@ -349,6 +350,11 @@ class StatcastExtractor:
         """Asynchronously extract and concat all date chunks for the requested range."""
         query = query or StatcastQuery.from_filters(filters)
         start, end = _to_date(start_date), _to_date(end_date)
+        if start.year < FIRST_SEASON:
+            raise ValueError(
+                f"Statcast ingestion starts in {FIRST_SEASON} (owner rule, ADR 56); "
+                f"{start.isoformat()} is before it"
+            )
         chunks = grid_windows(start, end, chunk_days=self.chunk_days)
         gate = asyncio.Semaphore(self.rate_limit_config.max_concurrency)
 
@@ -481,14 +487,12 @@ class StatcastExtractor:
 
         Windows come from the MLB season calendar, each is fetched/bisected independently and
         written as its own part, so a re-run only fetches what is missing or still volatile.
-        ``minors`` ingests the minor-league population into ``pitches_minors`` (2021 onwards;
-        earlier seasons are reported as skipped without any request).
+        A season outside the bounds of ``statcast.seasons`` (before 2008, before 2021 for
+        ``minors``, or in the future) is reported as skipped without any request (ADR 56).
         """
-        if minors and season < FIRST_MINORS_SEASON:
-            reason = (
-                f"no minor-league tracking data before {FIRST_MINORS_SEASON} (probed 2026-10-27)"
-            )
-            logger.info("pitches_minors season %s skipped: %s", season, reason)
+        reason = season_skip_reason(season, self._today(), minors=minors)
+        if reason is not None:
+            logger.info("statcast pitches season %s skipped: %s", season, reason)
             return StatcastSeasonReport(season, 0, 0, 0, 0, skipped_reason=reason)
         return asyncio.run(self._ingest_season_async(season, refresh, minors))
 
@@ -496,6 +500,11 @@ class StatcastExtractor:
         self, season: int, refresh: bool, minors: bool = False
     ) -> StatcastSeasonReport:
         start, end = self.season_window(season, minors)
+        if start > end:
+            # the window's end is capped at today, so this season's calendar starts later
+            reason = f"season {season} has not started (first day {start.isoformat()})"
+            logger.info("statcast pitches season %s skipped: %s", season, reason)
+            return StatcastSeasonReport(season, 0, 0, 0, 0, skipped_reason=reason)
         query = StatcastQuery(minors=minors)
         windows = grid_windows(start, end, chunk_days=self.chunk_days)
         gate = asyncio.Semaphore(self.rate_limit_config.max_concurrency)

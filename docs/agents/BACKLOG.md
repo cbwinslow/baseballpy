@@ -357,3 +357,11 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 
 
 
+## S. Statcast season bounds (`statcast-season-bounds`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-214 | statcast-season-bounds 1.1: delete stray pre-2008 data | DONE (87 season folders and 122 manifest entries removed from the owner's lake on 2026-11-03, owner approved) | the pre-2008 season folders and manifest entries are gone |
+| B-215 | statcast-season-bounds 1.2: `seasons.py` and the entry points | DONE | every Statcast entry point applies the bound before any request, tests pass |
+| B-216 | statcast-season-bounds 1.3: adapter skips, unstarted season skipped | DONE | `skipped` job with reason, test passes |
+| B-217 | statcast-season-bounds 1.4: docs, ADR 56, spec merge, live check, archive | DONE | gates green, a named 1850/1990 run makes zero requests, change archived |

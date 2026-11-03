@@ -17,6 +17,7 @@ from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.core.stores import RawStore
 from baseballpy.core.upstream import response_fingerprint
+from baseballpy.sources.statcast.seasons import season_skip_reason
 
 GAME_FEED_URL = "https://baseballsavant.mlb.com/gf"
 MLB_SCHEDULE_URL = "https://statsapi.mlb.com/api/v1/schedule"
@@ -33,6 +34,8 @@ class GameFeedReport:
     games: int
     fetched: int
     cached: int
+    #: set when the season is outside the Statcast bounds and nothing was requested (ADR 56)
+    skipped_reason: str | None = None
 
 
 class GameFeedError(RuntimeError):
@@ -118,8 +121,12 @@ class StatcastGameFeed:
         """Fetch and store the feed of every final game of a season (about 2-3 MB per game).
 
         Resumable: a final game already in ``raw/`` is not fetched again. This is opt-in because a
-        full season is several GB; ``max_games`` bounds it.
+        full season is several GB; ``max_games`` bounds it. A season outside the Statcast bounds
+        (``statcast.seasons``) is reported as skipped without any request.
         """
+        reason = season_skip_reason(season, self.cache_config.today_or_now())
+        if reason is not None:
+            return GameFeedReport(season, 0, 0, 0, skipped_reason=reason)
         with default_audit_logger.track(
             operation="statcast_game_feed_season",
             source="statcast",

@@ -32,6 +32,8 @@ is from that probe, not from memory.
 
 **API:** `statcast_search(start, end, query=StatcastQuery(...))`, `ingest_season(year)`, `ingest_all(2008, end)`.
 
+**Season bounds (ADR 56):** no Statcast dataset is requested before 2008 (`pitches_minors` before 2021, a leaderboard before its own first season); the top is the current year of the lake clock, never a constant, and a season whose calendar has not started is skipped. Bulk ingests report such a season as `skipped` with the reason and make no request; `extract`, `get_leaderboard` and `table` raise `ValueError`. The rule lives in `sources/statcast/seasons.py`.
+
 **Schema notes.** The old schema listed `pitcher_1` and `fielder_2_1`, which Savant never sends (always NULL);
 they were removed. 26 columns that Savant does send were missing and had been stored with per-file inferred
 types; they are now part of the schema (`age_pit`, `age_bat`, `home_win_exp`, `bat_win_exp`, `n_thruorder_pitcher`,

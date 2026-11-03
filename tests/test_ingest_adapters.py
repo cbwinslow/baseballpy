@@ -2,7 +2,7 @@
 
 import sys
 from collections.abc import Generator, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import Any
 
@@ -141,6 +141,7 @@ class FakeLeaderboardReport:
     slug: str
     seasons: dict[int, int | None]
     unsupported: str | None = None
+    skipped: dict[int, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -149,6 +150,7 @@ class FakeGameFeedReport:
     games: int
     fetched: int
     cached: int
+    skipped_reason: str | None = None
 
 
 class FakeStatcastExtractor:

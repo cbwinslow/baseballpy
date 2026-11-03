@@ -56,3 +56,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-02 (later): `cross-source-catalog-audit` (B-195..B-198) closed and archived (`archive/2026-11-02-cross-source-catalog-audit`). Cross-source scanner `scripts/master_coverage_audit.py` built; `docs/MASTER_COVERAGE_MATRIX.md` generated with all 459 registered datasets and cross-tool mappings against pybaseball, baseballr, MLB-StatsAPI, and the MLB OpenAPI spec; test suite `tests/test_coverage_matrix.py` added (all 3 passing); requirement `Cross-Source Reference Parity` merged into `catalog-audit`.
 
 
+- 2026-11-03: `statcast-season-bounds` (B-214..B-217) closed and archived (ADR 56: Statcast starts in 2008 for every dataset, the top end follows the lake clock; stray pre-2008 data deleted).

@@ -6,9 +6,8 @@ from typing import Any
 
 from baseballpy.ingest.results import counts_to_result
 from baseballpy.ingest.types import Job, JobResult, JobStatus, Selection, make_job
+from baseballpy.sources.statcast.seasons import FIRST_MINORS_SEASON, FIRST_SEASON
 
-FIRST_SEASON = 2008
-FIRST_MINORS_SEASON = 2021
 KNOWN_DATASETS = {"pitches", "pitches_minors", "leaderboards", "game_feed", "documents"}
 DEFAULT_DATASETS = ("pitches", "pitches_minors", "leaderboards", "documents")
 
@@ -124,9 +123,16 @@ class StatcastAdapter:
             season = int(season_val)
             reports = self._get_leaderboards().ingest_all(years=[season], refresh=refresh)
             counts: list[int | None] = []
+            reasons: list[str] = []
             for r in reports:
                 if season in r.seasons:
                     counts.append(r.seasons[season])
+                elif season in r.skipped:
+                    reasons.append(r.skipped[season])
+            if not counts and reasons:
+                return JobResult(
+                    job=job, status=JobStatus.SKIPPED, rows=None, detail=sorted(reasons)[0]
+                )
             return counts_to_result(job, counts)
 
         if job.task == "game_feed":
@@ -137,6 +143,13 @@ class StatcastAdapter:
             report = self._get_game_feed().ingest_season(
                 season, max_games=job.limit, refresh=refresh
             )
+            if report.skipped_reason:
+                return JobResult(
+                    job=job,
+                    status=JobStatus.SKIPPED,
+                    rows=None,
+                    detail=report.skipped_reason,
+                )
             if report.fetched == 0 and report.games > 0:
                 return JobResult(
                     job=job,

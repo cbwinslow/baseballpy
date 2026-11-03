@@ -36,7 +36,9 @@ def table(
     if name in PITCH_DATASETS:
         minors = name == "pitches_minors"
         extractor = StatcastExtractor(cache_config=config)
-        extractor.ingest_season(season, refresh=refresh, minors=minors)
+        report = extractor.ingest_season(season, refresh=refresh, minors=minors)
+        if report.skipped_reason:
+            raise ValueError(report.skipped_reason)
         spec = extractor.spec_minors if minors else extractor.spec
         return ProcessedStore(config).read(spec, season)
     for defn in LEADERBOARDS:
