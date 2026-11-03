@@ -234,4 +234,3 @@ Results of L-01 to L-04 (2026-10-29; evidence in the change's design.md S1 to S4
 - **Steps:** 1. let the table load report whether it was served from the cache; 2. the adapter sets `cache_hit` on the `JobResult`; 3. test with a cached and an uncached run.
 - **Done when:** a second `uv run baseballpy ingest lahman` writes `cache_hit` true for every job in `audit.jsonl`.
 - **Record:** tick 5.9; design.md S4.
-

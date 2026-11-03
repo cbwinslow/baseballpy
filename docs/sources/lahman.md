@@ -124,10 +124,10 @@ import duckdb
 con = duckdb.connect()
 con.register("batting", batting_df)
 top_hr_seasons = con.execute("""
-    SELECT playerID, yearID, teamID, HR, RBI, SB 
-    FROM batting 
-    WHERE HR >= 50 
-    ORDER BY HR DESC 
+    SELECT playerID, yearID, teamID, HR, RBI, SB
+    FROM batting
+    WHERE HR >= 50
+    ORDER BY HR DESC
     LIMIT 5
 """).fetchdf()
 print(top_hr_seasons)
