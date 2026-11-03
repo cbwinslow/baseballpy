@@ -1,8 +1,8 @@
 """Shared HTTP client: per-host rate limits, bounded concurrency, HTTP/2 pooling, retries.
 
 All network I/O in baseballpy goes through :class:`HttpClient`. Sync and async callers share
-the same limiter, semaphore and connection pool because every request executes on one
-private event loop owned by the client.
+the same per-host limiter and in-flight limit and one connection pool because every request
+executes on one private event loop owned by the client.
 """
 
 import asyncio
@@ -114,7 +114,7 @@ class HttpClient:
         self._loop: asyncio.AbstractEventLoop | None = None
         self._thread: threading.Thread | None = None
         self._client: httpx.AsyncClient | None = None
-        self._semaphore: asyncio.Semaphore | None = None
+        self._semaphores: dict[str, asyncio.Semaphore] = {}
         self._start_lock = threading.Lock()
 
     # ------------------------------------------------------------------ loop plumbing
@@ -128,7 +128,7 @@ class HttpClient:
                 thread.start()
                 self._loop, self._thread = loop, thread
                 self._client = None
-                self._semaphore = None
+                self._semaphores = {}
                 self._limiters = {}
             return self._loop
 
@@ -168,9 +168,24 @@ class HttpClient:
             self._limiters[host] = limiter
         return limiter
 
-    def _ensure_client(self) -> tuple[httpx.AsyncClient, asyncio.Semaphore]:
+    def limit_for(self, host: str) -> int:
+        """Most requests of ``host`` in flight at once (``host_concurrency`` or ``max_concurrency``)."""
+        return max(1, self.rate.host_concurrency.get(host, self.rate.max_concurrency))
+
+    def _semaphore_for(self, host: str) -> asyncio.Semaphore:
+        """One in-flight limit per host, so a slow host cannot hold another host's slots."""
+        semaphore = self._semaphores.get(host)
+        if semaphore is None:
+            semaphore = asyncio.Semaphore(self.limit_for(host))
+            self._semaphores[host] = semaphore
+        return semaphore
+
+    def _ensure_client(self) -> httpx.AsyncClient:
         if self._client is None:
-            limits = httpx.Limits(max_connections=20, max_keepalive_connections=10)
+            widest = max([self.rate.max_concurrency, *self.rate.host_concurrency.values()])
+            limits = httpx.Limits(
+                max_connections=max(20, 4 * widest), max_keepalive_connections=max(10, 2 * widest)
+            )
             self._client = httpx.AsyncClient(
                 http2=self._http2,
                 limits=limits,
@@ -179,9 +194,7 @@ class HttpClient:
                 transport=self._transport,
                 headers={"User-Agent": self._user_agent},
             )
-        if self._semaphore is None:
-            self._semaphore = asyncio.Semaphore(self.rate.max_concurrency)
-        return self._client, self._semaphore
+        return self._client
 
     # ------------------------------------------------------------------ requests
     async def _get_on_loop(
@@ -193,8 +206,9 @@ class HttpClient:
         allow: tuple[int, ...],
         timeout: float | None = None,
     ) -> HttpResult:
-        client, semaphore = self._ensure_client()
+        client = self._ensure_client()
         host = urlparse(url).hostname or ""
+        semaphore = self._semaphore_for(host)
         limiter = self._limiter_for(host)
         req_headers = dict(headers or {})
         if etag:

@@ -16,7 +16,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from baseballpy.core.audit import default_audit_logger
-from baseballpy.core.config import LakeConfig, RateLimitConfig
+from baseballpy.core.config import SAVANT_HOST, LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
@@ -290,7 +290,7 @@ class StatcastLeaderboardExtractor:
         self, years: list[int] | None = None, refresh: bool = False
     ) -> list[LeaderboardReport]:
         """Ingest every supported variant (unsupported ones are reported with their reason)."""
-        max_workers = min(max(self.http.rate.max_concurrency, 1), 4)
+        max_workers = self.http.limit_for(SAVANT_HOST)
         if max_workers > 1 and len(SUPPORTED) > 1:
             with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
                 reports = list(

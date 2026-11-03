@@ -16,7 +16,7 @@ The Statcast Ingestion Engine extracts, chunks, normalizes, and caches pitch-by-
 
 ## 3. Rate Limiting & Concurrency
 - Outbound requests to `baseballsavant.mlb.com` go through the shared `HttpClient` (`core/http.py`), whose host limiter is bounded to at most 2.5 requests/second.
-- Concurrency is bounded by the client's semaphore (default 4).
+- Concurrency is bounded by the client's per-host in-flight limit, 8 for Savant by default (`savant_concurrency`, ADR 57).
 - Transient errors are retried with jittered exponential backoff by the same client (see `concurrency-and-rate-limiting`).
 
 ---

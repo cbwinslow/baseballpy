@@ -275,6 +275,11 @@ class AuditConfig(EnvSettings):
         return self.log_dir / "audit.jsonl"
 
 
+#: hosts the extractors name when they ask the client for their in-flight limit
+SAVANT_HOST = "baseballsavant.mlb.com"
+STATSAPI_HOST = "statsapi.mlb.com"
+
+
 class RateLimitConfig(EnvSettings):
     """Rate limit, concurrency, and retry configuration for network extractors, loadable via BASEBALLPY_RATE_* env."""
 
@@ -301,7 +306,19 @@ class RateLimitConfig(EnvSettings):
         description="Host-specific token bucket rate limits in requests per second",
     )
     max_concurrency: int = Field(
-        default=4, description="Maximum number of simultaneous concurrent outbound requests"
+        default=4,
+        description="Maximum simultaneous outbound requests per host (each host has its own limit)",
+    )
+    savant_concurrency: int = Field(
+        default=8,
+        description=(
+            "In-flight limit for baseballsavant.mlb.com: its pitch CSVs take seconds each, so 4 "
+            "in flight cannot reach the 2.5 requests/second rate (ADR 57)"
+        ),
+    )
+    host_concurrency: dict[str, int] = Field(
+        default_factory=dict,
+        description="Host-specific in-flight limits that override the defaults above",
     )
     max_retries: int = Field(default=5, description="Maximum retry attempts on 429/5xx errors")
     backoff_factor: float = Field(default=1.5, description="Exponential backoff factor")
@@ -311,13 +328,14 @@ class RateLimitConfig(EnvSettings):
     def populate_host_rates(self) -> "RateLimitConfig":
         """Merge host-specific defaults if not explicitly provided."""
         defaults = {
-            "baseballsavant.mlb.com": self.savant_rps,
-            "statsapi.mlb.com": self.statsapi_rps,
+            SAVANT_HOST: self.savant_rps,
+            STATSAPI_HOST: self.statsapi_rps,
             "raw.githubusercontent.com": self.github_rps,
         }
         for host, rate in defaults.items():
             if host not in self.host_rates:
                 self.host_rates[host] = rate
+        self.host_concurrency.setdefault(SAVANT_HOST, self.savant_concurrency)
         return self
 
 

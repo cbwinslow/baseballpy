@@ -283,6 +283,30 @@ def _all(endpoint: MlbEndpoint) -> str:
     return endpoint.path + " " + " ".join(str(v) for v in endpoint.params.values())
 
 
+#: datasets whose stored rows a scope fans out over (ADR 57)
+_SCOPE_PREREQUISITES: dict[str, tuple[str, ...]] = {
+    "team_season": ("teams_season",),
+    "teams_season": ("teams_season",),
+    "award_season": ("ref_awards",),
+}
+#: request placeholders that are filled from a stored reference list
+_PLACEHOLDER_PREREQUISITES: dict[str, str] = {
+    "{leader_categories}": "ref_league_leader_types",
+    "{sit_codes}": "ref_situation_codes",
+}
+
+
+def prerequisites(endpoint: MlbEndpoint) -> tuple[str, ...]:
+    """Datasets an endpoint reads from the lake to know what to request (fan-out values).
+
+    A job for the endpoint must run after the job that stores them, or it requests nothing.
+    """
+    names = list(_SCOPE_PREREQUISITES.get(endpoint.scope, ()))
+    text = _all(endpoint)
+    names.extend(name for key, name in _PLACEHOLDER_PREREQUISITES.items() if key in text)
+    return tuple(dict.fromkeys(names))
+
+
 #: reference/meta lists: ``GET /v1/<route>``; dict-wrapped ones name their list key
 _REFERENCE: tuple[tuple[str, tuple[str, ...], str, tuple[str, ...]], ...] = (
     ("gameTypes", (), "Game type codes (R, P, S, ...).", ("id",)),

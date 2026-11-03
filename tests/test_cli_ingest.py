@@ -455,3 +455,19 @@ def test_ingest_auto_syncs_database(monkeypatch: pytest.MonkeyPatch) -> None:
     assert res_no_sync.exit_code == 0, res_no_sync.output
     assert len(synced_calls) == 0
     assert "DuckDB catalog synced" not in res_no_sync.output
+
+
+def test_the_cli_states_the_workers_and_the_real_network_limit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("BASEBALLPY_RATE_MAX_CONCURRENCY", "6")
+    reset_config()
+    spy = SpyAdapter()
+    ADAPTERS["spy_source"] = lambda: spy
+    result = CliRunner().invoke(
+        main, ["ingest", "spy_source", "--seasons", "2023", "-c", "3", "--no-sync-db"]
+    )
+    assert result.exit_code == 0, result.output
+    text = " ".join(result.output.split())
+    assert "3 parallel worker(s)" in text
+    assert "up to 6 requests in flight per host" in text

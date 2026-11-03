@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any
 
 from baseballpy.ingest.results import counts_to_result
-from baseballpy.ingest.types import Job, JobResult, JobStatus, Selection, make_job
+from baseballpy.ingest.types import Job, JobResult, JobStatus, Selection, make_job, with_needs
 
 FIRST_SEASON = 1876
 KNOWN_DATASETS = {"reference", "season", "games", "history", "people_stats"}
@@ -41,6 +41,28 @@ def _result(job: Job, reports: Sequence[Any]) -> JobResult:
         detail=f"{len(refused)} request(s) refused by the provider, the rest were stored",
         error=shown,
     )
+
+
+def _needs(name: str, season: int | None, named: Sequence[str], units: set[str]) -> tuple[str, ...]:
+    """Planned jobs that store what endpoint ``name`` fans out over (ADR 57).
+
+    An endpoint job run before them would find no teams or lists and silently request nothing, so
+    the runner starts it after them. Datasets nobody planned are read from the lake as they are.
+    """
+    from baseballpy.sources.mlb_api.endpoints import BY_NAME, prerequisites
+
+    partitioned = _partitioned()
+    ids: list[str] = []
+    for dataset in prerequisites(BY_NAME[name]):
+        is_season_scoped = dataset in partitioned
+        if dataset in named:
+            extra = {"season": season} if is_season_scoped and season is not None else {}
+            ids.append(make_job("mlb_api", "endpoint", name=dataset, **extra).job_id)
+        if is_season_scoped and "season" in units and season is not None:
+            ids.append(make_job("mlb_api", "season", season=season).job_id)
+        elif not is_season_scoped and "reference" in units:
+            ids.append(make_job("mlb_api", "reference").job_id)
+    return tuple(dict.fromkeys(ids))
 
 
 class MlbApiAdapter:
@@ -89,7 +111,8 @@ class MlbApiAdapter:
                 params: dict[str, Any] = {"name": name}
                 if season is not None:
                     params["season"] = season
-                jobs.append(make_job("mlb_api", "endpoint", **params))
+                needs = _needs(name, season, named, wanted)
+                jobs.append(with_needs(make_job("mlb_api", "endpoint", **params), needs))
         if "reference" in wanted:
             jobs.append(make_job("mlb_api", "reference"))
 

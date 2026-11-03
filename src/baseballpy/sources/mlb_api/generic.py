@@ -10,16 +10,16 @@ import concurrent.futures
 import json
 import logging
 import threading
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, TypeVar
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger
-from baseballpy.core.config import LakeConfig, RateLimitConfig
+from baseballpy.core.config import STATSAPI_HOST, LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.http import HttpClient, HttpResult, HttpStatusError, get_http_client
 from baseballpy.core.quarantine import Quarantine, checked_cast, safe_array
@@ -34,12 +34,15 @@ from baseballpy.sources.mlb_api.endpoints import (
     Context,
     MlbEndpoint,
     Request,
+    prerequisites,
     requests_for,
 )
 from baseballpy.sources.mlb_api.flatten import Scalar, iter_records
 from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
 
 logger = logging.getLogger(__name__)
+
+R = TypeVar("R")
 
 _TEXT_TYPES = (pa.date32(), pa.timestamp("us", tz="UTC"))
 
@@ -253,6 +256,16 @@ class EndpointReport:
     errors: tuple[str, ...] = ()
 
 
+@dataclass(frozen=True)
+class _Outcome:
+    """What one request of an endpoint ingest produced (summed into the report)."""
+
+    rows: int
+    cached: bool
+    missing: int
+    error: str | None
+
+
 class MlbEndpointExtractor:
     """Fetch/cache/store any registered :class:`MlbEndpoint`."""
 
@@ -364,7 +377,7 @@ class MlbEndpointExtractor:
                 )
                 return _fetch_subbatch(sub[:mid]) + _fetch_subbatch(sub[mid:])
 
-        max_workers = min(max(self.http.rate.max_concurrency, 1), 8)
+        max_workers = min(self.http.limit_for(STATSAPI_HOST), 8)
         if max_workers > 1 and len(batches) > 1:
             with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
                 all_results = list(pool.map(_fetch_subbatch, batches))
@@ -536,26 +549,70 @@ class MlbEndpointExtractor:
             tracker.set_records(len(table))
             return table
 
+    def _map_requests(
+        self, requests: Sequence[Request], work: Callable[[Request], R]
+    ) -> list[R | None]:
+        """Run ``work`` for every request on a pool bounded by ``max_concurrency`` (ADR 57).
+
+        The host token bucket and in-flight limit stay the only gates, so the pool never exceeds
+        what the provider is allowed to see. An exception from ``work`` stops the queued requests
+        (they return ``None``) and is raised; results keep the request order.
+        """
+        stop = threading.Event()
+
+        def guarded(request: Request) -> R | None:
+            if stop.is_set():
+                return None
+            try:
+                return work(request)
+            except BaseException:
+                stop.set()
+                raise
+
+        workers = min(self.http.limit_for(STATSAPI_HOST), len(requests))
+        if workers <= 1:
+            return [guarded(request) for request in requests]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+            return list(pool.map(guarded, requests))
+
+    @staticmethod
+    def _warn_if_nothing_to_request(ep: MlbEndpoint, requests: Sequence[Request]) -> None:
+        """An endpoint that fans out over stored values but found none did nothing: say so."""
+        if requests or ep.scope in ("flat", "since", "query", "season"):
+            return
+        needs = ", ".join(prerequisites(ep)) or "its fan-out values"
+        logger.warning(
+            "%s: nothing to request, %s are not in the lake (ingest them first)", ep.name, needs
+        )
+
     def _ingest_raw_only(self, ep: MlbEndpoint, ctx: Context, refresh: bool) -> EndpointReport:
         """Endpoints with no generated schema still keep every response as raw JSON (lossless).
 
         The generation probe saw no records for them (e.g. ``standings_first_half`` in 2024), so
         there is nothing to type yet; the raw files are typed later by regenerating the schemas.
         """
-        n = stored = cached = 0
+        requests = list(requests_for(ep, ctx))
+        self._warn_if_nothing_to_request(ep, requests)
         with default_audit_logger.track(
             operation=f"mlb_{ep.name}",
             source="mlb_api",
             endpoint=f"{MLB_BASE_URL}/{ep.path}",
         ) as tracker:
-            for request in requests_for(ep, ctx):
-                n += 1
+            if requests:
+                first = requests[0]
+                tracker.set_destination(
+                    str(
+                        self.raw.path_for(
+                            "mlb_api", ep.name, f"{first.ident}.json", first.season
+                        ).parent
+                    )
+                )
+
+            def one(request: Request) -> str:
                 name = f"{request.ident}.json"
                 path = self.raw.path_for("mlb_api", ep.name, name, request.season)
-                tracker.set_destination(str(path.parent))
                 if path.exists() and not refresh:
-                    cached += 1
-                    continue
+                    return "cached"
                 url = f"{MLB_BASE_URL}/{request.path}"
                 result = self.http.get_sync(
                     url,
@@ -563,7 +620,7 @@ class MlbEndpointExtractor:
                     allow=(200, 404) if ep.tolerate_missing else (200,),
                 )
                 if result.status != 200:
-                    continue
+                    return "empty"
                 self.raw.put(
                     "mlb_api",
                     ep.name,
@@ -574,7 +631,12 @@ class MlbEndpointExtractor:
                     etag=result.etag or "",
                     upstream=response_fingerprint(result.content, result.etag, url),
                 )
-                stored += 1
+                return "stored"
+
+            outcomes = [o for o in self._map_requests(requests, one) if o is not None]
+            n = len(outcomes)
+            stored = outcomes.count("stored")
+            cached = outcomes.count("cached")
             tracker.set_cache_hit(stored == 0 and cached > 0)
             tracker.set_records(stored + cached)
         return EndpointReport(ep.name, n, 0, cached, raw_only=stored + cached)
@@ -597,11 +659,11 @@ class MlbEndpointExtractor:
             return EndpointReport(ep.name, 0, 0, 0, unsupported=ep.unsupported)
         if ep.name not in MLB_SCHEMAS:
             return self._ingest_raw_only(ep, ctx, refresh)
-        rows = cached = n = 0
-        self.missing = 0
-        errors: list[str] = []
-        for request in requests_for(ep, ctx):
-            n += 1
+        requests = list(requests_for(ep, ctx))
+        self._warn_if_nothing_to_request(ep, requests)
+
+        def one(request: Request) -> _Outcome:
+            self.missing = 0
             was_cached = self._is_cached(ep, request, refresh)
             try:
                 table = self.fetch_request(ep, request, refresh, allow_heavy)
@@ -611,11 +673,19 @@ class MlbEndpointExtractor:
                 # one refused request (for example the league-wide 406, or a pool the fallback
                 # cannot reproduce) must not stop the rest
                 logger.warning("%s: %s", ep.name, exc)
-                errors.append(str(exc))
-                continue
-            rows += table.num_rows
-            cached += int(was_cached)
-        return EndpointReport(ep.name, n, rows, cached, missing=self.missing, errors=tuple(errors))
+                return _Outcome(0, False, self.missing, str(exc))
+            return _Outcome(table.num_rows, was_cached, self.missing, None)
+
+        outcomes = [o for o in self._map_requests(requests, one) if o is not None]
+        errors = [o.error for o in outcomes if o.error is not None]
+        return EndpointReport(
+            ep.name,
+            len(outcomes),
+            sum(o.rows for o in outcomes),
+            sum(int(o.cached) for o in outcomes),
+            missing=sum(o.missing for o in outcomes),
+            errors=tuple(errors),
+        )
 
 
 def read_endpoint(

@@ -33,6 +33,8 @@ export BASEBALLPY_RATE_SAVANT_RPS=2.5
 export BASEBALLPY_AUDIT_ENABLED=true
 ```
 
+`BASEBALLPY_RATE_MAX_CONCURRENCY` is the most requests in flight **per host** (default 4); `baseballpy ingest --concurrency` only sets how many *jobs* run at once, and the ingest header prints both. Each host is also paced by its own requests-per-second limit, so raising the in-flight limit never raises the rate. Override a single host with `BASEBALLPY_RATE_HOST_CONCURRENCY='{"baseballsavant.mlb.com": 8}'`.
+
 A dotenv file is loaded only when `BASEBALLPY_ENV_FILE` names it (real environment variables win over
 the file); a stray `.env` in the working directory is ignored. Or configure dynamically in Python:
 ```python

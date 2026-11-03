@@ -17,7 +17,7 @@ from rich.console import Console
 from rich.table import Table
 
 from baseballpy.core.concurrency import resolve_concurrency
-from baseballpy.core.config import LakeConfig
+from baseballpy.core.config import LakeConfig, get_config
 from baseballpy.core.datasets import DATASETS
 from baseballpy.ingest.adapters import ADAPTERS, get_adapters
 from baseballpy.ingest.runner import plan_jobs, run_jobs
@@ -382,8 +382,13 @@ def ingest_cmd(
         raise click.BadParameter(str(exc)) from exc
 
     if not as_json and planned_jobs:
+        rate = get_config().rate_limit
+        overrides = ", ".join(f"{h}: {n}" for h, n in sorted(rate.host_concurrency.items()))
         console.print(
-            f"[dim]Executing {len(planned_jobs)} job(s) with {workers} parallel worker(s)...[/dim]"
+            f"[dim]Executing {len(planned_jobs)} job(s) with {workers} parallel worker(s); "
+            f"network: up to {rate.max_concurrency} requests in flight per host"
+            f"{f' (except {overrides})' if overrides else ''}, paced by each host's rate "
+            f"limit (BASEBALLPY_RATE_MAX_CONCURRENCY).[/dim]"
         )
 
     report = run_jobs(

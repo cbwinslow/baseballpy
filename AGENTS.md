@@ -90,7 +90,7 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
    - **Retrosheet Mirror (`chadwickbureau/retrosheet` via GitHub CDN):** Static content; max 15 requests/sec. Never hit `retrosheet.org` for bulk historical extraction.
 2. **Structured Concurrency (No Unbounded Fan-Out):**
    - NEVER spawn unbounded `asyncio.gather()` or thread pools over full seasons.
-   - All concurrent downloads MUST be bounded by an explicit semaphore (`asyncio.Semaphore(max_concurrency)` defaulting to 4 workers).
+   - All concurrent downloads MUST be bounded by an explicit in-flight limit **per host** (`asyncio.Semaphore(max_concurrency)` for each host, default 4; `host_concurrency` overrides single hosts) on top of the host's token bucket, so a slow host never holds another host's slots (ADR 57). Fan-out inside a source (the requests of one endpoint, the windows of a season) uses a pool of at most `max_concurrency` workers behind those same gates.
 3. **Jittered Exponential Backoff:**
    - Wrap transient failures (HTTP 429, 500, 502, 503, 504, `httpx.ConnectTimeout`) in retry policies with exponential backoff and randomized jitter (via `tenacity`).
 

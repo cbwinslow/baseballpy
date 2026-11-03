@@ -1,6 +1,6 @@
 """Domain types for the baseballpy ingestion pipeline."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import StrEnum
 
 
@@ -37,6 +37,9 @@ class Job:
     source: str
     task: str
     params: tuple[tuple[str, str | int | bool], ...] = ()
+    #: ``job_id`` of jobs that must finish before this one starts (ignored when not in the plan);
+    #: not part of the identity: the same unit of work has the same id with or without them
+    needs: tuple[str, ...] = field(default=(), compare=False)
 
     @property
     def job_id(self) -> str:
@@ -64,6 +67,11 @@ def make_job(source: str, task: str, **params: str | int | bool) -> Job:
         sorted(params.items(), key=lambda item: item[0])
     )
     return Job(source=source, task=task, params=sorted_params)
+
+
+def with_needs(job: Job, needs: tuple[str, ...]) -> Job:
+    """``job`` that starts only after the jobs with these ids (those that are in the plan)."""
+    return replace(job, needs=needs)
 
 
 @dataclass
@@ -121,4 +129,5 @@ __all__ = [
     "RunReport",
     "Selection",
     "make_job",
+    "with_needs",
 ]

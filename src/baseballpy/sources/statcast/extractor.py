@@ -15,7 +15,7 @@ import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import cleanup_stale_parts
 from baseballpy.core.audit import default_audit_logger, get_audit_logger
-from baseballpy.core.config import LakeConfig, RateLimitConfig
+from baseballpy.core.config import SAVANT_HOST, LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.documents import keep_pages
 from baseballpy.core.http import HttpClient, get_http_client
@@ -356,7 +356,7 @@ class StatcastExtractor:
                 f"{start.isoformat()} is before it"
             )
         chunks = grid_windows(start, end, chunk_days=self.chunk_days)
-        gate = asyncio.Semaphore(self.rate_limit_config.max_concurrency)
+        gate = asyncio.Semaphore(self.http.limit_for(SAVANT_HOST))
 
         async def _bounded(s: date, e: date) -> tuple[pa.Table, bool]:
             async with gate:
@@ -507,7 +507,7 @@ class StatcastExtractor:
             return StatcastSeasonReport(season, 0, 0, 0, 0, skipped_reason=reason)
         query = StatcastQuery(minors=minors)
         windows = grid_windows(start, end, chunk_days=self.chunk_days)
-        gate = asyncio.Semaphore(self.rate_limit_config.max_concurrency)
+        gate = asyncio.Semaphore(self.http.limit_for(SAVANT_HOST))
 
         async def _one(s: date, e: date) -> tuple[int, bool]:
             async with gate:

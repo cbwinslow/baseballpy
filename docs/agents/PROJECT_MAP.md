@@ -12,13 +12,13 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `caching-and-invalidation` | 16 | 26 | 34 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
-| `cli-and-ingest` | 10 | 13 | 17 |
-| `concurrency-and-rate-limiting` | 4 | 6 | 7 |
+| `cli-and-ingest` | 12 | 20 | 24 |
+| `concurrency-and-rate-limiting` | 5 | 9 | 10 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
 | `lahman-database` | 11 | 18 | 26 |
-| `mlb-api-ingestion` | 25 | 32 | 34 |
+| `mlb-api-ingestion` | 26 | 35 | 37 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 7 | 12 | 12 |
 | `retrosheet-ingestion` | 19 | 20 | 21 |
@@ -37,11 +37,11 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
 | `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 19 |
 | `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 15 |
-| `mlb_api` | 365 | archived | yes | yes | yes | 9486/16719 (56%) | 25 |
+| `mlb_api` | 365 | archived | yes | yes | yes | 9486/16719 (56%) | 26 |
 
 ## Active changes (`openspec/changes/`)
 
-50 changes are archived under `openspec/changes/archive/`.
+51 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -108,6 +108,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 54: The Live Feed's `fields=` Is a Snapshot Ability, Never a Streaming Mode; Field Sets Are Data
 - ADR 55: Multi-Value Hydrate Parameters Are List-Encoded; a Pool With No Person Equivalent Is Refused
 - ADR 56: Statcast Starts in 2008 for Every Dataset; the Top End Follows the Clock
+- ADR 57: In-Flight Limits Are Per Host; MLB Requests Run in Parallel; Jobs Can Name Prerequisites
 
 ## Documentation pages (`docs/`)
 

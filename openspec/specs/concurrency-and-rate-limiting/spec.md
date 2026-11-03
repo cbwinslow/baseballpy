@@ -15,7 +15,7 @@ The system MUST route all HTTP requests through host-specific token bucket limit
 #### Scenario: High-volume concurrent season query
 - **GIVEN** a request to fetch 30 weeks of Statcast pitch data
 - **WHEN** scheduled across async worker tasks
-- **THEN** requests are rate-limited to 2.5 requests/sec and bounded by an `asyncio.Semaphore(max_concurrency=4)`.
+- **THEN** requests are rate-limited to 2.5 requests/sec and bounded by the host's in-flight limit (an `asyncio.Semaphore`, 8 for Savant by default, 4 for other hosts).
 - Verified by `tests/test_hardening.py::test_http_rate_limit_spaces_requests and ::test_http_semaphore_bounds_concurrency` and `tests/test_concurrency.py::test_concurrency_bound_holds_across_sync_and_async_callers`.
 
 ### Requirement: Jittered Exponential Backoff
@@ -27,12 +27,18 @@ The system MUST automatically retry failed requests on HTTP 408, 425, 429, 500, 
 - Verified by `tests/test_hardening.py::test_http_retries_transport_errors, ::test_http_gives_up_after_max_retries and ::test_http_retries_429_with_retry_after_then_succeeds`.
 
 ### Requirement: Single Shared HTTP Client
-Every network fetch MUST go through `baseballpy.core.http.HttpClient`, applying a per-host token bucket, a global bounded semaphore, HTTP/2 pooling and jittered exponential retry.
+Every network fetch MUST go through `baseballpy.core.http.HttpClient`, applying a per-host token bucket, a per-host bounded in-flight limit, HTTP/2 pooling and jittered exponential retry. A slow host MUST NOT consume the in-flight slots of another host.
 
 #### Scenario: Sync and async callers share limits
 - **GIVEN** sync and async callers hitting `statsapi.mlb.com` concurrently at a configured 8 req/s
 - **THEN** they share one limiter: after an initial burst of up to 8 requests (the bucket holds one second), the requests of all callers together are paced at 8 per second, and no more than `max_concurrency` are in flight at once.
 - Verified by `tests/test_concurrency.py::test_sync_threads_and_async_callers_share_one_host_limiter` and `::test_concurrency_bound_holds_across_sync_and_async_callers`.
+
+#### Scenario: A slow host does not block a fast one
+- **GIVEN** `slow.example.com` holds every one of its `max_concurrency` slots for a long time
+- **WHEN** a request is made to `fast.example.com`
+- **THEN** it completes without waiting for the slow host, and each host is still bounded by its own limit.
+- Verified by `tests/test_request_parallelism.py::test_a_slow_host_does_not_block_a_fast_one` and `::test_per_host_limits_are_bounded_separately`.
 
 #### Scenario: Retry policy
 - **WHEN** the server returns 429 with `Retry-After: 2`
@@ -54,3 +60,16 @@ When a high-volume request requires player hydration batches (such as split stat
 - **THEN** batches are downloaded concurrently across worker tasks and bounded by the host rate limiter (8 req/s) with zero 429 errors.
 - Verified by `tests/test_concurrency.py::test_hydrate_batches_execute_concurrently`.
 
+### Requirement: Host In-Flight Limit Is Configurable
+`RateLimitConfig.max_concurrency` (default 4) MUST be the in-flight limit of every host except Baseball Savant, whose default is `savant_concurrency` (8: its pitch CSVs take seconds each, so 4 in flight cannot reach the 2.5 requests/second rate; measured in the change's design.md). `host_concurrency` (host to limit) MUST override both for single hosts. Raising a limit MUST NOT raise the host's token-bucket rate.
+
+#### Scenario: A host override applies to that host only
+- **GIVEN** `max_concurrency=2` and `host_concurrency={"a.example.com": 5}`
+- **WHEN** many requests go to `a.example.com` and `b.example.com`
+- **THEN** the peak in flight is at most 5 for a and at most 2 for b.
+- Verified by `tests/test_request_parallelism.py::test_per_host_limits_are_bounded_separately`.
+
+#### Scenario: Savant has its own default
+- **WHEN** a client is built with the default configuration
+- **THEN** its in-flight limit is 8 for `baseballsavant.mlb.com` and 4 for `statsapi.mlb.com` and `raw.githubusercontent.com`, `savant_concurrency` changes the Savant default and a `host_concurrency` entry wins over it.
+- Verified by `tests/test_request_parallelism.py::test_savant_has_a_higher_default_in_flight_limit_than_other_hosts`.

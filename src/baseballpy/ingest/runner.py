@@ -63,7 +63,7 @@ def run_jobs(
 
     audit_logger = audit if audit is not None else default_audit_logger
 
-    def _run_single(job: Job) -> JobResult:
+    def _run_single(job: Job, blocked_by: str | None = None) -> JobResult:
         start = time.perf_counter()
         try:
             with audit_logger.track(
@@ -71,6 +71,11 @@ def run_jobs(
                 source=job.source,
                 endpoint=job.job_id,
             ) as tracker:
+                if blocked_by is not None:
+                    # its input would be missing or stale: fail visibly instead of storing nothing
+                    msg = f"not run: prerequisite job {blocked_by} did not finish"
+                    tracker.error = msg
+                    return JobResult(job=job, status=JobStatus.FAILED, detail=msg, error=msg)
                 adapter = adapters.get(job.source)
                 if adapter is None:
                     duration = time.perf_counter() - start
@@ -106,14 +111,15 @@ def run_jobs(
             )
 
     results: list[JobResult | None] = [None] * len(jobs)
+    deps = _dependencies(jobs)
     interrupted = False
     try:
         if workers == 1:
             # In the calling thread, so Ctrl-C reaches the running job's blocking I/O directly.
-            for idx, job in enumerate(jobs):
-                results[idx] = _run_single(job)
+            for idx in _order(jobs, deps):
+                results[idx] = _run_single(jobs[idx], _blocker(jobs, deps[idx], results))
         else:
-            _run_pool(jobs, _run_single, workers, results)
+            _run_pool(jobs, _run_single, workers, results, deps)
     except KeyboardInterrupt:
         interrupted = True
     if interrupted:
@@ -123,28 +129,80 @@ def run_jobs(
     return RunReport(results=[r for r in results if r is not None])
 
 
+def _dependencies(jobs: Sequence[Job]) -> list[list[int]]:
+    """For each job, the indexes of the planned jobs it needs (a need not in the plan is ignored)."""
+    index = {job.job_id: i for i, job in enumerate(jobs)}
+    return [
+        [index[n] for n in job.needs if n in index and index[n] != i] for i, job in enumerate(jobs)
+    ]
+
+
+def _order(jobs: Sequence[Job], deps: Sequence[Sequence[int]]) -> list[int]:
+    """Planned order with every job after the jobs it needs; raises if jobs wait for each other."""
+    ordered: list[int] = []
+    done: set[int] = set()
+    waiting = list(range(len(jobs)))
+    while waiting:
+        ready = [i for i in waiting if all(d in done for d in deps[i])]
+        if not ready:
+            names = ", ".join(jobs[i].job_id for i in waiting)
+            raise ValueError(f"jobs wait for each other (cycle): {names}")
+        first = ready[0]
+        ordered.append(first)
+        done.add(first)
+        waiting.remove(first)
+    return ordered
+
+
+def _blocker(
+    jobs: Sequence[Job], needs: Sequence[int], results: Sequence[JobResult | None]
+) -> str | None:
+    """``job_id`` of a needed job that failed or was cancelled, if any."""
+    for dep in needs:
+        result = results[dep]
+        if result is not None and result.status in (JobStatus.FAILED, JobStatus.CANCELLED):
+            return jobs[dep].job_id
+    return None
+
+
 def _run_pool(
     jobs: Sequence[Job],
-    run_single: Callable[[Job], JobResult],
+    run_single: Callable[[Job, str | None], JobResult],
     concurrency: int,
     results: list[JobResult | None],
+    deps: Sequence[Sequence[int]],
 ) -> None:
     """Run ``jobs`` on a thread pool, filling ``results`` by input index as they finish.
 
-    The main thread polls with a short timeout: on Windows a blocking wait on a lock is not
-    interrupted by Ctrl-C, a timed one is. On ``KeyboardInterrupt`` queued jobs are dropped and the
-    exception propagates; jobs already running finish their current call (threads cannot be killed)
-    before the interpreter exits.
+    A job starts only when the jobs it needs have finished; one whose prerequisite failed is
+    reported failed without running. The main thread polls with a short timeout: on Windows a
+    blocking wait on a lock is not interrupted by Ctrl-C, a timed one is. On ``KeyboardInterrupt``
+    queued jobs are dropped and the exception propagates; jobs already running finish their
+    current call (threads cannot be killed) before the interpreter exits.
     """
+    _order(jobs, deps)  # fail on a cycle before anything runs
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=concurrency)
-    pending = {executor.submit(run_single, job): idx for idx, job in enumerate(jobs)}
+    waiting = {i: set(d) for i, d in enumerate(deps)}
+    running: dict[concurrent.futures.Future[JobResult], int] = {}
+
+    def submit_ready() -> None:
+        for idx in sorted(i for i, needs in waiting.items() if not needs):
+            del waiting[idx]
+            blocked = _blocker(jobs, deps[idx], results)
+            running[executor.submit(run_single, jobs[idx], blocked)] = idx
+
+    submit_ready()
     try:
-        while pending:
+        while running:
             done, _ = concurrent.futures.wait(
-                pending, timeout=POLL_SECONDS, return_when=concurrent.futures.FIRST_COMPLETED
+                running, timeout=POLL_SECONDS, return_when=concurrent.futures.FIRST_COMPLETED
             )
             for fut in done:
-                results[pending.pop(fut)] = fut.result()
+                idx = running.pop(fut)
+                results[idx] = fut.result()
+                for needs in waiting.values():
+                    needs.discard(idx)
+            submit_ready()
     except BaseException:
         executor.shutdown(wait=False, cancel_futures=True)
         raise

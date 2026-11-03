@@ -365,3 +365,15 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-215 | statcast-season-bounds 1.2: `seasons.py` and the entry points | DONE | every Statcast entry point applies the bound before any request, tests pass |
 | B-216 | statcast-season-bounds 1.3: adapter skips, unstarted season skipped | DONE | `skipped` job with reason, test passes |
 | B-217 | statcast-season-bounds 1.4: docs, ADR 56, spec merge, live check, archive | DONE | gates green, a named 1850/1990 run makes zero requests, change archived |
+
+## T. Request parallelism and per-host limits (`request-parallelism-and-host-limits`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-218 | request-parallelism-and-host-limits 1.1: per-host in-flight limits in `HttpClient` | DONE | `host_concurrency` and `savant_concurrency` in `RateLimitConfig`, one semaphore per host, tests pass |
+| B-219 | request-parallelism-and-host-limits 1.2: MLB request-level parallelism | DONE | `_map_requests` pool in `ingest` and `_ingest_raw_only`, fail-fast and 404 sum tested |
+| B-220 | request-parallelism-and-host-limits 1.3: CLI states workers and network limit, docs | DONE | ingest header shows both, QUICKSTART and CLI docs updated, test passes |
+| B-221 | request-parallelism-and-host-limits 1.4: tests that prove it | DONE | 14 tests in `tests/test_request_parallelism.py`, mutation-checked |
+| B-222 | request-parallelism-and-host-limits 1.5: benchmark before and after | DONE | numbers in the change's design.md (found the job-ordering race) |
+| B-223 | request-parallelism-and-host-limits 1.6: Savant in-flight measured live | DONE | cold-cache 4 vs 8 recorded, default 8 chosen |
+| B-224 | request-parallelism-and-host-limits 1.7: specs, AGENTS.md, ADR 57, gates, archive | DONE | specs merged, ADR 57, gates green, change archived |

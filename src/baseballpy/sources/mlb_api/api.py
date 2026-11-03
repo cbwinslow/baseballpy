@@ -6,7 +6,7 @@ from typing import Any
 
 import pyarrow as pa
 
-from baseballpy.core.config import LakeConfig
+from baseballpy.core.config import STATSAPI_HOST, LakeConfig
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.sources.mlb_api.endpoints import SUPPORTED, Context, MlbEndpoint
 from baseballpy.sources.mlb_api.extractor import MlbApiExtractor
@@ -138,7 +138,7 @@ class MlbApiSource:
         """Ingest every flat (season-independent) endpoint: reference lists, jobs, history."""
         ctx = Context()
         flat_eps = [e for e in SUPPORTED if e.scope == "flat"]
-        max_workers = min(max(self.endpoints.http.rate.max_concurrency, 1), 8)
+        max_workers = min(self.endpoints.http.limit_for(STATSAPI_HOST), 8)
         if max_workers > 1 and len(flat_eps) > 1:
             with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
                 return list(
@@ -201,7 +201,7 @@ class MlbApiSource:
             and (include_awards or e.scope != "award_season")
             and (include_history or not e.heavy)
         ]
-        max_workers = min(max(self.endpoints.http.rate.max_concurrency, 1), 8)
+        max_workers = min(self.endpoints.http.limit_for(STATSAPI_HOST), 8)
         if max_workers > 1 and len(season_eps) > 1:
             with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
                 season_reports = list(
