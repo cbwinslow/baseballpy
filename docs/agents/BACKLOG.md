@@ -383,3 +383,13 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-225 | mlb-drift-warn-once 1.1: warn once per dataset and field | DONE | the MLB normalizer uses `warn_drift_once`, one warning for five identical payloads (test), scenario cites the test |
+
+## V. Adaptive per-host concurrency (`adaptive-host-concurrency`, rejected after measurement)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-226 | adaptive-host-concurrency 1.1: `AdaptiveGate` | DONE (built, discarded: ADR 58) | the gate and its tests were built and mutation-checked, then removed after the live results |
+| B-227 | adaptive-host-concurrency 1.2: wire into the client, config and pools | DONE (built, discarded: ADR 58) | as above |
+| B-228 | adaptive-host-concurrency 1.3: live Savant test | DONE | adaptive 16 vs pinned 8: same rows per second, 0 back-offs (design.md of the archived change) |
+| B-229 | adaptive-host-concurrency 1.4: live MLB tests | DONE | rate-bound pools unaffected; `stats_leaders` not faster with adaptive (40.9 s vs 31.9 s mean wall) |
+| B-230 | adaptive-host-concurrency 1.5: decision, ADR 58, archive | DONE | ADR 58 written, no code or spec change, change archived |

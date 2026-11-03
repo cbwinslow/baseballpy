@@ -59,3 +59,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-03: `statcast-season-bounds` (B-214..B-217) closed and archived (ADR 56: Statcast starts in 2008 for every dataset, the top end follows the lake clock; stray pre-2008 data deleted).
 - 2026-11-03 (later): `request-parallelism-and-host-limits` (B-218..B-224) closed and archived (ADR 57: per-host in-flight limits with Savant at 8, MLB requests in parallel, `Job.needs` prerequisites that fix a silent job-ordering race, CLI states the network limit).
 - 2026-11-03 (later): `mlb-drift-warn-once` (B-225) closed and archived: the MLB normalizer warned for every request (2,210 lines in a season run); it now warns once per dataset and field as the spec says.
+- 2026-11-03 (later): `adaptive-host-concurrency` (B-226..B-230) built, measured live and REJECTED, archived with the evidence (ADR 58): the heavy MLB pools are rate-bound, the slow endpoint and Savant gain nothing from more concurrency. No code kept.

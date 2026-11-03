@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-52 changes are archived under `openspec/changes/archive/`.
+53 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -109,6 +109,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 55: Multi-Value Hydrate Parameters Are List-Encoded; a Pool With No Person Equivalent Is Refused
 - ADR 56: Statcast Starts in 2008 for Every Dataset; the Top End Follows the Clock
 - ADR 57: In-Flight Limits Are Per Host; MLB Requests Run in Parallel; Jobs Can Name Prerequisites
+- ADR 58: Adaptive Per-Host Concurrency Was Measured and Rejected; In-Flight Limits Stay Fixed
 
 ## Documentation pages (`docs/`)
 
