@@ -9,8 +9,13 @@ Defines concurrency boundaries, host-specific token-bucket rate limiting, and ex
 The system MUST route all HTTP requests through host-specific token bucket limiters to prevent IP blocks and 429 errors.
 - Default limits:
   - `baseballsavant.mlb.com`: 2.5 requests/second
-  - `statsapi.mlb.com`: 8.0 requests/second
+  - `statsapi.mlb.com`: 10.0 requests/second
   - `raw.githubusercontent.com`: 15.0 requests/second
+
+#### Scenario: Default host rates
+- **WHEN** a `RateLimitConfig` is built with no overrides
+- **THEN** its per-host rates are 2.5, 10.0 and 15.0 requests/second for Savant, the MLB Stats API and GitHub, and `statsapi_rps` overrides the MLB one.
+- Verified by `tests/test_request_parallelism.py::test_default_host_rates_are_the_documented_ones`.
 
 #### Scenario: High-volume concurrent season query
 - **GIVEN** a request to fetch 30 weeks of Statcast pitch data
@@ -57,7 +62,7 @@ When a high-volume request requires player hydration batches (such as split stat
 #### Scenario: Hydrate batches execute concurrently within rate limit
 - **GIVEN** an MLB endpoint requiring 10 hydrate batches of player IDs
 - **WHEN** the fallback extraction is executed
-- **THEN** batches are downloaded concurrently across worker tasks and bounded by the host rate limiter (8 req/s) with zero 429 errors.
+- **THEN** batches are downloaded concurrently across worker tasks and bounded by the host rate limiter (10 req/s) with zero 429 errors.
 - Verified by `tests/test_concurrency.py::test_hydrate_batches_execute_concurrently`.
 
 ### Requirement: Host In-Flight Limit Is Configurable

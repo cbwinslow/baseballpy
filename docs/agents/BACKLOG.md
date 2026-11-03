@@ -393,3 +393,18 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-228 | adaptive-host-concurrency 1.3: live Savant test | DONE | adaptive 16 vs pinned 8: same rows per second, 0 back-offs (design.md of the archived change) |
 | B-229 | adaptive-host-concurrency 1.4: live MLB tests | DONE | rate-bound pools unaffected; `stats_leaders` not faster with adaptive (40.9 s vs 31.9 s mean wall) |
 | B-230 | adaptive-host-concurrency 1.5: decision, ADR 58, archive | DONE | ADR 58 written, no code or spec change, change archived |
+
+## W. MLB host rate 10 requests/second (`mlb-rate-10`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-231 | mlb-rate-10 1.1: cold-season test of 8 vs 10 | DONE | 4 cold-season runs, 0 errors, 10/s about 20% faster (design.md) |
+| B-232 | mlb-rate-10 1.2: default, specs, doc, test, ADR 59 | DONE | default 10.0, specs and source doc say 10, test passes |
+| B-233 | mlb-rate-10 1.3: full 2024 season run at 10 | DONE | zero errors, time recorded in design.md |
+| B-234 | mlb-rate-10 1.4: gates and archive | DONE | gates green, change archived |
+
+## X. Provider partial answers (new, found 2026-11-03)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-235 | detect valid-but-partial provider answers for fixed-size endpoints | READY (needs its own change: which endpoints have a known size, where the expectation lives; web-search how pybaseball/baseballr handle it first) | `standings_by_organization` returned 106 of 201 team records (19 of 30 organizations) in one run and the full answer five times afterwards; a check or a documented re-fetch rule exists and a test shows a partial answer is reported, not stored as complete |

@@ -329,3 +329,11 @@ def test_savant_has_a_higher_default_in_flight_limit_than_other_hosts() -> None:
         RateLimitConfig(host_concurrency={"baseballsavant.mlb.com": 5}, savant_concurrency=3)
     )
     assert explicit.limit_for("baseballsavant.mlb.com") == 5, "a host override wins"
+
+
+def test_default_host_rates_are_the_documented_ones() -> None:
+    rates = RateLimitConfig().host_rates
+    assert rates["baseballsavant.mlb.com"] == 2.5
+    assert rates["statsapi.mlb.com"] == 10.0
+    assert rates["raw.githubusercontent.com"] == 15.0
+    assert RateLimitConfig(statsapi_rps=8.0).host_rates["statsapi.mlb.com"] == 8.0

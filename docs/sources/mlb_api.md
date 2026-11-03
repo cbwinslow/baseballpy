@@ -5,7 +5,7 @@
 - **Base Endpoint URL:** `https://statsapi.mlb.com/api`
 - **Method:** `GET`
 - **Response Format:** JSON (JavaScript Object Notation)
-- **Rate Limit Policy:** Max 8.0 requests/second (token bucket enforced via `aiolimiter`)
+- **Rate Limit Policy:** Max 10.0 requests/second (default; `BASEBALLPY_RATE_STATSAPI_RPS` overrides) (token bucket enforced via `aiolimiter`)
 - **Transport Strategy:** HTTP/2 connection pooling with persistent keep-alive (`httpx.AsyncClient(http2=True)`).
 - **Optimization Strategy:**
   - High-performance deserialization via `msgspec.Struct` (10–20x faster than standard library `json`).

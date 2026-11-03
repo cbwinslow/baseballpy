@@ -296,7 +296,8 @@ class RateLimitConfig(EnvSettings):
         default=2.5, description="Token bucket rate limit for baseballsavant.mlb.com"
     )
     statsapi_rps: float = Field(
-        default=8.0, description="Token bucket rate limit for statsapi.mlb.com"
+        default=10.0,
+        description="Token bucket rate limit for statsapi.mlb.com (AGENTS.md allows 8-10; ADR 59)",
     )
     github_rps: float = Field(
         default=15.0, description="Token bucket rate limit for raw.githubusercontent.com"

@@ -25,7 +25,7 @@ The nine hand-written datasets below keep their selected-field schemas; every ot
 ---
 
 ## 3. Concurrency, Rate Limiting & Network Pooling
-- Host rate limit: 8.0 requests/second, enforced by the shared `HttpClient` (`core/http.py`).
+- Host rate limit: 10.0 requests/second (ADR 59; `AGENTS.md` allows 8-10), enforced by the shared `HttpClient` (`core/http.py`).
 - Persistent connection pooling with HTTP/2 enabled.
 - Exponential jitter backoff on transient HTTP failures, by the same client.
 

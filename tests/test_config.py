@@ -131,7 +131,7 @@ def test_rate_limit_config_env_vars() -> None:
         assert rate_cfg.timeout_seconds == 45.0
         assert rate_cfg.savant_rps == 1.5
         assert rate_cfg.host_rates["baseballsavant.mlb.com"] == 1.5
-        assert rate_cfg.host_rates["statsapi.mlb.com"] == 8.0
+        assert rate_cfg.host_rates["statsapi.mlb.com"] == 10.0
 
 
 def test_audit_and_quarantine_config(tmp_path: Path) -> None:
@@ -155,7 +155,7 @@ def test_pipeline_config_custom_base(tmp_path: Path) -> None:
     )
     assert pipeline.lake.home == tmp_path
     assert pipeline.rate_limit.max_concurrency == 4
-    assert pipeline.rate_limit.host_rates["statsapi.mlb.com"] == 8.0
+    assert pipeline.rate_limit.host_rates["statsapi.mlb.com"] == 10.0
 
 
 def test_get_config_singleton() -> None:

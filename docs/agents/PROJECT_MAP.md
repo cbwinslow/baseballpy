@@ -13,7 +13,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 12 | 20 | 24 |
-| `concurrency-and-rate-limiting` | 5 | 9 | 10 |
+| `concurrency-and-rate-limiting` | 5 | 10 | 11 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-53 changes are archived under `openspec/changes/archive/`.
+54 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -110,6 +110,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 56: Statcast Starts in 2008 for Every Dataset; the Top End Follows the Clock
 - ADR 57: In-Flight Limits Are Per Host; MLB Requests Run in Parallel; Jobs Can Name Prerequisites
 - ADR 58: Adaptive Per-Host Concurrency Was Measured and Rejected; In-Flight Limits Stay Fixed
+- ADR 59: The MLB Stats API Host Rate Is 10 Requests per Second
 
 ## Documentation pages (`docs/`)
 
