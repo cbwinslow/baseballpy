@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `mlb-api-ingestion` | 27 | 39 | 41 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 7 | 12 | 12 |
-| `retrosheet-ingestion` | 19 | 20 | 21 |
+| `retrosheet-ingestion` | 20 | 24 | 25 |
 | `statcast-ingestion` | 15 | 18 | 24 |
 
 ## Source review scorecard (where each source stands)
@@ -35,13 +35,13 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
-| `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 19 |
+| `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 20 |
 | `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 15 |
 | `mlb_api` | 365 | archived | yes | yes | yes | 9486/16719 (56%) | 27 |
 
 ## Active changes (`openspec/changes/`)
 
-55 changes are archived under `openspec/changes/archive/`.
+56 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -112,6 +112,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 58: Adaptive Per-Host Concurrency Was Measured and Rejected; In-Flight Limits Stay Fixed
 - ADR 59: The MLB Stats API Host Rate Is 10 Requests per Second
 - ADR 60: Small Low-Volume MLB Answers Are Fetched Twice and the Largest Is Kept
+- ADR 61: Retrosheet Parses in Parallel Through One Shared Process Pool, 32 Workers at Most
 
 ## Documentation pages (`docs/`)
 

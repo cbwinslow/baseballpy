@@ -47,6 +47,15 @@ _LEGACY_ENV = {
 }
 
 
+#: most parse workers by default: 32 measured best, 48 no better (ADR 61)
+PARSE_WORKERS_CEILING = 32
+
+
+def default_parse_workers() -> int:
+    """Parse worker processes when none are configured: the CPU count, capped."""
+    return min(os.cpu_count() or 1, PARSE_WORKERS_CEILING)
+
+
 class LakeConfig(EnvSettings):
     """Layout and freshness settings for the local data lake, loadable via BASEBALLPY_* env.
 
@@ -78,9 +87,12 @@ class LakeConfig(EnvSettings):
         default=None, description="Override for 'today' (deterministic tests); None = real date"
     )
     parse_workers: int = Field(
-        default=0,
+        default_factory=default_parse_workers,
         ge=0,
-        description="Worker processes for CPU-bound parsing (0 = parse in-process)",
+        description=(
+            "Worker processes for CPU-bound parsing (default: the CPU count, at most "
+            f"{PARSE_WORKERS_CEILING}; 0 or 1 = parse in the calling process; ADR 61)"
+        ),
     )
     raw_root_override: Path | None = Field(default=None, description="Override for raw/")
     processed_root_override: Path | None = Field(

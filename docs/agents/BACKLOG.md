@@ -417,3 +417,13 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-237 | verify-small-answers 1.2: tests | DONE | four tests in `tests/test_verify_small_answers.py` pass, one mutation-checked |
 | B-238 | verify-small-answers 1.3: live check and extra-request count | DONE | the standings request verified live, extra requests of a season counted in design.md |
 | B-239 | verify-small-answers 1.4: spec, doc, ADR 60, gates, archive | DONE | spec merged, ADR 60, gates green, change archived |
+
+## Z. Retrosheet parallel parsing (`retrosheet-parallel-parse`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-240 | retrosheet-parallel-parse 1.1: default workers from the CPU count, cap 16 | DONE | default `min(cpus, 16)`, tests unaffected (in-process unless asked) |
+| B-241 | retrosheet-parallel-parse 1.2: one persistent shared pool, bounded window, ordered results | DONE | four pool tests pass |
+| B-242 | retrosheet-parallel-parse 1.3: build steps of a season together | DONE (measured, not needed, not built) | see the change's design.md |
+| B-243 | retrosheet-parallel-parse 1.4: before and after on real seasons | DONE | season and multi-season times in design.md, every table equal to the single-core run |
+| B-244 | retrosheet-parallel-parse 1.5: spec, docs, ADR 61, gates, archive | DONE | gates green, change archived |

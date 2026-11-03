@@ -561,7 +561,9 @@ def test_process_pool_parsing_matches_in_process_parsing(
     retro_repo.add("seasons/2024/2024BOS.EVA", _game("BOS202404010"))
     retro_repo.add("seasons/2024/2024BAL.EVN", _game("BAL202404030", "BAL", "BOS"))
     retro_repo.mount()
-    serial = RetrosheetSource(cache_config=LakeConfig(home=tmp_path / "a")).events(2024)
+    serial = RetrosheetSource(cache_config=LakeConfig(home=tmp_path / "a", parse_workers=0)).events(
+        2024
+    )
     pooled = RetrosheetSource(cache_config=LakeConfig(home=tmp_path / "b", parse_workers=2)).events(
         2024
     )

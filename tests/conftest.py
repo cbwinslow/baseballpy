@@ -20,6 +20,8 @@ def _isolated_baseballpy_home(
 
     home = tmp_path_factory.mktemp("baseballpy_home")
     monkeypatch.setenv("BASEBALLPY_HOME", str(home))
+    # tests parse in process (fast, no spawned workers) unless they ask for a pool
+    monkeypatch.setenv("BASEBALLPY_PARSE_WORKERS", "0")
     for key in ("BASEBALLPY_CACHE_DIR",):
         monkeypatch.delenv(key, raising=False)
     get_audit_logger.reset()
