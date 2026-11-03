@@ -393,20 +393,20 @@ Usage: baseballpy ingest [OPTIONS] [SOURCES]...
   Execute ingestion jobs across registered adapters with planning and concurrency.
 
 Options:
-  -s, --seasons TEXT              Season expression (e.g. 2020, 2015-2024, or all).
-  -d, --datasets TEXT             Dataset(s) to ingest: name (one source) or source:name
-                                  (repeatable, comma-separated).
-  --refresh                       Bypass local cache and force fresh download.
-  --dry-run                       Plan jobs and print them without executing.
-  -c, --concurrency INTEGER RANGE
-                                  Max concurrent worker threads (minimum 1).  [x>=1]
-  --limit INTEGER RANGE           Bound the per-game, per-player or per-game-feed fan-out of opt-in
-                                  datasets (default: all).  [x>=1]
-  --stop-on-error                 Halt execution immediately when a job raises an error.
-  --json                          Output results as newline-delimited JSON objects.
-  --sync-db / --no-sync-db        Automatically update DuckDB views after successful ingestion
-                                  (default: true).
-  --help                          Show this message and exit.
+  -s, --seasons TEXT        Season expression (e.g. 2020, 2015-2024, or all).
+  -d, --datasets TEXT       Dataset(s) to ingest: name (one source) or source:name (repeatable,
+                            comma-separated).
+  --refresh                 Bypass local cache and force fresh download.
+  --dry-run                 Plan jobs and print them without executing.
+  -c, --concurrency TEXT    Max concurrent worker threads (minimum 1, or 'auto' to scale to
+                            hardware; default: auto).
+  --limit INTEGER RANGE     Bound the per-game, per-player or per-game-feed fan-out of opt-in
+                            datasets (default: all).  [x>=1]
+  --stop-on-error           Halt execution immediately when a job raises an error.
+  --json                    Output results as newline-delimited JSON objects.
+  --sync-db / --no-sync-db  Automatically update DuckDB views after successful ingestion (default:
+                            true).
+  --help                    Show this message and exit.
 ```
 
 ## `baseballpy migrate-layout`

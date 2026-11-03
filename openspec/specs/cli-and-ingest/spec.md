@@ -6,7 +6,7 @@ One command surface (`baseballpy`) plans and runs ingestion for every source thr
 ## Requirements
 
 ### Requirement: Ingest Planning and Execution
-`baseballpy ingest [SOURCES...] --seasons <selection>` MUST plan jobs through each source's `IngestAdapter`, run them with bounded concurrency, collect failures instead of aborting (unless `--stop-on-error`), record one audit event per job, and exit non-zero if any job failed. `--dry-run` MUST plan without any network request or adapter run. A selection is `2023`, `2015-2024`, `2015,2018` or `all`; an empty selection plans only season-less jobs. `--datasets` takes `name` or `source:name`.
+`baseballpy ingest [SOURCES...] --seasons <selection>` MUST plan jobs through each source's `IngestAdapter`, run them with bounded concurrency (automatically scaling worker threads to available CPU cores and planned job count when `--concurrency` is omitted or set to `auto`, or using explicit integer values), collect failures instead of aborting (unless `--stop-on-error`), record one audit event per job, and exit non-zero if any job failed. `--dry-run` MUST plan without any network request or adapter run. A selection is `2023`, `2015-2024`, `2015,2018` or `all`; an empty selection plans only season-less jobs. `--datasets` takes `name` or `source:name`.
 
 #### Scenario: Dry run
 - **WHEN** `ingest all --seasons 2023 --dry-run` runs
@@ -24,6 +24,12 @@ One command surface (`baseballpy`) plans and runs ingestion for every source thr
 - **WHEN** the user presses Ctrl-C
 - **THEN** the running job is interrupted promptly (sequential runs) or no new job starts (pool runs), unfinished jobs are reported `cancelled`, the audit event is `CANCELLED` and the exit code is 130.
 - Verified by `tests/test_ingest_runner.py::test_run_jobs_keyboard_interrupt_marks_cancelled and ::test_run_jobs_pool_interrupt_returns_while_a_job_is_still_running` and `tests/test_hardening.py::test_audit_keyboard_interrupt_is_cancelled`.
+
+#### Scenario: Auto concurrency resolves dynamically
+- **GIVEN** a planned list of ingestion jobs
+- **WHEN** `baseballpy ingest` runs without an explicit `--concurrency` argument
+- **THEN** worker thread concurrency is automatically resolved based on available CPU cores and job count, bounded by safe limits.
+- Verified by `tests/test_auto_concurrency.py::test_resolve_concurrency_auto_scaling`.
 
 ### Requirement: Coverage Visibility
 `baseballpy catalog list|show|status` MUST list every registered dataset with its view, partition, keys and schema, and report per dataset whether it is `INGESTED` or `MISSING` with files, rows, seasons and newest file date, without network access.

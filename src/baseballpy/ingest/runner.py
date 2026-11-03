@@ -6,6 +6,7 @@ import time
 from collections.abc import Callable, Mapping, Sequence
 
 from baseballpy.core.audit import AuditLogger, default_audit_logger
+from baseballpy.core.concurrency import resolve_concurrency
 from baseballpy.ingest.adapters import IngestAdapter
 from baseballpy.ingest.types import Job, JobResult, JobStatus, RunReport, Selection
 
@@ -33,7 +34,7 @@ def run_jobs(
     adapters: Mapping[str, IngestAdapter],
     *,
     refresh: bool = False,
-    concurrency: int = 1,
+    concurrency: int | str | None = None,
     continue_on_error: bool = True,
     audit: AuditLogger | None = None,
 ) -> RunReport:
@@ -43,7 +44,7 @@ def run_jobs(
         jobs: Sequence of jobs to execute in order.
         adapters: Mapping from source name to adapter instance.
         refresh: Whether to force fresh downloads, ignoring cached data.
-        concurrency: Max worker threads (must be >= 1).
+        concurrency: Max worker threads (integer >= 1, ``"auto"``, or ``None`` for auto-detect).
         continue_on_error: If True, failures are recorded and execution continues;
             if False, exceptions are re-raised immediately.
         audit: Optional audit logger; defaults to :data:`default_audit_logger`.
@@ -52,11 +53,10 @@ def run_jobs(
         :class:`RunReport` containing all job results in input order.
 
     Raises:
-        ValueError: If ``concurrency < 1``.
+        ValueError: If ``concurrency < 1`` or unparseable.
         Exception: If ``continue_on_error`` is False and any job raises.
     """
-    if concurrency < 1:
-        raise ValueError(f"concurrency must be at least 1; got {concurrency}")
+    workers = resolve_concurrency(concurrency, job_count=len(jobs))
 
     if not jobs:
         return RunReport()
@@ -108,12 +108,12 @@ def run_jobs(
     results: list[JobResult | None] = [None] * len(jobs)
     interrupted = False
     try:
-        if concurrency == 1:
+        if workers == 1:
             # In the calling thread, so Ctrl-C reaches the running job's blocking I/O directly.
             for idx, job in enumerate(jobs):
                 results[idx] = _run_single(job)
         else:
-            _run_pool(jobs, _run_single, concurrency, results)
+            _run_pool(jobs, _run_single, workers, results)
     except KeyboardInterrupt:
         interrupted = True
     if interrupted:

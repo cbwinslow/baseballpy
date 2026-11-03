@@ -342,6 +342,17 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 
 | B-208 | v1-ergonomics-and-e2e-verification 1.5: tests, gates, documentation, spec merge, and archive | DONE | all gates green, spec deltas merged into openspec/specs, change archived |
 
+## R. Auto-concurrency and intra-source parallelism (`auto-concurrency-and-intra-source-parallelism`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-209 | auto-concurrency-and-intra-source-parallelism 1.1: centralized `resolve_concurrency` utility | DONE | `src/baseballpy/core/concurrency.py` provides `resolve_concurrency` with CPU detection, cap, and validation |
+| B-210 | auto-concurrency-and-intra-source-parallelism 1.2: auto-concurrency in `run_jobs` runner | DONE | `src/baseballpy/ingest/runner.py` accepts `concurrency=None`/`"auto"` and resolves dynamically |
+| B-211 | auto-concurrency-and-intra-source-parallelism 1.3: CLI option updates in `cli_ingest.py` | DONE | `--concurrency` defaults to auto, displays resolved worker count in UI |
+| B-212 | auto-concurrency-and-intra-source-parallelism 1.4: unit and property tests | DONE | tests in `tests/test_auto_concurrency.py` verify resolution across simulated CPU counts and boundaries |
+| B-213 | auto-concurrency-and-intra-source-parallelism 1.5: docs, gates, spec merge, and archive | DONE | docs generated, all gates green, spec deltas merged, change archived |
+
+
 
 
 

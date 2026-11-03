@@ -16,12 +16,13 @@ from pyarrow.parquet import ParquetFile
 from rich.console import Console
 from rich.table import Table
 
+from baseballpy.core.concurrency import resolve_concurrency
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS
 from baseballpy.ingest.adapters import ADAPTERS, get_adapters
 from baseballpy.ingest.runner import plan_jobs, run_jobs
 from baseballpy.ingest.selection import parse_seasons
-from baseballpy.ingest.types import Job, JobStatus, Selection
+from baseballpy.ingest.types import Job, JobStatus, RunReport, Selection
 from baseballpy.probe import probe_cmd
 from baseballpy.sources.adapters import register_all_adapters
 from baseballpy.sources.catalog import register_all
@@ -203,6 +204,42 @@ def split_datasets(tokens: Sequence[str], sources: Sequence[str]) -> dict[str, t
     return {k: tuple(v) for k, v in grouped.items()}
 
 
+def _render_ingest_table(report: RunReport) -> None:
+    table = Table(title="Ingest Results")
+    table.add_column("Source", style="cyan")
+    table.add_column("Task")
+    table.add_column("Params")
+    table.add_column("Status")
+    table.add_column("Rows", justify="right")
+    table.add_column("Seconds", justify="right")
+
+    for res in report.results:
+        params_str = ", ".join(f"{k}={v}" for k, v in res.job.params)
+        rows_str = f"{res.rows:,}" if res.rows is not None else "-"
+        status_styles = {
+            JobStatus.COMPLETED: "bold green",
+            JobStatus.SKIPPED: "yellow",
+            JobStatus.FAILED: "bold red",
+            JobStatus.CANCELLED: "red",
+            JobStatus.PLANNED: "cyan",
+        }
+        style = status_styles.get(res.status, "white")
+        table.add_row(
+            res.job.source,
+            res.job.task,
+            params_str,
+            f"[{style}]{res.status.value}[/{style}]",
+            rows_str,
+            f"{res.seconds:.2f}",
+        )
+    console.print(table)
+
+    counts = report.counts()
+    summary_parts = [f"{status}: {count}" for status, count in sorted(counts.items())]
+    summary_str = ", ".join(summary_parts) if summary_parts else "0 jobs"
+    console.print(f"Summary: {summary_str}")
+
+
 @click.command("ingest")
 @click.argument("sources", nargs=-1)
 @click.option(
@@ -232,9 +269,9 @@ def split_datasets(tokens: Sequence[str], sources: Sequence[str]) -> dict[str, t
 @click.option(
     "--concurrency",
     "-c",
-    type=click.IntRange(min=1),
-    default=1,
-    help="Max concurrent worker threads (minimum 1).",
+    type=str,
+    default=None,
+    help="Max concurrent worker threads (minimum 1, or 'auto' to scale to hardware; default: auto).",
 )
 @click.option(
     "--limit",
@@ -267,7 +304,7 @@ def ingest_cmd(
     datasets: tuple[str, ...],
     refresh: bool,
     dry_run: bool,
-    concurrency: int,
+    concurrency: str | None,
     limit: int | None,
     stop_on_error: bool,
     as_json: bool,
@@ -339,11 +376,21 @@ def ingest_cmd(
             console.print(f"Planned {len(planned_jobs)} job(s).")
         ctx.exit(0)
 
+    try:
+        workers = resolve_concurrency(concurrency, job_count=len(planned_jobs))
+    except ValueError as exc:
+        raise click.BadParameter(str(exc)) from exc
+
+    if not as_json and planned_jobs:
+        console.print(
+            f"[dim]Executing {len(planned_jobs)} job(s) with {workers} parallel worker(s)...[/dim]"
+        )
+
     report = run_jobs(
         planned_jobs,
         adapters,
         refresh=refresh,
-        concurrency=concurrency,
+        concurrency=workers,
         continue_on_error=not stop_on_error,
     )
 
@@ -362,39 +409,7 @@ def ingest_cmd(
                 )
             )
     else:
-        table = Table(title="Ingest Results")
-        table.add_column("Source", style="cyan")
-        table.add_column("Task")
-        table.add_column("Params")
-        table.add_column("Status")
-        table.add_column("Rows", justify="right")
-        table.add_column("Seconds", justify="right")
-
-        for res in report.results:
-            params_str = ", ".join(f"{k}={v}" for k, v in res.job.params)
-            rows_str = f"{res.rows:,}" if res.rows is not None else "-"
-            status_styles = {
-                JobStatus.COMPLETED: "bold green",
-                JobStatus.SKIPPED: "yellow",
-                JobStatus.FAILED: "bold red",
-                JobStatus.CANCELLED: "red",
-                JobStatus.PLANNED: "cyan",
-            }
-            style = status_styles.get(res.status, "white")
-            table.add_row(
-                res.job.source,
-                res.job.task,
-                params_str,
-                f"[{style}]{res.status.value}[/{style}]",
-                rows_str,
-                f"{res.seconds:.2f}",
-            )
-        console.print(table)
-
-        counts = report.counts()
-        summary_parts = [f"{status}: {count}" for status, count in sorted(counts.items())]
-        summary_str = ", ".join(summary_parts) if summary_parts else "0 jobs"
-        console.print(f"Summary: {summary_str}")
+        _render_ingest_table(report)
 
     if (
         sync_db
