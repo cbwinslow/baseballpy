@@ -247,7 +247,8 @@ def parse_dates(
     return result
 
 
-def _warn_once(source: str, dataset: str, fields: Sequence[str]) -> list[str]:
+def warn_drift_once(source: str, dataset: str, fields: Sequence[str]) -> list[str]:
+    """Log ``schema_drift`` for fields not yet reported for this dataset; returns the new ones."""
     fresh: list[str] = []
     with _warned_lock:
         for name in fields:
@@ -297,7 +298,7 @@ def pack_extras(
     """
     if not extra_names:
         return pa.nulls(table.num_rows, type=pa.string())
-    _warn_once(source, dataset, extra_names)
+    warn_drift_once(source, dataset, extra_names)
     lists = [table.column(n).to_pylist() for n in extra_names]
     payload = [
         json.dumps({n: v for n, v in zip(extra_names, row, strict=True) if v is not None})
@@ -368,7 +369,7 @@ def normalize_csv(
         columns.append(pack_extras(table, extra_names, source=source, dataset=dataset))
         fields.append(pa.field(EXTRAS, pa.string()))
     elif extra_names:
-        _warn_once(source, dataset, extra_names)
+        warn_drift_once(source, dataset, extra_names)
     return pa.Table.from_arrays(
         [c if isinstance(c, pa.ChunkedArray) else pa.chunked_array([c]) for c in columns],
         schema=pa.schema(fields),

@@ -15,7 +15,7 @@ from hypothesis import strategies as st
 from baseballpy.core.config import LakeConfig, QuarantineConfig
 from baseballpy.core.datasets import get_dataset
 from baseballpy.core.quarantine import Quarantine
-from baseballpy.core.schema_tools import snake
+from baseballpy.core.schema_tools import reset_drift_warnings, snake
 from baseballpy.sources import catalog
 from baseballpy.sources.mlb_api import generic
 from baseballpy.sources.mlb_api.endpoints import (
@@ -245,6 +245,21 @@ def test_unknown_upstream_field_goes_to_extras_and_bad_cells_to_quarantine(tmp_p
     table = MlbRecordNormalizer().normalize(ep, payload)
     assert json.loads(table.column("_extras")[0].as_py()) == {"brandNew.x": 1}
     assert table.column("_extras")[1].as_py() is None
+
+
+def test_unknown_field_is_warned_about_once_per_dataset_not_once_per_request(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    reset_drift_warnings()
+    ep = BY_NAME["ref_game_types"]
+    normalizer = MlbRecordNormalizer()
+    with caplog.at_level("WARNING"):
+        for _ in range(5):  # the same drifted payload arrives with every request of a season
+            payload = _fixture("ref_game_types")
+            payload[0]["brandNew"] = {"x": 1}
+            normalizer.normalize(ep, payload)
+    drift = [r.getMessage() for r in caplog.records if "schema_drift" in r.getMessage()]
+    assert len(drift) == 1 and "brandNew.x" in drift[0] and "ref_game_types" in drift[0]
 
 
 def test_every_fixture_key_has_a_typed_column() -> None:

@@ -377,3 +377,9 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-222 | request-parallelism-and-host-limits 1.5: benchmark before and after | DONE | numbers in the change's design.md (found the job-ordering race) |
 | B-223 | request-parallelism-and-host-limits 1.6: Savant in-flight measured live | DONE | cold-cache 4 vs 8 recorded, default 8 chosen |
 | B-224 | request-parallelism-and-host-limits 1.7: specs, AGENTS.md, ADR 57, gates, archive | DONE | specs merged, ADR 57, gates green, change archived |
+
+## U. MLB drift warnings once per dataset (`mlb-drift-warn-once`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-225 | mlb-drift-warn-once 1.1: warn once per dataset and field | DONE | the MLB normalizer uses `warn_drift_once`, one warning for five identical payloads (test), scenario cites the test |

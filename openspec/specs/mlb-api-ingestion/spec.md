@@ -55,7 +55,7 @@ Nested objects MUST be flattened to dotted keys, arrays kept as JSON text, unkno
 #### Scenario: Nested objects, arrays and unknown fields are kept
 - **WHEN** a payload is flattened and normalized
 - **THEN** nested objects become dotted keys, arrays stay JSON text, unknown fields land in `_extras` with one drift warning, bad cells are quarantined, and a payload contradicting the record path raises
-- Verified by `tests/test_mlb_coverage.py::test_flatten_dots_nested_objects_and_keeps_arrays_as_json, ::test_unknown_upstream_field_goes_to_extras_and_bad_cells_to_quarantine and ::test_iter_records_carries_wrapper_fields_and_fails_loudly_on_shape_changes`.
+- Verified by `tests/test_mlb_coverage.py::test_flatten_dots_nested_objects_and_keeps_arrays_as_json, ::test_unknown_upstream_field_goes_to_extras_and_bad_cells_to_quarantine, ::test_unknown_field_is_warned_about_once_per_dataset_not_once_per_request and ::test_iter_records_carries_wrapper_fields_and_fails_loudly_on_shape_changes`.
 
 ### Requirement: Bounded Downloads
 Paginated stat requests MUST use `limit`/`offset` pages; a request announcing more than 20,000 rows MUST be refused after its first page unless history ingestion is explicitly allowed (all-time stat types ignore the season: `statsSingleSeason fielding` is 191,958 rows). `ingest_season` MUST skip such endpoints by default.

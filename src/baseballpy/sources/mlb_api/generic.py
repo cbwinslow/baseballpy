@@ -23,7 +23,7 @@ from baseballpy.core.config import STATSAPI_HOST, LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.http import HttpClient, HttpResult, HttpStatusError, get_http_client
 from baseballpy.core.quarantine import Quarantine, checked_cast, safe_array
-from baseballpy.core.schema_tools import EXTRAS, UPSTREAM_KEY, pa_type
+from baseballpy.core.schema_tools import EXTRAS, UPSTREAM_KEY, pa_type, warn_drift_once
 from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key, schema_matches
 from baseballpy.core.upstream import response_fingerprint
 from baseballpy.sources import catalog
@@ -207,11 +207,8 @@ class MlbRecordNormalizer:
         if EXTRAS in schema.names:
             extra_keys = sorted({k for r in records for k in r} - upstream_to_field.keys())
             if extra_keys:
-                logger.warning(
-                    "schema_drift: mlb_api/%s has unknown field(s) %s; preserving them in _extras",
-                    dataset,
-                    extra_keys,
-                )
+                # once per dataset and field for the whole process, like every other source
+                warn_drift_once("mlb_api", dataset, extra_keys)
             payloads = [
                 json.dumps({k: r[k] for k in extra_keys if r.get(k) is not None}) for r in records
             ]
