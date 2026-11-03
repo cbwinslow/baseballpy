@@ -381,7 +381,7 @@ def audit_tail(limit: int, source: str | None, status: str | None, since: str | 
             else ev.timestamp_utc
         )
         console.print(
-            f"[{status_color}]●[/{status_color}] [bold]{ev.operation}[/bold] ({ev.source}) - {time_info}"
+            f"[{status_color}][{ev.status[:3]}][/{status_color}] [bold]{ev.operation}[/bold] ({ev.source}) - {time_info}"
         )
         timing_detail = f"{ev.duration_seconds}s"
         if ev.download_seconds is not None:
