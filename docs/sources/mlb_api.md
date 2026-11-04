@@ -287,7 +287,7 @@ blocked until the provider answers or a season-by-season rebuild lands.
 ## Telemetry
 
 Every download, parse and store of this source writes one structured event per logical operation to
-`$BASEBALLPY_HOME/logs/audit.jsonl` (default `~/.baseballpy`, ADR 22). The event carries
+`$BASEBALLPY_HOME/logs/audit.jsonl` (default `.baseballpy` in the project folder, ADR 22 and 62). The event carries
 `operation`, `source="mlb_api"`, `endpoint`, `destination`, `records_count`, `duration_seconds`,
 `download_seconds`, `processing_seconds`, `throughput_rps`, `cache_hit`, `status` and `error`.
 

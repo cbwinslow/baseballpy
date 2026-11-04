@@ -12,7 +12,7 @@ provider  ->  source extractor + normalizer  ->  Arrow table (strict schema)
 
 ## Lake layout (v2)
 
-Everything lives under `$BASEBALLPY_HOME` (default `~/.baseballpy`):
+Everything lives under `$BASEBALLPY_HOME` (default: `.baseballpy` in the project folder, else `~/.baseballpy`):
 
 | Path | Content |
 |---|---|

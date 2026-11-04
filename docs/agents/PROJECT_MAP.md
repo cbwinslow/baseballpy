@@ -9,7 +9,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 5 | 5 | 5 |
-| `caching-and-invalidation` | 16 | 26 | 34 |
+| `caching-and-invalidation` | 16 | 27 | 37 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 12 | 20 | 24 |
@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-56 changes are archived under `openspec/changes/archive/`.
+57 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -113,6 +113,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 59: The MLB Stats API Host Rate Is 10 Requests per Second
 - ADR 60: Small Low-Volume MLB Answers Are Fetched Twice and the Largest Is Kept
 - ADR 61: Retrosheet Parses in Parallel Through One Shared Process Pool, 32 Workers at Most
+- ADR 62: The Default Data Folder Is `.baseballpy` in the Project Folder
 
 ## Documentation pages (`docs/`)
 

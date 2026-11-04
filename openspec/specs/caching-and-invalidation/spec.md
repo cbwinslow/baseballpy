@@ -6,7 +6,13 @@ Defines directory layout, source-based partitioning, hash-based invalidation mec
 ## Requirements
 
 ### Requirement: Four-Tier Local Layout
-All persisted data MUST live under `$BASEBALLPY_HOME` (default `~/.baseballpy/`) in `raw/`, `processed/`, `quarantine/`, `cache/http/`, `databases/` and `logs/`, with a `VERSION` file holding the layout version (2). Datasets MUST live only in `raw/` and `processed/`: `raw/<source>/<dataset>/[season=YYYY/]` holds immutable upstream bytes and `processed/<source>/<dataset>/[season=YYYY/]part-<chunk>.parquet` holds typed Parquet, one dataset per directory. Path helpers MUST NOT create directories; writers create them on write. Locations are configurable with `BASEBALLPY_HOME` and the per-tier `BASEBALLPY_*_OVERRIDE` settings of `LakeConfig`.
+All persisted data MUST live under `$BASEBALLPY_HOME` (default `.baseballpy/` in the nearest project folder, else `~/.baseballpy/`; ADR 62) in `raw/`, `processed/`, `quarantine/`, `cache/http/`, `databases/` and `logs/`, with a `VERSION` file holding the layout version (2). Datasets MUST live only in `raw/` and `processed/`: `raw/<source>/<dataset>/[season=YYYY/]` holds immutable upstream bytes and `processed/<source>/<dataset>/[season=YYYY/]part-<chunk>.parquet` holds typed Parquet, one dataset per directory. Path helpers MUST NOT create directories; writers create them on write. Locations are configurable with `BASEBALLPY_HOME` and the per-tier `BASEBALLPY_*_OVERRIDE` settings of `LakeConfig`.
+
+#### Scenario: The default data folder lives in the project
+- **GIVEN** `BASEBALLPY_HOME` is not set and the working directory is inside a folder with `pyproject.toml` or `.git`
+- **THEN** the data folder is `.baseballpy/` in the nearest such folder, and outside any project it is `~/.baseballpy/`
+- **AND** `BASEBALLPY_HOME` still wins when set.
+- Verified by `tests/test_default_home.py::test_default_is_dot_baseballpy_in_the_nearest_project_folder`, `tests/test_default_home.py::test_outside_any_project_the_home_folder_is_used` and `tests/test_default_home.py::test_environment_variables_still_win`.
 
 #### Scenario: Cache deletion is safe
 - **GIVEN** a populated lake

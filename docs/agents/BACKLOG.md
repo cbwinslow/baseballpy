@@ -427,3 +427,4 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-242 | retrosheet-parallel-parse 1.3: build steps of a season together | DONE (measured, not needed, not built) | see the change's design.md |
 | B-243 | retrosheet-parallel-parse 1.4: before and after on real seasons | DONE | season and multi-season times in design.md, every table equal to the single-core run |
 | B-244 | retrosheet-parallel-parse 1.5: spec, docs, ADR 61, gates, archive | DONE | gates green, change archived |
+| B-245 | project-local-data-folder 1.1-1.4: default `.baseballpy` in the project folder, ignore, tests, docs, ADR 62 | DONE | `tests/test_default_home.py` passes |

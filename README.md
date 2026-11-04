@@ -14,7 +14,7 @@ Unified extraction, normalization, and ingestion for **Statcast (Baseball Savant
 - **Two-Phase Atomic Ingestion & Manifest Checkpointing:** Downloads write to `.part` files and rename atomically via `os.replace()` upon validation. Pause and resume partitioned downloads seamlessly without data duplication or silent truncation.
 - **Real-Time Live Streaming & State Diffing:** Low-latency async generator for active MLB Gameday feeds with monotonic sequence watermarks `(atBatIndex, eventIndex)` and HTTP `ETag` conditional polling (`If-None-Match`).
 - **Full Data Preservation Mandate:** Every upstream field, metric, and metadata column is preserved with zero arbitrary truncation.
-- **Structured Audit Logging & CLI Reviewer:** Automatically logs all extractions to `~/.baseballpy/logs/audit.jsonl` with built-in CLI inspection tools (`baseballpy audit summary`, `tail`, `stats`).
+- **Structured Audit Logging & CLI Reviewer:** Automatically logs all extractions to `<data folder>/logs/audit.jsonl` with built-in CLI inspection tools (`baseballpy audit summary`, `tail`, `stats`).
 - **OpenSpec & ADR-Driven:** Transparent specifications, documented design decisions, and strict regression test suites.
 
 ---
@@ -208,7 +208,7 @@ from the working directory.
 
 ## Data Lake Layout
 
-Everything lives under `$BASEBALLPY_HOME` (default `~/.baseballpy`), layout version 2 (see
+Everything lives under `$BASEBALLPY_HOME` (default: `.baseballpy` in the project folder, else `~/.baseballpy`), layout version 2 (see
 [docs/examples/layout.txt](docs/examples/layout.txt) for a real listing):
 
 ```text

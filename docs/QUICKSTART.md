@@ -26,6 +26,7 @@ uv add "baseballpy[all]"  # Includes pandas and the Postgres/Snowflake dlt desti
 All paths and rate limits are managed via Pydantic Settings (`BASEBALLPY_*`):
 
 ```bash
+# optional: without it the data goes to .baseballpy in your project folder
 export BASEBALLPY_HOME="~/.baseballpy"
 export BASEBALLPY_PROCESSED_ROOT_OVERRIDE="/fast-disk/baseball/processed"  # optional: move one tier
 export BASEBALLPY_RATE_MAX_CONCURRENCY=8

@@ -64,3 +64,6 @@ data/processed/
 Thumbs.db
 *.part
 site/
+
+# Local data folder (the lake: raw, processed, databases, logs)
+.baseballpy/

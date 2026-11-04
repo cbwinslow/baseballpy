@@ -30,13 +30,33 @@ class EnvSettings(BaseSettings):
         super().__init__(**values)
 
 
+#: marks the root of a project folder (ADR 62)
+PROJECT_MARKERS = ("pyproject.toml", ".git")
+#: the data folder inside a project folder, and the fallback inside the user's home
+DATA_DIRNAME = ".baseballpy"
+
+
+def find_project_root(start: Path | None = None) -> Path | None:
+    """The nearest folder at or above ``start`` (default: the working directory) with a project marker."""
+    here = (start or Path.cwd()).resolve()
+    for folder in (here, *here.parents):
+        if any((folder / marker).exists() for marker in PROJECT_MARKERS):
+            return folder
+    return None
+
+
 def get_default_base_dir() -> Path:
-    """Resolve default base directory with environment variable overrides."""
+    """Resolve the data folder: ``BASEBALLPY_HOME``, then the cache override, then ``<project>/.baseballpy``.
+
+    ``<project>`` is the nearest folder above the working directory with a ``pyproject.toml`` or
+    ``.git``; outside any project the folder is ``~/.baseballpy`` (ADR 62).
+    """
     if env_home := os.getenv("BASEBALLPY_HOME"):
         return Path(env_home).expanduser().resolve()
     if env_cache := os.getenv("BASEBALLPY_CACHE_DIR"):
         return Path(env_cache).expanduser().resolve().parent
-    return (Path.home() / ".baseballpy").resolve()
+    root = find_project_root()
+    return ((root or Path.home()) / DATA_DIRNAME).resolve()
 
 
 LAYOUT_VERSION = 2
@@ -73,7 +93,7 @@ class LakeConfig(EnvSettings):
 
     home: Path = Field(
         default_factory=get_default_base_dir,
-        description="Lake root (BASEBALLPY_HOME; default ~/.baseballpy)",
+        description="Lake root (BASEBALLPY_HOME; default <project>/.baseballpy, else ~/.baseballpy)",
     )
     enabled: bool = Field(default=True, description="Whether persisting to the lake is enabled")
     ttl_seconds: int = Field(
