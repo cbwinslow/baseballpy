@@ -70,4 +70,3 @@ each source section is independently committable. Every section ends with: fixtu
 - Gates: 700 tests pass, `ruff check`/`format` clean, `mypy --strict src` clean, `docs generate --check` up to date.
 - Live full-coverage run (scratch home): MLB 2024 for sports 1 and 11 with 3 games: 137 endpoints, 1,438 requests, 181,816 rows in 439 s (325 award requests answered 404 and were recorded as empty, 1 endpoint raw-only: `standings_postseason`); 114 per-person stat combinations for 3 players (342 requests, 15,115 rows); one all-time pool allowed explicitly; `fielding_run_value` (311/299 rows for 2024/2025) and `rolling` (1,747 rows) ingested and queryable through DuckDB views.
 - Generator results: 44 league-wide, 56 team and 114 per-person stat combinations across all 8 stat groups; 297 typed MLB endpoints.
-
