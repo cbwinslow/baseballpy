@@ -19,15 +19,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --all-extras
       # Provider-listed items vs the registry; exits 1 on MISSING/REVIVED/ERROR findings. The
       # step may not stop the job: the findings are reported below, then the job fails.
       - id: audit
         continue-on-error: true
         run: uv run baseballpy catalog audit --json > catalog-audit.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: upstream-audit
