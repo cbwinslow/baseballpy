@@ -557,4 +557,3 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `schedule_original` | `retrosheet_schedule_original` | `season` | 13 | `game_date`, `game_number`, `visitor_team`, `visitor_game_number`, `home_team` | Original pre-disruption schedules (seasons/<year>/<year>sched-orig.csv). |
 | `substitutions` | `retrosheet_substitutions` | `season` | 26 | `GAME_ID`, `EVENT_ID`, `SUB_ID`, `SUB_FLD_CD` | In-game substitutions. |
 | `umpires` | `retrosheet_umpires` | `season` | 4 | `umpire_id` | Umpires working each season (seasons/<year>/UMPIRES<year>.txt). |
-

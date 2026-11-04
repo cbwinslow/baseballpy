@@ -1,5 +1,5 @@
 # Tasks: mlb-schema-drift-regeneration
- 
+
 Order: 1.1 -> 1.2 -> 1.3 -> 1.4.
 
 ## 1. Generate from the fallback
