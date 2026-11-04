@@ -9977,7 +9977,7 @@ except ValidationError as e:
     """
     [{'ctx': {'error': AssertionError('Value out of bounds')},
     'input': datetime.datetime(2023, 1, 1, 0, 0, tzinfo=<DstTzInfo 'Europe/London' LMT-1 day, 23:59:00 STD>),
-    'loc': (),  
+    'loc': (),
     'msg': 'Assertion failed, Value out of bounds',
     'type': 'assertion_error',
     'url': 'https://errors.pydantic.dev/2/v/assertion_error'}]
@@ -12145,7 +12145,7 @@ from pydantic import BaseModel, Field
 from pydantic.fields import FieldInfo
 
 
-def make_title(field_name: str, field_info: FieldInfo) -> str: 
+def make_title(field_name: str, field_info: FieldInfo) -> str:
     return field_name.upper()
 
 
@@ -20756,7 +20756,7 @@ except ValidationError as e:
     """
     [{'ctx': {'error': AssertionError('Value out of bounds')},
     'input': datetime.datetime(2023, 1, 1, 0, 0, tzinfo=<DstTzInfo 'Europe/London' LMT-1 day, 23:59:00 STD>),
-    'loc': (),  
+    'loc': (),
     'msg': 'Assertion failed, Value out of bounds',
     'type': 'assertion_error',
     'url': 'https://errors.pydantic.dev/2/v/assertion_error'}]
@@ -36261,7 +36261,7 @@ from pydantic import BaseModel, Field
 from pydantic.fields import FieldInfo
 
 
-def make_title(field_name: str, field_info: FieldInfo) -> str: 
+def make_title(field_name: str, field_info: FieldInfo) -> str:
     return field_name.upper()
 
 
@@ -39549,7 +39549,7 @@ except ValidationError as e:
     """
     [{'ctx': {'error': AssertionError('Value out of bounds')},
     'input': datetime.datetime(2023, 1, 1, 0, 0, tzinfo=<DstTzInfo 'Europe/London' LMT-1 day, 23:59:00 STD>),
-    'loc': (),  
+    'loc': (),
     'msg': 'Assertion failed, Value out of bounds',
     'type': 'assertion_error',
     'url': 'https://errors.pydantic.dev/2/v/assertion_error'}]
@@ -48657,7 +48657,7 @@ from pydantic import BaseModel, Field
 from pydantic.fields import FieldInfo
 
 
-def make_title(field_name: str, field_info: FieldInfo) -> str: 
+def make_title(field_name: str, field_info: FieldInfo) -> str:
     return field_name.upper()
 
 
