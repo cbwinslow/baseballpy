@@ -14,6 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
       - run: uv sync --all-extras
       - run: uvx ruff check .
       - run: uvx ruff format --check .
@@ -23,6 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
       - run: uv sync --all-extras
       - run: uv run mypy --strict src
 
@@ -42,11 +46,34 @@ jobs:
       # The socket guard is on by default (pyproject addopts); live tests are opt-in.
       - run: uv run pytest -m "not live" --cov=baseballpy --cov-fail-under=90
 
+  # Service containers exist only on Linux runners, so the real-PostgreSQL tests run in this job.
+  test-postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - run: uv sync --all-extras
+      - run: uv run pytest -m "not live" tests/test_export.py tests/test_dlt_typed.py --no-cov
+        env:
+          BASEBALLPY_TEST_POSTGRES_URL: postgresql://postgres:test@127.0.0.1:5432/postgres
+
   docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
       - run: uv sync --all-extras --group docs
       # Fails when the generated column dictionaries or docs/CLI.md are stale.
       - run: uv run baseballpy docs generate --check

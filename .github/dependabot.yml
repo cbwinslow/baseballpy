@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # Python packages (uv.lock): one grouped pull request per week; security fixes arrive at once.
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      python-packages:
+        patterns: ["*"]
+  # The versions of the actions used in .github/workflows.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]

@@ -101,9 +101,21 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 
 @pytest.fixture(scope="session")
 def postgres_url(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
-    """A disposable embedded PostgreSQL server (dev-only ``pgserver``); skips when it is absent."""
+    """A disposable PostgreSQL URL.
+
+    ``BASEBALLPY_TEST_POSTGRES_URL`` (CI sets it from a service container) wins; otherwise the
+    dev-only embedded ``pgserver`` is started, and the test skips when it is absent or cannot start
+    on this machine.
+    """
+    url = os.environ.get("BASEBALLPY_TEST_POSTGRES_URL")
+    if url:
+        yield url
+        return
     pgserver = pytest.importorskip("pgserver")
-    server = pgserver.get_server(tmp_path_factory.mktemp("pgdata"), cleanup_mode="stop")
+    try:
+        server = pgserver.get_server(tmp_path_factory.mktemp("pgdata"), cleanup_mode="stop")
+    except Exception as exc:  # embedded server cannot start here (for example initdb on CI Windows)
+        pytest.skip(f"embedded PostgreSQL could not start: {exc}")
     try:
         yield str(server.get_uri())
     finally:

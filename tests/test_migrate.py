@@ -61,7 +61,7 @@ def v1(tmp_path: Path) -> LakeConfig:
     # retrosheet raw + processed
     raw = c / "retrosheet" / "raw"
     (raw / "2023").mkdir(parents=True)
-    (raw / "2023" / "2023BOS.EVA").write_text("id,BOS\n")
+    (raw / "2023" / "2023BOS.EVA").write_bytes(b"id,BOS\n")
     (raw / "2023" / "TEAM2023").write_text("BOS,A\n")
     (raw / "2023" / "BOS2023.ROS").write_text("r\n")
     (raw / "gamelogs").mkdir()
@@ -288,7 +288,7 @@ def test_migrated_raw_files_get_manifest_entries_so_the_downloader_skips_them(
 ) -> None:
     migrate.migrate_layout(v1)
     entry = v1.dataset_manifest("retrosheet", "event_files", "raw", 2023).get_chunk("2023BOS.EVA")
-    assert entry is not None and entry["bytes"] == 8 and len(entry["sha256"]) == 64
+    assert entry is not None and entry["bytes"] == 7 and len(entry["sha256"]) == 64
     assert entry["source_ref"] is None and entry["migrated_from"] == "v1"
     gl = v1.dataset_manifest("retrosheet", "gamelogs", "raw", 2023).get_chunk("GL2023.TXT")
     assert gl is not None and gl["season"] == 2023
