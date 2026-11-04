@@ -379,7 +379,7 @@ retrosheet = [
 dev = [
     { name = "hypothesis" },
     { name = "mypy" },
-    { name = "pgserver" },
+    { name = "pgserver", marker = "python_full_version < '3.13'" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
@@ -425,7 +425,7 @@ provides-extras = ["retrosheet", "pandas", "dlt-postgres", "dlt-snowflake", "dlt
 dev = [
     { name = "hypothesis", specifier = ">=6.100.0" },
     { name = "mypy", specifier = ">=1.10.0" },
-    { name = "pgserver", specifier = ">=0.1.4" },
+    { name = "pgserver", marker = "python_full_version < '3.13'", specifier = ">=0.1.4" },
     { name = "pytest", specifier = ">=8.0.0" },
     { name = "pytest-asyncio", specifier = ">=0.23.0" },
     { name = "pytest-cov", specifier = ">=5.0.0" },

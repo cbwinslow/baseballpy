@@ -84,7 +84,7 @@ dev = [
   "respx>=0.21.0",
   "ruff>=0.4.0",
   "mypy>=1.10.0",
-  "pgserver>=0.1.4",
+  "pgserver>=0.1.4; python_version < '3.13'",  # no wheels for 3.13; CI job test-postgres covers it
 ]
 docs = [
   "mkdocs>=1.6.0",
