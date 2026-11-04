@@ -525,7 +525,8 @@ def generate_markdown_report() -> str:
             )
         lines.append("")
 
-    return "\n".join(lines) + "\n"
+    # One trailing newline, so the repo's end-of-file-fixer hook never makes the file "stale".
+    return "\n".join(lines).rstrip("\n") + "\n"
 
 
 def main() -> int:

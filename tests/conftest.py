@@ -116,7 +116,13 @@ def postgres_url(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
         server = pgserver.get_server(tmp_path_factory.mktemp("pgdata"), cleanup_mode="stop")
     except Exception as exc:  # embedded server cannot start here (for example initdb on CI Windows)
         pytest.skip(f"embedded PostgreSQL could not start: {exc}")
+    uri = str(server.get_uri())
+    if "host=" in uri or "@/" in uri:  # unix-socket address (Linux): dlt needs a TCP host
+        server.cleanup()
+        pytest.skip(
+            "embedded PostgreSQL listens on a unix socket here; CI job test-postgres runs these"
+        )
     try:
-        yield str(server.get_uri())
+        yield uri
     finally:
         server.cleanup()
