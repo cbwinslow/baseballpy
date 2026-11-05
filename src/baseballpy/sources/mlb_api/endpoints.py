@@ -6,7 +6,7 @@ into a typed Parquet dataset, using schemas generated from live responses (``mlb
 Routes that answer 4xx or carry no record list are kept with an ``unsupported`` reason.
 """
 
-from collections.abc import Iterator, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 
 from baseballpy.core.datasets import IngestMode
@@ -164,13 +164,123 @@ PROVIDER_ERRORS: dict[tuple[str, str, str], str] = {
 }
 
 
+def _request(
+    endpoint: MlbEndpoint,
+    ident: str,
+    season: int | None,
+    values: Mapping[str, str | int],
+    extra: Mapping[str, str | int] | None = None,
+) -> Request:
+    """One request of ``endpoint`` with its path and parameters filled from ``values``."""
+    return Request(
+        ident,
+        _fill(endpoint.path, values),
+        {k: _fill(str(v), values) for k, v in endpoint.params.items()},
+        season,
+        dict(extra or {}),
+    )
+
+
+def _season_requests(
+    endpoint: MlbEndpoint, ctx: Context, base: dict[str, str | int]
+) -> Iterator[Request]:
+    """One request per sport when the template names ``{sport_id}``, else a single request."""
+    per_sport = "{sport_id}" in _all(endpoint)
+    for sport in ctx.sport_ids:
+        values = {
+            **base,
+            "sport_id": sport,
+            "leader_categories": ",".join(ctx.leader_categories),
+            "sit_codes": ",".join(ctx.sit_codes),
+        }
+        ident = f"{endpoint.name}_{ctx.season}" + (f"_sport{sport}" if per_sport else "")
+        yield _request(
+            endpoint, ident, ctx.season, values, {"sport_id": sport} if per_sport else {}
+        )
+        if not per_sport:
+            return
+
+
+def _teams_season_requests(
+    endpoint: MlbEndpoint, ctx: Context, base: dict[str, str | int]
+) -> Iterator[Request]:
+    values = {**base, "team_ids": ",".join(str(t) for t in ctx.team_ids)}
+    yield _request(endpoint, f"{endpoint.name}_{ctx.season}", ctx.season, values)
+
+
+def _team_season_requests(
+    endpoint: MlbEndpoint, ctx: Context, base: dict[str, str | int]
+) -> Iterator[Request]:
+    for team in ctx.team_ids:
+        values = {**base, "team_id": team}
+        yield _request(
+            endpoint, f"{endpoint.name}_{ctx.season}_{team}", ctx.season, values, {"team_id": team}
+        )
+
+
+def _game_requests(
+    endpoint: MlbEndpoint, ctx: Context, base: dict[str, str | int]
+) -> Iterator[Request]:
+    for pk in ctx.game_pks:
+        values = {**base, "game_pk": pk}
+        yield _request(endpoint, f"{endpoint.name}_{pk}", ctx.season, values, {"game_pk": pk})
+
+
+def _person_season_requests(
+    endpoint: MlbEndpoint, ctx: Context, base: dict[str, str | int]
+) -> Iterator[Request]:
+    """Every person x every combination of the endpoint's fan-out dimensions (minus known 500s)."""
+    dims: dict[str, Sequence[str | int]] = {
+        "metric": ctx.metrics,
+        "opposing_team_id": ctx.opposing_team_ids,
+        "opposing_player_id": ctx.opposing_player_ids,
+    }
+    combos: list[dict[str, str | int]] = [{}]
+    for dim in endpoint.fan_out:
+        skip = {v for (name, d, v) in PROVIDER_ERRORS if name == endpoint.name and d == dim}
+        combos = [{**c, dim: v} for c in combos for v in dims[dim] if str(v) not in skip]
+    for person in ctx.person_ids:
+        for combo in combos:
+            values = {**base, "person_id": person, "sit_codes": ",".join(ctx.sit_codes), **combo}
+            tail = "".join(f"_{v}" for v in combo.values())
+            yield _request(
+                endpoint,
+                f"{endpoint.name}_{ctx.season}_{person}{tail}",
+                ctx.season,
+                values,
+                {"person_id": person, **combo},
+            )
+
+
+def _award_requests(
+    endpoint: MlbEndpoint, ctx: Context, base: dict[str, str | int]
+) -> Iterator[Request]:
+    for award in ctx.award_ids:
+        values = {**base, "award_id": award}
+        yield _request(
+            endpoint,
+            f"{endpoint.name}_{ctx.season}_{award}",
+            ctx.season,
+            values,
+            {"request_award_id": award},
+        )
+
+
+#: how each season-scoped fan-out builds its requests (one small function per scope)
+_SCOPE_REQUESTS: dict[
+    str, Callable[[MlbEndpoint, Context, dict[str, str | int]], Iterator[Request]]
+] = {
+    "season": _season_requests,
+    "teams_season": _teams_season_requests,
+    "team_season": _team_season_requests,
+    "game": _game_requests,
+    "person_season": _person_season_requests,
+    "award_season": _award_requests,
+}
+
+
 def requests_for(endpoint: MlbEndpoint, ctx: Context) -> Iterator[Request]:
     """The requests an endpoint needs for ``ctx`` (a fan-out per scope)."""
-    base: dict[str, str | int] = {}
-    values: dict[str, str | int]
-    if ctx.season is not None:
-        base["season"] = ctx.season
-        base["year"] = ctx.season
     if endpoint.scope == "flat":
         yield Request(endpoint.name, endpoint.path, dict(endpoint.params), None)
         return
@@ -180,103 +290,24 @@ def requests_for(endpoint: MlbEndpoint, ctx: Context) -> Iterator[Request]:
             raise ValueError(
                 f"{endpoint.name} needs ctx.{'updated_since' if endpoint.scope == 'since' else 'query'}"
             )
-        values = {"value": value}
         safe = "".join(c if c.isalnum() else "-" for c in value)
         yield Request(
             f"{endpoint.name}_{safe}",
             endpoint.path,
-            {k: _fill(str(v), values) for k, v in endpoint.params.items()},
+            {k: _fill(str(v), {"value": value}) for k, v in endpoint.params.items()},
             None,
         )
         return
     if ctx.season is None and endpoint.scope not in ("game",):
         raise ValueError(f"{endpoint.name} is season-scoped; ctx.season is required")
-    if endpoint.scope == "season":
-        for sport in ctx.sport_ids:
-            values = {
-                **base,
-                "sport_id": sport,
-                "leader_categories": ",".join(ctx.leader_categories),
-                "sit_codes": ",".join(ctx.sit_codes),
-            }
-            ident = f"{endpoint.name}_{ctx.season}" + (
-                f"_sport{sport}" if "{sport_id}" in _all(endpoint) else ""
-            )
-            yield Request(
-                ident,
-                _fill(endpoint.path, values),
-                {k: _fill(str(v), values) for k, v in endpoint.params.items()},
-                ctx.season,
-                {"sport_id": sport} if "{sport_id}" in _all(endpoint) else {},
-            )
-            if "{sport_id}" not in _all(endpoint):
-                return
-    elif endpoint.scope == "teams_season":
-        values = {**base, "team_ids": ",".join(str(t) for t in ctx.team_ids)}
-        yield Request(
-            f"{endpoint.name}_{ctx.season}",
-            _fill(endpoint.path, values),
-            {k: _fill(str(v), values) for k, v in endpoint.params.items()},
-            ctx.season,
-        )
-    elif endpoint.scope == "team_season":
-        for team in ctx.team_ids:
-            values = {**base, "team_id": team}
-            yield Request(
-                f"{endpoint.name}_{ctx.season}_{team}",
-                _fill(endpoint.path, values),
-                {k: _fill(str(v), values) for k, v in endpoint.params.items()},
-                ctx.season,
-                {"team_id": team},
-            )
-    elif endpoint.scope == "game":
-        for pk in ctx.game_pks:
-            values = {**base, "game_pk": pk}
-            yield Request(
-                f"{endpoint.name}_{pk}",
-                _fill(endpoint.path, values),
-                {k: _fill(str(v), values) for k, v in endpoint.params.items()},
-                ctx.season,
-                {"game_pk": pk},
-            )
-    elif endpoint.scope == "person_season":
-        dims: dict[str, Sequence[str | int]] = {
-            "metric": ctx.metrics,
-            "opposing_team_id": ctx.opposing_team_ids,
-            "opposing_player_id": ctx.opposing_player_ids,
-        }
-        combos: list[dict[str, str | int]] = [{}]
-        for dim in endpoint.fan_out:
-            skip = {v for (name, d, v) in PROVIDER_ERRORS if name == endpoint.name and d == dim}
-            combos = [{**c, dim: v} for c in combos for v in dims[dim] if str(v) not in skip]
-        for person in ctx.person_ids:
-            for combo in combos:
-                values = {
-                    **base,
-                    "person_id": person,
-                    "sit_codes": ",".join(ctx.sit_codes),
-                    **combo,
-                }
-                tail = "".join(f"_{v}" for v in combo.values())
-                yield Request(
-                    f"{endpoint.name}_{ctx.season}_{person}{tail}",
-                    _fill(endpoint.path, values),
-                    {k: _fill(str(v), values) for k, v in endpoint.params.items()},
-                    ctx.season,
-                    {"person_id": person, **combo},
-                )
-    elif endpoint.scope == "award_season":
-        for award in ctx.award_ids:
-            values = {**base, "award_id": award}
-            yield Request(
-                f"{endpoint.name}_{ctx.season}_{award}",
-                _fill(endpoint.path, values),
-                {k: _fill(str(v), values) for k, v in endpoint.params.items()},
-                ctx.season,
-                {"request_award_id": award},
-            )
-    else:
+    build = _SCOPE_REQUESTS.get(endpoint.scope)
+    if build is None:
         raise ValueError(f"unknown scope {endpoint.scope!r} for {endpoint.name}")
+    base: dict[str, str | int] = {}
+    if ctx.season is not None:
+        base["season"] = ctx.season
+        base["year"] = ctx.season
+    yield from build(endpoint, ctx, base)
 
 
 def _all(endpoint: MlbEndpoint) -> str:

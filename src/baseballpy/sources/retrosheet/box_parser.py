@@ -207,60 +207,95 @@ def decode_box(data: bytes) -> str:
 @collect_bad_values("retrosheet", "box_games")
 def parse_box_text(text: str, source_file: str = "") -> BoxTables:
     """Parse one box-account file's text into the four tables (strict field counts)."""
+    games, starters, batting, records = _scan(text)
+    return BoxTables(
+        games=_games_table(games, source_file),
+        starters=_table(starters, BOX_STARTERS_SCHEMA, "box_starters"),
+        batting=_table(batting, BOX_BATTING_SCHEMA, "box_batting_lines"),
+        records=_table(records, BOX_RECORDS_SCHEMA, "box_records"),
+    )
+
+
+_Rows = list[list[Any]]
+
+
+def _scan(text: str) -> tuple[list[_Game], _Rows, _Rows, _Rows]:
+    """Read every line into games, starters, batting lines and generic records."""
     games: list[_Game] = []
-    starters: list[list[Any]] = []
-    batting: list[list[Any]] = []
-    records: list[list[Any]] = []
+    starters: _Rows = []
+    batting: _Rows = []
+    records: _Rows = []
     current: _Game | None = None
     for number, line in enumerate(text.splitlines(), start=1):
         if not line.strip():
             continue
         parts = _fields(line)
-        kind = parts[0]
-        if kind == "id":
+        if parts[0] == "id":
             if len(parts) != 2:
                 raise BoxParseError(f"line {number}: id record has {len(parts)} fields")
             current = _Game(parts[1])
             games.append(current)
             continue
         if current is None:
-            raise BoxParseError(f"line {number}: {kind!r} record before any id record")
-        if kind == "version":
-            current.version = _ints([parts[1]], number, "version")[0]
-        elif kind == "info":
-            if len(parts) != 3:
-                raise BoxParseError(f"line {number}: info record has {len(parts)} fields")
-            if parts[1] not in current.info:
-                current.info[parts[1]] = parts[2]
-            else:
-                records.append([current.game_id, number, "info", parts[1:], line])
-        elif kind == "start":
-            if len(parts) != 6:
-                raise BoxParseError(f"line {number}: start record has {len(parts)} fields")
-            starters.append(
-                [current.game_id, parts[1], parts[2], *_ints(parts[3:], number, "start")]
-            )
-        elif kind == "stat" and len(parts) > 1 and parts[1] == "bline":
-            if len(parts) != 23:
-                raise BoxParseError(f"line {number}: bline record has {len(parts)} fields")
-            batting.append([current.game_id, parts[2], *_ints(parts[3:], number, "bline")])
+            raise BoxParseError(f"line {number}: {parts[0]!r} record before any id record")
+        _read_record(current, parts, number, line, starters, batting, records)
+    return games, starters, batting, records
+
+
+def _read_record(
+    current: _Game,
+    parts: list[str],
+    number: int,
+    line: str,
+    starters: _Rows,
+    batting: _Rows,
+    records: _Rows,
+) -> None:
+    """Route one non-``id`` line of the game ``current`` to its table."""
+    kind = parts[0]
+    if kind == "version":
+        current.version = _ints([parts[1]], number, "version")[0]
+    elif kind == "info":
+        if len(parts) != 3:
+            raise BoxParseError(f"line {number}: info record has {len(parts)} fields")
+        if parts[1] not in current.info:
+            current.info[parts[1]] = parts[2]
         else:
-            typed = kind in ("stat", "event") and len(parts) > 1
-            label = f"{kind},{parts[1]}" if typed else kind
-            records.append(
-                [current.game_id, number, label, parts[2:] if typed else parts[1:], line]
-            )
+            records.append([current.game_id, number, "info", parts[1:], line])
+    elif kind == "start":
+        if len(parts) != 6:
+            raise BoxParseError(f"line {number}: start record has {len(parts)} fields")
+        starters.append([current.game_id, parts[1], parts[2], *_ints(parts[3:], number, "start")])
+    elif kind == "stat" and len(parts) > 1 and parts[1] == "bline":
+        if len(parts) != 23:
+            raise BoxParseError(f"line {number}: bline record has {len(parts)} fields")
+        batting.append([current.game_id, parts[2], *_ints(parts[3:], number, "bline")])
+    else:
+        typed = kind in ("stat", "event") and len(parts) > 1
+        label = f"{kind},{parts[1]}" if typed else kind
+        records.append([current.game_id, number, label, parts[2:] if typed else parts[1:], line])
 
-    def column(rows: list[list[Any]], index: int, schema: pa.Schema, dataset: str) -> pa.Array:
-        field_ = schema.field(index)
-        return safe_array(
-            [r[index] for r in rows],
-            field_.type,
-            source="retrosheet",
-            dataset=dataset,
-            column=field_.name,
-        )
 
+def _column(rows: _Rows, index: int, schema: pa.Schema, dataset: str) -> pa.Array:
+    """Column ``index`` of ``rows`` cast to the schema's type (bad cells are quarantined)."""
+    field_ = schema.field(index)
+    return safe_array(
+        [r[index] for r in rows],
+        field_.type,
+        source="retrosheet",
+        dataset=dataset,
+        column=field_.name,
+    )
+
+
+def _table(rows: _Rows, schema: pa.Schema, dataset: str) -> pa.Table:
+    return pa.Table.from_arrays(
+        [_column(rows, i, schema, dataset) for i in range(len(schema))], schema=schema
+    )
+
+
+def _games_table(games: list[_Game], source_file: str) -> pa.Table:
+    """One row per game: the typed ``info`` columns, the rest of the info as ``_extras``."""
     known = {k for k, _ in INFO_COLUMNS}
     game_rows: list[dict[str, Any]] = []
     for g in games:
@@ -278,27 +313,9 @@ def parse_box_text(text: str, source_file: str = "") -> BoxTables:
     for f in BOX_GAMES_SCHEMA:
         values = [r[f.name] for r in game_rows]
         if pa.types.is_date32(f.type):
-            dates = [_as_date(v) for v in values]
-            game_arrays.append(pa.array(dates, pa.date32()))
+            game_arrays.append(pa.array([_as_date(v) for v in values], pa.date32()))
         else:
             game_arrays.append(
                 safe_array(values, f.type, source="retrosheet", dataset="box_games", column=f.name)
             )
-    return BoxTables(
-        games=pa.Table.from_arrays(game_arrays, schema=BOX_GAMES_SCHEMA),
-        starters=pa.Table.from_arrays(
-            [column(starters, i, BOX_STARTERS_SCHEMA, "box_starters") for i in range(6)],
-            schema=BOX_STARTERS_SCHEMA,
-        ),
-        batting=pa.Table.from_arrays(
-            [
-                column(batting, i, BOX_BATTING_SCHEMA, "box_batting_lines")
-                for i in range(len(BOX_BATTING_SCHEMA))
-            ],
-            schema=BOX_BATTING_SCHEMA,
-        ),
-        records=pa.Table.from_arrays(
-            [column(records, i, BOX_RECORDS_SCHEMA, "box_records") for i in range(5)],
-            schema=BOX_RECORDS_SCHEMA,
-        ),
-    )
+    return pa.Table.from_arrays(game_arrays, schema=BOX_GAMES_SCHEMA)
