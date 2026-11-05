@@ -64,51 +64,10 @@ def run_jobs(
     audit_logger = audit if audit is not None else default_audit_logger
 
     def _run_single(job: Job, blocked_by: str | None = None) -> JobResult:
-        start = time.perf_counter()
-        try:
-            with audit_logger.track(
-                operation="ingest_job",
-                source=job.source,
-                endpoint=job.job_id,
-            ) as tracker:
-                if blocked_by is not None:
-                    # its input would be missing or stale: fail visibly instead of storing nothing
-                    msg = f"not run: prerequisite job {blocked_by} did not finish"
-                    tracker.error = msg
-                    return JobResult(job=job, status=JobStatus.FAILED, detail=msg, error=msg)
-                adapter = adapters.get(job.source)
-                if adapter is None:
-                    duration = time.perf_counter() - start
-                    msg = f"no adapter for source {job.source}"
-                    tracker.error = msg
-                    return JobResult(
-                        job=job,
-                        status=JobStatus.FAILED,
-                        seconds=round(duration, 4),
-                        detail=msg,
-                        error=msg,
-                    )
-                result = adapter.run(job, refresh=refresh)
-                duration = time.perf_counter() - start
-                if result.seconds == 0.0:
-                    result.seconds = round(duration, 4)
-                if result.rows is not None:
-                    tracker.set_records(result.rows)
-                if result.cache_hit:
-                    tracker.set_cache_hit(True)
-                return result
-        except Exception as exc:
-            duration = time.perf_counter() - start
-            logger.exception("Job %s failed: %s", job.job_id, exc)
-            if not continue_on_error:
-                raise
-            return JobResult(
-                job=job,
-                status=JobStatus.FAILED,
-                seconds=round(duration, 4),
-                detail=str(exc),
-                error=f"{type(exc).__name__}: {exc}",
-            )
+        return _run_one(
+            job, blocked_by, adapters, audit_logger,
+            refresh=refresh, continue_on_error=continue_on_error,
+        )  # fmt: skip
 
     results: list[JobResult | None] = [None] * len(jobs)
     deps = _dependencies(jobs)
@@ -127,6 +86,55 @@ def run_jobs(
             if results[k] is None:
                 results[k] = JobResult(job=job, status=JobStatus.CANCELLED, detail="cancelled")
     return RunReport(results=[r for r in results if r is not None])
+
+
+def _run_one(
+    job: Job,
+    blocked_by: str | None,
+    adapters: Mapping[str, IngestAdapter],
+    audit_logger: AuditLogger,
+    *,
+    refresh: bool,
+    continue_on_error: bool,
+) -> JobResult:
+    """Run one job under an audit record; a failure becomes a FAILED result unless told to raise."""
+    start = time.perf_counter()
+    try:
+        with audit_logger.track(
+            operation="ingest_job", source=job.source, endpoint=job.job_id
+        ) as tracker:
+            if blocked_by is not None:
+                # its input would be missing or stale: fail visibly instead of storing nothing
+                msg = f"not run: prerequisite job {blocked_by} did not finish"
+                tracker.error = msg
+                return JobResult(job=job, status=JobStatus.FAILED, detail=msg, error=msg)
+            adapter = adapters.get(job.source)
+            if adapter is None:
+                msg = f"no adapter for source {job.source}"
+                tracker.error = msg
+                seconds = round(time.perf_counter() - start, 4)
+                return JobResult(
+                    job=job, status=JobStatus.FAILED, seconds=seconds, detail=msg, error=msg
+                )
+            result = adapter.run(job, refresh=refresh)
+            if result.seconds == 0.0:
+                result.seconds = round(time.perf_counter() - start, 4)
+            if result.rows is not None:
+                tracker.set_records(result.rows)
+            if result.cache_hit:
+                tracker.set_cache_hit(True)
+            return result
+    except Exception as exc:
+        logger.exception("Job %s failed: %s", job.job_id, exc)
+        if not continue_on_error:
+            raise
+        return JobResult(
+            job=job,
+            status=JobStatus.FAILED,
+            seconds=round(time.perf_counter() - start, 4),
+            detail=str(exc),
+            error=f"{type(exc).__name__}: {exc}",
+        )
 
 
 def _dependencies(jobs: Sequence[Job]) -> list[list[int]]:

@@ -38,46 +38,42 @@ def parse_seasons(
             raise ValueError("cannot resolve 'all' seasons without an all_seasons callback")
         resolved = all_seasons()
         for y in resolved:
-            if not isinstance(y, int) or y < MIN_SEASON or y > MAX_SEASON:
-                raise ValueError(f"season {y} outside valid range {MIN_SEASON}..{MAX_SEASON}")
+            _check_range(y)
         return tuple(sorted(set(resolved)))
 
-    parts = [p.strip() for p in cleaned.split(",")]
     seasons: set[int] = set()
-
-    for part in parts:
+    for part in (p.strip() for p in cleaned.split(",")):
         if not part:
             raise ValueError(f"invalid empty season entry in {text!r}")
-        if "-" in part:
-            dash_parts = part.split("-")
-            if len(dash_parts) != 2:
-                raise ValueError(f"invalid season range {part!r}")
-            start_str, end_str = dash_parts[0].strip(), dash_parts[1].strip()
-            if not start_str or not end_str:
-                raise ValueError(f"invalid season range {part!r}")
-            try:
-                start = int(start_str)
-                end = int(end_str)
-            except ValueError:
-                raise ValueError(f"non-numeric season in range {part!r}") from None
-            if start > end:
-                raise ValueError(f"reversed season range {start}-{end}; expected start <= end")
-            if start < MIN_SEASON or start > MAX_SEASON:
-                raise ValueError(f"season {start} outside valid range {MIN_SEASON}..{MAX_SEASON}")
-            if end < MIN_SEASON or end > MAX_SEASON:
-                raise ValueError(f"season {end} outside valid range {MIN_SEASON}..{MAX_SEASON}")
-            for year in range(start, end + 1):
-                seasons.add(year)
-        else:
-            try:
-                year = int(part)
-            except ValueError:
-                raise ValueError(f"non-numeric season {part!r}") from None
-            if year < MIN_SEASON or year > MAX_SEASON:
-                raise ValueError(f"season {year} outside valid range {MIN_SEASON}..{MAX_SEASON}")
-            seasons.add(year)
-
+        seasons.update(_expand(part))
     return tuple(sorted(seasons))
+
+
+def _check_range(year: object) -> int:
+    """``year`` when it is an int inside the valid range, else a ``ValueError``."""
+    if not isinstance(year, int) or year < MIN_SEASON or year > MAX_SEASON:
+        raise ValueError(f"season {year} outside valid range {MIN_SEASON}..{MAX_SEASON}")
+    return year
+
+
+def _expand(part: str) -> range:
+    """The years of one entry: a single year (``2023``) or an inclusive range (``2015-2017``)."""
+    if "-" not in part:
+        try:
+            year = int(part)
+        except ValueError:
+            raise ValueError(f"non-numeric season {part!r}") from None
+        return range(_check_range(year), year + 1)
+    pieces = [piece.strip() for piece in part.split("-")]
+    if len(pieces) != 2 or not all(pieces):
+        raise ValueError(f"invalid season range {part!r}")
+    try:
+        start, end = int(pieces[0]), int(pieces[1])
+    except ValueError:
+        raise ValueError(f"non-numeric season in range {part!r}") from None
+    if start > end:
+        raise ValueError(f"reversed season range {start}-{end}; expected start <= end")
+    return range(_check_range(start), _check_range(end) + 1)
 
 
 __all__ = ["parse_seasons"]

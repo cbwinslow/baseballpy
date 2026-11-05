@@ -434,3 +434,13 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-249 | season-calendar 1.1-1.3: seasons exist once their first day arrives, calendar-based `all_seasons`, January tests, ADR 66 | DONE | `tests/test_season_calendar.py` passes |
 | B-250 | audit-speed-check 1.1-1.4: `http_request` audit events, `audit speed` command, tests, ADR 67 | DONE | `tests/test_audit_speed.py` passes |
 | B-251 | lahman-folder-case 1.1-1.3: any spelling resolves to one folder, migrate uses registry names, case-sensitive test run (fix for the Linux CI failures) | DONE | full suite passes in a case-sensitive folder |
+
+## AA. Code tightening (`code-tightening`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-252 | code-tightening 1.1: `parse_seasons` and `run_jobs` split into helpers | DONE | gates green, complexity count 7 to 5 |
+| B-253 | `code-tightening 1.2`: `ingest_cmd` and `migrate.retrosheet` split into helpers | TODO | complexity under 15, outputs unchanged, gates green |
+| B-254 | `code-tightening 1.3`: `requests_for` and `parse_box_text` split into helpers | TODO | complexity under 15, outputs unchanged, gates green |
+| B-255 | `code-tightening 1.4`: `StatcastAdapter.run` split into one method per task | TODO | complexity under 15, outputs unchanged, gates green |
+| B-256 | `code-tightening 1.5`: spec, ADR 68, gates, archive | TODO | change archived |
