@@ -148,26 +148,37 @@ def _fields(line: str) -> list[str]:
 
 
 def _info_value(kind: str, value: str) -> Any:
-    if value in _SENTINELS:
+    """A typed ``info`` value; one that does not fit its kind is quarantined and stored as NULL."""
+    if value.strip() in _SENTINELS:
         return None
     if kind == "bool":
-        if value not in ("true", "false"):
-            raise BoxParseError(f"boolean info value {value!r}")
-        return value == "true"
+        lowered = value.strip().lower()
+        if lowered not in ("true", "false"):
+            record_bad_value("bool", value, f"boolean info value {value!r}")
+            return None
+        return lowered == "true"
     if kind.startswith("int"):
         try:
             return int(value)
         except ValueError as exc:
-            raise BoxParseError(f"integer info value {value!r} for kind {kind!r}") from exc
+            record_bad_value(kind, value, exc)
+            return None
     return value
 
 
-def _ints(values: list[str], number: int, what: str) -> list[int]:
-    """The integers in ``values``; a non-integer raises :class:`BoxParseError` naming the line."""
-    try:
-        return [int(v) for v in values]
-    except ValueError as exc:
-        raise BoxParseError(f"line {number}: {what} record has an invalid integer: {exc}") from exc
+def _ints(values: list[str], number: int, what: str) -> list[Any]:
+    """The integers in ``values``; a non-integer is kept as text so the column build quarantines it.
+
+    Old box accounts hold stray cells such as ``2i``, ``NA`` or an empty field in numeric
+    positions; they become NULL in the table and a quarantine entry, never a failed season.
+    """
+    out: list[Any] = []
+    for v in values:
+        try:
+            out.append(int(v))
+        except ValueError:
+            out.append(v)
+    return out
 
 
 def _as_date(value: Any) -> date | None:

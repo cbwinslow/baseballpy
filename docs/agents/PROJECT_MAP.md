@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `mlb-api-ingestion` | 27 | 39 | 41 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 7 | 12 | 12 |
-| `retrosheet-ingestion` | 20 | 24 | 25 |
+| `retrosheet-ingestion` | 20 | 25 | 26 |
 | `statcast-ingestion` | 15 | 18 | 24 |
 
 ## Source review scorecard (where each source stands)
@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-58 changes are archived under `openspec/changes/archive/`.
+59 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -115,6 +115,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 61: Retrosheet Parses in Parallel Through One Shared Process Pool, 32 Workers at Most
 - ADR 62: The Default Data Folder Is `.baseballpy` in the Project Folder
 - ADR 63: Short Part Names and `_manifest.json`
+- ADR 64: Bad Cells in Box Accounts Become NULL and Quarantine, Not a Failed Season
 
 ## Documentation pages (`docs/`)
 

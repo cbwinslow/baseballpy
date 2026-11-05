@@ -705,3 +705,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** the part name is the chunk id minus the `<dataset>_` prefix and the season token (`part-data` when empty), decided in one function (`part_filename`); two chunks that would share a name are refused; the manifest is `_manifest.json` (pyarrow skips underscore files) and an old `manifest.json` is renamed on first use.
 - **Consequences:** shorter, readable trees and working whole-folder reads; manifests keep the full chunk id as key; lakes written with the old names must be re-ingested.
 - **Alternatives rejected:** renaming chunk ids in every source; leaving `manifest.json` and telling users to filter.
+
+## ADR 64: Bad Cells in Box Accounts Become NULL and Quarantine, Not a Failed Season
+- **Status:** Accepted (found by the first all-history Retrosheet run, 2026-11-05; change `tolerant-box-cells`).
+- **Context:** 22 of 157 seasons failed because the strict box-account parser raised on stray cells (`2i`, `NA`, blanks, `FALSE`) in numeric or flag positions, losing every row of those seasons.
+- **Decision:** cells that do not fit their type are stored as NULL and written to quarantine with their value; `true`/`false` match in any case; blank values are no value; a wrong field count or a record before any id still raises.
+- **Consequences:** all seasons load; unreadable cells are visible in `quarantine/`; the raw bytes remain in `raw/`.
+- **Alternatives rejected:** skipping lines; failing seasons; rewriting values by guessing (`2i` to `2`).

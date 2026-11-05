@@ -91,7 +91,6 @@ def test_unknown_record_kind_is_preserved_not_dropped() -> None:
         ('id,A\nstart,x,"N",0,1\n', "start record has"),
         ("id,A\ninfo,site\n", "info record has"),
         ("id\n", "id record has"),
-        ("id,A\ninfo,usedh,maybe\n", "boolean info value"),
     ],
 )
 def test_unexpected_layouts_raise_instead_of_guessing(text: str, message: str) -> None:
@@ -200,20 +199,26 @@ def test_unpadded_dates_parse_and_bad_dates_are_quarantined(
         get_quarantine.reset()
 
 
-def test_non_integer_numbers_raise_box_parse_error() -> None:
-    bad_version = "id,BOS195004010\nversion,x\n"
-    with pytest.raises(BoxParseError):
-        parse_box_text(bad_version)
-
-    bad_start = 'id,BOS195004010\nversion,3\nstart,sprig001,"George Springer",0,x,9\n'
-    with pytest.raises(BoxParseError):
-        parse_box_text(bad_start)
-
-    bad_bline = (
-        "id,BOS195004010\nversion,3\nstat,bline,sprig001,0,9,1,4,1,1,0,0,0,0,0,0,0,0,0,x,0,0,0,0\n"
+def test_bad_numbers_and_flags_become_null_and_never_fail_the_season() -> None:
+    """Old box accounts hold cells such as ``2i``, ``NA`` or blanks (seasons 1904-1947 failed on them)."""
+    text = (
+        "id,BOS195004010\nversion,3\ninfo,usedh,FALSE\ninfo,innings, \n"
+        'start,sprig001,"George Springer",0,x,9\n'
+        "stat,bline,sprig001,0,9,1,4,1,1,0,0,0,0,0,0,0,0,0,2i,0,0,0,0\n"
     )
-    with pytest.raises(BoxParseError):
-        parse_box_text(bad_bline)
+    tables = parse_box_text(text)
+    assert tables.games.column("usedh").to_pylist() == [False]  # FALSE is a valid flag
+    assert tables.games.column("innings").to_pylist() == [None]  # a blank is no value
+    assert tables.starters.num_rows == 1
+    assert tables.starters.column("batting_order").to_pylist() == [None]  # bad cell, row kept
+    assert tables.batting.num_rows == 1
+    assert "2i" not in str(tables.batting.to_pylist())
+
+
+def test_a_maybe_flag_and_a_bad_version_are_null_not_errors() -> None:
+    games = parse_box_text("id,A\nversion,x\ninfo,usedh,maybe\n").games
+    assert games.column("usedh").to_pylist() == [None]
+    assert games.column("version").to_pylist() == [None]
 
 
 def test_two_way_player_listed_twice_in_a_lineup_has_unique_starter_keys() -> None:

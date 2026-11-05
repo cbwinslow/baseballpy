@@ -65,3 +65,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-03 (later): `retrosheet-parallel-parse` (B-240..B-244) closed and archived (ADR 61): Retrosheet parses on up to 32 worker processes through one shared pool; a season 236.5 s -> 35.6 s, five seasons 98 s, identical tables.
 - 2026-11-04: `project-local-data-folder` (B-245) closed and archived (ADR 62): default data folder is `.baseballpy` in the project folder; backfill ranges decided (Lahman/Chadwick/Retrosheet all history, Statcast/MLB API 2008 to now).
 - 2026-11-04 (later): `readable-lake-names` (B-246) closed and archived (ADR 63): short part names, `_manifest.json`, every reader checked.
+- 2026-11-05: `tolerant-box-cells` (B-247) closed and archived (ADR 64): first all-history Retrosheet run failed 22 seasons on bad cells; fixed and re-run.

@@ -156,6 +156,12 @@ Every `.EB*` file MUST be parsed: `id`/`version`/`info` into `box_games` (typed,
 - **THEN** every line is accounted for, unknown record kinds and repeated keys are preserved with their raw line, and an unexpected field count raises
 - Verified by `tests/test_retrosheet_box.py::test_every_line_of_real_games_is_accounted_for, ::test_unknown_record_kind_is_preserved_not_dropped, ::test_unexpected_layouts_raise_instead_of_guessing and ::test_repeated_info_keys_are_kept`.
 
+#### Scenario: A bad cell becomes NULL and is quarantined, never a failed season
+- **GIVEN** an old box account with a stray cell such as `2i`, `NA`, a blank number or an upper-case `FALSE`
+- **THEN** the row is kept, the unreadable cell is NULL and quarantined, `FALSE` is read as false, and the season completes
+- **AND** a wrong field count still raises.
+- Verified by `tests/test_retrosheet_box.py::test_bad_numbers_and_flags_become_null_and_never_fail_the_season and ::test_a_maybe_flag_and_a_bad_version_are_null_not_errors`.
+
 ### Requirement: Missing Event Text Is NULL
 A text field that cwevent reports as empty MUST be stored as NULL, like every other Retrosheet dataset, so that a CSV round trip of `events`, `events_postseason` and `events_deduced` is exact.
 
