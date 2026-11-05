@@ -113,6 +113,11 @@ Manifests MUST be safe under concurrent writers and MUST NOT silently discard co
 - **THEN** both chunks are present after both save.
 - Verified by `tests/test_hardening.py::test_manifest_concurrent_writers_do_not_lose_chunks`.
 
+#### Scenario: A big manifest with many busy writers
+- **GIVEN** a manifest of 3,000 entries and 30 threads each completing eight more chunks
+- **THEN** no save times out on the lock and every chunk is present afterwards (saves use the fast JSON encoder, one field per line, no indent).
+- Verified by `tests/test_hardening.py::test_a_big_manifest_with_many_busy_writers_never_times_out`.
+
 #### Scenario: Corrupt manifest
 - **WHEN** `_manifest.json` is invalid JSON
 - **THEN** it is preserved as `_manifest.json.corrupt-<ts>` and an error is logged.

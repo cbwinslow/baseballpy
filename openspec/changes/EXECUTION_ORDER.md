@@ -70,3 +70,5 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-05: `season-calendar` (B-249) closed and archived (ADR 66): the MLB calendar decides which seasons exist; January and February are safe.
 - 2026-11-05: `audit-speed-check` (B-250) closed and archived (ADR 67): real requests are audited, `audit speed` checks the log against the caps.
 - 2026-11-05: `lahman-folder-case` (B-251) closed and archived: fix for the Linux CI failures of the underscore-names commits.
+- 2026-11-05: `mlb-backfill-fixes` (B-257, B-258) closed and archived (ADR 67 amendment): fast manifest saves, request duration inside the slot; MLB 2008-2012 complete.
+
