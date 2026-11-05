@@ -67,3 +67,10 @@ site/
 
 # Local data folder (the lake: raw, processed, databases, logs)
 .baseballpy/
+
+# secrets: never commit (API tokens, keys)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
