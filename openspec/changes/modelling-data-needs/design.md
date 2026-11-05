@@ -47,3 +47,10 @@ A model may only use facts that were known before the game started. Final box sc
 
 ## Not in scope
 Placing orders. Totals, props and season markets (later; same data plus run-scoring pieces). Legal and tax questions (the owner checks those).
+
+## Findings: how far back market prices go (probed 2026-11-05, public endpoints, no login)
+
+- **Kalshi** (`api.elections.kalshi.com/trade-api/v2`): game-winner series `KXMLBGAME`. `/historical/markets` lists 8,702 settled game markets; the oldest opened 2025-04-16 (`KXMLBGAME-25APR16AZMIA-MIA`). So about two seasons at most (2025 and 2026), one market per team per game. `/historical/markets/{ticker}/candlesticks?start_ts&end_ts&period_interval=60` gave hourly bid, ask, last price, volume and open interest for a one-day window. A very wide window returned HTTP 400, so ask one game at a time. Early-day volume is small (about 20 contracts), game-time volume is hundreds. Live and archived markets are split at `/historical/cutoff` (2026-09-06 for settled markets), so a downloader must read both.
+- **Polymarket** (`gamma-api.polymarket.com` for events, `clob.polymarket.com/prices-history` for prices): the oldest closed MLB-tagged event found is 2024-09-26. `prices-history` with `interval=max` returned nothing for a closed market; with explicit `startTs`/`endTs` and `fidelity=60` it returned points (11 for a thin market). Tag coverage before Sept 2024 not checked.
+- **Meaning:** market comparison is possible for about two seasons (Kalshi) and a little over two (Polymarket). Models train on the many older seasons; the market test is a short window. Thin early-day volume means only prices near first pitch should be trusted.
+- **Not yet checked:** pregame lineups and probable pitchers in MLB's time-stamped game feed for old games.
