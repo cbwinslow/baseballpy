@@ -235,6 +235,13 @@ class _Planner:
 
     # -- retrosheet -------------------------------------------------------------------
     def retrosheet(self) -> None:
+        self._retrosheet_raw()
+        proc = self.root / "retrosheet" / "processed"
+        proc_manifest = proc / "manifest.json"
+        self._retrosheet_season_tables(proc, proc_manifest)
+        self._retrosheet_logs_and_reference(proc, proc_manifest)
+
+    def _retrosheet_raw(self) -> None:
         raw = self.root / "retrosheet" / "raw"
         raw_manifest = raw / "manifest.json"
         for child in sorted(raw.iterdir()) if raw.is_dir() else []:
@@ -273,8 +280,7 @@ class _Planner:
                 ),
             )
 
-        proc = self.root / "retrosheet" / "processed"
-        proc_manifest = proc / "manifest.json"
+    def _retrosheet_season_tables(self, proc: Path, proc_manifest: Path) -> None:
         simple: dict[str, tuple[str, Callable[[int], str]]] = {
             "boxscores_batting": ("batting", lambda y: f"box_batting_{y}"),
             "boxscores_pitching": ("pitching", lambda y: f"box_pitching_{y}"),
@@ -339,6 +345,8 @@ class _Planner:
                         manifest_key("events", season),
                     ),
                 )
+
+    def _retrosheet_logs_and_reference(self, proc: Path, proc_manifest: Path) -> None:
         gl_dir = proc / "gamelogs"
         for f in _files(gl_dir, "gl*.parquet"):
             match = _YEAR_FILE.search(f.stem)

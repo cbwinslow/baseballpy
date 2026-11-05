@@ -6,7 +6,7 @@ import logging
 import os
 import shutil
 import sys
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -19,7 +19,7 @@ from rich.table import Table
 from baseballpy.core.concurrency import resolve_concurrency
 from baseballpy.core.config import LakeConfig, get_config
 from baseballpy.core.datasets import DATASETS
-from baseballpy.ingest.adapters import ADAPTERS, get_adapters
+from baseballpy.ingest.adapters import ADAPTERS, IngestAdapter, get_adapters
 from baseballpy.ingest.runner import plan_jobs, run_jobs
 from baseballpy.ingest.selection import parse_seasons
 from baseballpy.ingest.types import Job, JobStatus, RunReport, Selection
@@ -321,27 +321,9 @@ def ingest_cmd(
     except (ValueError, KeyError) as exc:
         raise click.BadParameter(str(exc)) from exc
 
-    by_source = split_datasets(datasets, tuple(adapters))
-
-    planned_jobs: list[Job] = []
-    try:
-        for source in sorted(adapters.keys()):
-            adapter = adapters[source]
-            if seasons is not None:
-                parsed_seasons = parse_seasons(seasons, all_seasons=adapter.all_seasons)
-            else:
-                parsed_seasons = ()
-            sel = Selection(
-                seasons=parsed_seasons,
-                sources=(source,),
-                datasets=by_source.get(source, ()),
-                refresh=refresh,
-                limit=limit,
-            )
-            jobs = plan_jobs({source: adapter}, sel)
-            planned_jobs.extend(jobs)
-    except ValueError as exc:
-        raise click.BadParameter(str(exc)) from exc
+    planned_jobs = _plan_all(
+        adapters, seasons, split_datasets(datasets, tuple(adapters)), refresh=refresh, limit=limit
+    )
 
     if not planned_jobs:
         if not as_json:
@@ -349,31 +331,7 @@ def ingest_cmd(
         ctx.exit(0)
 
     if dry_run:
-        if as_json:
-            for job in planned_jobs:
-                click.echo(
-                    json.dumps(
-                        {
-                            "job_id": job.job_id,
-                            "status": JobStatus.PLANNED.value,
-                            "rows": None,
-                            "seconds": 0.0,
-                            "detail": "",
-                            "error": None,
-                        }
-                    )
-                )
-        else:
-            table = Table(title="Planned Ingest Jobs (Dry Run)")
-            table.add_column("Source", style="cyan")
-            table.add_column("Task")
-            table.add_column("Params")
-            table.add_column("Status")
-            for job in planned_jobs:
-                params_str = ", ".join(f"{k}={v}" for k, v in job.params)
-                table.add_row(job.source, job.task, params_str, "[cyan]planned[/cyan]")
-            console.print(table)
-            console.print(f"Planned {len(planned_jobs)} job(s).")
+        _print_dry_run(planned_jobs, as_json=as_json)
         ctx.exit(0)
 
     try:
@@ -381,15 +339,8 @@ def ingest_cmd(
     except ValueError as exc:
         raise click.BadParameter(str(exc)) from exc
 
-    if not as_json and planned_jobs:
-        rate = get_config().rate_limit
-        overrides = ", ".join(f"{h}: {n}" for h, n in sorted(rate.host_concurrency.items()))
-        console.print(
-            f"[dim]Executing {len(planned_jobs)} job(s) with {workers} parallel worker(s); "
-            f"network: up to {rate.max_concurrency} requests in flight per host"
-            f"{f' (except {overrides})' if overrides else ''}, paced by each host's rate "
-            f"limit (BASEBALLPY_RATE_MAX_CONCURRENCY).[/dim]"
-        )
+    if not as_json:
+        _announce_run(len(planned_jobs), workers)
 
     report = run_jobs(
         planned_jobs,
@@ -402,16 +353,7 @@ def ingest_cmd(
     if as_json:
         for res in report.results:
             click.echo(
-                json.dumps(
-                    {
-                        "job_id": res.job.job_id,
-                        "status": res.status.value,
-                        "rows": res.rows,
-                        "seconds": res.seconds,
-                        "detail": res.detail,
-                        "error": res.error,
-                    }
-                )
+                _job_json(res.job.job_id, res.status, res.rows, res.seconds, res.detail, res.error)
             )
     else:
         _render_ingest_table(report)
@@ -421,16 +363,103 @@ def ingest_cmd(
         and report.exit_code == 0
         and any(r.status == JobStatus.COMPLETED for r in report.results)
     ):
-        try:
-            from baseballpy.database import sync_database
-
-            synced = sync_database()
-            if not as_json and synced > 0:
-                console.print(f"[cyan]DuckDB catalog synced:[/cyan] {synced} view(s) active.")
-        except (OSError, RuntimeError, ValueError) as exc:
-            logger.warning("failed to sync DuckDB views: %s", exc)
+        _sync_views(as_json=as_json)
 
     ctx.exit(report.exit_code)
+
+
+def _plan_all(
+    adapters: Mapping[str, IngestAdapter],
+    seasons: str | None,
+    by_source: Mapping[str, tuple[str, ...]],
+    *,
+    refresh: bool,
+    limit: int | None,
+) -> list[Job]:
+    """The planned jobs of every adapter in source order; a bad season selection is a usage error."""
+    planned: list[Job] = []
+    try:
+        for source in sorted(adapters):
+            adapter = adapters[source]
+            parsed = (
+                parse_seasons(seasons, all_seasons=adapter.all_seasons)
+                if seasons is not None
+                else ()
+            )
+            selection = Selection(
+                seasons=parsed,
+                sources=(source,),
+                datasets=by_source.get(source, ()),
+                refresh=refresh,
+                limit=limit,
+            )
+            planned.extend(plan_jobs({source: adapter}, selection))
+    except ValueError as exc:
+        raise click.BadParameter(str(exc)) from exc
+    return planned
+
+
+def _job_json(
+    job_id: str,
+    status: JobStatus,
+    rows: int | None,
+    seconds: float,
+    detail: str | None,
+    error: str | None,
+) -> str:
+    """One newline-delimited JSON record of a job (planned or finished)."""
+    return json.dumps(
+        {
+            "job_id": job_id,
+            "status": status.value,
+            "rows": rows,
+            "seconds": seconds,
+            "detail": detail,
+            "error": error,
+        }
+    )
+
+
+def _print_dry_run(planned_jobs: Sequence[Job], *, as_json: bool) -> None:
+    """Print the plan without running anything."""
+    if as_json:
+        for job in planned_jobs:
+            click.echo(_job_json(job.job_id, JobStatus.PLANNED, None, 0.0, "", None))
+        return
+    table = Table(title="Planned Ingest Jobs (Dry Run)")
+    table.add_column("Source", style="cyan")
+    table.add_column("Task")
+    table.add_column("Params")
+    table.add_column("Status")
+    for job in planned_jobs:
+        params_str = ", ".join(f"{k}={v}" for k, v in job.params)
+        table.add_row(job.source, job.task, params_str, "[cyan]planned[/cyan]")
+    console.print(table)
+    console.print(f"Planned {len(planned_jobs)} job(s).")
+
+
+def _announce_run(job_count: int, workers: int) -> None:
+    """Say how many jobs run, on how many workers, and the network caps they share."""
+    rate = get_config().rate_limit
+    overrides = ", ".join(f"{h}: {n}" for h, n in sorted(rate.host_concurrency.items()))
+    console.print(
+        f"[dim]Executing {job_count} job(s) with {workers} parallel worker(s); "
+        f"network: up to {rate.max_concurrency} requests in flight per host"
+        f"{f' (except {overrides})' if overrides else ''}, paced by each host's rate "
+        f"limit (BASEBALLPY_RATE_MAX_CONCURRENCY).[/dim]"
+    )
+
+
+def _sync_views(*, as_json: bool) -> None:
+    """Refresh the DuckDB views after a successful run; a failure is logged, not fatal."""
+    try:
+        from baseballpy.database import sync_database
+
+        synced = sync_database()
+        if not as_json and synced > 0:
+            console.print(f"[cyan]DuckDB catalog synced:[/cyan] {synced} view(s) active.")
+    except (OSError, RuntimeError, ValueError) as exc:
+        logger.warning("failed to sync DuckDB views: %s", exc)
 
 
 @click.command("status")

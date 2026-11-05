@@ -440,7 +440,7 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-252 | code-tightening 1.1: `parse_seasons` and `run_jobs` split into helpers | DONE | gates green, complexity count 7 to 5 |
-| B-253 | `code-tightening 1.2`: `ingest_cmd` and `migrate.retrosheet` split into helpers | TODO | complexity under 15, outputs unchanged, gates green |
+| B-253 | code-tightening 1.2: `ingest_cmd` and `migrate.retrosheet` split into helpers | DONE | complexity count 5 to 3, gates green |
 | B-254 | `code-tightening 1.3`: `requests_for` and `parse_box_text` split into helpers | TODO | complexity under 15, outputs unchanged, gates green |
 | B-255 | `code-tightening 1.4`: `StatcastAdapter.run` split into one method per task | TODO | complexity under 15, outputs unchanged, gates green |
 | B-256 | `code-tightening 1.5`: spec, ADR 68, gates, archive | TODO | change archived |
