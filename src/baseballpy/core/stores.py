@@ -246,7 +246,10 @@ class ProcessedStore:
                             continue
                         if writer is None:
                             writer = pq.ParquetWriter(
-                                part, spec.schema, compression=PARQUET_COMPRESSION
+                                part,
+                                spec.schema,
+                                compression=PARQUET_COMPRESSION,
+                                store_decimal_as_integer=True,
                             )
                         writer.write_table(
                             batch if batch.schema.equals(spec.schema) else batch.cast(spec.schema)

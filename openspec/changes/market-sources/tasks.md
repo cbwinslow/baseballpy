@@ -1,6 +1,6 @@
 # Tasks
 - [ ] 1.1 owner decisions M1 to M4 (design.md) recorded (M1 done: all MLB markets)
-- [x] 1.2 (Kalshi done, Polymarket open) web research and probes of both APIs written into design.md (fields, paging, limits, history depth)
+- [ ] 1.2 (Kalshi probed, Polymarket open) web research and probes of both APIs written into design.md (fields, paging, limits, history depth)
 - [ ] 1.3 measure the homelab MLB subset (rows, bytes as Parquet) and pick the transfer route
 - [ ] 2.1 Kalshi: catalog (series, events, markets), candles, live snapshots: registry, schemas from probes, adapter, tests
 - [ ] 2.2 Polymarket: catalog (events, markets, outcomes), price history, live snapshots: registry, schemas from probes, adapter, tests

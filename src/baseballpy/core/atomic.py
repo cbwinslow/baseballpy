@@ -98,7 +98,7 @@ def atomic_write_parquet(
     """Atomically write a PyArrow Table to a Parquet file after validating its footer."""
     path = Path(target_path)
     with atomic_write(path) as part_path:
-        pq.write_table(table, part_path, compression=compression)
+        pq.write_table(table, part_path, compression=compression, store_decimal_as_integer=True)
         footer = pq.ParquetFile(part_path).metadata  # raises if the footer is corrupt
         if footer.num_rows != table.num_rows:
             raise ValueError(

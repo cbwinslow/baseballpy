@@ -59,14 +59,26 @@ def split_type_name(name: str) -> tuple[str, str | None]:
     return base, (fmt or None)
 
 
+_DECIMAL = re.compile(r"decimal\((\d{1,2}),(\d{1,2})\)")
+
+
 def pa_type(name: str) -> pa.DataType:
-    """Arrow type for a type name used in generated schema modules (formats are ignored)."""
+    """Arrow type for a type name used in generated schema modules (formats are ignored).
+
+    Besides the names in ``_TYPES``, ``decimal(P,S)`` gives an exact fixed-point type (prices and
+    quantities that arrive as decimal text); Parquet stores it as a 4- or 8-byte integer.
+    """
     base, _ = split_type_name(name)
+    if (match := _DECIMAL.fullmatch(base)) is not None:
+        precision, scale = int(match[1]), int(match[2])
+        if not 1 <= scale <= precision <= 38:
+            raise ValueError(f"bad decimal type {name!r}: need 1 <= scale <= precision <= 38")
+        return pa.decimal128(precision, scale)
     try:
         return _TYPES[base]
     except KeyError:
         raise ValueError(
-            f"unknown column type {name!r}; expected one of {sorted(_TYPES)}"
+            f"unknown column type {name!r}; expected one of {sorted(_TYPES)} or decimal(P,S)"
         ) from None
 
 
@@ -325,6 +337,21 @@ def normalize_csv(
     serialised per row into ``_extras`` (only when the schema declares that column).
     """
     table = read_csv_strings(raw, delimiter=delimiter, header=header)
+    return map_to_schema(table, schema, source=source, dataset=dataset, quarantine=quarantine)
+
+
+def map_to_schema(
+    table: pa.Table,
+    schema: pa.Schema,
+    *,
+    source: str,
+    dataset: str,
+    quarantine: Quarantine | None = None,
+) -> pa.Table:
+    """Map a table of string cells onto ``schema`` (the part of :func:`normalize_csv` after reading).
+
+    Same rules: match by upstream alias or name, cast with quarantine, unknown columns to ``_extras``.
+    """
     wants_extras = EXTRAS in schema.names
     known = [f for f in schema if f.name != EXTRAS]
     by_lower = {name.lower(): name for name in table.column_names}
@@ -374,3 +401,37 @@ def normalize_csv(
         [c if isinstance(c, pa.ChunkedArray) else pa.chunked_array([c]) for c in columns],
         schema=pa.schema(fields),
     )
+
+
+def _cell(value: object) -> str | None:
+    """One JSON value as a string cell: scalars as text, lists and objects as compact JSON."""
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, dict | list):
+        return json.dumps(value, separators=(",", ":"), sort_keys=True)
+    return str(value)
+
+
+def normalize_records(
+    records: Sequence[dict[str, object]],
+    schema: pa.Schema,
+    *,
+    source: str,
+    dataset: str,
+    quarantine: Quarantine | None = None,
+) -> pa.Table:
+    """Map JSON objects onto ``schema`` by key, with the same rules as :func:`normalize_csv`.
+
+    Every value is first turned into a string cell (nested values become JSON text), then cast to
+    the column type, so a bad value is quarantined and a new key lands in ``_extras``, never lost.
+    """
+    names: list[str] = []
+    for record in records:
+        for key in record:
+            if key not in names:
+                names.append(key)
+    columns = [pa.array([_cell(r.get(n)) for r in records], pa.string()) for n in names]
+    table = pa.Table.from_arrays(columns, names=names) if names else pa.table({})
+    return map_to_schema(table, schema, source=source, dataset=dataset, quarantine=quarantine)
