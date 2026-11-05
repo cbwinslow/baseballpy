@@ -446,4 +446,5 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-256 | `code-tightening 1.5`: spec, ADR 68, gates, archive | TODO | change archived |
 | B-257 | mlb-backfill-fixes 1.1-1.2: fast manifest saves, request duration inside the slot, big-manifest test | DONE | `tests/test_hardening.py::test_a_big_manifest_with_many_busy_writers_never_times_out` passes |
 | B-258 | mlb-backfill-fixes 1.3: gates, commit, re-run season 2011 | DONE | 2011 completed (2,637 rows added), re-run peaked at 4 of 4 in flight |
+| B-259 | mlb-stats-route-memory 1.1-1.2: remember a refused `/v1/stats` for an hour, test, spec, ADR 68 | DONE | `tests/test_mlb_coverage.py::test_a_refused_stats_route_is_asked_once_then_retested_after_an_hour` passes |
 

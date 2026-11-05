@@ -178,6 +178,12 @@ When `/v1/stats` answers HTTP 406 for a league-wide player pool whose stat type 
 - **THEN** the pool's rows are stored and the raw hydrate pages are kept
 - Verified by `tests/test_mlb_coverage.py::test_a_refused_league_wide_pool_is_fetched_through_people_hydrate`.
 
+#### Scenario: A refused pool route is remembered
+- **GIVEN** `/v1/stats` answered 406
+- **WHEN** more league-wide pool requests follow within an hour
+- **THEN** they go straight to the people route without asking `/v1/stats`, which is asked again after an hour and used again as soon as it answers 200.
+- Verified by `tests/test_mlb_coverage.py::test_a_refused_stats_route_is_asked_once_then_retested_after_an_hour`.
+
 #### Scenario: Two situation codes in one hydrate expression
 - **WHEN** a pool request carries `sitCodes=vr,vl`
 - **THEN** the hydrate expression carries `sitCodes=[vr,vl]` and both codes are requested

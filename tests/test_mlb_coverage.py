@@ -691,6 +691,40 @@ def test_hydrate_fallback_keeps_every_split_code(
     assert set(table.column("split_code").to_pylist()) == set(codes), "both situation codes kept"
 
 
+@respx.mock
+def test_a_refused_stats_route_is_asked_once_then_retested_after_an_hour(
+    tmp_path: Path,
+) -> None:
+    """The 2008-2012 run sent 3,399 doomed `/v1/stats` requests; now one per hour at most."""
+    from baseballpy.sources.mlb_api.endpoints import Request
+
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    refused = respx.get(f"{MLB_BASE_URL}/v1/stats").mock(return_value=httpx.Response(406))
+    respx.get(f"{MLB_BASE_URL}/v1/sports/1/players").mock(
+        return_value=httpx.Response(200, json={"people": []})
+    )
+    ep = BY_NAME["stats_season_hitting"]
+    request = Request("pool_a", "v1/stats", {"stats": "season", "group": "hitting"}, 2024)
+    url = f"{MLB_BASE_URL}/v1/stats"
+
+    def an_hour_passes() -> None:  # move the remembered refusal back (the real clock stays real)
+        assert extractor._stats_refused_at is not None
+        extractor._stats_refused_at -= generic.STATS_RETEST_SECONDS + 1
+
+    for _ in range(5):
+        extractor._get_pages(ep, request, url)
+    assert refused.call_count == 1, "four of five requests skipped the refused route"
+    an_hour_passes()
+    extractor._get_pages(ep, request, url)
+    assert refused.call_count == 2, "after an hour the route is asked again"
+    refused.mock(return_value=httpx.Response(200, json={"stats": []}))
+    an_hour_passes()
+    extractor._get_pages(ep, request, url)
+    extractor._get_pages(ep, request, url)
+    assert refused.call_count == 4, "once it answers 200 again every request uses it"
+
+
 def test_a_split_pool_written_before_the_list_fix_is_fetched_again(tmp_path: Path) -> None:
     import dataclasses
 

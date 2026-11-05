@@ -10,6 +10,7 @@ import concurrent.futures
 import json
 import logging
 import threading
+import time
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, TypeVar
@@ -63,6 +64,8 @@ MAX_SPLITS = 20_000
 #: seconds a page of an all-time pool may take: deep offsets into a ~190k-row pool exceed the
 #: default 30 s request timeout upstream (a real run of ``stats_single_season_hitting`` timed out)
 HEAVY_PAGE_TIMEOUT = 180.0
+#: a refused ``/v1/stats`` is asked again after this long (never on every request)
+STATS_RETEST_SECONDS = 3600.0
 
 #: smallest page a paginated request falls back to after a 5xx (halving from ``PAGE_SIZE``)
 MIN_PAGE_SIZE = 125
@@ -286,6 +289,8 @@ class MlbEndpointExtractor:
         self._local.missing = 0
         self._pool_lock = threading.Lock()
         self._pool_ids: dict[tuple[str, str], list[int]] = {}
+        #: when ``/v1/stats`` last answered 406 (``None``: it answered, or was never asked)
+        self._stats_refused_at: float | None = None
 
     @property
     def missing(self) -> int:
@@ -430,23 +435,54 @@ class MlbEndpointExtractor:
     ) -> list[tuple[str, HttpResult]]:
         """The response(s) of a request as ``(raw file name, result)``; paginated ones loop."""
         if endpoint.paginated and endpoint.path == "v1/stats":
+            if self._stats_route_refused():
+                return self._pool_fallback(endpoint, request, None)
             try:
-                return self._get_paginated(endpoint, request, url, allow_heavy)
+                pages = self._get_paginated(endpoint, request, url, allow_heavy)
             except HttpStatusError as exc:
                 if exc.status != 406:
                     raise
-                stat_type = str(request.params.get("stats", ""))
-                evidence = NO_PERSON_EQUIVALENT.get(stat_type)
-                if evidence is not None:
-                    raise PoolFallbackUnavailableError(
-                        f"{endpoint.name}: /v1/stats answers HTTP 406 and stat type {stat_type} has "
-                        f"no person-level equivalent ({evidence}); rebuild this pool season by "
-                        "season instead "
-                        "(openspec/changes/archive/2026-10-31-mlb-pool-fallback-completion/design.md "
-                        "D3/D5)"
-                    ) from exc
-                return self._pool_pages_by_hydrate(endpoint, request)
+                self._remember_stats_route(refused=True)
+                return self._pool_fallback(endpoint, request, exc)
+            self._remember_stats_route(refused=False)
+            return pages
         return self._get_paginated(endpoint, request, url, allow_heavy, verify)
+
+    def _stats_route_refused(self) -> bool:
+        """Whether ``/v1/stats`` answered 406 less than ``STATS_RETEST_SECONDS`` ago (no new probe)."""
+        with self._pool_lock:
+            at = self._stats_refused_at
+        return at is not None and time.monotonic() - at < STATS_RETEST_SECONDS
+
+    def _remember_stats_route(self, *, refused: bool) -> None:
+        """Record the last answer of ``/v1/stats`` so a refused route is asked again only hourly."""
+        with self._pool_lock:
+            was_refused = self._stats_refused_at is not None
+            self._stats_refused_at = time.monotonic() if refused else None
+        if refused != was_refused:
+            logger.warning(
+                "mlb_api: /v1/stats %s",
+                f"refused (HTTP 406); using the person route and asking again in "
+                f"{STATS_RETEST_SECONDS / 3600:g} h"
+                if refused
+                else "answers again; league-wide pools use it",
+            )
+
+    def _pool_fallback(
+        self, endpoint: MlbEndpoint, request: Request, cause: HttpStatusError | None
+    ) -> list[tuple[str, HttpResult]]:
+        """A league-wide pool without ``/v1/stats``: by hydrate, or refused with its evidence."""
+        stat_type = str(request.params.get("stats", ""))
+        evidence = NO_PERSON_EQUIVALENT.get(stat_type)
+        if evidence is not None:
+            raise PoolFallbackUnavailableError(
+                f"{endpoint.name}: /v1/stats answers HTTP 406 and stat type {stat_type} has "
+                f"no person-level equivalent ({evidence}); rebuild this pool season by "
+                "season instead "
+                "(openspec/changes/archive/2026-10-31-mlb-pool-fallback-completion/design.md "
+                "D3/D5)"
+            ) from cause
+        return self._pool_pages_by_hydrate(endpoint, request)
 
     def _get_paginated(
         self,
