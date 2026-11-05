@@ -23,7 +23,7 @@ Kalshi game-winner markets (`KXMLBGAME-*`): 9,394, opened 2025-04-16 to 2026-10-
 
 ## Decisions for the owner
 - **M1 Scope.** DECIDED 2026-11-05 by the owner: all MLB markets (every market type), no other sports.
-- **M2 Transfer route.** Export the MLB subset from PostgreSQL to Parquet on the homelab, then copy the files (my pick); or read PostgreSQL live from this PC; or skip the import and re-download everything from the APIs.
+- **M2 Transfer route.** DECIDED 2026-11-05 by the owner: the API downloaders come first and are strongly typed into the lake; they backfill newest-first. The homelab copy is an optional speed-up, built afterwards as a one-time script that writes the same typed schemas, and dropped if it adds complexity.
 - **M3 dlt.** Use our own client for downloads and dlt only for export (my pick), or build the downloaders with dlt's REST source.
 - **M4 Live snapshots.** Keep the homelab collector running as is and import its rows, or move the collector into baseballpy later.
 
@@ -35,3 +35,18 @@ Kalshi: `/historical/cutoff` split, candle window limits (a long window returned
 - Plain table scan to zstd Parquet, untyped text columns: `kalshi_candle` 3,000,000 rows in 19 s (19.4 MB, 6.5 bytes per row); `polymarket_price` 5,000,000 rows in 12 s (6.9 MB, 1.4 bytes per row). Linear guess for the whole tables: Kalshi candles 213M rows, about 23 minutes and 1.4 GB; Polymarket prices 604M rows, about 25 minutes and 0.9 GB. These come from the first rows of each table, so treat them as rough; typed columns will change the size.
 - A filtered export through a `where ... in (subquery)` join on the 604M-row table was slow (51,396 rows in 406 s), so the export should be a plain ordered scan, then filter in Parquet.
 - Result: the full raw history fits easily on this PC as Parquet, so the MLB filter is not needed to save space; M1 (all MLB markets) costs little.
+
+
+## Findings: Kalshi public endpoints (probed 2026-11-05, no login, about 4 requests a second)
+- Docs list no rate limit for unauthenticated market data (authenticated tiers are 200 to 4,800 tokens a second at 10 tokens a request), so the default cap is chosen low (4 in flight, a few requests a second) and checked by `audit speed`. Terms of use for redistributing market data are not stated on the pages read: code is shared, data is not.
+- Datasets the API offers (registry candidates): `series` (188 MLB, 14 keys), `events` (14 keys, cursor paging), `markets` (44 keys; live `/markets` and archived `/historical/markets`, same shape), `candlesticks` (hourly or finer, bid, ask and traded price, volume, open interest), **`trades`** (`/markets/trades` and `/historical/trades`, 10 keys: trade id, time, yes and no price, count, taker side, block-trade flag). Trades are tick data and are NOT in the homelab tables, so the API gives more than the homelab does.
+- Value shapes to type: prices are strings with up to 4 decimals (`*_dollars`), quantities strings with up to 2 decimals (`*_fp`), times ISO text, lists and dicts (`price_ranges`, `custom_strike`, `product_metadata`, `tags`, `settlement_sources`). Plan: prices `decimal(9,4)`, quantities `decimal(14,2)`, times `timestamp[us, UTC]`, enums as dictionary-encoded strings, nested values as JSON text in a typed column, anything unknown in `_extras`.
+- Two stores split at `/historical/cutoff` (`market_settled_ts`, `trades_created_ts`, each its own cutoff); the downloader reads live and archived and merges by key.
+- Type vocabulary: `core/schema_tools.py` has no decimal type yet; adding `decimal` names is a small framework change (Parquet stores `decimal(9,4)` as a 4-byte integer, exact and compact, and DuckDB reads it as DECIMAL).
+
+## Slices (one commit each, gates after each)
+1. Kalshi catalog: `series`, `events`, `markets` (live and archived), schema generator from probes, extractor, normalizer, adapter, tests, docs.
+2. Kalshi `candlesticks` and `trades`, newest-first backfill with a resumable watermark.
+3. Polymarket catalog: `events`, `markets`, `outcomes` (same pattern).
+4. Polymarket `prices_history` and live snapshots.
+5. Optional homelab import into the same schemas.
