@@ -75,3 +75,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-05: `mlb-stats-route-memory` (B-259) closed and archived (ADR 68): a refused /v1/stats is remembered for an hour.
 - 2026-11-05: `code-tightening` (B-252 to B-256) closed and archived (ADR 69): 7 complexity warnings fixed without changing any output.
 - 2026-11-05: `modelling-data-needs` (B-260 to B-264) opened: field-by-field list of what the game-winner models need; no code yet.
+- 2026-11-05: `market-sources` (B-266 to B-273) opened: Kalshi and Polymarket as standard sources, plus a one-time import of the homelab MLB history.
