@@ -54,3 +54,9 @@ Placing orders. Totals, props and season markets (later; same data plus run-scor
 - **Polymarket** (`gamma-api.polymarket.com` for events, `clob.polymarket.com/prices-history` for prices): the oldest closed MLB-tagged event found is 2024-09-26. `prices-history` with `interval=max` returned nothing for a closed market; with explicit `startTs`/`endTs` and `fidelity=60` it returned points (11 for a thin market). Tag coverage before Sept 2024 not checked.
 - **Meaning:** market comparison is possible for about two seasons (Kalshi) and a little over two (Polymarket). Models train on the many older seasons; the market test is a short window. Thin early-day volume means only prices near first pitch should be trusted.
 - **Not yet checked:** pregame lineups and probable pitchers in MLB's time-stamped game feed for old games.
+
+## Findings: pregame lineups and probable pitchers for old games (probed 2026-11-05, small sample)
+
+- `/v1/schedule?hydrate=probablePitcher,lineups` returns both probable pitchers and lineups for 2012, 2016, 2019 and 2024 sample days (15 of 15 games, 14 of 15 lineups in 2024). It is the state as of the call, so it shows who actually started. It is a stand-in, not an as-of snapshot.
+- The time-stamped game feed (`/v1.1/game/{pk}/feed/live/timestamps`, then `?timecode=`) in 2019: the first stamp was 77 minutes or more before first pitch in the three games tried, state `Preview`, with probable pitchers and a nine-man batting order for each team. Usable as a real pregame snapshot. In 2013 the first stamp was after the game started (`Live`), so 2013 is not as-of safe. Which seasons are safe is unknown: a sweep over many games per season is needed (new task).
+- Plan: use the first feed stamp that is before first pitch when it exists, the actual starters (Retrosheet, boxscore) when it does not, and keep a column that says which one was used.

@@ -457,4 +457,5 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-261 | `modelling-data-needs 1.2`: owner grilling, decisions D1 to D6 | OPEN | each decision answered and recorded |
 | B-262 | `modelling-data-needs 1.3`: open one change per missing source | OPEN | changes exist and are in the backlog |
 | B-263 | `modelling-data-needs 1.4`: as-of rule as a spec requirement with a test | OPEN | test fails if a feature uses data after first pitch |
-| B-264 | `modelling-data-needs 1.5`: spec, ADR, gates, archive | OPEN | change archived |
+| B-265 | `modelling-data-needs 1.5`: sweep the feed per season for the first pregame stamp | OPEN | safe seasons written into design.md |
+| B-264 | `modelling-data-needs 1.6`: spec, ADR, gates, archive | OPEN | change archived |
