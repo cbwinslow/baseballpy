@@ -44,9 +44,28 @@ Options:
   --help  Show this message and exit.
 
 Commands:
+  speed    Check the real request speeds in the log against the caps; exit 1 when a cap was...
   stats    Compute and display aggregate throughput, success rate, and cache hit metrics.
   summary  Display a formatted summary table of recent operations.
   tail     Print detailed telemetry records for the most recent operations.
+```
+
+## `baseballpy audit speed`
+
+```text
+Usage: baseballpy audit speed [OPTIONS]
+
+  Check the real request speeds in the log against the caps; exit 1 when a cap was broken.
+
+  Reads the ``http_request`` events (one per real network attempt) and the ingest jobs: requests per
+  second, requests in flight, retries, failures and rows per second, next to the rate and in-flight
+  caps the client enforces (``BASEBALLPY_RATE_*``, ADR 67).
+
+Options:
+  --since TEXT  Only events at or after this ISO date/time.
+  --host TEXT   Only requests to this host.
+  --json        Print the result as JSON.
+  --help        Show this message and exit.
 ```
 
 ## `baseballpy audit stats`

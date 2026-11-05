@@ -43,6 +43,8 @@ ADR 58) are in the archived changes `2026-11-03-*`.
 | Statcast | 2024: pitches 826,759 + minors 867,883 + leaderboards 21,442 rows, one command | about 1,038 s (443 + 516 + 79) | **380 s** (295 + 375 + 146 at the same time) | jobs run together, Savant at 8 requests in flight (ADR 57) |
 | Lahman + Chadwick | all tables and the register | 13.6 + 16.7 s | **13 s** | nothing needed |
 
+Check any run against the caps afterwards with `baseballpy audit speed` (ADR 67): it reads the `http_request` events the client writes for every real request and reports requests per second, requests in flight, retries, failures and rows per second per source, and exits 1 when a cap was broken. Runs made before ADR 67 have no such events, so their rates cannot be checked.
+
 What limits each source now:
 
 - **MLB API:** the host rate (10 requests/s, the top of the `AGENTS.md` range); a few endpoints

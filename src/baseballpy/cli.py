@@ -421,6 +421,79 @@ def audit_stats() -> None:
     console.print(table)
 
 
+@audit.command("speed")
+@click.option("--since", "since", default=None, help="Only events at or after this ISO date/time.")
+@click.option("--host", "host", default=None, help="Only requests to this host.")
+@click.option("--json", "as_json", is_flag=True, help="Print the result as JSON.")
+def audit_speed(since: str | None, host: str | None, as_json: bool) -> None:
+    """Check the real request speeds in the log against the caps; exit 1 when a cap was broken.
+
+    Reads the ``http_request`` events (one per real network attempt) and the ingest jobs:
+    requests per second, requests in flight, retries, failures and rows per second, next to the
+    rate and in-flight caps the client enforces (``BASEBALLPY_RATE_*``, ADR 67).
+    """
+    import dataclasses
+    import json
+
+    from baseballpy.core.speed import host_speeds, source_speeds
+
+    events = default_audit_logger.read_events(since=since)
+    hosts = host_speeds(events, host=host)
+    sources = source_speeds(events)
+    if as_json:
+        click.echo(
+            json.dumps(
+                {
+                    "hosts": [dataclasses.asdict(h) for h in hosts],
+                    "sources": [dataclasses.asdict(s) for s in sources],
+                },
+                indent=2,
+            )
+        )
+    elif not hosts and not sources:
+        console.print(
+            "[dim]No http_request or ingest_job events in the audit log; nothing to check.[/dim]"
+        )
+    else:
+        if hosts:
+            table = Table(title="Requests per host")
+            for name in (
+                "Host", "Requests", "Retries", "Failed", "Mean/s", "Peak 1s", "60s avg/s", "Cap/s",
+                "In flight", "Limit", "p50 s", "p95 s",
+            ):  # fmt: skip
+                table.add_column(name, justify="left" if name == "Host" else "right")
+            for h in hosts:
+                table.add_row(
+                    h.host, f"{h.requests:,}", f"{h.retries:,}", f"{h.failures:,}",
+                    f"{h.mean_rps:.2f}", f"{h.peak_rps_1s:.0f}", f"{h.sustained_rps_60s:.2f}",
+                    f"{h.rate_cap:g}", str(h.peak_in_flight), str(h.in_flight_cap),
+                    f"{h.p50_seconds:.2f}", f"{h.p95_seconds:.2f}",
+                )  # fmt: skip
+            console.print(table)
+        if sources:
+            table = Table(title="Rows per source (time any job ran)")
+            for name in ("Source", "Jobs", "Failed", "Rows", "Busy s", "Rows/s"):
+                table.add_column(name, justify="left" if name == "Source" else "right")
+            for s in sources:
+                table.add_row(
+                    s.source, f"{s.jobs:,}", f"{s.failed_jobs:,}", f"{s.rows:,}",
+                    f"{s.busy_seconds:,.0f}", f"{s.rows_per_second:,.0f}",
+                )  # fmt: skip
+            console.print(table)
+        for h in hosts:
+            for problem in h.problems:
+                console.print(f"[bold red]{h.host}[/bold red] {problem}")
+        if hosts and not any(h.problems for h in hosts):
+            console.print("[green]Every host stayed inside its rate and in-flight caps.[/green]")
+        if not hosts:
+            console.print(
+                "[dim]No http_request events: the rate and in-flight caps cannot be checked "
+                "from this log (runs before ADR 67 did not record them).[/dim]"
+            )
+    if any(h.problems for h in hosts):
+        raise SystemExit(1)
+
+
 register_commands(main, catalog)
 register_backfill_command(main)
 register_cache_commands(main)

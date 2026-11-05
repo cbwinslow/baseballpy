@@ -68,3 +68,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-05: `tolerant-box-cells` (B-247) closed and archived (ADR 64): first all-history Retrosheet run failed 22 seasons on bad cells; fixed and re-run.
 - 2026-11-05: `underscore-table-names` (B-248) closed and archived (ADR 65): one underscore name per table, enforced by a test.
 - 2026-11-05: `season-calendar` (B-249) closed and archived (ADR 66): the MLB calendar decides which seasons exist; January and February are safe.
+- 2026-11-05: `audit-speed-check` (B-250) closed and archived (ADR 67): real requests are audited, `audit speed` checks the log against the caps.

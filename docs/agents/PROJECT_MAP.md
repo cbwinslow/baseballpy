@@ -8,7 +8,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | Spec | Requirements | Scenarios | Tests cited |
 |---|---|---|---|
 | `agent-runbooks` | 4 | 7 | 13 |
-| `audit-and-benchmarking` | 5 | 5 | 5 |
+| `audit-and-benchmarking` | 6 | 7 | 11 |
 | `caching-and-invalidation` | 18 | 30 | 42 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-61 changes are archived under `openspec/changes/archive/`.
+62 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -118,6 +118,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 64: Bad Cells in Box Accounts Become NULL and Quarantine, Not a Failed Season
 - ADR 65: One Underscore Name per Table: Folder, Registry Key and View
 - ADR 66: A Season Exists Once Its First Day Has Arrived (MLB Calendar, Not the Clock's Year)
+- ADR 67: Every Real Request Is Audited and `audit speed` Checks the Log Against the Caps
 
 ## Documentation pages (`docs/`)
 

@@ -12,6 +12,7 @@ import threading
 import time
 from collections.abc import Awaitable, Mapping
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 from typing import Any, TypeVar
 from urllib.parse import urlparse
@@ -26,6 +27,7 @@ from tenacity import (
     wait_exponential_jitter,
 )
 
+from baseballpy.core.audit import AuditEvent, default_audit_logger
 from baseballpy.core.config import RateLimitConfig, get_config
 from baseballpy.core.lazy import lazy_singleton
 
@@ -36,6 +38,39 @@ RETRYABLE_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
 MAX_RETRY_AFTER_SECONDS = 120.0
 
 T = TypeVar("T")
+
+HTTP_OPERATION = "http_request"
+HTTP_SOURCE = "http"
+
+
+def _audit_attempt(
+    url: str, sent_at: datetime, elapsed: float, status: int | None, outcome: str, error: str | None
+) -> None:
+    """One audit event per real network attempt (ADR 67).
+
+    ``started_at_utc`` is the moment the request was really sent (after the rate limiter and the
+    in-flight gate), so ``baseballpy audit speed`` can count requests per second and requests in
+    flight; the query string is left out to keep the log small. ``RETRY`` marks an attempt that
+    raised an error the client retries (the last attempt of a failing request is also ``RETRY``;
+    the caller's own event carries the final failure).
+    """
+    parts = urlparse(url)
+    ended = sent_at.timestamp() + elapsed
+    default_audit_logger.log(
+        AuditEvent(
+            timestamp_utc=datetime.fromtimestamp(ended, UTC).isoformat(),
+            started_at_utc=sent_at.isoformat(),
+            completed_at_utc=datetime.fromtimestamp(ended, UTC).isoformat(),
+            operation=HTTP_OPERATION,
+            source=HTTP_SOURCE,
+            status=outcome,
+            duration_seconds=round(elapsed, 4),
+            endpoint=f"{parts.scheme}://{parts.netloc}{parts.path}",
+            error=error
+            if error is not None
+            else (f"HTTP {status}" if status and status >= 400 else None),
+        )
+    )
 
 
 class RetryableStatus(Exception):  # noqa: N818 - internal control-flow signal
@@ -225,20 +260,36 @@ class HttpClient:
         async def _once() -> HttpResult:
             async with semaphore, limiter:
                 started = time.perf_counter()
-                resp = await client.get(
-                    url,
-                    params=params,
-                    headers=req_headers,
-                    timeout=httpx.USE_CLIENT_DEFAULT if timeout is None else timeout,
-                )
+                sent_at = datetime.now(UTC)
+                try:
+                    resp = await client.get(
+                        url,
+                        params=params,
+                        headers=req_headers,
+                        timeout=httpx.USE_CLIENT_DEFAULT if timeout is None else timeout,
+                    )
+                except httpx.TransportError as exc:  # audited, then retried or raised as before
+                    _audit_attempt(
+                        url,
+                        sent_at,
+                        time.perf_counter() - started,
+                        None,
+                        "RETRY",
+                        type(exc).__name__,
+                    )
+                    raise
             elapsed = time.perf_counter() - started
             status = resp.status_code
             if status in RETRYABLE_STATUSES and status not in allow:
+                _audit_attempt(url, sent_at, elapsed, status, "RETRY", None)
                 raise RetryableStatus(status, _parse_retry_after(resp.headers.get("Retry-After")))
             if status == 304 and etag:
+                _audit_attempt(url, sent_at, elapsed, status, "SUCCESS", None)
                 return HttpResult(url, 304, b"", etag, True, elapsed)
             if status not in allow and not (200 <= status < 300 and 200 in allow):
+                _audit_attempt(url, sent_at, elapsed, status, "FAILURE", None)
                 raise HttpStatusError(url, status)
+            _audit_attempt(url, sent_at, elapsed, status, "SUCCESS", None)
             return HttpResult(url, status, resp.content, resp.headers.get("ETag"), False, elapsed)
 
         retrying = AsyncRetrying(
