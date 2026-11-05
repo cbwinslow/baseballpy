@@ -149,3 +149,12 @@ A planned job MAY name the jobs that must finish before it starts (`Job.needs`, 
 - **WHEN** `ingest -c 3` runs with `BASEBALLPY_RATE_MAX_CONCURRENCY=6`
 - **THEN** the output says 3 parallel workers and up to 6 requests in flight per host.
 - Verified by `tests/test_cli_ingest.py::test_the_cli_states_the_workers_and_the_real_network_limit`.
+
+### Requirement: Seasons Exist Once Their First Day Has Arrived
+`all_seasons()` of the Statcast and MLB Stats API adapters MUST end at the newest season whose first day (spring training, else opening day, from the MLB `/v1/seasons/all` calendar) is on or before the lake clock, and a job for a season that has not started MUST be reported as `skipped` with the reason and never reach the provider code, so the weeks between New Year and spring training plan and run without errors. Seasons before the current year MUST NOT need the calendar, the calendar MUST be cached for twelve hours, and a calendar that cannot be read MUST raise instead of guessing.
+
+#### Scenario: January plans the last season and skips the new one
+- **GIVEN** a lake clock of 15 January 2027 and a calendar that lists 2027 starting on 19 February
+- **THEN** `all_seasons()` ends at 2026, a 2027 job of either adapter is `skipped` with "has not started", and on 19 February 2027 the season counts
+- **AND** a calendar that answers HTTP 500 raises.
+- Verified by `tests/test_season_calendar.py::test_statcast_adapter_plans_to_last_season_and_skips_a_new_one_in_january`, `tests/test_season_calendar.py::test_mlb_adapter_plans_to_last_season_and_skips_a_new_one_in_january`, `tests/test_season_calendar.py::test_in_january_the_new_season_has_not_started_and_the_last_one_is_the_latest`, `tests/test_season_calendar.py::test_once_spring_training_begins_the_new_season_counts` and `tests/test_season_calendar.py::test_a_calendar_that_cannot_be_read_fails_loudly_not_silently`.

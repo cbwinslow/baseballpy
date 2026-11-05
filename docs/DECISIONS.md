@@ -719,3 +719,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** every table is lower-case words joined by underscores; the view is `<source>_<folder>` (`mlb_` for the MLB API). Lahman's own spelling is kept only at the provider boundary (file name, URL, git tree). One test enforces the rule for every dataset. Singular and plural stay as each source has them.
 - **Consequences:** `db sync` now drops views whose data folder is gone (found when the Lahman rename left 17 broken views); one rule with no special case; old CamelCase Lahman folders are not read (re-ingest, 13 s); a lake migrated from layout v1 needs the same re-ingest for Lahman. Column names keep the provider's spelling.
 - **Alternatives rejected:** view-only rename; CamelCase everywhere; forcing singular names (style only, hundreds of renames).
+
+## ADR 66: A Season Exists Once Its First Day Has Arrived (MLB Calendar, Not the Clock's Year)
+- **Status:** Accepted (owner asked how the code knows which seasons are available, and what happens between New Year and spring training, 2026-11-05; change `season-calendar`). Extends ADR 56.
+- **Context:** `all_seasons()` ended at the clock's year. The MLB calendar lists next year's season months ahead, so from 1 January the code planned a season with no games; only Statcast pitches skipped it, nothing else checked.
+- **Decision:** `core/season_calendar.py` reads `/v1/seasons/all` once (cached twelve hours; only the current year needs it) and a season counts once its spring-training day (else opening day) has arrived. The Statcast and MLB adapters end `all_seasons()` there and skip any job of a not-started season with the reason. A calendar that cannot be read raises.
+- **Consequences:** January and February plan the last season and skip the new one; from the first spring-training day the new season is planned; `is_finished` tells whether the postseason is over. Retrosheet keeps the provider's own listing.
+- **Alternatives rejected:** a hard-coded month; trusting provider listings (they show next year early); falling back to the clock year when the calendar is unreachable (silent guess).

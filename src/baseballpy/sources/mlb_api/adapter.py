@@ -1,7 +1,6 @@
 """MLB Stats API ingest adapter."""
 
 from collections.abc import Sequence
-from datetime import datetime
 from typing import Any
 
 from baseballpy.ingest.results import counts_to_result
@@ -70,8 +69,9 @@ class MlbApiAdapter:
 
     source = "mlb_api"
 
-    def __init__(self, source: Any = None) -> None:
+    def __init__(self, source: Any = None, calendar: Any = None) -> None:
         self._source = source
+        self._calendar_override = calendar
 
     def _get_source(self) -> Any:
         if self._source is None:
@@ -80,9 +80,18 @@ class MlbApiAdapter:
             self._source = MlbApiSource()
         return self._source
 
+    def _calendar(self) -> Any:
+        """The MLB season calendar on the source's lake clock and HTTP client."""
+        if self._calendar_override is not None:
+            return self._calendar_override
+        from baseballpy.core.season_calendar import SeasonCalendar
+
+        source = self._get_source()
+        return SeasonCalendar(source.cache_config, source.extractor.http)
+
     def all_seasons(self) -> Sequence[int]:
-        """All available seasons for MLB Stats API (1876 to current year)."""
-        return range(FIRST_SEASON, datetime.now().year + 1)
+        """MLB Stats API seasons from 1876 to the newest one that has started (ADR 66)."""
+        return range(FIRST_SEASON, self._calendar().latest_started_season() + 1)
 
     def plan(self, selection: Selection) -> list[Job]:
         """Generate planned jobs matching the given selection."""
@@ -143,6 +152,11 @@ class MlbApiAdapter:
     def run(self, job: Job, *, refresh: bool = False) -> JobResult:
         """Execute a single MLB Stats API ingest job."""
         source = self._get_source()
+        season_param = job.param("season")
+        if season_param is not None and (
+            reason := self._calendar().not_started_reason(int(season_param))
+        ):
+            return JobResult(job=job, status=JobStatus.SKIPPED, rows=None, detail=reason)
 
         if job.task == "endpoint":
             name = str(job.param("name"))

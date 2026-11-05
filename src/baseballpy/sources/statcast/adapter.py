@@ -1,7 +1,6 @@
 """Statcast (Baseball Savant) ingest adapter."""
 
 from collections.abc import Sequence
-from datetime import datetime
 from typing import Any
 
 from baseballpy.ingest.results import counts_to_result
@@ -22,7 +21,9 @@ class StatcastAdapter:
         extractor: Any = None,
         leaderboards: Any = None,
         game_feed: Any = None,
+        calendar: Any = None,
     ) -> None:
+        self._calendar_override = calendar
         self._extractor = extractor
         self._leaderboards = leaderboards
         self._game_feed = game_feed
@@ -48,9 +49,18 @@ class StatcastAdapter:
             self._game_feed = StatcastGameFeed()
         return self._game_feed
 
+    def _calendar(self) -> Any:
+        """The MLB season calendar on the extractor's lake clock and HTTP client."""
+        if self._calendar_override is not None:
+            return self._calendar_override
+        from baseballpy.core.season_calendar import SeasonCalendar
+
+        extractor = self._get_extractor()
+        return SeasonCalendar(extractor.cache_config, extractor.http)
+
     def all_seasons(self) -> Sequence[int]:
-        """All available seasons for Statcast (2008 to current year)."""
-        return range(FIRST_SEASON, datetime.now().year + 1)
+        """Statcast seasons from 2008 to the newest one that has started (ADR 66)."""
+        return range(FIRST_SEASON, self._calendar().latest_started_season() + 1)
 
     def plan(self, selection: Selection) -> list[Job]:
         """Generate planned jobs matching the given selection."""
@@ -85,6 +95,11 @@ class StatcastAdapter:
 
     def run(self, job: Job, *, refresh: bool = False) -> JobResult:
         """Execute a single Statcast ingest job."""
+        season_param = job.param("season")
+        if season_param is not None and (
+            reason := self._calendar().not_started_reason(int(season_param))
+        ):
+            return JobResult(job=job, status=JobStatus.SKIPPED, rows=None, detail=reason)
         if job.task == "documents":
             kept = self._get_extractor().keep_documents(refresh=refresh)
             if not kept:

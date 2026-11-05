@@ -431,3 +431,4 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-246 | readable-lake-names 1.1-1.4: short part names, clash guard, `_manifest.json`, tests, docs, ADR 63 | DONE | `tests/test_part_names.py` passes |
 | B-247 | tolerant-box-cells 1.1-1.3: bad box-account cells to NULL + quarantine, tests, ADR 64, 22 seasons re-run | DONE | 22 of 22 seasons completed, `catalog audit` clean |
 | B-248 | underscore-table-names 1.1-1.4: one underscore name per table, naming test, ADR 65, how-to guide, Lahman reloaded | DONE | `tests/test_table_names.py` passes |
+| B-249 | season-calendar 1.1-1.3: seasons exist once their first day arrives, calendar-based `all_seasons`, January tests, ADR 66 | DONE | `tests/test_season_calendar.py` passes |

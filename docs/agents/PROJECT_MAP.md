@@ -12,7 +12,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `caching-and-invalidation` | 18 | 30 | 42 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
-| `cli-and-ingest` | 12 | 20 | 24 |
+| `cli-and-ingest` | 13 | 21 | 29 |
 | `concurrency-and-rate-limiting` | 5 | 10 | 11 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-60 changes are archived under `openspec/changes/archive/`.
+61 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -117,6 +117,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 63: Short Part Names and `_manifest.json`
 - ADR 64: Bad Cells in Box Accounts Become NULL and Quarantine, Not a Failed Season
 - ADR 65: One Underscore Name per Table: Folder, Registry Key and View
+- ADR 66: A Season Exists Once Its First Day Has Arrived (MLB Calendar, Not the Clock's Year)
 
 ## Documentation pages (`docs/`)
 

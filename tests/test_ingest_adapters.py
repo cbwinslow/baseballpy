@@ -226,11 +226,23 @@ def test_statcast_adapter_plan() -> None:
         adapter.plan(Selection(seasons=(2023,), datasets=("unsupported_dataset",)))
 
 
+class StartedCalendar:
+    """A season calendar in which every season has started (the clock is not under test here)."""
+
+    def not_started_reason(self, season: int) -> str | None:
+        return None
+
+    def latest_started_season(self) -> int:
+        return 2026
+
+
 def test_statcast_adapter_run() -> None:
     ext = FakeStatcastExtractor()
     lb = FakeStatcastLeaderboards()
     gf = FakeStatcastGameFeed()
-    adapter = StatcastAdapter(extractor=ext, leaderboards=lb, game_feed=gf)
+    adapter = StatcastAdapter(
+        extractor=ext, leaderboards=lb, game_feed=gf, calendar=StartedCalendar()
+    )
 
     # pitches completed
     res = adapter.run(make_job("statcast", "pitches", season=2023))
@@ -325,7 +337,7 @@ class FakeMlbApiSource:
 
 
 def test_mlb_api_adapter_protocol_and_plan() -> None:
-    adapter = MlbApiAdapter(FakeMlbApiSource())
+    adapter = MlbApiAdapter(FakeMlbApiSource(), calendar=StartedCalendar())
     assert isinstance(adapter, IngestAdapter)
     assert 1876 in adapter.all_seasons()
 
@@ -350,7 +362,7 @@ def test_mlb_api_adapter_protocol_and_plan() -> None:
 
 def test_mlb_api_adapter_run() -> None:
     fake_source = FakeMlbApiSource()
-    adapter = MlbApiAdapter(fake_source)
+    adapter = MlbApiAdapter(fake_source, calendar=StartedCalendar())
 
     # reference
     res_ref = adapter.run(make_job("mlb_api", "reference"))
@@ -565,7 +577,7 @@ def test_retrosheet_adapter() -> None:
 
 def test_limit_bounds_the_opt_in_fan_out_of_mlb_and_statcast_jobs() -> None:
     mlb_source = FakeMlbApiSource()
-    mlb = MlbApiAdapter(mlb_source)
+    mlb = MlbApiAdapter(mlb_source, calendar=StartedCalendar())
     selection = Selection(seasons=(2023,), datasets=("games", "people_stats", "season"), limit=7)
     jobs = {(j.task, bool(j.param("games", False))): j for j in mlb.plan(selection)}
     assert jobs[("season", True)].limit == 7
@@ -579,7 +591,10 @@ def test_limit_bounds_the_opt_in_fan_out_of_mlb_and_statcast_jobs() -> None:
 
     feed = FakeStatcastGameFeed()
     statcast = StatcastAdapter(
-        extractor=FakeStatcastExtractor(), leaderboards=FakeStatcastLeaderboards(), game_feed=feed
+        extractor=FakeStatcastExtractor(),
+        leaderboards=FakeStatcastLeaderboards(),
+        game_feed=feed,
+        calendar=StartedCalendar(),
     )
     (job,) = statcast.plan(Selection(seasons=(2023,), datasets=("game_feed",), limit=3))
     statcast.run(job)
