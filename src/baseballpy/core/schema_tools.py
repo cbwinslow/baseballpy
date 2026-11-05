@@ -405,7 +405,7 @@ def map_to_schema(
 
 def _cell(value: object) -> str | None:
     """One JSON value as a string cell: scalars as text, lists and objects as compact JSON."""
-    if value is None:
+    if value is None or value == "":  # an empty string is NULL, as an empty CSV cell is
         return None
     if isinstance(value, bool):
         return "true" if value else "false"

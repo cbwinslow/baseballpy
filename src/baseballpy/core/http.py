@@ -10,7 +10,7 @@ import concurrent.futures
 import os
 import threading
 import time
-from collections.abc import Awaitable, Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
@@ -151,6 +151,15 @@ class HttpClient:
         self._client: httpx.AsyncClient | None = None
         self._semaphores: dict[str, asyncio.Semaphore] = {}
         self._start_lock = threading.Lock()
+        self._header_hooks: dict[str, Callable[[str, str], Mapping[str, str]]] = {}
+
+    def set_header_hook(self, host: str, hook: Callable[[str, str], Mapping[str, str]]) -> None:
+        """Add headers made per attempt for one host: ``hook(method, url)`` (request signing).
+
+        Called inside every attempt, so a retry never reuses a stale signature. The hook's values
+        are never logged: the audit log records only URL, status, timing and outcome.
+        """
+        self._header_hooks[host] = hook
 
     # ------------------------------------------------------------------ loop plumbing
     def _ensure_loop(self) -> asyncio.AbstractEventLoop:
@@ -261,11 +270,15 @@ class HttpClient:
             async with semaphore, limiter:
                 started = time.perf_counter()
                 sent_at = datetime.now(UTC)
+                hook = self._header_hooks.get(host)
+                attempt_headers = (
+                    req_headers if hook is None else {**req_headers, **hook("GET", url)}
+                )
                 try:
                     resp = await client.get(
                         url,
                         params=params,
-                        headers=req_headers,
+                        headers=attempt_headers,
                         timeout=httpx.USE_CLIENT_DEFAULT if timeout is None else timeout,
                     )
                 except httpx.TransportError as exc:  # audited, then retried or raised as before

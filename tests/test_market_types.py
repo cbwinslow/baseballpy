@@ -93,6 +93,6 @@ def test_decimal_columns_are_stored_as_integers_and_duckdb_reads_them(tmp_path: 
     atomic_write_parquet(table, target, compression="zstd")
     assert "int32" in str(pq.ParquetFile(target).schema)
     got = duckdb.sql(
-        f"select sum(p), typeof(any_value(p)) from read_parquet('{target.as_posix()}')"
+        f"select sum(p), typeof(any_value(p)) from read_parquet('{target.as_posix()}')"  # noqa: S608 - a temp path made by the test
     ).fetchall()[0]
     assert got == (decimal.Decimal("440.0000") + decimal.Decimal("10.0000"), "DECIMAL(9,4)")

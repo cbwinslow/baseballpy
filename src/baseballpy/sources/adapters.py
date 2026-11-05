@@ -33,13 +33,20 @@ def _retrosheet_factory() -> IngestAdapter:
     return RetrosheetAdapter()
 
 
+def _kalshi_factory() -> IngestAdapter:
+    from baseballpy.sources.kalshi.adapter import KalshiAdapter
+
+    return KalshiAdapter()
+
+
 def register_all_adapters() -> None:
-    """Register ingest adapter factories for all five built-in sources."""
+    """Register ingest adapter factories for all built-in sources."""
     register_adapter("statcast", _statcast_factory)
     register_adapter("mlb_api", _mlb_api_factory)
     register_adapter("lahman", _lahman_factory)
     register_adapter("chadwick", _chadwick_factory)
     register_adapter("retrosheet", _retrosheet_factory)
+    register_adapter("kalshi", _kalshi_factory)
 
 
 __all__ = ["register_all_adapters"]

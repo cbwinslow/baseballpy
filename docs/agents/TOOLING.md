@@ -27,6 +27,7 @@ something a designated tool does is a defect, even if its tests pass. This file 
 | In-memory transforms, joins, group-by | `polars` (or Arrow compute) | lazy where possible | row loops, `iterrows`, hand-written group-by |
 | Destinations beyond files (Postgres, BigQuery, Snowflake, MotherDuck) | `dlt` through `sinks/dlt.py` behind `SinkProtocol` | sources never import `dlt` | add a per-destination writer inside a source (ADR 50: dlt does not write the processed tier; a spike found it cannot rebuild one season of a partitioned dataset) |
 | Configuration | `pydantic` + `pydantic-settings` (`BASEBALLPY_*` env) | `core/config.py` | read `os.environ` ad hoc; hard-code paths |
+| Request signing (Kalshi RSA-PSS) | `cryptography` in `sources/kalshi/signing.py`, applied per attempt by `HttpClient.set_header_hook` | the standard, audited RSA implementation; keys come from the user's environment only | hand-rolled crypto; logging, storing or committing a key |
 | CLI and terminal output | `click` + `rich` | `cli*.py` | `print()` tables, `argparse` |
 | Tests | `pytest`, `respx`, `hypothesis`, `pytest-socket` | fixtures in `tests/fixtures/` | touch the real network in unit tests; hand-roll HTTP mocks |
 | Retrosheet event parsing | `chadwickpy` only inside `sources/retrosheet/_chadwick_adapter.py` | GPL boundary (ADR 26) | import it anywhere else; re-implement the parser |

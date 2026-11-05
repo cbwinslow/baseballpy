@@ -12,6 +12,7 @@ from baseballpy.core import datasets as _datasets_module
 from baseballpy.core.datasets import DatasetSpec, IngestMode, register
 from baseballpy.core.schema_tools import snake
 from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_SCHEMAS
+from baseballpy.sources.kalshi.schema import KALSHI_KEYS, KALSHI_SCHEMAS
 from baseballpy.sources.lahman.schema import (
     LAHMAN_PRIMARY_KEYS,
     LAHMAN_SCHEMAS,
@@ -279,6 +280,22 @@ def register_all() -> dict[str, DatasetSpec]:
             CHADWICK_PRIMARY_KEYS[name],
             desc,
             chadwick_doc,
+        )
+
+    kalshi_descriptions = {
+        "series": "Kalshi MLB series (a template for repeated markets, with its fee terms).",
+        "events": "Kalshi MLB events (one game or one season-long question per event).",
+        "markets": "Kalshi MLB markets (live and archived merged; one row per tradable outcome).",
+    }
+    for name, schema in KALSHI_SCHEMAS.items():
+        _add(
+            "kalshi",
+            name,
+            f"kalshi_{name}",
+            schema,
+            KALSHI_KEYS[name],
+            kalshi_descriptions[name],
+            f"sources/kalshi.md#dataset-{name}",
         )
 
     retro_doc = "sources/retrosheet.md"

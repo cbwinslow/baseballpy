@@ -17,6 +17,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
+| `kalshi-ingestion` | 5 | 8 | 12 |
 | `lahman-database` | 12 | 19 | 31 |
 | `mlb-api-ingestion` | 27 | 40 | 42 |
 | `multi-target-sinks` | 3 | 4 | 4 |
@@ -123,6 +124,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 67: Every Real Request Is Audited and `audit speed` Checks the Log Against the Caps
 - ADR 68: A Refused `/v1/stats` Is Remembered, Not Asked on Every Request
 - ADR 69: Tightening Is Behaviour-Preserving, One Slice Per Commit, Proven by Comparison
+- ADR 70: Kalshi Is a Standard Source: Typed Decimals, Threaded Catalog, Optional Signing
 
 ## Documentation pages (`docs/`)
 
@@ -159,6 +161,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/references/ENDPOINT_CROSSCHECK.md`
 - `docs/references/README.md`
 - `docs/sources/chadwick.md`
+- `docs/sources/kalshi.md`
 - `docs/sources/lahman.md`
 - `docs/sources/mlb_api.md`
 - `docs/sources/retrosheet.md`

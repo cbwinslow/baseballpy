@@ -9,7 +9,7 @@ from typing import Literal
 
 import pyarrow as pa
 
-SOURCES = ("statcast", "mlb_api", "lahman", "chadwick", "retrosheet")
+SOURCES = ("statcast", "mlb_api", "lahman", "chadwick", "retrosheet", "kalshi")
 
 #: how a dataset gets into the lake: ``default`` (the default ``ingest`` selection), ``opt_in``
 #: (needs an explicit option because it is large), ``on_demand`` (needs an input such as a query

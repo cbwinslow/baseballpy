@@ -7,7 +7,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal
 
-from pydantic import Field, model_validator
+from pydantic import AliasChoices, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from baseballpy.core.freshness import DEFAULT_TTLS, is_fresh
@@ -317,6 +317,40 @@ class AuditConfig(EnvSettings):
 #: hosts the extractors name when they ask the client for their in-flight limit
 SAVANT_HOST = "baseballsavant.mlb.com"
 STATSAPI_HOST = "statsapi.mlb.com"
+KALSHI_HOST = "api.elections.kalshi.com"
+
+
+class KalshiAuthConfig(EnvSettings):
+    """Kalshi request-signing credentials, from the user's own environment (never logged or stored).
+
+    ``BASEBALLPY_KALSHI_KEY_ID`` (alias ``KALSHI_TOKEN``) is the API key id and
+    ``BASEBALLPY_KALSHI_PRIVATE_KEY_PATH`` (alias ``KALSHI_PRIVATE_KEY_PATH``) the RSA private key
+    file. A dotenv file is read only when ``BASEBALLPY_ENV_FILE`` names it. Without both, requests
+    are unsigned (public market data needs no key; signing only raises the read budget).
+    """
+
+    model_config = SettingsConfigDict(extra="ignore", env_file_encoding="utf-8")
+
+    key_id: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("BASEBALLPY_KALSHI_KEY_ID", "KALSHI_TOKEN"),
+        repr=False,
+    )
+    private_key_path: Path | None = Field(
+        default=None,
+        validation_alias=AliasChoices(
+            "BASEBALLPY_KALSHI_PRIVATE_KEY_PATH", "KALSHI_PRIVATE_KEY_PATH"
+        ),
+    )
+
+    @property
+    def configured(self) -> bool:
+        """True when a key id is set and the private key file exists."""
+        return (
+            bool(self.key_id)
+            and self.private_key_path is not None
+            and self.private_key_path.is_file()
+        )
 
 
 class RateLimitConfig(EnvSettings):
@@ -340,6 +374,18 @@ class RateLimitConfig(EnvSettings):
     )
     github_rps: float = Field(
         default=15.0, description="Token bucket rate limit for raw.githubusercontent.com"
+    )
+    kalshi_rps: float | None = Field(
+        default=None,
+        description=(
+            "Token bucket rate limit for api.elections.kalshi.com. Unset: 20/s when signed requests "
+            "are configured (the documented Basic tier, 200 tokens/s at 10 per request), else 4/s "
+            "(unsigned pages of 200 to 1,000 records were throttled with HTTP 429 at about 10/s)"
+        ),
+    )
+    kalshi_concurrency: int | None = Field(
+        default=None,
+        description="In-flight limit for api.elections.kalshi.com. Unset: 16 when signed, else 4",
     )
     host_rates: dict[str, float] = Field(
         default_factory=dict,
@@ -377,15 +423,25 @@ class RateLimitConfig(EnvSettings):
     @model_validator(mode="after")
     def populate_host_rates(self) -> "RateLimitConfig":
         """Merge host-specific defaults if not explicitly provided."""
+        signed = KalshiAuthConfig().configured
         defaults = {
             SAVANT_HOST: self.savant_rps,
             STATSAPI_HOST: self.statsapi_rps,
+            KALSHI_HOST: self.kalshi_rps
+            if self.kalshi_rps is not None
+            else (20.0 if signed else 4.0),
             "raw.githubusercontent.com": self.github_rps,
         }
         for host, rate in defaults.items():
             if host not in self.host_rates:
                 self.host_rates[host] = rate
         self.host_concurrency.setdefault(SAVANT_HOST, self.savant_concurrency)
+        self.host_concurrency.setdefault(
+            KALSHI_HOST,
+            self.kalshi_concurrency
+            if self.kalshi_concurrency is not None
+            else (16 if signed else 4),
+        )
         return self
 
 
