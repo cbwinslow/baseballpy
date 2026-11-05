@@ -55,15 +55,15 @@ def test_render_dataset_documents_view_key_types_and_upstream_names() -> None:
 
 def test_blocks_are_replaced_in_place_and_new_ones_appended(tmp_path: Path) -> None:
     catalog.register_all()
-    spec = get_dataset("lahman", "People")
+    spec = get_dataset("lahman", "people")
     first = render_source_doc("# Lahman\n\nintro\n", [spec], tmp_path)
-    assert first.count("BEGIN GENERATED:lahman.People") == 1 and "intro" in first
+    assert first.count("BEGIN GENERATED:lahman.people") == 1 and "intro" in first
     (tmp_path / "columns").mkdir()
     (tmp_path / "columns" / "lahman.json").write_text(
-        json.dumps({"People": {"playerID": "Lahman player id"}}), encoding="utf-8"
+        json.dumps({"people": {"playerID": "Lahman player id"}}), encoding="utf-8"
     )
     second = render_source_doc(first, [spec], tmp_path)
-    assert second.count("BEGIN GENERATED:lahman.People") == 1
+    assert second.count("BEGIN GENERATED:lahman.people") == 1
     assert "Lahman player id" in second and "intro" in second
     assert render_source_doc(second, [spec], tmp_path) == second  # idempotent
 

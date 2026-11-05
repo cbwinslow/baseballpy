@@ -274,7 +274,7 @@ def test_fresh_lake_is_stamped_v2_on_first_write(tmp_path: Path) -> None:
 
     catalog.register_all()
     cfg = LakeConfig(home=tmp_path)
-    ProcessedStore(cfg).put(get_dataset("lahman", "People"), pa.table({"playerID": ["a"]}))
+    ProcessedStore(cfg).put(get_dataset("lahman", "people"), pa.table({"playerID": ["a"]}))
     assert layout.detect_layout(cfg) == 2
 
 

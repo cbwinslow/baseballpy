@@ -66,7 +66,7 @@ def test_regular_and_postseason_events_are_distinct_datasets() -> None:
 
 def test_register_rejects_conflicts_and_unknown_sources() -> None:
     catalog.register_all()
-    existing = get_dataset("lahman", "People")
+    existing = get_dataset("lahman", "people")
     assert register(existing) is existing  # identical re-registration is a no-op
     clash = DatasetSpec(
         "lahman", "Other", existing.view, pa.schema([("a", pa.int32())]), "none", ("a",), "x", "x"
@@ -99,7 +99,7 @@ def test_raw_store_records_sha_and_detects_tampering(tmp_path: Path) -> None:
 @pytest.mark.parametrize("bad", ["../x", "a/b", "a\\b", ""])
 def test_raw_store_rejects_path_traversal(tmp_path: Path, bad: str) -> None:
     with pytest.raises(ValueError, match="invalid chunk id"):
-        RawStore(LakeConfig(home=tmp_path)).put("lahman", "People", bad, b"x")
+        RawStore(LakeConfig(home=tmp_path)).put("lahman", "people", bad, b"x")
 
 
 def test_processed_store_layout_partitions_and_manifest(tmp_path: Path) -> None:
@@ -132,7 +132,7 @@ def test_processed_store_enforces_partition_contract(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="season-partitioned"):
         store.put(get_dataset("statcast", "pitches"), table, chunk_id="x")
     with pytest.raises(ValueError, match="not season-partitioned"):
-        store.put(get_dataset("lahman", "People"), table, season=2024)
+        store.put(get_dataset("lahman", "people"), table, season=2024)
 
 
 def test_reprocess_rebuilds_processed_from_raw_without_network(tmp_path: Path) -> None:

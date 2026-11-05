@@ -30,7 +30,7 @@ def test_lake_config_layout_v2(tmp_path: Path) -> None:
     assert config.raw_dir("statcast", "pitches", 2024) == (
         tmp_path / "raw" / "statcast" / "pitches" / "season=2024"
     )
-    assert config.processed_dir("lahman", "People") == tmp_path / "processed" / "lahman" / "People"
+    assert config.processed_dir("lahman", "people") == tmp_path / "processed" / "lahman" / "people"
 
 
 def test_lake_config_never_creates_directories_on_read(tmp_path: Path) -> None:

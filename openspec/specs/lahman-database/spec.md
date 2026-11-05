@@ -115,12 +115,12 @@ The mirror's `README.md`, `LICENSE` and data dictionary (`data/readme*.txt`) MUS
 - Verified by `tests/test_lahman_workflow.py::test_mixing_a_supplied_table_with_a_mirror_table_warns_once`.
 
 ### Requirement: Complete Python Access
-Every one of the 27 tables MUST be readable with `lahman.table(name)`, names MUST ignore letter case, the registry, the `LahmanTable` enum and the generated tables MUST name the same 27 tables, and a table MUST be read once per process and reused until its Parquet changes.
+Every one of the 27 tables MUST be readable with `lahman.table(name)`, tables MUST be named with lower-case words joined by underscores (`awards_share_managers`) as folder, registry key and view (`lahman_awards_share_managers`) with Lahman's own spelling kept only for file names, download addresses and git trees, names MUST be accepted in any spelling, the registry, the `LahmanTable` enum and the generated tables MUST name the same 27 tables, and a table MUST be read once per process and reused until its Parquet changes.
 
 #### Scenario: One call, any case, one list of names
 - **WHEN** tables are requested by name in different letter cases and the name lists are compared
-- **THEN** each resolves to the canonical table, an unknown name lists the 27 known ones, and the three lists are equal
-- Verified by `tests/test_lahman_workflow.py::test_table_names_ignore_letter_case_and_unknown_names_list_the_27`, `tests/test_lahman_workflow.py::test_enum_registry_and_generated_tables_name_the_same_27_tables` and `tests/test_lahman_workflow.py::test_generic_top_level_accessor_serves_every_table`.
+- **THEN** each resolves to the underscore name, an unknown name lists the 27 known ones, and the three lists are equal
+- Verified by `tests/test_table_names.py::test_any_spelling_of_a_lahman_table_gives_the_underscore_name`, `tests/test_table_names.py::test_lahman_tables_use_underscores_and_provider_spelling_stays_at_the_edge`, `tests/test_table_names.py::test_every_dataset_name_and_view_follow_the_rule_and_the_view_is_source_plus_folder`, `tests/test_lahman_workflow.py::test_table_names_ignore_letter_case_and_unknown_names_list_the_27`, `tests/test_lahman_workflow.py::test_enum_registry_and_generated_tables_name_the_same_27_tables` and `tests/test_lahman_workflow.py::test_generic_top_level_accessor_serves_every_table`.
 
 #### Scenario: Repeated reads are free
 - **WHEN** the same table is read repeatedly, then its Parquet is rewritten

@@ -30,7 +30,12 @@ from baseballpy.core.http import (
 from baseballpy.core.sources_lock import get_source_ref
 from baseballpy.core.stores import RawStore
 from baseballpy.core.upstream import GIT_BLOB, Fingerprint, is_current
-from baseballpy.sources.lahman.schema import LahmanTable, canonical_table_name
+from baseballpy.sources.lahman.schema import (
+    UPSTREAM_NAMES,
+    LahmanTable,
+    canonical_table_name,
+    upstream_name,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -80,16 +85,19 @@ class LahmanExtractor:
     # -- manifest and paths ----------------------------------------------------------------
 
     def manifest_for(self, table_name: str | LahmanTable) -> ManifestTracker:
-        """Per-table raw manifest at ``raw/lahman/<Table>/_manifest.json``."""
+        """Per-table raw manifest at ``raw/lahman/<table>/_manifest.json``."""
         return self.cache_config.dataset_manifest("lahman", str(table_name), "raw")
 
     def get_raw_path(self, table_name: str | LahmanTable) -> Path:
-        """Return local path to raw CSV file (``raw/lahman/<Table>/<Table>.csv``)."""
-        return self.cache_config.raw_dir("lahman", str(table_name)) / f"{table_name}.csv"
+        """Local path of the raw CSV, kept under Lahman's own file name (``raw/lahman/batting_post/BattingPost.csv``)."""
+        return (
+            self.cache_config.raw_dir("lahman", str(table_name))
+            / f"{upstream_name(table_name)}.csv"
+        )
 
     def file_entry(self, table_name: str | LahmanTable) -> dict[str, object] | None:
         """The one manifest entry of a raw file (``None`` when it was never stored)."""
-        return self.manifest_for(table_name).get_chunk(f"{table_name}.csv")
+        return self.manifest_for(table_name).get_chunk(f"{upstream_name(table_name)}.csv")
 
     def is_local(self, table_name: str | LahmanTable) -> bool:
         """True when the raw file came from a user-supplied archive."""
@@ -109,7 +117,7 @@ class LahmanExtractor:
 
     def blob_fingerprint(self, table_name: str | LahmanTable) -> Fingerprint | None:
         """The git blob fingerprint the tree lists for ``data/<Table>.csv`` (``None`` if unknown)."""
-        path = f"data/{table_name}.csv"
+        path = f"data/{upstream_name(table_name)}.csv"
         for entry in self.tree_entries() or ():
             if entry.path == path:
                 return Fingerprint(
@@ -165,7 +173,7 @@ class LahmanExtractor:
         return sorted(
             d.name
             for d in root.iterdir()
-            if d.is_dir() and d.name != DOCUMENT_DATASET and self.is_local(d.name)
+            if d.is_dir() and d.name in UPSTREAM_NAMES and self.is_local(d.name)
         )
 
     def _warn_if_mixed(self, table_name: str) -> None:
@@ -193,14 +201,14 @@ class LahmanExtractor:
             self.raw.put(
                 "lahman",
                 name,
-                f"{name}.csv",
+                f"{upstream_name(name)}.csv",
                 content,
                 source_ref=self.source_ref.ref,
                 etag=result.etag or "",
                 upstream=self.blob_fingerprint(name),
                 records=data_rows(content),
                 extra={
-                    "source": f"{self.base_url}/{name}.csv",
+                    "source": f"{self.base_url}/{upstream_name(name)}.csv",
                     "origin": f"{self.source_ref.repo}@{self.source_ref.ref}",
                 },
             )
@@ -226,7 +234,7 @@ class LahmanExtractor:
     ) -> bytes:
         """Extract a single Lahman table CSV, hitting cache if it is current."""
         name_str = canonical_table_name(table_name)
-        url = f"{self.base_url}/{name_str}.csv"
+        url = f"{self.base_url}/{upstream_name(name_str)}.csv"
         with default_audit_logger.track(
             operation="lahman_extract_table",
             source="lahman",

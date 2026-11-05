@@ -12,7 +12,11 @@ from baseballpy.core import datasets as _datasets_module
 from baseballpy.core.datasets import DatasetSpec, IngestMode, register
 from baseballpy.core.schema_tools import snake
 from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_SCHEMAS
-from baseballpy.sources.lahman.schema import LAHMAN_PRIMARY_KEYS, LAHMAN_SCHEMAS
+from baseballpy.sources.lahman.schema import (
+    LAHMAN_PRIMARY_KEYS,
+    LAHMAN_SCHEMAS,
+    upstream_name,
+)
 from baseballpy.sources.mlb_api import schemas as mlb
 from baseballpy.sources.mlb_api.endpoints import SUPPORTED as MLB_ENDPOINTS
 from baseballpy.sources.mlb_api.endpoints import MlbEndpoint
@@ -247,14 +251,14 @@ def register_all() -> dict[str, DatasetSpec]:
         )
 
     for table, schema in LAHMAN_SCHEMAS.items():
-        table_name = str(table)
+        table_name = str(table)  # the underscore name, e.g. ``batting_post``
         _add(
             "lahman",
             table_name,
-            f"lahman_{table_name.lower()}",
+            f"lahman_{table_name}",
             schema,
             LAHMAN_PRIMARY_KEYS[table_name],
-            f"Lahman {table_name} table.",
+            f"Lahman {upstream_name(table_name)} table.",
             "sources/lahman.md#all-27-supported-tables",
         )
 

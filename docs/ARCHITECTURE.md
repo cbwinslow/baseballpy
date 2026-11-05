@@ -27,6 +27,8 @@ Everything lives under `$BASEBALLPY_HOME` (default: `.baseballpy` in the project
 
 ## The dataset registry
 
+Naming rule and how to add a dataset or a source: [`ADDING_DATA.md`](ADDING_DATA.md).
+
 `core/datasets.py` and `sources/catalog.py::register_all()` register every `DatasetSpec` (schema, partition, keys, view name, documentation anchor, and how `ingest` reaches it: `default`, `opt_in`, `on_demand` or `api_only`). Views, docs generation and tests iterate the registry; nothing else hard-codes a dataset name. Column dictionaries in `docs/sources/<source>.md` are generated between `<!-- BEGIN GENERATED:... -->` markers.
 
 ## The ingest boundary

@@ -712,3 +712,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** cells that do not fit their type are stored as NULL and written to quarantine with their value; `true`/`false` match in any case; blank values are no value; a wrong field count or a record before any id still raises.
 - **Consequences:** all seasons load; unreadable cells are visible in `quarantine/`; the raw bytes remain in `raw/`.
 - **Alternatives rejected:** skipping lines; failing seasons; rewriting values by guessing (`2i` to `2`).
+
+## ADR 65: One Underscore Name per Table: Folder, Registry Key and View
+- **Status:** Accepted (owner chose underscores on 2026-11-05; change `underscore-table-names`). Follows ADR 63 (readable names).
+- **Context:** Lahman had `lahman/AwardsShareManagers` (folder) and `lahman_awardssharemanagers` (view). SQL ignores letter case, so CamelCase did not survive in queries. The owner's PostgreSQL `raw` schema uses lower-case words with underscores and was named as the style model.
+- **Decision:** every table is lower-case words joined by underscores; the view is `<source>_<folder>` (`mlb_` for the MLB API). Lahman's own spelling is kept only at the provider boundary (file name, URL, git tree). One test enforces the rule for every dataset. Singular and plural stay as each source has them.
+- **Consequences:** `db sync` now drops views whose data folder is gone (found when the Lahman rename left 17 broken views); one rule with no special case; old CamelCase Lahman folders are not read (re-ingest, 13 s); a lake migrated from layout v1 needs the same re-ingest for Lahman. Column names keep the provider's spelling.
+- **Alternatives rejected:** view-only rename; CamelCase everywhere; forcing singular names (style only, hundreds of renames).

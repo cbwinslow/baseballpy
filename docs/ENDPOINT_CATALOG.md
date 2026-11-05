@@ -97,7 +97,7 @@ Granularity per slug (player-season, player-pitchtype, team-season, game, rollin
 ---
 
 ## 3. Lahman Baseball Database (`cbwinslow/lahman-database-csv` `data/*.csv`, pinned ref, 1871–2025; or user-supplied zip/dir via `import_archive`; no other source — never `chadwickbureau/baseballdatabank`)
-27 tables, flat partition each, view `lahman_<table_lower>`; schemas generated from the real headers (+ `_extras`); PKs below **verified unique on the 2025 release**. Probed live on 2026-10-27 (`docs/endpoint_probe.json`): all 27 `ok`.
+27 tables, flat partition each, view `lahman_<table>` with underscore names (`lahman_awards_share_managers`, ADR 65); schemas generated from the real headers (+ `_extras`); PKs below **verified unique on the 2025 release**. Probed live on 2026-10-27 (`docs/endpoint_probe.json`): all 27 `ok`.
 
 | Table | PK |
 |---|---|

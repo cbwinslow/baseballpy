@@ -68,14 +68,14 @@ def test_player_id_type_enum() -> None:
 
 def test_lahman_table_enum() -> None:
     """Test LahmanTable enum values for all 27 canonical tables."""
-    assert bp.LahmanTable.BATTING == "Batting"
-    assert bp.LahmanTable.PITCHING == "Pitching"
-    assert bp.LahmanTable.PEOPLE == "People"
-    assert bp.LahmanTable.TEAMS == "Teams"
-    assert bp.LahmanTable.FIELDING == "Fielding"
-    assert bp.LahmanTable.SALARIES == "Salaries"
-    assert bp.LahmanTable.HALL_OF_FAME == "HallOfFame"
-    assert bp.LahmanTable.ALLSTAR_FULL == "AllstarFull"
+    assert bp.LahmanTable.BATTING == "batting"
+    assert bp.LahmanTable.PITCHING == "pitching"
+    assert bp.LahmanTable.PEOPLE == "people"
+    assert bp.LahmanTable.TEAMS == "teams"
+    assert bp.LahmanTable.FIELDING == "fielding"
+    assert bp.LahmanTable.SALARIES == "salaries"
+    assert bp.LahmanTable.HALL_OF_FAME == "hall_of_fame"
+    assert bp.LahmanTable.ALLSTAR_FULL == "allstar_full"
     assert len(bp.LahmanTable) == 27
 
 

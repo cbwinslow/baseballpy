@@ -224,7 +224,7 @@ def test_scan_lake_and_catalog_status_fabricated_parquet(tmp_path: Path) -> None
     assert statcast_status.files == 1
     assert statcast_status.seasons == (2023,)
 
-    missing_status = next(s for s in statuses if s.source == "lahman" and s.dataset == "People")
+    missing_status = next(s for s in statuses if s.source == "lahman" and s.dataset == "people")
     assert missing_status.status == "MISSING"
     assert missing_status.rows == 0
     assert missing_status.files == 0
@@ -343,12 +343,12 @@ def test_split_datasets_needs_source_prefix_when_ambiguous() -> None:
     assert split_datasets(("gamelogs,box_accounts",), ("retrosheet",)) == {
         "retrosheet": ("gamelogs", "box_accounts")
     }
-    assert split_datasets(("lahman:People", "retrosheet:gamelogs"), ("lahman", "retrosheet")) == {
-        "lahman": ("People",),
+    assert split_datasets(("lahman:people", "retrosheet:gamelogs"), ("lahman", "retrosheet")) == {
+        "lahman": ("people",),
         "retrosheet": ("gamelogs",),
     }
     with pytest.raises(click.BadParameter, match="ambiguous"):
-        split_datasets(("People",), ("lahman", "retrosheet"))
+        split_datasets(("people",), ("lahman", "retrosheet"))
     with pytest.raises(click.BadParameter, match="not selected"):
         split_datasets(("mlb_api:season",), ("lahman",))
 

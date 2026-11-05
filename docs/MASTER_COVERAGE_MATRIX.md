@@ -491,33 +491,33 @@ or train any derived sabermetric metric without web scraping dependencies.
 
 | Dataset Name | View Name | Partition | Columns | Primary Keys | Description |
 | :--- | :--- | :--- | :---: | :--- | :--- |
-| `AllstarFull` | `lahman_allstarfull` | `none` | 9 | `playerID`, `yearID`, `gameNum`, `gameID`, `teamID`, `lgID` | Lahman AllstarFull table. |
-| `Appearances` | `lahman_appearances` | `none` | 22 | `yearID`, `teamID`, `playerID` | Lahman Appearances table. |
-| `AwardsManagers` | `lahman_awardsmanagers` | `none` | 7 | `playerID`, `awardID`, `yearID`, `lgID` | Lahman AwardsManagers table. |
-| `AwardsPlayers` | `lahman_awardsplayers` | `none` | 7 | `playerID`, `awardID`, `yearID`, `lgID`, `notes` | Lahman AwardsPlayers table. |
-| `AwardsShareManagers` | `lahman_awardssharemanagers` | `none` | 8 | `awardID`, `yearID`, `lgID`, `playerID` | Lahman AwardsShareManagers table. |
-| `AwardsSharePlayers` | `lahman_awardsshareplayers` | `none` | 8 | `awardID`, `yearID`, `lgID`, `playerID` | Lahman AwardsSharePlayers table. |
-| `Batting` | `lahman_batting` | `none` | 23 | `playerID`, `yearID`, `stint` | Lahman Batting table. |
-| `BattingPost` | `lahman_battingpost` | `none` | 23 | `yearID`, `round`, `playerID` | Lahman BattingPost table. |
-| `CollegePlaying` | `lahman_collegeplaying` | `none` | 4 | `playerID`, `schoolID`, `yearID` | Lahman CollegePlaying table. |
-| `Fielding` | `lahman_fielding` | `none` | 19 | `playerID`, `yearID`, `stint`, `POS` | Lahman Fielding table. |
-| `FieldingOF` | `lahman_fieldingof` | `none` | 7 | `playerID`, `yearID`, `stint` | Lahman FieldingOF table. |
-| `FieldingOFsplit` | `lahman_fieldingofsplit` | `none` | 19 | `playerID`, `yearID`, `stint`, `POS` | Lahman FieldingOFsplit table. |
-| `FieldingPost` | `lahman_fieldingpost` | `none` | 18 | `playerID`, `yearID`, `round`, `POS` | Lahman FieldingPost table. |
-| `HallOfFame` | `lahman_halloffame` | `none` | 10 | `playerID`, `yearid`, `votedBy` | Lahman HallOfFame table. |
-| `HomeGames` | `lahman_homegames` | `none` | 10 | `yearkey`, `leaguekey`, `teamkey`, `parkkey` | Lahman HomeGames table. |
-| `Managers` | `lahman_managers` | `none` | 11 | `yearID`, `teamID`, `inseason` | Lahman Managers table. |
-| `ManagersHalf` | `lahman_managershalf` | `none` | 11 | `yearID`, `teamID`, `half`, `playerID` | Lahman ManagersHalf table. |
-| `Parks` | `lahman_parks` | `none` | 8 | `parkkey` | Lahman Parks table. |
-| `People` | `lahman_people` | `none` | 26 | `playerID` | Lahman People table. |
-| `Pitching` | `lahman_pitching` | `none` | 31 | `playerID`, `yearID`, `stint` | Lahman Pitching table. |
-| `PitchingPost` | `lahman_pitchingpost` | `none` | 31 | `yearID`, `round`, `playerID` | Lahman PitchingPost table. |
-| `Salaries` | `lahman_salaries` | `none` | 6 | `yearID`, `teamID`, `lgID`, `playerID` | Lahman Salaries table. |
-| `Schools` | `lahman_schools` | `none` | 6 | `schoolID` | Lahman Schools table. |
-| `SeriesPost` | `lahman_seriespost` | `none` | 10 | `yearID`, `round` | Lahman SeriesPost table. |
-| `Teams` | `lahman_teams` | `none` | 49 | `yearID`, `lgID`, `teamID` | Lahman Teams table. |
-| `TeamsFranchises` | `lahman_teamsfranchises` | `none` | 5 | `franchID` | Lahman TeamsFranchises table. |
-| `TeamsHalf` | `lahman_teamshalf` | `none` | 11 | `yearID`, `lgID`, `teamID`, `Half` | Lahman TeamsHalf table. |
+| `allstar_full` | `lahman_allstar_full` | `none` | 9 | `playerID`, `yearID`, `gameNum`, `gameID`, `teamID`, `lgID` | Lahman AllstarFull table. |
+| `appearances` | `lahman_appearances` | `none` | 22 | `yearID`, `teamID`, `playerID` | Lahman Appearances table. |
+| `awards_managers` | `lahman_awards_managers` | `none` | 7 | `playerID`, `awardID`, `yearID`, `lgID` | Lahman AwardsManagers table. |
+| `awards_players` | `lahman_awards_players` | `none` | 7 | `playerID`, `awardID`, `yearID`, `lgID`, `notes` | Lahman AwardsPlayers table. |
+| `awards_share_managers` | `lahman_awards_share_managers` | `none` | 8 | `awardID`, `yearID`, `lgID`, `playerID` | Lahman AwardsShareManagers table. |
+| `awards_share_players` | `lahman_awards_share_players` | `none` | 8 | `awardID`, `yearID`, `lgID`, `playerID` | Lahman AwardsSharePlayers table. |
+| `batting` | `lahman_batting` | `none` | 23 | `playerID`, `yearID`, `stint` | Lahman Batting table. |
+| `batting_post` | `lahman_batting_post` | `none` | 23 | `yearID`, `round`, `playerID` | Lahman BattingPost table. |
+| `college_playing` | `lahman_college_playing` | `none` | 4 | `playerID`, `schoolID`, `yearID` | Lahman CollegePlaying table. |
+| `fielding` | `lahman_fielding` | `none` | 19 | `playerID`, `yearID`, `stint`, `POS` | Lahman Fielding table. |
+| `fielding_of` | `lahman_fielding_of` | `none` | 7 | `playerID`, `yearID`, `stint` | Lahman FieldingOF table. |
+| `fielding_of_split` | `lahman_fielding_of_split` | `none` | 19 | `playerID`, `yearID`, `stint`, `POS` | Lahman FieldingOFsplit table. |
+| `fielding_post` | `lahman_fielding_post` | `none` | 18 | `playerID`, `yearID`, `round`, `POS` | Lahman FieldingPost table. |
+| `hall_of_fame` | `lahman_hall_of_fame` | `none` | 10 | `playerID`, `yearid`, `votedBy` | Lahman HallOfFame table. |
+| `home_games` | `lahman_home_games` | `none` | 10 | `yearkey`, `leaguekey`, `teamkey`, `parkkey` | Lahman HomeGames table. |
+| `managers` | `lahman_managers` | `none` | 11 | `yearID`, `teamID`, `inseason` | Lahman Managers table. |
+| `managers_half` | `lahman_managers_half` | `none` | 11 | `yearID`, `teamID`, `half`, `playerID` | Lahman ManagersHalf table. |
+| `parks` | `lahman_parks` | `none` | 8 | `parkkey` | Lahman Parks table. |
+| `people` | `lahman_people` | `none` | 26 | `playerID` | Lahman People table. |
+| `pitching` | `lahman_pitching` | `none` | 31 | `playerID`, `yearID`, `stint` | Lahman Pitching table. |
+| `pitching_post` | `lahman_pitching_post` | `none` | 31 | `yearID`, `round`, `playerID` | Lahman PitchingPost table. |
+| `salaries` | `lahman_salaries` | `none` | 6 | `yearID`, `teamID`, `lgID`, `playerID` | Lahman Salaries table. |
+| `schools` | `lahman_schools` | `none` | 6 | `schoolID` | Lahman Schools table. |
+| `series_post` | `lahman_series_post` | `none` | 10 | `yearID`, `round` | Lahman SeriesPost table. |
+| `teams` | `lahman_teams` | `none` | 49 | `yearID`, `lgID`, `teamID` | Lahman Teams table. |
+| `teams_franchises` | `lahman_teams_franchises` | `none` | 5 | `franchID` | Lahman TeamsFranchises table. |
+| `teams_half` | `lahman_teams_half` | `none` | 11 | `yearID`, `lgID`, `teamID`, `Half` | Lahman TeamsHalf table. |
 
 ### CHADWICK (4 datasets)
 

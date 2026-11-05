@@ -67,7 +67,7 @@ def lake(tmp_path: Path) -> LakeConfig:
         ),
     )
     store.put(
-        get_dataset("lahman", "People"),
+        get_dataset("lahman", "people"),
         pa.table(
             {
                 "playerID": ["ohtansh01", "troutmi01", "degroja01"],
@@ -202,9 +202,9 @@ def test_unregistered_dataset_directories_are_still_queryable(lake: LakeConfig) 
     from baseballpy.sources.lahman.api import lahman_spec
 
     table = pa.table({"playerID": ["a"], "awardID": ["MVP"]})
-    ProcessedStore(lake).put(lahman_spec("AwardsPlayers", table.schema), table)
+    ProcessedStore(lake).put(lahman_spec("awards_players", table.schema), table)
     con = BaseballDatabase(db_path=":memory:", cache_config=lake).connect()
-    assert con.execute("SELECT count(*) FROM lahman_awardsplayers").fetchone() == (1,)
+    assert con.execute("SELECT count(*) FROM lahman_awards_players").fetchone() == (1,)
 
 
 def test_season_catalog_and_crosswalk_views(lake: LakeConfig) -> None:
@@ -258,3 +258,20 @@ def test_deleting_the_cache_loses_no_dataset_and_every_view_still_resolves(
     assert after_db.execute("SELECT count(*) FROM statcast_pitches").fetchone() == before == (4,)
     assert after_db.execute("SELECT count(*) FROM chadwick_register").fetchone() == (3,)
     assert after_db.execute("SELECT count(*) FROM lahman_people").fetchone() == (3,)
+
+
+def test_sync_drops_a_view_whose_data_folder_is_gone(lake: LakeConfig, tmp_path: Path) -> None:
+    """After a rename or a deleted dataset the old view must not stay behind and fail queries."""
+    import shutil
+
+    db_file = tmp_path / "databases" / "stale.duckdb"
+    sync_database(db_path=db_file, cache_config=lake)
+    shutil.rmtree(lake.processed_dir("lahman", "people"))
+    sync_database(db_path=db_file, cache_config=lake)
+    con = duckdb.connect(str(db_file), read_only=True)
+    names = {
+        r[0] for r in con.execute("SELECT table_name FROM information_schema.tables").fetchall()
+    }
+    con.close()
+    assert "lahman_people" not in names
+    assert {"statcast_pitches", "chadwick_register", "v_season_catalog"} <= names

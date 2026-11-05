@@ -17,7 +17,7 @@ from baseballpy.core.quality import duplicate_rows, orphan_rows
 from baseballpy.sources.lahman.schema import LAHMAN_PRIMARY_KEYS
 
 #: tables whose newest yearID shows whether the release is current
-FRESHNESS_TABLES = {"Batting": "yearID", "Teams": "yearID"}
+FRESHNESS_TABLES = {"batting": "yearID", "teams": "yearID"}
 #: prefix of the finding keys written by the relationship checks
 ORPHAN_PREFIX = "orphan_rows:"
 
@@ -34,7 +34,7 @@ class ForeignKey:
 
     @property
     def label(self) -> str:
-        """The finding key, for example ``orphan_rows:playerID->People``."""
+        """The finding key, for example ``orphan_rows:playerID->people``."""
         return f"{ORPHAN_PREFIX}{'+'.join(self.columns)}->{self.parent}"
 
     def applies_to(self, table_name: str, column_names: list[str]) -> bool:
@@ -47,11 +47,11 @@ class ForeignKey:
 
 
 FOREIGN_KEYS: tuple[ForeignKey, ...] = (
-    ForeignKey(None, ("playerID",), "People", ("playerID",)),
-    ForeignKey(None, ("yearID", "teamID"), "Teams", ("yearID", "teamID")),
-    ForeignKey("Teams", ("franchID",), "TeamsFranchises", ("franchID",)),
-    ForeignKey("HomeGames", ("parkkey",), "Parks", ("parkkey",)),
-    ForeignKey("CollegePlaying", ("schoolID",), "Schools", ("schoolID",)),
+    ForeignKey(None, ("playerID",), "people", ("playerID",)),
+    ForeignKey(None, ("yearID", "teamID"), "teams", ("yearID", "teamID")),
+    ForeignKey("teams", ("franchID",), "teams_franchises", ("franchID",)),
+    ForeignKey("home_games", ("parkkey",), "parks", ("parkkey",)),
+    ForeignKey("college_playing", ("schoolID",), "schools", ("schoolID",)),
 )
 #: tables that are the parent of some relationship
 PARENT_TABLES = frozenset(fk.parent for fk in FOREIGN_KEYS)

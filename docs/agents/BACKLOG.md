@@ -430,3 +430,4 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-245 | project-local-data-folder 1.1-1.4: default `.baseballpy` in the project folder, ignore, tests, docs, ADR 62 | DONE | `tests/test_default_home.py` passes |
 | B-246 | readable-lake-names 1.1-1.4: short part names, clash guard, `_manifest.json`, tests, docs, ADR 63 | DONE | `tests/test_part_names.py` passes |
 | B-247 | tolerant-box-cells 1.1-1.3: bad box-account cells to NULL + quarantine, tests, ADR 64, 22 seasons re-run | DONE | 22 of 22 seasons completed, `catalog audit` clean |
+| B-248 | underscore-table-names 1.1-1.4: one underscore name per table, naming test, ADR 65, how-to guide, Lahman reloaded | DONE | `tests/test_table_names.py` passes |

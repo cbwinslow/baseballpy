@@ -84,7 +84,7 @@ def test_fingerprints_one_entry_per_file_and_documents_are_kept(tmp_path: Path) 
     source = LahmanSource(cfg)
     assert len(source.batting()) == 2
 
-    chunks = source.extractor.manifest_for("Batting").chunks()
+    chunks = source.extractor.manifest_for("batting").chunks()
     assert list(chunks) == ["Batting.csv"]  # exactly one entry per raw file
     entry = chunks["Batting.csv"]
     assert entry["records_count"] == 2 and entry["source_ref"] == repo.ref
@@ -95,7 +95,7 @@ def test_fingerprints_one_entry_per_file_and_documents_are_kept(tmp_path: Path) 
         ":data/Batting.csv"
     )
     # the processed Parquet remembers which raw file it was built from
-    processed = cfg.dataset_manifest("lahman", "Batting").get_chunk("data")
+    processed = cfg.dataset_manifest("lahman", "batting").get_chunk("data")
     assert stored_fingerprint(processed) == fingerprint
 
     # README, licence and the data dictionary are kept with hashes
@@ -117,7 +117,7 @@ def test_a_second_process_serves_both_tiers_without_any_request(tmp_path: Path) 
     LahmanSource(LakeConfig(home=tmp_path)).batting()
     calls = len(respx.calls)
     again = LahmanSource(LakeConfig(home=tmp_path))  # empty memory: tiers are really checked
-    loaded = again.load_table("Batting")
+    loaded = again.load_table("batting")
     assert loaded.from_cache and len(loaded.table) == 2
     assert len(respx.calls) == calls  # the pinned tree listing is cached on disk, nothing fetched
 
@@ -132,9 +132,9 @@ def test_moving_the_pin_refetches_the_raw_file_and_rebuilds_the_parquet(
     monkeypatch.setenv("BASEBALLPY_LAHMAN_REF", new_ref)
     _repo(BATTING_V2, "blob-batting-2", ref=new_ref).mount()
     source = LahmanSource(LakeConfig(home=tmp_path))
-    loaded = source.load_table("Batting")
+    loaded = source.load_table("batting")
     assert not loaded.from_cache and len(loaded.table) == 3  # raw AND processed were replaced
-    entry = source.extractor.file_entry("Batting")
+    entry = source.extractor.file_entry("batting")
     assert entry is not None and stored_fingerprint(entry).value == "blob-batting-2"  # type: ignore[union-attr]
     assert len(LahmanSource(LakeConfig(home=tmp_path)).batting()) == 3
 
@@ -149,7 +149,7 @@ def test_an_unchanged_blob_under_a_new_pin_is_not_downloaded_again(
     same = _repo(ref="c" * 40)  # new commit, same blob SHAs: the file did not change
     same.mount()
     before = same.raw_calls()
-    assert LahmanSource(LakeConfig(home=tmp_path)).load_table("Batting").from_cache
+    assert LahmanSource(LakeConfig(home=tmp_path)).load_table("batting").from_cache
     assert same.raw_calls() == before
 
 
@@ -168,7 +168,7 @@ def test_offline_without_a_cached_listing_the_pinned_commit_decides(
     )
     raw_before = repo.raw_calls()
     with caplog.at_level("WARNING"):
-        loaded = LahmanSource(cfg).load_table("Batting")
+        loaded = LahmanSource(cfg).load_table("batting")
     assert loaded.from_cache and repo.raw_calls() == raw_before
     assert "could not list" in caplog.text
 
@@ -183,17 +183,17 @@ def test_tables_are_remembered_in_process_and_noticed_when_the_parquet_changes(
     table = first.batting()
     assert first.get_table("batting") is table  # any letter case, same object, no work
     other = LahmanSource(cfg)
-    other.get_table("Batting", refresh=True)  # rewrites the Parquet
+    other.get_table("batting", refresh=True)  # rewrites the Parquet
     assert first.batting() is not table  # the stamp changed, so it is read again
     first.clear_cache()
     assert first.batting() is not table
 
 
 def test_table_names_ignore_letter_case_and_unknown_names_list_the_27() -> None:
-    assert canonical_table_name("batting") == "Batting"
-    assert canonical_table_name(" HALLOFFAME ") == "HallOfFame"
-    assert canonical_table_name(LahmanTable.PEOPLE) == "People"
-    with pytest.raises(ValueError, match=r"unknown table 'nope'.*AllstarFull.*TeamsHalf"):
+    assert canonical_table_name("batting") == "batting"
+    assert canonical_table_name(" HALLOFFAME ") == "hall_of_fame"
+    assert canonical_table_name(LahmanTable.PEOPLE) == "people"
+    with pytest.raises(ValueError, match=r"unknown table 'nope'.*allstar_full.*teams_half"):
         canonical_table_name("nope")
 
 
@@ -203,7 +203,9 @@ def test_enum_registry_and_generated_tables_name_the_same_27_tables() -> None:
     catalog.register_all()
     registry = {d.name for d in datasets_for("lahman")}
     enum = {t.value for t in LahmanTable}
-    assert len(enum) == 27 and registry == enum == set(LAHMAN_COLUMNS) == set(LAHMAN_KEYS)
+    assert len(enum) == 27 and registry == enum
+    assert {canonical_table_name(k) for k in LAHMAN_COLUMNS} == enum
+    assert {canonical_table_name(k) for k in LAHMAN_KEYS} == enum
 
 
 @respx.mock
@@ -230,7 +232,7 @@ def test_ingest_jobs_report_cache_hits(tmp_path: Path) -> None:
     assert first.rows == second.rows == 2
     assert not first.cache_hit and second.cache_hit
     planned = adapter.plan(Selection(datasets=("batting", "PEOPLE")))
-    assert [j.param("name") for j in planned] == ["Batting", "People"]
+    assert [j.param("name") for j in planned] == ["batting", "people"]
 
 
 def _zip(members: dict[str, bytes]) -> bytes:
@@ -263,7 +265,7 @@ def test_import_keeps_documents_and_unknown_csvs_raw_only_and_ignores_the_rest(
     with caplog.at_level("WARNING"):
         assert source.import_archive(archive) == 2
     report = source.last_import
-    assert sorted(report.tables) == ["Batting", "People"]
+    assert sorted(report.tables) == ["batting", "people"]
     assert sorted(report.documents) == ["LICENSE", "readme2025.txt"]
     assert report.raw_only == ["Extra"]
     assert "not one of the 27 Lahman tables" in caplog.text
@@ -272,11 +274,11 @@ def test_import_keeps_documents_and_unknown_csvs_raw_only_and_ignores_the_rest(
     assert not cfg.processed_dir("lahman", "Extra").exists()
     assert source.raw.get("lahman", DOCUMENT_DATASET, "LICENSE") == b"licence"
     # supplied data: one entry per file, content fingerprint, authoritative, served without network
-    entry = source.extractor.file_entry("Batting")
+    entry = source.extractor.file_entry("batting")
     assert entry is not None and entry["source_ref"] == LOCAL_IMPORT
     assert stored_fingerprint(entry).kind == CONTENT_SHA256  # type: ignore[union-attr]
-    assert source.extractor.is_local("Batting")
-    assert LahmanSource(cfg).load_table("Batting").from_cache
+    assert source.extractor.is_local("batting")
+    assert LahmanSource(cfg).load_table("batting").from_cache
 
 
 @respx.mock
@@ -292,7 +294,7 @@ def test_mixing_a_supplied_table_with_a_mirror_table_warns_once(
     with caplog.at_level("WARNING"):
         source.batting()
     assert caplog.text.count("mixed Lahman release") == 1
-    assert "People" in caplog.text
+    assert "people" in caplog.text
 
 
 @respx.mock
@@ -337,19 +339,19 @@ def test_findings_do_not_depend_on_the_order_tables_are_stored_in(tmp_path: Path
     cfg = LakeConfig(home=tmp_path)
     source = LahmanSource(cfg)
     source._import_csv("Batting.csv", BATTING_ROWS.encode())  # stored BEFORE its parents exist
-    manifest = cfg.dataset_manifest("lahman", "Batting")
+    manifest = cfg.dataset_manifest("lahman", "batting")
     assert "quality" not in (manifest.get_chunk("data") or {})  # nothing to compare with yet
 
     source._import_csv("People.csv", _csv("playerID", "known01"))
     quality = manifest.get_chunk("data")["quality"]  # type: ignore[index]
-    assert quality == {"orphan_rows:playerID->People": 1}
+    assert quality == {"orphan_rows:playerID->people": 1}
 
     source._import_csv("Teams.csv", _csv("yearID,teamID,lgID", "2025,BOS,AL"))
     quality = manifest.get_chunk("data")["quality"]  # type: ignore[index]
-    assert quality == {"orphan_rows:playerID->People": 1, "orphan_rows:yearID+teamID->Teams": 1}
+    assert quality == {"orphan_rows:playerID->people": 1, "orphan_rows:yearID+teamID->teams": 1}
 
     source._import_csv("People.csv", _csv("playerID", "known01", "ghost01"))  # the parent grows
-    assert manifest.get_chunk("data")["quality"] == {"orphan_rows:yearID+teamID->Teams": 1}  # type: ignore[index]
+    assert manifest.get_chunk("data")["quality"] == {"orphan_rows:yearID+teamID->teams": 1}  # type: ignore[index]
     source._import_csv("Teams.csv", _csv("yearID,teamID,lgID", "2025,BOS,AL", "2024,ZZZ,AL"))
     assert "quality" not in manifest.get_chunk("data")  # type: ignore[operator]
 
@@ -361,10 +363,10 @@ def test_empty_ids_are_not_orphans_and_other_relationships_are_checked(tmp_path:
     parent = pa.table({"schoolID": ["a", "b"]})
     assert quality.orphan_rows(child, ("schoolID",), parent, ("schoolID",)) == 1
     findings = quality.foreign_key_findings(
-        "CollegePlaying", child, lambda name: parent if name == "Schools" else None
+        "college_playing", child, lambda name: parent if name == "schools" else None
     )
-    assert findings == {"orphan_rows:schoolID->Schools": 1}
-    assert quality.foreign_key_findings("Parks", child, lambda _: parent) == {}  # not a child
+    assert findings == {"orphan_rows:schoolID->schools": 1}
+    assert quality.foreign_key_findings("parks", child, lambda _: parent) == {}  # not a child
 
 
 def test_catalog_status_shows_the_findings(tmp_path: Path) -> None:
@@ -379,13 +381,13 @@ def test_catalog_status_shows_the_findings(tmp_path: Path) -> None:
     source._import_csv("People.csv", _csv("playerID", "known01"))
     source._import_csv("Batting.csv", BATTING_ROWS.encode())
     status = {s.dataset: s for s in scan_lake(LakeConfig())}
-    assert status["Batting"].quality == {"orphan_rows:playerID->People": 1}
-    assert status["People"].quality == {}
+    assert status["batting"].quality == {"orphan_rows:playerID->people": 1}
+    assert status["people"].quality == {}
     out = CliRunner().invoke(main, ["catalog", "status", "--source", "lahman", "--json"])
     rows = {r["dataset"]: r for r in map(json.loads, out.output.splitlines()) if "dataset" in r}
-    assert rows["Batting"]["quality"] == {"orphan_rows:playerID->People": 1}
+    assert rows["batting"]["quality"] == {"orphan_rows:playerID->people": 1}
     table = CliRunner().invoke(main, ["catalog", "status", "--source", "lahman"])
-    assert "data quality lahman.Batting: orphan_rows:playerID->People=1" in " ".join(
+    assert "data quality lahman.batting: orphan_rows:playerID->people=1" in " ".join(
         table.output.split()
     )
 
@@ -395,15 +397,15 @@ def test_a_raw_file_stored_without_a_fingerprint_is_not_rebuilt_in_every_process
 ) -> None:
     cfg = LakeConfig(home=tmp_path)
     # what the previous version stored for a supplied file: no upstream, no etag
-    RawStore(cfg).put("lahman", "People", "People.csv", PEOPLE.encode(), source_ref=LOCAL_IMPORT)
+    RawStore(cfg).put("lahman", "people", "People.csv", PEOPLE.encode(), source_ref=LOCAL_IMPORT)
     first = LahmanSource(cfg)
-    first.load_table("People")
-    parquet = first.store.part_path(lahman_spec("People"), "data")
+    first.load_table("people")
+    parquet = first.store.part_path(lahman_spec("people"), "data")
     stamp = parquet.stat().st_mtime_ns
     for _ in range(2):  # new objects stand for new processes: nothing may be rewritten
-        again = LahmanSource(cfg).load_table("People")
+        again = LahmanSource(cfg).load_table("people")
         assert again.from_cache and parquet.stat().st_mtime_ns == stamp
-    entry = LahmanSource(cfg).extractor.file_entry("People")
+    entry = LahmanSource(cfg).extractor.file_entry("people")
     assert entry is not None and "sha256" in entry
 
 

@@ -66,3 +66,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-04: `project-local-data-folder` (B-245) closed and archived (ADR 62): default data folder is `.baseballpy` in the project folder; backfill ranges decided (Lahman/Chadwick/Retrosheet all history, Statcast/MLB API 2008 to now).
 - 2026-11-04 (later): `readable-lake-names` (B-246) closed and archived (ADR 63): short part names, `_manifest.json`, every reader checked.
 - 2026-11-05: `tolerant-box-cells` (B-247) closed and archived (ADR 64): first all-history Retrosheet run failed 22 seasons on bad cells; fixed and re-run.
+- 2026-11-05: `underscore-table-names` (B-248) closed and archived (ADR 65): one underscore name per table, enforced by a test.

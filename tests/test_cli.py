@@ -43,7 +43,7 @@ def test_migrate_layout_dry_run_and_real_run(
 
     real = CliRunner().invoke(main, ["migrate-layout"])
     assert real.exit_code == 0, real.output
-    assert (tmp_path / "processed" / "lahman" / "Batting" / "part-data.parquet").exists()
+    assert (tmp_path / "processed" / "lahman" / "batting" / "part-data.parquet").exists()
     assert (tmp_path / "VERSION").read_text().strip() == "2"
 
     again = CliRunner().invoke(main, ["migrate-layout"])
@@ -59,7 +59,7 @@ def test_db_sync_creates_views(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     monkeypatch.setenv("BASEBALLPY_HOME", str(tmp_path))
     reset_config()
     catalog.register_all()
-    ProcessedStore(LakeConfig()).put(get_dataset("lahman", "People"), pa.table({"playerID": ["a"]}))
+    ProcessedStore(LakeConfig()).put(get_dataset("lahman", "people"), pa.table({"playerID": ["a"]}))
     result = CliRunner().invoke(main, ["db", "sync"])
     assert result.exit_code == 0, result.output
     assert "views" in result.output

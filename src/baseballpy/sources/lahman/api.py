@@ -30,7 +30,12 @@ from baseballpy.sources.lahman.quality import (
     foreign_key_findings,
     quality_report,
 )
-from baseballpy.sources.lahman.schema import LAHMAN_SCHEMAS, LahmanTable, canonical_table_name
+from baseballpy.sources.lahman.schema import (
+    LAHMAN_SCHEMAS,
+    LahmanTable,
+    canonical_table_name,
+    upstream_name,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +51,7 @@ def lahman_spec(table_name: str, schema: pa.Schema | None = None) -> DatasetSpec
     return DatasetSpec(
         source="lahman",
         name=table_name,
-        view=f"lahman_{table_name.lower()}",
+        view=f"lahman_{table_name}",
         schema=schema or pa.schema([]),
         partition="none",
         keys=(),
@@ -127,7 +132,7 @@ class LahmanSource:
         self.raw.put(
             "lahman",
             table_name,
-            f"{table_name}.csv",
+            f"{upstream_name(table_name)}.csv",
             data,
             source_ref=LOCAL_IMPORT,
             upstream=fingerprint,
@@ -160,9 +165,11 @@ class LahmanSource:
         lower = filename.lower()
         if lower.endswith(".csv"):
             kind = self._import_csv(filename, data)
-            (self.last_import.tables if kind == "table" else self.last_import.raw_only).append(
-                Path(filename).stem
-            )
+            stem = Path(filename).stem
+            if kind == "table":
+                self.last_import.tables.append(canonical_table_name(stem))
+            else:
+                self.last_import.raw_only.append(stem)
         elif _is_document(filename):
             self._import_document(filename, data)
             self.last_import.documents.append(Path(filename).name)

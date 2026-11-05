@@ -212,3 +212,12 @@ A processed part file MUST be named `part-<chunk>.parquet` where `<chunk>` is th
 - **THEN** DuckDB, polars, pandas and pyarrow each return the same row count
 - **AND** an old `manifest.json` is renamed to `_manifest.json` the first time the manifest is opened.
 - Verified by `tests/test_part_names.py::test_every_reader_sees_the_same_rows_in_the_renamed_tree` and `tests/test_part_names.py::test_a_manifest_with_the_old_name_is_renamed_on_first_use`.
+
+### Requirement: Database Sync Drops Views of Deleted Data
+`baseballpy db sync` MUST drop every view whose dataset folder no longer holds Parquet (keeping `v_player_crosswalk` and `v_season_catalog`), so a renamed or deleted dataset never leaves a view that fails when queried; the database holds views only, so nothing is lost.
+
+#### Scenario: A deleted dataset loses its view
+- **GIVEN** a synced database and a dataset folder that is then deleted
+- **WHEN** the database is synced again
+- **THEN** the dataset's view is gone and the other views remain
+- Verified by `tests/test_database.py::test_sync_drops_a_view_whose_data_folder_is_gone`.

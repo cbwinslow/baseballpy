@@ -76,13 +76,13 @@ def test_lahman_extractor_and_caching(tmp_path: Path) -> None:
     assert batting_table["HR"].to_pylist() == [54, 58]
 
     # Verify two-tier directory structures exist
-    raw_file = cache_config.raw_dir("lahman", "Batting") / "Batting.csv"
-    processed_file = cache_config.processed_dir("lahman", "Batting") / "part-data.parquet"
+    raw_file = cache_config.raw_dir("lahman", "batting") / "Batting.csv"
+    processed_file = cache_config.processed_dir("lahman", "batting") / "part-data.parquet"
     assert raw_file.exists()
     assert processed_file.exists()
 
     # Verify manifest: one completed entry per raw file
-    assert source.extractor.manifest_for("Batting").is_completed("Batting.csv")
+    assert source.extractor.manifest_for("batting").is_completed("Batting.csv")
 
     # 2. Second fetch reads directly from local Parquet cache without network calls
     respx.get(f"{LAHMAN_GITHUB_BASE}/Batting.csv").mock(return_value=httpx.Response(500))
@@ -105,8 +105,8 @@ def test_lahman_import_local_archive_zip(tmp_path: Path) -> None:
     assert imported_count == 2
 
     # Verify files in processed/
-    people_parquet = cache_config.processed_dir("lahman", "People") / "part-data.parquet"
-    batting_parquet = cache_config.processed_dir("lahman", "Batting") / "part-data.parquet"
+    people_parquet = cache_config.processed_dir("lahman", "people") / "part-data.parquet"
+    batting_parquet = cache_config.processed_dir("lahman", "batting") / "part-data.parquet"
     assert people_parquet.exists()
     assert batting_parquet.exists()
 

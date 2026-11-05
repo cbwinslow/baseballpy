@@ -245,7 +245,7 @@ def build_lahman(http: HttpClient) -> dict[str, Any]:
     sections = lahman_sections(http.get_sync(LAHMAN_README).content.decode("utf-8", "replace"))
     out: dict[str, Any] = {"_sources": {"lahman_readme": LAHMAN_README}}
     for dataset, column in columns_of("lahman"):
-        found = sections.get(dataset.lower(), {})
+        found = sections.get(dataset.replace("_", "").lower(), {})  # readme headings are compact
         match = next((v for k, v in found.items() if k.lower() == column.lower()), None)
         if match:
             out.setdefault(dataset, {})[column] = {"text": match, "source": "lahman_readme"}

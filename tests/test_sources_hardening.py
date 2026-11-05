@@ -441,7 +441,7 @@ def test_lahman_normalizer_preserves_unknown_columns_and_quarantines_bad_cells(
         "badrow01,notayear,1,ML1,NL,1,8\n"
     )
     with caplog.at_level("WARNING"):
-        table = LahmanNormalizer(quarantine=q).normalize(csv, table_name="Batting")
+        table = LahmanNormalizer(quarantine=q).normalize(csv, table_name="batting")
     assert "newMetric" not in table.column_names
     assert [json.loads(x) for x in table["_extras"].to_pylist()] == [
         {"newMetric": "7"},
@@ -469,10 +469,10 @@ def test_lahman_cache_requires_manifest_completion(tmp_path: Path) -> None:
     )
     try:
         # A leftover, never-completed file must NOT be trusted as a cache hit.
-        ext.get_raw_path("Parks").parent.mkdir(parents=True)
-        ext.get_raw_path("Parks").write_bytes(b"corrupt partial")
-        assert ext.extract_table("Parks") == b"parkkey\nBOS07\n"
-        assert ext.extract_table("Parks") == b"parkkey\nBOS07\n"
+        ext.get_raw_path("parks").parent.mkdir(parents=True)
+        ext.get_raw_path("parks").write_bytes(b"corrupt partial")
+        assert ext.extract_table("parks") == b"parkkey\nBOS07\n"
+        assert ext.extract_table("parks") == b"parkkey\nBOS07\n"
     finally:
         http.close()
     assert route.call_count == 1

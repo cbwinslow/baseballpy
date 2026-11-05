@@ -85,8 +85,8 @@ def test_every_reader_sees_the_same_rows_in_the_renamed_tree(tmp_path: Path) -> 
 
 def test_a_manifest_with_the_old_name_is_renamed_on_first_use(tmp_path: Path) -> None:
     cfg = LakeConfig(home=tmp_path)
-    folder = cfg.processed_dir("lahman", "Batting")
+    folder = cfg.processed_dir("lahman", "batting")
     folder.mkdir(parents=True)
     (folder / "manifest.json").write_text('{"chunks": {}}', encoding="utf-8")
-    cfg.dataset_manifest("lahman", "Batting")
+    cfg.dataset_manifest("lahman", "batting")
     assert (folder / "_manifest.json").exists() and not (folder / "manifest.json").exists()

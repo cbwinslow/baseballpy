@@ -170,13 +170,13 @@ def test_resume_with_the_real_adapter_fetches_only_what_is_incomplete(tmp_path: 
         armed = True
 
         def run(self, job: Job, *, refresh: bool = False) -> JobResult:
-            if self.armed and job.param("name") == "People":
+            if self.armed and job.param("name") == "people":
                 self.armed = False
                 raise KeyboardInterrupt
             return super().run(job, refresh=refresh)
 
     adapter = CtrlCOnPeople(source=LahmanSource(cache_config=LakeConfig(home=tmp_path)))
-    plan = parse_plan({"stage": [{"sources": ["lahman"], "datasets": ["Batting", "People"]}]})
+    plan = parse_plan({"stage": [{"sources": ["lahman"], "datasets": ["batting", "people"]}]})
     respx.get(url__startswith="https://api.github.com/repos/").mock(
         return_value=httpx.Response(500)  # no file listing: the pinned commit decides
     )
@@ -204,7 +204,7 @@ def test_the_cli_dry_run_plans_without_running(
     monkeypatch.setenv("BASEBALLPY_HOME", str(tmp_path))
     path = tmp_path / "plan.toml"
     path.write_text(
-        '[[stage]]\nname = "tables"\nsources = ["lahman"]\ndatasets = ["Batting"]\nestimate_gb = 0.1\n',
+        '[[stage]]\nname = "tables"\nsources = ["lahman"]\ndatasets = ["batting"]\nestimate_gb = 0.1\n',
         encoding="utf-8",
     )
     result = CliRunner().invoke(main, ["backfill", str(path), "--dry-run"])

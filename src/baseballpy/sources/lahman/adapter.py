@@ -27,21 +27,29 @@ class LahmanAdapter:
 
     def plan(self, selection: Selection) -> list[Job]:
         """Generate planned jobs matching the given selection."""
+        from baseballpy.sources.lahman.schema import LahmanTable, canonical_table_name
+
         if self._source is not None:
             available_tables = self._source.list_tables()
         else:
-            from baseballpy.sources.lahman.schema import LahmanTable
-
             available_tables = [t.value for t in LahmanTable]
 
-        by_lower = {name.lower(): name for name in available_tables}
         if selection.datasets:
-            unknown = [d for d in selection.datasets if d.lower() not in by_lower]
+            known = set(available_tables)
+            wanted = []
+            unknown = []
+            for dataset in selection.datasets:
+                try:
+                    name = canonical_table_name(dataset)  # any spelling: BattingPost, batting_post
+                except ValueError:
+                    unknown.append(dataset)
+                    continue
+                if name in known:
+                    wanted.append(name)
+                else:
+                    unknown.append(dataset)
             if unknown:
-                raise ValueError(
-                    f"unknown table(s) for lahman: {unknown}; known: {sorted(by_lower.values())}"
-                )
-            wanted = [by_lower[d.lower()] for d in selection.datasets]  # names ignore letter case
+                raise ValueError(f"unknown table(s) for lahman: {unknown}; known: {sorted(known)}")
         else:
             wanted = list(available_tables)
 

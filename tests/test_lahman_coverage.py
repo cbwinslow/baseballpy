@@ -26,6 +26,7 @@ from baseballpy.sources.lahman.schema import (
     LAHMAN_PRIMARY_KEYS,
     LAHMAN_SCHEMAS,
     LahmanTable,
+    upstream_name,
 )
 
 FIXTURES = Path(__file__).parent / "fixtures" / "lahman"
@@ -58,7 +59,7 @@ def test_fixture_normalizes_to_the_exact_schema_without_loss(
     from baseballpy.core.quarantine import Quarantine
 
     q = Quarantine(QuarantineConfig(base_dir=tmp_path))
-    raw = (FIXTURES / f"{table}.csv").read_bytes()
+    raw = (FIXTURES / f"{upstream_name(table)}.csv").read_bytes()
     with caplog.at_level("WARNING"):
         out = LahmanNormalizer(quarantine=q).normalize(raw, table_name=table)
     assert out.schema.equals(LAHMAN_SCHEMAS[table])
@@ -74,7 +75,7 @@ def test_fixture_normalizes_to_the_exact_schema_without_loss(
 def test_people_fixture_handles_bom_and_surrogate_id() -> None:
     raw = (FIXTURES / "People.csv").read_bytes()
     assert raw.startswith(b"\xef\xbb\xbf")
-    table = LahmanNormalizer().normalize(raw, table_name="People")
+    table = LahmanNormalizer().normalize(raw, table_name="people")
     assert table.schema.field("ID").type == pa.int32()
     assert table["ID"].to_pylist()[:2] == [1, 2]
     assert table.schema.field("debut").type == pa.date32()
@@ -83,7 +84,7 @@ def test_people_fixture_handles_bom_and_surrogate_id() -> None:
 def test_extra_and_missing_columns_never_drop_data() -> None:
     schema_tools.reset_drift_warnings()
     raw = "yearID,teamID,lgID,franchID,brandNew\n2024,BOS,AL,BOS,x\n"
-    table = LahmanNormalizer().normalize(raw, table_name="Teams")
+    table = LahmanNormalizer().normalize(raw, table_name="teams")
     row = {k: v[0] for k, v in table.to_pydict().items()}
     assert row["yearID"] == 2024 and row["Rank"] is None  # missing column -> NULL
     assert json.loads(str(row["_extras"])) == {"brandNew": "x"}
@@ -91,7 +92,7 @@ def test_extra_and_missing_columns_never_drop_data() -> None:
 
 def test_reordered_headers_are_mapped_by_name() -> None:
     raw = "G,playerID,stint,yearID\n10,a01,1,2020\n"
-    table = LahmanNormalizer().normalize(raw, table_name="Batting")
+    table = LahmanNormalizer().normalize(raw, table_name="batting")
     assert table["playerID"].to_pylist() == ["a01"] and table["G"].to_pylist() == [10]
 
 
@@ -110,17 +111,17 @@ def test_quality_checks_report_duplicates_orphans_and_stale_data() -> None:
     )
     people = pa.table({"playerID": ["a", "b"]})
     report = quality.quality_report(
-        "Batting",
+        "batting",
         batting,
-        parents=lambda parent: people if parent == "People" else None,
+        parents=lambda parent: people if parent == "people" else None,
         today=date(2026, 6, 1),
     )
     assert report["duplicate_key_rows"] == 1
-    assert report["orphan_rows:playerID->People"] == 1
+    assert report["orphan_rows:playerID->people"] == 1
     assert "stale" in report and "2000" in str(report["stale"])
     current = pa.table({"playerID": ["a"], "yearID": [2025], "stint": [1]})
     assert (
-        quality.quality_report("Batting", current, parents=lambda _: None, today=date(2026, 6, 1))
+        quality.quality_report("batting", current, parents=lambda _: None, today=date(2026, 6, 1))
         == {}
     )
 
@@ -144,17 +145,24 @@ def test_import_archive_imports_all_27_as_local_import_and_never_hits_the_networ
     cfg = LakeConfig(home=tmp_path / "lake")
     archive = tmp_path / "lahman.zip"
     archive.write_bytes(
-        _zip_of({f"nested/{t}.csv": (FIXTURES / f"{t}.csv").read_bytes() for t in TABLES})
+        _zip_of(
+            {
+                f"nested/{upstream_name(t)}.csv": (
+                    FIXTURES / f"{upstream_name(t)}.csv"
+                ).read_bytes()
+                for t in TABLES
+            }
+        )
     )
     source = LahmanSource(cfg)
     assert source.import_archive(archive) == 27
-    entry = source.extractor.file_entry("Batting")
+    entry = source.extractor.file_entry("batting")
     assert entry is not None and entry["origin"] == LOCAL_IMPORT
     assert entry["source_ref"] == LOCAL_IMPORT and entry["records_count"] == 5
     # served from the imported data: pytest-socket would fail any network attempt
-    assert len(source.get_table("Batting")) == 5
-    assert source.extractor.extract_table("Batting").startswith(b"playerID")
-    raw = cfg.raw_dir("lahman", "People") / "People.csv"
+    assert len(source.get_table("batting")) == 5
+    assert source.extractor.extract_table("batting").startswith(b"playerID")
+    raw = cfg.raw_dir("lahman", "people") / "People.csv"
     assert raw.read_bytes().startswith(b"\xef\xbb\xbf")  # raw bytes stored untouched
     assert not list(tmp_path.rglob("*.part"))
 
@@ -196,9 +204,9 @@ def test_import_flags_stale_data_in_the_manifest(
     assert any("looks stale" in r.getMessage() for r in caplog.records)
     from baseballpy.core.datasets import get_dataset
 
-    entry = cfg.dataset_manifest("lahman", "Batting").get_chunk("data")
+    entry = cfg.dataset_manifest("lahman", "batting").get_chunk("data")
     assert entry is not None and "stale" in entry["quality"]
-    assert get_dataset("lahman", "Batting")
+    assert get_dataset("lahman", "batting")
 
 
 @respx.mock
@@ -211,7 +219,7 @@ def test_remote_failure_names_import_archive_and_contacts_no_other_repo(tmp_path
     )
     try:
         with pytest.raises(LahmanSourceError, match="import_archive"):
-            ext.extract_table("Parks")
+            ext.extract_table("parks")
     finally:
         http.close()
     assert route.call_count == 1

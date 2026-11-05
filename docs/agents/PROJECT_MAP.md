@@ -9,7 +9,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 5 | 5 | 5 |
-| `caching-and-invalidation` | 17 | 29 | 41 |
+| `caching-and-invalidation` | 18 | 30 | 42 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 12 | 20 | 24 |
@@ -17,7 +17,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
-| `lahman-database` | 11 | 18 | 26 |
+| `lahman-database` | 11 | 18 | 29 |
 | `mlb-api-ingestion` | 27 | 39 | 41 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 7 | 12 | 12 |
@@ -41,7 +41,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-59 changes are archived under `openspec/changes/archive/`.
+60 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -116,9 +116,11 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 62: The Default Data Folder Is `.baseballpy` in the Project Folder
 - ADR 63: Short Part Names and `_manifest.json`
 - ADR 64: Bad Cells in Box Accounts Become NULL and Quarantine, Not a Failed Season
+- ADR 65: One Underscore Name per Table: Folder, Registry Key and View
 
 ## Documentation pages (`docs/`)
 
+- `docs/ADDING_DATA.md`
 - `docs/API.md`
 - `docs/ARCHITECTURE.md`
 - `docs/BACKFILL.md`

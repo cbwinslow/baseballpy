@@ -384,7 +384,7 @@ def test_mlb_api_adapter_run() -> None:
 
 class FakeLahmanSource:
     def __init__(self) -> None:
-        self.tables = ["People", "Batting", "Pitching"]
+        self.tables = ["people", "batting", "pitching"]
 
     def list_tables(self) -> list[str]:
         return list(self.tables)
@@ -393,7 +393,7 @@ class FakeLahmanSource:
         if table_name not in self.tables:
             raise KeyError(table_name)
         return SimpleNamespace(
-            table=pa.table({"col": [1, 2, 3]}), from_cache=table_name == "People"
+            table=pa.table({"col": [1, 2, 3]}), from_cache=table_name == "people"
         )
 
 
@@ -406,27 +406,27 @@ def test_lahman_adapter() -> None:
     # plan with empty seasons -> all tables
     jobs = adapter.plan(Selection(seasons=()))
     assert len(jobs) == 3
-    assert [j.param("name") for j in jobs] == ["People", "Batting", "Pitching"]
+    assert [j.param("name") for j in jobs] == ["people", "batting", "pitching"]
 
     # plan with datasets filter
-    jobs_filter = adapter.plan(Selection(datasets=("People",)))
+    jobs_filter = adapter.plan(Selection(datasets=("people",)))
     assert len(jobs_filter) == 1
-    assert jobs_filter[0].param("name") == "People"
+    assert jobs_filter[0].param("name") == "people"
 
     # plan with unknown table
     with pytest.raises(ValueError, match="unknown table"):
         adapter.plan(Selection(datasets=("NonExistent",)))
 
     # run table
-    res = adapter.run(make_job("lahman", "table", name="People"))
+    res = adapter.run(make_job("lahman", "table", name="people"))
     assert res.status == JobStatus.COMPLETED
     assert res.rows == 3 and res.cache_hit  # the source said this table came from a cache
-    assert not adapter.run(make_job("lahman", "table", name="Batting")).cache_hit
+    assert not adapter.run(make_job("lahman", "table", name="batting")).cache_hit
 
     # names ignore letter case and are reported back as the source spells them
     assert [j.param("name") for j in adapter.plan(Selection(datasets=("people", "BATTING")))] == [
-        "People",
-        "Batting",
+        "people",
+        "batting",
     ]
 
     # run unknown task

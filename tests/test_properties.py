@@ -116,7 +116,7 @@ def test_lahman_normalizer_survives_arbitrary_cells(
 ) -> None:
     q = Quarantine(QuarantineConfig(base_dir=tmp_path_factory.mktemp("q")))
     csv = "playerID,yearID,G\n" + "\n".join(",".join(r) for r in rows) + "\n"
-    table = LahmanNormalizer(quarantine=q).normalize(csv, table_name="Batting")
+    table = LahmanNormalizer(quarantine=q).normalize(csv, table_name="batting")
     assert table.schema.field("yearID").type == pa.int16()
     assert table.schema.field("playerID").type == pa.string()
 

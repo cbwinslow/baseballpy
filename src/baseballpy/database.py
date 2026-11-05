@@ -196,6 +196,20 @@ class BaseballDatabase:
             f"FROM (VALUES {values}) AS t(source, dataset, season, row_count, files)"
         )
 
+    def _drop_stale_views(self, con: duckdb.DuckDBPyConnection) -> None:
+        """Drop views whose data folder is gone (after a rename or a deleted dataset).
+
+        The database holds views only, so dropping loses nothing; without it a renamed table would
+        leave its old view behind and every query of it would fail.
+        """
+        keep = {*self.expected_views(), CROSSWALK_VIEW, SEASON_CATALOG_VIEW}
+        for (name,) in con.execute(
+            "SELECT table_name FROM information_schema.tables WHERE table_type = 'VIEW'"
+        ).fetchall():
+            if name not in keep:
+                logger.info("dropping stale view %s (its data folder is gone)", name)
+                con.execute(f"DROP VIEW IF EXISTS {quote_ident(name)}")
+
     def sync_views(self, con: duckdb.DuckDBPyConnection | None = None) -> int:
         """Create or replace a view per dataset that has Parquet on disk; returns the count."""
         if self.read_only and con is None:
@@ -237,6 +251,7 @@ class BaseballDatabase:
                         views_registered += 1
                 self._create_season_catalog(con)
                 views_registered += 1
+                self._drop_stale_views(con)
 
                 tracker.set_records(views_registered)
                 return views_registered
