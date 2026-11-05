@@ -59,6 +59,24 @@ def schema_matches(spec: DatasetSpec, entry: Mapping[str, Any] | None) -> bool:
     return bool(stored == spec_fingerprint(spec))
 
 
+def part_filename(dataset: str, chunk_id: str, season: int | None = None) -> str:
+    """File name of a processed part: the chunk id without what its folders already say (ADR 63).
+
+    The dataset name (``<dataset>_`` in front) and the season (``_<season>`` or ``<season>_``) are
+    dropped, so ``processed/mlb_api/award_recipients/season=2024/`` holds ``part-AAACMVP.parquet``
+    instead of ``part-award_recipients_2024_AAACMVP.parquet``; nothing left means ``part-data``.
+    """
+    name = _safe_chunk_id(chunk_id)
+    if name == dataset:
+        name = ""
+    elif name.startswith(dataset + "_"):
+        name = name[len(dataset) + 1 :]
+    if season is not None:
+        tokens = [t for t in name.split("_") if t != str(season)]
+        name = "_".join(tokens)
+    return f"part-{name or 'data'}.parquet"
+
+
 def manifest_key(name: str, season: int | None) -> str:
     """Manifest key for a chunk: ``season=YYYY/<name>`` when season-partitioned."""
     return f"season={season}/{name}" if season is not None else name
@@ -155,7 +173,21 @@ class ProcessedStore:
     def part_path(self, spec: DatasetSpec, chunk_id: str, season: int | None = None) -> Path:
         """Deterministic part file path so reruns overwrite rather than duplicate."""
         self._check_season(spec, season)
-        return self.dataset_dir(spec, season) / f"part-{_safe_chunk_id(chunk_id)}.parquet"
+        return self.dataset_dir(spec, season) / part_filename(spec.name, chunk_id, season)
+
+    def _refuse_name_clash(self, spec: DatasetSpec, chunk_id: str, season: int | None) -> None:
+        """Two different chunks must never share one file name (the second would overwrite the first)."""
+        mine = part_filename(spec.name, chunk_id, season)
+        key = manifest_key(chunk_id, season)
+        prefix = f"season={season}/" if season is not None else ""
+        for other in self.config.dataset_manifest(spec.source, spec.name, "processed").chunks():
+            if other == key or (prefix and not other.startswith(prefix)):
+                continue
+            name = other[len(prefix) :] if prefix else other
+            if "/" not in name and part_filename(spec.name, name, season) == mine:
+                raise ValueError(
+                    f"{spec.key}: chunks {chunk_id!r} and {name!r} would share the file {mine}"
+                )
 
     def put(
         self,
@@ -169,6 +201,7 @@ class ProcessedStore:
     ) -> Path:
         """Atomically write ``table`` (footer validated) and record the chunk in the manifest."""
         path = self.part_path(spec, chunk_id, season)
+        self._refuse_name_clash(spec, chunk_id, season)
         ensure_version_file(self.config)
         path.parent.mkdir(parents=True, exist_ok=True)
         atomic_write_parquet(table, path, compression=PARQUET_COMPRESSION)
@@ -200,6 +233,7 @@ class ProcessedStore:
         the atomic rename, exactly like :meth:`put`.
         """
         path = self.part_path(spec, chunk_id, season)
+        self._refuse_name_clash(spec, chunk_id, season)
         ensure_version_file(self.config)
         path.parent.mkdir(parents=True, exist_ok=True)
         total = 0

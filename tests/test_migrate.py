@@ -141,31 +141,31 @@ def test_full_migration_maps_every_dataset_and_verifies_rows(v1: LakeConfig) -> 
     assert (proc / "statcast/pitches/season=2024/part-2024-04-01_2024-04-05.parquet").exists()
     assert (proc / "statcast/pitches/season=2023/part-2023-04-01_2023-04-05.parquet").exists()
     assert (
-        proc / "statcast/leaderboard_bat_tracking/season=2024/part-bat_tracking_2024.parquet"
+        proc / "statcast/leaderboard_bat_tracking/season=2024/part-bat_tracking.parquet"
     ).exists()
     assert (
         proc
         / "statcast/leaderboard_expected_statistics/season=2024"
-        / "part-expected_statistics_2024_type-batter.parquet"
+        / "part-expected_statistics_type-batter.parquet"
     ).exists()
     assert (raw / "retrosheet/event_files/season=2023/2023BOS.EVA").exists()
     assert (raw / "retrosheet/event_files/season=2023/TEAM2023").exists()
     assert (raw / "retrosheet/rosters/season=2023/BOS2023.ROS").exists()
     assert (raw / "retrosheet/gamelogs/season=2023/GL2023.TXT").exists()
     assert (raw / "retrosheet/reference_teams/teams.csv").exists()
-    assert (proc / "retrosheet/events/season=2023/part-events.parquet").exists()
+    assert (proc / "retrosheet/events/season=2023/part-data.parquet").exists()
     assert (proc / "retrosheet/boxscores_batting/season=2023/part-batting.parquet").exists()
     assert (proc / "retrosheet/gamelogs/season=2023/part-gl2023.parquet").exists()
     assert (proc / "retrosheet/gamelogs_postseason/part-world_series.parquet").exists()
-    assert (proc / "retrosheet/rosters/season=2023/part-rosters_2023.parquet").exists()
+    assert (proc / "retrosheet/rosters/season=2023/part-data.parquet").exists()
     assert (proc / "retrosheet/reference_teams/part-data.parquet").exists()
     assert (raw / "lahman/Batting/Batting.csv").exists()
     assert (proc / "lahman/Batting/part-data.parquet").exists()
     assert (raw / "chadwick/register/people-0.csv").exists()
     assert (raw / "chadwick/register_names/names.csv").exists()
     assert (proc / "chadwick/register/part-data.parquet").exists()
-    assert (proc / "mlb_api/schedule/season=2024/part-schedule_2024.parquet").exists()
-    assert (proc / "mlb_api/teams/part-teams_mlb.parquet").exists()
+    assert (proc / "mlb_api/schedule/season=2024/part-data.parquet").exists()
+    assert (proc / "mlb_api/teams/part-mlb.parquet").exists()
     assert (proc / "mlb_api/box_batting/season=2024/part-100.parquet").exists()
     assert (proc / "mlb_api/box_pitching/season=2024/part-100.parquet").exists()
     assert not (proc / "mlb_api/box_batting/season=2024/part-999.parquet").exists()

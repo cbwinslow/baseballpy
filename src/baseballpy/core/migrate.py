@@ -24,7 +24,7 @@ from baseballpy.core.atomic import ManifestTracker, atomic_write, atomic_write_p
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LAYOUT_VERSION, LakeConfig
 from baseballpy.core.layout import V1_SOURCE_DIRS, detect_layout, v1_cache_root, write_version
-from baseballpy.core.stores import PARQUET_COMPRESSION, manifest_key
+from baseballpy.core.stores import PARQUET_COMPRESSION, manifest_key, part_filename
 
 logger = logging.getLogger(__name__)
 
@@ -141,6 +141,8 @@ class _Planner:
             if tier == "raw"
             else self.config.processed_dir(source, dataset, season)
         )
+        if tier == "processed" and dst_rel.startswith("part-") and dst_rel.endswith(".parquet"):
+            dst_rel = part_filename(dataset, dst_rel[len("part-") : -len(".parquet")], season)
         self.steps.append(Step(src, base / dst_rel, tier, source, dataset, kind, manifests))
         self.claimed.add(src)
 
@@ -564,7 +566,7 @@ class _Planner:
                 if not f.is_file() or f in self.claimed:
                     continue
                 if (
-                    f.name == "manifest.json"
+                    f.name in ("manifest.json", "_manifest.json")
                     or f.name.endswith((".lock", ".part"))
                     or ".corrupt-" in f.name
                 ):
@@ -616,9 +618,7 @@ def _copy_verified(step: Step, report: MigrationReport) -> None:
 def _migrate_events_postseason(step: Step, report: MigrationReport) -> None:
     """``events_all`` held regular + postseason rows: keep only games absent from ``events``."""
     table = pq.read_table(step.src)
-    regular = (
-        step.dst.parent.parent.parent / "events" / step.dst.parent.name / "part-events.parquet"
-    )
+    regular = step.dst.parent.parent.parent / "events" / step.dst.parent.name / "part-data.parquet"
     regular_src = step.src.with_name("events.parquet")
     reference = regular if regular.exists() else regular_src
     if reference.exists() and "GAME_ID" in table.column_names:
@@ -644,7 +644,7 @@ def _migrate_events_postseason(step: Step, report: MigrationReport) -> None:
 def _record_raw_file(step: Step, config: LakeConfig) -> None:
     """Give a migrated raw file its per-file manifest entry (bytes + sha256) so the v2
     downloader recognises it as already fetched instead of downloading it again."""
-    if step.tier != "raw" or step.dst.name == "manifest.json":
+    if step.tier != "raw" or step.dst.name in ("manifest.json", "_manifest.json"):
         return
     match = _SEASON_DIR.match(step.dst.parent.name)
     season = int(match.group(1)) if match else None

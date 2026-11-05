@@ -444,7 +444,7 @@ def test_endpoint_without_generated_schema_keeps_the_raw_json(
     first = extractor.ingest(empty, Context(season=2024))
     assert first.rows == 0 and first.raw_only >= 1 and route.call_count == first.requests
     raw = lake.raw_dir("mlb_api", empty.name, 2024)
-    assert [p for p in raw.glob("*.json") if p.name != "manifest.json"]
+    assert [p for p in raw.glob("*.json") if p.name != "_manifest.json"]
     again = extractor.ingest(empty, Context(season=2024))
     assert again.cached == again.requests and route.call_count == first.requests
 

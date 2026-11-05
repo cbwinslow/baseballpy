@@ -34,6 +34,9 @@ class EnvSettings(BaseSettings):
 PROJECT_MARKERS = ("pyproject.toml", ".git")
 #: the data folder inside a project folder, and the fallback inside the user's home
 DATA_DIRNAME = ".baseballpy"
+#: manifest file name: the leading underscore makes pandas/pyarrow folder reads skip it (ADR 63)
+MANIFEST_NAME = "_manifest.json"
+LEGACY_MANIFEST_NAME = "manifest.json"
 
 
 def find_project_root(start: Path | None = None) -> Path | None:
@@ -225,7 +228,7 @@ class LakeConfig(EnvSettings):
         tier: Literal["raw", "processed"] = "processed",
         season: int | None = None,
     ) -> "ManifestTracker":
-        """Manifest tracker at ``<tier>/<source>/<dataset>/[season=YYYY/]manifest.json``.
+        """Manifest tracker at ``<tier>/<source>/<dataset>/[season=YYYY/]_manifest.json``.
 
         Raw files are tracked per season directory (one manifest rewrite per file would otherwise
         grow quadratically with the number of seasons); processed chunks per dataset.
@@ -233,7 +236,11 @@ class LakeConfig(EnvSettings):
         from baseballpy.core.atomic import ManifestTracker
 
         root = self.raw_dir if tier == "raw" else self.processed_dir
-        return ManifestTracker(root(source, dataset, season) / "manifest.json")
+        folder = root(source, dataset, season)
+        legacy = folder / LEGACY_MANIFEST_NAME
+        if legacy.exists() and not (folder / MANIFEST_NAME).exists():
+            legacy.replace(folder / MANIFEST_NAME)  # one-time rename of a pre-ADR-63 manifest
+        return ManifestTracker(folder / MANIFEST_NAME)
 
     def today_or_now(self) -> date:
         """The configured ``today`` or the real current date."""

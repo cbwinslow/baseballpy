@@ -23,7 +23,7 @@ The Statcast Ingestion Engine extracts, chunks, normalizes, and caches pitch-by-
 
 ## 4. Two-Phase Atomic Writes & Checkpointing
 - All Parquet writes execute via `atomic_write_parquet()` writing to `.part` files and renaming atomically.
-- Partition chunk status recorded in `manifest.json`.
+- Partition chunk status recorded in `_manifest.json`.
 
 ---
 

@@ -82,7 +82,7 @@ If an operation is interrupted or raises an exception, the `.part` file MUST be 
 - Verified by `tests/test_hardening.py::test_atomic_write_cleans_up_on_keyboard_interrupt` and `tests/test_lake.py::test_put_stream_failure_leaves_no_part_or_final_file`.
 
 ### Requirement: Manifest Checkpoint Tracking
-Every partitioned source MUST maintain a `manifest.json` tracking chunk completion status (`COMPLETED`, `FAILED`), record counts, and remote ETags.
+Every partitioned source MUST maintain a `_manifest.json` tracking chunk completion status (`COMPLETED`, `FAILED`), record counts, and remote ETags.
 
 #### Scenario: Checkpoint inspection skips existing partitions
 - **GIVEN** a multi-season or multi-week query
@@ -114,8 +114,8 @@ Manifests MUST be safe under concurrent writers and MUST NOT silently discard co
 - Verified by `tests/test_hardening.py::test_manifest_concurrent_writers_do_not_lose_chunks`.
 
 #### Scenario: Corrupt manifest
-- **WHEN** `manifest.json` is invalid JSON
-- **THEN** it is preserved as `manifest.json.corrupt-<ts>` and an error is logged.
+- **WHEN** `_manifest.json` is invalid JSON
+- **THEN** it is preserved as `_manifest.json.corrupt-<ts>` and an error is logged.
 - Verified by `tests/test_hardening.py::test_corrupt_manifest_is_preserved_and_logged`.
 
 ### Requirement: Dead-Letter Quarantine
@@ -197,3 +197,18 @@ A dataset MAY declare a `revision`; it MUST be part of the digest stored with ea
 - **WHEN** a dataset's parser output changes but its columns do not, and its revision is raised
 - **THEN** chunks written before the change are treated as stale and rebuilt
 - Verified by `tests/test_lake.py::test_a_parser_revision_replaces_chunks_written_by_an_older_parser`.
+
+### Requirement: Short Part Names and a Hidden Manifest
+A processed part file MUST be named `part-<chunk>.parquet` where `<chunk>` is the chunk id without a leading `<dataset>_` and without the season token (`part-data.parquet` when nothing is left), so file names do not repeat what the folders say; two different chunks MUST never share one file name. The manifest file MUST be named `_manifest.json` (a pre-ADR-63 `manifest.json` is renamed on first use) so pandas and pyarrow folder reads skip it.
+
+#### Scenario: Names drop the dataset and the season
+- **WHEN** the chunk `award_recipients_2024_ALMVP` of `mlb_api/award_recipients` for season 2024 is stored
+- **THEN** the file is `processed/mlb_api/award_recipients/season=2024/part-ALMVP.parquet`
+- **AND** a second chunk that would map to the same file name is refused.
+- Verified by `tests/test_part_names.py::test_part_filename_drops_what_the_folders_already_say` and `tests/test_part_names.py::test_two_chunks_that_would_share_a_file_are_refused`.
+
+#### Scenario: Every tool reads the tree
+- **GIVEN** a dataset stored in two seasons
+- **THEN** DuckDB, polars, pandas and pyarrow each return the same row count
+- **AND** an old `manifest.json` is renamed to `_manifest.json` the first time the manifest is opened.
+- Verified by `tests/test_part_names.py::test_every_reader_sees_the_same_rows_in_the_renamed_tree` and `tests/test_part_names.py::test_a_manifest_with_the_old_name_is_renamed_on_first_use`.

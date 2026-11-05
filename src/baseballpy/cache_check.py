@@ -94,7 +94,9 @@ def check_raw(
     trees: dict[str, Mapping[str, str] | None] = {}
     results: list[FileCheck] = []
     raw_root = config.raw_root
-    for manifest_path in sorted(raw_root.rglob("manifest.json")):
+    for manifest_path in sorted(
+        {*raw_root.rglob("_manifest.json"), *raw_root.rglob("manifest.json")}
+    ):
         source, dataset, season = _location(raw_root, manifest_path.parent)
         if sources and source not in sources:
             continue

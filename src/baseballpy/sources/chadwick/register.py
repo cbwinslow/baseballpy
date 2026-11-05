@@ -44,10 +44,13 @@ _LOADED: dict[tuple[str, int], tuple[float, "ChadwickRegister"]] = {}
 
 def _lake_stamp(config: LakeConfig) -> int:
     """Changes whenever the processed register is rewritten (0 when it does not exist yet)."""
-    try:
-        return (config.processed_dir("chadwick", "register") / "manifest.json").stat().st_mtime_ns
-    except OSError:
-        return 0
+    folder = config.processed_dir("chadwick", "register")
+    for name in ("_manifest.json", "manifest.json"):  # new name first, pre-ADR-63 name second
+        try:
+            return (folder / name).stat().st_mtime_ns
+        except OSError:
+            continue
+    return 0
 
 
 #: how many matches a fuzzy search returns

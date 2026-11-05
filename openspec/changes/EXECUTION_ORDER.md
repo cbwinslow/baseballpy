@@ -64,3 +64,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-03 (later): `verify-small-answers` (B-235..B-239) closed and archived (ADR 60): small answers of low-volume MLB calls are fetched twice, the largest kept (0.7 percent more requests per season); found after the provider returned a partial standings document once.
 - 2026-11-03 (later): `retrosheet-parallel-parse` (B-240..B-244) closed and archived (ADR 61): Retrosheet parses on up to 32 worker processes through one shared pool; a season 236.5 s -> 35.6 s, five seasons 98 s, identical tables.
 - 2026-11-04: `project-local-data-folder` (B-245) closed and archived (ADR 62): default data folder is `.baseballpy` in the project folder; backfill ranges decided (Lahman/Chadwick/Retrosheet all history, Statcast/MLB API 2008 to now).
+- 2026-11-04 (later): `readable-lake-names` (B-246) closed and archived (ADR 63): short part names, `_manifest.json`, every reader checked.

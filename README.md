@@ -213,7 +213,7 @@ Everything lives under `$BASEBALLPY_HOME` (default: `.baseballpy` in the project
 
 ```text
 $BASEBALLPY_HOME
-├── raw/<source>/<dataset>/[season=YYYY/]<upstream files>          immutable upstream bytes (+ manifest.json)
+├── raw/<source>/<dataset>/[season=YYYY/]<upstream files>          immutable upstream bytes (+ _manifest.json)
 ├── processed/<source>/<dataset>/[season=YYYY/]part-<chunk>.parquet  typed Parquet, one dataset per directory
 ├── quarantine/<source>/<YYYY-MM-DD>/<dataset>-<id>.jsonl          rows that failed coercion (dead letters)
 ├── cache/http/                                                    HTTP bookkeeping only; always safe to delete

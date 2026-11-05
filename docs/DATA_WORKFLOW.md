@@ -9,7 +9,7 @@ use it, and how it knows a saved copy is still good. The decisions behind it are
 1. **Check.** Is the saved copy still current? If yes, nothing is downloaded.
 2. **Download.** One shared client (`HttpClient`) fetches the file politely (rate limits, retries) and
    writes it to `raw/` exactly as the provider sent it. The file's sha256 and the provider's own
-   fingerprint of that version are written to a small `manifest.json` next to it.
+   fingerprint of that version are written to a small `_manifest.json` next to it.
 3. **Type.** The raw bytes become an Arrow table with a strict schema. Cells that cannot be converted go
    to `quarantine/`, never silently to nulls.
 4. **Store.** The table is saved as compressed Parquet in `processed/`, written to a temporary file
@@ -24,12 +24,20 @@ Everything is under one folder, `$BASEBALLPY_HOME` (default: `.baseballpy` in th
 
 | Folder | What is in it |
 |---|---|
-| `raw/<source>/<dataset>/[season=YYYY/]` | the provider's files unchanged, plus `manifest.json` (sha256, size, fingerprint) |
+| `raw/<source>/<dataset>/[season=YYYY/]` | the provider's files unchanged, plus `_manifest.json` (sha256, size, fingerprint) |
 | `processed/<source>/<dataset>/[season=YYYY/]part-*.parquet` | typed Parquet, one folder per dataset |
 | `quarantine/` | cells that failed conversion |
 | `cache/http/` | saved listings and validators |
 | `databases/baseball.duckdb` | views over the Parquet, no copies |
 | `logs/audit.jsonl` | one line per operation (rows, seconds, cache hit) |
+
+File names: a part is named after its chunk without the dataset name and the season, which the folders already say (`processed/mlb_api/award_recipients/season=2024/part-ALMVP.parquet`; one chunk per dataset and season is `part-data.parquet`). The bookkeeping file starts with an underscore (`_manifest.json`), so pandas and pyarrow skip it when they read a whole dataset folder.
+
+Reading it yourself:
+
+- DuckDB: `baseballpy db sync`, then `SELECT * FROM retrosheet_events`.
+- polars: `pl.scan_parquet('.baseballpy/processed/retrosheet/events/**/*.parquet', hive_partitioning=True)`.
+- pandas: `pd.read_parquet('.baseballpy/processed/retrosheet/events')`. If a table has its own `season` column, pandas and pyarrow also see the `season=YYYY` folder as a column named `season`: read the files one by one or use DuckDB.
 
 Move or split the lake with environment variables: `BASEBALLPY_HOME` moves everything;
 `BASEBALLPY_RAW_ROOT_OVERRIDE`, `BASEBALLPY_PROCESSED_ROOT_OVERRIDE`, `BASEBALLPY_QUARANTINE_ROOT_OVERRIDE`,

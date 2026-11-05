@@ -4,7 +4,7 @@ Lahman data comes only from this repository (or from a user-supplied archive via
 ``LahmanSource.import_archive``). The ``chadwickbureau/baseballdatabank`` repository must
 never be used: its data stops around 2023.
 
-Every raw file has exactly one manifest entry (``raw/lahman/<Table>/manifest.json``, key
+Every raw file has exactly one manifest entry (``raw/lahman/<Table>/_manifest.json``, key
 ``<Table>.csv``) holding its sha256, size, data-row count, the commit it was fetched at and the
 provider's git fingerprint of that file. Whether a raw file is current is decided by the shared
 ``core.upstream.is_current`` (ADR 43): a file is current when its stored fingerprint equals the blob
@@ -80,7 +80,7 @@ class LahmanExtractor:
     # -- manifest and paths ----------------------------------------------------------------
 
     def manifest_for(self, table_name: str | LahmanTable) -> ManifestTracker:
-        """Per-table raw manifest at ``raw/lahman/<Table>/manifest.json``."""
+        """Per-table raw manifest at ``raw/lahman/<Table>/_manifest.json``."""
         return self.cache_config.dataset_manifest("lahman", str(table_name), "raw")
 
     def get_raw_path(self, table_name: str | LahmanTable) -> Path:

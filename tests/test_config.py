@@ -113,7 +113,7 @@ def test_dataset_manifest_location(tmp_path: Path) -> None:
     config = LakeConfig(home=tmp_path)
     manifest = config.dataset_manifest("retrosheet", "events", "raw")
     manifest.set_completed("season=2023/x", records_count=1)
-    assert (tmp_path / "raw" / "retrosheet" / "events" / "manifest.json").exists()
+    assert (tmp_path / "raw" / "retrosheet" / "events" / "_manifest.json").exists()
     assert config.dataset_manifest("retrosheet", "events").is_completed("season=2023/x") is False
 
 

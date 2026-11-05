@@ -216,7 +216,7 @@ def test_retrosheet_source_orchestrator(tmp_path: Path, retro_repo: RetroRepo) -
     raw_season = cache_config.raw_dir("retrosheet", "event_files", 2024)
     processed_season = cache_config.processed_dir("retrosheet", "events", 2024)
     assert (raw_season / "2024BOS.EVA").exists()
-    assert (processed_season / "part-events.parquet").exists()
+    assert (processed_season / "part-data.parquet").exists()
 
     # Check manifest recorded completion
     assert source.store.is_cached(_spec("events"), "events", 2024)

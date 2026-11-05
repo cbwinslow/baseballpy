@@ -136,7 +136,7 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
    - Only after checksum, footer validation (for Parquet), or record boundary validation passes may the file be atomically renamed (`os.replace()`) to its final destination.
    - Interrupted downloads leave only `.part` artifacts, which must be safely discarded on retry, preventing corrupted partial files.
 2. **Pause / Resume via Manifest Checkpointing:**
-   - Partitioned datasets (Statcast date chunks, Retrosheet seasons) must maintain a `manifest.json` checkpoint recording chunk completion status, record counts, and ETags.
+   - Partitioned datasets (Statcast date chunks, Retrosheet seasons) must maintain a `_manifest.json` checkpoint recording chunk completion status, record counts, and ETags.
    - Re-running an interrupted extraction MUST inspect the manifest and resume from the first uncompleted chunk without re-downloading completed partitions.
 3. **Two-Tier Raw/Processed Partitioning:**
    - Sources with raw archive files (e.g. Retrosheet `.EVA`/`.EVN` event files and Lahman zip archives) must enforce clean two-tier folder separation:

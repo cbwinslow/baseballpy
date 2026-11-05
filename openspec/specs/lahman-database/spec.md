@@ -75,7 +75,7 @@ Every raw Lahman file MUST have exactly one manifest entry holding its sha256, s
 
 #### Scenario: One entry per file with a git fingerprint, remembered by the Parquet
 - **WHEN** a table is fetched from the mirror
-- **THEN** `raw/lahman/<Table>/manifest.json` has only the `<Table>.csv` entry with `upstream` kind `git_blob`, the exact data-row count and `source_ref`, and the processed manifest holds the same fingerprint
+- **THEN** `raw/lahman/<Table>/_manifest.json` has only the `<Table>.csv` entry with `upstream` kind `git_blob`, the exact data-row count and `source_ref`, and the processed manifest holds the same fingerprint
 - Verified by `tests/test_lahman_workflow.py::test_fingerprints_one_entry_per_file_and_documents_are_kept`.
 
 #### Scenario: A pinned lake needs no request, even offline

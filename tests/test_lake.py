@@ -111,7 +111,7 @@ def test_processed_store_layout_partitions_and_manifest(tmp_path: Path) -> None:
     path = store.put(spec, table, chunk_id="events", season=2023, source_ref="sha1")
     assert (
         path
-        == tmp_path / "processed" / "retrosheet" / "events" / "season=2023" / "part-events.parquet"
+        == tmp_path / "processed" / "retrosheet" / "events" / "season=2023" / "part-data.parquet"
     )
     assert pq.ParquetFile(path).metadata.num_rows == 2
     assert store.is_cached(spec, "events", 2023)

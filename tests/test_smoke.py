@@ -91,8 +91,8 @@ def test_smoke_retrosheet_multi_season_and_idempotency(
 
     assert (raw_2022 / "2022BOS.EVA").exists()
     assert (raw_2023 / "2023BOS.EVA").exists()
-    assert (proc_2022 / "part-events.parquet").exists()
-    assert (proc_2023 / "part-events.parquet").exists()
+    assert (proc_2022 / "part-data.parquet").exists()
+    assert (proc_2023 / "part-data.parquet").exists()
 
     # 4. Boxscores across both seasons
     bat_22, pitch_22 = source.boxscores(2022)

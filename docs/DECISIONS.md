@@ -698,3 +698,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** with no `BASEBALLPY_HOME` or `BASEBALLPY_CACHE_DIR`, the data folder is `.baseballpy/` in the nearest folder above the working directory that holds `pyproject.toml` or `.git`; with no such folder it is `~/.baseballpy/`. The folder is git-ignored. Backfill ranges: Lahman, Chadwick and Retrosheet all history; Statcast and the MLB API 2008 to the current year, taken from the clock.
 - **Consequences:** a fresh clone writes inside itself; two projects never share data unless `BASEBALLPY_HOME` says so; the data can be deleted with the folder.
 - **Alternatives rejected:** fixed absolute path; install folder; keeping `~/.baseballpy` as the only default.
+
+## ADR 63: Short Part Names and `_manifest.json`
+- **Status:** Accepted (owner asked for readable, navigable names that every tool can read, 2026-11-04; change `readable-lake-names`).
+- **Context:** parts were named after the full chunk id, repeating the dataset and the season already in the folders (683 files such as `part-award_recipients_2024_AAACMVP.parquet` in one season); `manifest.json` in each dataset folder made `pandas.read_parquet(folder)` and `pyarrow.dataset` fail.
+- **Decision:** the part name is the chunk id minus the `<dataset>_` prefix and the season token (`part-data` when empty), decided in one function (`part_filename`); two chunks that would share a name are refused; the manifest is `_manifest.json` (pyarrow skips underscore files) and an old `manifest.json` is renamed on first use.
+- **Consequences:** shorter, readable trees and working whole-folder reads; manifests keep the full chunk id as key; lakes written with the old names must be re-ingested.
+- **Alternatives rejected:** renaming chunk ids in every source; leaving `manifest.json` and telling users to filter.
