@@ -158,3 +158,16 @@ A planned job MAY name the jobs that must finish before it starts (`Job.needs`, 
 - **THEN** `all_seasons()` ends at 2026, a 2027 job of either adapter is `skipped` with "has not started", and on 19 February 2027 the season counts
 - **AND** a calendar that answers HTTP 500 raises.
 - Verified by `tests/test_season_calendar.py::test_statcast_adapter_plans_to_last_season_and_skips_a_new_one_in_january`, `tests/test_season_calendar.py::test_mlb_adapter_plans_to_last_season_and_skips_a_new_one_in_january`, `tests/test_season_calendar.py::test_in_january_the_new_season_has_not_started_and_the_last_one_is_the_latest`, `tests/test_season_calendar.py::test_once_spring_training_begins_the_new_season_counts` and `tests/test_season_calendar.py::test_a_calendar_that_cannot_be_read_fails_loudly_not_silently`.
+
+### Requirement: Season Selections Are Validated
+A season selection (`2023`, `2015-2024`, `2015,2018`, `all`) MUST resolve to a sorted tuple of unique years between 1800 and 2100, and any other text (empty, non-numeric, reversed range, malformed range, out of range, `all` without a source of seasons) MUST raise a `ValueError` that names the bad text.
+
+#### Scenario: Bad selections are refused
+- **WHEN** a selection is empty, reversed, malformed, non-numeric or outside 1800..2100
+- **THEN** a `ValueError` is raised and nothing is planned.
+- Verified by `tests/test_ingest_selection.py::test_parse_reversed_range_raises` and `tests/test_ingest_selection.py::test_parse_out_of_bounds_raises` and `tests/test_ingest_selection.py::test_parse_malformed_syntax_raises`.
+
+#### Scenario: Good selections resolve in order
+- **WHEN** a selection mixes ranges, single years and duplicates
+- **THEN** the years come back sorted and unique.
+- Verified by `tests/test_ingest_selection.py::test_parse_sorting_and_deduplication`.

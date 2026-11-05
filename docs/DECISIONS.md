@@ -743,3 +743,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Consequences:** about 3 refused requests per run instead of thousands; a recovered route is noticed within an hour of running; stat types with no person-level equivalent still fail with their evidence message.
 - **Alternatives rejected:** marking the route `unsupported` (hides a recovery, the rule is a 200 control); a permanent file-based flag (stale after a fix); skipping silently without the hourly retest.
 
+## ADR 69: Tightening Is Behaviour-Preserving, One Slice Per Commit, Proven by Comparison
+- **Status:** Accepted (owner asked for a tightening pass while the MLB backfill ran, 2026-11-05; change `code-tightening`).
+- **Context:** `ruff` with a complexity limit of 15 flagged 7 functions. Three of them decide what is downloaded (`requests_for`, the Statcast adapter's `run`, the season parser), so a slip would change data silently.
+- **Decision:** each flagged function is split into small named helpers (a dispatch table where the function branches on a kind), one function or pair per commit, all gates after each. Where the function decides what is requested or stored, the old version (git HEAD) is run side by side with the new one and the outputs compared: `requests_for` on 364 endpoints x 6 contexts (2,184, 0 differences), `parse_box_text` on 428 real box files (identical tables), the Statcast `run` on 7,680 stubbed cases (0 differences). Comparison scripts must not write into the real lake (the box comparison left 50 duplicate quarantine files, removed).
+- **Consequences:** the complexity check is clean at 15; no dataset, schema or request changed.
+- **Alternatives rejected:** a rewrite into classes (more change than the finding asked for); relying on the test suite alone (it did not prove equality of requests).
+

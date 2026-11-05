@@ -99,82 +99,68 @@ class StatcastAdapter:
         if season_param is not None and (
             reason := self._calendar().not_started_reason(int(season_param))
         ):
-            return JobResult(job=job, status=JobStatus.SKIPPED, rows=None, detail=reason)
-        if job.task == "documents":
-            kept = self._get_extractor().keep_documents(refresh=refresh)
-            if not kept:
-                return JobResult(
-                    job=job, status=JobStatus.SKIPPED, rows=None, detail="already kept"
-                )
-            return JobResult(job=job, status=JobStatus.COMPLETED, rows=len(kept))
+            return _skipped(job, reason)
+        runners = {
+            "documents": self._run_documents,
+            "pitches": self._run_pitches,
+            "leaderboards": self._run_leaderboards,
+            "game_feed": self._run_game_feed,
+        }
+        runner = runners.get(job.task)
+        if runner is None:
+            raise ValueError(f"unknown task {job.task!r} for statcast")
+        return runner(job, refresh)
 
-        if job.task == "pitches":
-            season_val = job.param("season")
-            if season_val is None:
-                raise ValueError(f"job {job.job_id} missing 'season' parameter")
-            season = int(season_val)
-            minors = bool(job.param("minors", False))
-            report = self._get_extractor().ingest_season(season, refresh=refresh, minors=minors)
-            if report.skipped_reason:
-                return JobResult(
-                    job=job,
-                    status=JobStatus.SKIPPED,
-                    rows=None,
-                    detail=report.skipped_reason,
-                )
-            if report.chunks > 0 and report.chunks == report.cached_chunks:
-                return JobResult(
-                    job=job,
-                    status=JobStatus.SKIPPED,
-                    rows=None,
-                    detail="already complete",
-                )
-            return JobResult(job=job, status=JobStatus.COMPLETED, rows=report.rows)
+    def _run_documents(self, job: Job, refresh: bool) -> JobResult:
+        kept = self._get_extractor().keep_documents(refresh=refresh)
+        if not kept:
+            return _skipped(job, "already kept")
+        return JobResult(job=job, status=JobStatus.COMPLETED, rows=len(kept))
 
-        if job.task == "leaderboards":
-            season_val = job.param("season")
-            if season_val is None:
-                raise ValueError(f"job {job.job_id} missing 'season' parameter")
-            season = int(season_val)
-            reports = self._get_leaderboards().ingest_all(years=[season], refresh=refresh)
-            counts: list[int | None] = []
-            reasons: list[str] = []
-            for r in reports:
-                if season in r.seasons:
-                    counts.append(r.seasons[season])
-                elif season in r.skipped:
-                    reasons.append(r.skipped[season])
-            if not counts and reasons:
-                return JobResult(
-                    job=job, status=JobStatus.SKIPPED, rows=None, detail=sorted(reasons)[0]
-                )
-            return counts_to_result(job, counts)
+    def _run_pitches(self, job: Job, refresh: bool) -> JobResult:
+        season = _season_of(job)
+        minors = bool(job.param("minors", False))
+        report = self._get_extractor().ingest_season(season, refresh=refresh, minors=minors)
+        if report.skipped_reason:
+            return _skipped(job, report.skipped_reason)
+        if report.chunks > 0 and report.chunks == report.cached_chunks:
+            return _skipped(job, "already complete")
+        return JobResult(job=job, status=JobStatus.COMPLETED, rows=report.rows)
 
-        if job.task == "game_feed":
-            season_val = job.param("season")
-            if season_val is None:
-                raise ValueError(f"job {job.job_id} missing 'season' parameter")
-            season = int(season_val)
-            report = self._get_game_feed().ingest_season(
-                season, max_games=job.limit, refresh=refresh
-            )
-            if report.skipped_reason:
-                return JobResult(
-                    job=job,
-                    status=JobStatus.SKIPPED,
-                    rows=None,
-                    detail=report.skipped_reason,
-                )
-            if report.fetched == 0 and report.games > 0:
-                return JobResult(
-                    job=job,
-                    status=JobStatus.SKIPPED,
-                    rows=None,
-                    detail="already complete",
-                )
-            return JobResult(job=job, status=JobStatus.COMPLETED, rows=report.fetched)
+    def _run_leaderboards(self, job: Job, refresh: bool) -> JobResult:
+        season = _season_of(job)
+        reports = self._get_leaderboards().ingest_all(years=[season], refresh=refresh)
+        counts: list[int | None] = []
+        reasons: list[str] = []
+        for r in reports:
+            if season in r.seasons:
+                counts.append(r.seasons[season])
+            elif season in r.skipped:
+                reasons.append(r.skipped[season])
+        if not counts and reasons:
+            return _skipped(job, sorted(reasons)[0])
+        return counts_to_result(job, counts)
 
-        raise ValueError(f"unknown task {job.task!r} for statcast")
+    def _run_game_feed(self, job: Job, refresh: bool) -> JobResult:
+        season = _season_of(job)
+        report = self._get_game_feed().ingest_season(season, max_games=job.limit, refresh=refresh)
+        if report.skipped_reason:
+            return _skipped(job, report.skipped_reason)
+        if report.fetched == 0 and report.games > 0:
+            return _skipped(job, "already complete")
+        return JobResult(job=job, status=JobStatus.COMPLETED, rows=report.fetched)
+
+
+def _season_of(job: Job) -> int:
+    """The job's ``season`` parameter; a job without one is a planning bug."""
+    season = job.param("season")
+    if season is None:
+        raise ValueError(f"job {job.job_id} missing 'season' parameter")
+    return int(season)
+
+
+def _skipped(job: Job, detail: str) -> JobResult:
+    return JobResult(job=job, status=JobStatus.SKIPPED, rows=None, detail=detail)
 
 
 __all__ = ["StatcastAdapter"]

@@ -12,7 +12,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `caching-and-invalidation` | 18 | 31 | 43 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
-| `cli-and-ingest` | 13 | 21 | 29 |
+| `cli-and-ingest` | 14 | 23 | 33 |
 | `concurrency-and-rate-limiting` | 5 | 10 | 11 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
@@ -41,11 +41,10 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-65 changes are archived under `openspec/changes/archive/`.
+66 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
-| `code-tightening` | 3 | 2 | 1.4, 1.5 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
@@ -121,6 +120,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 66: A Season Exists Once Its First Day Has Arrived (MLB Calendar, Not the Clock's Year)
 - ADR 67: Every Real Request Is Audited and `audit speed` Checks the Log Against the Caps
 - ADR 68: A Refused `/v1/stats` Is Remembered, Not Asked on Every Request
+- ADR 69: Tightening Is Behaviour-Preserving, One Slice Per Commit, Proven by Comparison
 
 ## Documentation pages (`docs/`)
 

@@ -73,3 +73,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-05: `mlb-backfill-fixes` (B-257, B-258) closed and archived (ADR 67 amendment): fast manifest saves, request duration inside the slot; MLB 2008-2012 complete.
 
 - 2026-11-05: `mlb-stats-route-memory` (B-259) closed and archived (ADR 68): a refused /v1/stats is remembered for an hour.
+- 2026-11-05: `code-tightening` (B-252 to B-256) closed and archived (ADR 69): 7 complexity warnings fixed without changing any output.
