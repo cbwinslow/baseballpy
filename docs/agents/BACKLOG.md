@@ -467,9 +467,11 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-266 | `market-sources 1.1`: owner decisions M1 to M4 | OPEN | decisions recorded |
 | B-267 | `market-sources 1.2`: probe and research both APIs | OPEN | evidence in design.md |
 | B-268 | `market-sources 1.3`: measure the homelab MLB subset, pick the transfer route | OPEN | numbers and route in design.md |
-| B-269 | `market-sources 2.1`: Kalshi candlesticks, trades and live snapshots (catalog is done: B-274) | OPEN | registry, schemas, adapter, tests green, newest-first resumable backfill |
+| B-269 | market-sources 2.1: Kalshi trades and candlesticks code, per open date, opt-in (ADR 71) | DONE | 3 real dates: 6,078 requests, 0 retries, 346,259 trades and 18,061 candles, none in _extras |
 | B-270 | `market-sources 2.2`: Polymarket source | OPEN | registry, schemas, adapter, tests green |
 | B-271 | `market-sources 3.1`: one-time import of the homelab MLB subset | OPEN | typed Parquet in the lake, sample checked against the APIs |
 | B-272 | `market-sources 3.2`: close the gap to today | OPEN | no missing days between import and now |
 | B-273 | `market-sources 4.1`: docs, specs, ADRs, gates, archive | OPEN | change archived |
 | B-274 | market-sources 2.1 part 1: Kalshi catalog (series, events, markets), signing, decimal types, ADR 70 | DONE | 189 series, 55,197 events, 900,555 markets in the lake, speed audit clean, 13 Kalshi tests pass |
+| B-275 | `market-sources 2.3`: run the full Kalshi trades and candlesticks backfill, tune the speed | OPEN | all traded markets stored, audit speed clean |
+| B-276 | `market-sources 2.4`: contract check of the Kalshi routes against the official OpenAPI spec | OPEN | a test or command flags new and removed routes |

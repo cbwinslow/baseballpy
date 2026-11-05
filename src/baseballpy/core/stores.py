@@ -20,10 +20,45 @@ logger = logging.getLogger(__name__)
 PARQUET_COMPRESSION = "zstd"
 
 
+#: characters Windows forbids in a file name (a lake built on Linux must open on Windows)
+_ILLEGAL_NAME_CHARS = frozenset('<>:"|?*')
+#: device names Windows reserves, with or without an extension
+_RESERVED_NAMES = frozenset(
+    {
+        "CON",
+        "PRN",
+        "AUX",
+        "NUL",
+        *(f"COM{i}" for i in range(1, 10)),
+        *(f"LPT{i}" for i in range(1, 10)),
+    }
+)
+#: longest chunk id; keeps raw and processed paths far below the 260-character Windows limit
+MAX_CHUNK_ID_LENGTH = 120
+
+
+def portable_name_problem(name: str) -> str | None:
+    """Why ``name`` would not be a safe file name on every OS (``None`` when it is portable)."""
+    if not name:
+        return "it is empty"
+    if any(sep in name for sep in ("/", "\\")) or ".." in name:
+        return "it could leave its directory"
+    if len(name) > MAX_CHUNK_ID_LENGTH:
+        return f"it is longer than {MAX_CHUNK_ID_LENGTH} characters"
+    if any(ch in _ILLEGAL_NAME_CHARS or ord(ch) < 32 for ch in name):
+        return "it has a character Windows forbids in file names"
+    if name.endswith((".", " ")):
+        return "it ends with a dot or a space"
+    if name.split(".")[0].upper() in _RESERVED_NAMES:
+        return "it is a reserved Windows device name"
+    return None
+
+
 def _safe_chunk_id(chunk_id: str) -> str:
-    """Reject chunk ids that could escape the dataset directory."""
-    if not chunk_id or any(sep in chunk_id for sep in ("/", "\\", "..")):
-        raise ValueError(f"invalid chunk id {chunk_id!r}")
+    """Reject chunk ids that would not be a safe file name on every OS (or could escape the folder)."""
+    problem = portable_name_problem(chunk_id)
+    if problem is not None:
+        raise ValueError(f"invalid chunk id {chunk_id!r}: {problem}")
     return chunk_id
 
 
@@ -177,14 +212,14 @@ class ProcessedStore:
 
     def _refuse_name_clash(self, spec: DatasetSpec, chunk_id: str, season: int | None) -> None:
         """Two different chunks must never share one file name (the second would overwrite the first)."""
-        mine = part_filename(spec.name, chunk_id, season)
+        mine = part_filename(spec.name, chunk_id, season).casefold()  # case-insensitive disks too
         key = manifest_key(chunk_id, season)
         prefix = f"season={season}/" if season is not None else ""
         for other in self.config.dataset_manifest(spec.source, spec.name, "processed").chunks():
             if other == key or (prefix and not other.startswith(prefix)):
                 continue
             name = other[len(prefix) :] if prefix else other
-            if "/" not in name and part_filename(spec.name, name, season) == mine:
+            if "/" not in name and part_filename(spec.name, name, season).casefold() == mine:
                 raise ValueError(
                     f"{spec.key}: chunks {chunk_id!r} and {name!r} would share the file {mine}"
                 )

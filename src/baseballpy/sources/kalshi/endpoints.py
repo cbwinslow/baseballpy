@@ -48,8 +48,10 @@ class KalshiEndpoint:
     """One public GET route: where it is, where its records sit and how it pages.
 
     ``fan_out`` says what the route is asked per: ``none`` (once), ``series`` (once per in-scope
-    series ticker, as ``series_ticker``). ``dataset`` is the registry dataset the records feed;
-    several routes may feed one dataset (live and archived markets), merged by the dataset key.
+    series ticker, as ``series_ticker``), ``market`` (once per market, as ``ticker`` or in the path)
+    or ``market_batch`` (up to ``batch_size`` markets per call). ``dataset`` is the registry dataset
+    the records feed; several routes may feed one dataset (live and archived), merged by its key.
+    A ``{ticker}`` in ``path`` is filled with the market ticker.
     """
 
     name: str
@@ -61,6 +63,8 @@ class KalshiEndpoint:
     params: tuple[tuple[str, str], ...] = ()
     #: paged with the ``cursor`` the answer returns (all routes except the series list)
     paged: bool = True
+    #: markets per call for ``market_batch`` routes (the API refuses more than 100)
+    batch_size: int = 1
 
 
 ENDPOINTS: tuple[KalshiEndpoint, ...] = (
@@ -83,7 +87,42 @@ ENDPOINTS: tuple[KalshiEndpoint, ...] = (
         1000,
         fan_out="series",
     ),
+    KalshiEndpoint("trades", "trades", "/markets/trades", "trades", 1000, fan_out="market"),
+    KalshiEndpoint(
+        "trades_historical", "trades", "/historical/trades", "trades", 1000, fan_out="market"
+    ),
+    KalshiEndpoint(
+        "candlesticks",
+        "candlesticks",
+        "/markets/candlesticks",
+        "markets",
+        page_limit=0,
+        fan_out="market_batch",
+        paged=False,
+        batch_size=100,
+    ),
+    KalshiEndpoint(
+        "candlesticks_historical",
+        "candlesticks",
+        "/historical/markets/{ticker}/candlesticks",
+        "candlesticks",
+        page_limit=0,
+        fan_out="market",
+        paged=False,
+    ),
 )
+
+#: datasets filled from the catalog (one job) and from per-market routes (one job per close date)
+CATALOG_DATASETS = ("series", "events", "markets")
+MARKET_DATASETS = ("trades", "candlesticks")
+
+#: candles are hourly: trades rebuild any finer price, and 1-minute candles for 900,000 markets are
+#: about a billion rows (``market-sources`` design); a market's window ends this long after it closes
+CANDLE_PERIOD_MINUTES = 60
+CANDLE_MARGIN_SECONDS = 3600
+#: markets with no traded volume have no trades and only quotes; they are not fetched (see
+#: ``docs/sources/kalshi.md``), the traded ones are the data every model needs
+MIN_VOLUME = 0
 
 BY_NAME: dict[str, KalshiEndpoint] = {e.name: e for e in ENDPOINTS}
 
@@ -92,10 +131,17 @@ DATASET_KEYS: dict[str, tuple[str, ...]] = {
     "series": ("ticker",),
     "events": ("event_ticker",),
     "markets": ("ticker",),
+    "trades": ("trade_id",),
+    "candlesticks": ("ticker", "end_period_ts"),
 }
 
 __all__ = [
     "BY_NAME",
+    "CANDLE_MARGIN_SECONDS",
+    "CANDLE_PERIOD_MINUTES",
+    "CATALOG_DATASETS",
+    "MARKET_DATASETS",
+    "MIN_VOLUME",
     "DATASET_KEYS",
     "ENDPOINTS",
     "KALSHI_BASE",

@@ -12,6 +12,7 @@ import json
 import re
 import sys
 from collections import defaultdict
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +23,8 @@ from baseballpy.sources.kalshi.endpoints import (
     MLB_SCOPE,
     KalshiEndpoint,
 )
+from baseballpy.sources.kalshi.market_data import KalshiMarketData, MarketRow, RawLog
+from baseballpy.sources.kalshi.signing import sign_with_environment
 
 OUTPUT = Path(__file__).resolve().parent.parent / "src/baseballpy/sources/kalshi/tables.py"
 _TIME = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})")
@@ -61,7 +64,9 @@ def decimal_type(texts: list[str]) -> str:
     """``decimal(P,S)`` wide enough for every text, with headroom for larger values later."""
     scale = max(len(t.partition(".")[2]) for t in texts)
     digits = max(len(t.lstrip("-").partition(".")[0]) for t in texts)
-    precision = 9 if digits + scale <= 7 else 18 if digits + scale <= 16 else 38
+    precision = (
+        9 if digits + scale <= 5 else 18 if digits + scale <= 14 else 38
+    )  # headroom: a busy hour holds far more contracts than a quiet sample
     return f"decimal({precision},{scale})"
 
 
@@ -118,12 +123,54 @@ def render(columns: dict[str, dict[str, str]], meta: dict[str, dict[str, int]]) 
     return "\n".join(lines) + "\n"
 
 
+def _time(value: object) -> datetime | None:
+    return None if not value else datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+
+
+def probe_market_routes(
+    records: dict[str, list[dict[str, Any]]], tickers: list[str], per_series: int
+) -> None:
+    """Trades and candlesticks of a few traded markets per series (the types come from these)."""
+    data = KalshiMarketData(get_http_client())
+    by_series: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for market in records["markets"]:
+        if str(market.get("volume_fp") or "0") not in ("0", "0.00"):
+            by_series[str(market["event_ticker"]).split("-")[0]].append(market)
+    chosen = [
+        m
+        for t in tickers
+        for m in sorted(by_series[t], key=lambda m: str(m["ticker"]))[:per_series]
+    ]
+    now = datetime.now(UTC)
+    raw = RawLog()
+    for market in chosen:
+        row = MarketRow(
+            ticker=str(market["ticker"]),
+            status=str(market.get("status")),
+            open_time=_time(market.get("open_time")),
+            close_time=_time(market.get("close_time")),
+            settlement_ts=_time(market.get("settlement_ts")),
+        )
+        records["trades"].extend(data.trades(row, raw))
+        if data.candle_route_is_archived(row):
+            records["candlesticks"].extend(data.candles_archived(row, raw, now))
+        else:
+            records["candlesticks"].extend(data.candles_live([row], raw, now))
+    print(f"probed {len(chosen)} traded markets: {len(records['trades'])} trades, "
+          f"{len(records['candlesticks'])} candles", flush=True)  # fmt: skip
+
+
 def main() -> int:
     """Probe, infer and write (or check) the generated module."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pages", type=int, default=2, help="pages per series and route")
     parser.add_argument("--check", action="store_true", help="exit 1 when tables.py is stale")
+    parser.add_argument(
+        "--markets-per-series", type=int, default=3, help="traded markets probed per series"
+    )
     args = parser.parse_args()
+    signed = sign_with_environment(get_http_client())
+    print(f"requests are {'signed' if signed else 'unsigned'}", flush=True)
 
     series_route = ENDPOINTS[0]
     all_series = sample(series_route, {}, 1)
@@ -133,11 +180,13 @@ def main() -> int:
 
     records: dict[str, list[dict[str, Any]]] = defaultdict(list)
     records["series"] = in_scope
-    for endpoint in ENDPOINTS[1:]:
+    for endpoint in (e for e in ENDPOINTS[1:] if e.fan_out == "series"):
         for ticker in tickers:
             got = sample(endpoint, {"series_ticker": ticker}, args.pages)
             records[endpoint.dataset].extend(got)
         print(f"{endpoint.name}: {len(records[endpoint.dataset])} records so far", flush=True)
+
+    probe_market_routes(records, tickers, args.markets_per_series)
 
     columns: dict[str, dict[str, str]] = {}
     meta: dict[str, dict[str, int]] = {}

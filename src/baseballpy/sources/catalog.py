@@ -286,6 +286,12 @@ def register_all() -> dict[str, DatasetSpec]:
         "series": "Kalshi MLB series (a template for repeated markets, with its fee terms).",
         "events": "Kalshi MLB events (one game or one season-long question per event).",
         "markets": "Kalshi MLB markets (live and archived merged; one row per tradable outcome).",
+        "trades": "Kalshi MLB trades (every fill of a market that traded: price, size, taker side).",
+        "candlesticks": "Kalshi MLB hourly candlesticks (traded price, bid and ask, volume, open interest).",
+    }
+    kalshi_opt_in = {
+        "trades": "large (millions of rows, about 0.9 million requests): `ingest kalshi --datasets trades`",
+        "candlesticks": "large (about 0.9 million requests): `ingest kalshi --datasets candlesticks`",
     }
     for name, schema in KALSHI_SCHEMAS.items():
         _add(
@@ -296,6 +302,8 @@ def register_all() -> dict[str, DatasetSpec]:
             KALSHI_KEYS[name],
             kalshi_descriptions[name],
             f"sources/kalshi.md#dataset-{name}",
+            ingest="opt_in" if name in kalshi_opt_in else "default",
+            ingest_note=kalshi_opt_in.get(name, ""),
         )
 
     retro_doc = "sources/retrosheet.md"

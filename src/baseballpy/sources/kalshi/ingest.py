@@ -21,7 +21,12 @@ from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import datasets_for, get_dataset
 from baseballpy.core.stores import ProcessedStore
 from baseballpy.sources import catalog
-from baseballpy.sources.kalshi.endpoints import DATASET_KEYS, ENDPOINTS, KalshiEndpoint
+from baseballpy.sources.kalshi.endpoints import (
+    CATALOG_DATASETS,
+    DATASET_KEYS,
+    ENDPOINTS,
+    KalshiEndpoint,
+)
 from baseballpy.sources.kalshi.extractor import KalshiExtractor
 from baseballpy.sources.kalshi.normalizer import KalshiNormalizer
 
@@ -81,7 +86,7 @@ def ingest(
     Unknown dataset names raise ``ValueError``. The catalog is small and its markets change while
     they trade, so every call fetches it again.
     """
-    names = dataset_names()
+    names = [n for n in dataset_names() if n in CATALOG_DATASETS]
     wanted = list(datasets) if datasets else names
     unknown = [d for d in wanted if d not in names]
     if unknown:

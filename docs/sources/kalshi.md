@@ -14,6 +14,9 @@
 - **Rate limit:** unsigned 4 requests/second and 4 in flight (pages of 200 to 1,000 records were throttled with HTTP 429 at about 10/second); signed 20 requests/second and 16 in flight (the documented Basic tier is 200 tokens/second at 10 per request; a real run of 781 requests was clean). Set `BASEBALLPY_RATE_KALSHI_RPS` and `BASEBALLPY_RATE_KALSHI_CONCURRENCY` to override; `baseballpy audit speed --host api.elections.kalshi.com` checks the real speeds against the caps.
 - **Threads:** one `catalog` job; inside it every in-scope series is fetched on a worker thread (`resolve_concurrency`), and the host caps above decide the real request rate.
 - **Keys (optional):** set `BASEBALLPY_KALSHI_KEY_ID` (alias `KALSHI_TOKEN`) and `BASEBALLPY_KALSHI_PRIVATE_KEY_PATH` (alias `KALSHI_PRIVATE_KEY_PATH`) in your environment, or in a dotenv file named by `BASEBALLPY_ENV_FILE`, to sign requests (RSA-PSS, SHA-256). The values are never logged or stored; `.env*`, `*.pem`, `*.key` and `kalshi*.txt` are git-ignored.
+- **Trades and candlesticks (opt-in, large):** `baseballpy ingest kalshi --datasets trades,candlesticks` (`--limit N` keeps the newest N dates). Only markets with traded volume are fetched (706,068 of 900,555; the rest have no trades, only quotes). Work is one job per UTC **open date** of a market (a date that never changes; a season-long market can close years from now), newest first, one Parquet chunk and one raw `<dataset>-<date>.jsonl.gz` per dataset and date (a file per request would be about a million files). A date whose markets are all `finalized` and unchanged is skipped on a rerun; a date with a market that can still trade is fetched again; `--refresh` fetches every selected date again.
+- **Routes follow the archive cutoff** (`GET /historical/cutoff`): trades created before `trades_created_ts` are archived only, markets settled before `market_settled_ts` have archived candles only (one call per market); newer markets use the live routes. A market spanning the cutoff reads both and keeps each `trade_id` once.
+- **Candles are hourly** (`period_interval=60`); the API refuses more than 5,000 candles in one call, so a long market is fetched in windows of at most 4,500 periods and joined by `(ticker, end_period_ts)`. The answer carries both a legacy `price_*` set and a `price_*_dollars` set; both are kept as typed columns (in the first 18,061 candles the legacy set was empty and the dollars set full).
 - **Storage:** raw JSON pages at `raw/kalshi/<dataset>/<route>-<series>-pNNNNN.json` (sha256 in the manifest); typed Parquet at `processed/kalshi/<dataset>/part-<SERIES>.parquet`, one chunk per series.
 
 ## Datasets
@@ -22,6 +25,8 @@
 | `series` | `kalshi_series` | `/series` | `ticker` |
 | `events` | `kalshi_events` | `/events` | `event_ticker` |
 | `markets` | `kalshi_markets` | `/markets`, `/historical/markets` | `ticker` |
+| `trades` (opt-in) | `kalshi_trades` | `/markets/trades`, `/historical/trades` | `trade_id` |
+| `candlesticks` (opt-in) | `kalshi_candlesticks` | `/markets/candlesticks` (up to 100 live markets a call), `/historical/markets/{ticker}/candlesticks` | `ticker`, `end_period_ts` |
 
 ## Schema notes (verified against the real data)
 - Schemas are **generated from live probes** (`scripts/gen_kalshi_schemas.py`): every key seen over the sampled pages of every in-scope series gets the narrowest exact type; types never come from column names.
@@ -160,3 +165,79 @@ Kalshi MLB series (a template for repeated markets, with its fee terms).
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:kalshi.series -->
+
+<!-- BEGIN GENERATED:kalshi.candlesticks -->
+### Dataset: candlesticks
+
+Kalshi MLB hourly candlesticks (traded price, bid and ask, volume, open interest).
+
+- **View:** `kalshi_candlesticks`
+- **Processed path:** `processed/kalshi/candlesticks/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `ticker`, `end_period_ts`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `end_period_ts` | timestamp[us, tz=UTC] | yes | — | TODO |
+| `open_interest` | decimal128(18, 2) | yes | — | TODO |
+| `open_interest_fp` | decimal128(18, 2) | yes | — | TODO |
+| `price_close` | decimal128(9, 4) | yes | — | TODO |
+| `price_close_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `price_high` | decimal128(9, 4) | yes | — | TODO |
+| `price_high_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `price_low` | decimal128(9, 4) | yes | — | TODO |
+| `price_low_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `price_mean` | decimal128(9, 4) | yes | — | TODO |
+| `price_mean_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `price_open` | decimal128(9, 4) | yes | — | TODO |
+| `price_open_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `price_previous` | decimal128(9, 4) | yes | — | TODO |
+| `price_previous_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `ticker` | string | yes | — | TODO |
+| `volume` | decimal128(18, 2) | yes | — | TODO |
+| `volume_fp` | decimal128(18, 2) | yes | — | TODO |
+| `yes_ask_close` | decimal128(9, 4) | yes | — | TODO |
+| `yes_ask_close_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `yes_ask_high` | decimal128(9, 4) | yes | — | TODO |
+| `yes_ask_high_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `yes_ask_low` | decimal128(9, 4) | yes | — | TODO |
+| `yes_ask_low_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `yes_ask_open` | decimal128(9, 4) | yes | — | TODO |
+| `yes_ask_open_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `yes_bid_close` | decimal128(9, 4) | yes | — | TODO |
+| `yes_bid_close_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `yes_bid_high` | decimal128(9, 4) | yes | — | TODO |
+| `yes_bid_high_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `yes_bid_low` | decimal128(9, 4) | yes | — | TODO |
+| `yes_bid_low_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `yes_bid_open` | decimal128(9, 4) | yes | — | TODO |
+| `yes_bid_open_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:kalshi.candlesticks -->
+
+<!-- BEGIN GENERATED:kalshi.trades -->
+### Dataset: trades
+
+Kalshi MLB trades (every fill of a market that traded: price, size, taker side).
+
+- **View:** `kalshi_trades`
+- **Processed path:** `processed/kalshi/trades/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `trade_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `count_fp` | decimal128(18, 2) | yes | — | TODO |
+| `created_time` | timestamp[us, tz=UTC] | yes | — | TODO |
+| `is_block_trade` | bool | yes | — | TODO |
+| `no_price_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `taker_book_side` | string | yes | — | TODO |
+| `taker_outcome_side` | string | yes | — | TODO |
+| `taker_side` | string | yes | — | TODO |
+| `ticker` | string | yes | — | TODO |
+| `trade_id` | string | yes | — | TODO |
+| `yes_price_dollars` | decimal128(9, 4) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:kalshi.trades -->

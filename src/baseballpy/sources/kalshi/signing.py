@@ -14,7 +14,8 @@ from urllib.parse import urlparse
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
-from baseballpy.core.config import KalshiAuthConfig
+from baseballpy.core.config import KALSHI_HOST, KalshiAuthConfig
+from baseballpy.core.http import HttpClient
 
 
 class KalshiSigner:
@@ -57,4 +58,13 @@ class KalshiSigner:
         }
 
 
-__all__ = ["KalshiSigner"]
+def sign_with_environment(http: HttpClient) -> bool:
+    """Sign this host's requests when the user's environment has Kalshi credentials; say whether it did."""
+    signer = KalshiSigner.from_config()
+    if signer is None:
+        return False
+    http.set_header_hook(KALSHI_HOST, signer.headers)
+    return True
+
+
+__all__ = ["KalshiSigner", "sign_with_environment"]

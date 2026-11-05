@@ -10,7 +10,7 @@ import re
 from collections.abc import Callable
 from typing import Any
 
-from baseballpy.core.config import KALSHI_HOST, LakeConfig
+from baseballpy.core.config import LakeConfig
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.stores import RawStore
 from baseballpy.sources.kalshi.endpoints import (
@@ -20,7 +20,7 @@ from baseballpy.sources.kalshi.endpoints import (
     MLB_SCOPE,
     KalshiEndpoint,
 )
-from baseballpy.sources.kalshi.signing import KalshiSigner
+from baseballpy.sources.kalshi.signing import sign_with_environment
 
 logger = logging.getLogger(__name__)
 
@@ -43,10 +43,8 @@ class KalshiExtractor:
         self._http = http or get_http_client()
         self._raw = RawStore(self._config)
         self._store_raw = store_raw and self._config.enabled
-        signer = KalshiSigner.from_config()
-        if signer is not None:  # optional: a signed account has a higher, documented read budget
-            self._http.set_header_hook(KALSHI_HOST, signer.headers)
-        self.signed = signer is not None
+        # optional: a signed account has a higher, documented read budget
+        self.signed = sign_with_environment(self._http)
 
     def _get(
         self, endpoint: KalshiEndpoint, params: dict[str, str]

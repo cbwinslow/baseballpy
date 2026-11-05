@@ -17,7 +17,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
-| `kalshi-ingestion` | 5 | 8 | 12 |
+| `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
 | `mlb-api-ingestion` | 27 | 40 | 42 |
 | `multi-target-sinks` | 3 | 4 | 4 |
@@ -48,7 +48,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
-| `market-sources` | 0 | 8 | 1.1, 1.2, 1.3, 2.1, 2.2, 3.1, 3.2, 4.1 |
+| `market-sources` | 1 | 9 | 1.1, 1.2, 1.3, 2.3, 2.4, 2.2, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
 | `modelling-data-needs` | 0 | 6 | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
@@ -125,6 +125,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 68: A Refused `/v1/stats` Is Remembered, Not Asked on Every Request
 - ADR 69: Tightening Is Behaviour-Preserving, One Slice Per Commit, Proven by Comparison
 - ADR 70: Kalshi Is a Standard Source: Typed Decimals, Threaded Catalog, Optional Signing
+- ADR 71: Kalshi Trades and Candlesticks Are Opt-In, Per Open Date, From the Catalog
 
 ## Documentation pages (`docs/`)
 

@@ -3,6 +3,42 @@
 from baseballpy.core.schema_tools import ColumnDef
 
 KALSHI_COLUMNS: dict[str, list[ColumnDef]] = {
+    "candlesticks": [
+        ("end_period_ts", "timestamp"),
+        ("open_interest", "decimal(18,2)"),
+        ("open_interest_fp", "decimal(18,2)"),
+        ("price_close", "decimal(9,4)"),
+        ("price_close_dollars", "decimal(9,4)"),
+        ("price_high", "decimal(9,4)"),
+        ("price_high_dollars", "decimal(9,4)"),
+        ("price_low", "decimal(9,4)"),
+        ("price_low_dollars", "decimal(9,4)"),
+        ("price_mean", "decimal(9,4)"),
+        ("price_mean_dollars", "decimal(9,4)"),
+        ("price_open", "decimal(9,4)"),
+        ("price_open_dollars", "decimal(9,4)"),
+        ("price_previous", "decimal(9,4)"),
+        ("price_previous_dollars", "decimal(9,4)"),
+        ("ticker", "string"),
+        ("volume", "decimal(18,2)"),
+        ("volume_fp", "decimal(18,2)"),
+        ("yes_ask_close", "decimal(9,4)"),
+        ("yes_ask_close_dollars", "decimal(9,4)"),
+        ("yes_ask_high", "decimal(9,4)"),
+        ("yes_ask_high_dollars", "decimal(9,4)"),
+        ("yes_ask_low", "decimal(9,4)"),
+        ("yes_ask_low_dollars", "decimal(9,4)"),
+        ("yes_ask_open", "decimal(9,4)"),
+        ("yes_ask_open_dollars", "decimal(9,4)"),
+        ("yes_bid_close", "decimal(9,4)"),
+        ("yes_bid_close_dollars", "decimal(9,4)"),
+        ("yes_bid_high", "decimal(9,4)"),
+        ("yes_bid_high_dollars", "decimal(9,4)"),
+        ("yes_bid_low", "decimal(9,4)"),
+        ("yes_bid_low_dollars", "decimal(9,4)"),
+        ("yes_bid_open", "decimal(9,4)"),
+        ("yes_bid_open_dollars", "decimal(9,4)"),
+    ],
     "events": [
         ("category", "string"),
         ("collateral_return_type", "string"),
@@ -85,11 +121,25 @@ KALSHI_COLUMNS: dict[str, list[ColumnDef]] = {
         ("ticker", "string"),
         ("title", "string"),
     ],
+    "trades": [
+        ("count_fp", "decimal(18,2)"),
+        ("created_time", "timestamp"),
+        ("is_block_trade", "bool"),
+        ("no_price_dollars", "decimal(9,4)"),
+        ("taker_book_side", "string"),
+        ("taker_outcome_side", "string"),
+        ("taker_side", "string"),
+        ("ticker", "string"),
+        ("trade_id", "string"),
+        ("yes_price_dollars", "decimal(9,4)"),
+    ],
 }
 
 #: records and series probed per dataset (evidence for the types above)
 KALSHI_META: dict[str, dict[str, int]] = {
+    "candlesticks": {"records": 360281, "series": 189},
     "events": {"records": 10423, "series": 189},
     "markets": {"records": 94021, "series": 189},
     "series": {"records": 189, "series": 189},
+    "trades": {"records": 290365, "series": 189},
 }

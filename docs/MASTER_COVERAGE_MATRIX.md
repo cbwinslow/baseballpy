@@ -4,13 +4,13 @@ This document provides an exhaustive catalog of all baseball datasets across the
 ecosystem, comparing `baseballpy` against `pybaseball`, `baseballr`, `MLB-StatsAPI`, and the
 official MLB OpenAPI specification.
 
-- **Total Registered Datasets in baseballpy:** 462
+- **Total Registered Datasets in baseballpy:** 464
 - **MLB Stats API:** 365 datasets across 65 API routes
 - **Statcast (Baseball Savant):** 38 datasets (MLB pitches, Minor League pitches, 36 leaderboards)
 - **Retrosheet:** 25 datasets (PBP events, game logs, boxscores, rosters)
 - **Lahman Database:** 27 datasets (complete historical database 1871–present)
 - **Chadwick Bureau:** 4 datasets (universal player ID crosswalk)
-- **Kalshi:** 3 datasets (MLB prediction-market catalog)
+- **Kalshi:** 5 datasets (MLB prediction-market catalog)
 
 ---
 
@@ -559,10 +559,12 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `substitutions` | `retrosheet_substitutions` | `season` | 26 | `GAME_ID`, `EVENT_ID`, `SUB_ID`, `SUB_FLD_CD` | In-game substitutions. |
 | `umpires` | `retrosheet_umpires` | `season` | 4 | `umpire_id` | Umpires working each season (seasons/<year>/UMPIRES<year>.txt). |
 
-### KALSHI (3 datasets)
+### KALSHI (5 datasets)
 
 | Dataset Name | View Name | Partition | Columns | Primary Keys | Description |
 | :--- | :--- | :--- | :---: | :--- | :--- |
+| `candlesticks` | `kalshi_candlesticks` | `none` | 35 | `ticker`, `end_period_ts` | Kalshi MLB hourly candlesticks (traded price, bid and ask, volume, open interest). |
 | `events` | `kalshi_events` | `none` | 15 | `event_ticker` | Kalshi MLB events (one game or one season-long question per event). |
 | `markets` | `kalshi_markets` | `none` | 49 | `ticker` | Kalshi MLB markets (live and archived merged; one row per tradable outcome). |
 | `series` | `kalshi_series` | `none` | 15 | `ticker` | Kalshi MLB series (a template for repeated markets, with its fee terms). |
+| `trades` | `kalshi_trades` | `none` | 11 | `trade_id` | Kalshi MLB trades (every fill of a market that traded: price, size, taker side). |
