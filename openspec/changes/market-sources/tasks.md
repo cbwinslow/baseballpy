@@ -1,5 +1,5 @@
 # Tasks
-- [ ] 1.1 owner decisions M1 to M4 (design.md) recorded
+- [ ] 1.1 owner decisions M1 to M4 (design.md) recorded (M1 done: all MLB markets)
 - [ ] 1.2 web research and probes of both APIs written into design.md (fields, paging, limits, history depth)
 - [ ] 1.3 measure the homelab MLB subset (rows, bytes as Parquet) and pick the transfer route
 - [ ] 2.1 Kalshi: catalog (series, events, markets), candles, live snapshots: registry, schemas from probes, adapter, tests
