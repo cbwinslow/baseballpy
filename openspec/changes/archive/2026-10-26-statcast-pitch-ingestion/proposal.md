@@ -1,7 +1,7 @@
 # Change Proposal: Statcast Pitch-Level Ingestion Engine
 
 ## Why
-Statcast (Baseball Savant) is the primary data source for modern pitch-by-pitch ball tracking, exit velocity, launch angles, spin metrics, and expected statistics (xBA, xwOBA, xSLG). 
+Statcast (Baseball Savant) is the primary data source for modern pitch-by-pitch ball tracking, exit velocity, launch angles, spin metrics, and expected statistics (xBA, xwOBA, xSLG).
 However, existing ingestion tools suffer from critical defects:
 1. They crash or return truncated results on queries exceeding ~25,000 rows (Savant's server-side cap) or timeout with HTTP 504 on date ranges > 5–7 days.
 2. They dump data into pandas DataFrames as untyped object strings with erratic null values (`"null"`, `""`, `"NA"`).
