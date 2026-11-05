@@ -17,7 +17,7 @@ import pyarrow.parquet as pq
 
 logger = logging.getLogger(__name__)
 
-LOCK_TIMEOUT_SECONDS = 10.0
+LOCK_TIMEOUT_SECONDS = 30.0
 LOCK_STALE_SECONDS = 60.0
 
 
@@ -285,7 +285,9 @@ class ManifestTracker:
                     merged[key] = entry
             disk["chunks"] = merged
             disk["updated_at"] = datetime.now(UTC).isoformat()
-            payload = json.dumps(disk, indent=2)
+            # one field per line but no ``indent``: indent forces the slow pure-Python encoder, and
+            # a 3,000-entry manifest saved by many threads then timed out on its lock (2011 MLB run)
+            payload = json.dumps(disk, separators=(",\n", ": "))
             with atomic_write(self.path) as part_path:
                 part_path.write_text(payload, encoding="utf-8")
             self._data = disk

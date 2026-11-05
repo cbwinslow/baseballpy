@@ -91,6 +91,31 @@ def test_manifest_concurrent_writers_do_not_lose_chunks(tmp_path: Path) -> None:
     assert ManifestTracker(path).is_completed("chunk-3-9")
 
 
+def test_a_big_manifest_with_many_busy_writers_never_times_out(tmp_path: Path) -> None:
+    """The 2008-2012 MLB run lost a season to a lock timeout: 3,200 entries, dozens of writers."""
+    path = tmp_path / "manifest.json"
+    entry = {"status": "COMPLETED", "records_count": 1, "completed_at": "2026-11-05T00:00:00+00:00"}
+    chunks = {f"season=2010/award_recipients_2010_{n}": entry for n in range(3000)}
+    path.write_text(json.dumps({"chunks": chunks}), encoding="utf-8")
+    errors: list[BaseException] = []
+
+    def work(idx: int) -> None:
+        tracker = ManifestTracker(path)
+        try:
+            for n in range(8):
+                tracker.set_completed(f"season=2011/w{idx}-{n}", records_count=n)
+        except BaseException as exc:  # noqa: BLE001 - surfaced by the assertion below
+            errors.append(exc)
+
+    threads = [threading.Thread(target=work, args=(i,)) for i in range(30)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert errors == []
+    assert len(json.loads(path.read_text(encoding="utf-8"))["chunks"]) == 3000 + 30 * 8
+
+
 def test_manifest_sees_other_instances_chunks(tmp_path: Path) -> None:
     path = tmp_path / "m.json"
     a, b = ManifestTracker(path), ManifestTracker(path)

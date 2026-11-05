@@ -444,3 +444,6 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-254 | `code-tightening 1.3`: `requests_for` and `parse_box_text` split into helpers | TODO | complexity under 15, outputs unchanged, gates green |
 | B-255 | `code-tightening 1.4`: `StatcastAdapter.run` split into one method per task | TODO | complexity under 15, outputs unchanged, gates green |
 | B-256 | `code-tightening 1.5`: spec, ADR 68, gates, archive | TODO | change archived |
+| B-257 | mlb-backfill-fixes 1.1-1.2: fast manifest saves, request duration inside the slot, big-manifest test | DONE | `tests/test_hardening.py::test_a_big_manifest_with_many_busy_writers_never_times_out` passes |
+| B-258 | `mlb-backfill-fixes 1.3`: gates, commit, re-run season 2011 | TODO | 2011 completed, `audit speed` shows no in-flight problem |
+

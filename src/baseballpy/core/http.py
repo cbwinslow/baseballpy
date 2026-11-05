@@ -278,7 +278,9 @@ class HttpClient:
                         type(exc).__name__,
                     )
                     raise
-            elapsed = time.perf_counter() - started
+                # measured before the slot is given back, so the logged end never overlaps the next
+                # request that takes the slot (the speed check counts overlaps, ADR 67)
+                elapsed = time.perf_counter() - started
             status = resp.status_code
             if status in RETRYABLE_STATUSES and status not in allow:
                 _audit_attempt(url, sent_at, elapsed, status, "RETRY", None)
