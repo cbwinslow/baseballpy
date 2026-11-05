@@ -139,3 +139,11 @@ The relationships between tables (`playerID` in `People`, `yearID`+`teamID` in `
 - **WHEN** a child table has an empty id, an unknown id, a duplicate key and stale data
 - **THEN** only the unknown id counts as an orphan, the other findings are reported, and `catalog status` prints them
 - Verified by `tests/test_lahman_workflow.py::test_empty_ids_are_not_orphans_and_other_relationships_are_checked`, `tests/test_lahman_coverage.py::test_quality_checks_report_duplicates_orphans_and_stale_data` and `tests/test_lahman_workflow.py::test_catalog_status_shows_the_findings`.
+
+### Requirement: One Folder per Table on Every Operating System
+Whatever spelling a table is requested with (`Parks`, `parks`), the raw folder, the manifest and the processed folder MUST be the one underscore-named folder, and `migrate-layout` MUST move v1 Lahman files into the folders the registry names (`batting`, not `Batting`), because Windows ignores letter case in paths and would hide a wrong folder name that Linux then fails on.
+
+#### Scenario: A CamelCase request and a v1 file land in the lower-case folder
+- **WHEN** a table is read with `Parks` and a v1 lake with `Batting.csv` is migrated
+- **THEN** the folders on disk are `parks` and `batting` (their exact names are compared, not only `exists()`)
+- Verified by `tests/test_sources_lock.py::test_lahman_chunk_fetched_at_other_ref_is_refetched`, `tests/test_migrate.py::test_full_migration_maps_every_dataset_and_verifies_rows` and `tests/test_lahman_coverage.py::test_import_archive_imports_all_27_as_local_import_and_never_hits_the_network`.

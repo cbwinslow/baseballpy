@@ -433,3 +433,4 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-248 | underscore-table-names 1.1-1.4: one underscore name per table, naming test, ADR 65, how-to guide, Lahman reloaded | DONE | `tests/test_table_names.py` passes |
 | B-249 | season-calendar 1.1-1.3: seasons exist once their first day arrives, calendar-based `all_seasons`, January tests, ADR 66 | DONE | `tests/test_season_calendar.py` passes |
 | B-250 | audit-speed-check 1.1-1.4: `http_request` audit events, `audit speed` command, tests, ADR 67 | DONE | `tests/test_audit_speed.py` passes |
+| B-251 | lahman-folder-case 1.1-1.3: any spelling resolves to one folder, migrate uses registry names, case-sensitive test run (fix for the Linux CI failures) | DONE | full suite passes in a case-sensitive folder |

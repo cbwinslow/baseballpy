@@ -17,7 +17,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
-| `lahman-database` | 11 | 18 | 29 |
+| `lahman-database` | 12 | 19 | 31 |
 | `mlb-api-ingestion` | 27 | 39 | 41 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 7 | 12 | 12 |
@@ -34,14 +34,14 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | Source | Datasets | Review | Track cards | Shared currency | Fingerprints | Column descriptions | Spec requirements |
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
-| `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 11 |
+| `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 12 |
 | `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 20 |
 | `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 15 |
 | `mlb_api` | 365 | archived | yes | yes | yes | 9486/16719 (56%) | 27 |
 
 ## Active changes (`openspec/changes/`)
 
-62 changes are archived under `openspec/changes/archive/`.
+63 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|

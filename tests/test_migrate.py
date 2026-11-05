@@ -38,6 +38,9 @@ def _entry(rows: int = 1) -> dict[str, object]:
 @pytest.fixture
 def v1(tmp_path: Path) -> LakeConfig:
     """A representative v1 lake covering every source."""
+    from baseballpy.sources import catalog
+
+    catalog.register_all()  # the registry names the folders a v1 file moves to
     cfg = LakeConfig(home=tmp_path)
     c = tmp_path / "cache"
 
@@ -159,8 +162,11 @@ def test_full_migration_maps_every_dataset_and_verifies_rows(v1: LakeConfig) -> 
     assert (proc / "retrosheet/gamelogs_postseason/part-world_series.parquet").exists()
     assert (proc / "retrosheet/rosters/season=2023/part-data.parquet").exists()
     assert (proc / "retrosheet/reference_teams/part-data.parquet").exists()
-    assert (raw / "lahman/Batting/Batting.csv").exists()
-    assert (proc / "lahman/Batting/part-data.parquet").exists()
+    assert (raw / "lahman/batting/Batting.csv").exists()
+    assert (proc / "lahman/batting/part-data.parquet").exists()
+    # Windows ignores letter case in paths, so check the real folder names too
+    assert [p.name for p in (raw / "lahman").iterdir()] == ["batting"]
+    assert [p.name for p in (proc / "lahman").iterdir()] == ["batting"]
     assert (raw / "chadwick/register/people-0.csv").exists()
     assert (raw / "chadwick/register_names/names.csv").exists()
     assert (proc / "chadwick/register/part-data.parquet").exists()
@@ -194,7 +200,7 @@ def test_manifest_entries_are_carried_so_freshness_survives(v1: LakeConfig) -> N
         "season=2024/2024-04-01_2024-04-05"
     )
     assert statcast is not None and statcast["fetched_at"] == "2024-01-01T00:00:00+00:00"
-    assert v1.dataset_manifest("lahman", "Batting", "raw").is_completed("Batting")
+    assert v1.dataset_manifest("lahman", "batting", "raw").is_completed("Batting")
     sha = v1.dataset_manifest("chadwick", "register", "raw").get_chunk("commit_sha")
     assert sha is not None and sha["sha"] == "abc"
     assert v1.dataset_manifest("retrosheet", "event_files", "raw").is_completed("season_2023")

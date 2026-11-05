@@ -23,6 +23,7 @@ import pyarrow.parquet as pq
 from baseballpy.core.atomic import ManifestTracker, atomic_write, atomic_write_parquet
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LAYOUT_VERSION, LakeConfig
+from baseballpy.core.datasets import datasets_for
 from baseballpy.core.layout import V1_SOURCE_DIRS, detect_layout, v1_cache_root, write_version
 from baseballpy.core.stores import PARQUET_COMPRESSION, manifest_key, part_filename
 
@@ -106,6 +107,20 @@ def _season_dirs(path: Path) -> Iterator[tuple[int, Path]]:
         match = _SEASON_DIR.match(child.name)
         if child.is_dir() and match:
             yield int(match.group(1)), child
+
+
+def _compact(name: str) -> str:
+    """A dataset name without letter case and underscores (``AwardsShareManagers`` = ``awards_share_managers``)."""
+    return name.replace("_", "").lower()
+
+
+def _registered_names(source: str) -> dict[str, str]:
+    """``{compact name: registered name}`` of a source, so a v1 file lands in the registered folder.
+
+    The registry must be filled (``baseballpy.sources.catalog.register_all()``, which the CLI does);
+    with an empty registry names are kept as they were (ADR 65).
+    """
+    return {_compact(spec.name): spec.name for spec in datasets_for(source)}
 
 
 def _files(path: Path, pattern: str = "*") -> list[Path]:
@@ -421,17 +436,21 @@ class _Planner:
     def lahman(self) -> None:
         base = self.root / "lahman"
         manifest = base / "manifest.json"
+        names = _registered_names("lahman")
         for f in _files(base / "raw", "*.csv"):
+            name = names.get(_compact(f.stem), f.stem)
             self._add(
                 f,
                 "raw",
                 "lahman",
-                f.stem,
+                name,
                 f.name,
-                manifests=self._mm(manifest, f.stem, "raw", "lahman", f.stem, f.stem),
+                manifests=self._mm(manifest, f.stem, "raw", "lahman", name, f.stem),
             )
         for f in _files(base / "processed", "*.parquet"):
-            self._add(f, "processed", "lahman", f.stem, "part-data.parquet")
+            self._add(
+                f, "processed", "lahman", names.get(_compact(f.stem), f.stem), "part-data.parquet"
+            )
 
     # -- chadwick ---------------------------------------------------------------------
     def chadwick(self) -> None:

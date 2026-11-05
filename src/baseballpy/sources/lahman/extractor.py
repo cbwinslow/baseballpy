@@ -86,14 +86,12 @@ class LahmanExtractor:
 
     def manifest_for(self, table_name: str | LahmanTable) -> ManifestTracker:
         """Per-table raw manifest at ``raw/lahman/<table>/_manifest.json``."""
-        return self.cache_config.dataset_manifest("lahman", str(table_name), "raw")
+        return self.cache_config.dataset_manifest("lahman", canonical_table_name(table_name), "raw")
 
     def get_raw_path(self, table_name: str | LahmanTable) -> Path:
         """Local path of the raw CSV, kept under Lahman's own file name (``raw/lahman/batting_post/BattingPost.csv``)."""
-        return (
-            self.cache_config.raw_dir("lahman", str(table_name))
-            / f"{upstream_name(table_name)}.csv"
-        )
+        folder = self.cache_config.raw_dir("lahman", canonical_table_name(table_name))
+        return folder / f"{upstream_name(table_name)}.csv"
 
     def file_entry(self, table_name: str | LahmanTable) -> dict[str, object] | None:
         """The one manifest entry of a raw file (``None`` when it was never stored)."""

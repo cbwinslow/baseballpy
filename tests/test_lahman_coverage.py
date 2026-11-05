@@ -165,6 +165,11 @@ def test_import_archive_imports_all_27_as_local_import_and_never_hits_the_networ
     raw = cfg.raw_dir("lahman", "people") / "People.csv"
     assert raw.read_bytes().startswith(b"\xef\xbb\xbf")  # raw bytes stored untouched
     assert not list(tmp_path.rglob("*.part"))
+    # every folder name is lower case: Windows ignores letter case, so a CamelCase folder would
+    # pass here and only fail on Linux (found by CI after ADR 65)
+    for root in (cfg.raw_root / "lahman", cfg.processed_root / "lahman"):
+        folders = [p.name for p in root.iterdir() if p.is_dir()]
+        assert len(folders) >= 27 and all(name == name.lower() for name in folders), folders
 
 
 @pytest.mark.parametrize("member", ["../evil.csv", "a/../../evil.csv"])

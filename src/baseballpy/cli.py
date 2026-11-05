@@ -106,6 +106,9 @@ def statcast_cmd(
 )
 def migrate_layout_cmd(dry_run: bool, delete_old: bool) -> None:
     """Migrate a v1 data lake (cache/<source>/...) to layout v2 (raw/ + processed/)."""
+    from baseballpy.sources import catalog as source_catalog
+
+    source_catalog.register_all()  # v1 Lahman files land in the registered (underscore) folders
     config = LakeConfig()
     report = migrate_layout(config, dry_run=dry_run, delete_old=delete_old)
     if report.already_migrated:

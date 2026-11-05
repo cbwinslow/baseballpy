@@ -193,7 +193,7 @@ class FakeStatcastGameFeed:
 
 
 def test_statcast_adapter_protocol_and_seasons() -> None:
-    adapter = StatcastAdapter()
+    adapter = StatcastAdapter(calendar=StartedCalendar())  # no network in unit tests
     assert isinstance(adapter, IngestAdapter)
     seasons = adapter.all_seasons()
     assert 2008 in seasons
