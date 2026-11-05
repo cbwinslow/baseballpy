@@ -117,7 +117,7 @@ Import the pitching_stats_range function and call it with a start and end date t
 ```python
 from pybaseball import pitching_stats_range
 
-# retrieve all players' pitching stats for the month of May, 2017 
+# retrieve all players' pitching stats for the month of May, 2017
 data = pitching_stats_range("2017-05-01", "2017-05-28")
 
 # retrieve pitching stats for only August 24, 2016
@@ -232,10 +232,10 @@ Import the bwar_pitch function and call it with default arguments to get a subse
 ```python
 from pybaseball import bwar_pitch
 
-# get war stats from baseball reference 
+# get war stats from baseball reference
 data = bwar_pitch()
 
-# get war stats plus additional fields from this table 
+# get war stats plus additional fields from this table
 data = bwar_pitch(return_all=True)
 ```
 
@@ -585,10 +585,10 @@ Function call
 ```python
 from pybaseball import bwar_pitch
 
-# get war stats from baseball reference 
+# get war stats from baseball reference
 data = bwar_pitch()
 
-# get war stats plus additional fields from this table 
+# get war stats plus additional fields from this table
 data = bwar_pitch(return_all=True)
 ```
 
@@ -643,7 +643,7 @@ Shows how to call batting_stats_range with a start and end date, and with only a
 ```python
 from pybaseball import batting_stats_range
 
-# retrieve all players' batting stats for the month of May, 2017 
+# retrieve all players' batting stats for the month of May, 2017
 data = batting_stats_range("2017-05-01", "2017-05-28")
 
 # retrieve batting stats for only August 24, 2016
@@ -677,7 +677,7 @@ Source: https://github.com/jldbc/pybaseball/blob/master/README.md
 Retrieves the 1927 New York Yankees game-by-game schedule and filters for games on May 16. The output shows the team's record and game details for that date.
 
 ```python
-# Example: Say we want to know the 1927 Yankees record on May 16 
+# Example: Say we want to know the 1927 Yankees record on May 16
 from pybaseball import schedule_and_record
 data = schedule_and_record(1927, 'NYY')
 data.loc[data.Date.str.contains("May 16"), :]
@@ -714,10 +714,10 @@ Import the bwar_bat function from pybaseball and call it to get WAR stats. The f
 ```python
 from pybaseball import bwar_bat
 
-# get war stats from baseball reference 
+# get war stats from baseball reference
 data = bwar_bat()
 
-# get war stats plus additional fields from this table 
+# get war stats plus additional fields from this table
 data = bwar_bat(return_all=True)
 ```
 
@@ -980,7 +980,7 @@ playerid_lookup('kershaw', 'clayton')
   name_last name_first  key_mlbam key_retro  key_bbref  key_fangraphs  mlb_played_first  mlb_played_last
 0   kershaw    clayton     477132  kersc001  kershcl01           2036            2008.0           2022.0
 
-# His MLBAM ID is 477132, so we feed that as the player_id argument to the following function 
+# His MLBAM ID is 477132, so we feed that as the player_id argument to the following function
 kershaw_stats = statcast_pitcher('2017-06-01', '2017-07-01', 477132)
 kershaw_stats.groupby("pitch_type").release_speed.agg("mean")
 pitch_type
@@ -1409,10 +1409,10 @@ awards_mgr = awards_managers()
 # player awards by year
 awards_player = awards_players()
 
-# vote shares by year for manager awards 
+# vote shares by year for manager awards
 award_share_mgr = awards_share_managers()
 
-# vote shares by year for player awards 
+# vote shares by year for player awards
 award_share_player = awards_share_players()
 
 # batting stats by year, regular season
@@ -1424,22 +1424,22 @@ batting_post = batting_post()
 # the college a player played at each year
 college_playing = college_playing()
 
-# fielding stats by year 
+# fielding stats by year
 fielding = fielding()
 
-# games played in left, center, right field 
+# games played in left, center, right field
 fielding_of = fielding_of()
 
 # LF/CF/RF splits
 fielding_of_split = fielding_of_split()
 
-# postseason fielding 
+# postseason fielding
 fielding_post = fielding_post()
 
-# hall of fame voting by year 
+# hall of fame voting by year
 hall_of_fame = hall_of_fame()
 
-# home game attendance by park by year 
+# home game attendance by park by year
 home_games = home_games()
 
 # managers by team and year
@@ -1460,7 +1460,7 @@ salaries = salaries()
 # schools attended by each player
 schools = schools()
 
-# playoff series winners and losers 
+# playoff series winners and losers
 series_post = series_post()
 
 # data on teams by year: record, division, stadium, attendance, etc
@@ -1470,7 +1470,7 @@ teams = teams()
 teams_franchises = teams_franchises()
 
 # split season data for teams
-teams_half = teams_half() 
+teams_half = teams_half()
 ```
 
 --------------------------------
@@ -1770,44 +1770,44 @@ Output of the describe() call showing summary statistics for each numeric column
 ```text
 Result:
             Season            W            L           SV            G  \
-count  2460.000000  2460.000000  2460.000000  2460.000000  2460.000000   
-mean   1966.289431    78.135366    78.135366    27.294715   414.617073   
-std      33.922249    13.540774    13.474811    14.757541   144.634809   
-min    1900.000000    36.000000    36.000000     0.000000   146.000000   
-25%    1937.000000    69.000000    69.000000    14.000000   295.000000   
-50%    1972.000000    79.000000    78.000000    29.000000   398.000000   
-75%    1996.000000    88.000000    88.000000    39.000000   538.000000   
-max    2016.000000   116.000000   120.000000    68.000000   768.000000   
+count  2460.000000  2460.000000  2460.000000  2460.000000  2460.000000
+mean   1966.289431    78.135366    78.135366    27.294715   414.617073
+std      33.922249    13.540774    13.474811    14.757541   144.634809
+min    1900.000000    36.000000    36.000000     0.000000   146.000000
+25%    1937.000000    69.000000    69.000000    14.000000   295.000000
+50%    1972.000000    79.000000    78.000000    29.000000   398.000000
+75%    1996.000000    88.000000    88.000000    39.000000   538.000000
+max    2016.000000   116.000000   120.000000    68.000000   768.000000
 
                 GS           IP           SO          K/9         BB/9  \
-count  2460.000000  2460.000000  2460.000000  2460.000000  2460.000000   
-mean    156.939837  1402.272276   800.954472     5.104598     3.236748   
-std       8.992996    82.564637   261.353634     1.543454     0.531561   
-min     103.000000   922.100000   245.000000     1.850000     1.490000   
-25%     154.000000  1378.000000   571.750000     3.780000     2.900000   
-50%     161.000000  1430.050000   811.000000     5.155000     3.220000   
-75%     162.000000  1450.000000   999.000000     6.260000     3.570000   
-max     165.000000  1506.200000  1510.000000     9.350000     5.520000   
+count  2460.000000  2460.000000  2460.000000  2460.000000  2460.000000
+mean    156.939837  1402.272276   800.954472     5.104598     3.236748
+std       8.992996    82.564637   261.353634     1.543454     0.531561
+min     103.000000   922.100000   245.000000     1.850000     1.490000
+25%     154.000000  1378.000000   571.750000     3.780000     2.900000
+50%     161.000000  1430.050000   811.000000     5.155000     3.220000
+75%     162.000000  1450.000000   999.000000     6.260000     3.570000
+max     165.000000  1506.200000  1510.000000     9.350000     5.520000
 
               HR/9        BABIP         LOB%         GB%       HR/FB  \
-count  2460.000000  2460.000000  2460.000000  450.000000  450.000000   
-mean      0.725545     0.282952     0.703174    0.441962    0.105998   
-std       0.330695     0.015073     0.034746    0.022116    0.014720   
-min       0.030000     0.238000     0.564000    0.382000    0.069000   
-25%       0.500000     0.272000     0.684750    0.426250    0.096000   
-50%       0.770000     0.283000     0.708000    0.441000    0.104000   
-75%       0.980000     0.294000     0.727000    0.457000    0.116000   
-max       1.610000     0.340000     0.795000    0.525000    0.159000   
+count  2460.000000  2460.000000  2460.000000  450.000000  450.000000
+mean      0.725545     0.282952     0.703174    0.441962    0.105998
+std       0.330695     0.015073     0.034746    0.022116    0.014720
+min       0.030000     0.238000     0.564000    0.382000    0.069000
+25%       0.500000     0.272000     0.684750    0.426250    0.096000
+50%       0.770000     0.283000     0.708000    0.441000    0.104000
+75%       0.980000     0.294000     0.727000    0.457000    0.116000
+max       1.610000     0.340000     0.795000    0.525000    0.159000
 
-               ERA          FIP        xFIP          WAR  
-count  2460.000000  2460.000000  450.000000  2460.000000  
-mean      3.861809     3.849037    4.189156    13.845935  
-std       0.698738     0.619960    0.348521     4.627145  
-min       1.730000     1.920000    3.330000    -0.500000  
-25%       3.420000     3.500000    3.940000    10.700000  
-50%       3.860000     3.900000    4.200000    13.900000  
-75%       4.320000     4.260000    4.430000    16.900000  
-max       6.710000     5.830000    5.130000    29.500000  
+               ERA          FIP        xFIP          WAR
+count  2460.000000  2460.000000  450.000000  2460.000000
+mean      3.861809     3.849037    4.189156    13.845935
+std       0.698738     0.619960    0.348521     4.627145
+min       1.730000     1.920000    3.330000    -0.500000
+25%       3.420000     3.500000    3.940000    10.700000
+50%       3.860000     3.900000    4.200000    13.900000
+75%       4.320000     4.260000    4.430000    16.900000
+max       6.710000     5.830000    5.130000    29.500000
 ```
 
 --------------------------------
@@ -2497,18 +2497,18 @@ Output of the previous code block showing the shape (2460, 20) and the first fiv
 Output:
 data shape: (2460, 20)
    Season       Team      W     L    SV      G     GS      IP     SO   K/9  \
-1  1907.0       Cubs  107.0  44.0   8.0  200.0  155.0  1373.1  586.0  3.84   
-2  1909.0       Cubs  104.0  49.0  11.0  212.0  155.0  1409.1  680.0  4.34   
-3  1906.0       Cubs  115.0  36.0  10.0  187.0  154.0  1388.1  702.0  4.55   
-4  1910.0  Athletics  102.0  48.0   5.0  200.0  155.0  1421.2  789.0  4.99   
-5  1909.0  Athletics   95.0  58.0   3.0  214.0  153.0  1378.0  728.0  4.75   
+1  1907.0       Cubs  107.0  44.0   8.0  200.0  155.0  1373.1  586.0  3.84
+2  1909.0       Cubs  104.0  49.0  11.0  212.0  155.0  1409.1  680.0  4.34
+3  1906.0       Cubs  115.0  36.0  10.0  187.0  154.0  1388.1  702.0  4.55
+4  1910.0  Athletics  102.0  48.0   5.0  200.0  155.0  1421.2  789.0  4.99
+5  1909.0  Athletics   95.0  58.0   3.0  214.0  153.0  1378.0  728.0  4.75
 
-   BB/9  HR/9  BABIP   LOB%  GB%  HR/FB   ERA   FIP  xFIP   WAR  
-1  2.63  0.07  0.241  0.747  NaN    NaN  1.73  2.31   NaN  17.8  
-2  2.32  0.04  0.248  0.745  NaN    NaN  1.74  2.08   NaN  22.4  
-3  2.89  0.08  0.238  0.757  NaN    NaN  1.75  2.43   NaN  17.6  
-4  2.85  0.05  0.254  0.731  NaN    NaN  1.79  2.23   NaN  16.4  
-5  2.52  0.06  0.251  0.737  NaN    NaN  1.93  2.08   NaN  15.1  
+   BB/9  HR/9  BABIP   LOB%  GB%  HR/FB   ERA   FIP  xFIP   WAR
+1  2.63  0.07  0.241  0.747  NaN    NaN  1.73  2.31   NaN  17.8
+2  2.32  0.04  0.248  0.745  NaN    NaN  1.74  2.08   NaN  22.4
+3  2.89  0.08  0.238  0.757  NaN    NaN  1.75  2.43   NaN  17.6
+4  2.85  0.05  0.254  0.731  NaN    NaN  1.79  2.23   NaN  16.4
+5  2.52  0.06  0.251  0.737  NaN    NaN  1.93  2.08   NaN  15.1
 ```
 
 --------------------------------
@@ -2615,7 +2615,7 @@ Use this snippet to retrieve all statcast data for a specific game by providing 
 ```python
 from pybaseball import statcast_single_game
 
-# get statcast data for game_pk 
+# get statcast data for game_pk
 data = statcast_single_game(529429)
 ```
 
@@ -2954,7 +2954,7 @@ Function call
 ```python
 from pybaseball import pitching_stats_range
 
-# retrieve all players' pitching stats for the month of May, 2017 
+# retrieve all players' pitching stats for the month of May, 2017
 data = pitching_stats_range("2017-05-01", "2017-05-28")
 
 # retrieve pitching stats for only August 24, 2016
@@ -3404,18 +3404,18 @@ pitchers.sort_values('SO', ascending=False).head()
 ```text
 Result:
       playerID            Player           H         HR         ER         BB  \
-143   colege01       Gerrit Cole  145.190329  23.916119  66.034603  53.325072   
-716  verlaju01  Justin Verlander  145.192833  28.656685  65.550935  47.145311   
-163  degroja01      Jacob deGrom  147.740156  17.419418  55.997757  47.226040   
-615  scherma01      Max Scherzer  134.729027  19.137910  57.718204  43.170277   
-58   bauertr01      Trevor Bauer  162.130978  23.420415  79.459799  67.396411   
+143   colege01       Gerrit Cole  145.190329  23.916119  66.034603  53.325072
+716  verlaju01  Justin Verlander  145.192833  28.656685  65.550935  47.145311
+163  degroja01      Jacob deGrom  147.740156  17.419418  55.997757  47.226040
+615  scherma01      Max Scherzer  134.729027  19.137910  57.718204  43.170277
+58   bauertr01      Trevor Bauer  162.130978  23.420415  79.459799  67.396411
 
-             SO        HBP          R  
-143  242.445196   4.835923  71.164678  
-716  233.046279   6.302306  68.739815  
-163  214.747754   5.515039  61.433772  
-615  212.630013   8.205640  61.732141  
-58   210.995752  11.851444  87.746950  
+             SO        HBP          R
+143  242.445196   4.835923  71.164678
+716  233.046279   6.302306  68.739815
+163  214.747754   5.515039  61.433772
+615  212.630013   8.205640  61.732141
+58   210.995752  11.851444  87.746950
 ```
 
 --------------------------------
@@ -3718,9 +3718,9 @@ def modify_gb(gb):
         gb = 0.0 # float(gb.replace('up ', ''))
     else:
         gb = -float(gb)
-    
+
     return gb
-    
+
 brewers['int_GB'] = brewers['GB'].dropna().apply(modify_gb)
 cardinals['int_GB'] = cardinals['GB'].dropna().apply(modify_gb)
 cubs['int_GB'] = cubs['GB'].dropna().apply(modify_gb)
@@ -3772,8 +3772,8 @@ Creates a scatter plot of hit probability (estimated batting average using speed
 fig, ax = plt.subplots(figsize=(8, 8))
 sns.despine(fig, left=True, bottom=True)
 sns.scatterplot(x="launch_speed", y="launch_angle",
-                hue="estimated_ba_using_speedangle", 
-                palette='viridis', 
+                hue="estimated_ba_using_speedangle",
+                palette='viridis',
                 data=data2, ax=ax)
 ax.set_title("Hit probability by Launch Angle and Exit Velocity");
 ```
@@ -3889,7 +3889,7 @@ batting_stats_range(start_dt, end_dt=None)
 ```python
 from pybaseball import batting_stats_range
 
-# retrieve all players' batting stats for the month of May, 2017 
+# retrieve all players' batting stats for the month of May, 2017
 data = batting_stats_range("2017-05-01", "2017-05-28")
 
 # retrieve batting stats for only August 24, 2016
@@ -4409,8 +4409,8 @@ data2['hr'] = data2.events=='home_run'
 fig, ax = plt.subplots(figsize=(8, 8))
 sns.despine(fig, left=True, bottom=True)
 sns.scatterplot(x="launch_speed", y="launch_angle",
-                hue="hr", 
-                palette='binary', 
+                hue="hr",
+                palette='binary',
                 data=data2, ax=ax)
 ax.set_title("Home Runs by Launch Angle and Exit Velocity");
 ```
@@ -4597,10 +4597,10 @@ Function call
 ```python
 from pybaseball import bwar_bat
 
-# get war stats from baseball reference 
+# get war stats from baseball reference
 data = bwar_bat()
 
-# get war stats plus additional fields from this table 
+# get war stats plus additional fields from this table
 data = bwar_bat(return_all=True)
 ```
 ```
@@ -4819,18 +4819,18 @@ batters.sort_values('HR', ascending=False).head()
 ```text
 Result:
       playerID          Player         1B         2B        3B         HR  \
-17   alonspe01     Pete Alonso  61.835746  24.424880  1.776910  36.479123   
-354  martijd02  J. D. Martinez  88.221199  30.439315  2.178894  35.774207   
-580  troutmi01      Mike Trout  68.296501  24.724267  2.726739  35.413694   
-48   bellico01  Cody Bellinger  78.348910  28.931966  4.151507  34.120187   
-553  suareeu01  Eugenio Suarez  80.978952  21.878351  1.930468  33.101862   
+17   alonspe01     Pete Alonso  61.835746  24.424880  1.776910  36.479123
+354  martijd02  J. D. Martinez  88.221199  30.439315  2.178894  35.774207
+580  troutmi01      Mike Trout  68.296501  24.724267  2.726739  35.413694
+48   bellico01  Cody Bellinger  78.348910  28.931966  4.151507  34.120187
+553  suareeu01  Eugenio Suarez  80.978952  21.878351  1.930468  33.101862
 
-            BB        HBP         SB        CS          SO        SH        SF  
-17   55.530717  13.808065   2.380606  0.634653  134.823677  0.268709  2.740424  
-354  61.850212   3.273532   4.228616  0.703440  133.531288  0.176546  5.085481  
-580  98.294393  10.368346  15.968754  2.492124  110.910443  0.177973  3.910907  
-48   73.574174   2.929709  12.346877  2.957267  121.966159  0.180862  3.481480  
-553  64.662073   8.582563   3.132271  2.358739  146.982596  0.173745  5.240382  
+            BB        HBP         SB        CS          SO        SH        SF
+17   55.530717  13.808065   2.380606  0.634653  134.823677  0.268709  2.740424
+354  61.850212   3.273532   4.228616  0.703440  133.531288  0.176546  5.085481
+580  98.294393  10.368346  15.968754  2.492124  110.910443  0.177973  3.910907
+48   73.574174   2.929709  12.346877  2.957267  121.966159  0.180862  3.481480
+553  64.662073   8.582563   3.132271  2.358739  146.982596  0.173745  5.240382
 ```
 
 --------------------------------
@@ -5435,23 +5435,23 @@ reds.describe()
 ```text
 Result:
                 R          RA         Inn        Rank    Attendance  \
-count  162.000000  162.000000  162.000000  162.000000    154.000000   
-mean     5.290123    3.907407    9.246914    1.135802  29033.474026   
-std      3.330048    2.797083    1.033968    0.361264  13331.318368   
-min      0.000000    0.000000    7.000000    1.000000   5219.000000   
-25%      3.000000    2.000000    9.000000    1.000000  18227.250000   
-50%      5.000000    3.000000    9.000000    1.000000  28114.000000   
-75%      7.000000    5.000000    9.000000    1.000000  38292.500000   
-max     14.000000   14.000000   16.000000    3.000000  53652.000000   
+count  162.000000  162.000000  162.000000  162.000000    154.000000
+mean     5.290123    3.907407    9.246914    1.135802  29033.474026
+std      3.330048    2.797083    1.033968    0.361264  13331.318368
+min      0.000000    0.000000    7.000000    1.000000   5219.000000
+25%      3.000000    2.000000    9.000000    1.000000  18227.250000
+50%      5.000000    3.000000    9.000000    1.000000  28114.000000
+75%      7.000000    5.000000    9.000000    1.000000  38292.500000
+max     14.000000   14.000000   16.000000    3.000000  53652.000000
 
-           Streak  
-count  162.000000  
-mean     0.839506  
-std      2.084887  
-min     -4.000000  
-25%     -1.000000  
-50%      1.000000  
-75%      2.000000  
+           Streak
+count  162.000000
+mean     0.839506
+std      2.084887
+min     -4.000000
+25%     -1.000000
+50%      1.000000
+75%      2.000000
 max      7.000000
 ```
 
