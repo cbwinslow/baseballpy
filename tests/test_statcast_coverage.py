@@ -12,6 +12,7 @@ import respx
 from baseballpy.core.config import LakeConfig, QuarantineConfig
 from baseballpy.core.datasets import datasets_for, get_dataset
 from baseballpy.core.quarantine import Quarantine
+from baseballpy.core.stores import RawStore
 from baseballpy.core.upstream import Fingerprint, stored_fingerprint
 from baseballpy.sources import catalog
 from baseballpy.sources.statcast.lb_catalog import (
@@ -401,8 +402,8 @@ def test_the_data_dictionary_page_is_kept_once_with_a_fingerprint(tmp_path: Path
     assert extractor.keep_documents() == ["csv-docs.html"]
     assert extractor.keep_documents() == []  # already kept: nothing downloaded
     assert route.call_count == 1
-    assert (lake.raw_root / "statcast" / "documents" / "csv-docs.html").read_bytes() == (
-        b"<html>dictionary</html>"
+    assert (
+        RawStore(lake).get("statcast", "documents", "csv-docs.html") == b"<html>dictionary</html>"
     )
     entry = lake.dataset_manifest("statcast", "documents", "raw").get_chunk("csv-docs.html")
     assert (stored_fingerprint(entry) or Fingerprint("none", "")).kind == "content_sha256"

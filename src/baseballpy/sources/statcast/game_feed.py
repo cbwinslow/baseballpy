@@ -15,6 +15,7 @@ from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, get_http_client
 from baseballpy.core.lazy import lazy_singleton
+from baseballpy.core.rawfiles import read_logical
 from baseballpy.core.stores import RawStore
 from baseballpy.core.upstream import response_fingerprint
 from baseballpy.sources.statcast.seasons import season_skip_reason
@@ -150,8 +151,10 @@ class StatcastGameFeed:
         root = self.cache_config.raw_dir("statcast", "game_feed", None)
         if not root.exists():
             return None
-        for path in root.glob(f"season=*/{game_pk}.json"):
-            return path.read_bytes()
+        name = f"{game_pk}.json"
+        for pattern in (f"season=*/{name}", f"season=*/{name}.gz"):
+            for path in root.glob(pattern):
+                return read_logical(path, name)
         return None
 
 

@@ -7,6 +7,7 @@ from rich.table import Table
 from baseballpy.core.compact import compact_dataset
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS
+from baseballpy.core.rawconvert import compress_raw
 from baseballpy.sources import catalog
 
 console = Console()
@@ -69,6 +70,26 @@ def compact_cmd(sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bo
         )
 
 
+@click.command("compress-raw")
+@click.option("--source", "sources", multiple=True, help="Limit to a source (repeatable).")
+@click.option("--dry-run", is_flag=True, help="Show what would be compressed; change nothing.")
+def compress_raw_cmd(sources: tuple[str, ...], dry_run: bool) -> None:
+    """Gzip raw text files (json, csv) of the configured sources (run when no ingest is running).
+
+    Each file is checked against its recorded sha256, written compressed, read back and checked
+    again before the original is removed. The checksum stays that of the original bytes.
+    """
+    report = compress_raw(LakeConfig(), sources=sources or None, dry_run=dry_run)
+    verb = "would compress" if dry_run else "compressed"
+    after = "" if dry_run else f" -> {report.bytes_after / 1e9:,.2f} GB"
+    console.print(f"{verb} {report.files:,} files: {report.bytes_before / 1e9:,.2f} GB{after}")
+    for line in report.skipped[:20]:
+        console.print(f"[yellow]skipped[/yellow] {line}")
+    if report.skipped:
+        raise click.ClickException(f"{len(report.skipped)} file(s) were left as they are")
+
+
 def register_compact_command(group: click.Group) -> None:
     """Attach ``compact`` to the main group."""
     group.add_command(compact_cmd)
+    group.add_command(compress_raw_cmd)

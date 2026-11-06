@@ -57,7 +57,7 @@ def keep_documents(
     kept: list[str] = []
     for entry in document_paths(entries, patterns):
         name = PurePosixPath(entry.path).name
-        if only_missing and raw.path_for(source, dataset, name).exists():
+        if only_missing and raw.exists(source, dataset, name):
             continue
         try:
             result = http.get_sync(f"{ref.raw_base()}/{entry.path}")
@@ -95,7 +95,7 @@ def keep_pages(
     """
     kept: list[str] = []
     for name, url in pages.items():
-        if only_missing and raw.path_for(source, dataset, name).exists():
+        if only_missing and raw.exists(source, dataset, name):
             continue
         try:
             result = http.get_sync(url)

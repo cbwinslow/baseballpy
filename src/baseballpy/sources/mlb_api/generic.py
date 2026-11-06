@@ -691,8 +691,7 @@ class MlbEndpointExtractor:
 
             def one(request: Request) -> str:
                 name = f"{request.ident}.json"
-                path = self.raw.path_for("mlb_api", ep.name, name, request.season)
-                if path.exists() and not refresh:
+                if self.raw.exists("mlb_api", ep.name, name, request.season) and not refresh:
                     return "cached"
                 url = f"{MLB_BASE_URL}/{request.path}"
                 result = self.http.get_sync(

@@ -117,6 +117,13 @@ class LakeConfig(EnvSettings):
             f"{PARSE_WORKERS_CEILING}; 0 or 1 = parse in the calling process; ADR 61)"
         ),
     )
+    raw_compress_sources: tuple[str, ...] = Field(
+        default=("mlb_api", "statcast"),
+        description=(
+            "Sources whose raw text files (json, csv) are stored gzipped (checksum of the "
+            "original bytes); sources whose parsers open raw files by path are left plain"
+        ),
+    )
     raw_root_override: Path | None = Field(default=None, description="Override for raw/")
     processed_root_override: Path | None = Field(
         default=None, description="Override for processed/"
@@ -246,6 +253,12 @@ class LakeConfig(EnvSettings):
         if legacy.exists() and not (folder / MANIFEST_NAME).exists():
             legacy.replace(folder / MANIFEST_NAME)  # one-time rename of a pre-ADR-63 manifest
         return ManifestTracker.for_path(folder / MANIFEST_NAME)
+
+    def manifest_for_path(self, path: Path) -> "ManifestTracker":
+        """The shared tracker of an existing manifest file."""
+        from baseballpy.core.atomic import ManifestTracker
+
+        return ManifestTracker.for_path(path)
 
     def today_or_now(self) -> date:
         """The configured ``today`` or the real current date."""

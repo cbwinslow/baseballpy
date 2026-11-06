@@ -5,7 +5,6 @@ upstream check compares the git blob fingerprints stored at download time with t
 each repository (two GitHub requests per repository, the tree listing is cached by commit).
 """
 
-import hashlib
 import logging
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
@@ -15,6 +14,7 @@ from baseballpy.core.atomic import ManifestTracker
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.github_tree import TreeTruncatedError, fetch_tree
 from baseballpy.core.http import HttpStatusError, TransportError
+from baseballpy.core.rawfiles import logical_sha256, stored_path
 from baseballpy.core.sources_lock import SourceRef, resolve_latest_sha
 from baseballpy.core.upstream import GIT_BLOB, stored_fingerprint
 
@@ -46,14 +46,6 @@ class FileCheck:
     name: str
     integrity: str
     upstream: str
-
-
-def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def latest_blobs(config: LakeConfig) -> LatestBlobs:
@@ -103,11 +95,11 @@ def check_raw(
         for name, entry in sorted(ManifestTracker(manifest_path).chunks().items()):
             if entry.get("status") != "COMPLETED" or "sha256" not in entry:
                 continue
-            path = manifest_path.parent / name
-            if not path.exists():
+            path = stored_path(manifest_path.parent, name)
+            if path is None:
                 integrity = MISSING
             else:
-                integrity = OK if _sha256(path) == entry["sha256"] else CORRUPT
+                integrity = OK if logical_sha256(path, name) == entry["sha256"] else CORRUPT
             results.append(
                 FileCheck(
                     source,

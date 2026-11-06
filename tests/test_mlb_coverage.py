@@ -361,7 +361,7 @@ def test_paginated_stats_walk_every_page(tmp_path: Path, monkeypatch: pytest.Mon
     assert report.rows == 3 and route.call_count == 2
     assert [int(c.request.url.params["offset"]) for c in route.calls] == [0, 2]
     raw = lake.raw_dir("mlb_api", paginated.name, 2024)
-    assert sorted(p.name for p in raw.glob("*.p*.json")) == [
+    assert sorted(p.name.removesuffix(".gz") for p in raw.glob("*.p*.json*")) == [
         f"{paginated.name}_2024_sport1.p0.json",
         f"{paginated.name}_2024_sport1.p1.json",
     ]
@@ -444,7 +444,7 @@ def test_endpoint_without_generated_schema_keeps_the_raw_json(
     first = extractor.ingest(empty, Context(season=2024))
     assert first.rows == 0 and first.raw_only >= 1 and route.call_count == first.requests
     raw = lake.raw_dir("mlb_api", empty.name, 2024)
-    assert [p for p in raw.glob("*.json") if p.name != "_manifest.json"]
+    assert [p for p in raw.glob("*.json*") if not p.name.startswith("_manifest")]
     again = extractor.ingest(empty, Context(season=2024))
     assert again.cached == again.requests and route.call_count == first.requests
 
@@ -616,7 +616,7 @@ def test_a_refused_league_wide_pool_is_fetched_through_people_hydrate(
     report = extractor.ingest(ep, Context(season=2024, sport_ids=(1,)))
     assert report.rows == 2 and hydrate.call_count == 2 and not report.errors
     raw = lake.raw_dir("mlb_api", ep.name, 2024)
-    assert any(".hydrate." in p.name for p in raw.glob("*.json")), "the provider's bytes are kept"
+    assert any(".hydrate." in p.name for p in raw.glob("*.json*")), "the provider's bytes are kept"
 
 
 @respx.mock

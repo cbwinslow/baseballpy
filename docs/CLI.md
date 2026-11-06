@@ -21,6 +21,7 @@ Commands:
   cache           Inspect the raw download cache.
   catalog         Inspect and audit what the registry covers.
   compact         Merge each dataset's small chunk files into big ones (run when no ingest is...
+  compress-raw    Gzip raw text files (json, csv) of the configured sources (run when no ingest...
   db              Manage the DuckDB catalog (views over processed/ Parquet).
   docs            Generate the per-dataset column dictionaries in docs/sources/*.md.
   doctor          Diagnose data lake layout, disk usage, package versions, and orphan files.
@@ -270,6 +271,22 @@ Options:
   --dataset TEXT  Limit to a dataset name (repeatable).
   --dry-run       Show what would be merged; change nothing.
   --help          Show this message and exit.
+```
+
+## `baseballpy compress-raw`
+
+```text
+Usage: baseballpy compress-raw [OPTIONS]
+
+  Gzip raw text files (json, csv) of the configured sources (run when no ingest is running).
+
+  Each file is checked against its recorded sha256, written compressed, read back and checked again
+  before the original is removed. The checksum stays that of the original bytes.
+
+Options:
+  --source TEXT  Limit to a source (repeatable).
+  --dry-run      Show what would be compressed; change nothing.
+  --help         Show this message and exit.
 ```
 
 ## `baseballpy db`

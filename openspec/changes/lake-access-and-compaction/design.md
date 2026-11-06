@@ -57,3 +57,11 @@ Dropping `union_by_name` helps a little; the real fix for bulk rows is `read`. `
 | `ingest mlb_api --seasons 2022`, everything downloaded | about 6 h | 57 s, 0 requests |
 | Processed size | 4.9 GB | 6.9 GB incl. Kalshi trades 3.1 GB (trades grew 7 percent) |
 Found on the way: the first real run refused Statcast 2008 because each chunk has its own dictionary for text categories (the check now compares values); 12,652 zero-row files per dataset were never merged (now deleted); `dataset_manifest()` built a new tracker, and parsed 4.5 MB, on every call (now shared).
+
+## Result of raw compression on the real lake (2026-11-06)
+| Measure | Before | After |
+|---|---|---|
+| `raw/` text files (mlb_api, statcast) | 242,809 files, 30.87 GB | gzip, 6.10 GB (24.8 GB freed) |
+| Free disk on C: | 51 GB | 72 GB |
+| `baseballpy cache check` | n/a | 252,542 of 252,542 files ok against the original checksums |
+Found by the test suite on the way: a Statcast game feed lookup that looked for a fixed `.json` name, and a checker that decompressed every `.gz` name (Kalshi pages are gzipped by the caller and checksummed as they are).

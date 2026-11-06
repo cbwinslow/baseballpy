@@ -19,6 +19,15 @@ from baseballpy.core.compacted import (
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec
 from baseballpy.core.layout import ensure_version_file, hint_if_legacy
+from baseballpy.core.rawfiles import (
+    GZIP,
+    GZIP_SUFFIX,
+    gzip_bytes,
+    is_compressible,
+    logical_sha256,
+    read_logical,
+    stored_path,
+)
 from baseballpy.core.upstream import ETAG, Fingerprint
 
 logger = logging.getLogger(__name__)
@@ -160,8 +169,13 @@ class RawStore:
         ensure_version_file(self.config)
         directory = self.config.raw_dir(source, dataset, season, create=True)
         path = directory / _safe_chunk_id(name)
-        with atomic_write(path) as part:
-            part.write_bytes(data)
+        packed = source in self.config.raw_compress_sources and is_compressible(path.name)
+        stored = gzip_bytes(data) if packed else data
+        target = path.with_name(path.name + GZIP_SUFFIX) if packed else path
+        with atomic_write(target) as part:
+            part.write_bytes(stored)
+        # a refresh may change the form: never leave both forms of one file behind
+        (path if packed else path.with_name(path.name + GZIP_SUFFIX)).unlink(missing_ok=True)
         self.config.dataset_manifest(source, dataset, "raw", season).set_completed(
             name,
             records_count=records or 0,
@@ -170,6 +184,7 @@ class RawStore:
                 **(extra or {}),
                 "bytes": len(data),
                 "sha256": hashlib.sha256(data).hexdigest(),
+                **({"stored": GZIP, "stored_bytes": len(stored)} if packed else {}),
                 "season": season,
                 "source_ref": source_ref,
                 **({"upstream": upstream.to_dict()} if upstream is not None else {}),
@@ -177,20 +192,33 @@ class RawStore:
         )
         return path
 
+    def stored_path(
+        self, source: str, dataset: str, name: str, season: int | None = None
+    ) -> Path | None:
+        """The file that holds ``name`` (plain or gzipped), or ``None`` when it is not stored."""
+        return stored_path(self.config.raw_dir(source, dataset, season), _safe_chunk_id(name))
+
+    def exists(self, source: str, dataset: str, name: str, season: int | None = None) -> bool:
+        """True when the raw file is stored, in either form."""
+        return self.stored_path(source, dataset, name, season) is not None
+
     def get(self, source: str, dataset: str, name: str, season: int | None = None) -> bytes:
-        """Read a raw file back (``FileNotFoundError`` if absent)."""
-        return self.path_for(source, dataset, name, season).read_bytes()
+        """Read a raw file back as the original bytes (``FileNotFoundError`` if absent)."""
+        path = self.stored_path(source, dataset, name, season)
+        if path is None:
+            raise FileNotFoundError(self.path_for(source, dataset, name, season))
+        return read_logical(path, _safe_chunk_id(name))
 
     def verify(self, source: str, dataset: str, name: str, season: int | None = None) -> bool:
-        """True when the file exists and matches the sha256 recorded in the manifest."""
-        path = self.path_for(source, dataset, name, season)
-        if not path.exists():
+        """True when the file exists and its original bytes match the sha256 in the manifest."""
+        path = self.stored_path(source, dataset, name, season)
+        if path is None:
             return False
         manifest = self.config.dataset_manifest(source, dataset, "raw", season)
         entry = manifest.get_chunk(name)
         if not entry or "sha256" not in entry:
             return False
-        return bool(hashlib.sha256(path.read_bytes()).hexdigest() == entry["sha256"])
+        return bool(logical_sha256(path, _safe_chunk_id(name)) == entry["sha256"])
 
 
 class ProcessedStore:
