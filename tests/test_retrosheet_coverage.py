@@ -12,6 +12,7 @@ import pytest
 import respx
 from conftest import RetroRepo
 
+from baseballpy.core.atomic import forget_swept_folders
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import datasets_for, get_dataset
 from baseballpy.core.github_tree import TreeEntry
@@ -364,6 +365,7 @@ def test_ingest_all_resumes_after_an_interruption(
 
     state["crash"] = False
     calls = len(respx.calls)
+    forget_swept_folders()  # the resume is a new process: it sweeps again
     resumed = RetrosheetSource(cache_config=cfg).ingest_all(2000, 2005)
     assert resumed.ok and [s.year for s in resumed.seasons] == [2000, 2001, 2002, 2003, 2004, 2005]
     for season in resumed.seasons[:3]:  # already finished: nothing re-parsed

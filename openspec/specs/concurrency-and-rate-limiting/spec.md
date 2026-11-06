@@ -78,3 +78,17 @@ When a high-volume request requires player hydration batches (such as split stat
 - **WHEN** a client is built with the default configuration
 - **THEN** its in-flight limit is 8 for `baseballsavant.mlb.com` and 4 for `statsapi.mlb.com` and `raw.githubusercontent.com`, `savant_concurrency` changes the Savant default and a `host_concurrency` entry wins over it.
 - Verified by `tests/test_request_parallelism.py::test_savant_has_a_higher_default_in_flight_limit_than_other_hosts`.
+
+### Requirement: One Process Per Host
+The per-host rate and in-flight caps are kept per process, so a process MUST claim a host with an operating-system file lock the first time it asks it something, a second process asking the same host MUST be refused with a clear message (unless `BASEBALLPY_RATE_ALLOW_PARALLEL_PROCESSES` is set), a claim MUST end with its process however the process ends, and other hosts MUST NOT be blocked.
+
+#### Scenario: A second process is refused and a crash frees the host
+- **GIVEN** one process holds a host
+- **WHEN** another process asks the same host, then the holder ends abruptly
+- **THEN** the second is refused with `HostBusyError`, a different host is not blocked, and after the crash the host can be claimed again.
+- Verified by `tests/test_hostlock.py::test_a_second_process_is_refused_until_the_first_ends_even_by_a_crash`.
+
+#### Scenario: The client claims on first use and can opt out
+- **WHEN** an `HttpClient` with a lock folder asks a host another process holds
+- **THEN** it is refused, a client with `allow_parallel_processes` is not, and a client with no lock folder never claims.
+- Verified by `tests/test_hostlock.py::test_the_http_client_claims_a_host_on_first_use_and_the_opt_out_skips_the_claim` and `tests/test_hostlock.py::test_a_client_without_a_lock_folder_never_claims`.

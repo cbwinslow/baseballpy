@@ -13,7 +13,7 @@ import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import cleanup_stale_parts
+from baseballpy.core.atomic import cleanup_stale_parts_once
 from baseballpy.core.audit import default_audit_logger, get_audit_logger
 from baseballpy.core.config import SAVANT_HOST, LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
@@ -206,8 +206,8 @@ class StatcastExtractor:
         self.manifest = self.cache_config.dataset_manifest("statcast", "pitches")
         self.manifest_minors = self.cache_config.dataset_manifest("statcast", "pitches_minors")
         # discard orphaned .part files from killed runs
-        cleanup_stale_parts(self.cache_config.raw_root / "statcast")
-        cleanup_stale_parts(self.cache_config.processed_root / "statcast")
+        cleanup_stale_parts_once(self.cache_config.raw_root / "statcast")
+        cleanup_stale_parts_once(self.cache_config.processed_root / "statcast")
 
     def _spec(self, minors: bool) -> DatasetSpec:
         return self.spec_minors if minors else self.spec

@@ -7,7 +7,7 @@ import re
 from datetime import UTC, datetime
 from pathlib import Path
 
-from baseballpy.core.atomic import cleanup_stale_parts
+from baseballpy.core.atomic import cleanup_stale_parts_once
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.documents import keep_documents, tree_or_none
@@ -66,7 +66,7 @@ class ChadwickExtractor:
         self._blob_shas: dict[str, str] = {}
         self.raw = RawStore(self.cache_config)
         # discard orphaned .part files from killed runs
-        cleanup_stale_parts(self.cache_config.raw_root / "chadwick")
+        cleanup_stale_parts_once(self.cache_config.raw_root / "chadwick")
 
     @property
     def shards_dir(self) -> Path:

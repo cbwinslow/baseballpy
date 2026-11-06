@@ -7,7 +7,7 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts
+from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts_once
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
@@ -41,8 +41,8 @@ class MlbApiExtractor:
         self.store = ProcessedStore(self.cache_config)
         self.raw = RawStore(self.cache_config)
         # discard orphaned .part files from killed runs
-        cleanup_stale_parts(self.cache_config.raw_root / "mlb_api")
-        cleanup_stale_parts(self.cache_config.processed_root / "mlb_api")
+        cleanup_stale_parts_once(self.cache_config.raw_root / "mlb_api")
+        cleanup_stale_parts_once(self.cache_config.processed_root / "mlb_api")
 
     def _season(self, season: int | None) -> int:
         """The given season, else the current one (no season is hard-coded)."""

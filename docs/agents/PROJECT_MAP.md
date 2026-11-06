@@ -13,7 +13,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 14 | 23 | 33 |
-| `concurrency-and-rate-limiting` | 5 | 10 | 11 |
+| `concurrency-and-rate-limiting` | 6 | 12 | 14 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
@@ -126,6 +126,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 69: Tightening Is Behaviour-Preserving, One Slice Per Commit, Proven by Comparison
 - ADR 70: Kalshi Is a Standard Source: Typed Decimals, Threaded Catalog, Optional Signing
 - ADR 71: Kalshi Trades and Candlesticks Are Opt-In, Per Open Date, From the Catalog
+- ADR 72: One baseballpy Process Per Remote Host
 
 ## Documentation pages (`docs/`)
 

@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 from pathlib import Path
 
-from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts
+from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts_once
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.documents import keep_documents
@@ -82,8 +82,8 @@ class RetrosheetDownloader:
         self.manifest = self.cache_config.dataset_manifest("retrosheet", "event_files", "raw")
         self._tree: RetroTree | None = None
         # discard orphaned .part files from killed runs
-        cleanup_stale_parts(self.cache_config.raw_root / "retrosheet")
-        cleanup_stale_parts(self.cache_config.processed_root / "retrosheet")
+        cleanup_stale_parts_once(self.cache_config.raw_root / "retrosheet")
+        cleanup_stale_parts_once(self.cache_config.processed_root / "retrosheet")
 
     # ------------------------------------------------------------------ discovery
     def tree(self, refresh: bool = False) -> RetroTree:

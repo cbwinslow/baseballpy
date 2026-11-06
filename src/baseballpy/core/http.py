@@ -14,6 +14,7 @@ from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
+from pathlib import Path
 from typing import Any, TypeVar
 from urllib.parse import urlparse
 
@@ -29,6 +30,7 @@ from tenacity import (
 
 from baseballpy.core.audit import AuditEvent, default_audit_logger
 from baseballpy.core.config import RateLimitConfig, get_config
+from baseballpy.core.hostlock import claim_host, release_all
 from baseballpy.core.lazy import lazy_singleton
 
 #: Re-exported so no other module needs to import httpx directly.
@@ -140,8 +142,11 @@ class HttpClient:
         http2: bool = True,
         transport: httpx.AsyncBaseTransport | None = None,
         user_agent: str | None = None,
+        lock_dir: Path | None = None,
     ) -> None:
         self.rate = rate or RateLimitConfig()
+        #: folder of the per-host claims (``None``: no claim, as in tests with their own client)
+        self._lock_dir = lock_dir
         self._http2 = http2
         self._transport = transport
         self._user_agent = user_agent or os.environ.get(USER_AGENT_ENV) or DEFAULT_USER_AGENT
@@ -190,7 +195,9 @@ class HttpClient:
         return asyncio.wrap_future(future)
 
     def close(self) -> None:
-        """Close the pooled client and stop the private loop."""
+        """Close the pooled client, stop the private loop and give up the host claims."""
+        if self._lock_dir is not None:
+            release_all(self._lock_dir)
         loop = self._loop
         if loop is None or loop.is_closed():
             return
@@ -252,6 +259,8 @@ class HttpClient:
     ) -> HttpResult:
         client = self._ensure_client()
         host = urlparse(url).hostname or ""
+        if self._lock_dir is not None and not self.rate.allow_parallel_processes:
+            claim_host(self._lock_dir, host)
         semaphore = self._semaphore_for(host)
         limiter = self._limiter_for(host)
         req_headers = dict(headers or {})
@@ -352,7 +361,9 @@ class HttpClient:
         return future.result()
 
 
-get_http_client = lazy_singleton(lambda: HttpClient(get_config().rate_limit))
+get_http_client = lazy_singleton(
+    lambda: HttpClient(get_config().rate_limit, lock_dir=get_config().lake.locks_root)
+)
 
 __all__ = [
     "HttpClient",

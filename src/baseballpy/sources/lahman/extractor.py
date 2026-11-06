@@ -15,7 +15,7 @@ commit decides. Files the user supplied are authoritative until ``refresh``.
 import logging
 from pathlib import Path
 
-from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts
+from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts_once
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.documents import keep_documents, tree_or_none
@@ -80,7 +80,7 @@ class LahmanExtractor:
         self._documents_done = False
         self._mixed_warned = False
         # discard orphaned .part files from killed runs
-        cleanup_stale_parts(self.cache_config.raw_root / "lahman")
+        cleanup_stale_parts_once(self.cache_config.raw_root / "lahman")
 
     # -- manifest and paths ----------------------------------------------------------------
 

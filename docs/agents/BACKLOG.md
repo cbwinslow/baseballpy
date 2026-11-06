@@ -475,3 +475,4 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-274 | market-sources 2.1 part 1: Kalshi catalog (series, events, markets), signing, decimal types, ADR 70 | DONE | 189 series, 55,197 events, 900,555 markets in the lake, speed audit clean, 13 Kalshi tests pass |
 | B-275 | `market-sources 2.3`: run the full Kalshi trades and candlesticks backfill, tune the speed | OPEN | all traded markets stored, audit speed clean |
 | B-276 | `market-sources 2.4`: contract check of the Kalshi routes against the official OpenAPI spec | OPEN | a test or command flags new and removed routes |
+| B-277 | market-sources: one baseballpy process per host (OS file lock), ADR 72 | DONE | tests/test_hostlock.py: second process refused, crash frees the host, opt-out works |

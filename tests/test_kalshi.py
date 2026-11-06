@@ -163,15 +163,29 @@ def _ingest(tmp_path: Path, workers: int = 4) -> tuple[IngestOutcome, FakeHttp, 
     return ingest(config=config, extractor=extractor, workers=workers), fake, config
 
 
-def test_extractor_follows_the_cursor_and_keeps_every_raw_page(tmp_path: Path) -> None:
+def test_extractor_follows_the_cursor_and_keeps_every_raw_page_in_one_gzip(
+    tmp_path: Path,
+) -> None:
+    import gzip
+
+    from baseballpy.sources.kalshi.raw import RawLog
+
     config = LakeConfig(base_dir=tmp_path)
     fake = FakeHttp(_pages())
     extractor = KalshiExtractor(config, fake)  # type: ignore[arg-type]
-    rows = extractor.records(BY_NAME["events"], "KXMLBGAME")
+    raw = RawLog()
+    rows = extractor.records(BY_NAME["events"], "KXMLBGAME", raw)
     assert [r["event_ticker"] for r in rows] == ["KXMLBGAME-E1", "KXMLBGAME-E2"]
-    raw = RawStore(config)
-    assert raw.verify("kalshi", "events", "events-KXMLBGAME-p00000.json")
-    assert raw.verify("kalshi", "events", "events-KXMLBGAME-p00001.json")
+    extractor.keep("events", "events-KXMLBGAME.jsonl.gz", raw)
+    store = RawStore(config)
+    assert store.verify("kalshi", "events", "events-KXMLBGAME.jsonl.gz")
+    pages = gzip.decompress(store.get("kalshi", "events", "events-KXMLBGAME.jsonl.gz")).splitlines()
+    assert len(pages) == 2, "both pages answered are kept"
+    assert [
+        p.name
+        for p in (tmp_path / "raw" / "kalshi" / "events").iterdir()
+        if p.name != "_manifest.json"
+    ] == ["events-KXMLBGAME.jsonl.gz"], "no file per page"
 
 
 def test_catalog_ingest_runs_series_on_threads_and_merges_live_with_archived(

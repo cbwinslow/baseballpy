@@ -643,3 +643,28 @@ def test_user_agent_defaults_to_the_pybaseball_one_and_can_be_overridden(
     monkeypatch.setenv(USER_AGENT_ENV, "custom/1")
     assert HttpClient()._user_agent == "custom/1"
     assert HttpClient(user_agent="explicit/2")._user_agent == "explicit/2"
+
+
+def test_stale_parts_are_swept_once_per_process_and_folder_not_once_per_job(
+    tmp_path: Path,
+) -> None:
+    """A walk of 400,000 files per extractor, all at once, stalled every restart for minutes."""
+    import os
+
+    from baseballpy.core.atomic import cleanup_stale_parts_once
+
+    old = tmp_path / "a" / "stale.parquet.part"
+    old.parent.mkdir()
+    old.write_bytes(b"x")
+    os.utime(old, (0, 0))
+    assert cleanup_stale_parts_once(tmp_path) == [old]
+    fresh = tmp_path / "b.part"
+    fresh.write_bytes(b"x")
+    os.utime(fresh, (0, 0))
+    assert cleanup_stale_parts_once(tmp_path) == [], (
+        "the second call must not walk the folder again"
+    )
+    assert fresh.exists()
+    other = tmp_path / "other"
+    other.mkdir()
+    assert cleanup_stale_parts_once(other) == [], "another folder is its own first call"

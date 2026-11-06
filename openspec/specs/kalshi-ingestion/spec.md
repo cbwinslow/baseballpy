@@ -32,7 +32,7 @@ The catalog ingest MUST fetch each in-scope series on a worker thread, merge liv
 #### Scenario: Series on threads, live and archived merged
 - **WHEN** the catalog is ingested from stubbed pages
 - **THEN** only in-scope series are requested, every page is followed to the end, the newer of a live and an archived row wins, and one Parquet part per series is written.
-- Verified by `tests/test_kalshi.py::test_catalog_ingest_runs_series_on_threads_and_merges_live_with_archived` and `tests/test_kalshi.py::test_extractor_follows_the_cursor_and_keeps_every_raw_page`.
+- Verified by `tests/test_kalshi.py::test_catalog_ingest_runs_series_on_threads_and_merges_live_with_archived` and `tests/test_kalshi.py::test_extractor_follows_the_cursor_and_keeps_every_raw_page_in_one_gzip`.
 
 #### Scenario: A dataset subset asks only for its routes
 - **WHEN** only the events dataset is selected

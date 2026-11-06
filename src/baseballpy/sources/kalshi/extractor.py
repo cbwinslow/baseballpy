@@ -6,7 +6,6 @@ sha256 before anything is typed, so a parsing fix never needs the network.
 """
 
 import logging
-import re
 from collections.abc import Callable
 from typing import Any
 
@@ -20,13 +19,13 @@ from baseballpy.sources.kalshi.endpoints import (
     MLB_SCOPE,
     KalshiEndpoint,
 )
+from baseballpy.sources.kalshi.raw import RawLog, keep_raw
 from baseballpy.sources.kalshi.signing import sign_with_environment
 
 logger = logging.getLogger(__name__)
 
 #: the series list needs no series ticker; a bounded page count guards against a cursor that never ends
 MAX_PAGES = 10_000
-_SAFE = re.compile(r"[^A-Za-z0-9._-]+")
 
 
 class KalshiExtractor:
@@ -55,23 +54,23 @@ class KalshiExtractor:
             raise ValueError(f"kalshi {endpoint.path}: no {endpoint.records!r} list in the answer")
         return result.content, payload
 
-    def _keep(
-        self, endpoint: KalshiEndpoint, label: str, page: int, data: bytes, rows: int
-    ) -> None:
+    def keep(self, dataset: str, name: str, raw: RawLog) -> None:
+        """Store the raw answers of one unit as ``raw/kalshi/<dataset>/<name>`` (when storing is on)."""
         if self._store_raw:
-            name = _SAFE.sub("_", f"{label}-p{page:05d}.json")
-            self._raw.put("kalshi", endpoint.dataset, name, data, records=rows,
-                          extra={"route": endpoint.name})  # fmt: skip
+            keep_raw(self._raw, dataset, name, raw)
 
     def series(self) -> list[dict[str, Any]]:
         """Every in-scope series record (the series list, filtered by the MLB scope rule)."""
         endpoint = BY_NAME["series"]
         data, payload = self._get(endpoint, dict(endpoint.params))
-        rows = payload[endpoint.records]
-        self._keep(endpoint, "series", 0, data, len(rows))
-        return [r for r in rows if MLB_SCOPE.includes(r)]
+        raw = RawLog()
+        raw.add(endpoint.name, "-", 0, data)
+        self.keep("series", "series-all.jsonl.gz", raw)
+        return [r for r in payload[endpoint.records] if MLB_SCOPE.includes(r)]
 
-    def records(self, endpoint: KalshiEndpoint, series_ticker: str) -> list[dict[str, Any]]:
+    def records(
+        self, endpoint: KalshiEndpoint, series_ticker: str, raw: RawLog
+    ) -> list[dict[str, Any]]:
         """Every record of one route for one series, following the cursor to the end."""
         out: list[dict[str, Any]] = []
         cursor = ""
@@ -80,9 +79,8 @@ class KalshiExtractor:
             if cursor:
                 params["cursor"] = cursor
             data, payload = self._get(endpoint, params)
-            rows = payload[endpoint.records]
-            self._keep(endpoint, f"{endpoint.name}-{series_ticker}", page, data, len(rows))
-            out.extend(rows)
+            raw.add(endpoint.name, series_ticker, page, data)
+            out.extend(payload[endpoint.records])
             cursor = str(payload.get("cursor") or "")
             if not cursor:
                 return out

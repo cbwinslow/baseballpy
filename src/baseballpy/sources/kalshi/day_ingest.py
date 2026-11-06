@@ -24,16 +24,16 @@ from baseballpy.core.datasets import get_dataset
 from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
 from baseballpy.sources import catalog
 from baseballpy.sources.kalshi.endpoints import MARKET_DATASETS, MIN_VOLUME
-from baseballpy.sources.kalshi.market_data import (
-    Clock,
-    KalshiMarketData,
-    MarketRow,
-    RawLog,
-)
+from baseballpy.sources.kalshi.market_data import Clock, KalshiMarketData, MarketRow
 from baseballpy.sources.kalshi.normalizer import KalshiNormalizer
+from baseballpy.sources.kalshi.raw import RawLog, keep_raw
 
 logger = logging.getLogger(__name__)
 
+#: threads inside one date's job. The runner already runs many dates side by side and the host caps
+#: bound the real request rate, so a larger pool only piles up idle threads (32 jobs of 32 threads
+#: was over 700 threads for 16 requests in flight)
+MAX_THREADS_PER_DAY = 8
 #: a market in any other status may still trade, so its date is fetched again on every run
 FINAL_STATUSES = frozenset({"finalized"})
 UNDATED = "undated"
@@ -128,7 +128,7 @@ def ingest_day(
         return outcome
 
     now = clock()
-    pool_size = resolve_concurrency(workers, len(todays))
+    pool_size = resolve_concurrency(workers, len(todays), max_cap=MAX_THREADS_PER_DAY)
     with ThreadPoolExecutor(max_workers=pool_size) as pool:
         for name in datasets:
             raw = RawLog()
@@ -142,13 +142,8 @@ def ingest_day(
             if not config.enabled:
                 continue
             spec = get_dataset("kalshi", name)
-            RawStore(config).put(
-                "kalshi",
-                name,
-                f"{name}-{day}.jsonl.gz",
-                raw.to_bytes(),
-                records=len(raw),
-                extra={"day": day, "markets": len(todays)},
+            keep_raw(
+                RawStore(config), name, f"{name}-{day}.jsonl.gz", raw, day=day, markets=len(todays)
             )
             store.put(
                 spec,

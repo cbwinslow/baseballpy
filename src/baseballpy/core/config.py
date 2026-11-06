@@ -181,6 +181,11 @@ class LakeConfig(EnvSettings):
         return self.http_cache_root_override or (self.home / "cache" / "http")
 
     @property
+    def locks_root(self) -> Path:
+        """One lock file per remote host: only one baseballpy process downloads from a host at a time."""
+        return self.home / "locks"
+
+    @property
     def exports_root(self) -> Path:
         """Root of exported files (Parquet, CSV, DuckDB) written by ``baseballpy export``."""
         return self.exports_root_override or (self.home / "exports")
@@ -415,6 +420,13 @@ class RateLimitConfig(EnvSettings):
     )
     verify_max_bytes: int = Field(
         default=1_000_000, description="Only answers up to this many bytes are verified"
+    )
+    allow_parallel_processes: bool = Field(
+        default=False,
+        description=(
+            "Speed caps are per process, so by default a second process is refused on a host "
+            "another one is already using (set true only if the host allows the sum of both)"
+        ),
     )
     max_retries: int = Field(default=5, description="Maximum retry attempts on 429/5xx errors")
     backoff_factor: float = Field(default=1.5, description="Exponential backoff factor")

@@ -31,10 +31,10 @@ from baseballpy.sources.kalshi.market_data import (
     MAX_CANDLE_PERIODS,
     KalshiMarketData,
     MarketRow,
-    RawLog,
     flatten_candle,
 )
 from baseballpy.sources.kalshi.normalizer import KalshiNormalizer
+from baseballpy.sources.kalshi.raw import RawLog
 
 CUTOFF = datetime(2026, 9, 6, tzinfo=UTC)
 NOW = datetime(2026, 11, 6, tzinfo=UTC)
@@ -332,6 +332,27 @@ def test_only_markets_that_traded_are_planned(tmp_path: Path) -> None:
     assert [m.ticker for m in traded_markets(store)] == ["A"]
     empty = traded_markets(ProcessedStore(_lake(tmp_path / "other")))
     assert empty == []
+
+
+def test_a_day_never_starts_more_threads_than_its_cap(tmp_path: Path) -> None:
+    import threading
+
+    from baseballpy.sources.kalshi.day_ingest import MAX_THREADS_PER_DAY
+
+    fake = FakeKalshi()
+    markets = [
+        _market(f"T-{i:03d}", "2026-10-27T12:00:00", "2026-10-28T03:00:00") for i in range(60)
+    ]
+    seen = set[int]()
+    original = fake.get_sync
+
+    def tracking(url: str, **kwargs: Any) -> HttpResult:
+        seen.add(threading.get_ident())
+        return original(url, **kwargs)
+
+    fake.get_sync = tracking  # type: ignore[method-assign]
+    _ingest(_lake(tmp_path), fake, "2026-10-27", markets, datasets=("trades",))
+    assert 1 <= len(seen) <= MAX_THREADS_PER_DAY
 
 
 def test_the_digest_changes_when_a_market_is_added_or_settles() -> None:

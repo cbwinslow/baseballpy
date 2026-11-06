@@ -92,6 +92,31 @@ def cleanup_stale_parts(directory: Path | str, older_than_seconds: float = 3600.
     return removed
 
 
+_SWEPT: set[Path] = set()
+_SWEPT_LOCK = threading.Lock()
+
+
+def forget_swept_folders() -> None:
+    """Forget which folders were swept (a new process starts with none; tests simulate a restart)."""
+    with _SWEPT_LOCK:
+        _SWEPT.clear()
+
+
+def cleanup_stale_parts_once(directory: Path | str) -> list[Path]:
+    """Sweep ``directory`` for stale ``*.part`` files at most once per process.
+
+    Every extractor used to walk its whole source folder when it was built, and one run builds one
+    per job: with 400,000 files that was minutes per job, all at the same time, before the first
+    request. Leftover parts are only hygiene, so the first caller sweeps and the rest skip it.
+    """
+    root = Path(directory)
+    with _SWEPT_LOCK:
+        if root in _SWEPT:
+            return []
+        _SWEPT.add(root)
+    return cleanup_stale_parts(root)
+
+
 def atomic_write_parquet(
     table: pa.Table, target_path: Path | str, compression: str = "snappy"
 ) -> None:
@@ -298,4 +323,6 @@ __all__ = [
     "atomic_write",
     "atomic_write_parquet",
     "cleanup_stale_parts",
+    "cleanup_stale_parts_once",
+    "forget_swept_folders",
 ]

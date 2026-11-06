@@ -29,6 +29,7 @@ from baseballpy.sources.kalshi.endpoints import (
 )
 from baseballpy.sources.kalshi.extractor import KalshiExtractor
 from baseballpy.sources.kalshi.normalizer import KalshiNormalizer
+from baseballpy.sources.kalshi.raw import RawLog
 
 logger = logging.getLogger(__name__)
 
@@ -66,10 +67,15 @@ def _newest_per_key(records: list[dict[str, Any]], key: tuple[str, ...]) -> list
 def _series_records(
     extractor: KalshiExtractor, ticker: str, routes: Sequence[KalshiEndpoint]
 ) -> dict[str, list[dict[str, Any]]]:
-    """Records of every wanted route for one series, grouped by dataset."""
+    """Records of every wanted route for one series, grouped by dataset; raw kept per dataset."""
     by_dataset: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    logs: dict[str, RawLog] = defaultdict(RawLog)
     for endpoint in routes:
-        by_dataset[endpoint.dataset].extend(extractor.records(endpoint, ticker))
+        by_dataset[endpoint.dataset].extend(
+            extractor.records(endpoint, ticker, logs[endpoint.dataset])
+        )
+    for dataset, log in logs.items():
+        extractor.keep(dataset, f"{dataset}-{ticker}.jsonl.gz", log)
     return by_dataset
 
 

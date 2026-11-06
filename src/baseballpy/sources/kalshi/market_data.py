@@ -7,10 +7,7 @@ live candles are fetched 100 markets to a call). Every answer is kept as raw JSO
 close date and dataset (a file per request would be about a million files).
 """
 
-import gzip
-import json
 import logging
-import threading
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -24,6 +21,7 @@ from baseballpy.sources.kalshi.endpoints import (
     KALSHI_BASE,
     KalshiEndpoint,
 )
+from baseballpy.sources.kalshi.raw import RawLog
 
 logger = logging.getLogger(__name__)
 
@@ -56,30 +54,6 @@ class MarketRow:
     def end(self) -> datetime | None:
         """When the market stopped trading: settlement if known, else its close."""
         return self.settlement_ts or self.close_time
-
-
-class RawLog:
-    """Raw answers of one close date, written as a gzip of JSON lines (the body kept verbatim)."""
-
-    def __init__(self) -> None:
-        self._lines: list[str] = []
-        self._lock = threading.Lock()
-
-    def add(self, route: str, ticker: str, page: int, body: bytes) -> None:
-        """Remember one answer; ``body`` is the exact response text (safe from several threads)."""
-        record = {"route": route, "ticker": ticker, "page": page, "body": body.decode("utf-8")}
-        line = json.dumps(record, separators=(",", ":"))
-        with self._lock:
-            self._lines.append(line)
-
-    def __len__(self) -> int:
-        return len(self._lines)
-
-    def to_bytes(self) -> bytes:
-        """The whole log as gzip bytes (``mtime`` fixed, so equal logs have equal bytes)."""
-        with self._lock:
-            lines = sorted(self._lines)  # threads add in any order; the file must not depend on it
-        return gzip.compress(("\n".join(lines) + "\n").encode("utf-8"), mtime=0)
 
 
 def _parse_time(value: object) -> datetime:
@@ -238,6 +212,5 @@ __all__ = [
     "Cutoffs",
     "KalshiMarketData",
     "MarketRow",
-    "RawLog",
     "flatten_candle",
 ]
