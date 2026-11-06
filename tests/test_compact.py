@@ -174,3 +174,25 @@ def test_the_compact_command_reports_and_merges(
     assert result.exit_code == 0, result.output
     assert "merged 3 chunks" in result.output
     assert _files(lake, spec, 2023) == ["compact-0001.parquet"]
+
+
+def test_chunks_with_different_category_values_are_compacted_and_read_back_right(
+    tmp_path: Path, spec: DatasetSpec
+) -> None:
+    """Category columns carry a dictionary per chunk; compaction must not call that a difference."""
+    cfg = LakeConfig(home=tmp_path)
+    store = ProcessedStore(cfg)
+    kind = spec.schema.field("pitch_type").type
+    for chunk, values in (("a", ["FF", "SL"]), ("b", ["CH", "FF"]), ("c", ["KC"])):
+        table = _pitches([90.0] * len(values), 2023)
+        column = pa.array(values).dictionary_encode().cast(kind)
+        store.put(
+            spec,
+            table.set_column(table.schema.get_field_index("pitch_type"), "pitch_type", column),
+            chunk_id=chunk,
+            season=2023,
+        )
+    assert compact_dataset(spec, cfg).groups == 1
+    kinds = sorted(bp.read("statcast.pitches", seasons=2023, config=cfg)["pitch_type"].to_list())
+    assert kinds == ["CH", "FF", "FF", "KC", "SL"]
+    assert store.read_part(spec, "b", 2023)["pitch_type"].to_pylist() == ["CH", "FF"]

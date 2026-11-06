@@ -53,6 +53,17 @@ class CompactReport:
     bytes_after: int = 0
 
 
+def _decoded(table: pa.Table) -> pa.Table:
+    """Category (dictionary) columns as plain values: each chunk has its own dictionary, so only
+    the values, not the dictionaries, can be compared."""
+    for index, field in enumerate(table.schema):
+        if pa.types.is_dictionary(field.type):
+            table = table.set_column(
+                index, field.name, table[field.name].cast(field.type.value_type)
+            )
+    return table
+
+
 def _group_key(key: str) -> int | None:
     return int(key.split("/", 1)[0].removeprefix("season=")) if key.startswith("season=") else None
 
@@ -160,9 +171,9 @@ def _compact_group(
             for key, source in tables:
                 first, count = spans[key]
                 expected = source if source.schema.equals(spec.schema) else source.cast(spec.schema)
-                if count != int(entries[key]["records_count"]) or not back.slice(
-                    first, count
-                ).equals(expected, check_metadata=False):
+                if count != int(entries[key]["records_count"]) or not _decoded(
+                    back.slice(first, count)
+                ).equals(_decoded(expected), check_metadata=False):
                     raise ValueError(f"{spec.key}: chunk {key} differs after compaction")
             report.rows += back.num_rows
             report.bytes_after += path.stat().st_size
