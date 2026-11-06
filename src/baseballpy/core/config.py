@@ -245,7 +245,7 @@ class LakeConfig(EnvSettings):
         legacy = folder / LEGACY_MANIFEST_NAME
         if legacy.exists() and not (folder / MANIFEST_NAME).exists():
             legacy.replace(folder / MANIFEST_NAME)  # one-time rename of a pre-ADR-63 manifest
-        return ManifestTracker(folder / MANIFEST_NAME)
+        return ManifestTracker.for_path(folder / MANIFEST_NAME)
 
     def today_or_now(self) -> date:
         """The configured ``today`` or the real current date."""

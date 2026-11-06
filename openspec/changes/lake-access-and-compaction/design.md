@@ -43,3 +43,17 @@ Whether very small datasets (a few thousand rows) become one file for all season
 | All pitches x 121 columns, `baseballpy.read` | 1.8 s (Polars direct) | 2.0 s |
 | One season, 3 columns, `baseballpy.read` | n/a | 0.13 s |
 Dropping `union_by_name` helps a little; the real fix for bulk rows is `read`. `db sync` took over 15 minutes because it opens about 400,000 small files (route names, footers); compaction (2.1) is what fixes that.
+
+## Result of compaction on the real lake (2026-11-06)
+| Measure | Before | After |
+|---|---|---|
+| Parquet files in `processed/` | about 400,000 (84,022 small chunks, 115,017 zero-row) | about 4,300 |
+| `baseballpy db sync` | over 15 min | 19.5 s |
+| DuckDB count of all pitches | 1.3 s | 0.27 s |
+| DuckDB one season, 121 columns | 4.6 s | 0.84 s |
+| DuckDB group by season | 2.5 s | 0.34 s |
+| `baseballpy.read` all pitches | 2.0 s | 1.4 s |
+| Chunk lookups (40 cached reads) | 4.6 s | 0.26 s |
+| `ingest mlb_api --seasons 2022`, everything downloaded | about 6 h | 57 s, 0 requests |
+| Processed size | 4.9 GB | 6.9 GB incl. Kalshi trades 3.1 GB (trades grew 7 percent) |
+Found on the way: the first real run refused Statcast 2008 because each chunk has its own dictionary for text categories (the check now compares values); 12,652 zero-row files per dataset were never merged (now deleted); `dataset_manifest()` built a new tracker, and parsed 4.5 MB, on every call (now shared).

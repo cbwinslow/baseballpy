@@ -6,6 +6,7 @@ import os
 import threading
 import time
 import uuid
+from collections import OrderedDict
 from collections.abc import Generator, Mapping
 from contextlib import contextmanager, suppress
 from datetime import UTC, datetime
@@ -177,6 +178,12 @@ def _entry_time(entry: dict[str, Any]) -> str:
     return str(entry.get("completed_at") or entry.get("failed_at") or "")
 
 
+#: manifests kept parsed in memory at once (see ``ManifestTracker.for_path``)
+MAX_SHARED_TRACKERS = 24
+_TRACKERS: "OrderedDict[str, ManifestTracker]" = OrderedDict()
+_TRACKERS_LOCK = threading.Lock()
+
+
 class ManifestTracker:
     """Thread- and process-safe checkpoint manifest tracking download/ingestion chunks.
 
@@ -193,6 +200,28 @@ class ManifestTracker:
         # (mtime_ns, size) of the file that ``_data`` mirrors; a matching stat means no re-parse
         self._sig: tuple[int, int] | None = None
         self._data: dict[str, Any] = self._load()
+
+    @classmethod
+    def for_path(cls, manifest_path: Path | str) -> "ManifestTracker":
+        """The shared tracker of a manifest file (a few are kept, least recently used dropped).
+
+        Building a tracker parses the whole file; a per-team dataset has a 4.5 MB manifest and
+        every chunk lookup used to build a new one. Trackers refresh themselves when the file
+        changes, so sharing one is safe across threads.
+        """
+        key = os.path.normcase(os.path.abspath(manifest_path))
+        with _TRACKERS_LOCK:
+            tracker = _TRACKERS.get(key)
+            if tracker is not None:
+                _TRACKERS.move_to_end(key)
+                return tracker
+        tracker = cls(manifest_path)
+        with _TRACKERS_LOCK:
+            tracker = _TRACKERS.setdefault(key, tracker)
+            _TRACKERS.move_to_end(key)
+            while len(_TRACKERS) > MAX_SHARED_TRACKERS:
+                _TRACKERS.popitem(last=False)
+        return tracker
 
     def _stat_sig(self) -> tuple[int, int] | None:
         try:
@@ -327,6 +356,7 @@ class ManifestTracker:
 
     def save(self, _only: str | frozenset[str] | None = None) -> None:
         """Merge with on-disk state under a file lock and atomically persist."""
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         with self._rlock, _FileLock(self._lock_path):
             if self._sig is not None and self._sig == self._stat_sig():
                 disk = {**self._data}  # file unchanged since our last read or write

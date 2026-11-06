@@ -483,7 +483,7 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 |---|---|---|---|
 | B-278 | lake-access-and-compaction 1.1: views without union_by_name, schema equality test | DONE | count 2.1 to 1.3 s, season 5.4 to 4.6 s; bulk rows go through read (2.0 s); db sync over 15 min until compaction |
 | B-279 | lake-access-and-compaction 1.2: baseballpy.read and baseballpy.sql with recipes, ADR 73 | DONE | tests/test_access.py (7 tests): read equals sql, join, read-only; all 14,971,703 pitches by 121 columns in 2.0 s |
-| B-280 | `lake-access-and-compaction 2.1`: compact command | OPEN | row counts and keys equal before and after, files near 100 MB |
+| B-280 | lake-access-and-compaction 2.1: compact command, ADR 74 | DONE | 9 tests; real lake 400,000 files to about 4,300, db sync 15 min to 20 s, MLB season with all chunks downloaded 6 h to 57 s with no request |
 | B-281 | `lake-access-and-compaction 2.2`: compressed raw files and conversion command | OPEN | raw size cut, every raw read verified |
 | B-282 | `lake-access-and-compaction 2.3`: layout checks in catalog audit | OPEN | audit flags tiny files and mixed schemas |
 | B-283 | `lake-access-and-compaction 3.1`: run on the lake and record sizes and times | OPEN | numbers in design.md |

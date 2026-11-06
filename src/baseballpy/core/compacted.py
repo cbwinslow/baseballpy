@@ -9,6 +9,7 @@ relative to the dataset folder).
 
 import json
 from collections.abc import Mapping
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -34,11 +35,21 @@ def is_compacted(entry: Mapping[str, Any] | None) -> bool:
     return bool(entry and entry.get(INTO))
 
 
-def chunk_map(path: Path) -> dict[str, tuple[int, int]]:
-    """``manifest key -> (first row, row count)`` read from a compacted file's footer."""
+@lru_cache(maxsize=256)
+def _chunk_map(path: str, mtime_ns: int, size: int) -> dict[str, tuple[int, int]]:
     metadata = pq.read_schema(path).metadata or {}
     raw = json.loads(metadata.get(CHUNK_MAP_KEY, b"{}"))
     return {key: (int(span[0]), int(span[1])) for key, span in raw.items()}
+
+
+def chunk_map(path: Path) -> dict[str, tuple[int, int]]:
+    """``manifest key -> (first row, row count)`` read from a compacted file's footer.
+
+    Kept in memory while the file is unchanged (a lookup per cached chunk would otherwise read
+    the footer thousands of times).
+    """
+    stat = path.stat()
+    return _chunk_map(str(path), stat.st_mtime_ns, stat.st_size)
 
 
 def holds_chunk(dataset_dir: Path, entry: Mapping[str, Any] | None, key: str) -> bool:
