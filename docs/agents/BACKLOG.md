@@ -476,3 +476,15 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-275 | `market-sources 2.3`: run the full Kalshi trades and candlesticks backfill, tune the speed | OPEN | all traded markets stored, audit speed clean |
 | B-276 | `market-sources 2.4`: contract check of the Kalshi routes against the official OpenAPI spec | OPEN | a test or command flags new and removed routes |
 | B-277 | market-sources: one baseballpy process per host (OS file lock), ADR 72 | DONE | tests/test_hostlock.py: second process refused, crash frees the host, opt-out works |
+
+## AD. Lake access and compaction (`lake-access-and-compaction`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-278 | `lake-access-and-compaction 1.1`: views without union_by_name, schema equality test | OPEN | all-years view read no longer minutes, test passes |
+| B-279 | `lake-access-and-compaction 1.2`: baseballpy.read and baseballpy.sql with recipes | OPEN | one-line Statcast 2008 to 2026 load and a join, group, sum, filter example tested |
+| B-280 | `lake-access-and-compaction 2.1`: compact command | OPEN | row counts and keys equal before and after, files near 100 MB |
+| B-281 | `lake-access-and-compaction 2.2`: compressed raw files and conversion command | OPEN | raw size cut, every raw read verified |
+| B-282 | `lake-access-and-compaction 2.3`: layout checks in catalog audit | OPEN | audit flags tiny files and mixed schemas |
+| B-283 | `lake-access-and-compaction 3.1`: run on the lake and record sizes and times | OPEN | numbers in design.md |
+| B-284 | `lake-access-and-compaction 3.2`: spec, ADR, docs, gates, archive | OPEN | change archived |

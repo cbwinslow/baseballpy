@@ -48,6 +48,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
+| `lake-access-and-compaction` | 0 | 7 | 1.1, 1.2, 2.1, 2.2, 2.3, 3.1, 3.2 |
 | `market-sources` | 1 | 9 | 1.1, 1.2, 1.3, 2.3, 2.4, 2.2, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
 | `modelling-data-needs` | 0 | 6 | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6 |
