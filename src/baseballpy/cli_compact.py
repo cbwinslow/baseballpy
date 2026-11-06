@@ -35,8 +35,10 @@ def compact_cmd(sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bo
         "Dataset", "Seasons", "Chunks", "Files before", "Files after", "MB before", "MB after"
     )
     totals = [0, 0, 0, 0, 0]
+    empty_files = 0
     for spec in specs:
         report = compact_dataset(spec, config, dry_run=dry_run)
+        empty_files += report.empty_files
         if not report.groups:
             continue
         table.add_row(
@@ -61,6 +63,10 @@ def compact_cmd(sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bo
         f"{verb} {totals[0]:,} chunks: {totals[1]:,} files -> {totals[2]:,} files, "
         f"{totals[3] / 1e6:,.0f} MB -> {totals[4] / 1e6:,.0f} MB"
     )
+    if empty_files:
+        console.print(
+            f"{'would remove' if dry_run else 'removed'} {empty_files:,} empty (0 row) files"
+        )
 
 
 def register_compact_command(group: click.Group) -> None:

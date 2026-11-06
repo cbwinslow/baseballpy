@@ -196,3 +196,20 @@ def test_chunks_with_different_category_values_are_compacted_and_read_back_right
     kinds = sorted(bp.read("statcast.pitches", seasons=2023, config=cfg)["pitch_type"].to_list())
     assert kinds == ["CH", "FF", "FF", "KC", "SL"]
     assert store.read_part(spec, "b", 2023)["pitch_type"].to_pylist() == ["CH", "FF"]
+
+
+def test_empty_chunk_files_are_removed_and_the_chunk_still_counts_as_downloaded(
+    lake: LakeConfig, spec: DatasetSpec
+) -> None:
+    store = ProcessedStore(lake)
+    store.put(
+        spec, spec.schema.empty_table(), chunk_id="none", season=2023, metadata={"empty": True}
+    )
+    assert store.part_path(spec, "none", 2023).exists()
+    dry = compact_dataset(spec, lake, dry_run=True)
+    assert dry.empty_files == 1 and store.part_path(spec, "none", 2023).exists()
+    assert compact_dataset(spec, lake).empty_files == 1
+    assert not store.part_path(spec, "none", 2023).exists()
+    assert store.is_cached(spec, "none", 2023) and store.has_part(spec, "none", 2023)
+    assert store.read_part(spec, "none", 2023).num_rows == 0
+    assert bp.read("statcast.pitches", seasons=2023, config=lake).height == 6

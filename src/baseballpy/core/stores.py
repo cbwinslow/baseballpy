@@ -351,12 +351,15 @@ class ProcessedStore:
     def has_part(
         self, spec: DatasetSpec, chunk_id: str = "data", season: int | None = None
     ) -> bool:
-        """True when the chunk's rows are stored, as its own part file or inside a compacted file."""
+        """True when the chunk is stored: a part file, a compacted file, or recorded as empty."""
         if self.part_path(spec, chunk_id, season).exists():
             return True
         manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
         key = manifest_key(chunk_id, season)
-        return holds_chunk(self._dataset_root(spec), manifest.get_chunk(key), key)
+        entry = manifest.get_chunk(key)
+        if entry and entry.get("status") == "COMPLETED" and entry.get("records_count") == 0:
+            return True  # downloaded and empty: no file is needed
+        return holds_chunk(self._dataset_root(spec), entry, key)
 
     def find_chunk_season(self, spec: DatasetSpec, chunk_id: str) -> int | None:
         """Season folder that stores ``chunk_id`` (as a part file or inside a compacted file)."""

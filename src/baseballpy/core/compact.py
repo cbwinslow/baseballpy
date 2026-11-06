@@ -49,6 +49,7 @@ class CompactReport:
     rows: int = 0
     files_before: int = 0
     files_after: int = 0
+    empty_files: int = 0
     bytes_before: int = 0
     bytes_after: int = 0
 
@@ -193,6 +194,31 @@ def _compact_group(
         (root / rel).unlink(missing_ok=True)
 
 
+def _drop_empty_parts(
+    spec: DatasetSpec,
+    config: LakeConfig,
+    chunks: dict[str, dict[str, Any]],
+    report: CompactReport,
+    *,
+    dry_run: bool,
+) -> None:
+    """Delete zero-row part files of chunks recorded as downloaded and empty.
+
+    The manifest already says "COMPLETED, 0 rows", which counts as stored without a file.
+    A file is removed only when its own footer also says 0 rows.
+    """
+    for key, entry in chunks.items():
+        if entry.get("status") != "COMPLETED" or entry.get("records_count") != 0:
+            continue
+        season = _group_key(key)
+        name = key.split("/", 1)[1] if season is not None else key
+        part = config.processed_dir(spec.source, spec.name, season) / _part_name(spec, name, season)
+        if part.exists() and pq.read_metadata(part).num_rows == 0:
+            report.empty_files += 1
+            if not dry_run:
+                part.unlink()
+
+
 def compact_dataset(
     spec: DatasetSpec,
     config: LakeConfig | None = None,
@@ -210,6 +236,7 @@ def compact_dataset(
     manifest = cfg.dataset_manifest(spec.source, spec.name, "processed")
     if not dry_run:
         _cleanup(root, manifest.chunks())
+    _drop_empty_parts(spec, cfg, manifest.chunks(), report, dry_run=dry_run)
     groups: dict[int | None, list[str]] = {}
     for key, entry in manifest.chunks().items():
         if (
