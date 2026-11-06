@@ -4,6 +4,33 @@ A complete reference guide mapping every dataset to its designated Python functi
 
 ---
 
+## 0. Load data from the lake (two doors)
+
+After downloading, there are two ways to get rows into Python. Both read the same Parquet files.
+
+```python
+import baseballpy as bp
+import polars as pl
+
+# Door 1: bulk rows into a DataFrame (Polars; also backend="pandas" or "pyarrow").
+all_pitches = bp.read("statcast.pitches")                    # every season, all columns
+one_year = bp.read("statcast.pitches", seasons=2024)         # only that folder is opened
+speeds = bp.read("statcast.pitches", seasons=range(2015, 2027),
+                 columns=["game_pk", "pitcher", "release_speed", "season"])
+fast = bp.read("statcast.pitches", lazy=True).filter(pl.col("release_speed") > 100).collect()
+
+# Door 2: SQL (DuckDB) for joins, group by, sum and filter. Views are named like the datasets.
+by_season = bp.sql("SELECT season, count(*) n, avg(release_speed) v "
+                   "FROM statcast_pitches GROUP BY season ORDER BY season")
+named = bp.sql("SELECT r.name_last, count(*) n FROM statcast_pitches p "
+               "JOIN chadwick_register r ON p.pitcher = r.key_mlbam GROUP BY r.name_last "
+               "ORDER BY n DESC LIMIT 10")
+```
+
+Use `read` when you want many rows back (it loaded all 14,971,703 Statcast pitches with 121 columns in about 2 seconds). Use `sql` when the answer is smaller than the data (counts, sums, joins). `sql` is read-only and needs the views from `baseballpy db sync`.
+
+---
+
 ## 1. Installation
 
 ```bash

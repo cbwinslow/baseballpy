@@ -226,3 +226,11 @@ A processed part file MUST be named `part-<chunk>.parquet` where `<chunk>` is th
 - **WHEN** the database is synced again
 - **THEN** the dataset's view is gone and the other views remain
 - Verified by `tests/test_database.py::test_sync_drops_a_view_whose_data_folder_is_gone`.
+
+### Requirement: Manifests Are Parsed Only When They Change
+A `ManifestTracker` MUST re-read its manifest file only when the file's size or modification time changed since it last read or wrote it, so that a chunk lookup on a manifest of thousands of entries costs a file check, not a parse. Changes made by another writer MUST still be seen on the next lookup.
+
+#### Scenario: Lookups do not re-parse an unchanged manifest
+- **WHEN** the same chunk is looked up fifty times while the file is unchanged, and then another writer adds a chunk
+- **THEN** no parse happens for the fifty lookups, and the new chunk is seen on the next lookup
+- Verified by `tests/test_atomic.py::test_manifest_is_parsed_only_when_the_file_changed`.

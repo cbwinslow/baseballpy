@@ -481,10 +481,11 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-278 | `lake-access-and-compaction 1.1`: views without union_by_name, schema equality test | OPEN | all-years view read no longer minutes, test passes |
-| B-279 | `lake-access-and-compaction 1.2`: baseballpy.read and baseballpy.sql with recipes | OPEN | one-line Statcast 2008 to 2026 load and a join, group, sum, filter example tested |
+| B-278 | lake-access-and-compaction 1.1: views without union_by_name, schema equality test | DONE | count 2.1 to 1.3 s, season 5.4 to 4.6 s; bulk rows go through read (2.0 s); db sync over 15 min until compaction |
+| B-279 | lake-access-and-compaction 1.2: baseballpy.read and baseballpy.sql with recipes, ADR 73 | DONE | tests/test_access.py (7 tests): read equals sql, join, read-only; all 14,971,703 pitches by 121 columns in 2.0 s |
 | B-280 | `lake-access-and-compaction 2.1`: compact command | OPEN | row counts and keys equal before and after, files near 100 MB |
 | B-281 | `lake-access-and-compaction 2.2`: compressed raw files and conversion command | OPEN | raw size cut, every raw read verified |
 | B-282 | `lake-access-and-compaction 2.3`: layout checks in catalog audit | OPEN | audit flags tiny files and mixed schemas |
 | B-283 | `lake-access-and-compaction 3.1`: run on the lake and record sizes and times | OPEN | numbers in design.md |
 | B-284 | `lake-access-and-compaction 3.2`: spec, ADR, docs, gates, archive | OPEN | change archived |
+| B-285 | lake-access-and-compaction: manifest parsed only when its file changed (three MLB seasons failed with MemoryError and took about 6 h each) | DONE | tests/test_atomic.py: 50 lookups, zero parses, other writers still seen |

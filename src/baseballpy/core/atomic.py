@@ -190,7 +190,16 @@ class ManifestTracker:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._rlock = threading.RLock()
         self._lock_path = self.path.with_name(self.path.name + ".lock")
+        # (mtime_ns, size) of the file that ``_data`` mirrors; a matching stat means no re-parse
+        self._sig: tuple[int, int] | None = None
         self._data: dict[str, Any] = self._load()
+
+    def _stat_sig(self) -> tuple[int, int] | None:
+        try:
+            st = self.path.stat()
+        except OSError:
+            return None
+        return (st.st_mtime_ns, st.st_size)
 
     def _read_disk(self) -> dict[str, Any] | None:
         """Read the manifest from disk, preserving corrupt files; None if absent."""
@@ -229,11 +238,22 @@ class ManifestTracker:
 
     def _load(self) -> dict[str, Any]:
         with self._rlock:
-            return self._read_disk() or _empty_manifest()
+            sig = self._stat_sig()
+            data = self._read_disk() or _empty_manifest()
+            self._sig = sig
+            return data
 
     def reload(self) -> None:
-        """Refresh the in-memory view from disk (picks up other writers' chunks)."""
+        """Refresh the in-memory view from disk (picks up other writers' chunks).
+
+        A manifest of a per-team dataset is several MB; it is parsed again only when its
+        size or modification time changed (a 9-season MLB run re-parsed it for every chunk
+        lookup, took hours and ran out of memory).
+        """
         with self._rlock:
+            sig = self._stat_sig()
+            if sig is not None and sig == self._sig:
+                return
             self._data = self._load()
 
     def is_completed(self, chunk_id: str) -> bool:
@@ -302,7 +322,10 @@ class ManifestTracker:
     def save(self, _only: str | None = None) -> None:
         """Merge with on-disk state under a file lock and atomically persist."""
         with self._rlock, _FileLock(self._lock_path):
-            disk = self._read_disk() or _empty_manifest()
+            if self._sig is not None and self._sig == self._stat_sig():
+                disk = {**self._data}  # file unchanged since our last read or write
+            else:
+                disk = self._read_disk() or _empty_manifest()
             merged: dict[str, Any] = dict(disk.get("chunks", {}))
             for key, entry in self._data.get("chunks", {}).items():
                 existing = merged.get(key)
@@ -316,6 +339,7 @@ class ManifestTracker:
             with atomic_write(self.path) as part_path:
                 part_path.write_text(payload, encoding="utf-8")
             self._data = disk
+            self._sig = self._stat_sig()
 
 
 __all__ = [

@@ -67,3 +67,27 @@ def test_manifest_tracker_lifecycle(tmp_path: Path) -> None:
     reloaded = ManifestTracker(manifest_path)
     assert reloaded.is_completed("chunk_2024_01")
     assert not reloaded.is_completed("chunk_2024_02")
+
+
+def test_manifest_is_parsed_only_when_the_file_changed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Chunk lookups must not re-parse a big manifest each time, yet must see other writers."""
+    path = tmp_path / "_manifest.json"
+    mine = ManifestTracker(path)
+    mine.set_completed("a")
+    reads: list[int] = []
+    original = ManifestTracker._read_disk
+
+    def counting(self: ManifestTracker):  # type: ignore[no-untyped-def]
+        reads.append(1)
+        return original(self)
+
+    monkeypatch.setattr(ManifestTracker, "_read_disk", counting)
+    for _ in range(50):
+        assert mine.is_completed("a")
+    assert reads == []  # unchanged file: no parse at all
+
+    ManifestTracker(path).set_completed("b")  # another writer
+    assert mine.is_completed("b")  # picked up through the changed stat
+    assert len(reads) >= 1

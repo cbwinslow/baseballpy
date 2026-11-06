@@ -9,7 +9,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 6 | 7 | 11 |
-| `caching-and-invalidation` | 18 | 31 | 43 |
+| `caching-and-invalidation` | 19 | 32 | 44 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 14 | 23 | 33 |
@@ -19,6 +19,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `docs-generation` | 1 | 1 | 1 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
+| `lake-access` | 3 | 3 | 7 |
 | `mlb-api-ingestion` | 27 | 40 | 42 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `real-time-streaming` | 7 | 12 | 12 |
@@ -48,7 +49,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
-| `lake-access-and-compaction` | 0 | 7 | 1.1, 1.2, 2.1, 2.2, 2.3, 3.1, 3.2 |
+| `lake-access-and-compaction` | 3 | 5 | 2.1, 2.2, 2.3, 3.1, 3.2 |
 | `market-sources` | 1 | 9 | 1.1, 1.2, 1.3, 2.3, 2.4, 2.2, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
 | `modelling-data-needs` | 0 | 6 | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6 |
@@ -128,6 +129,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 70: Kalshi Is a Standard Source: Typed Decimals, Threaded Catalog, Optional Signing
 - ADR 71: Kalshi Trades and Candlesticks Are Opt-In, Per Open Date, From the Catalog
 - ADR 72: One baseballpy Process Per Remote Host
+- ADR 73: Two Doors From The Lake To A DataFrame
 
 ## Documentation pages (`docs/`)
 

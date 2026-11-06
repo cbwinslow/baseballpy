@@ -11,6 +11,7 @@ from typing import Any
 import polars as pl
 import pyarrow as pa
 
+from baseballpy.access import read, sql
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.migrate import MigrationReport, migrate_layout
 from baseballpy.core.protocols import (
@@ -226,7 +227,9 @@ __all__ = [
     "LakeConfig",
     "MigrationReport",
     "migrate_layout",
+    "read",
     "scan",
+    "sql",
     "to_dataframe",
     "to_duckdb",
     "to_parquet",

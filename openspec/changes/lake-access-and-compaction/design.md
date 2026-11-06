@@ -33,3 +33,13 @@ Reading: the Hive layout is the standard recommendation and Polars and pyarrow r
 
 ## Not decided
 Whether very small datasets (a few thousand rows) become one file for all seasons (likely yes), and the exact target size per source.
+
+## Result of the quick fix (2026-11-06, tests running at the same time)
+| Test | Before | After |
+|---|---|---|
+| `count(*)` all pitches, DuckDB view | 2.1 s | 1.3 s |
+| One season, all 121 columns, DuckDB view | 5.4 s | 4.6 s |
+| Group by season, DuckDB view | 2.1 s | 2.5 s (noise) |
+| All pitches x 121 columns, `baseballpy.read` | 1.8 s (Polars direct) | 2.0 s |
+| One season, 3 columns, `baseballpy.read` | n/a | 0.13 s |
+Dropping `union_by_name` helps a little; the real fix for bulk rows is `read`. `db sync` took over 15 minutes because it opens about 400,000 small files (route names, footers); compaction (2.1) is what fixes that.

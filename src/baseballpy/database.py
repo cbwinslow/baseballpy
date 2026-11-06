@@ -46,12 +46,20 @@ class DatabaseReadOnlyError(RuntimeError):
     """Raised when a read-only connection needs views that have not been created yet."""
 
 
-def _view_sql(files_glob: Path, partitioned: bool) -> str:
-    """``SELECT`` over a dataset's parquet parts (one consistent ``season`` column if hive)."""
-    options = "union_by_name = true"
+def _view_sql(files_glob: Path, partitioned: bool, strict: bool) -> str:
+    """``SELECT`` over a dataset's parquet parts (one consistent ``season`` column if hive).
+
+    Registered datasets have one strict schema, so every part has the same columns and the view
+    skips ``union_by_name`` (which makes DuckDB open every file to merge schemas). Datasets that
+    are not registered yet (untyped) keep the merge.
+    """
+    parts: list[str] = []
     if partitioned:
-        options = f"hive_partitioning = true, hive_types = {{'season': 'SMALLINT'}}, {options}"
-    return f"SELECT * FROM read_parquet({quote_literal(files_glob.as_posix())}, {options})"  # noqa: S608 - glob/options are quoted with quote_literal
+        parts += ["hive_partitioning = true", "hive_types = {'season': 'SMALLINT'}"]
+    if not strict:
+        parts.append("union_by_name = true")
+    options = "".join(f", {p}" for p in parts)
+    return f"SELECT * FROM read_parquet({quote_literal(files_glob.as_posix())}{options})"  # noqa: S608 - glob/options are quoted with quote_literal
 
 
 class BaseballDatabase:
@@ -105,20 +113,20 @@ class BaseballDatabase:
         root = self.cache_config.processed_dir(source, dataset)
         return sorted(root.rglob("*.parquet")) if root.exists() else []
 
-    def expected_views(self) -> dict[str, tuple[Path, bool]]:
-        """``view -> (parquet glob, hive-partitioned)`` for every dataset with data on disk.
+    def expected_views(self) -> dict[str, tuple[Path, bool, bool]]:
+        """``view -> (parquet glob, hive-partitioned, strict schema)`` for datasets with data.
 
         Registered datasets come first; directories under ``processed/`` that are not in the
         registry yet (untyped Lahman tables, Savant leaderboards) are discovered with a warning
         so their data stays queryable.
         """
-        views: dict[str, tuple[Path, bool]] = {}
+        views: dict[str, tuple[Path, bool, bool]] = {}
         known: set[tuple[str, str]] = set()
         for spec in DATASETS.values():
             known.add((spec.source, spec.name))
             if self._dataset_files(spec.source, spec.name):
                 root = self.cache_config.processed_dir(spec.source, spec.name)
-                views[spec.view] = (root / "**" / "*.parquet", spec.partition == "season")
+                views[spec.view] = (root / "**" / "*.parquet", spec.partition == "season", True)
         processed = self.cache_config.processed_root
         if processed.exists():
             for source_dir in sorted(p for p in processed.iterdir() if p.is_dir()):
@@ -134,7 +142,7 @@ class BaseballDatabase:
                     partitioned = any(
                         _SEASON_DIR.fullmatch(p.name) for p in dataset_dir.iterdir() if p.is_dir()
                     )
-                    views[view] = (dataset_dir / "**" / "*.parquet", partitioned)
+                    views[view] = (dataset_dir / "**" / "*.parquet", partitioned, False)
         return views
 
     def _require_views(self, con: duckdb.DuckDBPyConnection) -> int:
@@ -224,10 +232,10 @@ class BaseballDatabase:
                 destination=str(self.db_path),
             ) as tracker:
                 views_registered = 0
-                for view, (pattern, partitioned) in self.expected_views().items():
+                for view, (pattern, partitioned, strict) in self.expected_views().items():
                     con.execute(
                         f"CREATE OR REPLACE VIEW {quote_ident(view)} AS "
-                        f"{_view_sql(pattern, partitioned)}"
+                        f"{_view_sql(pattern, partitioned, strict)}"
                     )
                     views_registered += 1
 
