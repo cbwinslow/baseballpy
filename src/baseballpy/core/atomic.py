@@ -6,7 +6,7 @@ import os
 import threading
 import time
 import uuid
-from collections.abc import Generator
+from collections.abc import Generator, Mapping
 from contextlib import contextmanager, suppress
 from datetime import UTC, datetime
 from pathlib import Path
@@ -306,6 +306,12 @@ class ManifestTracker:
         """Store ``entry`` verbatim (keeps timestamps/status); used when migrating manifests."""
         self._set(chunk_id, dict(entry))
 
+    def put_entries(self, entries: Mapping[str, dict[str, Any]]) -> None:
+        """Store many entries verbatim with one save (``put_entry`` in a loop saves every time)."""
+        with self._rlock:
+            self._data.setdefault("chunks", {}).update({k: dict(v) for k, v in entries.items()})
+            self.save(_only=frozenset(entries))
+
     def chunks(self) -> dict[str, dict[str, Any]]:
         """Snapshot of every chunk entry currently on disk."""
         with self._rlock:
@@ -319,17 +325,18 @@ class ManifestTracker:
             self._data.setdefault("chunks", {})[chunk_id] = entry
             self.save(_only=chunk_id)
 
-    def save(self, _only: str | None = None) -> None:
+    def save(self, _only: str | frozenset[str] | None = None) -> None:
         """Merge with on-disk state under a file lock and atomically persist."""
         with self._rlock, _FileLock(self._lock_path):
             if self._sig is not None and self._sig == self._stat_sig():
                 disk = {**self._data}  # file unchanged since our last read or write
             else:
                 disk = self._read_disk() or _empty_manifest()
+            forced = {_only} if isinstance(_only, str) else set(_only or ())
             merged: dict[str, Any] = dict(disk.get("chunks", {}))
             for key, entry in self._data.get("chunks", {}).items():
                 existing = merged.get(key)
-                if key == _only or existing is None or _entry_time(entry) > _entry_time(existing):
+                if key in forced or existing is None or _entry_time(entry) > _entry_time(existing):
                     merged[key] = entry
             disk["chunks"] = merged
             disk["updated_at"] = datetime.now(UTC).isoformat()

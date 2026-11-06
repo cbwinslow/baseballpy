@@ -20,6 +20,7 @@ Commands:
   backfill        Run a TOML plan of ingest stages (sources, seasons, datasets) into the lake.
   cache           Inspect the raw download cache.
   catalog         Inspect and audit what the registry covers.
+  compact         Merge each dataset's small chunk files into big ones (run when no ingest is...
   db              Manage the DuckDB catalog (views over processed/ Parquet).
   docs            Generate the per-dataset column dictionaries in docs/sources/*.md.
   doctor          Diagnose data lake layout, disk usage, package versions, and orphan files.
@@ -252,6 +253,23 @@ Options:
   --gaps         Show only MISSING datasets that the default ingest selection should have filled.
   --json         Print status as JSON lines (one object per dataset).
   --help         Show this message and exit.
+```
+
+## `baseballpy compact`
+
+```text
+Usage: baseballpy compact [OPTIONS]
+
+  Merge each dataset's small chunk files into big ones (run when no ingest is running).
+
+  Every new file is read back and compared with its source chunks before the small files are
+  removed. Chunks stay known to the download records, so later ingests still resume.
+
+Options:
+  --source TEXT   Limit to a source (repeatable).
+  --dataset TEXT  Limit to a dataset name (repeatable).
+  --dry-run       Show what would be merged; change nothing.
+  --help          Show this message and exit.
 ```
 
 ## `baseballpy db`

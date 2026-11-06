@@ -9,6 +9,7 @@ from rich.table import Table
 from baseballpy.cli_backfill import register_backfill_command
 from baseballpy.cli_cache import register_cache_commands
 from baseballpy.cli_catalog import register_catalog_commands
+from baseballpy.cli_compact import register_compact_command
 from baseballpy.cli_db import register_db_commands
 from baseballpy.cli_export import register_export_command
 from baseballpy.cli_ingest import register_commands
@@ -503,6 +504,7 @@ register_cache_commands(main)
 register_export_command(main)
 register_catalog_commands(catalog)
 register_db_commands(db)
+register_compact_command(main)
 register_stream_command(main)
 register_quarantine_commands(main)
 

@@ -16,7 +16,6 @@ from dataclasses import dataclass
 from typing import Any, TypeVar
 
 import pyarrow as pa
-import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import cleanup_stale_parts_once
 from baseballpy.core.audit import default_audit_logger
@@ -308,12 +307,11 @@ class MlbEndpointExtractor:
 
     def _is_cached(self, endpoint: MlbEndpoint, request: Request, refresh: bool) -> bool:
         spec = self.spec(endpoint)
-        path = self.store.part_path(spec, request.ident, request.season)
         entry = self.cache_config.dataset_manifest("mlb_api", endpoint.name).get_chunk(
             manifest_key(request.ident, request.season)
         )
         return (
-            path.exists()
+            self.store.has_part(spec, request.ident, request.season)
             and schema_matches(spec, entry)
             and self.cache_config.is_fresh(
                 entry, endpoint.freshness, season=request.season, refresh=refresh
@@ -565,7 +563,9 @@ class MlbEndpointExtractor:
                 destination=str(part),
             ) as hit:
                 hit.set_cache_hit(True)
-                table = pq.read_table(part, schema=spec.schema)
+                table = self.store.read_part(spec, request.ident, request.season)
+                if not table.schema.equals(spec.schema):
+                    table = table.cast(spec.schema)
                 hit.set_records(len(table))
                 return table
         with default_audit_logger.track(

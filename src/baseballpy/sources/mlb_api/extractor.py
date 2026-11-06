@@ -1,11 +1,9 @@
 """MLB Stats API extractor: shared HttpClient (rate limit, HTTP/2, retry) and fresh-aware caching."""
 
 from collections.abc import Callable, Mapping
-from pathlib import Path
 from typing import Any
 
 import pyarrow as pa
-import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import ManifestTracker, cleanup_stale_parts_once
 from baseballpy.core.audit import default_audit_logger
@@ -67,14 +65,16 @@ class MlbApiExtractor:
         """Fetch a JSON payload through the shared client with audit tracking."""
         return self._fetch(endpoint, params).json()
 
-    def _read_cached(self, cache_file: Path, endpoint: str) -> pa.Table:
+    def _read_cached(
+        self, spec: DatasetSpec, ident: str, season: int | None, endpoint: str
+    ) -> pa.Table:
         with default_audit_logger.track(
             operation="mlb_api_cache_read",
             source="mlb_api",
             endpoint=endpoint,
-            destination=str(cache_file),
+            destination=str(self.store.part_path(spec, ident, season)),
         ) as tracker:
-            table = pq.read_table(cache_file)
+            table = self.store.read_part(spec, ident, season)
             tracker.set_cache_hit(True)
             tracker.set_records(len(table))
             return table
@@ -93,14 +93,15 @@ class MlbApiExtractor:
     ) -> pa.Table:
         """Cache-or-fetch one dataset: freshness check, fetch, normalize, raw + processed store."""
         spec = self._spec(dataset)
-        cache_file = self.store.part_path(spec, ident, season)
         entry = self.store.config.dataset_manifest("mlb_api", dataset).get_chunk(
             manifest_key(ident, season)
         )
-        if (cache_file.exists() and schema_matches(spec, entry)) and self.cache_config.is_fresh(
+        if (
+            self.store.has_part(spec, ident, season) and schema_matches(spec, entry)
+        ) and self.cache_config.is_fresh(
             entry, freshness_key or dataset, season=season, refresh=refresh
         ):
-            return self._read_cached(cache_file, endpoint)
+            return self._read_cached(spec, ident, season, endpoint)
 
         result = self._fetch(endpoint, params)
         table = normalize(result.json())
@@ -168,20 +169,18 @@ class MlbApiExtractor:
         """Processed-tier manifest of one MLB dataset."""
         return self.cache_config.dataset_manifest("mlb_api", dataset)
 
-    def _find_box_parts(self, game_pk: int) -> tuple[Path | None, Path | None]:
-        """Locate previously stored batting/pitching parts for a game (any season)."""
-        found: list[Path | None] = []
-        for name in ("box_batting", "box_pitching"):
-            root = self.store.dataset_dir(self._spec(name))
-            matches = sorted(root.glob(f"season=*/part-{game_pk}.parquet")) if root.exists() else []
-            found.append(matches[0] if matches else None)
-        return found[0], found[1]
+    def _find_box_seasons(self, game_pk: int) -> tuple[int | None, int | None]:
+        """Season under which a game's batting and pitching parts are stored (``None`` = not stored)."""
+        return (
+            self.store.find_chunk_season(self._spec("box_batting"), str(game_pk)),
+            self.store.find_chunk_season(self._spec("box_pitching"), str(game_pk)),
+        )
 
     def extract_boxscore(
         self, game_pk: int, refresh: bool = False, season: int | None = None
     ) -> tuple[pa.Table, pa.Table]:
         """Extract and normalize game boxscore into (batting_table, pitching_table)."""
-        batting_file, pitching_file = self._find_box_parts(game_pk)
+        batting_season, pitching_season = self._find_box_seasons(game_pk)
         ident = f"box_{game_pk}"
         endpoint = f"v1/game/{game_pk}/boxscore"
 
@@ -189,13 +188,17 @@ class MlbApiExtractor:
         final = bool(entry and entry.get("final"))
         ttl = None if final else self.cache_config.ttl_for("boxscore")
         if (
-            batting_file is not None
-            and pitching_file is not None
+            batting_season is not None
+            and pitching_season is not None
             and is_fresh(entry, ttl_seconds=ttl, today=self.cache_config.today, refresh=refresh)
         ):
             return (
-                self._read_cached(batting_file, endpoint),
-                self._read_cached(pitching_file, endpoint),
+                self._read_cached(
+                    self._spec("box_batting"), str(game_pk), batting_season, endpoint
+                ),
+                self._read_cached(
+                    self._spec("box_pitching"), str(game_pk), pitching_season, endpoint
+                ),
             )
 
         result = self._fetch(endpoint)

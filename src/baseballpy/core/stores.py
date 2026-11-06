@@ -10,6 +10,12 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import atomic_write, atomic_write_parquet
+from baseballpy.core.compacted import (
+    INTO,
+    holds_chunk,
+    read_chunk,
+    release_chunk,
+)
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec
 from baseballpy.core.layout import ensure_version_file, hint_if_legacy
@@ -239,6 +245,7 @@ class ProcessedStore:
         self._refuse_name_clash(spec, chunk_id, season)
         ensure_version_file(self.config)
         path.parent.mkdir(parents=True, exist_ok=True)
+        self._release_compacted(spec, chunk_id, season)
         atomic_write_parquet(table, path, compression=PARQUET_COMPRESSION)
         self.config.dataset_manifest(spec.source, spec.name, "processed").set_completed(
             manifest_key(chunk_id, season),
@@ -271,6 +278,7 @@ class ProcessedStore:
         self._refuse_name_clash(spec, chunk_id, season)
         ensure_version_file(self.config)
         path.parent.mkdir(parents=True, exist_ok=True)
+        self._release_compacted(spec, chunk_id, season)
         total = 0
         try:
             with atomic_write(path) as part:
@@ -333,18 +341,63 @@ class ProcessedStore:
         entry = manifest.get_chunk(manifest_key(chunk_id, season))
         if entry is None or entry.get("status") != "COMPLETED" or not schema_matches(spec, entry):
             return False
-        if self.part_path(spec, chunk_id, season).exists():
+        if self.has_part(spec, chunk_id, season):
             return True
         return entry.get("records_count") == 0
+
+    def _dataset_root(self, spec: DatasetSpec) -> Path:
+        return self.config.processed_dir(spec.source, spec.name)
+
+    def has_part(
+        self, spec: DatasetSpec, chunk_id: str = "data", season: int | None = None
+    ) -> bool:
+        """True when the chunk's rows are stored, as its own part file or inside a compacted file."""
+        if self.part_path(spec, chunk_id, season).exists():
+            return True
+        manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
+        key = manifest_key(chunk_id, season)
+        return holds_chunk(self._dataset_root(spec), manifest.get_chunk(key), key)
+
+    def find_chunk_season(self, spec: DatasetSpec, chunk_id: str) -> int | None:
+        """Season folder that stores ``chunk_id`` (as a part file or inside a compacted file)."""
+        root = self._dataset_root(spec)
+        if not root.exists():
+            return None
+        wanted = part_filename(spec.name, chunk_id)
+        for match in root.glob(f"season=*/{wanted}"):
+            return int(match.parent.name.removeprefix("season="))
+        manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
+        suffix = f"/{chunk_id}"
+        for key, entry in manifest.chunks().items():
+            if key.startswith("season=") and key.endswith(suffix):
+                season = int(key.split("/", 1)[0].removeprefix("season="))
+                if holds_chunk(root, entry, key):
+                    return season
+        return None
+
+    def _release_compacted(self, spec: DatasetSpec, chunk_id: str, season: int | None) -> None:
+        """Before a chunk is rewritten, take its old rows out of the compacted file that holds them."""
+        manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
+        key = manifest_key(chunk_id, season)
+        entry = manifest.get_chunk(key)
+        if not entry or not entry.get(INTO):
+            return
+        release_chunk(self._dataset_root(spec), entry, key, spec.schema)
+        manifest.put_entry(key, {k: v for k, v in entry.items() if k != INTO})
 
     def read_part(
         self, spec: DatasetSpec, chunk_id: str = "data", season: int | None = None
     ) -> pa.Table:
         """Read one stored part back (an empty table for a chunk recorded with zero rows)."""
         path = self.part_path(spec, chunk_id, season)
-        if not path.exists():
-            return spec.schema.empty_table()
-        return pq.read_table(path)
+        if path.exists():
+            return pq.read_table(path)
+        manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
+        key = manifest_key(chunk_id, season)
+        entry = manifest.get_chunk(key)
+        if entry and holds_chunk(self._dataset_root(spec), entry, key):
+            return read_chunk(self._dataset_root(spec), entry, key)
+        return spec.schema.empty_table()
 
     def files(self, spec: DatasetSpec) -> list[Path]:
         """Every parquet part currently stored for ``spec``."""
