@@ -485,7 +485,7 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-279 | lake-access-and-compaction 1.2: baseballpy.read and baseballpy.sql with recipes, ADR 73 | DONE | tests/test_access.py (7 tests): read equals sql, join, read-only; all 14,971,703 pitches by 121 columns in 2.0 s |
 | B-280 | lake-access-and-compaction 2.1: compact command, ADR 74 | DONE | 9 tests; real lake 400,000 files to about 4,300, db sync 15 min to 20 s, MLB season with all chunks downloaded 6 h to 57 s with no request |
 | B-281 | lake-access-and-compaction 2.2: compressed raw files and compress-raw command, ADR 75 | DONE | raw 30.87 GB to 6.10 GB; cache check ok on all 252,542 files; tests/test_raw_compress.py (7) |
-| B-282 | `lake-access-and-compaction 2.3`: layout checks in catalog audit | OPEN | audit flags tiny files and mixed schemas |
-| B-283 | `lake-access-and-compaction 3.1`: run on the lake and record sizes and times | OPEN | numbers in design.md |
-| B-284 | `lake-access-and-compaction 3.2`: spec, ADR, docs, gates, archive | OPEN | change archived |
+| B-282 | lake-access-and-compaction 2.3: offline layout check catalog layout, ADR 76 | DONE | tests/test_layout_audit.py (7); real lake: no failing finding, 9 Retrosheet datasets advise small row groups |
+| B-283 | lake-access-and-compaction 3.1: run on the lake and record sizes and times | DONE | numbers in the design of the change (compaction, gzip, queries) |
+| B-284 | lake-access-and-compaction 3.2: spec, ADR, docs, gates, archive | DONE | specs lake-access and caching-and-invalidation, ADR 73 to 76, change archived |
 | B-285 | lake-access-and-compaction: manifest parsed only when its file changed (three MLB seasons failed with MemoryError and took about 6 h each) | DONE | tests/test_atomic.py: 50 lookups, zero parses, other writers still seen |

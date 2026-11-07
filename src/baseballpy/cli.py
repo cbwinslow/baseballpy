@@ -206,6 +206,46 @@ def catalog_audit(sources: tuple[str, ...], as_json: bool) -> None:
         raise SystemExit(1)
 
 
+@catalog.command("layout")
+@click.option("--source", "sources", multiple=True, help="Limit to a source (repeatable).")
+@click.option("--json", "as_json", is_flag=True, help="Print the findings as JSON.")
+def catalog_layout(sources: tuple[str, ...], as_json: bool) -> None:
+    """Check that the lake is still shaped for fast reads (offline; exit 1 on a failing finding).
+
+    Reports many small files, zero-row files, parts that differ from the registered schema, tiny
+    row groups, compacted files no record points at, and raw text files that are not gzipped.
+    """
+    import json as _json
+
+    from baseballpy.layout_audit import audit_layout
+
+    findings = audit_layout(LakeConfig(), sources)
+    if as_json:
+        click.echo(
+            _json.dumps(
+                [
+                    {
+                        "kind": f.kind.value,
+                        "source": f.source,
+                        "item": f.item,
+                        "evidence": f.evidence,
+                    }
+                    for f in findings
+                ],
+                indent=2,
+            )
+        )
+    else:
+        table = Table(title="Lake layout")
+        for column in ("kind", "source", "item", "evidence"):
+            table.add_column(column, overflow="fold")
+        for f in findings:
+            table.add_row(f.kind.value, f.source, f.item, f.evidence)
+        console.print(table if findings else "[bold green]Layout is clean.[/bold green]")
+    if any(f.fails for f in findings):
+        raise SystemExit(1)
+
+
 @main.group()
 def docs() -> None:
     """Generate the per-dataset column dictionaries in docs/sources/*.md."""

@@ -178,6 +178,7 @@ Options:
 Commands:
   audit     Compare provider-listed items with the registry (exit 1 on MISSING/REVIVED/ERROR).
   coverage  Audit expected vs held entities (games, pitches, datasets) and show fix commands.
+  layout    Check that the lake is still shaped for fast reads (offline; exit 1 on a failing...
   list      List registered datasets with schema, partition, and primary key metadata.
   show      Show detailed metadata, schema columns, and lake status for a registered dataset.
   status    Inspect local lake processed Parquet datasets and reporting status.
@@ -210,6 +211,22 @@ Options:
   --json                Output coverage audit as a JSON object.
   --fix                 Automatically execute remediation ingest jobs for missing entities.
   --help                Show this message and exit.
+```
+
+## `baseballpy catalog layout`
+
+```text
+Usage: baseballpy catalog layout [OPTIONS]
+
+  Check that the lake is still shaped for fast reads (offline; exit 1 on a failing finding).
+
+  Reports many small files, zero-row files, parts that differ from the registered schema, tiny row
+  groups, compacted files no record points at, and raw text files that are not gzipped.
+
+Options:
+  --source TEXT  Limit to a source (repeatable).
+  --json         Print the findings as JSON.
+  --help         Show this message and exit.
 ```
 
 ## `baseballpy catalog list`
