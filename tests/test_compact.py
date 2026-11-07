@@ -231,3 +231,28 @@ def test_coverage_and_the_duplicate_check_still_see_a_compacted_season(
     assert before.held_count == after.held_count == 3
     assert after.expected_count == before.expected_count == 4 and after.missing_count == 1
     assert len(list(lake.processed_dir("statcast", "pitches", 2023).glob("*.parquet"))) == 1
+
+
+def test_threads_refreshing_chunks_of_one_compacted_file_lose_and_duplicate_nothing(
+    tmp_path: Path, spec: DatasetSpec
+) -> None:
+    """The current season is refreshed by many threads; their chunks share one compacted file."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    cfg = LakeConfig(home=tmp_path)
+    store = ProcessedStore(cfg)
+    chunks = [f"c{i:02d}" for i in range(16)]
+    for index, chunk in enumerate(chunks):
+        store.put(spec, _pitches([float(index)], 2023), chunk_id=chunk, season=2023)
+    compact_dataset(spec, cfg)
+
+    def refresh(index: int) -> None:
+        store.read_part(spec, chunks[(index + 1) % len(chunks)], 2023)  # readers meet the rewrites
+        store.put(spec, _pitches([100.0 + index], 2023), chunk_id=chunks[index], season=2023)
+
+    with ThreadPoolExecutor(16) as pool:
+        list(pool.map(refresh, range(len(chunks))))
+    speeds = sorted(bp.read("statcast.pitches", seasons=2023, config=cfg)["release_speed"])
+    assert speeds == [100.0 + i for i in range(16)]
+    compact_dataset(spec, cfg)
+    assert sorted(bp.read("statcast.pitches", seasons=2023, config=cfg)["release_speed"]) == speeds

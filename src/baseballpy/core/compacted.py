@@ -8,6 +8,7 @@ relative to the dataset folder).
 """
 
 import json
+import threading
 from collections.abc import Mapping
 from functools import lru_cache
 from pathlib import Path
@@ -23,6 +24,18 @@ CHUNK_MAP_KEY = b"baseballpy.chunks"
 COMPACT_PREFIX = "compact-"
 #: rows per row group (DuckDB advises 100,000 to 1,000,000; its default is 122,880)
 ROW_GROUP_ROWS = 122_880
+
+
+_LOCKS_GUARD = threading.Lock()
+_FILE_LOCKS: dict[str, threading.RLock] = {}
+
+
+def _file_lock(path: Path) -> threading.RLock:
+    """One lock per compacted file: threads that refresh chunks stored in the same file rewrite
+    it one at a time (two rewrites at once would lose one chunk's removal), and readers never see
+    the file mid-replace."""
+    with _LOCKS_GUARD:
+        return _FILE_LOCKS.setdefault(str(path), threading.RLock())
 
 
 def compact_file_name(index: int) -> str:
@@ -63,6 +76,11 @@ def holds_chunk(dataset_dir: Path, entry: Mapping[str, Any] | None, key: str) ->
 def read_chunk(dataset_dir: Path, entry: Mapping[str, Any], key: str) -> pa.Table:
     """Read one chunk's rows out of its compacted file (only the row groups that cover it)."""
     path = dataset_dir / str(entry[INTO])
+    with _file_lock(path):
+        return _read_chunk_locked(path, key)
+
+
+def _read_chunk_locked(path: Path, key: str) -> pa.Table:
     first, count = chunk_map(path)[key]
     groups: list[int] = []
     group_start = 0
@@ -122,6 +140,11 @@ def release_chunk(dataset_dir: Path, entry: Mapping[str, Any], key: str, schema:
     The file is rewritten atomically without the chunk; an emptied file is deleted.
     """
     path = dataset_dir / str(entry[INTO])
+    with _file_lock(path):
+        _release_locked(path, key, schema)
+
+
+def _release_locked(path: Path, key: str, schema: pa.Schema) -> None:
     if not path.exists():
         return
     spans = chunk_map(path)
