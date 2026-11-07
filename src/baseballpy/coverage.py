@@ -1,5 +1,6 @@
 """Season-level expected vs. held coverage inspection and gap remediation."""
 
+import json
 import logging
 from collections.abc import Sequence
 from dataclasses import dataclass, field
@@ -12,6 +13,7 @@ import pyarrow.parquet as pq
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import datasets_for
 from baseballpy.sources.catalog import register_all
+from baseballpy.sources.statcast.extractor import grid_windows
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +87,7 @@ class SeasonCoverageReport:
 def check_mlb_games(season: int, config: LakeConfig) -> CoverageItem:
     """Inspect MLB Stats API scheduled vs held games for a season."""
     sched_dir = config.processed_dir("mlb_api", "schedule_hydrated", season)
-    sched_files = sorted(sched_dir.glob("part-*.parquet")) if sched_dir.is_dir() else []
+    sched_files = sorted(sched_dir.glob("*.parquet")) if sched_dir.is_dir() else []
     expected_pks: set[int] = set()
     if sched_files:
         try:
@@ -110,11 +112,11 @@ def check_mlb_games(season: int, config: LakeConfig) -> CoverageItem:
     expected_count = len(expected_pks) if expected_pks else 2430
 
     box_dir = config.processed_dir("mlb_api", "game_boxscore_teams", season)
-    if not box_dir.is_dir() or not any(box_dir.glob("part-*.parquet")):
+    if not box_dir.is_dir() or not any(box_dir.glob("*.parquet")):
         box_dir = config.processed_dir("mlb_api", "game_linescore", season)
-    if not box_dir.is_dir() or not any(box_dir.glob("part-*.parquet")):
+    if not box_dir.is_dir() or not any(box_dir.glob("*.parquet")):
         box_dir = config.processed_dir("mlb_api", "game_boxscores", season)
-    held_files = sorted(box_dir.glob("part-*.parquet")) if box_dir.is_dir() else []
+    held_files = sorted(box_dir.glob("*.parquet")) if box_dir.is_dir() else []
 
     held_pks: set[int] = set()
     if held_files:
@@ -153,7 +155,7 @@ def check_mlb_games(season: int, config: LakeConfig) -> CoverageItem:
 def check_retrosheet_games(season: int, config: LakeConfig) -> CoverageItem:
     """Inspect Retrosheet scheduled vs held games for a season."""
     gamelogs_dir = config.processed_dir("retrosheet", "gamelogs", season)
-    gl_files = sorted(gamelogs_dir.glob("part-*.parquet")) if gamelogs_dir.is_dir() else []
+    gl_files = sorted(gamelogs_dir.glob("*.parquet")) if gamelogs_dir.is_dir() else []
     expected_count = 0
     if gl_files:
         try:
@@ -165,7 +167,7 @@ def check_retrosheet_games(season: int, config: LakeConfig) -> CoverageItem:
         expected_count = 2430
 
     box_dir = config.processed_dir("retrosheet", "box_games", season)
-    box_files = sorted(box_dir.glob("part-*.parquet")) if box_dir.is_dir() else []
+    box_files = sorted(box_dir.glob("*.parquet")) if box_dir.is_dir() else []
     held_count = 0
     if box_files:
         try:
@@ -196,12 +198,36 @@ def check_retrosheet_games(season: int, config: LakeConfig) -> CoverageItem:
     )
 
 
+def _statcast_expected_windows(season: int, config: LakeConfig) -> int:
+    """Number of 5-day windows in the season's calendar (0 until the ingest has cached it)."""
+    cached = config.http_cache_root / "mlb-seasons" / f"{season}.json"
+    if not cached.exists():
+        return 0
+    record = json.loads(cached.read_text(encoding="utf-8"))
+    start = record.get("springStartDate") or record.get("regularSeasonStartDate")
+    end = record.get("postSeasonEndDate") or record.get("seasonEndDate")
+    if not start or not end:
+        return 0
+    return len(
+        grid_windows(
+            date.fromisoformat(start[:10]), min(date.fromisoformat(end[:10]), date.today())
+        )
+    )
+
+
 def check_statcast_pitches(season: int, config: LakeConfig) -> CoverageItem:
-    """Inspect Statcast pitch chunk completeness for a season."""
-    pitch_dir = config.processed_dir("statcast", "pitches", season)
-    files = sorted(pitch_dir.glob("part-*.parquet")) if pitch_dir.is_dir() else []
-    held_chunks = len(files)
-    expected_chunks = 31 if season >= 2008 else 0
+    """Inspect Statcast pitch chunk completeness for a season.
+
+    Held chunks are the download records marked COMPLETED (a compacted season has one file but
+    keeps its records); expected chunks are the 5-day windows of the season's cached calendar.
+    """
+    prefix = f"season={season}/"
+    held_chunks = sum(
+        1
+        for key, entry in config.dataset_manifest("statcast", "pitches").chunks().items()
+        if key.startswith(prefix) and entry.get("status") == "COMPLETED"
+    )
+    expected_chunks = _statcast_expected_windows(season, config)
     pct = round((held_chunks / expected_chunks * 100.0), 1) if expected_chunks > 0 else 0.0
     missing_count = max(0, expected_chunks - held_chunks)
     cmd = "(up to date)" if missing_count <= 0 else f"baseballpy ingest statcast --seasons {season}"
@@ -227,7 +253,7 @@ def check_dataset_tables(source: str, season: int, config: LakeConfig) -> Covera
     missing_names: list[str] = []
     for s in specs:
         target_dir = config.processed_dir(source, s.name, season)
-        if target_dir.is_dir() and any(target_dir.glob("part-*.parquet")):
+        if target_dir.is_dir() and any(target_dir.glob("*.parquet")):
             held_count += 1
         else:
             missing_names.append(s.name)

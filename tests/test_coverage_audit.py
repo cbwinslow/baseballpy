@@ -67,20 +67,24 @@ def test_catalog_coverage_statcast_chunks(tmp_path: Path) -> None:
     lake = LakeConfig(home=tmp_path)
     season = 2024
 
+    calendar = lake.http_cache_root / "mlb-seasons"
+    calendar.mkdir(parents=True)
+    (calendar / f"{season}.json").write_text(
+        '{"springStartDate": "2024-03-01", "postSeasonEndDate": "2024-03-30"}', encoding="utf-8"
+    )
     item = check_statcast_pitches(season, lake)
-    assert item.expected_count == 31
+    assert item.expected_count == 6  # the 5-day windows of the cached calendar
     assert item.held_count == 0
     assert "ingest statcast" in item.remediation_cmd
 
-    # Write 31 chunk files
-    pitch_dir = lake.processed_dir("statcast", "pitches", season)
-    pitch_dir.mkdir(parents=True, exist_ok=True)
-    tbl = pa.table({"pitch_type": ["FF"]})
-    for i in range(31):
-        pq.write_table(tbl, pitch_dir / f"part-w{i:02d}.parquet")
+    # Download records (not file names) say what is held: this also holds after compaction
+    manifest = lake.dataset_manifest("statcast", "pitches")
+    for i in range(6):
+        manifest.set_completed(f"season={season}/w{i:02d}", records_count=1)
+    manifest.set_failed(f"season={season}/w07", "boom")
 
     item_done = check_statcast_pitches(season, lake)
-    assert item_done.held_count == 31
+    assert item_done.held_count == 6
     assert item_done.missing_count == 0
     assert item_done.held_percent == 100.0
     assert item_done.remediation_cmd == "(up to date)"

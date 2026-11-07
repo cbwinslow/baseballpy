@@ -213,3 +213,21 @@ def test_empty_chunk_files_are_removed_and_the_chunk_still_counts_as_downloaded(
     assert store.is_cached(spec, "none", 2023) and store.has_part(spec, "none", 2023)
     assert store.read_part(spec, "none", 2023).num_rows == 0
     assert bp.read("statcast.pitches", seasons=2023, config=lake).height == 6
+
+
+def test_coverage_and_the_duplicate_check_still_see_a_compacted_season(
+    lake: LakeConfig, spec: DatasetSpec
+) -> None:
+    from baseballpy.coverage import check_statcast_pitches
+
+    cache = lake.http_cache_root / "mlb-seasons"
+    cache.mkdir(parents=True)
+    (cache / "2023.json").write_text(
+        '{"springStartDate": "2023-03-01", "postSeasonEndDate": "2023-03-15"}', encoding="utf-8"
+    )
+    before = check_statcast_pitches(2023, lake)
+    compact_dataset(spec, lake)
+    after = check_statcast_pitches(2023, lake)
+    assert before.held_count == after.held_count == 3
+    assert after.expected_count == before.expected_count == 4 and after.missing_count == 1
+    assert len(list(lake.processed_dir("statcast", "pitches", 2023).glob("*.parquet"))) == 1

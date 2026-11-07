@@ -545,7 +545,7 @@ class StatcastExtractor:
 
     def duplicate_keys(self, season: int, minors: bool = False) -> int:
         """Number of surplus rows sharing a pitch key within a season (0 when keys are unique)."""
-        files = sorted(self.store.dataset_dir(self._spec(minors), season).glob("part-*.parquet"))
+        files = sorted(self.store.dataset_dir(self._spec(minors), season).glob("*.parquet"))
         if not files:
             return 0
         table = pa.concat_tables(

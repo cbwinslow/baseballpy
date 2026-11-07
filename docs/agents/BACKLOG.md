@@ -489,3 +489,4 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-283 | lake-access-and-compaction 3.1: run on the lake and record sizes and times | DONE | numbers in the design of the change (compaction, gzip, queries) |
 | B-284 | lake-access-and-compaction 3.2: spec, ADR, docs, gates, archive | DONE | specs lake-access and caching-and-invalidation, ADR 73 to 76, change archived |
 | B-285 | lake-access-and-compaction: manifest parsed only when its file changed (three MLB seasons failed with MemoryError and took about 6 h each) | DONE | tests/test_atomic.py: 50 lookups, zero parses, other writers still seen |
+| B-286 | coverage audit saw only part- files and guessed 31 Statcast windows; now counts download records and the cached calendar (found by the on-track review) | DONE | tests/test_coverage_audit.py, tests/test_compact.py: Statcast 2024 shows 51 of 51 |
