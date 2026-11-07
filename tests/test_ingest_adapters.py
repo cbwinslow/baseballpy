@@ -311,6 +311,7 @@ class FakeMlbApiSource:
         self.people_reports = [FakeEndpointReport("people_stats_season_hitting", 25, 900, 0)]
         self.people_calls: list[tuple[int, int | None]] = []
         self.season_calls: list[tuple[int, bool, int | None]] = []
+        self.game_sport_calls: list[tuple[int, ...] | None] = []
 
     def ingest_reference(self, refresh: bool = False) -> list[FakeEndpointReport]:
         return self.ref_reports
@@ -325,8 +326,10 @@ class FakeMlbApiSource:
         include_awards: bool = True,
         include_people_stats: bool = False,
         max_people: int | None = None,
+        game_sport_ids: tuple[int, ...] | None = (1,),
         refresh: bool = False,
     ) -> list[FakeEndpointReport]:
+        self.game_sport_calls.append(game_sport_ids)
         self.season_calls.append((season, include_games, max_games))
         return self.season_reports
 

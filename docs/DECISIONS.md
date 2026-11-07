@@ -858,3 +858,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** a test enforces snake_case, unique views of the form `<source>_<dataset>` (one declared exception), and a doc file per source; the README states the rules and draws the complete lake; `catalog layout` fails on a `processed/` folder no dataset owns.
 - **Consequences:** a misnamed dataset or an orphan folder is caught before it reaches users; nothing was renamed, so no user query breaks.
 - **Alternatives rejected:** renaming `mlb_*` views to `mlb_api_*` (breaks queries); checking raw folders the same way (raw-only names are legitimate).
+
+## ADR 85: The Per-Game MLB Download Defaults To The Major Leagues
+- **Status:** Accepted (owner chose "major leagues first", 2026-11-07; change `mlb-game-levels`).
+- **Context:** the per-game phase took every level of the schedule (about 16,000 games per season, 5 to 6 days for all seasons); the 2026 run died of a `MemoryError` after 7.9 hours. Major leagues are about 2,960 games per season.
+- **Decision:** `--option sports=` selects the levels (default `1`; `all` or a list of ids), read from `schedule_hydrated.sport_id`.
+- **Consequences:** the first full per-game backfill is about five times smaller. Minor-league games are one option away and nothing is removed from the catalog.
+- **Alternatives rejected:** a separate command (the options mechanism already exists); keeping all levels as the default (days of download for data the models do not need first).

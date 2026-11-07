@@ -22,7 +22,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
 | `lake-access` | 8 | 9 | 40 |
-| `mlb-api-ingestion` | 27 | 40 | 42 |
+| `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `real-time-streaming` | 7 | 12 | 12 |
@@ -42,11 +42,11 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 12 |
 | `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 20 |
 | `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 15 |
-| `mlb_api` | 365 | archived | yes | yes | yes | 9486/16719 (56%) | 27 |
+| `mlb_api` | 365 | archived | yes | yes | yes | 9486/16719 (56%) | 28 |
 
 ## Active changes (`openspec/changes/`)
 
-70 changes are archived under `openspec/changes/archive/`.
+71 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -55,10 +55,11 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
-| `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
+| `mlb-game-memory` | 0 | 1 | 1.1 |
+| `mlb-stats-route-406-and-deep-pools` | 5 | 5 | 1.2, 3.1, 3.3 |
 | `modelling-data-needs` | 0 | 6 | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
-| `retrosheet-box-accounts` | 9 | 5 | 1.1, 1.2, 2.3 |
+| `retrosheet-box-accounts` | 9 | 6 | 1.1, 1.2, 2.3, 2.4 |
 
 ## Decisions (`docs/DECISIONS.md`)
 
@@ -145,6 +146,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 82: One Overview, One Update Command, Manifest-Based Status, Blank And NaN Are Values
 - ADR 83: Verify The Library The Way A New User Meets It; Rebuild A Catalog From A Newer DuckDB
 - ADR 84: Write Down And Test The Naming Rules; Unknown Processed Folders Fail The Layout Check
+- ADR 85: The Per-Game MLB Download Defaults To The Major Leagues
 
 ## Documentation pages (`docs/`)
 

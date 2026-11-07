@@ -9,6 +9,26 @@ from baseballpy.ingest.types import Job, JobResult, JobStatus, Selection, make_j
 FIRST_SEASON = 1876
 KNOWN_DATASETS = {"reference", "season", "games", "history", "people_stats"}
 DEFAULT_DATASETS = ("reference", "season")
+#: ``--option sports=...`` for the per-game phase: major leagues unless told otherwise
+MAJOR_LEAGUES = "1"
+ALL_LEVELS = "all"
+
+
+def parse_game_sports(text: str) -> tuple[int, ...] | None:
+    """Sport ids of ``--option sports=...``: ``all`` -> ``None`` (every level), else comma-separated ids."""
+    cleaned = text.strip().lower()
+    if cleaned == ALL_LEVELS:
+        return None
+    try:
+        ids = tuple(dict.fromkeys(int(part) for part in cleaned.split(",") if part.strip()))
+    except ValueError:
+        ids = ()
+    if not ids:
+        raise ValueError(
+            f"bad --option sports={text!r}: use 'all' or sport ids such as 1 or 1,11,12 "
+            "(see the mlb_api ref_sports dataset for the ids)"
+        )
+    return ids
 
 
 def _registered() -> set[str]:
@@ -130,12 +150,15 @@ class MlbApiAdapter:
                 if "season" in wanted:
                     jobs.append(make_job("mlb_api", "season", season=season))
                 if "games" in wanted:
+                    sports = selection.option("sports", MAJOR_LEAGUES)
+                    parse_game_sports(sports)  # a typo fails the plan, not the job hours later
                     jobs.append(
                         make_job(
                             "mlb_api",
                             "season",
                             games=True,
                             season=season,
+                            sports=sports.strip().lower().replace(" ", ""),
                             **selection.limit_params(),
                         )
                     )
@@ -177,7 +200,11 @@ class MlbApiAdapter:
             season = int(season_val)
             include_games = bool(job.param("games", False))
             reports = source.ingest_season(
-                season, include_games=include_games, max_games=job.limit, refresh=refresh
+                season,
+                include_games=include_games,
+                max_games=job.limit,
+                game_sport_ids=parse_game_sports(str(job.param("sports", MAJOR_LEAGUES))),
+                refresh=refresh,
             )
             return _result(job, reports)
 

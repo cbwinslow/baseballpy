@@ -18,15 +18,15 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Active Checkouts (Locked — Do Not Disturb)
 
-- **Task:** FanGraphs homelab export & schema generation
-  - **Agent:** Claude (Session 1)
-  - **Claimed At:** 2026-11-06 22:00 UTC
+- **Task:** B-301
+  - **Agent:** Gemini (Session 2)
+  - **Claimed At:** 2026-11-07 20:59 UTC
   - **Locked Areas:**
-    - `src/baseballpy/sources/fangraphs/`
-    - `scripts/export_homelab_fangraphs.py`
-    - `scripts/gen_fangraphs_schemas.py`
-    - `docs/sources/fangraphs.md`
-  - **Status:** Creating scripts to inspect/export FanGraphs tables from the homelab and generate strongly typed schemas without web scraping (per ADR 78). In progress.
+    - `src/baseballpy/core/atomic.py`
+    - `src/baseballpy/core/stores.py`
+    - `src/baseballpy/core/config.py`
+  - **Status:** Fixing manifest memory spike by partitioning manifests per season
+
 
 ---
 

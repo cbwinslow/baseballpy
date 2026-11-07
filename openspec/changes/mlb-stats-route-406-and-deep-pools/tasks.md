@@ -9,3 +9,4 @@
 - [ ] 3. Re-run
   - [ ] 3.1 After a 200: re-run the 15 failed pools and one modern MLB season on the homelab; record rows and errors in `design.md`
   - [x] 3.2 Regenerate the `team_stats_year_by_year_*` schemas (`gen_mlb_schemas.py --only`, never the full run while the 406 lasts); add a test that the real-run fields are typed columns
+  - [ ] 3.3 Regenerate the 61 MLB schemas with schema drift in _extras via gen_mlb_schemas.py --only

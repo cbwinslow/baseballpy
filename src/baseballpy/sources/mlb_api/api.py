@@ -149,17 +149,23 @@ class MlbApiSource:
                 )
         return [self.endpoints.ingest(e, ctx, refresh=refresh, keep_going=True) for e in flat_eps]
 
-    def final_game_pks(self, season: int) -> tuple[int, ...]:
-        """``game_pk`` of every final game of a season, from ``schedule_hydrated``."""
+    def final_game_pks(
+        self, season: int, sport_ids: tuple[int, ...] | None = None
+    ) -> tuple[int, ...]:
+        """``game_pk`` of every final game of a season, from ``schedule_hydrated``.
+
+        ``sport_ids`` keeps only games of those levels (1 = the major leagues); ``None`` keeps all.
+        """
         table = read_endpoint("schedule_hydrated", season, self.cache_config)
         pks = {
             pk
-            for pk, state in zip(
+            for pk, state, sport in zip(
                 table.column("game_pk").to_pylist(),
                 table.column("status_abstract_game_state").to_pylist(),
+                table.column("sport_id").to_pylist(),
                 strict=True,
             )
-            if state == "Final"
+            if state == "Final" and (sport_ids is None or sport in sport_ids)
         }
         return tuple(sorted(pks))
 
@@ -173,9 +179,13 @@ class MlbApiSource:
         include_awards: bool = True,
         include_people_stats: bool = False,
         max_people: int | None = None,
+        game_sport_ids: tuple[int, ...] | None = (1,),
         refresh: bool = False,
     ) -> list[EndpointReport]:
         """Ingest every season-scoped endpoint (and, optionally, per-game endpoints) of a season.
+
+        ``game_sport_ids`` picks the levels whose games get the per-game datasets: the major
+        leagues by default, ``None`` for every level (about five times as many games).
 
         Order matters: reference lists and ``teams_season`` first (they define the fan-out for
         team-scoped endpoints and stats leaders), then everything else; per-game endpoints use the
@@ -227,7 +237,7 @@ class MlbApiSource:
                 )
             )
         if include_games:
-            pks = self.final_game_pks(season)
+            pks = self.final_game_pks(season, game_sport_ids)
             pks = pks[:max_games] if max_games is not None else pks
             game_ctx = self._context(season, sports, pks)
             game_eps = sorted(

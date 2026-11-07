@@ -339,3 +339,11 @@ A single, non-paginated MLB request that belongs to a call of at most `verify_ma
 - **WHEN** three answers all differ
 - **THEN** the largest is stored and the warning is logged.
 - Verified by `tests/test_verify_small_answers.py::test_three_different_answers_keep_the_largest_and_warn`.
+
+### Requirement: The Per-Game Download Covers The Major Leagues Unless Told Otherwise
+The per-game datasets (`ingest mlb_api -d games`) MUST be fetched for the final games of the levels named by `--option sports=` (sport ids such as `1` or `1,11,12`, or `all`), defaulting to the major leagues (`1`); a value that is neither `all` nor a list of ids MUST fail while the plan is built.
+
+#### Scenario: Levels choose the games
+- **WHEN** a games job is planned with no option, with `sports=all`, and with `sports=1, 11`, and a schedule holds final games of levels 1, 11 and 12
+- **THEN** the jobs carry `sports=1`, `all` and `1,11`, the source receives `(1,)`, `None` and `(1, 11)`, only games of those levels are selected, and `sports=minors` is refused
+- Verified by `tests/test_mlb_game_levels.py::test_parse_game_sports`, `tests/test_mlb_game_levels.py::test_the_plan_defaults_to_the_major_leagues_and_takes_the_option`, `tests/test_mlb_game_levels.py::test_the_job_hands_the_levels_to_the_source` and `tests/test_mlb_game_levels.py::test_final_game_pks_keeps_only_the_wanted_levels`.
