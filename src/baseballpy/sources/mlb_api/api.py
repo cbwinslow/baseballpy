@@ -230,9 +230,14 @@ class MlbApiSource:
             pks = self.final_game_pks(season)
             pks = pks[:max_games] if max_games is not None else pks
             game_ctx = self._context(season, sports, pks)
-            game_eps = [e for e in SUPPORTED if e.scope == "game"]
+            game_eps = sorted(
+                (e for e in SUPPORTED if e.scope == "game"), key=lambda e: (e.path, e.name)
+            )
             if max_workers > 1 and len(game_eps) > 1:
-                with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
+                # one thread per dataset: datasets cut from the same URL (six from the boxscore,
+                # four from the live feed) must run side by side to share one request per game;
+                # requests in flight stay capped by the HTTP client
+                with concurrent.futures.ThreadPoolExecutor(max_workers=len(game_eps)) as pool:
                     game_reports = list(
                         pool.map(
                             lambda e: self.endpoints.ingest(

@@ -19,6 +19,7 @@ import pyarrow as pa
 
 from baseballpy.core.atomic import cleanup_stale_parts_once
 from baseballpy.core.audit import default_audit_logger
+from baseballpy.core.coalesce import Coalescer
 from baseballpy.core.config import STATSAPI_HOST, LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.http import HttpClient, HttpResult, HttpStatusError, get_http_client
@@ -58,6 +59,8 @@ def _total_splits(payload: Any) -> int | None:
 
 #: a paginated request announcing more rows than this is refused unless heavy ingestion is allowed
 MAX_SPLITS = 20_000
+#: game answers kept for the sibling datasets that are cut from the same URL (a live feed is ~2 MB)
+SHARED_ANSWERS = 256
 
 
 #: seconds a page of an all-time pool may take: deep offsets into a ~190k-row pool exceed the
@@ -282,6 +285,7 @@ class MlbEndpointExtractor:
         self.normalizer = MlbRecordNormalizer()
         self.store = ProcessedStore(self.cache_config)
         self.raw = RawStore(self.cache_config)
+        self._shared_answers: Coalescer[HttpResult] = Coalescer(SHARED_ANSWERS)
         cleanup_stale_parts_once(self.cache_config.raw_root / "mlb_api")
         cleanup_stale_parts_once(self.cache_config.processed_root / "mlb_api")
         self._local = threading.local()
@@ -495,6 +499,12 @@ class MlbEndpointExtractor:
             allow = (200, 404) if endpoint.tolerate_missing else (200,)
             if verify:
                 result = self._verified_get(endpoint, url, request.params, allow)
+            elif endpoint.scope == "game":
+                # sibling datasets (six from one boxscore, four from one live feed) share one answer
+                key = (url, tuple(sorted((k, str(v)) for k, v in request.params.items())))
+                result = self._shared_answers.get(
+                    key, lambda: self.http.get_sync(url, params=request.params, allow=allow)
+                )
             else:
                 result = self.http.get_sync(url, params=request.params, allow=allow)
             return [(f"{request.ident}.json", result)]

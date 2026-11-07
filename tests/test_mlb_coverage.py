@@ -12,7 +12,7 @@ import respx
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from baseballpy.core.config import LakeConfig, QuarantineConfig
+from baseballpy.core.config import LakeConfig, QuarantineConfig, RateLimitConfig
 from baseballpy.core.datasets import get_dataset
 from baseballpy.core.quarantine import Quarantine
 from baseballpy.core.schema_tools import reset_drift_warnings, snake
@@ -826,3 +826,22 @@ def test_a_414_on_a_single_player_batch_propagates(
                 2024,
             ),
         )
+
+
+@respx.mock
+def test_datasets_cut_from_one_game_url_fetch_it_once(tmp_path: Path) -> None:
+    """Six boxscore datasets and four live-feed datasets must not ask the provider six and four times."""
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(
+        cache_config=lake, rate_limit_config=RateLimitConfig(verify_max_requests=0)
+    )  # a big run: small answers are not repeated and compared
+    names = [e.name for e in COVERED if e.scope == "game" and e.path.endswith("/boxscore")]
+    assert len(names) >= 2, "several datasets share the boxscore URL"
+    route = respx.get(f"{MLB_BASE_URL}/v1/game/745000/boxscore").mock(
+        return_value=httpx.Response(200, json=_fixture(names[0]))
+    )
+    for name in names:
+        extractor.ingest(name, Context(season=2024, game_pks=(745000,)))
+    assert route.call_count == 1
+    for name in names:
+        assert generic.read_endpoint(name, season=2024, config=lake).num_rows >= 0
