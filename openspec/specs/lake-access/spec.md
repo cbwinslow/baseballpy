@@ -73,3 +73,11 @@ Sources and datasets MUST be `lower_snake_case`; a dataset's view MUST be `<sour
 - **WHEN** the registry is checked and a lake holds a misspelled dataset folder and an unknown source folder
 - **THEN** names, views and doc files satisfy the rules, and the layout check reports both folders as failing UNKNOWN_FOLDER findings while a registered folder is not reported
 - Verified by `tests/test_naming_rules.py::test_sources_and_datasets_are_lower_snake_case`, `tests/test_naming_rules.py::test_views_follow_source_underscore_dataset_with_one_declared_exception`, `tests/test_naming_rules.py::test_every_source_has_a_doc_file_and_every_doc_file_has_a_source`, `tests/test_naming_rules.py::test_a_processed_folder_no_dataset_owns_fails_the_layout_check` and `tests/test_naming_rules.py::test_registered_folders_are_not_unknown`.
+
+### Requirement: A Schema That Gains Columns Does Not Stop Compacted Files From Being Rewritten
+Writing a compacted file MUST line each chunk up with the registered schema by column name: a column the chunk lacks is filled with empty cells, and a column the schema lacks MUST raise an error instead of being dropped.
+
+#### Scenario: Old and new chunks share one file
+- **WHEN** a chunk written before a schema gained `name_slug` and a chunk written after are compacted together, and a chunk with an unknown column is offered
+- **THEN** the file holds all rows with `name_slug` empty for the old ones, and the unknown column is refused
+- Verified by `tests/test_compacted_schema.py::test_old_rows_get_empty_new_columns`, `tests/test_compacted_schema.py::test_a_column_the_schema_lacks_is_refused_not_dropped` and `tests/test_compacted_schema.py::test_old_and_new_chunks_are_written_into_one_file`.

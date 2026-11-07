@@ -865,3 +865,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** `--option sports=` selects the levels (default `1`; `all` or a list of ids), read from `schedule_hydrated.sport_id`.
 - **Consequences:** the first full per-game backfill is about five times smaller. Minor-league games are one option away and nothing is removed from the catalog.
 - **Alternatives rejected:** a separate command (the options mechanism already exists); keeping all levels as the default (days of download for data the models do not need first).
+
+## ADR 86: Compacted Files Are Written By Column Name, Not By Position
+- **Status:** Accepted (found when every major-league game run failed on 2026-11-07; follows the schema regeneration B-303).
+- **Context:** B-303 added typed columns (for example `person_name_slug`) to 142 datasets. Compacted files written earlier lack them, and rewriting such a file (when one of its chunks is downloaded again) failed with a column-name mismatch, so all 19 seasons of the per-game download stopped within 30 seconds.
+- **Decision:** `core/compacted.py::align_to_schema` lines a table up with the registered schema by name, with empty cells for new columns; an unknown column is an error.
+- **Consequences:** a schema can gain columns while old compacted files exist. Old files keep their old columns until their chunks are rewritten (`catalog layout` still reports them as MIXED_SCHEMA; not changed here).
+- **Alternatives rejected:** casting by position (the failure); dropping unknown columns (loses data); deleting compacted files on a schema change (loses the resume points).

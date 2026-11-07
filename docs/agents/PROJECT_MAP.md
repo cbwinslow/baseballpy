@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 8 | 9 | 40 |
+| `lake-access` | 9 | 10 | 43 |
 | `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -147,6 +147,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 83: Verify The Library The Way A New User Meets It; Rebuild A Catalog From A Newer DuckDB
 - ADR 84: Write Down And Test The Naming Rules; Unknown Processed Folders Fail The Layout Check
 - ADR 85: The Per-Game MLB Download Defaults To The Major Leagues
+- ADR 86: Compacted Files Are Written By Column Name, Not By Position
 
 ## Documentation pages (`docs/`)
 

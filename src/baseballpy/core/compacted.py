@@ -98,6 +98,27 @@ def _read_chunk_locked(path: Path, key: str) -> pa.Table:
         return file.read_row_groups(groups).slice(lead, count)
 
 
+def align_to_schema(table: pa.Table, schema: pa.Schema) -> pa.Table:
+    """``table`` with exactly the columns of ``schema``: older rows get empty new columns.
+
+    A schema that gained columns since a chunk was written (typed ``name_slug`` columns, ADR 86)
+    leaves old chunks short of them; their rows are kept and the new cells are empty. A column the
+    schema does not have would be dropped silently, so it is an error instead.
+    """
+    if table.schema.equals(schema):
+        return table
+    extra = [name for name in table.column_names if name not in schema.names]
+    if extra:
+        raise ValueError(f"columns {extra} are not in the registered schema; refusing to drop them")
+    columns = [
+        table.column(f.name).cast(f.type)
+        if f.name in table.column_names
+        else pa.nulls(table.num_rows, f.type)
+        for f in schema
+    ]
+    return pa.table(columns, schema=schema)
+
+
 def write_compacted(
     path: Path,
     schema: pa.Schema,
@@ -123,7 +144,7 @@ def write_compacted(
             store_decimal_as_integer=True,
         )
         try:
-            aligned = [t if t.schema.equals(schema) else t.cast(schema) for _, t in tables]
+            aligned = [align_to_schema(t, schema) for _, t in tables]
             everything = pa.concat_tables(aligned).replace_schema_metadata(meta)
             writer.write_table(everything, ROW_GROUP_ROWS)  # full row groups across chunk borders
         finally:
