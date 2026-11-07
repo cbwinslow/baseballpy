@@ -3,7 +3,8 @@
 ``baseballpy catalog layout`` looks at the files under ``processed/`` and ``raw/`` and reports what
 would slow queries down or hint at damage: many small part files in one dataset folder, zero-row
 files, parts whose columns differ from the registered schema, tiny row groups, compacted files that
-no download record points at, and raw text files that are not yet gzipped.
+no download record points at, folders under ``processed/`` that no registered dataset owns, and raw
+text files that are not yet gzipped.
 """
 
 from collections import defaultdict
@@ -27,7 +28,7 @@ MIN_ROW_GROUP_ROWS = 5_000
 
 
 class LayoutKind(StrEnum):
-    """Layout verdicts. MIXED_SCHEMA and ORPHAN_COMPACT fail the check; the rest advise."""
+    """Layout verdicts. MIXED_SCHEMA, ORPHAN_COMPACT and UNKNOWN_FOLDER fail; the rest advise."""
 
     TINY_FILES = "TINY_FILES"  # many small part files: run `baseballpy compact`
     EMPTY_FILES = "EMPTY_FILES"  # zero-row files of empty chunks: run `baseballpy compact`
@@ -35,6 +36,7 @@ class LayoutKind(StrEnum):
     SMALL_ROW_GROUPS = "SMALL_ROW_GROUPS"  # row groups under 5,000 rows in a multi-group file
     ORPHAN_COMPACT = "ORPHAN_COMPACT"  # a compacted file no download record points at
     RAW_PLAIN = "RAW_PLAIN"  # raw text files not gzipped: run `baseballpy compress-raw`
+    UNKNOWN_FOLDER = "UNKNOWN_FOLDER"  # a processed/ folder no registered dataset owns
 
 
 @dataclass(frozen=True)
@@ -49,7 +51,47 @@ class LayoutFinding:
     @property
     def fails(self) -> bool:
         """Schema mix-ups and orphan compacted files fail the check (exit code 1)."""
-        return self.kind in (LayoutKind.MIXED_SCHEMA, LayoutKind.ORPHAN_COMPACT)
+        return self.kind in (
+            LayoutKind.MIXED_SCHEMA,
+            LayoutKind.ORPHAN_COMPACT,
+            LayoutKind.UNKNOWN_FOLDER,
+        )
+
+
+def _unknown_folder_findings(config: LakeConfig, sources: set[str]) -> list[LayoutFinding]:
+    """Folders under ``processed/`` that the registry does not own: no view reads them."""
+    findings: list[LayoutFinding] = []
+    root = config.processed_root
+    if not root.is_dir():
+        return findings
+    known: dict[str, set[str]] = defaultdict(set)
+    for spec in DATASETS.values():
+        known[spec.source].add(spec.name)
+    for source_dir in sorted(p for p in root.iterdir() if p.is_dir()):
+        if sources and source_dir.name not in sources:
+            continue
+        if source_dir.name not in known:
+            findings.append(
+                LayoutFinding(
+                    LayoutKind.UNKNOWN_FOLDER,
+                    source_dir.name,
+                    f"{source_dir.name}/",
+                    "no registered source has this name, so no view reads it",
+                )
+            )
+            continue
+        for dataset_dir in sorted(p for p in source_dir.iterdir() if p.is_dir()):
+            if dataset_dir.name not in known[source_dir.name]:
+                findings.append(
+                    LayoutFinding(
+                        LayoutKind.UNKNOWN_FOLDER,
+                        source_dir.name,
+                        f"{dataset_dir.name}/",
+                        "no registered dataset has this name, so no view reads it "
+                        "(a renamed or removed dataset? move or delete the folder)",
+                    )
+                )
+    return findings
 
 
 def _processed_findings(config: LakeConfig, sources: set[str]) -> list[LayoutFinding]:
@@ -215,7 +257,11 @@ def audit_layout(
     catalog.register_all()
     cfg = config or LakeConfig()
     wanted = set(sources)
-    return _processed_findings(cfg, wanted) + _raw_findings(cfg, wanted)
+    return (
+        _unknown_folder_findings(cfg, wanted)
+        + _processed_findings(cfg, wanted)
+        + _raw_findings(cfg, wanted)
+    )
 
 
 __all__ = ["LayoutFinding", "LayoutKind", "audit_layout"]

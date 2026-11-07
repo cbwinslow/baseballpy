@@ -65,3 +65,11 @@ When the catalog database in the lake was written by a newer DuckDB than the ins
 - **WHEN** the first open of the lake catalog fails as a newer-version file, a read-only query meets the same file, `arrow` is requested, and pandas is missing
 - **THEN** the old file is kept aside and the views are rebuilt, the query error names `db sync`, `arrow` returns an Arrow table, and the error for pandas says `pip install pandas`
 - Verified by `tests/test_workflows.py::test_a_catalog_from_a_newer_duckdb_is_moved_aside_and_rebuilt`, `tests/test_workflows.py::test_a_read_only_query_of_a_newer_catalog_says_what_to_do`, `tests/test_workflows.py::test_arrow_is_another_name_for_pyarrow` and `tests/test_workflows.py::test_a_missing_optional_dataframe_library_says_what_to_install`.
+
+### Requirement: Names Follow One Rule And Unknown Folders Fail
+Sources and datasets MUST be `lower_snake_case`; a dataset's view MUST be `<source>_<dataset>` (with the prefix `mlb` for the `mlb_api` source) and unique; every source MUST have a `docs/sources/<source>.md` and every such file a source; and `baseballpy catalog layout` MUST fail on any folder under `processed/` (a source or a dataset) that no registered dataset owns.
+
+#### Scenario: Rules and a stray folder
+- **WHEN** the registry is checked and a lake holds a misspelled dataset folder and an unknown source folder
+- **THEN** names, views and doc files satisfy the rules, and the layout check reports both folders as failing UNKNOWN_FOLDER findings while a registered folder is not reported
+- Verified by `tests/test_naming_rules.py::test_sources_and_datasets_are_lower_snake_case`, `tests/test_naming_rules.py::test_views_follow_source_underscore_dataset_with_one_declared_exception`, `tests/test_naming_rules.py::test_every_source_has_a_doc_file_and_every_doc_file_has_a_source`, `tests/test_naming_rules.py::test_a_processed_folder_no_dataset_owns_fails_the_layout_check` and `tests/test_naming_rules.py::test_registered_folders_are_not_unknown`.

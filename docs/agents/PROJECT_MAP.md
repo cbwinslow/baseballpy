@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 7 | 8 | 35 |
+| `lake-access` | 8 | 9 | 40 |
 | `mlb-api-ingestion` | 27 | 40 | 42 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -53,6 +53,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `agent-coordination-and-audit-rotation` | 3 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
+| `folder-and-name-audit` | 3 | 1 | 1.4 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
@@ -144,6 +145,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 81: Agent Coordination CLI, Automated 100 MB Audit Rotation, and Synergized Multi-Agent Workflow
 - ADR 82: One Overview, One Update Command, Manifest-Based Status, Blank And NaN Are Values
 - ADR 83: Verify The Library The Way A New User Meets It; Rebuild A Catalog From A Newer DuckDB
+- ADR 84: Write Down And Test The Naming Rules; Unknown Processed Folders Fail The Layout Check
 
 ## Documentation pages (`docs/`)
 

@@ -851,3 +851,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** the catalog database (views only) is moved aside and rebuilt when it comes from a newer DuckDB; read-only use gets a clear error; small friendliness fixes (`arrow`, pandas message, group hint).
 - **Consequences:** one lake works with DuckDB 1.5 and 2.0 alike; the clean-room run is the check to repeat before a release (steps in the change design).
 - **Alternatives rejected:** pinning DuckDB below 2 (blocks users who have 2.0 and gives the developer machine a different version from the lock); storing the catalog per DuckDB version (more files, same result).
+
+## ADR 84: Write Down And Test The Naming Rules; Unknown Processed Folders Fail The Layout Check
+- **Status:** Accepted (owner asked for a folder and name audit, 2026-11-07; change `folder-and-name-audit`).
+- **Context:** the audit found every name consistent, with one deliberate exception (`mlb_` views for the `mlb_api` source), but no test and no documentation of the rules.
+- **Decision:** a test enforces snake_case, unique views of the form `<source>_<dataset>` (one declared exception), and a doc file per source; the README states the rules and draws the complete lake; `catalog layout` fails on a `processed/` folder no dataset owns.
+- **Consequences:** a misnamed dataset or an orphan folder is caught before it reaches users; nothing was renamed, so no user query breaks.
+- **Alternatives rejected:** renaming `mlb_*` views to `mlb_api_*` (breaks queries); checking raw folders the same way (raw-only names are legitimate).

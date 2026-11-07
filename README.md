@@ -219,14 +219,24 @@ Everything lives under `$BASEBALLPY_HOME` (default: `.baseballpy` in the project
 
 ```text
 $BASEBALLPY_HOME
-├── raw/<source>/<dataset>/[season=YYYY/]<upstream files>          immutable upstream bytes (+ _manifest.json)
+├── raw/<source>/<dataset>/[season=YYYY/]<upstream files>          immutable upstream bytes, gzipped text (+ _manifest.json)
 ├── processed/<source>/<dataset>/[season=YYYY/]part-<chunk>.parquet  typed Parquet, one dataset per directory
-├── quarantine/<source>/<YYYY-MM-DD>/<dataset>-<id>.jsonl          rows that failed coercion (dead letters)
+│                                           .../compact-NNNN.parquet   the same rows merged by `baseballpy compact`
+├── inbox/<source>/                                                files you supply (FanGraphs CSVs)
+├── exports/<source>/<dataset>/                                    `baseballpy export` and the `statcast` command write here
+├── quarantine/<source>/<YYYY-MM-DD>/<dataset>-<id>.jsonl          values that could not be typed (dead letters)
 ├── cache/http/                                                    HTTP bookkeeping only; always safe to delete
-├── databases/baseball.duckdb                                      views over processed/ (no data copies)
-├── logs/audit.jsonl
+├── locks/                                                         one lock per host being downloaded from
+├── databases/baseball.duckdb                                      views over processed/ (no data copies; rebuilt if needed)
+├── logs/audit.jsonl                                               every request and job (rotated at 100 MB)
 └── VERSION                                                        layout version (2)
 ```
+
+Naming rules (a test enforces them): sources and datasets are `lower_snake_case`; a dataset lives at
+`processed/<source>/<dataset>`; its DuckDB view is `<source>_<dataset>`, except `mlb_api`, whose views
+start with `mlb_` (`mlb_schedule`); a chunk file is `part-<chunk>.parquet` and the chunk id says what
+it holds (a season, a date range, a game id); `compact-NNNN.parquet` is a merge of several chunks.
+`baseballpy catalog layout` fails on a `processed/` folder that no registered dataset owns.
 
 - DuckDB views (`baseballpy db sync`) read only `processed/`; each registered dataset gets one view
   (`statcast_pitches`, `retrosheet_events`, `retrosheet_events_postseason`, `lahman_batting`,
