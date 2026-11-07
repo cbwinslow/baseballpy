@@ -22,6 +22,7 @@ from baseballpy.sources.mlb_api import schemas as mlb
 from baseballpy.sources.mlb_api.endpoints import SUPPORTED as MLB_ENDPOINTS
 from baseballpy.sources.mlb_api.endpoints import MlbEndpoint
 from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
+from baseballpy.sources.polymarket.schema import POLYMARKET_KEYS, POLYMARKET_SCHEMAS
 from baseballpy.sources.retrosheet import schema as retro
 from baseballpy.sources.retrosheet.box_parser import SCHEMAS as BOX_SCHEMAS
 from baseballpy.sources.retrosheet.schema import RETROSHEET_FLAT_KEYS, RETROSHEET_FLAT_SCHEMAS
@@ -304,6 +305,28 @@ def register_all() -> dict[str, DatasetSpec]:
             f"sources/kalshi.md#dataset-{name}",
             ingest="opt_in" if name in kalshi_opt_in else "default",
             ingest_note=kalshi_opt_in.get(name, ""),
+        )
+
+    polymarket_descriptions = {
+        "events": "Polymarket MLB events (one game or one season-long question per event).",
+        "markets": "Polymarket MLB markets (one row per question, with its token ids and volume).",
+        "outcomes": "Polymarket MLB outcomes (one row per outcome token of a market: label, token id, last price).",
+        "prices": "Polymarket MLB hourly price history (one price per outcome token and hour).",
+    }
+    polymarket_opt_in = {
+        "prices": "large (millions of rows, about 0.5 million requests): `ingest polymarket --datasets prices`",
+    }
+    for name, schema in POLYMARKET_SCHEMAS.items():
+        _add(
+            "polymarket",
+            name,
+            f"polymarket_{name}",
+            schema,
+            POLYMARKET_KEYS[name],
+            polymarket_descriptions[name],
+            f"sources/polymarket.md#dataset-{name}",
+            ingest="opt_in" if name in polymarket_opt_in else "default",
+            ingest_note=polymarket_opt_in.get(name, ""),
         )
 
     retro_doc = "sources/retrosheet.md"

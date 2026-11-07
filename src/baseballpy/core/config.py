@@ -336,6 +336,9 @@ class AuditConfig(EnvSettings):
 SAVANT_HOST = "baseballsavant.mlb.com"
 STATSAPI_HOST = "statsapi.mlb.com"
 KALSHI_HOST = "api.elections.kalshi.com"
+POLYMARKET_GAMMA_HOST = "gamma-api.polymarket.com"
+POLYMARKET_CLOB_HOST = "clob.polymarket.com"
+POLYMARKET_DATA_HOST = "data-api.polymarket.com"
 
 
 class KalshiAuthConfig(EnvSettings):
@@ -405,6 +408,18 @@ class RateLimitConfig(EnvSettings):
         default=None,
         description="In-flight limit for api.elections.kalshi.com. Unset: 16 when signed, else 4",
     )
+    polymarket_gamma_rps: float = Field(
+        default=24.0,
+        description="Rate limit for gamma-api.polymarket.com (documented 500 per 10 s on /events, 300 on /markets; 80% of the lower)",
+    )
+    polymarket_clob_rps: float = Field(
+        default=80.0,
+        description="Rate limit for clob.polymarket.com (documented 1,000 per 10 s on /prices-history; 80%)",
+    )
+    polymarket_data_rps: float = Field(
+        default=16.0,
+        description="Rate limit for data-api.polymarket.com (documented 200 per 10 s on /trades; 80%)",
+    )
     host_rates: dict[str, float] = Field(
         default_factory=dict,
         description="Host-specific token bucket rate limits in requests per second",
@@ -456,11 +471,20 @@ class RateLimitConfig(EnvSettings):
             if self.kalshi_rps is not None
             else (20.0 if signed else 4.0),
             "raw.githubusercontent.com": self.github_rps,
+            POLYMARKET_GAMMA_HOST: self.polymarket_gamma_rps,
+            POLYMARKET_CLOB_HOST: self.polymarket_clob_rps,
+            POLYMARKET_DATA_HOST: self.polymarket_data_rps,
         }
         for host, rate in defaults.items():
             if host not in self.host_rates:
                 self.host_rates[host] = rate
         self.host_concurrency.setdefault(SAVANT_HOST, self.savant_concurrency)
+        for host, limit in (
+            (POLYMARKET_GAMMA_HOST, 8),
+            (POLYMARKET_CLOB_HOST, 16),
+            (POLYMARKET_DATA_HOST, 8),
+        ):
+            self.host_concurrency.setdefault(host, limit)
         self.host_concurrency.setdefault(
             KALSHI_HOST,
             self.kalshi_concurrency

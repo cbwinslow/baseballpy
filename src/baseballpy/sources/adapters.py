@@ -39,6 +39,12 @@ def _kalshi_factory() -> IngestAdapter:
     return KalshiAdapter()
 
 
+def _polymarket_factory() -> IngestAdapter:
+    from baseballpy.sources.polymarket.adapter import PolymarketAdapter
+
+    return PolymarketAdapter()
+
+
 def register_all_adapters() -> None:
     """Register ingest adapter factories for all built-in sources."""
     register_adapter("statcast", _statcast_factory)
@@ -47,6 +53,7 @@ def register_all_adapters() -> None:
     register_adapter("chadwick", _chadwick_factory)
     register_adapter("retrosheet", _retrosheet_factory)
     register_adapter("kalshi", _kalshi_factory)
+    register_adapter("polymarket", _polymarket_factory)
 
 
 __all__ = ["register_all_adapters"]

@@ -464,16 +464,16 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-266 | `market-sources 1.1`: owner decisions M1 to M4 | OPEN | decisions recorded |
+| B-266 | market-sources 1.1: owner decisions M1 to M4 | DONE | decisions recorded in design.md (M1 all MLB markets, M2 API downloaders first) |
 | B-267 | `market-sources 1.2`: probe and research both APIs | OPEN | evidence in design.md |
-| B-268 | `market-sources 1.3`: measure the homelab MLB subset, pick the transfer route | OPEN | numbers and route in design.md |
+| B-268 | market-sources 1.3: measure the homelab MLB subset, pick the transfer route | DONE | numbers and route in design.md (Kalshi candles 213M / 1.4GB, Polymarket 604M / 0.9GB) |
 | B-269 | market-sources 2.1: Kalshi trades and candlesticks code, per open date, opt-in (ADR 71) | DONE | 3 real dates: 6,078 requests, 0 retries, 346,259 trades and 18,061 candles, none in _extras |
-| B-270 | `market-sources 2.2`: Polymarket source | OPEN | registry, schemas, adapter, tests green |
+| B-270 | market-sources 2.2: Polymarket source (catalog, hourly prices), ADR 77 | DONE | tests/test_polymarket.py (13), tests/test_infer_types.py (3); real run 11,653 events, 233,923 markets, 467,846 outcomes |
 | B-271 | `market-sources 3.1`: one-time import of the homelab MLB subset | OPEN | typed Parquet in the lake, sample checked against the APIs |
 | B-272 | `market-sources 3.2`: close the gap to today | OPEN | no missing days between import and now |
 | B-273 | `market-sources 4.1`: docs, specs, ADRs, gates, archive | OPEN | change archived |
 | B-274 | market-sources 2.1 part 1: Kalshi catalog (series, events, markets), signing, decimal types, ADR 70 | DONE | 189 series, 55,197 events, 900,555 markets in the lake, speed audit clean, 13 Kalshi tests pass |
-| B-275 | `market-sources 2.3`: run the full Kalshi trades and candlesticks backfill, tune the speed | OPEN | all traded markets stored, audit speed clean |
+| B-275 | market-sources 2.3: run the full Kalshi trades and candlesticks backfill, tune the speed | DONE | all 447 open dates complete (110,994,885 trades, 14,903,320 candles, compacted to 11 files) |
 | B-276 | `market-sources 2.4`: contract check of the Kalshi routes against the official OpenAPI spec | OPEN | a test or command flags new and removed routes |
 | B-277 | market-sources: one baseballpy process per host (OS file lock), ADR 72 | DONE | tests/test_hostlock.py: second process refused, crash frees the host, opt-out works |
 
@@ -490,3 +490,4 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-284 | lake-access-and-compaction 3.2: spec, ADR, docs, gates, archive | DONE | specs lake-access and caching-and-invalidation, ADR 73 to 76, change archived |
 | B-285 | lake-access-and-compaction: manifest parsed only when its file changed (three MLB seasons failed with MemoryError and took about 6 h each) | DONE | tests/test_atomic.py: 50 lookups, zero parses, other writers still seen |
 | B-286 | coverage audit saw only part- files and guessed 31 Statcast windows; now counts download records and the cached calendar (found by the on-track review) | DONE | tests/test_coverage_audit.py, tests/test_compact.py: Statcast 2024 shows 51 of 51 |
+| B-287 | `market-sources 2.5`: Polymarket trades (v2), live snapshots, batch price route | OPEN | owner decision on trader identities; trades or an unsupported verdict with probe evidence |

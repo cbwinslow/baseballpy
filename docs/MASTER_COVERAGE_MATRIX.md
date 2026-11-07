@@ -4,13 +4,14 @@ This document provides an exhaustive catalog of all baseball datasets across the
 ecosystem, comparing `baseballpy` against `pybaseball`, `baseballr`, `MLB-StatsAPI`, and the
 official MLB OpenAPI specification.
 
-- **Total Registered Datasets in baseballpy:** 464
+- **Total Registered Datasets in baseballpy:** 468
 - **MLB Stats API:** 365 datasets across 65 API routes
 - **Statcast (Baseball Savant):** 38 datasets (MLB pitches, Minor League pitches, 36 leaderboards)
 - **Retrosheet:** 25 datasets (PBP events, game logs, boxscores, rosters)
 - **Lahman Database:** 27 datasets (complete historical database 1871–present)
 - **Chadwick Bureau:** 4 datasets (universal player ID crosswalk)
 - **Kalshi:** 5 datasets (MLB prediction-market catalog)
+- **Polymarket:** 4 datasets (MLB prediction-market catalog and prices)
 
 ---
 
@@ -568,3 +569,12 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `markets` | `kalshi_markets` | `none` | 49 | `ticker` | Kalshi MLB markets (live and archived merged; one row per tradable outcome). |
 | `series` | `kalshi_series` | `none` | 15 | `ticker` | Kalshi MLB series (a template for repeated markets, with its fee terms). |
 | `trades` | `kalshi_trades` | `none` | 11 | `trade_id` | Kalshi MLB trades (every fill of a market that traded: price, size, taker side). |
+
+### POLYMARKET (4 datasets)
+
+| Dataset Name | View Name | Partition | Columns | Primary Keys | Description |
+| :--- | :--- | :--- | :---: | :--- | :--- |
+| `events` | `polymarket_events` | `none` | 69 | `id` | Polymarket MLB events (one game or one season-long question per event). |
+| `markets` | `polymarket_markets` | `none` | 120 | `id` | Polymarket MLB markets (one row per question, with its token ids and volume). |
+| `outcomes` | `polymarket_outcomes` | `none` | 7 | `market_id`, `outcome_index` | Polymarket MLB outcomes (one row per outcome token of a market: label, token id, last price). |
+| `prices` | `polymarket_prices` | `none` | 4 | `token_id`, `t` | Polymarket MLB hourly price history (one price per outcome token and hour). |

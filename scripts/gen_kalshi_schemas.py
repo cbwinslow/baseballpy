@@ -9,7 +9,6 @@ times ``timestamp``, nested values JSON text). Run it again when ``schema_drift`
 
 import argparse
 import json
-import re
 import sys
 from collections import defaultdict
 from datetime import UTC, datetime
@@ -17,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from baseballpy.core.http import get_http_client
+from baseballpy.core.infer_types import infer
 from baseballpy.sources.kalshi.endpoints import (
     ENDPOINTS,
     KALSHI_BASE,
@@ -27,10 +27,6 @@ from baseballpy.sources.kalshi.market_data import KalshiMarketData, MarketRow, R
 from baseballpy.sources.kalshi.signing import sign_with_environment
 
 OUTPUT = Path(__file__).resolve().parent.parent / "src/baseballpy/sources/kalshi/tables.py"
-_TIME = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})")
-_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
-_DECIMAL = re.compile(r"-?\d+\.\d+")
-_INT = re.compile(r"-?\d+")
 
 
 def fetch(path: str, params: dict[str, str]) -> dict[str, Any]:
@@ -58,49 +54,6 @@ def sample(endpoint: KalshiEndpoint, params: dict[str, str], pages: int) -> list
         if not cursor:
             break
     return records
-
-
-def decimal_type(texts: list[str]) -> str:
-    """``decimal(P,S)`` wide enough for every text, with headroom for larger values later."""
-    scale = max(len(t.partition(".")[2]) for t in texts)
-    digits = max(len(t.lstrip("-").partition(".")[0]) for t in texts)
-    precision = (
-        9 if digits + scale <= 5 else 18 if digits + scale <= 14 else 38
-    )  # headroom: a busy hour holds far more contracts than a quiet sample
-    return f"decimal({precision},{scale})"
-
-
-def infer(values: list[Any]) -> str:
-    """The type name for every sampled value of one key (``string`` when nothing fits)."""
-    seen = [v for v in values if v is not None and v != ""]
-    if not seen:
-        return "string"
-    if all(isinstance(v, bool) for v in seen):
-        return "bool"
-    if any(isinstance(v, bool) for v in seen):
-        return "string"
-    if all(isinstance(v, int) for v in seen):
-        span = max(abs(v) for v in seen)
-        return (
-            "int32" if span <= 2_000_000_000 else "int64"
-        )  # no int16: a later value may be larger
-    if all(isinstance(v, int | float) for v in seen):
-        return "float64"
-    if all(isinstance(v, str) for v in seen):
-        texts = [str(v) for v in seen]
-        if all(_TIME.fullmatch(t) for t in texts):
-            return "timestamp"
-        if all(_DATE.fullmatch(t) for t in texts):
-            return "date32"
-        if all(_DECIMAL.fullmatch(t) or _INT.fullmatch(t) for t in texts) and any(
-            _DECIMAL.fullmatch(t) for t in texts
-        ):
-            return decimal_type(texts)
-        if all(_INT.fullmatch(t) for t in texts):
-            span = max(abs(int(t)) for t in texts)
-            if not any(len(t.lstrip("-")) > 1 and t.lstrip("-").startswith("0") for t in texts):
-                return "int32" if span <= 2_000_000_000 else "int64"
-    return "string"
 
 
 def render(columns: dict[str, dict[str, str]], meta: dict[str, dict[str, int]]) -> str:

@@ -22,6 +22,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `lake-access` | 6 | 7 | 31 |
 | `mlb-api-ingestion` | 27 | 40 | 42 |
 | `multi-target-sinks` | 3 | 4 | 4 |
+| `polymarket-ingestion` | 5 | 5 | 15 |
 | `real-time-streaming` | 7 | 12 | 12 |
 | `retrosheet-ingestion` | 20 | 25 | 26 |
 | `statcast-ingestion` | 15 | 18 | 24 |
@@ -49,7 +50,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
-| `market-sources` | 1 | 9 | 1.1, 1.2, 1.3, 2.3, 2.4, 2.2, 3.1, 3.2, 4.1 |
+| `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
 | `modelling-data-needs` | 0 | 6 | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
@@ -132,6 +133,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 74: Compaction In Place, With Chunk Positions In The File Footer
 - ADR 75: Gzipped Raw Text Files, Checksum Of The Original
 - ADR 76: An Offline Layout Check Beside The Provider Audit
+- ADR 77: Polymarket As A Standard Source, GET Only, Hourly Prices
 
 ## Documentation pages (`docs/`)
 
@@ -171,5 +173,6 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/sources/kalshi.md`
 - `docs/sources/lahman.md`
 - `docs/sources/mlb_api.md`
+- `docs/sources/polymarket.md`
 - `docs/sources/retrosheet.md`
 - `docs/sources/statcast.md`
