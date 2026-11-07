@@ -8,4 +8,4 @@
 
 ## Decisions
 1. Baseball-Reference: only the published files (decided, ADR 78).
-2. FanGraphs: no downloader (decided, ADR 78). What to do with the homelab copy is open (task 2.1).
+2. FanGraphs: no downloader (decided, ADR 78). The homelab copy was collected with a client that sends the Android app user agent to pass the bot protection (see docs/sources/fangraphs.md); what to do with it is open (task 2.1).
