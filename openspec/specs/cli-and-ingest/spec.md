@@ -171,3 +171,27 @@ A season selection (`2023`, `2015-2024`, `2015,2018`, `all`) MUST resolve to a s
 - **WHEN** a selection mixes ranges, single years and duplicates
 - **THEN** the years come back sorted and unique.
 - Verified by `tests/test_ingest_selection.py::test_parse_sorting_and_deduplication`.
+
+### Requirement: One Fast Overview, One Update Command
+`baseballpy status` MUST show per source the datasets held out of those registered, the rows, the seasons, the newest date and the default datasets still empty, plus free disk space, the hosts a process is downloading from, and the counts of quarantine and leftover `.part` files, by reading manifests only and without creating any folder. `catalog status` MUST read manifests too and MUST count Parquet footers only with `--verify`. `baseballpy update` MUST run the built-in `daily` plan and `baseballpy backfill NAME` MUST accept a built-in plan name (`daily`, `full`) as well as a file, a file winning over a name. A season expression MUST accept `current` alone, in a list and as the end of a range.
+
+#### Scenario: Overview, scan, plans and seasons
+- **WHEN** manifests are written for two sources, the lake is scanned with and without verification, status is run as text and JSON, a host is claimed and released, built-in plans are loaded and dry-run, and `current` is parsed
+- **THEN** the overview sums the manifests, the fast scan creates no folder, verification can disagree with a wrong manifest, the busy host is named and the lock is free again afterwards, the plans load and plan their jobs, a plan file beats a built-in name, an unknown name lists the built-in ones, and `current` is this year
+- Verified by `tests/test_workflows.py::test_the_scan_reads_manifests_and_never_opens_a_parquet_file_or_makes_a_folder`, `tests/test_workflows.py::test_verify_counts_the_files_and_catches_a_manifest_that_is_wrong`, `tests/test_workflows.py::test_status_summarizes_each_source_and_says_nothing_runs`, `tests/test_workflows.py::test_busy_hosts_sees_a_claim_and_looking_does_not_take_the_lock`, `tests/test_workflows.py::test_the_built_in_plans_load_and_their_names_are_listed`, `tests/test_workflows.py::test_a_plan_file_still_wins_over_a_built_in_name`, `tests/test_workflows.py::test_backfill_and_update_dry_runs_use_the_built_in_daily_plan` and `tests/test_workflows.py::test_current_means_this_calendar_year_alone_in_a_list_and_in_a_range`.
+
+### Requirement: Blank And NaN Cells Are Values, Not Errors
+When a cell is built into a typed column, a blank text cell in a non-text column MUST become NULL and the text `NaN`, `Infinity` or `-Infinity` in a float column MUST become that float, neither being quarantined; a value that still does not fit MUST be set to NULL and quarantined.
+
+#### Scenario: Blank, NaN and wrong values
+- **WHEN** blanks and `NaN` text are built into integer and float columns, and a text value is built into an integer column
+- **THEN** blanks are NULL, `NaN` and infinities are floats, nothing is quarantined for them, and the wrong text is NULL and quarantined once
+- Verified by `tests/test_workflows.py::test_a_blank_cell_is_missing_and_nan_text_is_a_float_and_neither_is_quarantined` and `tests/test_workflows.py::test_a_value_that_is_really_wrong_is_still_quarantined`.
+
+### Requirement: Coverage Expects Only What A Plain Ingest Fills
+The season-dataset coverage audit MUST count only default-mode datasets as expected, because opt-in, on-demand and API-only datasets need an option or an input, and MUST say in its note how many it left out.
+
+#### Scenario: Default datasets only
+- **WHEN** the coverage of a source with opt-in datasets is audited on an empty lake
+- **THEN** the expected count is the number of default season datasets and the note names the number left out
+- Verified by `tests/test_workflows.py::test_coverage_expects_only_the_datasets_a_plain_ingest_fills`.

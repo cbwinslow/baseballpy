@@ -164,6 +164,32 @@ def collect_bad_values(source: str, dataset: str) -> Callable[[Callable[..., T]]
     return decorator
 
 
+_SPECIAL_FLOATS = {
+    "nan": float("nan"),
+    "inf": float("inf"),
+    "+inf": float("inf"),
+    "infinity": float("inf"),
+    "+infinity": float("inf"),
+    "-inf": float("-inf"),
+    "-infinity": float("-inf"),
+}
+
+
+def _normalised(value: Any, target: pa.DataType) -> Any:
+    """What a text cell means for a non-text column: blank is missing, ``NaN``/``Infinity`` are floats.
+
+    Anything else is returned unchanged (and quarantined by the caller if it still does not fit).
+    """
+    if not isinstance(value, str) or pa.types.is_string(target) or pa.types.is_large_string(target):
+        return value
+    text = value.strip()
+    if not text:
+        return None
+    if pa.types.is_floating(target) and text.lower() in _SPECIAL_FLOATS:
+        return _SPECIAL_FLOATS[text.lower()]
+    return value
+
+
 def safe_array(
     values: list[Any],
     target: pa.DataType,
@@ -173,21 +199,27 @@ def safe_array(
     column: str,
     quarantine: Quarantine | None = None,
 ) -> pa.Array:
-    """Build an Arrow array; values that do not fit ``target`` become NULL and are quarantined."""
+    """Build an Arrow array; values that do not fit ``target`` become NULL and are quarantined.
+
+    A blank text cell in a numeric, date or boolean column is a missing value (NULL, not an error)
+    and the text ``NaN`` / ``Infinity`` in a float column is that float, so neither is quarantined.
+    """
     try:
         return pa.array(values, type=target)
     except (pa.ArrowInvalid, pa.ArrowTypeError, pa.ArrowNotImplementedError, OverflowError):
         pass
     out: list[Any] = []
     bad: list[dict[str, Any]] = []
-    for idx, value in enumerate(values):
+    for idx, raw in enumerate(values):
+        value = _normalised(raw, target)
         try:
             pa.array([value], type=target)
             out.append(value)
         except (pa.ArrowInvalid, pa.ArrowTypeError, pa.ArrowNotImplementedError, OverflowError):
             out.append(None)
-            bad.append({"column": column, "row": idx, "value": value})
-    (quarantine or get_quarantine()).write(
-        source, dataset, bad, f"values in column {column!r} do not fit {target}"
-    )
+            bad.append({"column": column, "row": idx, "value": raw})
+    if bad:
+        (quarantine or get_quarantine()).write(
+            source, dataset, bad, f"values in column {column!r} do not fit {target}"
+        )
     return pa.array(out, type=target)

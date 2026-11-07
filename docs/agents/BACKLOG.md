@@ -504,4 +504,4 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-293 | agent-coordination-and-audit-rotation 1.1: `baseballpy agent` CLI (`claim`, `release`, `board`), ADR 81 | DONE | tests in `tests/test_agent_cli.py` pass (5/5); claims and releases update both `AGENT_BOARD.md` and `agent_log.jsonl`; 4-hour stale lock detection |
 | B-294 | agent-coordination-and-audit-rotation 1.2: `baseballpy audit rotate` and 100 MB automatic threshold, ADR 81 | DONE | tests in `tests/test_audit_rotate.py` pass (4/4); audit log rotated and gzipped when >= 100 MB or via CLI command |
 | B-295 | agent-coordination-and-audit-rotation 1.3: OpenCode model default and synergized workflow contract, ADR 81 | DONE | `scripts/opencode_delegate.py` defaults to `opencode/deepseek-v4.1-flash-free`; `AGENTS.md` and `CLAUDE.md` link OpenSpec, Backlog, and Agent Board together |
-
+| B-296 | lake-workflows-and-cli 1.1 to 1.7: `status`, `update`, built-in plans, `current` seasons, manifest-based scan, blank/NaN cells, statcast export path, ADR 82 | DONE | tests/test_workflows.py (10); `status` for 480 datasets in 17.6 s (the footer scan did not finish in 110 s) |

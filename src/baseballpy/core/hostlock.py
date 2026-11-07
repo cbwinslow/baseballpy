@@ -69,4 +69,25 @@ def release_all(directory: Path | None = None) -> None:
             os.close(_HELD.pop(key))  # closing the descriptor drops the OS lock
 
 
-__all__ = ["HostBusyError", "claim_host", "release_all"]
+def busy_hosts(directory: Path) -> list[str]:
+    """Hosts some process is downloading from right now (their lock cannot be taken).
+
+    Each lock is tried and, when it was free, dropped again at once, so looking changes nothing.
+    """
+    busy: list[str] = []
+    if not directory.is_dir():
+        return busy
+    for path in sorted(directory.glob("*.lock")):
+        try:
+            fd = os.open(path, os.O_RDWR)
+        except OSError:
+            continue
+        try:
+            if not _try_lock(fd):
+                busy.append(path.name.removesuffix(".lock"))
+        finally:
+            os.close(fd)  # closing drops a lock we just took
+    return busy
+
+
+__all__ = ["HostBusyError", "busy_hosts", "claim_host", "release_all"]

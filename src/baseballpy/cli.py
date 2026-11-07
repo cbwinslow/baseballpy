@@ -15,6 +15,7 @@ from baseballpy.cli_db import register_db_commands
 from baseballpy.cli_export import register_export_command
 from baseballpy.cli_ingest import register_commands
 from baseballpy.cli_quarantine import register_quarantine_commands
+from baseballpy.cli_status import register_status_command
 from baseballpy.cli_stream import register_stream_command
 from baseballpy.clidocs import CLI_DOC_NAME, generate_cli_doc
 from baseballpy.core.audit import default_audit_logger
@@ -63,7 +64,11 @@ def main() -> None:
 @click.option("--start", "-s", type=str, required=True, help="Start date (YYYY-MM-DD)")
 @click.option("--end", "-e", type=str, required=True, help="End date (YYYY-MM-DD)")
 @click.option(
-    "--destination", "-d", type=str, default="baseball.duckdb", help="Target destination path"
+    "--destination",
+    "-d",
+    type=str,
+    default=None,
+    help="Target file (default: exports/statcast_pitches.<duckdb|parquet> inside the lake).",
 )
 @click.option(
     "--format",
@@ -75,9 +80,16 @@ def main() -> None:
 @click.option("--table", "-t", type=str, default="statcast_pitches", help="DuckDB table name")
 @click.option("--refresh", is_flag=True, help="Bypass local cache and force fresh download")
 def statcast_cmd(
-    start: str, end: str, destination: str, format: str, table: str, refresh: bool
+    start: str, end: str, destination: str | None, format: str, table: str, refresh: bool
 ) -> None:
-    """Download Statcast pitch-level tracking data with chunking and rate limits."""
+    """Download one date range of Statcast pitches into a single file (not the lake).
+
+    To fill the lake use `baseballpy ingest statcast --seasons YYYY`.
+    """
+    if destination is None:
+        exports = LakeConfig().exports_root
+        exports.mkdir(parents=True, exist_ok=True)
+        destination = str(exports / f"statcast_pitches.{format}")
     console.print(
         f"[bold green]baseballpy[/bold green] - Fetching Statcast from [cyan]{start}[/cyan] to [cyan]{end}[/cyan]"
     )
@@ -578,6 +590,7 @@ register_compact_command(main)
 register_stream_command(main)
 register_quarantine_commands(main)
 register_agent_commands(main)
+register_status_command(main)
 
 
 if __name__ == "__main__":

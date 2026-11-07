@@ -1,0 +1,37 @@
+# Built-in plan "full": the whole history of every free source, cheapest first. Resumable: stop it
+# any time and run it again. Measured sizes and times are in docs/BACKFILL.md. Run
+# `baseballpy backfill full --dry-run` first; add `--max-gb 40` to cap the growth of the lake.
+# FanGraphs is not here: it is typed from files or downloaded on request (docs/sources/fangraphs.md).
+
+[[stage]]
+name = "reference"
+sources = ["lahman", "chadwick"]
+estimate_gb = 0.2
+
+[[stage]]
+name = "retrosheet"
+sources = ["retrosheet"]
+seasons = "all"
+estimate_gb = 6.0
+
+[[stage]]
+name = "baseball-reference"
+sources = ["bref"]
+estimate_gb = 0.1
+
+[[stage]]
+name = "statcast"
+sources = ["statcast"]
+seasons = "2008-current"
+estimate_gb = 9.0
+
+[[stage]]
+name = "mlb-api"
+sources = ["mlb_api"]
+seasons = "2008-current"
+estimate_gb = 20.0
+
+[[stage]]
+name = "markets"
+sources = ["kalshi", "polymarket"]
+estimate_gb = 1.0

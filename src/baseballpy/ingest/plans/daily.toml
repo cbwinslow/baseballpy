@@ -1,0 +1,20 @@
+# Built-in plan "daily": bring the live sources up to date. Run it as often as you like
+# (`baseballpy update`): every chunk that is already complete is skipped, so a rerun only fetches
+# what is new. "current" means this calendar year.
+
+[[stage]]
+name = "markets"
+sources = ["kalshi", "polymarket"]
+estimate_gb = 0.1
+
+[[stage]]
+name = "statcast-current"
+sources = ["statcast"]
+seasons = "current"
+estimate_gb = 0.5
+
+[[stage]]
+name = "mlb-current"
+sources = ["mlb_api"]
+seasons = "current"
+estimate_gb = 0.5

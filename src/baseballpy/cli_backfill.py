@@ -1,7 +1,6 @@
 """``baseballpy backfill``: run a plan file of ingest stages with a disk budget."""
 
 import json
-from pathlib import Path
 
 import click
 from rich.console import Console
@@ -45,7 +44,7 @@ def _print_plan(plan: BackfillPlan, counts: dict[str, int], free_bytes: int) -> 
 
 
 @click.command("backfill")
-@click.argument("plan_file", type=click.Path(exists=True, dir_okay=False, path_type=Path))
+@click.argument("plan_file", metavar="PLAN")
 @click.option(
     "--max-gb",
     type=click.FloatRange(min=0, min_open=True),
@@ -72,7 +71,7 @@ def _print_plan(plan: BackfillPlan, counts: dict[str, int], free_bytes: int) -> 
 @click.pass_context
 def backfill_cmd(
     ctx: click.Context,
-    plan_file: Path,
+    plan_file: str,
     max_gb: float | None,
     min_free_gb: float,
     refresh: bool,
@@ -80,9 +79,11 @@ def backfill_cmd(
     concurrency: int,
     as_json: bool,
 ) -> None:
-    """Run a TOML plan of ingest stages (sources, seasons, datasets) into the lake.
+    """Run a plan of ingest stages (sources, seasons, datasets) into the lake.
 
-    Re-running the same plan resumes: the adapters skip every chunk that is already complete.
+    PLAN is a TOML file, or the name of a built-in plan: `daily` (live sources, this season) or
+    `full` (every free source, whole history). Re-running a plan resumes: the adapters skip every
+    chunk that is already complete.
     """
     register_all_adapters()
     home = LakeConfig().home
@@ -151,9 +152,26 @@ def backfill_cmd(
     ctx.exit(report.exit_code)
 
 
+def _update(ctx: click.Context, **options: object) -> None:
+    ctx.invoke(backfill_cmd, plan_file="daily", **options)
+
+
+#: ``update`` is ``backfill daily``: the same options, no plan argument
+update_cmd = click.Command(
+    "update",
+    params=[p for p in backfill_cmd.params if p.name != "plan_file"],
+    callback=click.pass_context(_update),
+    help=(
+        "Bring the lake up to date: this season of Statcast and the MLB API, and the live "
+        "Kalshi and Polymarket markets (the built-in `daily` plan; a rerun fetches only what is new)."
+    ),
+)
+
+
 def register_backfill_command(main: click.Group) -> None:
-    """Add ``backfill`` to the top-level group."""
+    """Add ``backfill`` and ``update`` to the top-level group."""
     main.add_command(backfill_cmd, "backfill")
+    main.add_command(update_cmd, "update")
 
 
-__all__ = ["backfill_cmd", "register_backfill_command"]
+__all__ = ["backfill_cmd", "register_backfill_command", "update_cmd"]

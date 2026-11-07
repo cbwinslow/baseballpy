@@ -838,3 +838,9 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Consequences:** Zero file collisions across parallel agent sessions; audit log size stays bounded under 100 MB while preserving complete audit history; fast and free task delegation via OpenCode.
 - **Alternatives rejected:** External Redis/Postgres locking service (heavy, non-portable for local open-source users); deleting old audit records (violates ADR 6 auditability mandate); allowing unrestricted file edits across parallel sessions.
 
+## ADR 82: One Overview, One Update Command, Manifest-Based Status, Blank And NaN Are Values
+- **Status:** Accepted (owner asked for workflows and a CLI that just work, 2026-11-07; change `lake-workflows-and-cli`).
+- **Context:** `catalog status` opened every Parquet footer (more than 110 s), no shipped plan existed, season ranges went stale, 26 quarantine files held blank cells and `NaN` text, and a legacy command wrote into the working folder.
+- **Decision:** `status` and `update` commands; status reads manifests (`--verify` for the slow check); built-in `daily` and `full` plans with a `current` season keyword; blank cells are NULL and `NaN` text is a float; the `statcast` command writes under `exports/`.
+- **Consequences:** a lake overview takes seconds; a rerun of `update` fetches only what is new; quarantine only holds real errors (older quarantine files stay as history); the manifest is trusted for counts, and `--verify` or `catalog layout` is the check.
+- **Alternatives rejected:** caching row counts in a second file (the manifest already has them); a `--season-from` flag instead of `current` (stale again each January).

@@ -171,6 +171,12 @@ One command surface runs the whole library. Every command and option is listed i
 [`docs/CLI.md`](docs/CLI.md).
 
 ```bash
+# The everyday three: see the lake, bring it up to date, look for gaps
+baseballpy status                                  # per source: datasets, rows, seasons, what is downloading
+baseballpy update                                  # fetch what is new (built-in `daily` plan; safe to rerun)
+baseballpy catalog coverage                        # games / pitches expected vs held this season
+baseballpy backfill full --dry-run                 # the whole history, every free source (resumable)
+
 # What does the registry cover, and what is in the lake?
 baseballpy catalog list
 baseballpy catalog show statcast.pitches

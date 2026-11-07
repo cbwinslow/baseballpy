@@ -18,7 +18,7 @@ from rich.table import Table
 
 from baseballpy.core.concurrency import resolve_concurrency
 from baseballpy.core.config import LakeConfig, get_config
-from baseballpy.core.datasets import DATASETS
+from baseballpy.core.datasets import DATASETS, DatasetSpec
 from baseballpy.ingest.adapters import ADAPTERS, IngestAdapter, get_adapters
 from baseballpy.ingest.runner import plan_jobs, run_jobs
 from baseballpy.ingest.selection import parse_seasons
@@ -70,14 +70,38 @@ def _quality_findings(config: LakeConfig, source: str, dataset: str) -> dict[str
     return findings
 
 
-def scan_lake(config: LakeConfig | None = None) -> list[DatasetStatus]:
-    """Scan the local lake processed directory for all registered datasets.
+def _from_manifest(
+    cfg: LakeConfig, spec: DatasetSpec
+) -> tuple[int, int, tuple[int, ...], str | None] | None:
+    """(chunks, rows, seasons, newest day) from the dataset's manifest, or None without one.
 
-    No network calls are made. Inspects Parquet file footers for row counts without
-    reading full record batches.
+    The manifest records every finished chunk with its row count, so this reads one small JSON file
+    instead of opening every Parquet footer (seconds instead of minutes for a big lake).
+    """
+    if not (cfg.processed_dir(spec.source, spec.name) / "_manifest.json").is_file():
+        return None  # looking must not create folders, so the tracker is only made for real files
+    done = [
+        e
+        for e in cfg.dataset_manifest(spec.source, spec.name).chunks().values()
+        if e.get("status") == "COMPLETED"
+    ]
+    rows = sum(int(e.get("records_count") or 0) for e in done)
+    seasons = {int(e["season"]) for e in done if isinstance(e.get("season"), int)}
+    stamps = [str(e["completed_at"])[:10] for e in done if e.get("completed_at")]
+    return len(done), rows, tuple(sorted(seasons)), max(stamps) if stamps else None
+
+
+def scan_lake(config: LakeConfig | None = None, *, verify: bool = False) -> list[DatasetStatus]:
+    """Report what the lake holds for every registered dataset.
+
+    No network calls are made. By default the numbers come from each dataset's manifest (fast);
+    ``verify=True`` opens every Parquet file instead and counts the rows in its footer (slow, and
+    the way to catch a file that changed behind the manifest). A dataset without a manifest is
+    always counted from its files.
 
     Args:
         config: Optional lake configuration. If omitted, constructs a new LakeConfig.
+        verify: Count rows from the Parquet footers instead of the manifests.
 
     Returns:
         List of DatasetStatus instances for every registered dataset.
@@ -89,6 +113,24 @@ def scan_lake(config: LakeConfig | None = None) -> list[DatasetStatus]:
     sorted_specs = sorted(DATASETS.values(), key=lambda d: (d.source, d.name))
 
     for spec in sorted_specs:
+        summary = None if verify else _from_manifest(cfg, spec)
+        if summary is not None:
+            chunks, rows, seasons, newest = summary
+            results.append(
+                DatasetStatus(
+                    source=spec.source,
+                    dataset=spec.name,
+                    status="INGESTED" if rows else "MISSING",
+                    files=chunks if rows else 0,
+                    rows=rows,
+                    seasons=seasons if rows else (),
+                    newest_mtime=newest if rows else None,
+                    ingest=spec.ingest,
+                    note=spec.ingest_note,
+                    quality=_quality_findings(cfg, spec.source, spec.name) if rows else {},
+                )
+            )
+            continue
         target_dir = cfg.processed_dir(spec.source, spec.name)
         parquet_files: list[Path] = []
         if target_dir.is_dir():
@@ -511,6 +553,11 @@ def _sync_views(*, as_json: bool) -> None:
     is_flag=True,
     help="Print status as JSON lines (one object per dataset).",
 )
+@click.option(
+    "--verify",
+    is_flag=True,
+    help="Count rows by opening every Parquet file (slow) instead of reading the manifests.",
+)
 @click.pass_context
 def catalog_status_cmd(
     ctx: click.Context,
@@ -518,6 +565,7 @@ def catalog_status_cmd(
     missing: bool,
     gaps: bool,
     as_json: bool,
+    verify: bool,
 ) -> None:
     """Inspect local lake processed Parquet datasets and reporting status.
 
@@ -526,7 +574,7 @@ def catalog_status_cmd(
     empty for a season the provider does not publish (its note says which).
     """
     config = LakeConfig()
-    statuses = scan_lake(config)
+    statuses = scan_lake(config, verify=verify)
     if sources:
         source_set = set(sources)
         statuses = [s for s in statuses if s.source in source_set]

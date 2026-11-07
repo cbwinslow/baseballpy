@@ -76,3 +76,7 @@ site/
 *.key
 kalshi*.txt
 polymarket*.txt
+
+# profiler output
+prof.out
+*.prof

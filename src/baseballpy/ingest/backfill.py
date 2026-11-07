@@ -23,6 +23,7 @@ again. Disk use is measured as the drop in free space, because that is what the 
 import tomllib
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
+from importlib import resources
 from pathlib import Path
 from typing import Any
 
@@ -108,12 +109,34 @@ class BackfillReport:
         return 1 if any(r.status == JobStatus.FAILED for r in results) else 0
 
 
-def load_plan(path: Path) -> BackfillPlan:
-    """Read and validate a TOML plan file."""
+def builtin_plans() -> list[str]:
+    """Names of the plans shipped inside the package (``daily``, ``full``)."""
+    folder = resources.files("baseballpy.ingest").joinpath("plans")
+    return sorted(
+        item.name.removesuffix(".toml") for item in folder.iterdir() if item.name.endswith(".toml")
+    )
+
+
+def load_plan(path: Path | str) -> BackfillPlan:
+    """Read and validate a plan: a TOML file, or the name of a built-in plan (see ``builtin_plans``)."""
+    candidate = Path(path)
+    if candidate.is_file():
+        text, label = candidate.read_text(encoding="utf-8"), str(candidate)
+    elif str(path) in builtin_plans():
+        text = (
+            resources.files("baseballpy.ingest")
+            .joinpath("plans", f"{path}.toml")
+            .read_text(encoding="utf-8")
+        )
+        label = f"built-in plan {path!r}"
+    else:
+        raise BackfillError(
+            f"{path}: no such file, and not a built-in plan ({', '.join(builtin_plans())})"
+        )
     try:
-        data = tomllib.loads(path.read_text(encoding="utf-8"))
+        data = tomllib.loads(text)
     except tomllib.TOMLDecodeError as exc:
-        raise BackfillError(f"{path}: not valid TOML: {exc}") from exc
+        raise BackfillError(f"{label}: not valid TOML: {exc}") from exc
     return parse_plan(data)
 
 

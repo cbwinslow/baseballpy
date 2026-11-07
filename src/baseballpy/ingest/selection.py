@@ -1,9 +1,13 @@
 """Season expression parsing for ingestion commands and pipelines."""
 
+import re
 from collections.abc import Callable, Sequence
+from datetime import date
 
 MIN_SEASON = 1800
 MAX_SEASON = 2100
+#: the season keyword that means "this calendar year"
+CURRENT = "current"
 
 
 def parse_seasons(
@@ -17,6 +21,7 @@ def parse_seasons(
         - Comma-delimited list: ``"2015,2018"``
         - Mix of ranges and years: ``"2015-2017,2020"``
         - Upstream wildcard: ``"all"`` (case-insensitive, invokes ``all_seasons``)
+        - This season: ``"current"`` (the calendar year; also inside a list or range: ``"2024,current"``, ``"2008-current"``)
 
     Args:
         text: Season specification string.
@@ -41,6 +46,7 @@ def parse_seasons(
             _check_range(y)
         return tuple(sorted(set(resolved)))
 
+    cleaned = re.sub(rf"\b{CURRENT}\b", str(date.today().year), cleaned, flags=re.IGNORECASE)
     seasons: set[int] = set()
     for part in (p.strip() for p in cleaned.split(",")):
         if not part:

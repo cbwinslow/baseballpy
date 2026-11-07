@@ -245,9 +245,15 @@ def check_statcast_pitches(season: int, config: LakeConfig) -> CoverageItem:
 
 
 def check_dataset_tables(source: str, season: int, config: LakeConfig) -> CoverageItem:
-    """Inspect registered dataset tables presence for a source and season."""
+    """Inspect the season tables a plain ``ingest`` of the source should have filled.
+
+    Opt-in, on-demand and API-only datasets are not expected (they need an option or an input), so
+    they never count as missing; the note says how many were left out.
+    """
     register_all()
-    specs = [s for s in datasets_for(source) if s.partition == "season"]
+    seasonal = [s for s in datasets_for(source) if s.partition == "season"]
+    specs = [s for s in seasonal if s.ingest == "default"]
+    skipped = len(seasonal) - len(specs)
     expected_count = len(specs)
     held_count = 0
     missing_names: list[str] = []
@@ -272,6 +278,12 @@ def check_dataset_tables(source: str, season: int, config: LakeConfig) -> Covera
         held_percent=pct,
         remediation_cmd=cmd,
         missing_ids=tuple(missing_names[:20]),
+        note=(
+            f"{skipped} opt-in, on-demand or API-only dataset(s) not counted "
+            "(`catalog status --source " + source + " --missing` lists them)"
+            if skipped
+            else ""
+        ),
     )
 
 

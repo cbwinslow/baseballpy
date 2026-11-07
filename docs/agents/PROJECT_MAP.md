@@ -13,7 +13,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `caching-and-invalidation` | 19 | 32 | 44 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
-| `cli-and-ingest` | 14 | 23 | 33 |
+| `cli-and-ingest` | 16 | 25 | 43 |
 | `concurrency-and-rate-limiting` | 6 | 12 | 14 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
@@ -46,7 +46,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-67 changes are archived under `openspec/changes/archive/`.
+68 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -142,6 +142,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 79: FanGraphs Files Are Typed From An Inbox, For Private Use, With No Request To FanGraphs
 - ADR 80: A Slow, Honest FanGraphs Downloader; Stop At The First Refusal
 - ADR 81: Agent Coordination CLI, Automated 100 MB Audit Rotation, and Synergized Multi-Agent Workflow
+- ADR 82: One Overview, One Update Command, Manifest-Based Status, Blank And NaN Are Values
 
 ## Documentation pages (`docs/`)
 

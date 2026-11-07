@@ -18,7 +18,7 @@ Options:
 Commands:
   agent           Coordinate parallel AI agent sessions with checkout locks and status board.
   audit           Inspect and analyze pipeline execution logs, benchmarks, and audit telemetry.
-  backfill        Run a TOML plan of ingest stages (sources, seasons, datasets) into the lake.
+  backfill        Run a plan of ingest stages (sources, seasons, datasets) into the lake.
   cache           Inspect the raw download cache.
   catalog         Inspect and audit what the registry covers.
   compact         Merge each dataset's small chunk files into big ones (run when no ingest is...
@@ -32,8 +32,10 @@ Commands:
   probe           Check every provider route in seconds (run it before a long ingest).
   quarantine      Inspect and display dead-letter quarantine files and unparseable records.
   refs            Show or update the pinned upstream commit SHAs (reproducible GitHub sources).
-  statcast        Download Statcast pitch-level tracking data with chunking and rate limits.
+  statcast        Download one date range of Statcast pitches into a single file (not the lake).
+  status          Show what the lake holds per source, what is running and what needs attention.
   stream          Stream live pitch and play events for a game in real time or replay mode.
+  update          Bring the lake up to date: this season of Statcast and the MLB API, and the...
 ```
 
 ## `baseballpy agent`
@@ -183,11 +185,13 @@ Options:
 ## `baseballpy backfill`
 
 ```text
-Usage: baseballpy backfill [OPTIONS] PLAN_FILE
+Usage: baseballpy backfill [OPTIONS] PLAN
 
-  Run a TOML plan of ingest stages (sources, seasons, datasets) into the lake.
+  Run a plan of ingest stages (sources, seasons, datasets) into the lake.
 
-  Re-running the same plan resumes: the adapters skip every chunk that is already complete.
+  PLAN is a TOML file, or the name of a built-in plan: `daily` (live sources, this season) or `full`
+  (every free source, whole history). Re-running a plan resumes: the adapters skip every chunk that
+  is already complete.
 
 Options:
   --max-gb FLOAT RANGE            Stop when the lake has grown by this many GB (measured as the drop
@@ -339,6 +343,7 @@ Options:
   --missing      Show only MISSING datasets.
   --gaps         Show only MISSING datasets that the default ingest selection should have filled.
   --json         Print status as JSON lines (one object per dataset).
+  --verify       Count rows by opening every Parquet file (slow) instead of reading the manifests.
   --help         Show this message and exit.
 ```
 
@@ -662,16 +667,34 @@ Options:
 ```text
 Usage: baseballpy statcast [OPTIONS]
 
-  Download Statcast pitch-level tracking data with chunking and rate limits.
+  Download one date range of Statcast pitches into a single file (not the lake).
+
+  To fill the lake use `baseballpy ingest statcast --seasons YYYY`.
 
 Options:
   -s, --start TEXT               Start date (YYYY-MM-DD)  [required]
   -e, --end TEXT                 End date (YYYY-MM-DD)  [required]
-  -d, --destination TEXT         Target destination path
+  -d, --destination TEXT         Target file (default: exports/statcast_pitches.<duckdb|parquet>
+                                 inside the lake).
   -f, --format [duckdb|parquet]  Output format
   -t, --table TEXT               DuckDB table name
   --refresh                      Bypass local cache and force fresh download
   --help                         Show this message and exit.
+```
+
+## `baseballpy status`
+
+```text
+Usage: baseballpy status [OPTIONS]
+
+  Show what the lake holds per source, what is running and what needs attention.
+
+  Fast (it reads manifests, not data). For one row per dataset use `catalog status`; for gaps in a
+  season use `catalog coverage`; to fetch what is new use `update`.
+
+Options:
+  --json  Print the overview as one JSON object.
+  --help  Show this message and exit.
 ```
 
 ## `baseballpy stream`
@@ -690,4 +713,25 @@ Options:
   --max-events INTEGER   Stop streaming after processing N events.
   --json                 Print events as JSON lines to stdout.
   --help                 Show this message and exit.
+```
+
+## `baseballpy update`
+
+```text
+Usage: baseballpy update [OPTIONS]
+
+  Bring the lake up to date: this season of Statcast and the MLB API, and the live Kalshi and
+  Polymarket markets (the built-in `daily` plan; a rerun fetches only what is new).
+
+Options:
+  --max-gb FLOAT RANGE            Stop when the lake has grown by this many GB (measured as the drop
+                                  in free space).  [x>0]
+  --min-free-gb FLOAT RANGE       Refuse to start, and stop, when less than this much space would
+                                  stay free.  [default: 5.0; x>=0]
+  --refresh                       Bypass local cache and force fresh download.
+  --dry-run                       Plan the jobs and the disk check; run nothing.
+  -c, --concurrency INTEGER RANGE
+                                  Max concurrent worker threads (minimum 1).  [x>=1]
+  --json                          Print one JSON object per stage.
+  --help                          Show this message and exit.
 ```
