@@ -324,6 +324,14 @@ class AuditConfig(EnvSettings):
     log_dir_override: Path | None = Field(
         default=None, description="Explicit directory override for audit logs"
     )
+    max_bytes: int = Field(
+        default=100 * 1024 * 1024,
+        description="Maximum uncompressed size of audit.jsonl before rotation (default 100 MB)",
+    )
+    auto_rotate: bool = Field(
+        default=True,
+        description="Whether to automatically rotate and compress audit.jsonl when exceeding max_bytes",
+    )
 
     @property
     def log_dir(self) -> Path:

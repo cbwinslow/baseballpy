@@ -6,6 +6,7 @@ import click
 from rich.console import Console
 from rich.table import Table
 
+from baseballpy.cli_agent import register_agent_commands
 from baseballpy.cli_backfill import register_backfill_command
 from baseballpy.cli_cache import register_cache_commands
 from baseballpy.cli_catalog import register_catalog_commands
@@ -538,6 +539,35 @@ def audit_speed(since: str | None, host: str | None, as_json: bool) -> None:
         raise SystemExit(1)
 
 
+@audit.command("rotate")
+@click.option(
+    "--max-mb",
+    type=int,
+    default=100,
+    help="Maximum uncompressed size in megabytes before rotation (default 100).",
+)
+@click.option(
+    "--force",
+    is_flag=True,
+    help="Force rotation even if current file size is below threshold.",
+)
+def audit_rotate(max_mb: int, force: bool) -> None:
+    """Rotate and gzip-compress the active audit log if exceeding threshold."""
+    max_bytes = max_mb * 1024 * 1024
+    rotated = default_audit_logger.rotate(max_bytes=max_bytes, force=force)
+    if rotated:
+        console.print(f"[bold green]Audit log rotated:[/bold green] {rotated}")
+    else:
+        current_size_mb = (
+            default_audit_logger.log_path.stat().st_size / (1024 * 1024)
+            if default_audit_logger.log_path.exists()
+            else 0.0
+        )
+        console.print(
+            f"[dim]Audit log ({current_size_mb:.2f} MB) is below threshold ({max_mb} MB). No rotation needed.[/dim]"
+        )
+
+
 register_commands(main, catalog)
 register_backfill_command(main)
 register_cache_commands(main)
@@ -547,6 +577,7 @@ register_db_commands(db)
 register_compact_command(main)
 register_stream_command(main)
 register_quarantine_commands(main)
+register_agent_commands(main)
 
 
 if __name__ == "__main__":

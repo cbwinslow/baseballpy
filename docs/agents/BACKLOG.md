@@ -501,7 +501,7 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-293 | `agent-coordination-and-audit-rotation 1.1`: `baseballpy agent` CLI (`claim`, `release`, `board`) | READY | tests in `tests/test_agent_cli.py` pass; claims and releases update both `AGENT_BOARD.md` and `agent_log.jsonl`; 4-hour stale lock detection |
-| B-294 | `agent-coordination-and-audit-rotation 1.2`: `baseballpy audit rotate` and 100 MB automatic threshold | READY | tests in `tests/test_audit_rotate.py` pass; audit log rotated and gzipped when >= 100 MB or via CLI command |
-| B-295 | `agent-coordination-and-audit-rotation 1.3`: OpenCode model default and synergized workflow contract | READY | `scripts/opencode_delegate.py` defaults to `opencode/deepseek-v4.1-flash-free`; `AGENTS.md` and `CLAUDE.md` link OpenSpec, Backlog, and Agent Board together |
+| B-293 | agent-coordination-and-audit-rotation 1.1: `baseballpy agent` CLI (`claim`, `release`, `board`), ADR 81 | DONE | tests in `tests/test_agent_cli.py` pass (5/5); claims and releases update both `AGENT_BOARD.md` and `agent_log.jsonl`; 4-hour stale lock detection |
+| B-294 | agent-coordination-and-audit-rotation 1.2: `baseballpy audit rotate` and 100 MB automatic threshold, ADR 81 | DONE | tests in `tests/test_audit_rotate.py` pass (4/4); audit log rotated and gzipped when >= 100 MB or via CLI command |
+| B-295 | agent-coordination-and-audit-rotation 1.3: OpenCode model default and synergized workflow contract, ADR 81 | DONE | `scripts/opencode_delegate.py` defaults to `opencode/deepseek-v4.1-flash-free`; `AGENTS.md` and `CLAUDE.md` link OpenSpec, Backlog, and Agent Board together |
 

@@ -185,20 +185,20 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 
 1. Stay decoupled, reusable and dynamic: registry- and generator-driven behavior, `Protocol` boundaries, no scattered per-source special cases; prefer a declarative table plus one generic function.
 2. Search the web for existing solutions (other libraries, the provider's repositories, issues) before writing any workaround, and record the findings in the change's design.
-3. Bulk code that Claude has already designed may be delegated to `agy`; every delegated diff is reviewed in full and gated (`docs/agents/AGY_DELEGATION.md`). Claude `Agent`/workflow subagents remain off unless the owner asks.
+3. Bulk code that Claude has already designed may be delegated to `agy` or `opencode` (DeepSeek models via `scripts/opencode_delegate.py`); every delegated diff is reviewed in full and gated (`docs/agents/AGY_DELEGATION.md`). Claude `Agent`/workflow subagents remain off unless the owner asks.
 
 
 ## 14. AI Agent Operating Rules (binding for every agent and every task)
 
-These rules apply to Claude, `agy` and any other agent. They are short on purpose; the reasons are in
+These rules apply to Claude, `agy`, `opencode` and any other agent. They are short on purpose; the reasons are in
 sections 1-13 and `docs/DECISIONS.md`. `tests/test_agent_rails.py` enforces what a machine can check.
 
 ### 14.1 Preflight (before the first edit of a task)
 
 0. **Check the coordination board:** read `docs/agents/AGENT_BOARD.md` for active checkouts before
    editing. If a task or files are locked by another agent, do not touch them; pick an unassigned
-   backlog row instead. Claim your task by adding a checkout tag to `AGENT_BOARD.md` and appending
-   a `TASK_CLAIMED` record to `docs/agents/agent_log.jsonl`.
+   backlog row instead. Claim your task with `baseballpy agent claim <task_id> [--agent <name>] [--files <paths>]`
+   (which enforces 4-hour stale lock checks, updates `AGENT_BOARD.md`, and logs a `TASK_CLAIMED` record to `docs/agents/agent_log.jsonl`).
 1. Find the task: a row in `docs/agents/BACKLOG.md` and, for source work, its card in
    `docs/agents/tracks/`. No row, no card: open an OpenSpec change and add the row first.
 2. Read the OpenSpec change (`proposal.md`, `design.md`, `tasks.md`, spec deltas) and the spec in
@@ -228,7 +228,7 @@ sections 1-13 and `docs/DECISIONS.md`. `tests/test_agent_rails.py` enforces what
 7. **Evidence or it is not done.** Paste command output for every gate and live check; say "not
    verified" plainly. Two failures of one gate need a written root-cause note before the next try.
 8. **Search before a workaround** (section 13.2) and record what others do.
-9. **Owner rules:** no Claude `Agent`/workflow subagents; delegation only to `agy` with a brief and a
+9. **Owner rules:** no Claude `Agent`/workflow subagents; delegation only to `agy` or `opencode` with a brief and a
    full diff review; Lahman only from `cbwinslow/lahman-database-csv` or user-supplied data; commit after
    every green slice, never push unless the owner says so; heavy runs go to the homelab; stop only
    background jobs you started.
@@ -246,8 +246,8 @@ sections 1-13 and `docs/DECISIONS.md`. `tests/test_agent_rails.py` enforces what
 ### 14.4 Definition of done for a slice
 
 Task ticked in `tasks.md`; evidence in the change's `design.md`; `BACKLOG.md` status updated and
-`uv run python scripts/project_map.py` regenerated; checkout tag moved to Recent Completed Handoffs in
-`docs/agents/AGENT_BOARD.md` and logged in `docs/agents/agent_log.jsonl`; gates green (`pytest`, `ruff
+`uv run python scripts/project_map.py` regenerated; checkout released with `baseballpy agent release <task_id> "<summary>"`
+(updating `docs/agents/AGENT_BOARD.md` and `docs/agents/agent_log.jsonl`); gates green (`pytest`, `ruff
 check`, `ruff format --check`, `mypy --strict src`, `docs generate --check`, `openspec validate --specs`);
 one conventional commit whose body lists the reuse-check answers, the evidence and what is not verified.
 

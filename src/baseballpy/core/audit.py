@@ -1,7 +1,9 @@
 """Structured audit logging, execution benchmarking, and telemetry engine."""
 
 import asyncio
+import gzip
 import logging
+import shutil
 import threading
 import time
 from collections.abc import AsyncGenerator, Generator
@@ -165,6 +167,57 @@ class AuditLogger:
             self.log_path.parent.mkdir(parents=True, exist_ok=True)
             with open(self.log_path, "ab") as f:
                 f.write(line)
+            if self.config.auto_rotate:
+                try:
+                    if self.log_path.stat().st_size >= self.config.max_bytes:
+                        self._rotate_unlocked(self.config.max_bytes, force=False)
+                except OSError:
+                    pass
+
+    def _rotate_unlocked(self, threshold: int, force: bool) -> Path | None:
+        """Rotate audit.jsonl into audit-YYYY-MM-DD[-N].jsonl.gz (must hold _lock)."""
+        if not self.log_path.exists():
+            return None
+        size = self.log_path.stat().st_size
+        if not force and size < threshold:
+            return None
+
+        dest_dir = self.log_path.parent
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        date_str = datetime.now(UTC).strftime("%Y-%m-%d")
+        candidate = dest_dir / f"audit-{date_str}.jsonl.gz"
+        idx = 1
+        while candidate.exists():
+            candidate = dest_dir / f"audit-{date_str}-{idx}.jsonl.gz"
+            idx += 1
+
+        rot_tmp = self.log_path.with_name(f"{self.log_path.name}.rot")
+        try:
+            self.log_path.replace(rot_tmp)
+        except OSError:
+            return None
+
+        # Re-create empty active file immediately so concurrent writers can proceed
+        self.log_path.touch()
+
+        part_path = candidate.with_name(f"{candidate.name}.part")
+        try:
+            with open(rot_tmp, "rb") as f_in, gzip.open(part_path, "wb", compresslevel=6) as f_out:
+                shutil.copyfileobj(f_in, f_out)
+            part_path.replace(candidate)
+        finally:
+            if rot_tmp.exists():
+                rot_tmp.unlink(missing_ok=True)
+            if part_path.exists():
+                part_path.unlink(missing_ok=True)
+
+        return candidate
+
+    def rotate(self, max_bytes: int | None = None, *, force: bool = False) -> Path | None:
+        """Rotate and gzip-compress audit.jsonl if size >= max_bytes (or force=True)."""
+        threshold = self.config.max_bytes if max_bytes is None else max_bytes
+        with self._lock:
+            return self._rotate_unlocked(threshold, force=force)
 
     @contextmanager
     def track(

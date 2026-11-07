@@ -16,6 +16,7 @@ Options:
   --help      Show this message and exit.
 
 Commands:
+  agent           Coordinate parallel AI agent sessions with checkout locks and status board.
   audit           Inspect and analyze pipeline execution logs, benchmarks, and audit telemetry.
   backfill        Run a TOML plan of ingest stages (sources, seasons, datasets) into the lake.
   cache           Inspect the raw download cache.
@@ -35,6 +36,60 @@ Commands:
   stream          Stream live pitch and play events for a game in real time or replay mode.
 ```
 
+## `baseballpy agent`
+
+```text
+Usage: baseballpy agent [OPTIONS] COMMAND [ARGS]...
+
+  Coordinate parallel AI agent sessions with checkout locks and status board.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  board    Display active checkouts and recent handoffs from the agent board.
+  claim    Claim a task lock on the Agent Board to prevent clobbering.
+  release  Release a task lock and record completion in handoffs and machine log.
+```
+
+## `baseballpy agent board`
+
+```text
+Usage: baseballpy agent board [OPTIONS]
+
+  Display active checkouts and recent handoffs from the agent board.
+
+Options:
+  --help  Show this message and exit.
+```
+
+## `baseballpy agent claim`
+
+```text
+Usage: baseballpy agent claim [OPTIONS] TASK_ID
+
+  Claim a task lock on the Agent Board to prevent clobbering.
+
+Options:
+  --agent TEXT      Name of agent claiming the task.
+  -f, --files TEXT  Comma-separated files or paths to lock.
+  --note TEXT       Brief note or status.
+  --force           Force override of an existing active lock.
+  --help            Show this message and exit.
+```
+
+## `baseballpy agent release`
+
+```text
+Usage: baseballpy agent release [OPTIONS] TASK_ID SUMMARY
+
+  Release a task lock and record completion in handoffs and machine log.
+
+Options:
+  --agent TEXT  Name of agent releasing the task.
+  --help        Show this message and exit.
+```
+
 ## `baseballpy audit`
 
 ```text
@@ -46,10 +101,24 @@ Options:
   --help  Show this message and exit.
 
 Commands:
+  rotate   Rotate and gzip-compress the active audit log if exceeding threshold.
   speed    Check the real request speeds in the log against the caps; exit 1 when a cap was...
   stats    Compute and display aggregate throughput, success rate, and cache hit metrics.
   summary  Display a formatted summary table of recent operations.
   tail     Print detailed telemetry records for the most recent operations.
+```
+
+## `baseballpy audit rotate`
+
+```text
+Usage: baseballpy audit rotate [OPTIONS]
+
+  Rotate and gzip-compress the active audit log if exceeding threshold.
+
+Options:
+  --max-mb INTEGER  Maximum uncompressed size in megabytes before rotation (default 100).
+  --force           Force rotation even if current file size is below threshold.
+  --help            Show this message and exit.
 ```
 
 ## `baseballpy audit speed`

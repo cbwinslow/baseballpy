@@ -50,7 +50,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
-| `agent-coordination-and-audit-rotation` | 0 | 3 | 1.1, 1.2, 1.3 |
+| `agent-coordination-and-audit-rotation` | 3 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
@@ -141,6 +141,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 78: Baseball-Reference From Its Published Files Only; FanGraphs Not Downloaded
 - ADR 79: FanGraphs Files Are Typed From An Inbox, For Private Use, With No Request To FanGraphs
 - ADR 80: A Slow, Honest FanGraphs Downloader; Stop At The First Refusal
+- ADR 81: Agent Coordination CLI, Automated 100 MB Audit Rotation, and Synergized Multi-Agent Workflow
 
 ## Documentation pages (`docs/`)
 

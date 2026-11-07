@@ -32,6 +32,14 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-07 04:57 UTC [Gemini (Session 2)]:**
+  - **Tasks:** `B-293`.
+  - **Summary:** Added baseballpy agent CLI (claim, release, board) with 4-hour stale lock detection, auto 100 MB audit log rotation, and OpenCode deepseek-v4.1-flash-free default.
+
+- **2026-11-06 22:46 UTC [Claude - Session 1]:**
+  - **Tasks:** `B-289` (FanGraphs homelab table import; ADR 79).
+  - **Summary:** Added `fangraphs` source importing 1,219,323 rows from homelab tables into strongly typed Parquet. Compared column totals with homelab tables; all 9 tests pass. Marked private (no web scraping).
+
 - **2026-11-06 21:50 UTC [Claude - Session 1]:**
   - **Tasks:** `B-288` (Baseball-Reference WAR from published files; ADR 78).
   - **Summary:** Added `bref` source downloading two published WAR files (`war_batting`, `war_pitching`) at 6 requests/minute. Ingested 126,547 batting and 57,884 pitching rows cleanly into typed Parquet.

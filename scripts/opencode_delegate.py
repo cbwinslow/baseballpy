@@ -100,7 +100,7 @@ def main() -> int:
     parser.add_argument("--allow", action="append", default=[], help="Allowed writable path prefix")
     parser.add_argument(
         "--model",
-        default="opencode-go/deepseek-v4.1-flash",
+        default="opencode/deepseek-v4.1-flash-free",
         help="OpenCode model identifier (e.g. opencode/deepseek-v4.1-flash-free or opencode-go/deepseek-v4.1-flash)",
     )
     parser.add_argument(
