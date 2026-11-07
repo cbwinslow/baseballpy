@@ -844,3 +844,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** `status` and `update` commands; status reads manifests (`--verify` for the slow check); built-in `daily` and `full` plans with a `current` season keyword; blank cells are NULL and `NaN` text is a float; the `statcast` command writes under `exports/`.
 - **Consequences:** a lake overview takes seconds; a rerun of `update` fetches only what is new; quarantine only holds real errors (older quarantine files stay as history); the manifest is trusted for counts, and `--verify` or `catalog layout` is the check.
 - **Alternatives rejected:** caching row counts in a second file (the manifest already has them); a `--season-from` flag instead of `current` (stale again each January).
+
+## ADR 83: Verify The Library The Way A New User Meets It; Rebuild A Catalog From A Newer DuckDB
+- **Status:** Accepted (owner asked whether a new user would hit problems, 2026-11-07; change `fresh-install-verification`).
+- **Context:** the wheel was installed in an empty environment with an empty lake. Downloads, names, views, reads, exports and checks worked, but the developer machine's DuckDB 2.0 catalog could not be opened by the DuckDB 1.5.6 that a plain install resolves.
+- **Decision:** the catalog database (views only) is moved aside and rebuilt when it comes from a newer DuckDB; read-only use gets a clear error; small friendliness fixes (`arrow`, pandas message, group hint).
+- **Consequences:** one lake works with DuckDB 1.5 and 2.0 alike; the clean-room run is the check to repeat before a release (steps in the change design).
+- **Alternatives rejected:** pinning DuckDB below 2 (blocks users who have 2.0 and gives the developer machine a different version from the lock); storing the catalog per DuckDB version (more files, same result).

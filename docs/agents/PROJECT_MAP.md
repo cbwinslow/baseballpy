@@ -13,7 +13,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `caching-and-invalidation` | 19 | 32 | 44 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
-| `cli-and-ingest` | 16 | 25 | 43 |
+| `cli-and-ingest` | 18 | 27 | 45 |
 | `concurrency-and-rate-limiting` | 6 | 12 | 14 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 6 | 7 | 31 |
+| `lake-access` | 7 | 8 | 35 |
 | `mlb-api-ingestion` | 27 | 40 | 42 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -46,7 +46,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-68 changes are archived under `openspec/changes/archive/`.
+69 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -143,6 +143,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 80: A Slow, Honest FanGraphs Downloader; Stop At The First Refusal
 - ADR 81: Agent Coordination CLI, Automated 100 MB Audit Rotation, and Synergized Multi-Agent Workflow
 - ADR 82: One Overview, One Update Command, Manifest-Based Status, Blank And NaN Are Values
+- ADR 83: Verify The Library The Way A New User Meets It; Rebuild A Catalog From A Newer DuckDB
 
 ## Documentation pages (`docs/`)
 

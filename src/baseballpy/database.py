@@ -46,6 +46,15 @@ class DatabaseReadOnlyError(RuntimeError):
     """Raised when a read-only connection needs views that have not been created yet."""
 
 
+class DatabaseTooNewError(RuntimeError):
+    """The database file was written by a newer DuckDB than the one installed."""
+
+
+def is_newer_format(exc: BaseException) -> bool:
+    """Whether a DuckDB error says the file comes from a newer DuckDB version."""
+    return isinstance(exc, duckdb.IOException) and "newer version of DuckDB" in str(exc)
+
+
 def _view_sql(files_glob: Path, partitioned: bool, strict: bool) -> str:
     """``SELECT`` over a dataset's parquet parts (one consistent ``season`` column if hive).
 
@@ -85,7 +94,27 @@ class BaseballDatabase:
     def _open(self, read_only: bool) -> duckdb.DuckDBPyConnection:
         if not read_only and str(self.db_path) != ":memory:":
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        return duckdb.connect(database=str(self.db_path), read_only=read_only)
+        try:
+            return duckdb.connect(database=str(self.db_path), read_only=read_only)
+        except duckdb.IOException as exc:
+            if not is_newer_format(exc):
+                raise
+            # The catalog holds only views (no data), so a file from a newer DuckDB is rebuilt;
+            # a file the user pointed us at by hand is never touched.
+            if read_only or self.db_path != self.cache_config.database_path:
+                raise DatabaseTooNewError(
+                    f"{self.db_path} was written by a newer DuckDB than the installed {duckdb.__version__}. "
+                    "Run `baseballpy db sync` (it rebuilds the view catalog) or upgrade duckdb."
+                ) from exc
+            aside = self.db_path.with_name(self.db_path.name + ".newer-duckdb")
+            self.db_path.replace(aside)
+            logger.warning(
+                "%s was written by a newer DuckDB than %s; moved it to %s and rebuilt the views",
+                self.db_path,
+                duckdb.__version__,
+                aside,
+            )
+            return duckdb.connect(database=str(self.db_path), read_only=read_only)
 
     def connect(self) -> duckdb.DuckDBPyConnection:
         """Open a connection; read-write syncs views, read-only requires them to exist."""

@@ -463,7 +463,13 @@ def _plan_all(
             )
             planned.extend(plan_jobs({source: adapter}, selection))
     except ValueError as exc:
-        raise click.BadParameter(str(exc)) from exc
+        message = str(exc)
+        if message.startswith("unknown dataset"):
+            message += (
+                ". Names in `catalog list` that are not in this list are fetched together as part "
+                "of a group above (for example every leaderboard_* with `leaderboards`)."
+            )
+        raise click.BadParameter(message) from exc
     return planned
 
 

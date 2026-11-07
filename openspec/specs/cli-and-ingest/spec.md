@@ -195,3 +195,11 @@ The season-dataset coverage audit MUST count only default-mode datasets as expec
 - **WHEN** the coverage of a source with opt-in datasets is audited on an empty lake
 - **THEN** the expected count is the number of default season datasets and the note names the number left out
 - Verified by `tests/test_workflows.py::test_coverage_expects_only_the_datasets_a_plain_ingest_fills`.
+
+### Requirement: Unknown Dataset Errors Explain Groups
+When `ingest -d` names a dataset the source does not plan by that name, the usage error MUST list the names it knows and MUST say that registry names missing from the list are fetched together as part of a group.
+
+#### Scenario: A leaderboard asked for alone
+- **WHEN** `ingest statcast -d leaderboard_sprint_speed` is run
+- **THEN** it exits with a usage error that names the group `leaderboards`
+- Verified by `tests/test_workflows.py::test_an_unknown_dataset_error_explains_that_some_names_belong_to_a_group`.

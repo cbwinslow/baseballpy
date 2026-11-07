@@ -161,3 +161,91 @@ def test_coverage_expects_only_the_datasets_a_plain_ingest_fills() -> None:
     item = check_dataset_tables("mlb_api", 2025, LakeConfig())
     assert item.expected_count == len(defaults)
     assert str(len(seasonal) - len(defaults)) in item.note
+
+
+def _newer_duckdb_error() -> Exception:
+    import duckdb
+
+    return duckdb.IOException(
+        "IO Error: Trying to read a database file with version number 69, but we can only read "
+        "versions between 64 and 68.\nThe database file was created with a newer version of DuckDB."
+    )
+
+
+def test_a_catalog_from_a_newer_duckdb_is_moved_aside_and_rebuilt(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import duckdb
+
+    from baseballpy.database import BaseballDatabase
+
+    config = LakeConfig()
+    config.database_path.parent.mkdir(parents=True, exist_ok=True)
+    config.database_path.write_bytes(b"placeholder written by another duckdb")
+    real = duckdb.connect
+    calls: list[str] = []
+
+    def connect(database: str, read_only: bool = False):  # type: ignore[no-untyped-def]
+        calls.append(database)
+        if len(calls) == 1:
+            raise _newer_duckdb_error()
+        return real(database, read_only=read_only)
+
+    monkeypatch.setattr(duckdb, "connect", connect)
+    with BaseballDatabase().session() as con:
+        assert con.sql("select 1").fetchall() == [(1,)]
+    aside = config.database_path.with_name(config.database_path.name + ".newer-duckdb")
+    assert aside.read_bytes() == b"placeholder written by another duckdb"
+
+
+def test_a_read_only_query_of_a_newer_catalog_says_what_to_do(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import duckdb
+
+    from baseballpy import sql
+    from baseballpy.database import DatabaseTooNewError
+
+    config = LakeConfig()
+    config.database_path.parent.mkdir(parents=True, exist_ok=True)
+    config.database_path.write_bytes(b"x")
+
+    def connect(*args: object, **kwargs: object) -> None:
+        raise _newer_duckdb_error()
+
+    monkeypatch.setattr(duckdb, "connect", connect)
+    with pytest.raises(DatabaseTooNewError, match="db sync"):
+        sql("select 1")
+
+
+def test_arrow_is_another_name_for_pyarrow() -> None:
+    from baseballpy.frames import to_dataframe
+
+    table = pa.table({"x": [1, 2]})
+    assert to_dataframe(table, "arrow").equals(table)
+    with pytest.raises(ValueError, match="arrow"):
+        to_dataframe(table, "nope")  # type: ignore[arg-type]
+
+
+def test_a_missing_optional_dataframe_library_says_what_to_install(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import narwhals as nw
+
+    from baseballpy.frames import to_dataframe
+
+    def missing(*args: object, **kwargs: object) -> None:
+        raise ModuleNotFoundError("No module named 'pandas'", name="pandas")
+
+    monkeypatch.setattr(nw, "from_arrow", missing)
+    with pytest.raises(ImportError, match="pip install pandas"):
+        to_dataframe(pa.table({"x": [1]}), "pandas")
+
+
+def test_an_unknown_dataset_error_explains_that_some_names_belong_to_a_group() -> None:
+    result = CliRunner().invoke(
+        main,
+        ["ingest", "statcast", "-d", "leaderboard_sprint_speed", "--seasons", "2024", "--dry-run"],
+    )
+    assert result.exit_code == 2
+    assert "leaderboards" in result.output and "group" in result.output

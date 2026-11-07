@@ -57,3 +57,11 @@ For the sources in `raw_compress_sources` (default `mlb_api`, `statcast`), `RawS
 - **WHEN** a lake is clean, has many small and empty files, a part with other columns, an unreferenced compacted file, tiny row groups or plain raw files, and the command runs
 - **THEN** only the matching findings appear, compaction clears the small-file findings, and the exit code is 1 only for the two failing kinds
 - Verified by `tests/test_layout_audit.py::test_a_clean_lake_has_no_findings`, `tests/test_layout_audit.py::test_many_small_files_and_empty_files_are_advised_and_compaction_clears_them`, `tests/test_layout_audit.py::test_a_part_with_other_columns_fails_the_check`, `tests/test_layout_audit.py::test_a_compacted_file_nobody_points_at_fails_the_check`, `tests/test_layout_audit.py::test_tiny_row_groups_are_advised`, `tests/test_layout_audit.py::test_plain_raw_text_files_are_advised` and `tests/test_layout_audit.py::test_the_layout_command_prints_json_and_sets_the_exit_code`.
+
+### Requirement: A Fresh Install Works With Any Supported DuckDB
+When the catalog database in the lake was written by a newer DuckDB than the installed one, a read-write open MUST move it aside (`<name>.newer-duckdb`) and rebuild the views, a read-only query MUST raise an error that names `baseballpy db sync`, and a database file at a path chosen by the caller MUST NOT be moved. The backend name `arrow` MUST mean `pyarrow`, and a DataFrame library that is not installed MUST be named with its install command.
+
+#### Scenario: Newer catalog, arrow, missing pandas
+- **WHEN** the first open of the lake catalog fails as a newer-version file, a read-only query meets the same file, `arrow` is requested, and pandas is missing
+- **THEN** the old file is kept aside and the views are rebuilt, the query error names `db sync`, `arrow` returns an Arrow table, and the error for pandas says `pip install pandas`
+- Verified by `tests/test_workflows.py::test_a_catalog_from_a_newer_duckdb_is_moved_aside_and_rebuilt`, `tests/test_workflows.py::test_a_read_only_query_of_a_newer_catalog_says_what_to_do`, `tests/test_workflows.py::test_arrow_is_another_name_for_pyarrow` and `tests/test_workflows.py::test_a_missing_optional_dataframe_library_says_what_to_install`.

@@ -15,6 +15,7 @@ import polars as pl
 
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS, DatasetSpec
+from baseballpy.database import DatabaseTooNewError, is_newer_format
 from baseballpy.frames import Backend, to_dataframe
 from baseballpy.sources import catalog
 
@@ -89,7 +90,15 @@ def sql(
     path = (config or LakeConfig()).database_path
     if not path.exists():
         raise FileNotFoundError(f"no database at {path}; run `baseballpy db sync` first")
-    con = duckdb.connect(str(path), read_only=True)
+    try:
+        con = duckdb.connect(str(path), read_only=True)
+    except duckdb.IOException as exc:
+        if is_newer_format(exc):
+            raise DatabaseTooNewError(
+                f"{path} was written by a newer DuckDB than the installed {duckdb.__version__}. "
+                "Run `baseballpy db sync` (it rebuilds the view catalog) or upgrade duckdb."
+            ) from exc
+        raise
     try:
         relation = con.sql(query)
         if relation is None:
