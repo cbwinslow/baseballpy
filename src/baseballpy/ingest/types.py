@@ -24,6 +24,16 @@ class Selection:
     refresh: bool = False
     #: bounds the per-subject fan-out of opt-in datasets (games, people, game feeds); ``None`` = all
     limit: int | None = None
+    #: source-specific switches from ``--option KEY=VALUE`` (for example ``download=yes``)
+    options: tuple[tuple[str, str], ...] = ()
+
+    def option(self, name: str, default: str = "") -> str:
+        """The value of ``--option name=...`` (``default`` when it was not given)."""
+        return dict(self.options).get(name, default)
+
+    def flag(self, name: str) -> bool:
+        """True when ``--option name=yes`` (or true, 1, on) was given."""
+        return self.option(name).lower() in ("yes", "true", "1", "on")
 
     def limit_params(self) -> dict[str, int]:
         """The fan-out bound as job parameters (empty when unbounded)."""

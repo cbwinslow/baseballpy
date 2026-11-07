@@ -341,6 +341,7 @@ SAVANT_HOST = "baseballsavant.mlb.com"
 STATSAPI_HOST = "statsapi.mlb.com"
 KALSHI_HOST = "api.elections.kalshi.com"
 BREF_HOST = "www.baseball-reference.com"
+FANGRAPHS_HOST = "www.fangraphs.com"
 POLYMARKET_GAMMA_HOST = "gamma-api.polymarket.com"
 POLYMARKET_CLOB_HOST = "clob.polymarket.com"
 POLYMARKET_DATA_HOST = "data-api.polymarket.com"
@@ -421,6 +422,14 @@ class RateLimitConfig(EnvSettings):
             "are a handful of requests, so the cap is far below that"
         ),
     )
+    fangraphs_rps: float = Field(
+        default=0.5,
+        description=(
+            "Rate limit for www.fangraphs.com: one request every two seconds, one in flight. "
+            "FanGraphs says it supports no scraping and that most of its traffic is bots, so the "
+            "downloader is slow, identifies itself and stops at the first refusal"
+        ),
+    )
     polymarket_gamma_rps: float = Field(
         default=24.0,
         description="Rate limit for gamma-api.polymarket.com (documented 500 per 10 s on /events, 300 on /markets; 80% of the lower)",
@@ -471,10 +480,11 @@ class RateLimitConfig(EnvSettings):
     )
     max_retries: int = Field(default=5, description="Maximum retry attempts on 429/5xx errors")
     host_max_attempts: dict[str, int] = Field(
-        default_factory=lambda: {BREF_HOST: 1},
+        default_factory=lambda: {BREF_HOST: 1, FANGRAPHS_HOST: 1},
         description=(
             "Attempts per request for a host that must not be asked again after a refusal "
-            "(Baseball-Reference jails a session for up to a day: 1 means no retry)"
+            "(Baseball-Reference jails a session for up to a day, FanGraphs challenges bots: "
+            "1 means no retry)"
         ),
     )
     backoff_factor: float = Field(default=1.5, description="Exponential backoff factor")
@@ -492,6 +502,7 @@ class RateLimitConfig(EnvSettings):
             else (20.0 if signed else 4.0),
             "raw.githubusercontent.com": self.github_rps,
             BREF_HOST: self.bref_rps,
+            FANGRAPHS_HOST: self.fangraphs_rps,
             POLYMARKET_GAMMA_HOST: self.polymarket_gamma_rps,
             POLYMARKET_CLOB_HOST: self.polymarket_clob_rps,
             POLYMARKET_DATA_HOST: self.polymarket_data_rps,
@@ -502,6 +513,7 @@ class RateLimitConfig(EnvSettings):
         self.host_concurrency.setdefault(SAVANT_HOST, self.savant_concurrency)
         for host, limit in (
             (BREF_HOST, 1),
+            (FANGRAPHS_HOST, 1),
             (POLYMARKET_GAMMA_HOST, 8),
             (POLYMARKET_CLOB_HOST, 16),
             (POLYMARKET_DATA_HOST, 8),

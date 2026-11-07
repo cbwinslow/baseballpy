@@ -18,6 +18,10 @@ class FangraphsFile:
     homelab_table: str
     keys: tuple[str, ...]
     description: str
+    #: column whose value names the chunk (one season or one capture date per chunk);
+    #: ``None`` keeps the whole table in one chunk
+    chunk_by: str | None = None
+    chunk_prefix: str = ""
 
     @property
     def names(self) -> tuple[str, ...]:
@@ -31,18 +35,24 @@ FILES: tuple[FangraphsFile, ...] = (
         "fangraphs_batting",
         ("playerid", "season"),
         "FanGraphs season batting leaderboard (private research data): one row per player and season.",
+        chunk_by="season",
+        chunk_prefix="season-",
     ),
     FangraphsFile(
         "pitching",
         "fangraphs_pitching",
         ("playerid", "season"),
         "FanGraphs season pitching leaderboard (private research data): one row per player and season.",
+        chunk_by="season",
+        chunk_prefix="season-",
     ),
     FangraphsFile(
         "fielding",
         "fangraphs_fielding",
         ("playerid", "season", "pos"),
         "FanGraphs season fielding leaderboard (private research data): one row per player, season and position.",
+        chunk_by="season",
+        chunk_prefix="season-",
     ),
     FangraphsFile(
         "guts",
@@ -55,12 +65,16 @@ FILES: tuple[FangraphsFile, ...] = (
         "fangraphs_park_factors",
         ("season", "team"),
         "FanGraphs park factors (private research data): one row per season and team.",
+        chunk_by="season",
+        chunk_prefix="season-",
     ),
     FangraphsFile(
         "park_factors_handedness",
         "fangraphs_park_factors_handedness",
         ("season", "team"),
         "FanGraphs park factors by batter handedness (private research data), from 2002.",
+        chunk_by="season",
+        chunk_prefix="season-",
     ),
     FangraphsFile(
         "projection",
@@ -74,24 +88,32 @@ FILES: tuple[FangraphsFile, ...] = (
             "_row_hash",
         ),
         "FanGraphs projection snapshots (private research data): a row per system, player, capture date and change.",
+        chunk_by="_captured_date",
+        chunk_prefix="capture-",
     ),
     FangraphsFile(
         "prospects",
         "fangraphs_prospects",
         ("season", "playerid", "minormasterid"),
         "FanGraphs prospect board (private research data): scouting grades per player and season.",
+        chunk_by="season",
+        chunk_prefix="season-",
     ),
     FangraphsFile(
         "split_batting",
         "fangraphs_split_batting",
         ("playerid", "season", "_split", "_scope"),
         "FanGraphs batting split leaderboards (private research data): a curated set of splits per season.",
+        chunk_by="season",
+        chunk_prefix="season-",
     ),
     FangraphsFile(
         "split_pitching",
         "fangraphs_split_pitching",
         ("playerid", "season", "_split", "_scope"),
         "FanGraphs pitching split leaderboards (private research data): a curated set of splits per season.",
+        chunk_by="season",
+        chunk_prefix="season-",
     ),
 )
 BY_DATASET: dict[str, FangraphsFile] = {f.dataset: f for f in FILES}

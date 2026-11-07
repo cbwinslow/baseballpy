@@ -1,9 +1,12 @@
 """FanGraphs CSV files onto the strict schemas (typed, quarantined, never dropped)."""
 
+from collections.abc import Sequence
+from typing import Any
+
 import pyarrow as pa
 
 from baseballpy.core.quarantine import Quarantine
-from baseballpy.core.schema_tools import normalize_csv
+from baseballpy.core.schema_tools import normalize_csv, normalize_records
 from baseballpy.sources.fangraphs.schema import FANGRAPHS_SCHEMAS
 
 
@@ -25,6 +28,15 @@ class FangraphsNormalizer:
             source="fangraphs",
             dataset=dataset,
             quarantine=self._quarantine,
+        )
+
+    def normalize_records(self, dataset: str, records: Sequence[dict[str, Any]]) -> pa.Table:
+        """Typed table of records already shaped to table column names (a download)."""
+        schema = FANGRAPHS_SCHEMAS[dataset]
+        if not records:
+            return schema.empty_table()
+        return normalize_records(
+            records, schema, source="fangraphs", dataset=dataset, quarantine=self._quarantine
         )
 
 

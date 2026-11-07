@@ -1,15 +1,32 @@
-# FanGraphs (files you supply; never downloaded)
+# FanGraphs (a slow honest downloader, plus files you supply)
 
-## Verdict: no supported way to download, so baseballpy does not
-- **What FanGraphs says** (read 2026-11-06): its contact page says that outside of the one-click data export for FanGraphs Members it does not support exporting data in any other way, and lists web scraping, API endpoints and importing data automatically as unsupported. Its 2026 "State of FanGraphs" post says it does not scrape data itself, keeps agreements with its data providers, and that at least 60 percent of its traffic is from non-human sources (crawlers, AI bots, scrapers). Its FAQ says the data is for private, non-commercial use or fair use. Its robots.txt disallows only a few legacy pages and sets no crawl delay.
-- **What the site does:** it answers automated clients with a bot challenge ("Just a moment..."; pybaseball users report HTTP 403 on the leaderboards).
-- **Decision:** baseballpy does not scrape FanGraphs and never tries to get around a bot challenge. There is no downloader, no host rate limit and no request to FanGraphs anywhere in the code (a test fails if the source makes one).
+## What FanGraphs says, and what baseballpy does about it
+- **What FanGraphs says** (read 2026-11-06): its contact page says that outside of the one-click data export for FanGraphs Members it does not support exporting data in any other way, and lists web scraping, API endpoints and importing data automatically as unsupported. Its 2026 "State of FanGraphs" post says at least 60 percent of its traffic is from non-human sources (crawlers, AI bots, scrapers). Its FAQ says the data is for private, non-commercial use or fair use. Its robots.txt disallows only a few legacy pages and sets no crawl delay.
+- **What baseballpy does:** it can download the website's own JSON data (leaderboards and projections) because the website serves it to an ordinary client, but it does so in the most considerate way it can: **one request every two seconds, one at a time, an honest user agent** (`baseballpy/<version> (research use; +https://github.com/cbwinslow/baseballpy)`), **no retry after a refusal**, and **a hard stop at the first sign of a bot challenge** (HTTP 403, 429 or 503, or a web page where data should be). It never changes its identity, adds browser headers or uses another client to get past bot protection. If FanGraphs starts refusing, the downloader stops with a message and the files-you-supply route (below) carries on.
+- **Your responsibility:** FanGraphs does not support this kind of access and could block it at any time. The data is for private, non-commercial use. Use the downloader at your own risk and keep the downloaded data to yourself.
 
-## What baseballpy does: type files you supply (private research data)
-- **Source `fangraphs`** reads CSV files from `inbox/fangraphs/<dataset>.csv` (or `.csv.gz`) in the lake and types them: `baseballpy ingest fangraphs`. It makes no network request. A file whose bytes are unchanged since the last ingest is skipped; `--refresh` types it again. The raw bytes are kept (gzip, sha256 of the original) in `raw/fangraphs/<dataset>/`.
-- **Where the files come from:** the owner's homelab database already holds FanGraphs tables (collected by the separate homelab project). `uv run python scripts/export_homelab_fangraphs.py` copies the ten tables read only (`ssh` key login, `psql \copy`, gzipped) into the inbox. A member's own one-click export can be dropped into the same folder; it is typed the same way if its headers match, and unknown headers are kept in `_extras`.
-- **Private use only.** FanGraphs data is for private, non-commercial use. These datasets are marked `private` in their description, are never part of anything published or shared, and baseballpy ships no data. If you share the lake, leave `processed/fangraphs`, `raw/fangraphs` and `inbox/` out.
-- **Datasets** (rows when imported 2026-11-06; each equals the homelab table row for row, and column totals were compared against the homelab):
+## Download it (`-o download=yes`)
+```bash
+# the current season's leaderboards (3 requests)
+uv run baseballpy ingest fangraphs -d batting -d pitching -d fielding --seasons 2026 -o download=yes
+# any seasons (2 seconds per request: 1871 to now is about 15 minutes per leaderboard)
+uv run baseballpy ingest fangraphs -d batting --seasons 2015-2024 -o download=yes
+# one snapshot of every projection system (32 requests, only changed rows are stored)
+uv run baseballpy ingest fangraphs -d projection -o download=yes
+```
+- **Leaderboards** (`batting`, `pitching`, `fielding`): `GET /api/leaders/major-league/data`, one request per season, every player (`qual=0`), one row per player and season; a past season already stored is skipped, the current one is fetched again. About 480 columns for batting, 550 for pitching.
+- **Projections** (`projection`): `GET /api/projections`, one request per system (16: Steamer, ZiPS, ZiPS DC, Depth Charts, ATC, THE BAT, THE BAT X, OOPSY, and the rest-of-season versions) and stat group (batting, pitching). A row is stored only when its values changed since that player's last stored snapshot (md5 of the row's values, the same hash the files carry), as chunk `capture-<date>-<system>-<group>`. Run it daily to follow how projections move.
+- **Not downloadable yet** (type them from files): `guts` and `park_factors*` (FanGraphs serves them only as web pages), `split_*` (a POST route the shared client does not send) and `prospects`.
+- **Same tables as the files:** keys are renamed by one rule (lowercase; anything that is not a letter, digit or `_` becomes `_`; a leading digit gets an `n`: `1B` is `n1b`, `BB%` is `bb_`; four colliding pairs such as `-WPA` are renamed first), so a download lands in the same typed columns. Checked on a real run: the 2024 batting download had the same 478 columns, the same 1,454 players and identical counting stats as the homelab copy; 17 of 478 columns differ (WAR, dollars, runs: FanGraphs recalculated them after the season) and 9 names changed (a spelling, position lists).
+- **Raw answers** are kept (gzip, sha256) in `raw/fangraphs/<dataset>/`.
+
+## Or type files you supply (private research data)
+- **`baseballpy ingest fangraphs`** (no option) reads CSV files from `inbox/fangraphs/<dataset>.csv` (or `.csv.gz`) and types them. It makes no network request. A file whose bytes are unchanged since the last ingest is skipped; `--refresh` types it again. Each file is cut into the same chunks a download writes (one per season, or per capture date for projections), so a season that arrives both ways is stored once, the newer source replacing the older.
+- **Where the files come from:** the owner's homelab database holds FanGraphs tables (collected by the separate homelab project). `uv run python scripts/export_homelab_fangraphs.py` copies the ten tables read only (`ssh` key login, `psql \copy`, gzipped) into the inbox; it is for that one database. Anyone else can drop a member's one-click export (or any CSV with these column names) into the same folder; unknown headers are kept in `_extras`.
+- **Private use only.** These datasets are marked private in their description and baseballpy ships no data. If you share a lake, leave `processed/fangraphs`, `raw/fangraphs` and `inbox/` out.
+
+## Datasets
+- **Rows when imported 2026-11-06; each equals the homelab table row for row, and column totals were compared against the homelab):
 
 | Dataset | Rows | Columns | Key |
 | --- | --- | --- | --- |
@@ -32,11 +49,11 @@
 ## How the owner's homelab project gets FanGraphs data (read 2026-11-06, `~/workspace/mlb`)
 - It uses `fungo`, a small client for FanGraphs' unofficial mobile-app JSON API, and sends `User-Agent: okhttp/4.12.0` (the Android app's HTTP library), "the one client Cloudflare does not block"; `pybaseball`'s FanGraphs functions return HTTP 403 and are not used. A cron job refreshes projections every 6 hours (about 60 requests a run) and appends changed rows only.
 - That project's own rights table calls this "owner-risk research only": no permission evidence for automated collection, redistribution or model training, and `gold.fangraphs_*` is never public. FanGraphs says it does not support API endpoints or scraping.
-- baseballpy does not copy this approach: presenting as the mobile app to pass the site's bot protection is the kind of workaround this project does not build into code that others will run. The data stays collected by the homelab project; baseballpy only types the copy.
+- baseballpy does not copy this approach: presenting as the mobile app to pass the site's bot protection is the kind of workaround this project does not build into code that others will run. The downloader above uses the website's own routes with an honest identity and stops if it is refused. The homelab project keeps collecting on its own; baseballpy only types the copy.
 
 ## Alternatives
 - **Baseball-Reference WAR** is built (`docs/sources/bref.md`); **Statcast** leaderboards and the **MLB Stats API** stat pools are in the lake.
-- **A member export** (the owner clicks FanGraphs' own Export Data button) follows FanGraphs' rules and works with the same inbox.
+- **A member export** (click FanGraphs' own Export Data button) follows FanGraphs' rules exactly and works with the same inbox.
 
 ## Dataset reference (generated)
 

@@ -173,7 +173,7 @@ def test_adapter_plans_one_job_and_reports_missing_files() -> None:
     assert "no file for batting" in result.detail
     with pytest.raises(ValueError, match="unknown dataset"):
         adapter.plan(Selection(datasets=("nope",)))
-    assert adapter.all_seasons() == []
+    assert adapter.all_seasons()[0] == 1871, "download mode can ask for every season"
 
 
 def test_the_export_script_refuses_odd_names_and_builds_one_read_only_copy_command(

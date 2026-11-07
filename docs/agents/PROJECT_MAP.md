@@ -18,7 +18,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
-| `fangraphs-ingestion` | 4 | 4 | 11 |
+| `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
 | `lake-access` | 6 | 7 | 31 |
@@ -50,8 +50,9 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
+| `agent-coordination-and-audit-rotation` | 0 | 3 | 1.1, 1.2, 1.3 |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `fangraphs-and-bref` | 4 | 1 | 2.2 |
+| `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
@@ -139,6 +140,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 77: Polymarket As A Standard Source, GET Only, Hourly Prices
 - ADR 78: Baseball-Reference From Its Published Files Only; FanGraphs Not Downloaded
 - ADR 79: FanGraphs Files Are Typed From An Inbox, For Private Use, With No Request To FanGraphs
+- ADR 80: A Slow, Honest FanGraphs Downloader; Stop At The First Refusal
 
 ## Documentation pages (`docs/`)
 

@@ -280,6 +280,13 @@ def _render_ingest_table(report: RunReport) -> None:
     help="Bound the per-game, per-player or per-game-feed fan-out of opt-in datasets (default: all).",
 )
 @click.option(
+    "--option",
+    "-o",
+    "options",
+    multiple=True,
+    help="A source-specific switch as KEY=VALUE, for example fangraphs: download=yes (repeatable).",
+)
+@click.option(
     "--stop-on-error",
     is_flag=True,
     help="Halt execution immediately when a job raises an error.",
@@ -306,6 +313,7 @@ def ingest_cmd(
     dry_run: bool,
     concurrency: str | None,
     limit: int | None,
+    options: tuple[str, ...],
     stop_on_error: bool,
     as_json: bool,
     sync_db: bool = True,
@@ -322,7 +330,12 @@ def ingest_cmd(
         raise click.BadParameter(str(exc)) from exc
 
     planned_jobs = _plan_all(
-        adapters, seasons, split_datasets(datasets, tuple(adapters)), refresh=refresh, limit=limit
+        adapters,
+        seasons,
+        split_datasets(datasets, tuple(adapters)),
+        refresh=refresh,
+        limit=limit,
+        options=_parse_options(options),
     )
 
     if not planned_jobs:
@@ -368,6 +381,17 @@ def ingest_cmd(
     ctx.exit(report.exit_code)
 
 
+def _parse_options(raw: tuple[str, ...]) -> tuple[tuple[str, str], ...]:
+    """``KEY=VALUE`` strings from ``--option`` as pairs; anything else is a usage error."""
+    pairs: list[tuple[str, str]] = []
+    for item in raw:
+        name, sep, value = item.partition("=")
+        if not sep or not name.strip():
+            raise click.BadParameter(f"--option expects KEY=VALUE, got {item!r}")
+        pairs.append((name.strip(), value.strip()))
+    return tuple(pairs)
+
+
 def _plan_all(
     adapters: Mapping[str, IngestAdapter],
     seasons: str | None,
@@ -375,6 +399,7 @@ def _plan_all(
     *,
     refresh: bool,
     limit: int | None,
+    options: tuple[tuple[str, str], ...] = (),
 ) -> list[Job]:
     """The planned jobs of every adapter in source order; a bad season selection is a usage error."""
     planned: list[Job] = []
@@ -392,6 +417,7 @@ def _plan_all(
                 datasets=by_source.get(source, ()),
                 refresh=refresh,
                 limit=limit,
+                options=options,
             )
             planned.extend(plan_jobs({source: adapter}, selection))
     except ValueError as exc:

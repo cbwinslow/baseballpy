@@ -9,9 +9,12 @@ unchanged since the last ingest is left alone, so a rerun costs nothing.
 import gzip
 import hashlib
 import logging
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
+
+import pyarrow as pa
+import pyarrow.compute as pc
 
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import datasets_for, get_dataset
@@ -41,6 +44,28 @@ class IngestOutcome:
 def find_file(inbox: Path, file: FangraphsFile) -> Path | None:
     """The inbox file of a dataset (``<dataset>.csv`` or ``.csv.gz``), if the user supplied one."""
     return next((inbox / n for n in file.names if (inbox / n).is_file()), None)
+
+
+UNDATED = "undated"
+
+
+def chunks_of(file: FangraphsFile, table: pa.Table) -> Iterator[tuple[str, pa.Table]]:
+    """``(chunk id, rows)`` pieces of a table: one per season or capture date, else one.
+
+    Cutting the files you supply the same way a download is cut means a season (or a day) that
+    arrives both ways is stored once, the newer source replacing the older, never twice.
+    """
+    if file.chunk_by is None or file.chunk_by not in table.column_names:
+        yield "data", table
+        return
+    column = table[file.chunk_by]
+    values = sorted(pc.unique(column).to_pylist(), key=lambda v: (v is None, str(v)))
+    for value in values:
+        mask = (
+            pc.is_null(column) if value is None else pc.equal(column, pa.scalar(value, column.type))
+        )
+        name = UNDATED if value is None else f"{file.chunk_prefix}{value}"
+        yield name, table.filter(mask)
 
 
 def ingest(
@@ -81,7 +106,7 @@ def ingest(
         digest = hashlib.sha256(data).hexdigest()
         spec = get_dataset("fangraphs", name)
         entry = cfg.dataset_manifest("fangraphs", name, "raw").get_chunk(f"{name}.csv")
-        if not refresh and entry and entry.get("sha256") == digest and store.is_cached(spec):
+        if not refresh and entry and entry.get("sha256") == digest and store.files(spec):
             outcome.unchanged.append(name)
             outcome.rows[name] = store.row_count(spec)
             continue
@@ -89,7 +114,8 @@ def ingest(
         outcome.rows[name] = table.num_rows
         if cfg.enabled:
             raw_store.put("fangraphs", name, f"{name}.csv", data, source_ref=path.name)
-            store.put(spec, table, source_ref=path.name)
+            for chunk, part in chunks_of(file, table):
+                store.put(spec, part, chunk_id=chunk, source_ref=path.name)
     return outcome
 
 

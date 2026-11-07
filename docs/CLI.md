@@ -473,6 +473,8 @@ Options:
                             hardware; default: auto).
   --limit INTEGER RANGE     Bound the per-game, per-player or per-game-feed fan-out of opt-in
                             datasets (default: all).  [x>=1]
+  -o, --option TEXT         A source-specific switch as KEY=VALUE, for example fangraphs:
+                            download=yes (repeatable).
   --stop-on-error           Halt execution immediately when a job raises an error.
   --json                    Output results as newline-delimited JSON objects.
   --sync-db / --no-sync-db  Automatically update DuckDB views after successful ingestion (default:

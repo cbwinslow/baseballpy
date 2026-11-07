@@ -494,3 +494,14 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-288 | fangraphs-and-bref 1.1 to 1.3: Baseball-Reference WAR from its published files, FanGraphs not downloaded, ADR 78 | DONE | tests/test_bref.py (7), tests/test_slow_hosts.py (3); real run 126,547 + 57,884 rows, 0 extra requests |
 | B-289 | fangraphs-and-bref 2.1: import of the FanGraphs tables held on the homelab (owner said yes), ADR 79 | DONE | tests/test_fangraphs.py (9); 1,219,323 rows equal to the homelab, column totals compared |
 | B-290 | `fangraphs-and-bref 2.2`: Baseball-Reference daily WAR archive as an opt-in dataset | OPEN | WAR as of each day, 2018 onward |
+| B-291 | fangraphs-and-bref 3.1: slow honest FanGraphs downloader for leaderboards and projections, `--option` switch, ADR 80 | DONE | tests/test_fangraphs_download.py (16); live: 35 requests all 200, 2024 batting equals the homelab copy in 478 columns |
+| B-292 | `fangraphs-and-bref 3.2`: downloaders for guts and park factors (web pages), prospects and splits (POST) | OPEN | each dataset downloadable or recorded as not possible with evidence |
+
+## AE. Agent coordination and audit rotation (`agent-coordination-and-audit-rotation`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-293 | `agent-coordination-and-audit-rotation 1.1`: `baseballpy agent` CLI (`claim`, `release`, `board`) | READY | tests in `tests/test_agent_cli.py` pass; claims and releases update both `AGENT_BOARD.md` and `agent_log.jsonl`; 4-hour stale lock detection |
+| B-294 | `agent-coordination-and-audit-rotation 1.2`: `baseballpy audit rotate` and 100 MB automatic threshold | READY | tests in `tests/test_audit_rotate.py` pass; audit log rotated and gzipped when >= 100 MB or via CLI command |
+| B-295 | `agent-coordination-and-audit-rotation 1.3`: OpenCode model default and synergized workflow contract | READY | `scripts/opencode_delegate.py` defaults to `opencode/deepseek-v4.1-flash-free`; `AGENTS.md` and `CLAUDE.md` link OpenSpec, Backlog, and Agent Board together |
+
