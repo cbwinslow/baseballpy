@@ -173,12 +173,17 @@ def dedupe_headers(names: Sequence[str]) -> list[str]:
 
 
 def read_csv_strings(
-    raw: bytes | str, *, delimiter: str = ",", header: Sequence[str] | None = None
+    raw: bytes | str,
+    *,
+    delimiter: str = ",",
+    header: Sequence[str] | None = None,
+    null_values: Sequence[str] = NULL_TOKENS,
 ) -> pa.Table:
     """Read a CSV with every column as a nullable string (BOM-safe, duplicate-header-safe).
 
     ``header`` supplies the column names for files that have no header row (the first row is then
-    data); otherwise the first row is the header.
+    data); otherwise the first row is the header. ``null_values`` are the cells that mean NULL
+    (a file may mark missing values with a word such as ``NULL``).
     """
     data = raw.encode("utf-8") if isinstance(raw, str) else raw
     if not data.strip():
@@ -201,14 +206,16 @@ def read_csv_strings(
             convert_options=pacsv.ConvertOptions(
                 column_types=dict.fromkeys(cleaned, pa.string()),
                 strings_can_be_null=True,
-                null_values=list(NULL_TOKENS),
+                null_values=list(null_values),
             ),
         )
     except pa.ArrowInvalid:
-        return _read_ragged(data, cleaned, skip, delimiter)
+        return _read_ragged(data, cleaned, skip, delimiter, null_values)
 
 
-def _read_ragged(data: bytes, names: list[str], skip: int, delimiter: str) -> pa.Table:
+def _read_ragged(
+    data: bytes, names: list[str], skip: int, delimiter: str, null_values: Sequence[str]
+) -> pa.Table:
     """Slow path for files with rows of unexpected width (seen in Retrosheet discrepancy files).
 
     Short rows are padded with NULLs; rows *longer* than the header keep their surplus cells in
@@ -228,8 +235,9 @@ def _read_ragged(data: bytes, names: list[str], skip: int, delimiter: str) -> pa
         )
     if short:
         logger.info("%d CSV row(s) are shorter than the header; padded with NULLs", short)
+    nulls = frozenset(null_values)
     columns = [
-        pa.array([(r[i] if i < len(r) and r[i] != "" else None) for r in rows], pa.string())
+        pa.array([(r[i] if i < len(r) and r[i] not in nulls else None) for r in rows], pa.string())
         for i in range(width)
     ]
     return pa.Table.from_arrays(columns, names=all_names)
@@ -328,6 +336,7 @@ def normalize_csv(
     quarantine: Quarantine | None = None,
     delimiter: str = ",",
     header: Sequence[str] | None = None,
+    null_values: Sequence[str] = NULL_TOKENS,
 ) -> pa.Table:
     """Map a CSV onto ``schema`` by header name; unknown columns go to ``_extras`` as JSON.
 
@@ -336,7 +345,7 @@ def normalize_csv(
     the column's declared format) are quarantined, and columns absent from the schema are
     serialised per row into ``_extras`` (only when the schema declares that column).
     """
-    table = read_csv_strings(raw, delimiter=delimiter, header=header)
+    table = read_csv_strings(raw, delimiter=delimiter, header=header, null_values=null_values)
     return map_to_schema(table, schema, source=source, dataset=dataset, quarantine=quarantine)
 
 

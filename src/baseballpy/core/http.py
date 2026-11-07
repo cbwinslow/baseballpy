@@ -215,7 +215,9 @@ class HttpClient:
         limiter = self._limiters.get(host)
         if limiter is None:
             rate = self.rate.host_rates.get(host, self.rate.default_requests_per_second)
-            limiter = AsyncLimiter(max(rate, 0.001), 1.0)
+            rate = max(rate, 0.001)
+            # a bucket holds at least one request: a slow host (0.1/s) is one request per 10 s
+            limiter = AsyncLimiter(rate, 1.0) if rate >= 1 else AsyncLimiter(1, 1.0 / rate)
             self._limiters[host] = limiter
         return limiter
 
@@ -317,7 +319,9 @@ class HttpClient:
             return HttpResult(url, status, resp.content, resp.headers.get("ETag"), False, elapsed)
 
         retrying = AsyncRetrying(
-            stop=stop_after_attempt(max(1, self.rate.max_retries)),
+            stop=stop_after_attempt(
+                max(1, self.rate.host_max_attempts.get(host, self.rate.max_retries))
+            ),
             wait=_wait,
             retry=retry_if_exception_type((httpx.TransportError, RetryableStatus)),
             reraise=True,

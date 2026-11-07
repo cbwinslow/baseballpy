@@ -467,6 +467,7 @@ def generate_markdown_report() -> str:
         f"- **Chadwick Bureau:** {len(by_source.get('chadwick', [])):,} datasets (universal player ID crosswalk)",
         f"- **Kalshi:** {len(by_source.get('kalshi', [])):,} datasets (MLB prediction-market catalog)",
         f"- **Polymarket:** {len(by_source.get('polymarket', [])):,} datasets (MLB prediction-market catalog and prices)",
+        f"- **Baseball-Reference:** {len(by_source.get('bref', [])):,} datasets (WAR files)",
         "",
         "---",
         "",
@@ -517,6 +518,7 @@ def generate_markdown_report() -> str:
         "retrosheet",
         "kalshi",
         "polymarket",
+        "bref",
     ):
         datasets = by_source.get(source_name, [])
         lines.extend(

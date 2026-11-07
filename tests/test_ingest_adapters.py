@@ -84,10 +84,11 @@ def test_register_all_adapters_idempotent() -> None:
         "retrosheet",
         "kalshi",
         "polymarket",
+        "bref",
     }
     # Second call should be a no-op
     register_all_adapters()
-    assert len(ADAPTERS) == 7
+    assert len(ADAPTERS) == 8
 
 
 def test_adapters_module_import_does_not_construct_orchestrators(

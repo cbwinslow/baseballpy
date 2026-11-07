@@ -9,6 +9,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 |---|---|---|---|
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 6 | 7 | 11 |
+| `bref-ingestion` | 3 | 3 | 10 |
 | `caching-and-invalidation` | 19 | 32 | 44 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
@@ -49,6 +50,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
+| `fangraphs-and-bref` | 3 | 2 | 2.1, 2.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 5 | 4 | 1.2, 3.1 |
@@ -134,6 +136,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 75: Gzipped Raw Text Files, Checksum Of The Original
 - ADR 76: An Offline Layout Check Beside The Provider Audit
 - ADR 77: Polymarket As A Standard Source, GET Only, Hourly Prices
+- ADR 78: Baseball-Reference From Its Published Files Only; FanGraphs Not Downloaded
 
 ## Documentation pages (`docs/`)
 
@@ -169,7 +172,9 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/index.md`
 - `docs/references/ENDPOINT_CROSSCHECK.md`
 - `docs/references/README.md`
+- `docs/sources/bref.md`
 - `docs/sources/chadwick.md`
+- `docs/sources/fangraphs.md`
 - `docs/sources/kalshi.md`
 - `docs/sources/lahman.md`
 - `docs/sources/mlb_api.md`

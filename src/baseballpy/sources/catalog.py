@@ -11,6 +11,8 @@ import pyarrow as pa
 from baseballpy.core import datasets as _datasets_module
 from baseballpy.core.datasets import DatasetSpec, IngestMode, register
 from baseballpy.core.schema_tools import snake
+from baseballpy.sources.bref.endpoints import BY_DATASET as BREF_FILES
+from baseballpy.sources.bref.schema import BREF_KEYS, BREF_SCHEMAS
 from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_SCHEMAS
 from baseballpy.sources.kalshi.schema import KALSHI_KEYS, KALSHI_SCHEMAS
 from baseballpy.sources.lahman.schema import (
@@ -327,6 +329,18 @@ def register_all() -> dict[str, DatasetSpec]:
             f"sources/polymarket.md#dataset-{name}",
             ingest="opt_in" if name in polymarket_opt_in else "default",
             ingest_note=polymarket_opt_in.get(name, ""),
+        )
+
+    for name, schema in BREF_SCHEMAS.items():
+        _add(
+            "bref",
+            name,
+            f"bref_{name}",
+            schema,
+            BREF_KEYS[name],
+            BREF_FILES[name].description,
+            f"sources/bref.md#dataset-{name}",
+            "season",
         )
 
     retro_doc = "sources/retrosheet.md"
