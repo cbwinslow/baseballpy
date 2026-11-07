@@ -18,10 +18,10 @@
     "country": "USA"
    },
    "timeZone": {
-    "tz": "CDT",
+    "tz": "CST",
     "id": "America/Chicago",
-    "offset": -5,
-    "offsetAtGameTime": -5
+    "offset": -6,
+    "offsetAtGameTime": -6
    },
    "fieldInfo": {
     "capacity": 6000,
@@ -61,10 +61,10 @@
     "country": "USA"
    },
    "timeZone": {
-    "tz": "PDT",
+    "tz": "PST",
     "id": "America/Los_Angeles",
-    "offset": -7,
-    "offsetAtGameTime": -7
+    "offset": -8,
+    "offsetAtGameTime": -8
    },
    "fieldInfo": {
     "capacity": 5000,

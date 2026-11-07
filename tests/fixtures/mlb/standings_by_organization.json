@@ -13,7 +13,7 @@
     "name": "Detroit Tigers",
     "link": "/api/v1/teams/116"
    },
-   "lastUpdated": "2026-06-03T19:22:52.507Z",
+   "lastUpdated": "2026-10-29T20:20:00.098Z",
    "aggregateRecord": {
     "gamesPlayed": 771,
     "wildCardGamesBack": "-",
@@ -854,7 +854,7 @@
     "name": "Cleveland Guardians",
     "link": "/api/v1/teams/114"
    },
-   "lastUpdated": "2026-07-22T14:25:01.218Z",
+   "lastUpdated": "2026-10-29T20:20:30.808Z",
    "aggregateRecord": {
     "gamesPlayed": 763,
     "wildCardGamesBack": "-",
@@ -1275,7 +1275,7 @@
       "ties": 0,
       "pct": ".592"
      },
-     "lastUpdated": "2026-01-16T21:31:42Z",
+     "lastUpdated": "2026-10-29T20:20:30Z",
      "records": {
       "splitRecords": [
        {
@@ -1488,7 +1488,7 @@
       "ties": 0,
       "pct": ".580"
      },
-     "lastUpdated": "2025-08-14T23:32:23Z",
+     "lastUpdated": "2026-10-29T15:45:30Z",
      "records": {
       "splitRecords": [
        {
@@ -1683,7 +1683,7 @@
     "name": "Milwaukee Brewers",
     "link": "/api/v1/teams/158"
    },
-   "lastUpdated": "2026-10-22T18:52:40.879Z",
+   "lastUpdated": "2026-11-02T15:32:50.082Z",
    "aggregateRecord": {
     "gamesPlayed": 762,
     "wildCardGamesBack": "-",
@@ -1851,7 +1851,7 @@
       "ties": 0,
       "pct": ".605"
      },
-     "lastUpdated": "2025-08-26T00:59:20Z",
+     "lastUpdated": "2026-10-29T18:50:40Z",
      "records": {
       "splitRecords": [
        {
@@ -2064,7 +2064,7 @@
       "ties": 0,
       "pct": ".588"
      },
-     "lastUpdated": "2026-01-16T21:35:35Z",
+     "lastUpdated": "2026-10-29T20:20:01Z",
      "records": {
       "splitRecords": [
        {

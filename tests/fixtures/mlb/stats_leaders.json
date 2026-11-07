@@ -27,7 +27,8 @@
       "fullName": "Cal Raleigh",
       "link": "/api/v1/people/663728",
       "firstName": "Cal",
-      "lastName": "Raleigh"
+      "lastName": "Raleigh",
+      "nameSlug": "cal-raleigh-663728"
      },
      "sport": {
       "id": 1,
@@ -55,7 +56,8 @@
       "fullName": "Will Smith",
       "link": "/api/v1/people/669257",
       "firstName": "Will",
-      "lastName": "Smith"
+      "lastName": "Smith",
+      "nameSlug": "will-smith-669257"
      },
      "sport": {
       "id": 1,
@@ -83,7 +85,8 @@
       "fullName": "Logan O'Hoppe",
       "link": "/api/v1/people/681351",
       "firstName": "Logan",
-      "lastName": "O'Hoppe"
+      "lastName": "O'Hoppe",
+      "nameSlug": "logan-o-hoppe-681351"
      },
      "sport": {
       "id": 1,
@@ -123,7 +126,8 @@
       "fullName": "Scott Alexander",
       "link": "/api/v1/people/518397",
       "firstName": "Scott",
-      "lastName": "Alexander"
+      "lastName": "Alexander",
+      "nameSlug": "scott-alexander-518397"
      },
      "sport": {
       "id": 1,
@@ -151,7 +155,8 @@
       "fullName": "Joe Mantiply",
       "link": "/api/v1/people/573009",
       "firstName": "Joe",
-      "lastName": "Mantiply"
+      "lastName": "Mantiply",
+      "nameSlug": "joe-mantiply-573009"
      },
      "sport": {
       "id": 1,
@@ -179,7 +184,8 @@
       "fullName": "Anthony Banda",
       "link": "/api/v1/people/607455",
       "firstName": "Anthony",
-      "lastName": "Banda"
+      "lastName": "Banda",
+      "nameSlug": "anthony-banda-607455"
      },
      "sport": {
       "id": 1,
@@ -219,7 +225,8 @@
       "fullName": "Tarik Skubal",
       "link": "/api/v1/people/669373",
       "firstName": "Tarik",
-      "lastName": "Skubal"
+      "lastName": "Skubal",
+      "nameSlug": "tarik-skubal-669373"
      },
      "sport": {
       "id": 1,
@@ -247,7 +254,8 @@
       "fullName": "Max Fried",
       "link": "/api/v1/people/608331",
       "firstName": "Max",
-      "lastName": "Fried"
+      "lastName": "Fried",
+      "nameSlug": "max-fried-608331"
      },
      "sport": {
       "id": 1,
@@ -275,7 +283,8 @@
       "fullName": "Chris Sale",
       "link": "/api/v1/people/519242",
       "firstName": "Chris",
-      "lastName": "Sale"
+      "lastName": "Sale",
+      "nameSlug": "chris-sale-519242"
      },
      "sport": {
       "id": 1,

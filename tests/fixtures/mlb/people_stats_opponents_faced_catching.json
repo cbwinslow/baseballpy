@@ -19,14 +19,16 @@
       "fullName": "Dan Altavilla",
       "link": "/api/v1/people/656186",
       "firstName": "Daniel",
-      "lastName": "Altavilla"
+      "lastName": "Altavilla",
+      "nameSlug": "daniel-altavilla-656186"
      },
      "batter": {
       "id": 519317,
       "fullName": "Giancarlo Stanton",
       "link": "/api/v1/people/519317",
       "firstName": "Giancarlo",
-      "lastName": "Stanton"
+      "lastName": "Stanton",
+      "nameSlug": "giancarlo-stanton-519317"
      }
     },
     {
@@ -37,14 +39,16 @@
       "fullName": "Dan Altavilla",
       "link": "/api/v1/people/656186",
       "firstName": "Daniel",
-      "lastName": "Altavilla"
+      "lastName": "Altavilla",
+      "nameSlug": "daniel-altavilla-656186"
      },
      "batter": {
       "id": 671732,
       "fullName": "Lawrence Butler",
       "link": "/api/v1/people/671732",
       "firstName": "Lawrence",
-      "lastName": "Butler"
+      "lastName": "Butler",
+      "nameSlug": "lawrence-butler-671732"
      }
     },
     {
@@ -55,14 +59,16 @@
       "fullName": "Dan Altavilla",
       "link": "/api/v1/people/656186",
       "firstName": "Daniel",
-      "lastName": "Altavilla"
+      "lastName": "Altavilla",
+      "nameSlug": "daniel-altavilla-656186"
      },
      "batter": {
       "id": 680474,
       "fullName": "Max Schuemann",
       "link": "/api/v1/people/680474",
       "firstName": "Maxwell",
-      "lastName": "Schuemann"
+      "lastName": "Schuemann",
+      "nameSlug": "maxwell-schuemann-680474"
      }
     }
    ]

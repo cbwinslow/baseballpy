@@ -17,13 +17,13 @@
       "wRaa": 70.8202,
       "wRc": 156.331,
       "wRcPlus": 179.437,
-      "rar": 86.4287,
-      "war": 8.92616,
+      "rar": 86.4327,
+      "war": 8.92657,
       "batting": 69.4384,
       "fielding": 0.0,
-      "baseRunning": 9.75101,
+      "baseRunning": 9.76339,
       "positional": -17.1759,
-      "wLeague": 2.31201,
+      "wLeague": 2.30366,
       "replacement": 22.1032,
       "spd": 8.10565,
       "ubr": 1.89999985694885,
@@ -38,7 +38,8 @@
      "player": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "league": {
       "id": 104,

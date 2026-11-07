@@ -9,85 +9,170 @@
    "splits": [
     {
      "stat": {
-      "name": "battingAverage",
+      "name": "onBasePlusSlugging",
       "zones": [
        {
         "zone": "01",
         "color": "rgba(255, 255, 255, 0.55)",
         "temp": "lukewarm",
-        "value": ".237"
+        "value": ".744"
        },
        {
         "zone": "02",
         "color": "rgba(214, 41, 52, .55)",
         "temp": "hot",
-        "value": ".326"
+        "value": "1.170"
        },
        {
         "zone": "03",
         "color": "rgba(234, 147, 153, .55)",
         "temp": "warm",
-        "value": ".262"
+        "value": ".857"
        },
        {
         "zone": "04",
         "color": "rgba(214, 41, 52, .55)",
         "temp": "hot",
-        "value": ".351"
+        "value": "1.067"
        },
        {
         "zone": "05",
         "color": "rgba(214, 41, 52, .55)",
         "temp": "hot",
-        "value": ".477"
+        "value": "1.727"
        },
        {
         "zone": "06",
         "color": "rgba(214, 41, 52, .55)",
         "temp": "hot",
-        "value": ".341"
+        "value": "1.000"
        },
        {
         "zone": "07",
         "color": "rgba(214, 41, 52, .55)",
         "temp": "hot",
-        "value": ".385"
+        "value": "1.036"
        },
        {
         "zone": "08",
         "color": "rgba(214, 41, 52, .55)",
         "temp": "hot",
+        "value": "1.033"
+       },
+       {
+        "zone": "09",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "1.028"
+       },
+       {
+        "zone": "11",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".717"
+       },
+       {
+        "zone": "12",
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".661"
+       },
+       {
+        "zone": "13",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".451"
+       },
+       {
+        "zone": "14",
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".621"
+       }
+      ]
+     }
+    },
+    {
+     "stat": {
+      "name": "onBasePercentage",
+      "zones": [
+       {
+        "zone": "01",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".256"
+       },
+       {
+        "zone": "02",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".319"
+       },
+       {
+        "zone": "03",
+        "color": "rgba(150, 188, 255, .55)",
+        "temp": "cool",
+        "value": ".262"
+       },
+       {
+        "zone": "04",
+        "color": "rgba(234, 147, 153, .55)",
+        "temp": "warm",
+        "value": ".367"
+       },
+       {
+        "zone": "05",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".466"
+       },
+       {
+        "zone": "06",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".333"
+       },
+       {
+        "zone": "07",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".418"
+       },
+       {
+        "zone": "08",
+        "color": "rgba(234, 147, 153, .55)",
+        "temp": "warm",
         "value": ".350"
        },
        {
         "zone": "09",
         "color": "rgba(214, 41, 52, .55)",
         "temp": "hot",
-        "value": ".364"
+        "value": ".417"
        },
        {
         "zone": "11",
-        "color": "rgba(150, 188, 255, .55)",
-        "temp": "cool",
-        "value": ".216"
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".453"
        },
        {
         "zone": "12",
-        "color": "rgba(255, 255, 255, 0.55)",
-        "temp": "lukewarm",
-        "value": ".233"
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".411"
        },
        {
         "zone": "13",
-        "color": "rgba(6, 90, 238, .55)",
-        "temp": "cold",
-        "value": ".102"
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".380"
        },
        {
         "zone": "14",
-        "color": "rgba(150, 188, 255, .55)",
-        "temp": "cool",
-        "value": ".204"
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".409"
        }
       ]
      }
@@ -173,91 +258,6 @@
         "color": "rgba(6, 90, 238, .55)",
         "temp": "cold",
         "value": ".286"
-       }
-      ]
-     }
-    },
-    {
-     "stat": {
-      "name": "exitVelocity",
-      "zones": [
-       {
-        "zone": "01",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": "96.65"
-       },
-       {
-        "zone": "02",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": "97.72"
-       },
-       {
-        "zone": "03",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": "92.72"
-       },
-       {
-        "zone": "04",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": "98.06"
-       },
-       {
-        "zone": "05",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": "103.24"
-       },
-       {
-        "zone": "06",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": "98.20"
-       },
-       {
-        "zone": "07",
-        "color": "rgba(234, 147, 153, .55)",
-        "temp": "warm",
-        "value": "91.14"
-       },
-       {
-        "zone": "08",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": "99.45"
-       },
-       {
-        "zone": "09",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": "101.05"
-       },
-       {
-        "zone": "11",
-        "color": "rgba(234, 147, 153, .55)",
-        "temp": "warm",
-        "value": "89.72"
-       },
-       {
-        "zone": "12",
-        "color": "rgba(6, 90, 238, .55)",
-        "temp": "cold",
-        "value": "79.37"
-       },
-       {
-        "zone": "13",
-        "color": "rgba(6, 90, 238, .55)",
-        "temp": "cold",
-        "value": "81.05"
-       },
-       {
-        "zone": "14",
-        "color": "rgba(214, 41, 52, .55)",
-        "temp": "hot",
-        "value": "97.23"
        }
       ]
      }

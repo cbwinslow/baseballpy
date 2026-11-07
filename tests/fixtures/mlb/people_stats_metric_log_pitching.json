@@ -42,7 +42,8 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "venue": {
       "id": 3313,
@@ -56,14 +57,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 681297,
       "fullName": "Colton Cowser",
       "link": "/api/v1/people/681297",
       "firstName": "Colton",
-      "lastName": "Cowser"
+      "lastName": "Cowser",
+      "nameSlug": "colton-cowser-681297"
      },
      "fieldingTeam": {
       "id": 147,
@@ -193,7 +196,8 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "venue": {
       "id": 3313,
@@ -207,14 +211,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 807799,
       "fullName": "Masataka Yoshida",
       "link": "/api/v1/people/807799",
       "firstName": "Masataka",
-      "lastName": "Yoshida"
+      "lastName": "Yoshida",
+      "nameSlug": "masataka-yoshida-807799"
      },
      "fieldingTeam": {
       "id": 147,
@@ -344,7 +350,8 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "venue": {
       "id": 3313,
@@ -358,14 +365,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 646240,
       "fullName": "Rafael Devers",
       "link": "/api/v1/people/646240",
       "firstName": "Rafael",
-      "lastName": "Devers"
+      "lastName": "Devers",
+      "nameSlug": "rafael-devers-646240"
      },
      "fieldingTeam": {
       "id": 147,

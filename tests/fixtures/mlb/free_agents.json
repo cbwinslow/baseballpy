@@ -5,7 +5,8 @@
    "player": {
     "id": 642715,
     "fullName": "Willy Adames",
-    "link": "/api/v1/people/642715"
+    "link": "/api/v1/people/642715",
+    "nameSlug": "willy-adames-642715"
    },
    "originalTeam": {
     "id": 158,
@@ -31,7 +32,8 @@
    "player": {
     "id": 677941,
     "fullName": "Jordyn Adams",
-    "link": "/api/v1/people/677941"
+    "link": "/api/v1/people/677941",
+    "nameSlug": "jordyn-adams-677941"
    },
    "originalTeam": {
     "id": 108,
@@ -57,7 +59,8 @@
    "player": {
     "id": 605113,
     "fullName": "Nick Ahmed",
-    "link": "/api/v1/people/605113"
+    "link": "/api/v1/people/605113",
+    "nameSlug": "nick-ahmed-605113"
    },
    "originalTeam": {
     "id": 135,

@@ -19,7 +19,8 @@
       "fullName": "Daniel Descalso",
       "link": "/api/v1/people/518614",
       "firstName": "Daniel",
-      "lastName": "Descalso"
+      "lastName": "Descalso",
+      "nameSlug": "daniel-descalso-518614"
      }
     },
     {
@@ -30,7 +31,8 @@
       "fullName": "Jeremy Hellickson",
       "link": "/api/v1/people/476451",
       "firstName": "Jeremy",
-      "lastName": "Hellickson"
+      "lastName": "Hellickson",
+      "nameSlug": "jeremy-hellickson-476451"
      }
     },
     {
@@ -41,7 +43,8 @@
       "fullName": "Noah Syndergaard",
       "link": "/api/v1/people/592789",
       "firstName": "Noah",
-      "lastName": "Syndergaard"
+      "lastName": "Syndergaard",
+      "nameSlug": "noah-syndergaard-592789"
      }
     }
    ]

@@ -3,51 +3,6 @@
  "stats": [
   {
    "type": {
-    "displayName": "vsPlayerTotal"
-   },
-   "group": {
-    "displayName": "running"
-   },
-   "totalSplits": 129,
-   "exemptions": [],
-   "splits": [
-    {
-     "gameType": "R",
-     "numTeams": 2,
-     "pitcher": {
-      "id": 518614,
-      "fullName": "Daniel Descalso",
-      "link": "/api/v1/people/518614",
-      "firstName": "Daniel",
-      "lastName": "Descalso"
-     }
-    },
-    {
-     "gameType": "R",
-     "numTeams": 2,
-     "pitcher": {
-      "id": 476451,
-      "fullName": "Jeremy Hellickson",
-      "link": "/api/v1/people/476451",
-      "firstName": "Jeremy",
-      "lastName": "Hellickson"
-     }
-    },
-    {
-     "gameType": "R",
-     "numTeams": 2,
-     "pitcher": {
-      "id": 592789,
-      "fullName": "Noah Syndergaard",
-      "link": "/api/v1/people/592789",
-      "firstName": "Noah",
-      "lastName": "Syndergaard"
-     }
-    }
-   ]
-  },
-  {
-   "type": {
     "displayName": "vsPlayer"
    },
    "group": {
@@ -88,14 +43,16 @@
       "fullName": "Zack Greinke",
       "link": "/api/v1/people/425844",
       "firstName": "Donald",
-      "lastName": "Greinke"
+      "lastName": "Greinke",
+      "nameSlug": "donald-greinke-425844"
      },
      "batter": {
       "id": 543037,
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      }
     },
     {
@@ -130,14 +87,16 @@
       "fullName": "Cole Hamels",
       "link": "/api/v1/people/430935",
       "firstName": "Colbert",
-      "lastName": "Hamels"
+      "lastName": "Hamels",
+      "nameSlug": "colbert-hamels-430935"
      },
      "batter": {
       "id": 543037,
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      }
     },
     {
@@ -172,14 +131,64 @@
       "fullName": "Scott Baker",
       "link": "/api/v1/people/435044",
       "firstName": "Timothy",
-      "lastName": "Baker"
+      "lastName": "Baker",
+      "nameSlug": "timothy-baker-435044"
      },
      "batter": {
       "id": 543037,
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
+     }
+    }
+   ]
+  },
+  {
+   "type": {
+    "displayName": "vsPlayerTotal"
+   },
+   "group": {
+    "displayName": "running"
+   },
+   "totalSplits": 129,
+   "exemptions": [],
+   "splits": [
+    {
+     "gameType": "R",
+     "numTeams": 2,
+     "pitcher": {
+      "id": 518614,
+      "fullName": "Daniel Descalso",
+      "link": "/api/v1/people/518614",
+      "firstName": "Daniel",
+      "lastName": "Descalso",
+      "nameSlug": "daniel-descalso-518614"
+     }
+    },
+    {
+     "gameType": "R",
+     "numTeams": 2,
+     "pitcher": {
+      "id": 476451,
+      "fullName": "Jeremy Hellickson",
+      "link": "/api/v1/people/476451",
+      "firstName": "Jeremy",
+      "lastName": "Hellickson",
+      "nameSlug": "jeremy-hellickson-476451"
+     }
+    },
+    {
+     "gameType": "R",
+     "numTeams": 2,
+     "pitcher": {
+      "id": 592789,
+      "fullName": "Noah Syndergaard",
+      "link": "/api/v1/people/592789",
+      "firstName": "Noah",
+      "lastName": "Syndergaard",
+      "nameSlug": "noah-syndergaard-592789"
      }
     }
    ]

@@ -64,7 +64,8 @@
      "player": {
       "id": 543037,
       "fullName": "Gerrit Cole",
-      "link": "/api/v1/people/543037"
+      "link": "/api/v1/people/543037",
+      "nameSlug": "gerrit-cole-543037"
      },
      "opponent": {
       "id": 110,
@@ -77,12 +78,14 @@
      "pitcher": {
       "id": 543037,
       "fullName": "Gerrit Cole",
-      "link": "/api/v1/people/543037"
+      "link": "/api/v1/people/543037",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 683002,
       "fullName": "Gunnar Henderson",
-      "link": "/api/v1/people/683002"
+      "link": "/api/v1/people/683002",
+      "nameSlug": "gunnar-henderson-683002"
      },
      "game": {
       "gamePk": 745732,
@@ -148,7 +151,8 @@
      "player": {
       "id": 543037,
       "fullName": "Gerrit Cole",
-      "link": "/api/v1/people/543037"
+      "link": "/api/v1/people/543037",
+      "nameSlug": "gerrit-cole-543037"
      },
      "opponent": {
       "id": 110,
@@ -161,12 +165,14 @@
      "pitcher": {
       "id": 543037,
       "fullName": "Gerrit Cole",
-      "link": "/api/v1/people/543037"
+      "link": "/api/v1/people/543037",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 683002,
       "fullName": "Gunnar Henderson",
-      "link": "/api/v1/people/683002"
+      "link": "/api/v1/people/683002",
+      "nameSlug": "gunnar-henderson-683002"
      },
      "game": {
       "gamePk": 745732,
@@ -233,7 +239,8 @@
      "player": {
       "id": 543037,
       "fullName": "Gerrit Cole",
-      "link": "/api/v1/people/543037"
+      "link": "/api/v1/people/543037",
+      "nameSlug": "gerrit-cole-543037"
      },
      "opponent": {
       "id": 110,
@@ -246,12 +253,14 @@
      "pitcher": {
       "id": 543037,
       "fullName": "Gerrit Cole",
-      "link": "/api/v1/people/543037"
+      "link": "/api/v1/people/543037",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 683002,
       "fullName": "Gunnar Henderson",
-      "link": "/api/v1/people/683002"
+      "link": "/api/v1/people/683002",
+      "nameSlug": "gunnar-henderson-683002"
      },
      "game": {
       "gamePk": 745732,

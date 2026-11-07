@@ -76,62 +76,74 @@
   "pitcher": {
    "id": 570632,
    "fullName": "José Ureña",
-   "link": "/api/v1/people/570632"
+   "link": "/api/v1/people/570632",
+   "nameSlug": "jose-urena-570632"
   },
   "catcher": {
    "id": 668800,
    "fullName": "Andrew Knizner",
-   "link": "/api/v1/people/668800"
+   "link": "/api/v1/people/668800",
+   "nameSlug": "andrew-knizner-668800"
   },
   "first": {
    "id": 663993,
    "fullName": "Nathaniel Lowe",
-   "link": "/api/v1/people/663993"
+   "link": "/api/v1/people/663993",
+   "nameSlug": "nathaniel-lowe-663993"
   },
   "second": {
    "id": 543760,
    "fullName": "Marcus Semien",
-   "link": "/api/v1/people/543760"
+   "link": "/api/v1/people/543760",
+   "nameSlug": "marcus-semien-543760"
   },
   "third": {
    "id": 677649,
    "fullName": "Ezequiel Duran",
-   "link": "/api/v1/people/677649"
+   "link": "/api/v1/people/677649",
+   "nameSlug": "ezequiel-duran-677649"
   },
   "shortstop": {
    "id": 608369,
    "fullName": "Corey Seager",
-   "link": "/api/v1/people/608369"
+   "link": "/api/v1/people/608369",
+   "nameSlug": "corey-seager-608369"
   },
   "left": {
    "id": 694671,
    "fullName": "Wyatt Langford",
-   "link": "/api/v1/people/694671"
+   "link": "/api/v1/people/694671",
+   "nameSlug": "wyatt-langford-694671"
   },
   "center": {
    "id": 665750,
    "fullName": "Leody Taveras",
-   "link": "/api/v1/people/665750"
+   "link": "/api/v1/people/665750",
+   "nameSlug": "leody-taveras-665750"
   },
   "right": {
    "id": 666969,
    "fullName": "Adolis García",
-   "link": "/api/v1/people/666969"
+   "link": "/api/v1/people/666969",
+   "nameSlug": "adolis-garcia-666969"
   },
   "batter": {
    "id": 608369,
    "fullName": "Corey Seager",
-   "link": "/api/v1/people/608369"
+   "link": "/api/v1/people/608369",
+   "nameSlug": "corey-seager-608369"
   },
   "onDeck": {
    "id": 669701,
    "fullName": "Josh Smith",
-   "link": "/api/v1/people/669701"
+   "link": "/api/v1/people/669701",
+   "nameSlug": "josh-smith-669701"
   },
   "inHole": {
    "id": 666969,
    "fullName": "Adolis García",
-   "link": "/api/v1/people/666969"
+   "link": "/api/v1/people/666969",
+   "nameSlug": "adolis-garcia-666969"
   },
   "battingOrder": 2,
   "team": {
@@ -144,22 +156,26 @@
   "batter": {
    "id": 679845,
    "fullName": "Nick Loftin",
-   "link": "/api/v1/people/679845"
+   "link": "/api/v1/people/679845",
+   "nameSlug": "nick-loftin-679845"
   },
   "onDeck": {
    "id": 677951,
    "fullName": "Bobby Witt Jr.",
-   "link": "/api/v1/people/677951"
+   "link": "/api/v1/people/677951",
+   "nameSlug": "bobby-witt-jr-677951"
   },
   "inHole": {
    "id": 686469,
    "fullName": "Vinnie Pasquantino",
-   "link": "/api/v1/people/686469"
+   "link": "/api/v1/people/686469",
+   "nameSlug": "vinnie-pasquantino-686469"
   },
   "pitcher": {
    "id": 672578,
    "fullName": "Carlos Hernández",
-   "link": "/api/v1/people/672578"
+   "link": "/api/v1/people/672578",
+   "nameSlug": "carlos-hernandez-672578"
   },
   "battingOrder": 1,
   "team": {

@@ -11,7 +11,7 @@
     "id": 201,
     "link": "/api/v1/divisions/201"
    },
-   "lastUpdated": "2026-09-24T23:52:42.501Z",
+   "lastUpdated": "2026-10-29T06:15:55.070Z",
    "teamRecords": [
     {
      "team": {
@@ -508,7 +508,7 @@
       "ties": 0,
       "pct": ".531"
      },
-     "lastUpdated": "2025-04-14T19:17:38Z",
+     "lastUpdated": "2026-10-29T06:14:40Z",
      "records": {
       "splitRecords": [
        {
@@ -721,7 +721,7 @@
     "id": 203,
     "link": "/api/v1/divisions/203"
    },
-   "lastUpdated": "2026-09-17T14:57:32.600Z",
+   "lastUpdated": "2026-10-29T06:16:16.490Z",
    "teamRecords": [
     {
      "team": {
@@ -754,7 +754,7 @@
       "ties": 0,
       "pct": ".574"
      },
-     "lastUpdated": "2026-09-11T17:31:33Z",
+     "lastUpdated": "2026-10-29T06:12:45Z",
      "records": {
       "splitRecords": [
        {
@@ -986,7 +986,7 @@
       "ties": 0,
       "pct": ".549"
      },
-     "lastUpdated": "2026-09-11T17:31:48Z",
+     "lastUpdated": "2026-10-29T06:16:15Z",
      "records": {
       "splitRecords": [
        {

@@ -51,7 +51,8 @@
      "player": {
       "id": 521692,
       "fullName": "Salvador Perez",
-      "link": "/api/v1/people/521692"
+      "link": "/api/v1/people/521692",
+      "nameSlug": "salvador-perez-521692"
      },
      "league": {
       "id": 103,
@@ -106,7 +107,8 @@
      "player": {
       "id": 521692,
       "fullName": "Salvador Perez",
-      "link": "/api/v1/people/521692"
+      "link": "/api/v1/people/521692",
+      "nameSlug": "salvador-perez-521692"
      },
      "league": {
       "id": 103,
@@ -161,7 +163,8 @@
      "player": {
       "id": 521692,
       "fullName": "Salvador Perez",
-      "link": "/api/v1/people/521692"
+      "link": "/api/v1/people/521692",
+      "nameSlug": "salvador-perez-521692"
      },
      "league": {
       "id": 103,

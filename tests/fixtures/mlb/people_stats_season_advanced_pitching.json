@@ -78,7 +78,8 @@
      "player": {
       "id": 543037,
       "fullName": "Gerrit Cole",
-      "link": "/api/v1/people/543037"
+      "link": "/api/v1/people/543037",
+      "nameSlug": "gerrit-cole-543037"
      },
      "league": {
       "id": 103,

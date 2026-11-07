@@ -13,45 +13,45 @@
    "splits": [
     {
      "stat": {
-      "gamesPlayed": 15,
-      "groundOuts": 4,
+      "gamesPlayed": 14,
+      "groundOuts": 3,
       "airOuts": 1,
       "doubles": 1,
       "triples": 0,
-      "homeRuns": 3,
+      "homeRuns": 2,
       "strikeOuts": 2,
       "baseOnBalls": 4,
       "intentionalWalks": 0,
-      "hits": 10,
+      "hits": 9,
       "hitByPitch": 1,
-      "avg": ".588",
-      "atBats": 17,
-      "obp": ".682",
-      "slg": "1.176",
-      "ops": "1.858",
+      "avg": ".600",
+      "atBats": 15,
+      "obp": ".700",
+      "slg": "1.067",
+      "ops": "1.767",
       "groundIntoDoublePlay": 1,
-      "numberOfPitches": 101,
-      "inningsPitched": "3.0",
+      "numberOfPitches": 85,
+      "inningsPitched": "2.2",
       "outsPitched": 0,
-      "whip": "4.67",
-      "battersFaced": 22,
-      "outs": 9,
-      "gamesPitched": 15,
-      "balls": 41,
-      "strikes": 60,
-      "strikePercentage": ".590",
+      "whip": "4.88",
+      "battersFaced": 20,
+      "outs": 8,
+      "gamesPitched": 14,
+      "balls": 37,
+      "strikes": 48,
+      "strikePercentage": ".560",
       "hitBatsmen": 1,
       "balks": 0,
       "wildPitches": 0,
-      "totalBases": 20,
-      "groundOutsToAirouts": "4.00",
-      "rbi": 7,
-      "pitchesPerInning": "33.67",
+      "totalBases": 16,
+      "groundOutsToAirouts": "3.00",
+      "rbi": 6,
+      "pitchesPerInning": "31.88",
       "strikeoutWalkRatio": "0.50",
-      "strikeoutsPer9Inn": "6.00",
-      "walksPer9Inn": "12.00",
-      "hitsPer9Inn": "30.00",
-      "homeRunsPer9": "9.00",
+      "strikeoutsPer9Inn": "6.75",
+      "walksPer9Inn": "13.50",
+      "hitsPer9Inn": "30.38",
+      "homeRunsPer9": "6.75",
       "catchersInterference": 0,
       "sacBunts": 0,
       "sacFlies": 0
@@ -62,13 +62,14 @@
       "link": "/api/v1/teams/147"
      },
      "gameType": "R",
-     "numTeams": 12,
+     "numTeams": 11,
      "pitcher": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      }
     }
    ]
@@ -83,6 +84,81 @@
    "totalSplits": 18,
    "exemptions": [],
    "splits": [
+    {
+     "season": "2021",
+     "stat": {
+      "gamesPlayed": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 0,
+      "hitByPitch": 1,
+      "avg": ".000",
+      "atBats": 0,
+      "obp": "1.000",
+      "slg": ".000",
+      "ops": "1.000",
+      "groundIntoDoublePlay": 0,
+      "numberOfPitches": 3,
+      "inningsPitched": "0.0",
+      "outsPitched": 0,
+      "whip": "-",
+      "battersFaced": 1,
+      "outs": 0,
+      "gamesPitched": 1,
+      "balls": 1,
+      "strikes": 2,
+      "strikePercentage": ".670",
+      "hitBatsmen": 1,
+      "balks": 0,
+      "wildPitches": 0,
+      "totalBases": 0,
+      "groundOutsToAirouts": "-.--",
+      "rbi": 0,
+      "pitchesPerInning": "-.--",
+      "strikeoutWalkRatio": "-.--",
+      "strikeoutsPer9Inn": "-.--",
+      "walksPer9Inn": "-.--",
+      "hitsPer9Inn": "-.--",
+      "homeRunsPer9": "-.--",
+      "catchersInterference": 0,
+      "sacBunts": 0,
+      "sacFlies": 0
+     },
+     "team": {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "link": "/api/v1/teams/108"
+     },
+     "opponent": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "gameType": "R",
+     "numTeams": 1,
+     "pitcher": {
+      "id": 660271,
+      "fullName": "Shohei Ohtani",
+      "link": "/api/v1/people/660271",
+      "firstName": "Shohei",
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
+     },
+     "batter": {
+      "id": 640449,
+      "fullName": "Clint Frazier",
+      "link": "/api/v1/people/640449",
+      "firstName": "Clint",
+      "lastName": "Frazier",
+      "nameSlug": "clint-frazier-640449"
+     }
+    },
     {
      "season": "2021",
      "stat": {
@@ -146,14 +222,16 @@
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "batter": {
       "id": 572228,
       "fullName": "Luke Voit",
       "link": "/api/v1/people/572228",
       "firstName": "Louis",
-      "lastName": "Voit"
+      "lastName": "Voit",
+      "nameSlug": "louis-voit-572228"
      }
     },
     {
@@ -219,87 +297,16 @@
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "batter": {
       "id": 596059,
       "fullName": "Rougned Odor",
       "link": "/api/v1/people/596059",
       "firstName": "Rougned",
-      "lastName": "Odor"
-     }
-    },
-    {
-     "season": "2021",
-     "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 0,
-      "hitByPitch": 1,
-      "avg": ".000",
-      "atBats": 0,
-      "obp": "1.000",
-      "slg": ".000",
-      "ops": "1.000",
-      "groundIntoDoublePlay": 0,
-      "numberOfPitches": 3,
-      "inningsPitched": "0.0",
-      "outsPitched": 0,
-      "whip": "-",
-      "battersFaced": 1,
-      "outs": 0,
-      "gamesPitched": 1,
-      "balls": 1,
-      "strikes": 2,
-      "strikePercentage": ".670",
-      "hitBatsmen": 1,
-      "balks": 0,
-      "wildPitches": 0,
-      "totalBases": 0,
-      "groundOutsToAirouts": "-.--",
-      "rbi": 0,
-      "pitchesPerInning": "-.--",
-      "strikeoutWalkRatio": "-.--",
-      "strikeoutsPer9Inn": "-.--",
-      "walksPer9Inn": "-.--",
-      "hitsPer9Inn": "-.--",
-      "homeRunsPer9": "-.--",
-      "catchersInterference": 0,
-      "sacBunts": 0,
-      "sacFlies": 0
-     },
-     "team": {
-      "id": 108,
-      "name": "Los Angeles Angels",
-      "link": "/api/v1/teams/108"
-     },
-     "opponent": {
-      "id": 147,
-      "name": "New York Yankees",
-      "link": "/api/v1/teams/147"
-     },
-     "gameType": "R",
-     "numTeams": 1,
-     "pitcher": {
-      "id": 660271,
-      "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271",
-      "firstName": "Shohei",
-      "lastName": "Ohtani"
-     },
-     "batter": {
-      "id": 640449,
-      "fullName": "Clint Frazier",
-      "link": "/api/v1/people/640449",
-      "firstName": "Clint",
-      "lastName": "Frazier"
+      "lastName": "Odor",
+      "nameSlug": "rougned-odor-596059"
      }
     }
    ]

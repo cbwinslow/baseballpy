@@ -2,11 +2,52 @@
  "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
  "transactions": [
   {
-   "id": 736105,
+   "id": 736150,
    "person": {
-    "id": 814188,
-    "fullName": "Jayson Bass",
-    "link": "/api/v1/people/814188"
+    "id": 680710,
+    "fullName": "Grant Witherspoon",
+    "link": "/api/v1/people/680710",
+    "nameSlug": "grant-witherspoon-680710"
+   },
+   "toTeam": {
+    "id": 677,
+    "name": "Naranjeros de Hermosillo",
+    "link": "/api/v1/teams/677"
+   },
+   "date": "2024-01-01",
+   "effectiveDate": "2024-01-01",
+   "resolutionDate": "2024-01-01",
+   "typeCode": "ASG",
+   "typeDesc": "Assigned",
+   "description": "OF Grant Witherspoon assigned to Naranjeros de Hermosillo."
+  },
+  {
+   "id": 736128,
+   "person": {
+    "id": 675880,
+    "fullName": "Daniel De La Fuente",
+    "link": "/api/v1/people/675880",
+    "nameSlug": "daniel-de-la-fuente-675880"
+   },
+   "toTeam": {
+    "id": 676,
+    "name": "Mayos de Navojoa",
+    "link": "/api/v1/teams/676"
+   },
+   "date": "2024-01-01",
+   "effectiveDate": "2024-01-01",
+   "resolutionDate": "2024-01-01",
+   "typeCode": "SC",
+   "typeDesc": "Status Change",
+   "description": "Mayos de Navojoa placed RHP Daniel De La Fuente on the reserve list."
+  },
+  {
+   "id": 736104,
+   "person": {
+    "id": 703722,
+    "fullName": "Miguel Vazquez",
+    "link": "/api/v1/people/703722",
+    "nameSlug": "miguel-vazquez-703722"
    },
    "toTeam": {
     "id": 675,
@@ -18,45 +59,7 @@
    "resolutionDate": "2024-01-01",
    "typeCode": "SC",
    "typeDesc": "Status Change",
-   "description": "Caneros de los Mochis placed OF Jayson Bass on the reserve list."
-  },
-  {
-   "id": 736109,
-   "person": {
-    "id": 672629,
-    "fullName": "Gerardo Carrillo",
-    "link": "/api/v1/people/672629"
-   },
-   "toTeam": {
-    "id": 674,
-    "name": "Charros de Jalisco",
-    "link": "/api/v1/teams/674"
-   },
-   "date": "2024-01-01",
-   "effectiveDate": "2024-01-01",
-   "resolutionDate": "2024-01-01",
-   "typeCode": "SC",
-   "typeDesc": "Status Change",
-   "description": "Charros de Jalisco placed RHP Gerardo Carrillo on the reserve list."
-  },
-  {
-   "id": 736148,
-   "person": {
-    "id": 652999,
-    "fullName": "Jesus Fabela",
-    "link": "/api/v1/people/652999"
-   },
-   "toTeam": {
-    "id": 678,
-    "name": "Tomateros de Culiacan",
-    "link": "/api/v1/teams/678"
-   },
-   "date": "2024-01-01",
-   "effectiveDate": "2024-01-01",
-   "resolutionDate": "2024-01-01",
-   "typeCode": "SC",
-   "typeDesc": "Status Change",
-   "description": "Tomateros de Culiacan activated RF Jesus Fabela from the reserve list."
+   "description": "Caneros de los Mochis activated RHP Miguel Vazquez from the reserve list."
   }
  ]
 }

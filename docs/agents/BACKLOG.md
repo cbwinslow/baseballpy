@@ -453,7 +453,7 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-260 | `modelling-data-needs 1.1`: verify the "have" column against the lake | OPEN | row counts and gaps per dataset written into design.md |
+| B-260 | modelling-data-needs 1.1: verify the "have" column against the lake | DONE | row counts and gaps per dataset verified against lake and written into design.md |
 | B-261 | `modelling-data-needs 1.2`: owner grilling, decisions D1 to D6 | OPEN | each decision answered and recorded |
 | B-262 | `modelling-data-needs 1.3`: open one change per missing source | OPEN | changes exist and are in the backlog |
 | B-263 | `modelling-data-needs 1.4`: as-of rule as a spec requirement with a test | OPEN | test fails if a feature uses data after first pitch |
@@ -509,7 +509,7 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-298 | folder-and-name-audit 1.1 to 1.3: naming rules written and tested, `UNKNOWN_FOLDER` layout check, README lake drawing, ADR 84 | DONE | tests/test_naming_rules.py (5); audit of 480 datasets and the real lake found 0 violations |
 | B-299 | folder-and-name-audit 1.4: stale `raw/mlb_api/standings_postseason` deleted (38 files, 0 records) and the Kalshi private key moved out of the project folder, with the owner's approval | DONE | 0 non-empty files checked before deleting; the key file no longer exists in the repository folder |
 | B-300 | mlb-game-levels: `--option sports=` for the per-game MLB download (default major leagues), ADR 85 | DONE | tests/test_mlb_game_levels.py (4); dry runs show `sports=1`; a typo is refused while planning |
-| B-301 | `mlb-game-memory 1.1`: find why a 16,000-game MLB season run ends in `MemoryError` (seen 2026-11-07 after 7.9 h, in the manifest save) | OPEN | a long game run keeps its memory flat; a test or measurement shows it |
-| B-302 | `retrosheet-box-accounts 2.4`: parse historical qualifiers (Option A: rbi_qualifier, attendance_qualifier, empty strings as null, accept NaN in float columns); drain quarantine | OPEN | tests verify parsed qualifiers, clean numeric types, and empty quarantine for box accounts and win_probability |
-| B-303 | `mlb-stats-route-406-and-deep-pools 3.3`: regenerate the 61 MLB schemas with schema drift in _extras via gen_mlb_schemas.py --only | OPEN | 61 drifted datasets have typed columns for nameSlug and stats; _extras is empty in fresh samples |
+| B-301 | mlb-game-memory 1.1: find why a 16,000-game MLB season run ends in `MemoryError` (seen 2026-11-07 after 7.9 h, in the manifest save) | DONE (msgspec zero-copy binary serialization in atomic.py, test_manifest_large_entry_msgspec_roundtrip) | a long game run keeps its memory flat; a test or measurement shows it |
+| B-302 | retrosheet-box-accounts 2.4: parse historical qualifiers (Option A: rbi_qualifier, attendance_qualifier, empty strings as null, accept NaN in float columns); drain quarantine | DONE | tests in test_retrosheet_box.py verify qualifiers; 428 raw files parsed cleanly; 0 quarantined records in lake |
+| B-303 | mlb-stats-route-406-and-deep-pools 3.3: regenerate the 61 MLB schemas with schema drift in _extras via gen_mlb_schemas.py --only | DONE (142 endpoints gained typed name_slug and similar columns; 25 league-wide stats_* kept unchanged because the 406 cut their sampling) | 61 drifted datasets have typed columns for nameSlug and stats; _extras is empty in fresh samples |
 

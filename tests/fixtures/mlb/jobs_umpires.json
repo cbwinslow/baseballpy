@@ -5,7 +5,8 @@
    "person": {
     "id": 596809,
     "fullName": "Ryan Additon",
-    "link": "/api/v1/people/596809"
+    "link": "/api/v1/people/596809",
+    "nameSlug": "ryan-additon-596809"
    },
    "jerseyNumber": "67",
    "job": "Umpire",
@@ -16,7 +17,8 @@
    "person": {
     "id": 623938,
     "fullName": "Erich Bacchus",
-    "link": "/api/v1/people/623938"
+    "link": "/api/v1/people/623938",
+    "nameSlug": "erich-bacchus-623938"
    },
    "jerseyNumber": "12",
    "job": "Umpire",
@@ -27,7 +29,8 @@
    "person": {
     "id": 545402,
     "fullName": "John Bacon",
-    "link": "/api/v1/people/545402"
+    "link": "/api/v1/people/545402",
+    "nameSlug": "john-bacon-545402"
    },
    "jerseyNumber": "70",
    "job": "Umpire",

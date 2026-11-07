@@ -23,7 +23,8 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "sport": {
       "id": 1,

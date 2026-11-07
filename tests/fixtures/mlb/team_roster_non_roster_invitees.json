@@ -5,7 +5,8 @@
    "person": {
     "id": 656185,
     "fullName": "Greg Allen",
-    "link": "/api/v1/people/656185"
+    "link": "/api/v1/people/656185",
+    "nameSlug": "greg-allen-656185"
    },
    "jerseyNumber": "31",
    "position": {
@@ -23,7 +24,8 @@
    "person": {
     "id": 677007,
     "fullName": "Josh Breaux",
-    "link": "/api/v1/people/677007"
+    "link": "/api/v1/people/677007",
+    "nameSlug": "josh-breaux-677007"
    },
    "jerseyNumber": "82",
    "position": {
@@ -41,7 +43,8 @@
    "person": {
     "id": 660787,
     "fullName": "Yerry De los Santos",
-    "link": "/api/v1/people/660787"
+    "link": "/api/v1/people/660787",
+    "nameSlug": "yerry-de-los-santos-660787"
    },
    "jerseyNumber": "73",
    "position": {

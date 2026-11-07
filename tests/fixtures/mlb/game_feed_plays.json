@@ -239,7 +239,7 @@
     "link": "/api/v1/people/641680",
     "firstName": "Jonah",
     "lastName": "Heim",
-    "primaryNumber": "15",
+    "primaryNumber": "37",
     "birthDate": "1995-06-27",
     "currentAge": 31,
     "birthCity": "Buffalo",
@@ -247,7 +247,7 @@
     "birthCountry": "USA",
     "height": "6' 4\"",
     "weight": 220,
-    "active": true,
+    "active": false,
     "primaryPosition": {
      "code": "2",
      "name": "Catcher",
@@ -262,6 +262,7 @@
     "isPlayer": true,
     "isVerified": true,
     "draftYear": 2013,
+    "lastPlayedDate": "2026-09-26",
     "mlbDebutDate": "2020-08-25",
     "batSide": {
      "code": "S",
@@ -490,7 +491,6 @@
     "link": "/api/v1/people/663993",
     "firstName": "David",
     "lastName": "Lowe",
-    "primaryNumber": "46",
     "birthDate": "1995-07-07",
     "currentAge": 31,
     "birthCity": "Norfolk",
@@ -590,7 +590,7 @@
     "lastName": "Gray",
     "primaryNumber": "22",
     "birthDate": "1991-11-05",
-    "currentAge": 34,
+    "currentAge": 35,
     "birthCity": "Shawnee",
     "birthStateProvince": "OK",
     "birthCountry": "USA",
@@ -1431,7 +1431,6 @@
     "link": "/api/v1/people/670167",
     "firstName": "John",
     "lastName": "Schreiber",
-    "primaryNumber": "56",
     "birthDate": "1994-03-05",
     "currentAge": 32,
     "birthCity": "Wyandotte",
@@ -1439,7 +1438,7 @@
     "birthCountry": "USA",
     "height": "6' 2\"",
     "weight": 224,
-    "active": true,
+    "active": false,
     "primaryPosition": {
      "code": "1",
      "name": "Pitcher",
@@ -1455,6 +1454,7 @@
     "isVerified": true,
     "draftYear": 2016,
     "pronunciation": "SHRY-ber",
+    "lastPlayedDate": "2026-09-25",
     "mlbDebutDate": "2019-08-09",
     "batSide": {
      "code": "R",
@@ -2233,7 +2233,7 @@
     "birthCountry": "USA",
     "height": "6' 3\"",
     "weight": 208,
-    "active": true,
+    "active": false,
     "primaryPosition": {
      "code": "1",
      "name": "Pitcher",
@@ -2250,6 +2250,7 @@
     "isVerified": true,
     "draftYear": 2006,
     "pronunciation": "SHER-zer",
+    "lastPlayedDate": "2026-09-27",
     "mlbDebutDate": "2008-04-29",
     "batSide": {
      "code": "R",
@@ -2525,7 +2526,6 @@
     "link": "/api/v1/people/489446",
     "firstName": "Kirby",
     "lastName": "Yates",
-    "primaryNumber": "54",
     "birthDate": "1987-03-25",
     "currentAge": 39,
     "birthCity": "Lihue",
@@ -2742,9 +2742,9 @@
     "phone": "(817) 533-1972"
    },
    "timeZone": {
-    "tz": "CDT",
+    "tz": "CST",
     "id": "America/Chicago",
-    "offset": -5,
+    "offset": -6,
     "offsetAtGameTime": -5
    },
    "fieldInfo": {
@@ -2798,23 +2798,27 @@
    "away": {
     "id": 679525,
     "fullName": "Alec Marsh",
-    "link": "/api/v1/people/679525"
+    "link": "/api/v1/people/679525",
+    "nameSlug": "alec-marsh-679525"
    },
    "home": {
     "id": 453286,
     "fullName": "Max Scherzer",
-    "link": "/api/v1/people/453286"
+    "link": "/api/v1/people/453286",
+    "nameSlug": "max-scherzer-453286"
    }
   },
   "officialScorer": {
    "id": 674635,
    "fullName": "Chris Ruiz",
-   "link": "/api/v1/people/674635"
+   "link": "/api/v1/people/674635",
+   "nameSlug": "chris-ruiz-674635"
   },
   "primaryDatacaster": {
    "id": 679748,
    "fullName": "Cameron Varnau",
-   "link": "/api/v1/people/679748"
+   "link": "/api/v1/people/679748",
+   "nameSlug": "cameron-varnau-679748"
   },
   "moundVisits": {
    "away": {
@@ -2863,7 +2867,8 @@
       "batter": {
        "id": 679845,
        "fullName": "Nick Loftin",
-       "link": "/api/v1/people/679845"
+       "link": "/api/v1/people/679845",
+       "nameSlug": "nick-loftin-679845"
       },
       "batSide": {
        "code": "R",
@@ -2872,7 +2877,8 @@
       "pitcher": {
        "id": 453286,
        "fullName": "Max Scherzer",
-       "link": "/api/v1/people/453286"
+       "link": "/api/v1/people/453286",
+       "nameSlug": "max-scherzer-453286"
       },
       "pitchHand": {
        "code": "R",
@@ -2918,7 +2924,8 @@
         "runner": {
          "id": 679845,
          "fullName": "Nick Loftin",
-         "link": "/api/v1/people/679845"
+         "link": "/api/v1/people/679845",
+         "nameSlug": "nick-loftin-679845"
         },
         "responsiblePitcher": null,
         "isScoringEvent": false,
@@ -3422,7 +3429,8 @@
       "batter": {
        "id": 677951,
        "fullName": "Bobby Witt Jr.",
-       "link": "/api/v1/people/677951"
+       "link": "/api/v1/people/677951",
+       "nameSlug": "bobby-witt-jr-677951"
       },
       "batSide": {
        "code": "R",
@@ -3431,7 +3439,8 @@
       "pitcher": {
        "id": 453286,
        "fullName": "Max Scherzer",
-       "link": "/api/v1/people/453286"
+       "link": "/api/v1/people/453286",
+       "nameSlug": "max-scherzer-453286"
       },
       "pitchHand": {
        "code": "R",
@@ -3471,7 +3480,8 @@
         "runner": {
          "id": 677951,
          "fullName": "Bobby Witt Jr.",
-         "link": "/api/v1/people/677951"
+         "link": "/api/v1/people/677951",
+         "nameSlug": "bobby-witt-jr-677951"
         },
         "responsiblePitcher": null,
         "isScoringEvent": false,
@@ -3745,7 +3755,8 @@
       "batter": {
        "id": 686469,
        "fullName": "Vinnie Pasquantino",
-       "link": "/api/v1/people/686469"
+       "link": "/api/v1/people/686469",
+       "nameSlug": "vinnie-pasquantino-686469"
       },
       "batSide": {
        "code": "L",
@@ -3754,7 +3765,8 @@
       "pitcher": {
        "id": 453286,
        "fullName": "Max Scherzer",
-       "link": "/api/v1/people/453286"
+       "link": "/api/v1/people/453286",
+       "nameSlug": "max-scherzer-453286"
       },
       "pitchHand": {
        "code": "R",
@@ -3793,7 +3805,8 @@
         "runner": {
          "id": 686469,
          "fullName": "Vinnie Pasquantino",
-         "link": "/api/v1/people/686469"
+         "link": "/api/v1/people/686469",
+         "nameSlug": "vinnie-pasquantino-686469"
         },
         "responsiblePitcher": null,
         "isScoringEvent": false,
@@ -4010,7 +4023,8 @@
      "batter": {
       "id": 679845,
       "fullName": "Nick Loftin",
-      "link": "/api/v1/people/679845"
+      "link": "/api/v1/people/679845",
+      "nameSlug": "nick-loftin-679845"
      },
      "batSide": {
       "code": "R",
@@ -4019,7 +4033,8 @@
      "pitcher": {
       "id": 570632,
       "fullName": "José Ureña",
-      "link": "/api/v1/people/570632"
+      "link": "/api/v1/people/570632",
+      "nameSlug": "jose-urena-570632"
      },
      "pitchHand": {
       "code": "R",
@@ -4061,7 +4076,8 @@
        "runner": {
         "id": 679845,
         "fullName": "Nick Loftin",
-        "link": "/api/v1/people/679845"
+        "link": "/api/v1/people/679845",
+        "nameSlug": "nick-loftin-679845"
        },
        "responsiblePitcher": null,
        "isScoringEvent": false,
@@ -4506,12 +4522,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 679845,
          "fullName": "Nick Loftin",
-         "link": "/api/v1/people/679845"
+         "link": "/api/v1/people/679845",
+         "nameSlug": "nick-loftin-679845"
         },
         "coordinates": {
          "x": 139.41,
@@ -4537,12 +4555,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 686469,
          "fullName": "Vinnie Pasquantino",
-         "link": "/api/v1/people/686469"
+         "link": "/api/v1/people/686469",
+         "nameSlug": "vinnie-pasquantino-686469"
         },
         "coordinates": {
          "x": 108.28,
@@ -4570,12 +4590,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 543760,
          "fullName": "Marcus Semien",
-         "link": "/api/v1/people/543760"
+         "link": "/api/v1/people/543760",
+         "nameSlug": "marcus-semien-543760"
         },
         "coordinates": {
          "x": 110.7,
@@ -4601,12 +4623,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 608369,
          "fullName": "Corey Seager",
-         "link": "/api/v1/people/608369"
+         "link": "/api/v1/people/608369",
+         "nameSlug": "corey-seager-608369"
         },
         "coordinates": {
          "x": 211.52,
@@ -4651,12 +4675,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 521692,
          "fullName": "Salvador Perez",
-         "link": "/api/v1/people/521692"
+         "link": "/api/v1/people/521692",
+         "nameSlug": "salvador-perez-521692"
         },
         "coordinates": {
          "x": 171.14,
@@ -4682,12 +4708,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 592669,
          "fullName": "Hunter Renfroe",
-         "link": "/api/v1/people/592669"
+         "link": "/api/v1/people/592669",
+         "nameSlug": "hunter-renfroe-592669"
         },
         "coordinates": {
          "x": 125.2,
@@ -4715,12 +4743,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 663993,
          "fullName": "Nathaniel Lowe",
-         "link": "/api/v1/people/663993"
+         "link": "/api/v1/people/663993",
+         "nameSlug": "nathaniel-lowe-663993"
         },
         "coordinates": {
          "x": 138.5,
@@ -4746,12 +4776,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 694671,
          "fullName": "Wyatt Langford",
-         "link": "/api/v1/people/694671"
+         "link": "/api/v1/people/694671",
+         "nameSlug": "wyatt-langford-694671"
         },
         "coordinates": {
          "x": 110.82,
@@ -4796,12 +4828,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 676369,
          "fullName": "Nelson Velázquez",
-         "link": "/api/v1/people/676369"
+         "link": "/api/v1/people/676369",
+         "nameSlug": "nelson-velazquez-676369"
         },
         "coordinates": {
          "x": 96.74,
@@ -4827,12 +4861,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 672580,
          "fullName": "Maikel Garcia",
-         "link": "/api/v1/people/672580"
+         "link": "/api/v1/people/672580",
+         "nameSlug": "maikel-garcia-672580"
         },
         "coordinates": {
          "x": 184.13,
@@ -4860,12 +4896,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 665750,
          "fullName": "Leody Taveras",
-         "link": "/api/v1/people/665750"
+         "link": "/api/v1/people/665750",
+         "nameSlug": "leody-taveras-665750"
         },
         "coordinates": {
          "x": 159.05,
@@ -4891,12 +4929,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 543760,
          "fullName": "Marcus Semien",
-         "link": "/api/v1/people/543760"
+         "link": "/api/v1/people/543760",
+         "nameSlug": "marcus-semien-543760"
         },
         "coordinates": {
          "x": 200.15,
@@ -4922,12 +4962,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 608369,
          "fullName": "Corey Seager",
-         "link": "/api/v1/people/608369"
+         "link": "/api/v1/people/608369",
+         "nameSlug": "corey-seager-608369"
         },
         "coordinates": {
          "x": 162.71,
@@ -4953,12 +4995,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 669701,
          "fullName": "Josh Smith",
-         "link": "/api/v1/people/669701"
+         "link": "/api/v1/people/669701",
+         "nameSlug": "josh-smith-669701"
         },
         "coordinates": {
          "x": 126.11,
@@ -5006,12 +5050,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 679845,
          "fullName": "Nick Loftin",
-         "link": "/api/v1/people/679845"
+         "link": "/api/v1/people/679845",
+         "nameSlug": "nick-loftin-679845"
         },
         "coordinates": {
          "x": 109.49,
@@ -5037,12 +5083,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 677951,
          "fullName": "Bobby Witt Jr.",
-         "link": "/api/v1/people/677951"
+         "link": "/api/v1/people/677951",
+         "nameSlug": "bobby-witt-jr-677951"
         },
         "coordinates": {
          "x": 132.46,
@@ -5068,12 +5116,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 686469,
          "fullName": "Vinnie Pasquantino",
-         "link": "/api/v1/people/686469"
+         "link": "/api/v1/people/686469",
+         "nameSlug": "vinnie-pasquantino-686469"
         },
         "coordinates": {
          "x": 70.59,
@@ -5101,12 +5151,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 663993,
          "fullName": "Nathaniel Lowe",
-         "link": "/api/v1/people/663993"
+         "link": "/api/v1/people/663993",
+         "nameSlug": "nathaniel-lowe-663993"
         },
         "coordinates": {
          "x": 95.65,
@@ -5132,12 +5184,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 694671,
          "fullName": "Wyatt Langford",
-         "link": "/api/v1/people/694671"
+         "link": "/api/v1/people/694671",
+         "nameSlug": "wyatt-langford-694671"
         },
         "coordinates": {
          "x": 167.0,
@@ -5163,12 +5217,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 677649,
          "fullName": "Ezequiel Duran",
-         "link": "/api/v1/people/677649"
+         "link": "/api/v1/people/677649",
+         "nameSlug": "ezequiel-duran-677649"
         },
         "coordinates": {
          "x": 114.93,
@@ -5194,12 +5250,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 668800,
          "fullName": "Andrew Knizner",
-         "link": "/api/v1/people/668800"
+         "link": "/api/v1/people/668800",
+         "nameSlug": "andrew-knizner-668800"
         },
         "coordinates": {
          "x": 149.99,
@@ -5225,12 +5283,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 665750,
          "fullName": "Leody Taveras",
-         "link": "/api/v1/people/665750"
+         "link": "/api/v1/people/665750",
+         "nameSlug": "leody-taveras-665750"
         },
         "coordinates": {
          "x": 85.81,
@@ -5256,12 +5316,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 543760,
          "fullName": "Marcus Semien",
-         "link": "/api/v1/people/543760"
+         "link": "/api/v1/people/543760",
+         "nameSlug": "marcus-semien-543760"
         },
         "coordinates": {
          "x": 114.32,
@@ -5308,12 +5370,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 521692,
          "fullName": "Salvador Perez",
-         "link": "/api/v1/people/521692"
+         "link": "/api/v1/people/521692",
+         "nameSlug": "salvador-perez-521692"
         },
         "coordinates": {
          "x": 129.5,
@@ -5339,12 +5403,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 669004,
          "fullName": "MJ Melendez",
-         "link": "/api/v1/people/669004"
+         "link": "/api/v1/people/669004",
+         "nameSlug": "mj-melendez-669004"
         },
         "coordinates": {
          "x": 159.83,
@@ -5370,12 +5436,14 @@
         "pitcher": {
          "id": 453286,
          "fullName": "Max Scherzer",
-         "link": "/api/v1/people/453286"
+         "link": "/api/v1/people/453286",
+         "nameSlug": "max-scherzer-453286"
         },
         "batter": {
          "id": 676369,
          "fullName": "Nelson Velázquez",
-         "link": "/api/v1/people/676369"
+         "link": "/api/v1/people/676369",
+         "nameSlug": "nelson-velazquez-676369"
         },
         "coordinates": {
          "x": 142.74,
@@ -5403,12 +5471,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 608369,
          "fullName": "Corey Seager",
-         "link": "/api/v1/people/608369"
+         "link": "/api/v1/people/608369",
+         "nameSlug": "corey-seager-608369"
         },
         "coordinates": {
          "x": 206.2,
@@ -5434,12 +5504,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 669701,
          "fullName": "Josh Smith",
-         "link": "/api/v1/people/669701"
+         "link": "/api/v1/people/669701",
+         "nameSlug": "josh-smith-669701"
         },
         "coordinates": {
          "x": 136.08,
@@ -5465,12 +5537,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 666969,
          "fullName": "Adolis García",
-         "link": "/api/v1/people/666969"
+         "link": "/api/v1/people/666969",
+         "nameSlug": "adolis-garcia-666969"
         },
         "coordinates": {
          "x": 69.5,
@@ -5496,12 +5570,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 663993,
          "fullName": "Nathaniel Lowe",
-         "link": "/api/v1/people/663993"
+         "link": "/api/v1/people/663993",
+         "nameSlug": "nathaniel-lowe-663993"
         },
         "coordinates": {
          "x": 143.23,
@@ -5527,12 +5603,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 694671,
          "fullName": "Wyatt Langford",
-         "link": "/api/v1/people/694671"
+         "link": "/api/v1/people/694671",
+         "nameSlug": "wyatt-langford-694671"
         },
         "coordinates": {
          "x": 178.22,
@@ -5578,12 +5656,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 672580,
          "fullName": "Maikel Garcia",
-         "link": "/api/v1/people/672580"
+         "link": "/api/v1/people/672580",
+         "nameSlug": "maikel-garcia-672580"
         },
         "coordinates": {
          "x": 137.45,
@@ -5609,12 +5689,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 679845,
          "fullName": "Nick Loftin",
-         "link": "/api/v1/people/679845"
+         "link": "/api/v1/people/679845",
+         "nameSlug": "nick-loftin-679845"
         },
         "coordinates": {
          "x": 110.09,
@@ -5642,12 +5724,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 677649,
          "fullName": "Ezequiel Duran",
-         "link": "/api/v1/people/677649"
+         "link": "/api/v1/people/677649",
+         "nameSlug": "ezequiel-duran-677649"
         },
         "coordinates": {
          "x": 169.33,
@@ -5673,12 +5757,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 665750,
          "fullName": "Leody Taveras",
-         "link": "/api/v1/people/665750"
+         "link": "/api/v1/people/665750",
+         "nameSlug": "leody-taveras-665750"
         },
         "coordinates": {
          "x": 76.47,
@@ -5704,12 +5790,14 @@
         "pitcher": {
          "id": 679525,
          "fullName": "Alec Marsh",
-         "link": "/api/v1/people/679525"
+         "link": "/api/v1/people/679525",
+         "nameSlug": "alec-marsh-679525"
         },
         "batter": {
          "id": 543760,
          "fullName": "Marcus Semien",
-         "link": "/api/v1/people/543760"
+         "link": "/api/v1/people/543760",
+         "nameSlug": "marcus-semien-543760"
         },
         "coordinates": {
          "x": 40.84,
@@ -5735,12 +5823,14 @@
         "pitcher": {
          "id": 669674,
          "fullName": "Sam Long",
-         "link": "/api/v1/people/669674"
+         "link": "/api/v1/people/669674",
+         "nameSlug": "sam-long-669674"
         },
         "batter": {
          "id": 608369,
          "fullName": "Corey Seager",
-         "link": "/api/v1/people/608369"
+         "link": "/api/v1/people/608369",
+         "nameSlug": "corey-seager-608369"
         },
         "coordinates": {
          "x": 140.68,
@@ -5786,12 +5876,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 677951,
          "fullName": "Bobby Witt Jr.",
-         "link": "/api/v1/people/677951"
+         "link": "/api/v1/people/677951",
+         "nameSlug": "bobby-witt-jr-677951"
         },
         "coordinates": {
          "x": 85.84,
@@ -5817,12 +5909,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 686469,
          "fullName": "Vinnie Pasquantino",
-         "link": "/api/v1/people/686469"
+         "link": "/api/v1/people/686469",
+         "nameSlug": "vinnie-pasquantino-686469"
         },
         "coordinates": {
          "x": 130.09,
@@ -5848,12 +5942,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 521692,
          "fullName": "Salvador Perez",
-         "link": "/api/v1/people/521692"
+         "link": "/api/v1/people/521692",
+         "nameSlug": "salvador-perez-521692"
         },
         "coordinates": {
          "x": 94.38,
@@ -5881,12 +5977,14 @@
         "pitcher": {
          "id": 669674,
          "fullName": "Sam Long",
-         "link": "/api/v1/people/669674"
+         "link": "/api/v1/people/669674",
+         "nameSlug": "sam-long-669674"
         },
         "batter": {
          "id": 669701,
          "fullName": "Josh Smith",
-         "link": "/api/v1/people/669701"
+         "link": "/api/v1/people/669701",
+         "nameSlug": "josh-smith-669701"
         },
         "coordinates": {
          "x": 210.89,
@@ -5912,12 +6010,14 @@
         "pitcher": {
          "id": 669674,
          "fullName": "Sam Long",
-         "link": "/api/v1/people/669674"
+         "link": "/api/v1/people/669674",
+         "nameSlug": "sam-long-669674"
         },
         "batter": {
          "id": 666969,
          "fullName": "Adolis García",
-         "link": "/api/v1/people/666969"
+         "link": "/api/v1/people/666969",
+         "nameSlug": "adolis-garcia-666969"
         },
         "coordinates": {
          "x": 127.94,
@@ -5943,12 +6043,14 @@
         "pitcher": {
          "id": 669674,
          "fullName": "Sam Long",
-         "link": "/api/v1/people/669674"
+         "link": "/api/v1/people/669674",
+         "nameSlug": "sam-long-669674"
         },
         "batter": {
          "id": 663993,
          "fullName": "Nathaniel Lowe",
-         "link": "/api/v1/people/663993"
+         "link": "/api/v1/people/663993",
+         "nameSlug": "nathaniel-lowe-663993"
         },
         "coordinates": {
          "x": 78.66,
@@ -5974,12 +6076,14 @@
         "pitcher": {
          "id": 672578,
          "fullName": "Carlos Hernández",
-         "link": "/api/v1/people/672578"
+         "link": "/api/v1/people/672578",
+         "nameSlug": "carlos-hernandez-672578"
         },
         "batter": {
          "id": 694671,
          "fullName": "Wyatt Langford",
-         "link": "/api/v1/people/694671"
+         "link": "/api/v1/people/694671",
+         "nameSlug": "wyatt-langford-694671"
         },
         "coordinates": {
          "x": 106.97,
@@ -6005,12 +6109,14 @@
         "pitcher": {
          "id": 672578,
          "fullName": "Carlos Hernández",
-         "link": "/api/v1/people/672578"
+         "link": "/api/v1/people/672578",
+         "nameSlug": "carlos-hernandez-672578"
         },
         "batter": {
          "id": 677649,
          "fullName": "Ezequiel Duran",
-         "link": "/api/v1/people/677649"
+         "link": "/api/v1/people/677649",
+         "nameSlug": "ezequiel-duran-677649"
         },
         "coordinates": {
          "x": 110.09,
@@ -6054,12 +6160,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 669004,
          "fullName": "MJ Melendez",
-         "link": "/api/v1/people/669004"
+         "link": "/api/v1/people/669004",
+         "nameSlug": "mj-melendez-669004"
         },
         "coordinates": {
          "x": 129.45,
@@ -6085,12 +6193,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 676369,
          "fullName": "Nelson Velázquez",
-         "link": "/api/v1/people/676369"
+         "link": "/api/v1/people/676369",
+         "nameSlug": "nelson-velazquez-676369"
         },
         "coordinates": {
          "x": 109.49,
@@ -6118,12 +6228,14 @@
         "pitcher": {
          "id": 672578,
          "fullName": "Carlos Hernández",
-         "link": "/api/v1/people/672578"
+         "link": "/api/v1/people/672578",
+         "nameSlug": "carlos-hernandez-672578"
         },
         "batter": {
          "id": 668800,
          "fullName": "Andrew Knizner",
-         "link": "/api/v1/people/668800"
+         "link": "/api/v1/people/668800",
+         "nameSlug": "andrew-knizner-668800"
         },
         "coordinates": {
          "x": 196.04,
@@ -6149,12 +6261,14 @@
         "pitcher": {
          "id": 672578,
          "fullName": "Carlos Hernández",
-         "link": "/api/v1/people/672578"
+         "link": "/api/v1/people/672578",
+         "nameSlug": "carlos-hernandez-672578"
         },
         "batter": {
          "id": 665750,
          "fullName": "Leody Taveras",
-         "link": "/api/v1/people/665750"
+         "link": "/api/v1/people/665750",
+         "nameSlug": "leody-taveras-665750"
         },
         "coordinates": {
          "x": 71.41,
@@ -6180,12 +6294,14 @@
         "pitcher": {
          "id": 672578,
          "fullName": "Carlos Hernández",
-         "link": "/api/v1/people/672578"
+         "link": "/api/v1/people/672578",
+         "nameSlug": "carlos-hernandez-672578"
         },
         "batter": {
          "id": 543760,
          "fullName": "Marcus Semien",
-         "link": "/api/v1/people/543760"
+         "link": "/api/v1/people/543760",
+         "nameSlug": "marcus-semien-543760"
         },
         "coordinates": {
          "x": 59.39,
@@ -6225,12 +6341,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 672580,
          "fullName": "Maikel Garcia",
-         "link": "/api/v1/people/672580"
+         "link": "/api/v1/people/672580",
+         "nameSlug": "maikel-garcia-672580"
         },
         "coordinates": {
          "x": 165.39,
@@ -6256,12 +6374,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 680118,
          "fullName": "Dairon Blanco",
-         "link": "/api/v1/people/680118"
+         "link": "/api/v1/people/680118",
+         "nameSlug": "dairon-blanco-680118"
         },
         "coordinates": {
          "x": 113.12,
@@ -6287,12 +6407,14 @@
         "pitcher": {
          "id": 570632,
          "fullName": "José Ureña",
-         "link": "/api/v1/people/570632"
+         "link": "/api/v1/people/570632",
+         "nameSlug": "jose-urena-570632"
         },
         "batter": {
          "id": 679845,
          "fullName": "Nick Loftin",
-         "link": "/api/v1/people/679845"
+         "link": "/api/v1/people/679845",
+         "nameSlug": "nick-loftin-679845"
         },
         "coordinates": {
          "x": 103.44,
@@ -6477,62 +6599,74 @@
     "pitcher": {
      "id": 570632,
      "fullName": "José Ureña",
-     "link": "/api/v1/people/570632"
+     "link": "/api/v1/people/570632",
+     "nameSlug": "jose-urena-570632"
     },
     "catcher": {
      "id": 668800,
      "fullName": "Andrew Knizner",
-     "link": "/api/v1/people/668800"
+     "link": "/api/v1/people/668800",
+     "nameSlug": "andrew-knizner-668800"
     },
     "first": {
      "id": 663993,
      "fullName": "Nathaniel Lowe",
-     "link": "/api/v1/people/663993"
+     "link": "/api/v1/people/663993",
+     "nameSlug": "nathaniel-lowe-663993"
     },
     "second": {
      "id": 543760,
      "fullName": "Marcus Semien",
-     "link": "/api/v1/people/543760"
+     "link": "/api/v1/people/543760",
+     "nameSlug": "marcus-semien-543760"
     },
     "third": {
      "id": 677649,
      "fullName": "Ezequiel Duran",
-     "link": "/api/v1/people/677649"
+     "link": "/api/v1/people/677649",
+     "nameSlug": "ezequiel-duran-677649"
     },
     "shortstop": {
      "id": 608369,
      "fullName": "Corey Seager",
-     "link": "/api/v1/people/608369"
+     "link": "/api/v1/people/608369",
+     "nameSlug": "corey-seager-608369"
     },
     "left": {
      "id": 694671,
      "fullName": "Wyatt Langford",
-     "link": "/api/v1/people/694671"
+     "link": "/api/v1/people/694671",
+     "nameSlug": "wyatt-langford-694671"
     },
     "center": {
      "id": 665750,
      "fullName": "Leody Taveras",
-     "link": "/api/v1/people/665750"
+     "link": "/api/v1/people/665750",
+     "nameSlug": "leody-taveras-665750"
     },
     "right": {
      "id": 666969,
      "fullName": "Adolis García",
-     "link": "/api/v1/people/666969"
+     "link": "/api/v1/people/666969",
+     "nameSlug": "adolis-garcia-666969"
     },
     "batter": {
      "id": 608369,
      "fullName": "Corey Seager",
-     "link": "/api/v1/people/608369"
+     "link": "/api/v1/people/608369",
+     "nameSlug": "corey-seager-608369"
     },
     "onDeck": {
      "id": 669701,
      "fullName": "Josh Smith",
-     "link": "/api/v1/people/669701"
+     "link": "/api/v1/people/669701",
+     "nameSlug": "josh-smith-669701"
     },
     "inHole": {
      "id": 666969,
      "fullName": "Adolis García",
-     "link": "/api/v1/people/666969"
+     "link": "/api/v1/people/666969",
+     "nameSlug": "adolis-garcia-666969"
     },
     "battingOrder": 2,
     "team": {
@@ -6545,22 +6679,26 @@
     "batter": {
      "id": 679845,
      "fullName": "Nick Loftin",
-     "link": "/api/v1/people/679845"
+     "link": "/api/v1/people/679845",
+     "nameSlug": "nick-loftin-679845"
     },
     "onDeck": {
      "id": 677951,
      "fullName": "Bobby Witt Jr.",
-     "link": "/api/v1/people/677951"
+     "link": "/api/v1/people/677951",
+     "nameSlug": "bobby-witt-jr-677951"
     },
     "inHole": {
      "id": 686469,
      "fullName": "Vinnie Pasquantino",
-     "link": "/api/v1/people/686469"
+     "link": "/api/v1/people/686469",
+     "nameSlug": "vinnie-pasquantino-686469"
     },
     "pitcher": {
      "id": 672578,
      "fullName": "Carlos Hernández",
-     "link": "/api/v1/people/672578"
+     "link": "/api/v1/people/672578",
+     "nameSlug": "carlos-hernandez-672578"
     },
     "battingOrder": 1,
     "team": {
@@ -6693,7 +6831,8 @@
        "person": {
         "id": 666142,
         "fullName": "Cole Ragans",
-        "link": "/api/v1/people/666142"
+        "link": "/api/v1/people/666142",
+        "nameSlug": "cole-ragans-666142"
        },
        "jerseyNumber": "55",
        "position": {
@@ -6842,7 +6981,8 @@
        "person": {
         "id": 623433,
         "fullName": "Nick Anderson",
-        "link": "/api/v1/people/623433"
+        "link": "/api/v1/people/623433",
+        "nameSlug": "nick-anderson-623433"
        },
        "jerseyNumber": "63",
        "position": {
@@ -6991,7 +7131,8 @@
        "person": {
         "id": 666023,
         "fullName": "Freddy Fermin",
-        "link": "/api/v1/people/666023"
+        "link": "/api/v1/people/666023",
+        "nameSlug": "freddy-fermin-666023"
        },
        "jerseyNumber": "34",
        "position": {
@@ -7139,7 +7280,8 @@
        "person": {
         "id": 669674,
         "fullName": "Sam Long",
-        "link": "/api/v1/people/669674"
+        "link": "/api/v1/people/669674",
+        "nameSlug": "sam-long-669674"
        },
        "jerseyNumber": "73",
        "position": {
@@ -7362,7 +7504,8 @@
        "person": {
         "id": 592669,
         "fullName": "Hunter Renfroe",
-        "link": "/api/v1/people/592669"
+        "link": "/api/v1/people/592669",
+        "nameSlug": "hunter-renfroe-592669"
        },
        "jerseyNumber": "16",
        "position": {
@@ -7565,7 +7708,8 @@
        "person": {
         "id": 521692,
         "fullName": "Salvador Perez",
-        "link": "/api/v1/people/521692"
+        "link": "/api/v1/people/521692",
+        "nameSlug": "salvador-perez-521692"
        },
        "jerseyNumber": "13",
        "position": {
@@ -7768,7 +7912,8 @@
        "person": {
         "id": 663903,
         "fullName": "Brady Singer",
-        "link": "/api/v1/people/663903"
+        "link": "/api/v1/people/663903",
+        "nameSlug": "brady-singer-663903"
        },
        "jerseyNumber": "51",
        "position": {
@@ -7917,7 +8062,8 @@
        "person": {
         "id": 641658,
         "fullName": "Garrett Hampson",
-        "link": "/api/v1/people/641658"
+        "link": "/api/v1/people/641658",
+        "nameSlug": "garrett-hampson-641658"
        },
        "jerseyNumber": "2",
        "position": {
@@ -8065,7 +8211,8 @@
        "person": {
         "id": 663704,
         "fullName": "James McArthur",
-        "link": "/api/v1/people/663704"
+        "link": "/api/v1/people/663704",
+        "nameSlug": "james-mcarthur-663704"
        },
        "jerseyNumber": "66",
        "position": {
@@ -8214,7 +8361,8 @@
        "person": {
         "id": 679845,
         "fullName": "Nick Loftin",
-        "link": "/api/v1/people/679845"
+        "link": "/api/v1/people/679845",
+        "nameSlug": "nick-loftin-679845"
        },
        "jerseyNumber": "12",
        "position": {
@@ -8418,7 +8566,8 @@
        "person": {
         "id": 679525,
         "fullName": "Alec Marsh",
-        "link": "/api/v1/people/679525"
+        "link": "/api/v1/people/679525",
+        "nameSlug": "alec-marsh-679525"
        },
        "jerseyNumber": "48",
        "position": {
@@ -8644,7 +8793,8 @@
        "person": {
         "id": 669004,
         "fullName": "MJ Melendez",
-        "link": "/api/v1/people/669004"
+        "link": "/api/v1/people/669004",
+        "nameSlug": "mj-melendez-669004"
        },
        "jerseyNumber": "1",
        "position": {
@@ -8847,7 +8997,8 @@
        "person": {
         "id": 672578,
         "fullName": "Carlos Hernández",
-        "link": "/api/v1/people/672578"
+        "link": "/api/v1/people/672578",
+        "nameSlug": "carlos-hernandez-672578"
        },
        "jerseyNumber": "43",
        "position": {
@@ -9070,7 +9221,8 @@
        "person": {
         "id": 680118,
         "fullName": "Dairon Blanco",
-        "link": "/api/v1/people/680118"
+        "link": "/api/v1/people/680118",
+        "nameSlug": "dairon-blanco-680118"
        },
        "jerseyNumber": "44",
        "position": {
@@ -9273,7 +9425,8 @@
        "person": {
         "id": 686469,
         "fullName": "Vinnie Pasquantino",
-        "link": "/api/v1/people/686469"
+        "link": "/api/v1/people/686469",
+        "nameSlug": "vinnie-pasquantino-686469"
        },
        "jerseyNumber": "9",
        "position": {
@@ -9476,7 +9629,8 @@
        "person": {
         "id": 664728,
         "fullName": "Kyle Isbel",
-        "link": "/api/v1/people/664728"
+        "link": "/api/v1/people/664728",
+        "nameSlug": "kyle-isbel-664728"
        },
        "jerseyNumber": "28",
        "position": {
@@ -9624,7 +9778,8 @@
        "person": {
         "id": 519293,
         "fullName": "Will Smith",
-        "link": "/api/v1/people/519293"
+        "link": "/api/v1/people/519293",
+        "nameSlug": "will-smith-519293"
        },
        "jerseyNumber": "31",
        "position": {
@@ -9773,7 +9928,8 @@
        "person": {
         "id": 608379,
         "fullName": "Michael Wacha",
-        "link": "/api/v1/people/608379"
+        "link": "/api/v1/people/608379",
+        "nameSlug": "michael-wacha-608379"
        },
        "jerseyNumber": "52",
        "position": {
@@ -9922,7 +10078,8 @@
        "person": {
         "id": 672580,
         "fullName": "Maikel Garcia",
-        "link": "/api/v1/people/672580"
+        "link": "/api/v1/people/672580",
+        "nameSlug": "maikel-garcia-672580"
        },
        "jerseyNumber": "11",
        "position": {
@@ -10125,7 +10282,8 @@
        "person": {
         "id": 607625,
         "fullName": "Seth Lugo",
-        "link": "/api/v1/people/607625"
+        "link": "/api/v1/people/607625",
+        "nameSlug": "seth-lugo-607625"
        },
        "jerseyNumber": "67",
        "position": {
@@ -10274,7 +10432,8 @@
        "person": {
         "id": 672582,
         "fullName": "Angel Zerpa",
-        "link": "/api/v1/people/672582"
+        "link": "/api/v1/people/672582",
+        "nameSlug": "angel-zerpa-672582"
        },
        "jerseyNumber": "61",
        "position": {
@@ -10423,7 +10582,8 @@
        "person": {
         "id": 608717,
         "fullName": "Chris Stratton",
-        "link": "/api/v1/people/608717"
+        "link": "/api/v1/people/608717",
+        "nameSlug": "chris-stratton-608717"
        },
        "jerseyNumber": "35",
        "position": {
@@ -10572,7 +10732,8 @@
        "person": {
         "id": 670167,
         "fullName": "John Schreiber",
-        "link": "/api/v1/people/670167"
+        "link": "/api/v1/people/670167",
+        "nameSlug": "john-schreiber-670167"
        },
        "jerseyNumber": "46",
        "position": {
@@ -10721,7 +10882,8 @@
        "person": {
         "id": 677951,
         "fullName": "Bobby Witt Jr.",
-        "link": "/api/v1/people/677951"
+        "link": "/api/v1/people/677951",
+        "nameSlug": "bobby-witt-jr-677951"
        },
        "jerseyNumber": "7",
        "position": {
@@ -10924,7 +11086,8 @@
        "person": {
         "id": 676369,
         "fullName": "Nelson Velázquez",
-        "link": "/api/v1/people/676369"
+        "link": "/api/v1/people/676369",
+        "nameSlug": "nelson-velazquez-676369"
        },
        "jerseyNumber": "17",
        "position": {
@@ -11338,7 +11501,8 @@
        "person": {
         "id": 641680,
         "fullName": "Jonah Heim",
-        "link": "/api/v1/people/641680"
+        "link": "/api/v1/people/641680",
+        "nameSlug": "jonah-heim-641680"
        },
        "jerseyNumber": "28",
        "position": {
@@ -11486,7 +11650,8 @@
        "person": {
         "id": 694671,
         "fullName": "Wyatt Langford",
-        "link": "/api/v1/people/694671"
+        "link": "/api/v1/people/694671",
+        "nameSlug": "wyatt-langford-694671"
        },
        "jerseyNumber": "36",
        "position": {
@@ -11689,7 +11854,8 @@
        "person": {
         "id": 668800,
         "fullName": "Andrew Knizner",
-        "link": "/api/v1/people/668800"
+        "link": "/api/v1/people/668800",
+        "nameSlug": "andrew-knizner-668800"
        },
        "jerseyNumber": "12",
        "position": {
@@ -11893,7 +12059,8 @@
        "person": {
         "id": 665750,
         "fullName": "Leody Taveras",
-        "link": "/api/v1/people/665750"
+        "link": "/api/v1/people/665750",
+        "nameSlug": "leody-taveras-665750"
        },
        "jerseyNumber": "3",
        "position": {
@@ -12096,7 +12263,8 @@
        "person": {
         "id": 641540,
         "fullName": "Dane Dunning",
-        "link": "/api/v1/people/641540"
+        "link": "/api/v1/people/641540",
+        "nameSlug": "dane-dunning-641540"
        },
        "jerseyNumber": "33",
        "position": {
@@ -12245,7 +12413,8 @@
        "person": {
         "id": 570632,
         "fullName": "José Ureña",
-        "link": "/api/v1/people/570632"
+        "link": "/api/v1/people/570632",
+        "nameSlug": "jose-urena-570632"
        },
        "jerseyNumber": "54",
        "position": {
@@ -12469,7 +12638,8 @@
        "person": {
         "id": 663993,
         "fullName": "Nathaniel Lowe",
-        "link": "/api/v1/people/663993"
+        "link": "/api/v1/people/663993",
+        "nameSlug": "nathaniel-lowe-663993"
        },
        "jerseyNumber": "30",
        "position": {
@@ -12672,7 +12842,8 @@
        "person": {
         "id": 656641,
         "fullName": "Jacob Latz",
-        "link": "/api/v1/people/656641"
+        "link": "/api/v1/people/656641",
+        "nameSlug": "jacob-latz-656641"
        },
        "jerseyNumber": "67",
        "position": {
@@ -12821,7 +12992,8 @@
        "person": {
         "id": 608369,
         "fullName": "Corey Seager",
-        "link": "/api/v1/people/608369"
+        "link": "/api/v1/people/608369",
+        "nameSlug": "corey-seager-608369"
        },
        "jerseyNumber": "5",
        "position": {
@@ -13024,7 +13196,8 @@
        "person": {
         "id": 592351,
         "fullName": "Jon Gray",
-        "link": "/api/v1/people/592351"
+        "link": "/api/v1/people/592351",
+        "nameSlug": "jon-gray-592351"
        },
        "jerseyNumber": "22",
        "position": {
@@ -13173,7 +13346,8 @@
        "person": {
         "id": 543760,
         "fullName": "Marcus Semien",
-        "link": "/api/v1/people/543760"
+        "link": "/api/v1/people/543760",
+        "nameSlug": "marcus-semien-543760"
        },
        "jerseyNumber": "2",
        "position": {
@@ -13376,7 +13550,8 @@
        "person": {
         "id": 677649,
         "fullName": "Ezequiel Duran",
-        "link": "/api/v1/people/677649"
+        "link": "/api/v1/people/677649",
+        "nameSlug": "ezequiel-duran-677649"
        },
        "jerseyNumber": "20",
        "position": {
@@ -13579,7 +13754,8 @@
        "person": {
         "id": 453286,
         "fullName": "Max Scherzer",
-        "link": "/api/v1/people/453286"
+        "link": "/api/v1/people/453286",
+        "nameSlug": "max-scherzer-453286"
        },
        "jerseyNumber": "31",
        "position": {
@@ -13805,7 +13981,8 @@
        "person": {
         "id": 642546,
         "fullName": "Jonathan Hernández",
-        "link": "/api/v1/people/642546"
+        "link": "/api/v1/people/642546",
+        "nameSlug": "jonathan-hernandez-642546"
        },
        "jerseyNumber": "72",
        "position": {
@@ -13954,7 +14131,8 @@
        "person": {
         "id": 608671,
         "fullName": "Travis Jankowski",
-        "link": "/api/v1/people/608671"
+        "link": "/api/v1/people/608671",
+        "nameSlug": "travis-jankowski-608671"
        },
        "jerseyNumber": "16",
        "position": {
@@ -14102,7 +14280,8 @@
        "person": {
         "id": 669701,
         "fullName": "Josh Smith",
-        "link": "/api/v1/people/669701"
+        "link": "/api/v1/people/669701",
+        "nameSlug": "josh-smith-669701"
        },
        "jerseyNumber": "8",
        "position": {
@@ -14303,7 +14482,8 @@
        "person": {
         "id": 571760,
         "fullName": "Andrew Heaney",
-        "link": "/api/v1/people/571760"
+        "link": "/api/v1/people/571760",
+        "nameSlug": "andrew-heaney-571760"
        },
        "jerseyNumber": "44",
        "position": {
@@ -14452,7 +14632,8 @@
        "person": {
         "id": 547179,
         "fullName": "Michael Lorenzen",
-        "link": "/api/v1/people/547179"
+        "link": "/api/v1/people/547179",
+        "nameSlug": "michael-lorenzen-547179"
        },
        "jerseyNumber": "23",
        "position": {
@@ -14601,7 +14782,8 @@
        "person": {
         "id": 666969,
         "fullName": "Adolis García",
-        "link": "/api/v1/people/666969"
+        "link": "/api/v1/people/666969",
+        "nameSlug": "adolis-garcia-666969"
        },
        "jerseyNumber": "53",
        "position": {
@@ -14804,7 +14986,8 @@
        "person": {
         "id": 489446,
         "fullName": "Kirby Yates",
-        "link": "/api/v1/people/489446"
+        "link": "/api/v1/people/489446",
+        "nameSlug": "kirby-yates-489446"
        },
        "jerseyNumber": "39",
        "position": {
@@ -14953,7 +15136,8 @@
        "person": {
         "id": 656271,
         "fullName": "Brock Burke",
-        "link": "/api/v1/people/656271"
+        "link": "/api/v1/people/656271",
+        "nameSlug": "brock-burke-656271"
        },
        "jerseyNumber": "46",
        "position": {
@@ -15102,7 +15286,8 @@
        "person": {
         "id": 543257,
         "fullName": "Robbie Grossman",
-        "link": "/api/v1/people/543257"
+        "link": "/api/v1/people/543257",
+        "nameSlug": "robbie-grossman-543257"
        },
        "jerseyNumber": "4",
        "position": {
@@ -15250,7 +15435,8 @@
        "person": {
         "id": 543135,
         "fullName": "Nathan Eovaldi",
-        "link": "/api/v1/people/543135"
+        "link": "/api/v1/people/543135",
+        "nameSlug": "nathan-eovaldi-543135"
        },
        "jerseyNumber": "17",
        "position": {
@@ -15399,7 +15585,8 @@
        "person": {
         "id": 600917,
         "fullName": "José Leclerc",
-        "link": "/api/v1/people/600917"
+        "link": "/api/v1/people/600917",
+        "nameSlug": "jose-leclerc-600917"
        },
        "jerseyNumber": "25",
        "position": {
@@ -15548,7 +15735,8 @@
        "person": {
         "id": 502085,
         "fullName": "David Robertson",
-        "link": "/api/v1/people/502085"
+        "link": "/api/v1/people/502085",
+        "nameSlug": "david-robertson-502085"
        },
        "jerseyNumber": "37",
        "position": {
@@ -15697,7 +15885,8 @@
        "person": {
         "id": 673995,
         "fullName": "Davis Wendzel",
-        "link": "/api/v1/people/673995"
+        "link": "/api/v1/people/673995",
+        "nameSlug": "davis-wendzel-673995"
        },
        "jerseyNumber": "38",
        "position": {
@@ -15954,7 +16143,8 @@
      "official": {
       "id": 427413,
       "fullName": "Tony Randazzo",
-      "link": "/api/v1/people/427413"
+      "link": "/api/v1/people/427413",
+      "nameSlug": "tony-randazzo-427413"
      },
      "officialType": "Home Plate"
     },
@@ -15962,7 +16152,8 @@
      "official": {
       "id": 573769,
       "fullName": "Jeremy Riggs",
-      "link": "/api/v1/people/573769"
+      "link": "/api/v1/people/573769",
+      "nameSlug": "jeremy-riggs-573769"
      },
      "officialType": "First Base"
     },
@@ -15970,7 +16161,8 @@
      "official": {
       "id": 483564,
       "fullName": "Dan Bellino",
-      "link": "/api/v1/people/483564"
+      "link": "/api/v1/people/483564",
+      "nameSlug": "dan-bellino-483564"
      },
      "officialType": "Second Base"
     },
@@ -15978,7 +16170,8 @@
      "official": {
       "id": 427093,
       "fullName": "Phil Cuzzi",
-      "link": "/api/v1/people/427093"
+      "link": "/api/v1/people/427093",
+      "nameSlug": "phil-cuzzi-427093"
      },
      "officialType": "Third Base"
     }
@@ -16044,7 +16237,8 @@
        "id": 453286,
        "fullName": "Max Scherzer",
        "link": "/api/v1/people/453286",
-       "boxscoreName": "Scherzer"
+       "boxscoreName": "Scherzer",
+       "nameSlug": "max-scherzer-453286"
       },
       "jerseyNumber": "31",
       "position": {
@@ -16276,7 +16470,8 @@
        "id": 570632,
        "fullName": "José Ureña",
        "link": "/api/v1/people/570632",
-       "boxscoreName": "Ureña"
+       "boxscoreName": "Ureña",
+       "nameSlug": "jose-urena-570632"
       },
       "jerseyNumber": "54",
       "position": {
@@ -16506,7 +16701,8 @@
        "id": 665750,
        "fullName": "Leody Taveras",
        "link": "/api/v1/people/665750",
-       "boxscoreName": "Taveras, L"
+       "boxscoreName": "Taveras, L",
+       "nameSlug": "leody-taveras-665750"
       },
       "jerseyNumber": "3",
       "position": {
@@ -16715,17 +16911,20 @@
    "winner": {
     "id": 453286,
     "fullName": "Max Scherzer",
-    "link": "/api/v1/people/453286"
+    "link": "/api/v1/people/453286",
+    "nameSlug": "max-scherzer-453286"
    },
    "loser": {
     "id": 679525,
     "fullName": "Alec Marsh",
-    "link": "/api/v1/people/679525"
+    "link": "/api/v1/people/679525",
+    "nameSlug": "alec-marsh-679525"
    },
    "save": {
     "id": 570632,
     "fullName": "José Ureña",
-    "link": "/api/v1/people/570632"
+    "link": "/api/v1/people/570632",
+    "nameSlug": "jose-urena-570632"
    }
   },
   "leaders": {

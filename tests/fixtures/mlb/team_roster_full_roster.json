@@ -5,7 +5,8 @@
    "person": {
     "id": 677076,
     "fullName": "Clayton Andrews",
-    "link": "/api/v1/people/677076"
+    "link": "/api/v1/people/677076",
+    "nameSlug": "clayton-andrews-677076"
    },
    "jerseyNumber": "74",
    "position": {
@@ -23,7 +24,8 @@
    "person": {
     "id": 690925,
     "fullName": "Clayton Beeter",
-    "link": "/api/v1/people/690925"
+    "link": "/api/v1/people/690925",
+    "nameSlug": "clayton-beeter-690925"
    },
    "jerseyNumber": "85",
    "position": {
@@ -41,7 +43,8 @@
    "person": {
     "id": 542932,
     "fullName": "Jon Berti",
-    "link": "/api/v1/people/542932"
+    "link": "/api/v1/people/542932",
+    "nameSlug": "jon-berti-542932"
    },
    "jerseyNumber": "19",
    "position": {

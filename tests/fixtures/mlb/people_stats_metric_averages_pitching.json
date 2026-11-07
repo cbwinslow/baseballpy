@@ -43,7 +43,8 @@
        "name": "Pitcher",
        "type": "Pitcher",
        "abbreviation": "P"
-      }
+      },
+      "nameSlug": "gerrit-cole-543037"
      },
      "gameType": "R",
      "numOccurrences": 287
@@ -81,7 +82,8 @@
        "name": "Pitcher",
        "type": "Pitcher",
        "abbreviation": "P"
-      }
+      },
+      "nameSlug": "gerrit-cole-543037"
      },
      "gameType": "R",
      "numOccurrences": 232
@@ -119,7 +121,8 @@
        "name": "Pitcher",
        "type": "Pitcher",
        "abbreviation": "P"
-      }
+      },
+      "nameSlug": "gerrit-cole-543037"
      },
      "gameType": "R",
      "numOccurrences": 242

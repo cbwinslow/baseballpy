@@ -5,7 +5,8 @@
    "person": {
     "id": 582413,
     "fullName": "Fernando Alcala",
-    "link": "/api/v1/people/582413"
+    "link": "/api/v1/people/582413",
+    "nameSlug": "fernando-alcala-582413"
    },
    "jerseyNumber": "",
    "job": "Official Scorer",
@@ -16,7 +17,8 @@
    "person": {
     "id": 434138,
     "fullName": "Billy Altman",
-    "link": "/api/v1/people/434138"
+    "link": "/api/v1/people/434138",
+    "nameSlug": "billy-altman-434138"
    },
    "jerseyNumber": "",
    "job": "Official Scorer",
@@ -27,7 +29,8 @@
    "person": {
     "id": 679924,
     "fullName": "Kenny Ayres",
-    "link": "/api/v1/people/679924"
+    "link": "/api/v1/people/679924",
+    "nameSlug": "kenny-ayres-679924"
    },
    "jerseyNumber": "",
    "job": "Official Scorer",

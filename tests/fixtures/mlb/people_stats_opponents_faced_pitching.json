@@ -19,14 +19,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 682928,
       "fullName": "CJ Abrams",
       "link": "/api/v1/people/682928",
       "firstName": "Paul",
-      "lastName": "Abrams"
+      "lastName": "Abrams",
+      "nameSlug": "paul-abrams-682928"
      },
      "battingTeam": {
       "id": 120,
@@ -42,14 +44,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 677800,
       "fullName": "Wilyer Abreu",
       "link": "/api/v1/people/677800",
       "firstName": "Wilyer",
-      "lastName": "Abreu"
+      "lastName": "Abreu",
+      "nameSlug": "wilyer-abreu-677800"
      },
      "battingTeam": {
       "id": 111,
@@ -65,14 +69,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 624413,
       "fullName": "Pete Alonso",
       "link": "/api/v1/people/624413",
       "firstName": "Peter",
-      "lastName": "Alonso"
+      "lastName": "Alonso",
+      "nameSlug": "peter-alonso-624413"
      },
      "battingTeam": {
       "id": 121,

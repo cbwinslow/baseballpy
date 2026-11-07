@@ -5,7 +5,8 @@
    "person": {
     "id": 687396,
     "fullName": "Brent Headrick",
-    "link": "/api/v1/people/687396"
+    "link": "/api/v1/people/687396",
+    "nameSlug": "brent-headrick-687396"
    },
    "jerseyNumber": "",
    "position": {
@@ -21,9 +22,10 @@
   },
   {
    "person": {
-    "id": 621112,
-    "fullName": "Paul Blackburn",
-    "link": "/api/v1/people/621112"
+    "id": 518585,
+    "fullName": "Fernando Cruz",
+    "link": "/api/v1/people/518585",
+    "nameSlug": "fernando-cruz-518585"
    },
    "jerseyNumber": "",
    "position": {
@@ -39,9 +41,10 @@
   },
   {
    "person": {
-    "id": 677960,
-    "fullName": "Ryan Weathers",
-    "link": "/api/v1/people/677960"
+    "id": 661563,
+    "fullName": "Luis Gil",
+    "link": "/api/v1/people/661563",
+    "nameSlug": "luis-gil-661563"
    },
    "jerseyNumber": "",
    "position": {

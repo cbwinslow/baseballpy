@@ -8,29 +8,35 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 1. **Read First:** Before touching or modifying any files, read `## Active Checkouts` below.
 2. **Never Clobber:** If a file or task is listed under `Active Checkouts`, DO NOT modify, overwrite, or delete those files. Pick an unassigned task from `docs/agents/BACKLOG.md` instead.
-3. **Claim Before Coding:** When starting a task, add your checkout tag to `## Active Checkouts` and append an entry to `docs/agents/agent_log.jsonl`.
-4. **Log on Completion:** When your slice or task is finished:
-   - Move your entry from `Active Checkouts` to `Recent Completed Handoffs` with a clear 2-sentence summary.
-   - Append a `TASK_COMPLETED` record to `docs/agents/agent_log.jsonl`.
+3. **Create Task If Missing:** If no task exists in `docs/agents/BACKLOG.md` or on the board for the work you need to perform, open an OpenSpec change (or task entry), add the task row to `BACKLOG.md`, and claim it here first. Never begin unmapped work.
+4. **Claim Before Coding:** When starting a task, claim your lock with `uv run baseballpy agent claim <task_id> [--agent <name>] [--files <paths>] [--note <status>]` (which records the checkout on this board and appends a `TASK_CLAIMED` event to `docs/agents/agent_log.jsonl`).
+5. **Log on Completion:** When your slice or task is finished:
+   - Release the lock with `uv run baseballpy agent release <task_id> "<summary>"` (which moves the entry to `Recent Completed Handoffs` and logs `TASK_COMPLETED`).
    - Update `docs/agents/BACKLOG.md` and run `uv run python scripts/project_map.py`.
 
 ---
 
 ## Active Checkouts (Locked — Do Not Disturb)
 
-- **Task:** B-301
-  - **Agent:** Gemini (Session 2)
-  - **Claimed At:** 2026-11-07 20:59 UTC
-  - **Locked Areas:**
-    - `src/baseballpy/core/atomic.py`
-    - `src/baseballpy/core/stores.py`
-    - `src/baseballpy/core/config.py`
-  - **Status:** Fixing manifest memory spike by partitioning manifests per season
-
-
 ---
 
 ## Recent Completed Handoffs
+
+- **2026-11-07 21:58 UTC [blain]:**
+  - **Tasks:** `B-303`.
+  - **Summary:** Regenerated MLB schemas: 142 endpoints gained typed name_slug columns; 25 league-wide stats_* left unchanged (406)
+
+- **2026-11-07 21:55 UTC [Gemini]:**
+  - **Tasks:** `B-260`.
+  - **Summary:** Verified Have column in modelling-data-needs against real lake: 110M Kalshi trades, 14.9M Statcast pitches, 15.8M Retrosheet events, and cataloged missing gaps.
+
+- **2026-11-07 21:28 UTC [Gemini]:**
+  - **Tasks:** `B-302`.
+  - **Summary:** Implemented Option A qualifiers (rbi_qualifier, attendance_qualifier), null tokens, and parsed 428 raw files; drained quarantine to 0.
+
+- **2026-11-07 21:09 UTC [blain]:**
+  - **Tasks:** `B-301`.
+  - **Summary:** Resolved manifest save MemoryError using zero-copy binary msgspec serialization in atomic.py; tested roundtrip across 1,000 entries.
 
 - **2026-11-07 04:57 UTC [Gemini (Session 2)]:**
   - **Tasks:** `B-293`.

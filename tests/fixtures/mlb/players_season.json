@@ -122,7 +122,7 @@
    "birthCountry": "Dominican Republic",
    "height": "6' 1\"",
    "weight": 230,
-   "active": true,
+   "active": false,
    "currentTeam": {
     "id": 117,
     "name": "Houston Astros",
@@ -142,6 +142,7 @@
    "nameMatrilineal": "Jimenez",
    "isPlayer": true,
    "isVerified": true,
+   "lastPlayedDate": "2026-09-24",
    "mlbDebutDate": "2019-07-31",
    "batSide": {
     "code": "R",

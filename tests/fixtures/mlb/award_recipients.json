@@ -19,7 +19,8 @@
      "type": "Infielder",
      "abbreviation": "3B"
     },
-    "nameFirstLast": "Adrian Beltré"
+    "nameFirstLast": "Adrian Beltré",
+    "nameSlug": "adrian-beltre-134181"
    }
   },
   {
@@ -40,7 +41,8 @@
      "type": "Catcher",
      "abbreviation": "C"
     },
-    "nameFirstLast": "Joe Mauer"
+    "nameFirstLast": "Joe Mauer",
+    "nameSlug": "joe-mauer-408045"
    }
   },
   {
@@ -61,7 +63,8 @@
      "type": "Infielder",
      "abbreviation": "1B"
     },
-    "nameFirstLast": "Todd Helton"
+    "nameFirstLast": "Todd Helton",
+    "nameSlug": "todd-helton-115732"
    }
   }
  ]

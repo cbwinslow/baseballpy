@@ -34,7 +34,8 @@
      "player": {
       "id": 592450,
       "fullName": "Aaron Judge",
-      "link": "/api/v1/people/592450"
+      "link": "/api/v1/people/592450",
+      "nameSlug": "aaron-judge-592450"
      },
      "gameType": "R"
     }

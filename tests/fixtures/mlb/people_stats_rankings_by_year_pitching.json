@@ -23,7 +23,8 @@
      "player": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "league": {
       "id": 104,
@@ -45,7 +46,8 @@
      "player": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "league": {
       "id": 104,
@@ -76,7 +78,8 @@
      "player": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "league": {
       "id": 103,

@@ -9,65 +9,6 @@
    "splits": [
     {
      "stat": {
-      "name": "numberOfStrikes",
-      "zones": [
-       {
-        "zone": "01",
-        "value": "77.00"
-       },
-       {
-        "zone": "02",
-        "value": "67.00"
-       },
-       {
-        "zone": "03",
-        "value": "34.00"
-       },
-       {
-        "zone": "04",
-        "value": "70.00"
-       },
-       {
-        "zone": "05",
-        "value": "80.00"
-       },
-       {
-        "zone": "06",
-        "value": "59.00"
-       },
-       {
-        "zone": "07",
-        "value": "31.00"
-       },
-       {
-        "zone": "08",
-        "value": "65.00"
-       },
-       {
-        "zone": "09",
-        "value": "66.00"
-       },
-       {
-        "zone": "11",
-        "value": "61.00"
-       },
-       {
-        "zone": "12",
-        "value": "38.00"
-       },
-       {
-        "zone": "13",
-        "value": "22.00"
-       },
-       {
-        "zone": "14",
-        "value": "72.00"
-       }
-      ]
-     }
-    },
-    {
-     "stat": {
       "name": "onBasePlusSlugging",
       "zones": [
        {
@@ -147,6 +88,91 @@
         "color": "rgba(6, 90, 238, .55)",
         "temp": "cold",
         "value": ".273"
+       }
+      ]
+     }
+    },
+    {
+     "stat": {
+      "name": "sluggingPercentage",
+      "zones": [
+       {
+        "zone": "01",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".394"
+       },
+       {
+        "zone": "02",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".531"
+       },
+       {
+        "zone": "03",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".500"
+       },
+       {
+        "zone": "04",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".286"
+       },
+       {
+        "zone": "05",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".408"
+       },
+       {
+        "zone": "06",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": ".615"
+       },
+       {
+        "zone": "07",
+        "color": "rgba(214, 41, 52, .55)",
+        "temp": "hot",
+        "value": "1.083"
+       },
+       {
+        "zone": "08",
+        "color": "rgba(255, 255, 255, 0.55)",
+        "temp": "lukewarm",
+        "value": ".400"
+       },
+       {
+        "zone": "09",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".094"
+       },
+       {
+        "zone": "11",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".296"
+       },
+       {
+        "zone": "12",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".050"
+       },
+       {
+        "zone": "13",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".267"
+       },
+       {
+        "zone": "14",
+        "color": "rgba(6, 90, 238, .55)",
+        "temp": "cold",
+        "value": ".038"
        }
       ]
      }

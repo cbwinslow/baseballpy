@@ -58,7 +58,8 @@
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "league": {
       "id": 104,
@@ -132,7 +133,8 @@
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "league": {
       "id": 104,
@@ -206,7 +208,8 @@
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "league": {
       "id": 104,

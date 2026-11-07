@@ -5,7 +5,8 @@
    "person": {
     "id": 150359,
     "fullName": "A.J. Burnett",
-    "link": "/api/v1/people/150359"
+    "link": "/api/v1/people/150359",
+    "nameSlug": "a-j-burnett-150359"
    },
    "jerseyNumber": "34",
    "position": {
@@ -24,7 +25,8 @@
    "person": {
     "id": 595918,
     "fullName": "A.J. Cole",
-    "link": "/api/v1/people/595918"
+    "link": "/api/v1/people/595918",
+    "nameSlug": "a-j-cole-595918"
    },
    "jerseyNumber": "67",
    "position": {
@@ -43,7 +45,8 @@
    "person": {
     "id": 111213,
     "fullName": "Aaron Boone",
-    "link": "/api/v1/people/111213"
+    "link": "/api/v1/people/111213",
+    "nameSlug": "aaron-boone-111213"
    },
    "jerseyNumber": "19",
    "position": {

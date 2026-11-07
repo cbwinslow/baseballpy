@@ -6,35 +6,35 @@
  "offset": 0,
  "prospects": [
   {
-   "bisPlayerId": 5017338,
-   "pickRound": "9",
-   "pickNumber": 282,
+   "bisPlayerId": 5016720,
+   "pickRound": "8",
+   "pickNumber": 254,
    "home": {
-    "city": "Iowa City",
-    "state": "Iowa",
+    "city": "Pasadena",
+    "state": "Maryland",
     "country": "USA"
    },
    "school": {
-    "name": "Iowa",
+    "name": "William & Mary",
     "schoolClass": "4YR JR",
-    "city": "Iowa City",
+    "city": "Williamsburg",
     "country": "USA",
-    "state": "IA"
+    "state": "VA"
    },
-   "headshotLink": "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:silo:current.png/w_120,q_auto:best/v1/people/808861/headshot/draft/current",
+   "headshotLink": "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:silo:current.png/w_120,q_auto:best/v1/people/695775/headshot/draft/current",
    "person": {
-    "id": 808861,
-    "fullName": "Marcus Morgan",
-    "link": "/api/v1/people/808861",
-    "firstName": "Marcus",
-    "lastName": "Morgan",
-    "birthDate": "2002-12-27",
+    "id": 695775,
+    "fullName": "Travis Garnett",
+    "link": "/api/v1/people/695775",
+    "firstName": "Travis",
+    "lastName": "Garnett",
+    "birthDate": "2003-01-19",
     "currentAge": 23,
-    "birthCity": "Iowa City",
-    "birthStateProvince": "IA",
+    "birthCity": "Annapolis",
+    "birthStateProvince": "MD",
     "birthCountry": "USA",
-    "height": "6' 3\"",
-    "weight": 210,
+    "height": "6' 6\"",
+    "weight": 225,
     "active": true,
     "primaryPosition": {
      "code": "1",
@@ -42,10 +42,10 @@
      "type": "Pitcher",
      "abbreviation": "P"
     },
-    "useName": "Marcus",
-    "useLastName": "Morgan",
-    "middleName": "Cristopher",
-    "boxscoreName": "Morgan",
+    "useName": "Travis",
+    "useLastName": "Garnett",
+    "middleName": "Edward",
+    "boxscoreName": "Garnett",
     "gender": "M",
     "isPlayer": true,
     "isVerified": true,
@@ -55,138 +55,19 @@
      "description": "Right"
     },
     "pitchHand": {
-     "code": "R",
-     "description": "Right"
-    },
-    "nameFirstLast": "Marcus Morgan",
-    "nameSlug": "marcus-morgan-808861",
-    "firstLastName": "Marcus Morgan",
-    "lastFirstName": "Morgan, Marcus",
-    "lastInitName": "Morgan, M",
-    "initLastName": "M Morgan",
-    "fullFMLName": "Marcus Cristopher Morgan",
-    "fullLFMName": "Morgan, Marcus Cristopher",
-    "strikeZoneTop": 3.344,
-    "strikeZoneBottom": 1.688
-   },
-   "team": {
-    "springLeague": {
-     "id": 115,
-     "name": "Grapefruit League",
-     "link": "/api/v1/league/115",
-     "abbreviation": "GL"
-    },
-    "allStarStatus": "N",
-    "id": 143,
-    "name": "Philadelphia Phillies",
-    "link": "/api/v1/teams/143",
-    "season": 2026,
-    "venue": {
-     "id": 2681,
-     "name": "Citizens Bank Park",
-     "link": "/api/v1/venues/2681"
-    },
-    "springVenue": {
-     "id": 2700,
-     "link": "/api/v1/venues/2700"
-    },
-    "teamCode": "phi",
-    "fileCode": "phi",
-    "abbreviation": "PHI",
-    "teamName": "Phillies",
-    "locationName": "Philadelphia",
-    "firstYearOfPlay": "1883",
-    "league": {
-     "id": 104,
-     "name": "National League",
-     "link": "/api/v1/league/104"
-    },
-    "division": {
-     "id": 204,
-     "name": "National League East",
-     "link": "/api/v1/divisions/204"
-    },
-    "sport": {
-     "id": 1,
-     "link": "/api/v1/sports/1",
-     "name": "Major League Baseball"
-    },
-    "shortName": "Philadelphia",
-    "franchiseName": "Philadelphia",
-    "clubName": "Phillies",
-    "active": true
-   },
-   "draftType": {
-    "code": "JR",
-    "description": "Rule 4 / June Amateur Draft"
-   },
-   "isDrafted": true,
-   "isPass": false,
-   "year": "2024"
-  },
-  {
-   "bisPlayerId": 5026456,
-   "pickRound": "9",
-   "pickNumber": 284,
-   "home": {
-    "city": "Golden",
-    "state": "Colorado",
-    "country": "USA"
-   },
-   "school": {
-    "name": "Arkansas",
-    "schoolClass": "4YR SR",
-    "city": "Fayetteville",
-    "country": "USA",
-    "state": "AR"
-   },
-   "headshotLink": "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:silo:current.png/w_120,q_auto:best/v1/people/808768/headshot/draft/current",
-   "person": {
-    "id": 808768,
-    "fullName": "Ben McLaughlin",
-    "link": "/api/v1/people/808768",
-    "firstName": "Ben",
-    "lastName": "McLaughlin",
-    "birthDate": "2002-05-30",
-    "currentAge": 24,
-    "birthCity": "Golden",
-    "birthStateProvince": "CO",
-    "birthCountry": "USA",
-    "height": "6' 1\"",
-    "weight": 210,
-    "active": true,
-    "primaryPosition": {
-     "code": "3",
-     "name": "First Base",
-     "type": "Infielder",
-     "abbreviation": "1B"
-    },
-    "useName": "Ben",
-    "useLastName": "McLaughlin",
-    "middleName": "Michael",
-    "boxscoreName": "McLaughlin",
-    "gender": "M",
-    "isPlayer": true,
-    "isVerified": true,
-    "draftYear": 2024,
-    "batSide": {
      "code": "L",
      "description": "Left"
     },
-    "pitchHand": {
-     "code": "R",
-     "description": "Right"
-    },
-    "nameFirstLast": "Ben McLaughlin",
-    "nameSlug": "ben-mclaughlin-808768",
-    "firstLastName": "Ben McLaughlin",
-    "lastFirstName": "McLaughlin, Ben",
-    "lastInitName": "McLaughlin, B",
-    "initLastName": "B McLaughlin",
-    "fullFMLName": "Ben McLaughlin",
-    "fullLFMName": "McLaughlin, Ben ",
-    "strikeZoneTop": 3.28,
-    "strikeZoneBottom": 1.65
+    "nameFirstLast": "Travis Garnett",
+    "nameSlug": "travis-garnett-695775",
+    "firstLastName": "Travis Garnett",
+    "lastFirstName": "Garnett, Travis",
+    "lastInitName": "Garnett, T",
+    "initLastName": "T Garnett",
+    "fullFMLName": "Travis Edward Garnett",
+    "fullLFMName": "Garnett, Travis Edward",
+    "strikeZoneTop": 3.478,
+    "strikeZoneBottom": 1.755
    },
    "team": {
     "springLeague": {
@@ -244,35 +125,35 @@
    "year": "2024"
   },
   {
-   "bisPlayerId": 5022046,
-   "pickRound": "9",
-   "pickNumber": 280,
+   "bisPlayerId": 5028999,
+   "pickRound": "8",
+   "pickNumber": 250,
    "home": {
-    "city": "Lafayette",
-    "state": "Louisiana",
+    "city": "Oregon",
+    "state": "Illinois",
     "country": "USA"
    },
    "school": {
-    "name": "Troy University",
-    "schoolClass": "4YR 5S",
-    "city": "Troy",
+    "name": "Newman Central Catholic HS",
+    "schoolClass": "HS SR",
+    "city": "Sterling",
     "country": "USA",
-    "state": "AL"
+    "state": "IL"
    },
-   "headshotLink": "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:silo:current.png/w_120,q_auto:best/v1/people/801887/headshot/draft/current",
+   "headshotLink": "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:silo:current.png/w_120,q_auto:best/v1/people/815665/headshot/draft/current",
    "person": {
-    "id": 801887,
-    "fullName": "Kole Myers",
-    "link": "/api/v1/people/801887",
-    "firstName": "Kole",
-    "lastName": "Myers",
-    "birthDate": "2000-12-28",
-    "currentAge": 25,
-    "birthCity": "Lafayette",
-    "birthStateProvince": "LA",
+    "id": 815665,
+    "fullName": "Brendan Tunink",
+    "link": "/api/v1/people/815665",
+    "firstName": "Brendan",
+    "lastName": "Tunink",
+    "birthDate": "2005-10-02",
+    "currentAge": 21,
+    "birthCity": "Rockford",
+    "birthStateProvince": "IL",
     "birthCountry": "USA",
-    "height": "6' 0\"",
-    "weight": 195,
+    "height": "6' 1\"",
+    "weight": 185,
     "active": true,
     "primaryPosition": {
      "code": "O",
@@ -280,10 +161,10 @@
      "type": "Outfielder",
      "abbreviation": "OF"
     },
-    "useName": "Kole",
-    "useLastName": "Myers",
-    "middleName": "Matthew",
-    "boxscoreName": "Myers",
+    "useName": "Brendan",
+    "useLastName": "Tunink",
+    "middleName": "Cole",
+    "boxscoreName": "Tunink",
     "gender": "M",
     "isPlayer": true,
     "isVerified": true,
@@ -293,19 +174,19 @@
      "description": "Left"
     },
     "pitchHand": {
-     "code": "R",
-     "description": "Right"
+     "code": "L",
+     "description": "Left"
     },
-    "nameFirstLast": "Kole Myers",
-    "nameSlug": "kole-myers-801887",
-    "firstLastName": "Kole Myers",
-    "lastFirstName": "Myers, Kole",
-    "lastInitName": "Myers, K",
-    "initLastName": "K Myers",
-    "fullFMLName": "Kole Myers",
-    "fullLFMName": "Myers, Kole",
-    "strikeZoneTop": 3.21,
-    "strikeZoneBottom": 1.62
+    "nameFirstLast": "Brendan Tunink",
+    "nameSlug": "brendan-tunink-815665",
+    "firstLastName": "Brendan Tunink",
+    "lastFirstName": "Tunink, Brendan",
+    "lastInitName": "Tunink, B",
+    "initLastName": "B Tunink",
+    "fullFMLName": "Brendan Tunink",
+    "fullLFMName": "Tunink, Brendan ",
+    "strikeZoneTop": 3.255,
+    "strikeZoneBottom": 1.643
    },
    "team": {
     "springLeague": {
@@ -352,6 +233,125 @@
     "shortName": "LA Dodgers",
     "franchiseName": "Los Angeles",
     "clubName": "Dodgers",
+    "active": true
+   },
+   "draftType": {
+    "code": "JR",
+    "description": "Rule 4 / June Amateur Draft"
+   },
+   "isDrafted": true,
+   "isPass": false,
+   "year": "2024"
+  },
+  {
+   "bisPlayerId": 5030516,
+   "pickRound": "8",
+   "pickNumber": 248,
+   "home": {
+    "city": "Bartlesville",
+    "state": "Oklahoma",
+    "country": "USA"
+   },
+   "school": {
+    "name": "Oral Roberts U",
+    "schoolClass": "4YR JR",
+    "city": "Tulsa",
+    "country": "USA",
+    "state": "OK"
+   },
+   "headshotLink": "https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:silo:current.png/w_120,q_auto:best/v1/people/828471/headshot/draft/current",
+   "person": {
+    "id": 828471,
+    "fullName": "Jakob Hall",
+    "link": "/api/v1/people/828471",
+    "firstName": "Jakob",
+    "lastName": "Hall",
+    "birthDate": "2002-08-14",
+    "currentAge": 24,
+    "birthCity": "Tulsa",
+    "birthStateProvince": "OK",
+    "birthCountry": "USA",
+    "height": "6' 1\"",
+    "weight": 195,
+    "active": true,
+    "primaryPosition": {
+     "code": "1",
+     "name": "Pitcher",
+     "type": "Pitcher",
+     "abbreviation": "P"
+    },
+    "useName": "Jakob",
+    "useLastName": "Hall",
+    "middleName": "Perry",
+    "boxscoreName": "Hall",
+    "gender": "M",
+    "isPlayer": true,
+    "isVerified": true,
+    "draftYear": 2024,
+    "batSide": {
+     "code": "R",
+     "description": "Right"
+    },
+    "pitchHand": {
+     "code": "R",
+     "description": "Right"
+    },
+    "nameFirstLast": "Jakob Hall",
+    "nameSlug": "jakob-hall-828471",
+    "firstLastName": "Jakob Hall",
+    "lastFirstName": "Hall, Jakob",
+    "lastInitName": "Hall, J",
+    "initLastName": "J Hall",
+    "fullFMLName": "Jakob Perry Hall",
+    "fullLFMName": "Hall, Jakob Perry",
+    "strikeZoneTop": 3.255,
+    "strikeZoneBottom": 1.643
+   },
+   "team": {
+    "springLeague": {
+     "id": 115,
+     "name": "Grapefruit League",
+     "link": "/api/v1/league/115",
+     "abbreviation": "GL"
+    },
+    "allStarStatus": "N",
+    "id": 142,
+    "name": "Minnesota Twins",
+    "link": "/api/v1/teams/142",
+    "season": 2026,
+    "venue": {
+     "id": 3312,
+     "name": "Target Field",
+     "link": "/api/v1/venues/3312"
+    },
+    "springVenue": {
+     "id": 2862,
+     "link": "/api/v1/venues/2862"
+    },
+    "teamCode": "min",
+    "fileCode": "min",
+    "abbreviation": "MIN",
+    "teamName": "Twins",
+    "locationName": "Minneapolis",
+    "firstYearOfPlay": "1901",
+    "league": {
+     "id": 103,
+     "name": "American League",
+     "link": "/api/v1/league/103"
+    },
+    "division": {
+     "id": 202,
+     "name": "American League Central",
+     "link": "/api/v1/divisions/202"
+    },
+    "sport": {
+     "id": 1,
+     "link": "/api/v1/sports/1",
+     "name": "Major League Baseball"
+    },
+    "shortName": "Minnesota",
+    "franchiseName": "Minnesota",
+    "clubName": "Twins",
     "active": true
    },
    "draftType": {

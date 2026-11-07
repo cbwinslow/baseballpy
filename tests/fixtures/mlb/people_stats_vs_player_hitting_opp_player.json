@@ -61,14 +61,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      }
     },
     {
@@ -121,14 +123,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      }
     },
     {
@@ -181,14 +185,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      }
     }
    ]
@@ -242,14 +248,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      }
     }
    ]

@@ -19,7 +19,8 @@
      "batter": {
       "id": 458015,
       "fullName": "Joey Votto",
-      "link": "/api/v1/people/458015"
+      "link": "/api/v1/people/458015",
+      "nameSlug": "joey-votto-458015"
      }
     }
    ]

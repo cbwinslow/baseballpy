@@ -32,7 +32,8 @@
    "batter": {
     "id": 679845,
     "fullName": "Nick Loftin",
-    "link": "/api/v1/people/679845"
+    "link": "/api/v1/people/679845",
+    "nameSlug": "nick-loftin-679845"
    },
    "batSide": {
     "code": "R",
@@ -41,7 +42,8 @@
    "pitcher": {
     "id": 453286,
     "fullName": "Max Scherzer",
-    "link": "/api/v1/people/453286"
+    "link": "/api/v1/people/453286",
+    "nameSlug": "max-scherzer-453286"
    },
    "pitchHand": {
     "code": "R",
@@ -87,7 +89,8 @@
      "runner": {
       "id": 679845,
       "fullName": "Nick Loftin",
-      "link": "/api/v1/people/679845"
+      "link": "/api/v1/people/679845",
+      "nameSlug": "nick-loftin-679845"
      },
      "responsiblePitcher": null,
      "isScoringEvent": false,
@@ -1114,7 +1117,8 @@
    "batter": {
     "id": 677951,
     "fullName": "Bobby Witt Jr.",
-    "link": "/api/v1/people/677951"
+    "link": "/api/v1/people/677951",
+    "nameSlug": "bobby-witt-jr-677951"
    },
    "batSide": {
     "code": "R",
@@ -1123,7 +1127,8 @@
    "pitcher": {
     "id": 453286,
     "fullName": "Max Scherzer",
-    "link": "/api/v1/people/453286"
+    "link": "/api/v1/people/453286",
+    "nameSlug": "max-scherzer-453286"
    },
    "pitchHand": {
     "code": "R",
@@ -1163,7 +1168,8 @@
      "runner": {
       "id": 677951,
       "fullName": "Bobby Witt Jr.",
-      "link": "/api/v1/people/677951"
+      "link": "/api/v1/people/677951",
+      "nameSlug": "bobby-witt-jr-677951"
      },
      "responsiblePitcher": null,
      "isScoringEvent": false,
@@ -1756,7 +1762,8 @@
    "batter": {
     "id": 686469,
     "fullName": "Vinnie Pasquantino",
-    "link": "/api/v1/people/686469"
+    "link": "/api/v1/people/686469",
+    "nameSlug": "vinnie-pasquantino-686469"
    },
    "batSide": {
     "code": "L",
@@ -1765,7 +1772,8 @@
    "pitcher": {
     "id": 453286,
     "fullName": "Max Scherzer",
-    "link": "/api/v1/people/453286"
+    "link": "/api/v1/people/453286",
+    "nameSlug": "max-scherzer-453286"
    },
    "pitchHand": {
     "code": "R",
@@ -1804,7 +1812,8 @@
      "runner": {
       "id": 686469,
       "fullName": "Vinnie Pasquantino",
-      "link": "/api/v1/people/686469"
+      "link": "/api/v1/people/686469",
+      "nameSlug": "vinnie-pasquantino-686469"
      },
      "responsiblePitcher": null,
      "isScoringEvent": false,

@@ -65,7 +65,8 @@
      "player": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "opponent": {
       "id": 135,
@@ -78,12 +79,14 @@
      "pitcher": {
       "id": 506433,
       "fullName": "Yu Darvish",
-      "link": "/api/v1/people/506433"
+      "link": "/api/v1/people/506433",
+      "nameSlug": "yu-darvish-506433"
      },
      "batter": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "game": {
       "gamePk": 745444,
@@ -150,7 +153,8 @@
      "player": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "opponent": {
       "id": 135,
@@ -163,12 +167,14 @@
      "pitcher": {
       "id": 506433,
       "fullName": "Yu Darvish",
-      "link": "/api/v1/people/506433"
+      "link": "/api/v1/people/506433",
+      "nameSlug": "yu-darvish-506433"
      },
      "batter": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "game": {
       "gamePk": 745444,
@@ -235,7 +241,8 @@
      "player": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "opponent": {
       "id": 135,
@@ -248,12 +255,14 @@
      "pitcher": {
       "id": 676680,
       "fullName": "Tom Cosgrove",
-      "link": "/api/v1/people/676680"
+      "link": "/api/v1/people/676680",
+      "nameSlug": "tom-cosgrove-676680"
      },
      "batter": {
       "id": 660271,
       "fullName": "Shohei Ohtani",
-      "link": "/api/v1/people/660271"
+      "link": "/api/v1/people/660271",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "game": {
       "gamePk": 745444,

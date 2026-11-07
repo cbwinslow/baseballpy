@@ -98,3 +98,7 @@ schemas: 40 requests each, all answered 200, keys unique; 78 stat columns (`stat
 Work `mlb-pool-fallback-completion` tasks 2.1-2.4 (code and tests), then 2.5 on the homelab. Retest
 `/v1/stats` no more than once an hour (B-32); when it answers 200, the single-season family can be
 re-run on the direct route before the season-by-season rebuild is needed.
+
+## As built: task 3.3 (2026-11-07)
+
+Re-probed all supported endpoints with `gen_mlb_schemas.py --skip-combos --only <all names>` (the `--only` merge keeps endpoints that return nothing). 142 endpoints gained typed columns (`*_name_slug`, `hot_cold_zone_stats_stats` and similar) that had been landing in `_extras`. 25 league-wide `stats_*` endpoints (projected, season, season advanced, outs above average, expected statistics, sabermetrics, last x games) lost columns in the new sample because `v1/stats` still answers 406 (B-30): their old tables, probe entries and fixtures were restored. They stay open for B-35 once the route answers 200. The count of 61 in the backlog was not recorded anywhere; the real number is 142.

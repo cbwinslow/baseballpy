@@ -175,7 +175,8 @@
       "id": 676508,
       "fullName": "Ben Casparius",
       "link": "/api/v1/people/676508",
-      "boxscoreName": "Casparius"
+      "boxscoreName": "Casparius",
+      "nameSlug": "ben-casparius-676508"
      },
      "jerseyNumber": "78",
      "position": {
@@ -325,7 +326,8 @@
       "id": 669257,
       "fullName": "Will Smith",
       "link": "/api/v1/people/669257",
-      "boxscoreName": "Smith, W"
+      "boxscoreName": "Smith, W",
+      "nameSlug": "will-smith-669257"
      },
      "jerseyNumber": "16",
      "position": {
@@ -529,7 +531,8 @@
       "id": 621035,
       "fullName": "Chris Taylor",
       "link": "/api/v1/people/621035",
-      "boxscoreName": "Taylor, Ch"
+      "boxscoreName": "Taylor, Ch",
+      "nameSlug": "chris-taylor-621035"
      },
      "jerseyNumber": "3",
      "position": {
@@ -738,7 +741,8 @@
       "id": 543339,
       "fullName": "Daniel Hudson",
       "link": "/api/v1/people/543339",
-      "boxscoreName": "Hudson, Dan"
+      "boxscoreName": "Hudson, Dan",
+      "nameSlug": "daniel-hudson-543339"
      },
      "jerseyNumber": "41",
      "position": {
@@ -888,7 +892,8 @@
       "id": 681911,
       "fullName": "Alex Vesia",
       "link": "/api/v1/people/681911",
-      "boxscoreName": "Vesia"
+      "boxscoreName": "Vesia",
+      "nameSlug": "alex-vesia-681911"
      },
      "jerseyNumber": "51",
      "position": {
@@ -1112,7 +1117,8 @@
       "id": 621111,
       "fullName": "Walker Buehler",
       "link": "/api/v1/people/621111",
-      "boxscoreName": "Buehler"
+      "boxscoreName": "Buehler",
+      "nameSlug": "walker-buehler-621111"
      },
      "jerseyNumber": "21",
      "position": {
@@ -1337,7 +1343,8 @@
       "id": 605131,
       "fullName": "Austin Barnes",
       "link": "/api/v1/people/605131",
-      "boxscoreName": "Barnes, A"
+      "boxscoreName": "Barnes, A",
+      "nameSlug": "austin-barnes-605131"
      },
      "jerseyNumber": "15",
      "position": {
@@ -1486,7 +1493,8 @@
       "id": 571771,
       "fullName": "Enrique Hernández",
       "link": "/api/v1/people/571771",
-      "boxscoreName": "Hernández, E"
+      "boxscoreName": "Hernández, E",
+      "nameSlug": "enrique-hernandez-571771"
      },
      "jerseyNumber": "8",
      "position": {
@@ -1690,7 +1698,8 @@
       "id": 571970,
       "fullName": "Max Muncy",
       "link": "/api/v1/people/571970",
-      "boxscoreName": "Muncy"
+      "boxscoreName": "Muncy",
+      "nameSlug": "max-muncy-571970"
      },
      "jerseyNumber": "13",
      "position": {
@@ -1894,7 +1903,8 @@
       "id": 607455,
       "fullName": "Anthony Banda",
       "link": "/api/v1/people/607455",
-      "boxscoreName": "Banda"
+      "boxscoreName": "Banda",
+      "nameSlug": "anthony-banda-607455"
      },
      "jerseyNumber": "43",
      "position": {
@@ -2118,7 +2128,8 @@
       "id": 518692,
       "fullName": "Freddie Freeman",
       "link": "/api/v1/people/518692",
-      "boxscoreName": "Freeman, F"
+      "boxscoreName": "Freeman, F",
+      "nameSlug": "freddie-freeman-518692"
      },
      "jerseyNumber": "5",
      "position": {
@@ -2322,7 +2333,8 @@
       "id": 660813,
       "fullName": "Brusdar Graterol",
       "link": "/api/v1/people/660813",
-      "boxscoreName": "Graterol"
+      "boxscoreName": "Graterol",
+      "nameSlug": "brusdar-graterol-660813"
      },
      "jerseyNumber": "48",
      "position": {
@@ -2546,7 +2558,8 @@
       "id": 656427,
       "fullName": "Jack Flaherty",
       "link": "/api/v1/people/656427",
-      "boxscoreName": "Flaherty"
+      "boxscoreName": "Flaherty",
+      "nameSlug": "jack-flaherty-656427"
      },
      "jerseyNumber": "0",
      "position": {
@@ -2772,7 +2785,8 @@
       "id": 669242,
       "fullName": "Tommy Edman",
       "link": "/api/v1/people/669242",
-      "boxscoreName": "Edman"
+      "boxscoreName": "Edman",
+      "nameSlug": "tommy-edman-669242"
      },
      "jerseyNumber": "25",
      "position": {
@@ -2976,7 +2990,8 @@
       "id": 660271,
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
-      "boxscoreName": "Ohtani"
+      "boxscoreName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "jerseyNumber": "17",
      "position": {
@@ -3178,7 +3193,8 @@
       "id": 656629,
       "fullName": "Michael Kopech",
       "link": "/api/v1/people/656629",
-      "boxscoreName": "Kopech"
+      "boxscoreName": "Kopech",
+      "nameSlug": "michael-kopech-656629"
      },
      "jerseyNumber": "45",
      "position": {
@@ -3402,7 +3418,8 @@
       "id": 606192,
       "fullName": "Teoscar Hernández",
       "link": "/api/v1/people/606192",
-      "boxscoreName": "Hernández, T"
+      "boxscoreName": "Hernández, T",
+      "nameSlug": "teoscar-hernandez-606192"
      },
      "jerseyNumber": "37",
      "position": {
@@ -3606,7 +3623,8 @@
       "id": 689017,
       "fullName": "Landon Knack",
       "link": "/api/v1/people/689017",
-      "boxscoreName": "Knack"
+      "boxscoreName": "Knack",
+      "nameSlug": "landon-knack-689017"
      },
      "jerseyNumber": "96",
      "position": {
@@ -3756,7 +3774,8 @@
       "id": 681624,
       "fullName": "Andy Pages",
       "link": "/api/v1/people/681624",
-      "boxscoreName": "Pages, A"
+      "boxscoreName": "Pages, A",
+      "nameSlug": "andy-pages-681624"
      },
      "jerseyNumber": "44",
      "position": {
@@ -3905,7 +3924,8 @@
       "id": 666158,
       "fullName": "Gavin Lux",
       "link": "/api/v1/people/666158",
-      "boxscoreName": "Lux"
+      "boxscoreName": "Lux",
+      "nameSlug": "gavin-lux-666158"
      },
      "jerseyNumber": "9",
      "position": {
@@ -4109,7 +4129,8 @@
       "id": 605141,
       "fullName": "Mookie Betts",
       "link": "/api/v1/people/605141",
-      "boxscoreName": "Betts"
+      "boxscoreName": "Betts",
+      "nameSlug": "mookie-betts-605141"
      },
      "jerseyNumber": "50",
      "position": {
@@ -4313,7 +4334,8 @@
       "id": 518489,
       "fullName": "Ryan Brasier",
       "link": "/api/v1/people/518489",
-      "boxscoreName": "Brasier"
+      "boxscoreName": "Brasier",
+      "nameSlug": "ryan-brasier-518489"
      },
      "jerseyNumber": "57",
      "position": {
@@ -4537,7 +4559,8 @@
       "id": 641703,
       "fullName": "Brent Honeywell",
       "link": "/api/v1/people/641703",
-      "boxscoreName": "Honeywell"
+      "boxscoreName": "Honeywell",
+      "nameSlug": "brent-honeywell-641703"
      },
      "jerseyNumber": "40",
      "position": {
@@ -4687,7 +4710,8 @@
       "id": 500743,
       "fullName": "Miguel Rojas",
       "link": "/api/v1/people/500743",
-      "boxscoreName": "Rojas, M"
+      "boxscoreName": "Rojas, M",
+      "nameSlug": "miguel-rojas-500743"
      },
      "jerseyNumber": "11",
      "position": {
@@ -4836,7 +4860,8 @@
       "id": 595014,
       "fullName": "Blake Treinen",
       "link": "/api/v1/people/595014",
-      "boxscoreName": "Treinen"
+      "boxscoreName": "Treinen",
+      "nameSlug": "blake-treinen-595014"
      },
      "jerseyNumber": "49",
      "position": {
@@ -5061,7 +5086,8 @@
       "id": 808967,
       "fullName": "Yoshinobu Yamamoto",
       "link": "/api/v1/people/808967",
-      "boxscoreName": "Yamamoto"
+      "boxscoreName": "Yamamoto",
+      "nameSlug": "yoshinobu-yamamoto-808967"
      },
      "jerseyNumber": "18",
      "position": {
@@ -5480,7 +5506,8 @@
       "id": 641482,
       "fullName": "Nestor Cortes",
       "link": "/api/v1/people/641482",
-      "boxscoreName": "Cortes"
+      "boxscoreName": "Cortes",
+      "nameSlug": "nestor-cortes-641482"
      },
      "jerseyNumber": "65",
      "position": {
@@ -5630,7 +5657,8 @@
       "id": 519203,
       "fullName": "Anthony Rizzo",
       "link": "/api/v1/people/519203",
-      "boxscoreName": "Rizzo"
+      "boxscoreName": "Rizzo",
+      "nameSlug": "anthony-rizzo-519203"
      },
      "jerseyNumber": "48",
      "position": {
@@ -5834,7 +5862,8 @@
       "id": 607074,
       "fullName": "Carlos Rodón",
       "link": "/api/v1/people/607074",
-      "boxscoreName": "Rodón"
+      "boxscoreName": "Rodón",
+      "nameSlug": "carlos-rodon-607074"
      },
      "jerseyNumber": "55",
      "position": {
@@ -5984,7 +6013,8 @@
       "id": 596133,
       "fullName": "Luke Weaver",
       "link": "/api/v1/people/596133",
-      "boxscoreName": "Weaver"
+      "boxscoreName": "Weaver",
+      "nameSlug": "luke-weaver-596133"
      },
      "jerseyNumber": "30",
      "position": {
@@ -6209,7 +6239,8 @@
       "id": 665828,
       "fullName": "Oswaldo Cabrera",
       "link": "/api/v1/people/665828",
-      "boxscoreName": "Cabrera, O"
+      "boxscoreName": "Cabrera, O",
+      "nameSlug": "oswaldo-cabrera-665828"
      },
      "jerseyNumber": "95",
      "position": {
@@ -6358,7 +6389,8 @@
       "id": 657376,
       "fullName": "Clarke Schmidt",
       "link": "/api/v1/people/657376",
-      "boxscoreName": "Schmidt"
+      "boxscoreName": "Schmidt",
+      "nameSlug": "clarke-schmidt-657376"
      },
      "jerseyNumber": "36",
      "position": {
@@ -6508,7 +6540,8 @@
       "id": 657077,
       "fullName": "Alex Verdugo",
       "link": "/api/v1/people/657077",
-      "boxscoreName": "Verdugo, A"
+      "boxscoreName": "Verdugo, A",
+      "nameSlug": "alex-verdugo-657077"
      },
      "jerseyNumber": "24",
      "position": {
@@ -6712,7 +6745,8 @@
       "id": 592450,
       "fullName": "Aaron Judge",
       "link": "/api/v1/people/592450",
-      "boxscoreName": "Judge"
+      "boxscoreName": "Judge",
+      "nameSlug": "aaron-judge-592450"
      },
      "jerseyNumber": "99",
      "position": {
@@ -6916,7 +6950,8 @@
       "id": 641835,
       "fullName": "Tim Mayza",
       "link": "/api/v1/people/641835",
-      "boxscoreName": "Mayza"
+      "boxscoreName": "Mayza",
+      "nameSlug": "tim-mayza-641835"
      },
      "jerseyNumber": "58",
      "position": {
@@ -7066,7 +7101,8 @@
       "id": 657612,
       "fullName": "Tim Hill",
       "link": "/api/v1/people/657612",
-      "boxscoreName": "Hill, T"
+      "boxscoreName": "Hill, T",
+      "nameSlug": "tim-hill-657612"
      },
      "jerseyNumber": "54",
      "position": {
@@ -7216,7 +7252,8 @@
       "id": 691176,
       "fullName": "Jasson Domínguez",
       "link": "/api/v1/people/691176",
-      "boxscoreName": "Domínguez"
+      "boxscoreName": "Domínguez",
+      "nameSlug": "jasson-dominguez-691176"
      },
      "jerseyNumber": "89",
      "position": {
@@ -7365,7 +7402,8 @@
       "id": 669224,
       "fullName": "Austin Wells",
       "link": "/api/v1/people/669224",
-      "boxscoreName": "Wells, A"
+      "boxscoreName": "Wells, A",
+      "nameSlug": "austin-wells-669224"
      },
      "jerseyNumber": "28",
      "position": {
@@ -7569,7 +7607,8 @@
       "id": 650402,
       "fullName": "Gleyber Torres",
       "link": "/api/v1/people/650402",
-      "boxscoreName": "Torres"
+      "boxscoreName": "Torres",
+      "nameSlug": "gleyber-torres-650402"
      },
      "jerseyNumber": "25",
      "position": {
@@ -7773,7 +7812,8 @@
       "id": 664776,
       "fullName": "Jake Cousins",
       "link": "/api/v1/people/664776",
-      "boxscoreName": "Cousins"
+      "boxscoreName": "Cousins",
+      "nameSlug": "jake-cousins-664776"
      },
      "jerseyNumber": "61",
      "position": {
@@ -7923,7 +7963,8 @@
       "id": 592454,
       "fullName": "Tommy Kahnle",
       "link": "/api/v1/people/592454",
-      "boxscoreName": "Kahnle"
+      "boxscoreName": "Kahnle",
+      "nameSlug": "tommy-kahnle-592454"
      },
      "jerseyNumber": "41",
      "position": {
@@ -8148,7 +8189,8 @@
       "id": 624431,
       "fullName": "Jose Trevino",
       "link": "/api/v1/people/624431",
-      "boxscoreName": "Trevino"
+      "boxscoreName": "Trevino",
+      "nameSlug": "jose-trevino-624431"
      },
      "jerseyNumber": "39",
      "position": {
@@ -8297,7 +8339,8 @@
       "id": 605280,
       "fullName": "Clay Holmes",
       "link": "/api/v1/people/605280",
-      "boxscoreName": "Holmes, C"
+      "boxscoreName": "Holmes, C",
+      "nameSlug": "clay-holmes-605280"
      },
      "jerseyNumber": "35",
      "position": {
@@ -8522,7 +8565,8 @@
       "id": 683011,
       "fullName": "Anthony Volpe",
       "link": "/api/v1/people/683011",
-      "boxscoreName": "Volpe"
+      "boxscoreName": "Volpe",
+      "nameSlug": "anthony-volpe-683011"
      },
      "jerseyNumber": "11",
      "position": {
@@ -8726,7 +8770,8 @@
       "id": 519317,
       "fullName": "Giancarlo Stanton",
       "link": "/api/v1/people/519317",
-      "boxscoreName": "Stanton"
+      "boxscoreName": "Stanton",
+      "nameSlug": "giancarlo-stanton-519317"
      },
      "jerseyNumber": "27",
      "position": {
@@ -8928,7 +8973,8 @@
       "id": 643410,
       "fullName": "Mark Leiter Jr.",
       "link": "/api/v1/people/643410",
-      "boxscoreName": "Leiter Jr."
+      "boxscoreName": "Leiter Jr.",
+      "nameSlug": "mark-leiter-jr-643410"
      },
      "jerseyNumber": "38",
      "position": {
@@ -9152,7 +9198,8 @@
       "id": 665742,
       "fullName": "Juan Soto",
       "link": "/api/v1/people/665742",
-      "boxscoreName": "Soto, J"
+      "boxscoreName": "Soto, J",
+      "nameSlug": "juan-soto-665742"
      },
      "jerseyNumber": "22",
      "position": {
@@ -9356,7 +9403,8 @@
       "id": 665862,
       "fullName": "Jazz Chisholm Jr.",
       "link": "/api/v1/people/665862",
-      "boxscoreName": "Chisholm Jr."
+      "boxscoreName": "Chisholm Jr.",
+      "nameSlug": "jazz-chisholm-jr-665862"
      },
      "jerseyNumber": "13",
      "position": {
@@ -9560,7 +9608,8 @@
       "id": 661563,
       "fullName": "Luis Gil",
       "link": "/api/v1/people/661563",
-      "boxscoreName": "Gil"
+      "boxscoreName": "Gil",
+      "nameSlug": "luis-gil-661563"
      },
      "jerseyNumber": "81",
      "position": {
@@ -9710,7 +9759,8 @@
       "id": 573186,
       "fullName": "Marcus Stroman",
       "link": "/api/v1/people/573186",
-      "boxscoreName": "Stroman"
+      "boxscoreName": "Stroman",
+      "nameSlug": "marcus-stroman-573186"
      },
      "jerseyNumber": "0",
      "position": {
@@ -9859,7 +9909,8 @@
       "id": 663757,
       "fullName": "Trent Grisham",
       "link": "/api/v1/people/663757",
-      "boxscoreName": "Grisham"
+      "boxscoreName": "Grisham",
+      "nameSlug": "trent-grisham-663757"
      },
      "jerseyNumber": "12",
      "position": {
@@ -10008,7 +10059,8 @@
       "id": 543037,
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
-      "boxscoreName": "Cole"
+      "boxscoreName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "jerseyNumber": "45",
      "position": {
@@ -10336,7 +10388,8 @@
    "official": {
     "id": 483919,
     "fullName": "Mark Ripperger",
-    "link": "/api/v1/people/483919"
+    "link": "/api/v1/people/483919",
+    "nameSlug": "mark-ripperger-483919"
    },
    "officialType": "Home Plate"
   },
@@ -10344,7 +10397,8 @@
    "official": {
     "id": 429805,
     "fullName": "Todd Tichenor",
-    "link": "/api/v1/people/429805"
+    "link": "/api/v1/people/429805",
+    "nameSlug": "todd-tichenor-429805"
    },
    "officialType": "First Base"
   },
@@ -10352,7 +10406,8 @@
    "official": {
     "id": 547380,
     "fullName": "Carlos Torres",
-    "link": "/api/v1/people/547380"
+    "link": "/api/v1/people/547380",
+    "nameSlug": "carlos-torres-547380"
    },
    "officialType": "Second Base"
   },
@@ -10360,7 +10415,8 @@
    "official": {
     "id": 427164,
     "fullName": "Andy Fletcher",
-    "link": "/api/v1/people/427164"
+    "link": "/api/v1/people/427164",
+    "nameSlug": "andy-fletcher-427164"
    },
    "officialType": "Third Base"
   },
@@ -10368,7 +10424,8 @@
    "official": {
     "id": 427053,
     "fullName": "Mark Carlson",
-    "link": "/api/v1/people/427053"
+    "link": "/api/v1/people/427053",
+    "nameSlug": "mark-carlson-427053"
    },
    "officialType": "Left Field"
   },
@@ -10376,7 +10433,8 @@
    "official": {
     "id": 427139,
     "fullName": "Doug Eddings",
-    "link": "/api/v1/people/427139"
+    "link": "/api/v1/people/427139",
+    "nameSlug": "doug-eddings-427139"
    },
    "officialType": "Right Field"
   }
@@ -10456,7 +10514,8 @@
      "id": 592450,
      "fullName": "Aaron Judge",
      "link": "/api/v1/people/592450",
-     "boxscoreName": "Judge"
+     "boxscoreName": "Judge",
+     "nameSlug": "aaron-judge-592450"
     },
     "jerseyNumber": "99",
     "position": {
@@ -10665,7 +10724,8 @@
      "id": 665742,
      "fullName": "Juan Soto",
      "link": "/api/v1/people/665742",
-     "boxscoreName": "Soto, J"
+     "boxscoreName": "Soto, J",
+     "nameSlug": "juan-soto-665742"
     },
     "jerseyNumber": "22",
     "position": {
@@ -10874,7 +10934,8 @@
      "id": 543037,
      "fullName": "Gerrit Cole",
      "link": "/api/v1/people/543037",
-     "boxscoreName": "Cole"
+     "boxscoreName": "Cole",
+     "nameSlug": "gerrit-cole-543037"
     },
     "jerseyNumber": "45",
     "position": {

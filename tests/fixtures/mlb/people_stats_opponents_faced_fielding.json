@@ -19,14 +19,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 673962,
       "fullName": "Josh Jung",
       "link": "/api/v1/people/673962",
       "firstName": "Joshua",
-      "lastName": "Jung"
+      "lastName": "Jung",
+      "nameSlug": "joshua-jung-673962"
      }
     },
     {
@@ -37,14 +39,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 643446,
       "fullName": "Jeff McNeil",
       "link": "/api/v1/people/643446",
       "firstName": "Jeffrey",
-      "lastName": "McNeil"
+      "lastName": "McNeil",
+      "nameSlug": "jeffrey-mcneil-643446"
      }
     },
     {
@@ -55,14 +59,16 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "batter": {
       "id": 805779,
       "fullName": "Jacob Wilson",
       "link": "/api/v1/people/805779",
       "firstName": "Jacob",
-      "lastName": "Wilson"
+      "lastName": "Wilson",
+      "nameSlug": "jacob-wilson-805779"
      }
     }
    ]

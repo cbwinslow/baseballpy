@@ -5,7 +5,8 @@
    "person": {
     "id": 666938,
     "fullName": "Edward Alvarez",
-    "link": "/api/v1/people/666938"
+    "link": "/api/v1/people/666938",
+    "nameSlug": "edward-alvarez-666938"
    },
    "jerseyNumber": "",
    "job": "Stringer",
@@ -16,7 +17,8 @@
    "person": {
     "id": 684798,
     "fullName": "David Amoriello",
-    "link": "/api/v1/people/684798"
+    "link": "/api/v1/people/684798",
+    "nameSlug": "david-amoriello-684798"
    },
    "jerseyNumber": "",
    "job": "Stringer",
@@ -27,7 +29,8 @@
    "person": {
     "id": 632811,
     "fullName": "Doug Anderson",
-    "link": "/api/v1/people/632811"
+    "link": "/api/v1/people/632811",
+    "nameSlug": "doug-anderson-632811"
    },
    "jerseyNumber": "",
    "job": "Stringer",

@@ -40,9 +40,9 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 12 |
-| `retrosheet` | 25 | archived | yes | yes | yes | 1012/1280 (79%) | 20 |
+| `retrosheet` | 25 | archived | yes | yes | yes | 1012/1282 (78%) | 20 |
 | `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 15 |
-| `mlb_api` | 365 | archived | yes | yes | yes | 9486/16719 (56%) | 28 |
+| `mlb_api` | 365 | archived | yes | yes | yes | 9486/16937 (56%) | 28 |
 
 ## Active changes (`openspec/changes/`)
 
@@ -55,11 +55,11 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
-| `mlb-game-memory` | 0 | 1 | 1.1 |
-| `mlb-stats-route-406-and-deep-pools` | 5 | 5 | 1.2, 3.1, 3.3 |
-| `modelling-data-needs` | 0 | 6 | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6 |
+| `mlb-game-memory` | 1 | 0 | none |
+| `mlb-stats-route-406-and-deep-pools` | 6 | 4 | 1.2, 3.1 |
+| `modelling-data-needs` | 1 | 5 | 1.2, 1.3, 1.4, 1.5, 1.6 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
-| `retrosheet-box-accounts` | 9 | 6 | 1.1, 1.2, 2.3, 2.4 |
+| `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
 
 ## Decisions (`docs/DECISIONS.md`)
 

@@ -175,7 +175,8 @@
       "id": 666142,
       "fullName": "Cole Ragans",
       "link": "/api/v1/people/666142",
-      "boxscoreName": "Ragans"
+      "boxscoreName": "Ragans",
+      "nameSlug": "cole-ragans-666142"
      },
      "jerseyNumber": "55",
      "position": {
@@ -325,7 +326,8 @@
       "id": 623433,
       "fullName": "Nick Anderson",
       "link": "/api/v1/people/623433",
-      "boxscoreName": "Anderson, N"
+      "boxscoreName": "Anderson, N",
+      "nameSlug": "nick-anderson-623433"
      },
      "jerseyNumber": "63",
      "position": {
@@ -475,7 +477,8 @@
       "id": 666023,
       "fullName": "Freddy Fermin",
       "link": "/api/v1/people/666023",
-      "boxscoreName": "Fermin"
+      "boxscoreName": "Fermin",
+      "nameSlug": "freddy-fermin-666023"
      },
      "jerseyNumber": "34",
      "position": {
@@ -892,7 +895,8 @@
       "id": 641680,
       "fullName": "Jonah Heim",
       "link": "/api/v1/people/641680",
-      "boxscoreName": "Heim"
+      "boxscoreName": "Heim",
+      "nameSlug": "jonah-heim-641680"
      },
      "jerseyNumber": "28",
      "position": {
@@ -1041,7 +1045,8 @@
       "id": 694671,
       "fullName": "Wyatt Langford",
       "link": "/api/v1/people/694671",
-      "boxscoreName": "Langford"
+      "boxscoreName": "Langford",
+      "nameSlug": "wyatt-langford-694671"
      },
      "jerseyNumber": "36",
      "position": {
@@ -1245,7 +1250,8 @@
       "id": 668800,
       "fullName": "Andrew Knizner",
       "link": "/api/v1/people/668800",
-      "boxscoreName": "Knizner"
+      "boxscoreName": "Knizner",
+      "nameSlug": "andrew-knizner-668800"
      },
      "jerseyNumber": "12",
      "position": {
@@ -1558,7 +1564,8 @@
    "official": {
     "id": 427413,
     "fullName": "Tony Randazzo",
-    "link": "/api/v1/people/427413"
+    "link": "/api/v1/people/427413",
+    "nameSlug": "tony-randazzo-427413"
    },
    "officialType": "Home Plate"
   },
@@ -1566,7 +1573,8 @@
    "official": {
     "id": 573769,
     "fullName": "Jeremy Riggs",
-    "link": "/api/v1/people/573769"
+    "link": "/api/v1/people/573769",
+    "nameSlug": "jeremy-riggs-573769"
    },
    "officialType": "First Base"
   },
@@ -1574,7 +1582,8 @@
    "official": {
     "id": 483564,
     "fullName": "Dan Bellino",
-    "link": "/api/v1/people/483564"
+    "link": "/api/v1/people/483564",
+    "nameSlug": "dan-bellino-483564"
    },
    "officialType": "Second Base"
   },
@@ -1582,7 +1591,8 @@
    "official": {
     "id": 427093,
     "fullName": "Phil Cuzzi",
-    "link": "/api/v1/people/427093"
+    "link": "/api/v1/people/427093",
+    "nameSlug": "phil-cuzzi-427093"
    },
    "officialType": "Third Base"
   }
@@ -1648,7 +1658,8 @@
      "id": 453286,
      "fullName": "Max Scherzer",
      "link": "/api/v1/people/453286",
-     "boxscoreName": "Scherzer"
+     "boxscoreName": "Scherzer",
+     "nameSlug": "max-scherzer-453286"
     },
     "jerseyNumber": "31",
     "position": {
@@ -1880,7 +1891,8 @@
      "id": 570632,
      "fullName": "José Ureña",
      "link": "/api/v1/people/570632",
-     "boxscoreName": "Ureña"
+     "boxscoreName": "Ureña",
+     "nameSlug": "jose-urena-570632"
     },
     "jerseyNumber": "54",
     "position": {
@@ -2110,7 +2122,8 @@
      "id": 665750,
      "fullName": "Leody Taveras",
      "link": "/api/v1/people/665750",
-     "boxscoreName": "Taveras, L"
+     "boxscoreName": "Taveras, L",
+     "nameSlug": "leody-taveras-665750"
     },
     "jerseyNumber": "3",
     "position": {

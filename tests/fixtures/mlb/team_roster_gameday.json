@@ -5,7 +5,8 @@
    "person": {
     "id": 694341,
     "fullName": "Brendan Beck",
-    "link": "/api/v1/people/694341"
+    "link": "/api/v1/people/694341",
+    "nameSlug": "brendan-beck-694341"
    },
    "jerseyNumber": "89",
    "position": {
@@ -22,16 +23,17 @@
   },
   {
    "person": {
-    "id": 670280,
-    "fullName": "David Bednar",
-    "link": "/api/v1/people/670280"
+    "id": 641355,
+    "fullName": "Cody Bellinger",
+    "link": "/api/v1/people/641355",
+    "nameSlug": "cody-bellinger-641355"
    },
-   "jerseyNumber": "53",
+   "jerseyNumber": "35",
    "position": {
-    "code": "1",
-    "name": "Pitcher",
-    "type": "Pitcher",
-    "abbreviation": "P"
+    "code": "7",
+    "name": "Outfielder",
+    "type": "Outfielder",
+    "abbreviation": "LF"
    },
    "status": {
     "code": "A",
@@ -41,16 +43,17 @@
   },
   {
    "person": {
-    "id": 641355,
-    "fullName": "Cody Bellinger",
-    "link": "/api/v1/people/641355"
+    "id": 676609,
+    "fullName": "José Caballero",
+    "link": "/api/v1/people/676609",
+    "nameSlug": "jose-caballero-676609"
    },
-   "jerseyNumber": "35",
+   "jerseyNumber": "72",
    "position": {
-    "code": "7",
-    "name": "Outfielder",
-    "type": "Outfielder",
-    "abbreviation": "LF"
+    "code": "6",
+    "name": "Shortstop",
+    "type": "Infielder",
+    "abbreviation": "SS"
    },
    "status": {
     "code": "A",
