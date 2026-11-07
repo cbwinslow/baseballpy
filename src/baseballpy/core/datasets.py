@@ -18,6 +18,7 @@ SOURCES = (
     "kalshi",
     "polymarket",
     "bref",
+    "fangraphs",
 )
 
 #: how a dataset gets into the lake: ``default`` (the default ``ingest`` selection), ``opt_in``

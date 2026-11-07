@@ -4,7 +4,7 @@ This document provides an exhaustive catalog of all baseball datasets across the
 ecosystem, comparing `baseballpy` against `pybaseball`, `baseballr`, `MLB-StatsAPI`, and the
 official MLB OpenAPI specification.
 
-- **Total Registered Datasets in baseballpy:** 470
+- **Total Registered Datasets in baseballpy:** 480
 - **MLB Stats API:** 365 datasets across 65 API routes
 - **Statcast (Baseball Savant):** 38 datasets (MLB pitches, Minor League pitches, 36 leaderboards)
 - **Retrosheet:** 25 datasets (PBP events, game logs, boxscores, rosters)
@@ -13,6 +13,7 @@ official MLB OpenAPI specification.
 - **Kalshi:** 5 datasets (MLB prediction-market catalog)
 - **Polymarket:** 4 datasets (MLB prediction-market catalog and prices)
 - **Baseball-Reference:** 2 datasets (WAR files)
+- **FanGraphs:** 10 datasets (private research files you supply)
 
 ---
 
@@ -586,3 +587,18 @@ or train any derived sabermetric metric without web scraping dependencies.
 | :--- | :--- | :--- | :---: | :--- | :--- |
 | `war_batting` | `bref_war_batting` | `season` | 50 | `player_ID`, `year_ID`, `stint_ID` | Baseball-Reference WAR, batting side: one row per player, season and stint. |
 | `war_pitching` | `bref_war_pitching` | `season` | 44 | `player_ID`, `year_ID`, `stint_ID` | Baseball-Reference WAR, pitching side: one row per player, season and stint. |
+
+### FANGRAPHS (10 datasets)
+
+| Dataset Name | View Name | Partition | Columns | Primary Keys | Description |
+| :--- | :--- | :--- | :---: | :--- | :--- |
+| `batting` | `fangraphs_batting` | `none` | 478 | `playerid`, `season` | FanGraphs season batting leaderboard (private research data): one row per player and season. |
+| `fielding` | `fangraphs_fielding` | `none` | 87 | `playerid`, `season`, `pos` | FanGraphs season fielding leaderboard (private research data): one row per player, season and position. |
+| `guts` | `fangraphs_guts` | `none` | 16 | `season` | FanGraphs Guts! constants (private research data): wOBA weights, FIP constant, run values per season. |
+| `park_factors` | `fangraphs_park_factors` | `none` | 19 | `season`, `team` | FanGraphs park factors (private research data): one row per season and team. |
+| `park_factors_handedness` | `fangraphs_park_factors_handedness` | `none` | 13 | `season`, `team` | FanGraphs park factors by batter handedness (private research data), from 2002. |
+| `pitching` | `fangraphs_pitching` | `none` | 547 | `playerid`, `season` | FanGraphs season pitching leaderboard (private research data): one row per player and season. |
+| `projection` | `fangraphs_projection` | `none` | 121 | `playerid`, `_projection_system`, `_stat_group`, `_horizon`, `_captured_date`, `_row_hash` | FanGraphs projection snapshots (private research data): a row per system, player, capture date and change. |
+| `prospects` | `fangraphs_prospects` | `none` | 138 | `season`, `playerid`, `minormasterid` | FanGraphs prospect board (private research data): scouting grades per player and season. |
+| `split_batting` | `fangraphs_split_batting` | `none` | 23 | `playerid`, `season`, `_split`, `_scope` | FanGraphs batting split leaderboards (private research data): a curated set of splits per season. |
+| `split_pitching` | `fangraphs_split_pitching` | `none` | 24 | `playerid`, `season`, `_split`, `_scope` | FanGraphs pitching split leaderboards (private research data): a curated set of splits per season. |

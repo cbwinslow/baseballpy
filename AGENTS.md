@@ -195,6 +195,10 @@ sections 1-13 and `docs/DECISIONS.md`. `tests/test_agent_rails.py` enforces what
 
 ### 14.1 Preflight (before the first edit of a task)
 
+0. **Check the coordination board:** read `docs/agents/AGENT_BOARD.md` for active checkouts before
+   editing. If a task or files are locked by another agent, do not touch them; pick an unassigned
+   backlog row instead. Claim your task by adding a checkout tag to `AGENT_BOARD.md` and appending
+   a `TASK_CLAIMED` record to `docs/agents/agent_log.jsonl`.
 1. Find the task: a row in `docs/agents/BACKLOG.md` and, for source work, its card in
    `docs/agents/tracks/`. No row, no card: open an OpenSpec change and add the row first.
 2. Read the OpenSpec change (`proposal.md`, `design.md`, `tasks.md`, spec deltas) and the spec in
@@ -242,9 +246,10 @@ sections 1-13 and `docs/DECISIONS.md`. `tests/test_agent_rails.py` enforces what
 ### 14.4 Definition of done for a slice
 
 Task ticked in `tasks.md`; evidence in the change's `design.md`; `BACKLOG.md` status updated and
-`uv run python scripts/project_map.py` regenerated; gates green (`pytest`, `ruff check`, `ruff format
---check`, `mypy --strict src`, `docs generate --check`, `openspec validate --specs`); one conventional
-commit whose body lists the reuse-check answers, the evidence and what is not verified.
+`uv run python scripts/project_map.py` regenerated; checkout tag moved to Recent Completed Handoffs in
+`docs/agents/AGENT_BOARD.md` and logged in `docs/agents/agent_log.jsonl`; gates green (`pytest`, `ruff
+check`, `ruff format --check`, `mypy --strict src`, `docs generate --check`, `openspec validate --specs`);
+one conventional commit whose body lists the reuse-check answers, the evidence and what is not verified.
 
 ### 14.5 When blocked
 

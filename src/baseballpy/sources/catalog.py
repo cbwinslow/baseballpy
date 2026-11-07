@@ -14,6 +14,8 @@ from baseballpy.core.schema_tools import snake
 from baseballpy.sources.bref.endpoints import BY_DATASET as BREF_FILES
 from baseballpy.sources.bref.schema import BREF_KEYS, BREF_SCHEMAS
 from baseballpy.sources.chadwick.schema import CHADWICK_PRIMARY_KEYS, CHADWICK_SCHEMAS
+from baseballpy.sources.fangraphs.files import BY_DATASET as FANGRAPHS_FILES
+from baseballpy.sources.fangraphs.schema import FANGRAPHS_KEYS, FANGRAPHS_SCHEMAS
 from baseballpy.sources.kalshi.schema import KALSHI_KEYS, KALSHI_SCHEMAS
 from baseballpy.sources.lahman.schema import (
     LAHMAN_PRIMARY_KEYS,
@@ -341,6 +343,22 @@ def register_all() -> dict[str, DatasetSpec]:
             BREF_FILES[name].description,
             f"sources/bref.md#dataset-{name}",
             "season",
+        )
+
+    for name, schema in FANGRAPHS_SCHEMAS.items():
+        _add(
+            "fangraphs",
+            name,
+            f"fangraphs_{name}",
+            schema,
+            FANGRAPHS_KEYS[name],
+            FANGRAPHS_FILES[name].description,
+            f"sources/fangraphs.md#dataset-{name}",
+            ingest="on_demand",
+            ingest_note=(
+                "files you supply: put the CSV in inbox/fangraphs/ "
+                "(scripts/export_homelab_fangraphs.py), then `ingest fangraphs`"
+            ),
         )
 
     retro_doc = "sources/retrosheet.md"

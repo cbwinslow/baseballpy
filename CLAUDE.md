@@ -19,11 +19,11 @@ Suggested shape: *Summary*, *What I found / did*, *What happens next*, *Question
 
 ## Hard rules (every task, every agent; full text is `AGENTS.md` section 14)
 
-1. **Preflight first:** find the task in `docs/agents/BACKLOG.md` (and its card in `docs/agents/tracks/`), read its OpenSpec change, list the files you will touch. No row, no change: open the change first.
+1. **Preflight first:** check `docs/agents/AGENT_BOARD.md` for active checkouts (never touch locked tasks/files; post your claim and append a `TASK_CLAIMED` record to `docs/agents/agent_log.jsonl`), find the task in `docs/agents/BACKLOG.md` (and its card in `docs/agents/tracks/`), read its OpenSpec change, list the files you will touch. No row, no change: open the change first.
 2. **Tools before code:** run the reuse check of `docs/agents/TOOLING.md` (pyarrow, polars, duckdb, narwhals, msgspec, httpx/tenacity/aiolimiter, dlt, pydantic-settings, click/rich, hypothesis). `Grep` for an existing helper. Custom code needs one sentence of evidence for what the tool cannot do.
 3. **Registry and data, not names:** no hard-coded dataset, endpoint or season lists; one declarative table plus one generic function; keep Protocol boundaries (`IngestAdapter`, `SinkProtocol`).
 4. **OpenSpec always:** spec delta with a `Verified by` test, ADR per decision, tick `tasks.md`, evidence in `design.md`, archive finished changes.
-5. **Small slices, evidence or not done:** one card per commit, the four gates plus `docs generate --check` and `openspec validate --specs`, command output pasted, "not verified" said plainly.
+5. **Small slices, evidence or not done:** one card per commit, the four gates plus `docs generate --check` and `openspec validate --specs`, update `docs/agents/AGENT_BOARD.md` (move checkout to Recent Handoffs) and log completion to `docs/agents/agent_log.jsonl`, command output pasted, "not verified" said plainly.
 
 How the project is partitioned into tasks: `docs/agents/WORK_BREAKDOWN.md`. Current source under review: Chadwick (`docs/agents/tracks/01-chadwick.md`).
 

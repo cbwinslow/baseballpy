@@ -492,5 +492,5 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-286 | coverage audit saw only part- files and guessed 31 Statcast windows; now counts download records and the cached calendar (found by the on-track review) | DONE | tests/test_coverage_audit.py, tests/test_compact.py: Statcast 2024 shows 51 of 51 |
 | B-287 | `market-sources 2.5`: Polymarket trades (v2), live snapshots, batch price route | OPEN | owner decision on trader identities; trades or an unsupported verdict with probe evidence |
 | B-288 | fangraphs-and-bref 1.1 to 1.3: Baseball-Reference WAR from its published files, FanGraphs not downloaded, ADR 78 | DONE | tests/test_bref.py (7), tests/test_slow_hosts.py (3); real run 126,547 + 57,884 rows, 0 extra requests |
-| B-289 | `fangraphs-and-bref 2.1`: owner decision on the FanGraphs data on the homelab | OPEN | import, member-export importer, or neither recorded |
+| B-289 | fangraphs-and-bref 2.1: import of the FanGraphs tables held on the homelab (owner said yes), ADR 79 | DONE | tests/test_fangraphs.py (9); 1,219,323 rows equal to the homelab, column totals compared |
 | B-290 | `fangraphs-and-bref 2.2`: Baseball-Reference daily WAR archive as an opt-in dataset | OPEN | WAR as of each day, 2018 onward |

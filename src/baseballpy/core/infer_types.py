@@ -10,8 +10,10 @@ from typing import Any
 
 _TIME = re.compile(r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}(:\d{2})?)")
 _DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
-_DECIMAL = re.compile(r"-?\d+\.\d+")
+_DECIMAL = re.compile(r"-?\d*\.\d+")
 _INT = re.compile(r"-?\d+")
+_NUMBER = re.compile(r"-?(\d+(\.\d+)?|\.\d+)([eE][+-]?\d+)?")
+_INTEGRAL = re.compile(r"-?\d+(\.0+)?")
 #: JSON numbers with more decimals than this are real floats, not prices or quantities
 MAX_DECIMAL_SCALE = 8
 MAX_INT64 = 2**63 - 1
@@ -27,11 +29,16 @@ def decimal_type(texts: list[str]) -> str:
     return f"decimal({precision},{scale})"
 
 
-def infer(values: list[Any], *, floats_as_decimal: bool = False) -> str:
+def infer(
+    values: list[Any], *, floats_as_decimal: bool = False, max_text_scale: int | None = None
+) -> str:
     """The type name for every sampled value of one key (``string`` when nothing fits).
 
     ``floats_as_decimal``: JSON numbers that are written with at most 8 decimals become exact
-    decimals (Polymarket sends prices as JSON numbers such as ``0.9965``).
+    decimals (Polymarket sends prices as JSON numbers such as ``0.9965``). ``max_text_scale``:
+    numbers written as text with more decimals than this, or in scientific notation, are computed
+    values (rates, model outputs) and become ``float64`` instead of an exact decimal; numbers that
+    are all whole (``592450.0``) become integers.
     """
     seen = [v for v in values if v is not None and v != ""]
     if not seen:
@@ -58,6 +65,15 @@ def infer(values: list[Any], *, floats_as_decimal: bool = False) -> str:
         return "float64"
     if all(isinstance(v, str) for v in seen):
         texts = [str(v) for v in seen]
+        if (
+            max_text_scale is not None
+            and all(_NUMBER.fullmatch(t) for t in texts)
+            and any("e" in t.lower() or len(t.partition(".")[2]) > max_text_scale for t in texts)
+        ):
+            return "float64"
+        if max_text_scale is not None and all(_INTEGRAL.fullmatch(t) for t in texts):
+            span = max(abs(int(float(t))) for t in texts)  # whole numbers written as 592450.0
+            return "int32" if span <= 2_000_000_000 else "int64"
         if all(_TIME.fullmatch(t) for t in texts):
             return "timestamp"
         if all(_DATE.fullmatch(t) for t in texts):

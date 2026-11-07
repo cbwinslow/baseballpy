@@ -30,3 +30,37 @@ def test_json_numbers_stay_floats_unless_asked_and_short_enough() -> None:
     assert infer([0.9965, 0.5], floats_as_decimal=True) == "decimal(9,4)"
     assert infer([0.12345678901], floats_as_decimal=True) == "float64"
     assert infer([1e-07], floats_as_decimal=True) == "float64"
+
+
+def test_leading_dot_decimals_and_whole_numbers_written_as_floats() -> None:
+    assert infer([".316", ".313", "-.412"]) == "decimal(9,3)"
+    assert infer(["592450.0", "16.0"], max_text_scale=8) == "int32"
+    assert infer(["592450.0", "16.5"], max_text_scale=8) == "decimal(18,1)"
+    assert infer(["592450.0"]) == "decimal(18,1)", "without the option the text type is kept"
+
+
+def test_ids_written_both_as_plain_and_as_float_text_are_one_integer_type() -> None:
+    assert infer(["110587", "687060.0"], max_text_scale=8) == "int32"
+
+
+def test_a_whole_number_written_with_a_zero_fraction_loads_as_that_integer() -> None:
+    import pyarrow as pa
+
+    from baseballpy.core.schema_tools import normalize_csv, schema_from_columns
+
+    schema = schema_from_columns([("ab", "int32"), ("id", "int32")])
+    table = normalize_csv(
+        b"ab,id\n157.0,110587\n12,687060.0\n,5\n", schema, source="x", dataset="y"
+    )
+    assert table.column("ab").to_pylist() == [157, 12, None]
+    assert table.column("id").to_pylist() == [110587, 687060, 5]
+    bad = normalize_csv(b"ab,id\n12.5,1\n", schema, source="x", dataset="y")
+    assert bad.column("ab").to_pylist() == [None], "a real fraction is still refused, not rounded"
+    assert isinstance(table.schema.field("ab").type, pa.DataType)
+
+
+def test_long_or_scientific_numbers_in_text_are_floats_when_asked() -> None:
+    assert infer(["0.2857142857142857", "1.5"], max_text_scale=8) == "float64"
+    assert infer(["1.5e-05", "2"], max_text_scale=8) == "float64"
+    assert infer(["0.285", "1.5"], max_text_scale=8) == "decimal(9,3)"
+    assert infer(["0.2857142857142857"]) == "decimal(38,16)", "without the option, exact decimals"

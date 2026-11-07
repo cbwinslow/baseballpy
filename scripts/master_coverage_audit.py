@@ -468,6 +468,7 @@ def generate_markdown_report() -> str:
         f"- **Kalshi:** {len(by_source.get('kalshi', [])):,} datasets (MLB prediction-market catalog)",
         f"- **Polymarket:** {len(by_source.get('polymarket', [])):,} datasets (MLB prediction-market catalog and prices)",
         f"- **Baseball-Reference:** {len(by_source.get('bref', [])):,} datasets (WAR files)",
+        f"- **FanGraphs:** {len(by_source.get('fangraphs', [])):,} datasets (private research files you supply)",
         "",
         "---",
         "",
@@ -519,6 +520,7 @@ def generate_markdown_report() -> str:
         "kalshi",
         "polymarket",
         "bref",
+        "fangraphs",
     ):
         datasets = by_source.get(source_name, [])
         lines.extend(

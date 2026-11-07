@@ -23,10 +23,10 @@ MAX_ATTEMPTS = 3
 
 CONTRACT = """You are implementing one task in the baseballpy repository (working directory).
 Rules (non-negotiable):
-- Follow AGENTS.md and CLAUDE.md. Keep Extract / Parse / Sink decoupled behind typing.Protocol;
-  no hard-coded dataset names (use the registry); no hand edits to generated files
+- Follow AGENTS.md, CLAUDE.md and docs/agents/AGENT_BOARD.md. Keep Extract / Parse / Sink decoupled
+  behind typing.Protocol; no hard-coded dataset names (use the registry); no hand edits to generated files
   (tables.py, lb_tables.py, mlb_tables.py, stat_combos.py, docs between GENERATED markers).
-- Touch ONLY the files the task lists. Never run git commit/push/checkout/reset/clean.
+- Touch ONLY the files the task lists. Never touch files checked out by another agent. Never run git commit/push/checkout/reset/clean.
 - No network access except through baseballpy.core.http.HttpClient; tests must not use the network.
 - Never swallow exceptions. Strict typing (mypy --strict), docstrings on public items, ruff clean.
 - Do not invent facts about upstream data; if the task lacks information, stop and say so.

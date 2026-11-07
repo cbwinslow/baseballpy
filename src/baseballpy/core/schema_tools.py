@@ -389,6 +389,9 @@ def map_to_schema(
                 )
             )
         else:
+            if pa.types.is_integer(field.type) and pa.types.is_string(column.type):
+                # a whole number written with a zero fraction ("157.0") is the integer 157
+                column = pc.replace_substring_regex(column, r"\.0+$", "")
             columns.append(
                 checked_cast(
                     column,

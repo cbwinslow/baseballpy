@@ -118,7 +118,7 @@ class LakeConfig(EnvSettings):
         ),
     )
     raw_compress_sources: tuple[str, ...] = Field(
-        default=("mlb_api", "statcast", "bref"),
+        default=("mlb_api", "statcast", "bref", "fangraphs"),
         description=(
             "Sources whose raw text files (json, csv) are stored gzipped (checksum of the "
             "original bytes); sources whose parsers open raw files by path are left plain"
@@ -259,6 +259,10 @@ class LakeConfig(EnvSettings):
         from baseballpy.core.atomic import ManifestTracker
 
         return ManifestTracker.for_path(path)
+
+    def inbox_dir(self, source: str) -> Path:
+        """``inbox/<source>/``: files the user supplies for a source that has no download."""
+        return self.home / "inbox" / source
 
     def today_or_now(self) -> date:
         """The configured ``today`` or the real current date."""

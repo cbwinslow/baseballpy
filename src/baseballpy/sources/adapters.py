@@ -51,6 +51,12 @@ def _bref_factory() -> IngestAdapter:
     return BrefAdapter()
 
 
+def _fangraphs_factory() -> IngestAdapter:
+    from baseballpy.sources.fangraphs.adapter import FangraphsAdapter
+
+    return FangraphsAdapter()
+
+
 def register_all_adapters() -> None:
     """Register ingest adapter factories for all built-in sources."""
     register_adapter("statcast", _statcast_factory)
@@ -61,6 +67,7 @@ def register_all_adapters() -> None:
     register_adapter("kalshi", _kalshi_factory)
     register_adapter("polymarket", _polymarket_factory)
     register_adapter("bref", _bref_factory)
+    register_adapter("fangraphs", _fangraphs_factory)
 
 
 __all__ = ["register_all_adapters"]
