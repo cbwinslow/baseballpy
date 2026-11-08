@@ -371,6 +371,10 @@ Options:
   --migrate / --no-migrate  First rewrite files written under an older schema (slow the first time;
                             the download queue skips it and leaves it to a run of its own).
                             [default: migrate]
+  --jobs INTEGER RANGE      Datasets compacted at the same time (they are independent; the file
+                            reads release the interpreter lock). Each holds one season of one
+                            dataset in memory: 4 at once ran out of committed memory beside a
+                            download (pyarrow ArrowMemoryError), 2 does not.  [default: 2; x>=1]
   --help                    Show this message and exit.
 ```
 

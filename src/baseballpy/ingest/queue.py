@@ -17,6 +17,7 @@ import sys
 import threading
 import time
 from collections.abc import Callable, Sequence
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -133,8 +134,9 @@ def run_queue(
     ``run_stage(name)`` returns an exit code. A stage is tried up to ``retries + 1`` times; one
     that is still failing is marked failed and the next stage runs. ``stop`` ends the run at the
     next safe point (it also interrupts the waits). ``max_rounds`` bounds the rounds (tests).
-    ``after_stage(name)`` runs after a stage ends well (compaction); a failure there is recorded and
-    reported but does not fail the stage.
+    ``after_stage(name)`` runs after a stage ends well (compaction) in the background, beside the next
+    stage (one at a time: the next one waits for it); a failure there is recorded and reported but
+    does not fail the stage.
     """
 
     def say(message: str) -> None:
@@ -144,6 +146,42 @@ def run_queue(
 
     state = load_state(state_path, plan)
     report = QueueReport()
+    background = _Background(after_stage, state, state_path, say)
+    try:
+        return _run_rounds(
+            stages,
+            run_stage,
+            state,
+            state_path,
+            stop,
+            every,
+            retries,
+            initial_wait,
+            max_wait,
+            max_rounds,
+            background,
+            report,
+            say,
+        )
+    finally:
+        background.close()
+
+
+def _run_rounds(
+    stages: Sequence[str],
+    run_stage: Callable[[str], int],
+    state: QueueState,
+    state_path: Path,
+    stop: threading.Event,
+    every: float | None,
+    retries: int,
+    initial_wait: float,
+    max_wait: float,
+    max_rounds: int | None,
+    background: "_Background",
+    report: QueueReport,
+    say: Callable[[str], None],
+) -> QueueReport:
     while True:
         if not state.round_started_at:
             state.round_started_at = _now().isoformat()
@@ -173,11 +211,8 @@ def run_queue(
             )
             save_state(state_path, state)  # a stage that just ended is on disk before anything else
             if code == EXIT_OK:
-                if after_stage is not None and not stop.is_set():
-                    after = after_stage(name)
-                    if after != EXIT_OK:
-                        stage.last_error = f"after-stage step exited with {after}"
-                        say(f"round {state.round}: {name}: {stage.last_error}")
+                if not stop.is_set():
+                    background.start(name)
                 continue
             if code == EXIT_INTERRUPTED or stop.is_set():
                 report.stopped = "interrupted"
@@ -205,6 +240,59 @@ def run_queue(
         state.round_started_at = ""
         state.next_round_at = ""
         state.stages = {}
+
+
+class _Background:
+    """The after-stage step of finished stages (compaction), run beside the next download.
+
+    Compaction used to run between stages, and at the size of a season (tens of thousands of small
+    files) it took longer than the download: the download sat idle for 45 minutes. It touches only
+    the finished season's files, so it can run while the next season downloads; the next step waits
+    for the one before it, and the queue waits for the last one before it ends.
+    """
+
+    def __init__(
+        self,
+        work: Callable[[str], int] | None,
+        state: QueueState,
+        state_path: Path,
+        say: Callable[[str], None],
+    ) -> None:
+        self._work = work
+        self._state = state
+        self._state_path = state_path
+        self._say = say
+        self._pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="after-stage")
+        self._pending: tuple[str, Future[int]] | None = None
+
+    def start(self, name: str) -> None:
+        """Run the step for ``name`` in the background (after the previous one has ended)."""
+        if self._work is None:
+            return
+        self.settle()
+        self._pending = (name, self._pool.submit(self._work, name))
+
+    def settle(self) -> None:
+        """Wait for the running step and record how it ended."""
+        if self._pending is None:
+            return
+        name, future = self._pending
+        self._pending = None
+        code = future.result()
+        if code != EXIT_OK:
+            stage = self._state.stages.get(name)
+            message = f"after-stage step exited with {code}"
+            if stage is not None:
+                stage.last_error = message
+                save_state(self._state_path, self._state)
+            self._say(f"{name}: {message}")
+
+    def close(self) -> None:
+        """Wait for the last step and release the thread."""
+        try:
+            self.settle()
+        finally:
+            self._pool.shutdown(wait=True)
 
 
 def _wait(stop: threading.Event, seconds: float) -> None:

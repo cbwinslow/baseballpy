@@ -156,6 +156,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 91: A Games Run Fetches Only The Games, And The Queue Compacts Between Stages
 - ADR 92: The Download Speed Is Measured, And The Limit Is In Our Own Work
 - ADR 93: A Bulk Download Must Not Pay For The Size Of The Lake At Every Chunk
+- ADR 94: Compaction Runs Beside The Next Download
 
 ## Documentation pages (`docs/`)
 

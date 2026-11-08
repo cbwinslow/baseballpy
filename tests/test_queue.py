@@ -336,3 +336,37 @@ def test_a_crashed_attempt_is_retried_like_a_failed_one(tmp_path: Path, crash: i
     assert always.failed == ["a"] and always.exit_code == 1
     state = load_state(tmp_path / "state" / "queue.json", "p2")
     assert state.stages["a"].status == "failed" and state.stages["a"].last_exit == crash
+
+
+def test_compaction_runs_beside_the_next_stage_and_never_beside_another_compaction(
+    tmp_path: Path,
+) -> None:
+    """Compaction of a season took longer than the download: it must not hold the next one up."""
+    b_started = threading.Event()
+    lock = threading.Lock()
+    active = {"now": 0, "peak": 0}
+    seen: list[tuple[str, bool]] = []
+
+    def run(name: str) -> int:
+        if name == "b":
+            b_started.set()
+        return EXIT_OK
+
+    def compact(name: str) -> int:
+        with lock:
+            active["now"] += 1
+            active["peak"] = max(active["peak"], active["now"])
+        try:
+            if name == "a":
+                seen.append((name, b_started.wait(10)))  # stage b started while a is compacted
+            else:
+                seen.append((name, True))
+            return EXIT_OK
+        finally:
+            with lock:
+                active["now"] -= 1
+
+    report = run_queue("p", ["a", "b", "c"], run, after_stage=compact, **_fast(tmp_path))
+    assert report.exit_code == 0
+    assert seen == [("a", True), ("b", True), ("c", True)]  # the queue waited for the last one
+    assert active["peak"] == 1

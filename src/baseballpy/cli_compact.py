@@ -1,5 +1,7 @@
 """CLI: ``baseballpy compact`` merges small download chunks into a few big Parquet files."""
 
+from concurrent.futures import ThreadPoolExecutor
+
 import click
 from rich.console import Console
 from rich.table import Table
@@ -24,8 +26,21 @@ console = Console()
     help="First rewrite files written under an older schema (slow the first time; the download "
     "queue skips it and leaves it to a run of its own).",
 )
+@click.option(
+    "--jobs",
+    type=click.IntRange(min=1),
+    default=2,
+    show_default=True,
+    help="Datasets compacted at the same time (they are independent; the file reads release the "
+    "interpreter lock). Each holds one season of one dataset in memory: 4 at once ran out of "
+    "committed memory beside a download (pyarrow ArrowMemoryError), 2 does not.",
+)
 def compact_cmd(
-    sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bool, migrate: bool
+    sources: tuple[str, ...],
+    datasets: tuple[str, ...],
+    dry_run: bool,
+    migrate: bool,
+    jobs: int,
 ) -> None:
     """Merge each dataset's small chunk files into big ones (run when no ingest is running).
 
@@ -50,8 +65,13 @@ def compact_cmd(
     totals = [0, 0, 0, 0, 0]
     empty_files = 0
     migrated = failed = 0
-    for spec in specs:
-        report = compact_dataset(spec, config, dry_run=dry_run, migrate=migrate)
+    with ThreadPoolExecutor(max_workers=min(jobs, len(specs))) as pool:
+        reports = list(
+            pool.map(
+                lambda spec: compact_dataset(spec, config, dry_run=dry_run, migrate=migrate), specs
+            )
+        )
+    for report in reports:
         empty_files += report.empty_files
         migrated += report.migrated_files
         failed += report.migrate_failed
