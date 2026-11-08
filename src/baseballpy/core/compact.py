@@ -195,6 +195,10 @@ def _compact_group(
                     raise ValueError(f"{spec.key}: chunk {key} differs after compaction")
             report.rows += back.num_rows
             report.bytes_after += path.stat().st_size
+            # the allocator keeps freed batches for reuse; give them back so a season does not
+            # pile up one batch after another in committed memory
+            del back, tables
+            pa.default_memory_pool().release_unused()
     except Exception:
         for path, _ in written:
             path.unlink(missing_ok=True)
