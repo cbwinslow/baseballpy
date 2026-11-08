@@ -126,6 +126,7 @@ def run_queue(
     initial_wait: float = 60.0,
     max_wait: float = 900.0,
     max_rounds: int | None = None,
+    failed_wait: float = 1800.0,
     after_stage: Callable[[str], int] | None = None,
     on_event: Callable[[str], None] | None = None,
 ) -> QueueReport:
@@ -134,6 +135,9 @@ def run_queue(
     ``run_stage(name)`` returns an exit code. A stage is tried up to ``retries + 1`` times; one
     that is still failing is marked failed and the next stage runs. ``stop`` ends the run at the
     next safe point (it also interrupts the waits). ``max_rounds`` bounds the rounds (tests).
+    A round with failed stages does not wait for the whole ``every`` interval: it runs again after
+    ``failed_wait`` seconds (30 minutes) with only the failed stages (a disk that compaction frees,
+    a host that was down).
     ``after_stage(name)`` runs after a stage ends well (compaction) in the background, beside the next
     stage (one at a time: the next one waits for it); a failure there is recorded and reported but
     does not fail the stage.
@@ -159,6 +163,7 @@ def run_queue(
             initial_wait,
             max_wait,
             max_rounds,
+            failed_wait,
             background,
             report,
             say,
@@ -178,6 +183,7 @@ def _run_rounds(
     initial_wait: float,
     max_wait: float,
     max_rounds: int | None,
+    failed_wait: float,
     background: "_Background",
     report: QueueReport,
     say: Callable[[str], None],
@@ -228,6 +234,8 @@ def _run_rounds(
         if every is None or (max_rounds is not None and state.round >= max_rounds):
             return report
         wait = max(0.0, every - (time.monotonic() - round_began))
+        if report.failed:
+            wait = min(wait, failed_wait)  # what failed is tried again soon, not tomorrow
         state.next_round_at = datetime.fromtimestamp(time.time() + wait, UTC).isoformat()
         save_state(state_path, state)
         say(
@@ -236,6 +244,8 @@ def _run_rounds(
         if stop.wait(wait):
             report.stopped = "interrupted"
             return report
+        if report.failed:
+            continue  # the same round: stages that are done stay done, only the failed ones run
         state.round += 1
         state.round_started_at = ""
         state.next_round_at = ""

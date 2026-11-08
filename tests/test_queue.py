@@ -370,3 +370,22 @@ def test_compaction_runs_beside_the_next_stage_and_never_beside_another_compacti
     assert report.exit_code == 0
     assert seen == [("a", True), ("b", True), ("c", True)]  # the queue waited for the last one
     assert active["peak"] == 1
+
+
+def test_a_round_with_a_failed_stage_runs_again_soon_with_only_the_failed_stage(
+    tmp_path: Path,
+) -> None:
+    """A stage that failed because the disk was full must not wait a day for its next try."""
+    stop = threading.Event()
+    calls: list[str] = []
+
+    def run(name: str) -> int:
+        calls.append(name)
+        if name == "a" and calls.count("a") >= 3:
+            stop.set()
+        return EXIT_FAILED if name == "a" and calls.count("a") < 3 else EXIT_OK
+
+    options = _fast(tmp_path, stop=stop)
+    report = run_queue("p", ["a", "b"], run, every=86400, retries=0, failed_wait=0.01, **options)
+    assert calls == ["a", "b", "a", "a"][: len(calls)] and calls.count("b") == 1
+    assert calls.count("a") == 3 and report.exit_code == EXIT_INTERRUPTED
