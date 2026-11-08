@@ -14,24 +14,51 @@ A record that is cut short (power cut in the middle of a write) or does not matc
 replay: every record before it is kept, it and everything after it is dropped, and the file is cut
 back to the last good record so that new records follow whole ones.
 
-``commit`` (the raw segment, ``seg-NNNN.parquet``, and its line in ``segments.json``) and ``read``
-belong to task 2.3 (B-358) and raise ``NotImplementedError`` until then.
+``commit`` writes the open units as one raw segment, ``seg-NNNN.parquet`` (one row per response:
+url, fetched_at, status, etag, sha256 of the original bytes, the bytes), then appends one JSON line
+to ``segments.json``; only then are the units counted as stored and the journal deleted. A segment
+file that no line names (a crash between the rename and the line) is deleted on the next start and
+its units come back from the journal.
 """
 
 import hashlib
+import json
 import os
 import struct
 import zlib
 from collections.abc import Sequence
+from contextlib import suppress
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 import pyarrow as pa
+import pyarrow.parquet as pq
 
+from baseballpy.core.atomic import atomic_write
 from baseballpy.core.config import LakeConfig
+from baseballpy.core.stores import schema_fingerprint
 
 JOURNAL_NAME = "journal.zst"
 OPEN_DIRNAME = "_open"
+COMMIT_NAME = "segments.json"
+#: zstd level of a raw segment and the size of its data pages (guesses, measured in task 2.4):
+#: pages must hold many bodies, or Parquet compresses each body alone and the shared gain is lost
+RAW_LEVEL = 9
+RAW_PAGE_BYTES = 8 * 1024 * 1024
+RAW_ROW_GROUP_ROWS = 500
+RAW_SCHEMA = pa.schema(
+    [
+        ("url", pa.string()),
+        ("fetched_at", pa.string()),
+        ("status", pa.int32()),
+        ("etag", pa.string()),
+        ("sha256", pa.string()),
+        ("body", pa.large_binary()),
+        ("legacy_path", pa.string()),
+    ]
+)
 #: zstd level of a journal record: the journal is short-lived, so speed matters more than size
 JOURNAL_LEVEL = 3
 
@@ -161,6 +188,75 @@ def read_journal(path: Path) -> tuple[dict[str, list[Response]], int]:
     return units, at
 
 
+class RawSegmentSink:
+    """Writes a raw segment table as one atomic Parquet file (``SinkProtocol``).
+
+    The file is written beside its target as ``<name>.<id>.part`` (readers only match ``*.parquet``),
+    its footer is checked, then it is renamed into place with the Windows retry of ``core.atomic``.
+    """
+
+    def write(self, table: pa.Table, destination: str, **kwargs: Any) -> int:
+        """Write ``table`` to ``destination``; returns the number of rows."""
+        with atomic_write(Path(destination)) as part:
+            pq.write_table(
+                table,
+                part,
+                compression="zstd",
+                compression_level=int(kwargs.get("level", RAW_LEVEL)),
+                data_page_size=int(kwargs.get("page_bytes", RAW_PAGE_BYTES)),
+                row_group_size=int(kwargs.get("row_group_rows", RAW_ROW_GROUP_ROWS)),
+                use_dictionary=False,
+            )
+            rows = pq.ParquetFile(part).metadata.num_rows  # raises if the footer is corrupt
+            if rows != table.num_rows:
+                raise ValueError(f"parquet footer row count {rows} != table rows {table.num_rows}")
+        return int(table.num_rows)
+
+    def write_stream(self, reader: pa.RecordBatchReader, destination: str, **kwargs: Any) -> int:
+        """Write the batches of ``reader`` as one segment file; returns the number of rows."""
+        return self.write(reader.read_all(), destination, **kwargs)
+
+
+def _segment_name(segment: int) -> str:
+    return f"seg-{segment:04d}.parquet"
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        while block := handle.read(1024 * 1024):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def read_commit_lines(path: Path) -> tuple[list[dict[str, Any]], int]:
+    """The lines of ``segments.json`` and the size in bytes of its whole lines.
+
+    A last line that is cut short (no newline, or not JSON) is ignored; a bad line before the last
+    one raises ``ValueError``, because the file is then damaged and not merely torn.
+    """
+    if not path.exists():
+        return [], 0
+    data = path.read_bytes()
+    lines: list[dict[str, Any]] = []
+    good = 0
+    for raw in data.splitlines(keepends=True):
+        text = raw.decode("utf-8", errors="replace").strip()
+        if not text:
+            good += len(raw)
+            continue
+        try:
+            if not raw.endswith(b"\n"):
+                raise ValueError("no end of line")
+            lines.append(json.loads(text))
+        except ValueError:
+            if good + len(raw) == len(data):
+                break
+            raise
+        good += len(raw)
+    return lines, good
+
+
 class ResponseLog:
     """The log of one source and season (``season=None`` for a source that is not split by season)."""
 
@@ -169,6 +265,8 @@ class ResponseLog:
         self.source = source
         self.season = season
         self._units: dict[str, list[Response]] = {}
+        self._committed: dict[str, str] = {}
+        self._lines: list[dict[str, Any]] = []
         self._replay()
 
     @property
@@ -182,8 +280,29 @@ class ResponseLog:
         """The crash journal of the open segment."""
         return self.season_dir / OPEN_DIRNAME / JOURNAL_NAME
 
+    @property
+    def commit_path(self) -> Path:
+        """``segments.json``: one line per committed segment."""
+        return self.season_dir / COMMIT_NAME
+
     def _replay(self) -> None:
-        """Load the units of the journal and cut a torn tail off the file."""
+        """Start-up: read the commit lines, drop what no line names, replay the journal."""
+        lines, good = read_commit_lines(self.commit_path)
+        if self.commit_path.exists() and self.commit_path.stat().st_size != good:
+            with self.commit_path.open("r+b") as handle:
+                handle.truncate(good)
+        self._lines = lines
+        named = {name for line in lines for name in line.get("files", {})}
+        for unit in (u for line in lines for u in line.get("units", [])):
+            self._committed[unit] = ""
+        if self.season_dir.is_dir():
+            for leftover in (
+                *self.season_dir.glob("*.part"),
+                *self.season_dir.glob("seg-*.parquet"),
+            ):
+                if leftover.name not in named:
+                    with suppress(OSError):
+                        leftover.unlink()
         units, good = read_journal(self.journal_path)
         self._units = units
         if self.journal_path.exists() and self.journal_path.stat().st_size != good:
@@ -193,8 +312,8 @@ class ResponseLog:
                 os.fsync(handle.fileno())
 
     def stored(self) -> frozenset[str]:
-        """The ids of the units that are in the journal (committed units are added by task 2.3)."""
-        return frozenset(self._units)
+        """The ids of the units that are committed or in the journal."""
+        return frozenset(self._units) | frozenset(self._committed)
 
     def add_unit(self, unit_id: str, responses: Sequence[Response]) -> None:
         """Append a finished unit to the journal; it is on disk when this returns."""
@@ -206,10 +325,70 @@ class ResponseLog:
             os.fsync(handle.fileno())
         self._units[unit_id] = list(responses)
 
-    def commit(self) -> None:
-        """Write the open units as a raw segment and its commit line (task 2.3, B-358)."""
-        raise NotImplementedError("raw segment writer: task 2.3 (B-358)")
+    def commit(self) -> int | None:
+        """Write the open units as one raw segment and its commit line; returns the segment number.
+
+        Order matters: the segment file is renamed into place first, the line is appended second, the
+        journal is deleted last. A crash anywhere leaves either nothing counted (the journal replays)
+        or everything counted (a leftover journal holds only units a line already names).
+        """
+        if not self._units:
+            return None
+        segment = 1 + max((int(line["segment"]) for line in self._lines), default=0)
+        name = _segment_name(segment)
+        path = self.season_dir / name
+        table = self._table()
+        RawSegmentSink().write(table, str(path))
+        line = {
+            "segment": segment,
+            "units": sorted(self._units),
+            "raw": name,
+            "files": {name: {"sha256": _file_sha256(path), "rows": table.num_rows}},
+            "schema_sha256": {"raw": schema_fingerprint(RAW_SCHEMA)},
+            "committed_at": datetime.now(UTC).isoformat(),
+        }
+        with self.commit_path.open("ab") as handle:
+            handle.write(json.dumps(line, separators=(",", ":")).encode("utf-8") + b"\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        self._lines.append(line)
+        for unit in self._units:
+            self._committed[unit] = name
+        self._units = {}
+        with suppress(FileNotFoundError):
+            self.journal_path.unlink()
+        with suppress(OSError):
+            self.journal_path.parent.rmdir()
+        return segment
+
+    def _table(self) -> pa.Table:
+        """One row per response of every open unit."""
+        rows = [response for unit in self._units.values() for response in unit]
+        return pa.table(
+            {
+                "url": [r.url for r in rows],
+                "fetched_at": [r.fetched_at for r in rows],
+                "status": [r.status for r in rows],
+                "etag": [r.etag for r in rows],
+                "sha256": [r.sha256 for r in rows],
+                "body": [r.body for r in rows],
+                "legacy_path": [None] * len(rows),
+            },
+            schema=RAW_SCHEMA,
+        )
 
     def read(self, sha256: str) -> bytes:
-        """The original bytes of a stored response (task 2.3, B-358)."""
-        raise NotImplementedError("raw segment reader: task 2.3 (B-358)")
+        """The original bytes of a stored response, from the open units or a committed segment."""
+        for unit in self._units.values():
+            for response in unit:
+                if response.sha256 == sha256:
+                    return response.body
+        for line in self._lines:
+            table = pq.read_table(
+                self.season_dir / line["raw"],
+                columns=["sha256", "body"],
+                filters=[("sha256", "=", sha256)],
+            )
+            if table.num_rows:
+                return bytes(table.column("body")[0].as_py())
+        raise KeyError(sha256)

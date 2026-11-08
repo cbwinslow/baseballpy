@@ -1,10 +1,7 @@
 """The response log (ADR 95): each HTTP response is stored once, a crash loses no finished game.
 
-Written first (task 2.1, B-356). Task 2.2 (B-357) built the journal (``stored``, ``add_unit``); task 2.3
-(B-358) builds the raw segment writer (``commit``, ``read``). Until then every test is an expected
-failure that must stop at ``commit`` or ``read`` (``NotImplementedError``), not for another reason.
-Remove the ``xfail`` marks when the tests start to pass; a strict ``xfail`` that passes fails the run,
-so nobody can forget.
+Written first (task 2.1, B-356); the journal came with task 2.2 (B-357) and the raw segment writer
+with task 2.3 (B-358), which made these tests pass.
 
 The interface these tests fix:
 
@@ -26,12 +23,6 @@ import pyarrow.parquet as pq
 import pytest
 
 from baseballpy.core.config import LakeConfig
-
-NOT_BUILT = pytest.mark.xfail(
-    strict=True,
-    raises=(ImportError, NotImplementedError),
-    reason="B-358: ResponseLog.commit and .read (the raw segment writer) are not built yet",
-)
 
 FETCHED_AT = "2026-11-08T12:00:00+00:00"
 SOURCE = "mlb_api"
@@ -94,7 +85,6 @@ def _run(log: Any, response_class: Any, games: list[str], fetched: list[str]) ->
         log.add_unit(game, _unit_responses(response_class, game))
 
 
-@NOT_BUILT
 def test_each_response_is_stored_once_with_the_sha256_of_its_original_bytes(tmp_path: Path) -> None:
     response_class, log_class = _api()
     config = LakeConfig(home=tmp_path)
@@ -118,7 +108,6 @@ def test_each_response_is_stored_once_with_the_sha256_of_its_original_bytes(tmp_
             assert log.read(_sha(_body(label))) == _body(label)
 
 
-@NOT_BUILT
 def test_a_crash_replays_the_journal_and_refetches_no_finished_game(tmp_path: Path) -> None:
     response_class, log_class = _api()
     config = LakeConfig(home=tmp_path)
@@ -146,7 +135,6 @@ def test_a_crash_replays_the_journal_and_refetches_no_finished_game(tmp_path: Pa
     assert not (_season_dir(config) / "_open" / "journal.zst").exists(), "deleted after the commit"
 
 
-@NOT_BUILT
 def test_a_torn_last_journal_record_is_dropped(tmp_path: Path) -> None:
     response_class, log_class = _api()
     config = LakeConfig(home=tmp_path)
@@ -170,7 +158,6 @@ def test_a_torn_last_journal_record_is_dropped(tmp_path: Path) -> None:
     assert len(lines) == 1 and sorted(lines[0]["units"]) == ["745001", "745002"]
 
 
-@NOT_BUILT
 def test_a_source_on_segments_writes_no_per_dataset_or_gzip_raw_file(tmp_path: Path) -> None:
     response_class, log_class = _api()
     config = LakeConfig(home=tmp_path)
@@ -189,3 +176,70 @@ def test_a_source_on_segments_writes_no_per_dataset_or_gzip_raw_file(tmp_path: P
     assert not list(source_dir.rglob("*.gz")), "no gzip raw file"
     assert not list(source_dir.rglob("_manifest.json")), "no per-dataset raw manifest"
     assert {path.name for path in source_dir.iterdir()} == {"season=2024"}, "no per-dataset folder"
+
+
+def test_a_segment_file_no_line_names_is_deleted_and_its_games_come_back_from_the_journal(
+    tmp_path: Path,
+) -> None:
+    response_class, log_class = _api()
+    config = LakeConfig(home=tmp_path)
+    log = log_class(config, SOURCE, SEASON)
+    log.add_unit("745001", _unit_responses(response_class, "745001"))
+    journal = (_season_dir(config) / "_open" / "journal.zst").read_bytes()
+    log.commit()
+    # the run died after the rename, before the line: put the state back as that crash leaves it
+    (_season_dir(config) / "segments.json").unlink()
+    (_season_dir(config) / "_open").mkdir(exist_ok=True)
+    (_season_dir(config) / "_open" / "journal.zst").write_bytes(journal)
+
+    again = log_class(config, SOURCE, SEASON)
+    assert not list(_season_dir(config).glob("seg-*.parquet")), "the unnamed segment is deleted"
+    assert again.stored() == frozenset({"745001"}), "the game is back from the journal"
+    again.commit()
+    assert len(_commit_lines(config)) == 1
+
+
+def test_a_torn_commit_line_is_ignored_and_the_next_segment_is_numbered_after_the_last(
+    tmp_path: Path,
+) -> None:
+    response_class, log_class = _api()
+    config = LakeConfig(home=tmp_path)
+    first = log_class(config, SOURCE, SEASON)
+    first.add_unit("745001", _unit_responses(response_class, "745001"))
+    assert first.commit() == 1
+    with (_season_dir(config) / "segments.json").open("ab") as handle:
+        handle.write(b'{"segment":2,"units":["7450')  # a line cut short by a crash
+
+    second = log_class(config, SOURCE, SEASON)
+    assert second.stored() == frozenset({"745001"})
+    second.add_unit("745002", _unit_responses(response_class, "745002"))
+    assert second.commit() == 2
+    assert [line["segment"] for line in _commit_lines(config)] == [1, 2]
+    assert sorted(p.name for p in _season_dir(config).glob("seg-*.parquet")) == [
+        "seg-0001.parquet",
+        "seg-0002.parquet",
+    ]
+    # a response is read back from a committed segment by a fresh log
+    reopened = log_class(config, SOURCE, SEASON)
+    assert reopened.read(_sha(_body("box-745001"))) == _body("box-745001")
+    assert reopened.read(_sha(_body("feed-745002"))) == _body("feed-745002")
+
+
+def test_committing_nothing_writes_nothing_and_an_unknown_hash_is_an_error(tmp_path: Path) -> None:
+    _, log_class = _api()
+    config = LakeConfig(home=tmp_path)
+    log = log_class(config, SOURCE, SEASON)
+    assert log.commit() is None
+    assert not (tmp_path / "raw").exists()
+    with pytest.raises(KeyError):
+        log.read("0" * 64)
+
+
+def test_the_raw_segment_sink_is_a_sink_protocol(tmp_path: Path) -> None:
+    from baseballpy.core.protocols import SinkProtocol
+    from baseballpy.core.responselog import RAW_SCHEMA, RawSegmentSink
+
+    sink: SinkProtocol = RawSegmentSink()
+    empty = RAW_SCHEMA.empty_table()
+    assert sink.write(empty, str(tmp_path / "seg-0001.parquet")) == 0
+    assert not list(tmp_path.glob("*.part"))
