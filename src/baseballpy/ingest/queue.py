@@ -168,6 +168,7 @@ def run_queue(
                 max_wait,
                 say,
             )
+            save_state(state_path, state)  # a stage that just ended is on disk before anything else
             if code == EXIT_OK:
                 if after_stage is not None and not stop.is_set():
                     after = after_stage(name)

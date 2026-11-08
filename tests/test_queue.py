@@ -275,3 +275,16 @@ def test_the_compact_runner_runs_compact_for_every_source_of_the_stage() -> None
         ["compact", "--source", "mlb_api"],
         ["compact", "--source", "statcast"],
     ]
+
+
+def test_a_finished_stage_is_on_disk_before_its_compaction_runs(tmp_path: Path) -> None:
+    """A crash during the compaction must not forget that the stage is done."""
+    seen: list[str] = []
+    path = tmp_path / "state" / "queue.json"
+
+    def compact(name: str) -> int:
+        seen.append(load_state(path, "p").stages[name].status)
+        return EXIT_OK
+
+    run_queue("p", ["a"], lambda _n: EXIT_OK, after_stage=compact, **_fast(tmp_path))
+    assert seen == ["done"]
