@@ -150,6 +150,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 85: The Per-Game MLB Download Defaults To The Major Leagues
 - ADR 86: Compacted Files Are Written By Column Name, Not By Position
 - ADR 87: Files Written Under An Older Schema Are Read As-Is And Migrated By `compact`
+- ADR 88: Manifests Are Read And Written As Bytes
 
 ## Documentation pages (`docs/`)
 

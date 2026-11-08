@@ -1,6 +1,5 @@
 """Two-phase atomic file writes and lock-protected checkpoint manifest tracking."""
 
-import json
 import logging
 import os
 import threading
@@ -13,6 +12,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, cast
 
+import msgspec
 import pyarrow as pa
 import pyarrow.parquet as pq
 
@@ -232,11 +232,10 @@ class ManifestTracker:
 
     def _read_disk(self) -> dict[str, Any] | None:
         """Read the manifest from disk, preserving corrupt files; None if absent."""
-        text: str | None = None
+        data = b""
         for attempt in range(50):
             try:
-                text = self.path.read_text(encoding="utf-8")
-                break
+                data = self.path.read_bytes()
             except FileNotFoundError:
                 return None
             except PermissionError:
@@ -244,12 +243,11 @@ class ManifestTracker:
                 if attempt == 49:
                     raise
                 time.sleep(0.02)
-            except UnicodeDecodeError as exc:
-                self._preserve_corrupt(f"{type(exc).__name__}: {exc}")
-                return None
+                continue
+            break
         try:
-            loaded = json.loads(text or "")
-        except json.JSONDecodeError as exc:
+            loaded = msgspec.json.decode(data)  # bytes in: no multi-MB str copy
+        except (msgspec.DecodeError, UnicodeDecodeError) as exc:
             self._preserve_corrupt(f"{type(exc).__name__}: {exc}")
             return None
         if not isinstance(loaded, dict) or not isinstance(loaded.get("chunks", {}), dict):
@@ -370,11 +368,10 @@ class ManifestTracker:
                     merged[key] = entry
             disk["chunks"] = merged
             disk["updated_at"] = datetime.now(UTC).isoformat()
-            # one field per line but no ``indent``: indent forces the slow pure-Python encoder, and
-            # a 3,000-entry manifest saved by many threads then timed out on its lock (2011 MLB run)
-            payload = json.dumps(disk, separators=(",\n", ": "))
+            # bytes straight to the file: json.dumps built a multi-MB str on every chunk write
+            # and 12 threads doing that ran a 16,000-game MLB season out of memory (ADR 88)
             with atomic_write(self.path) as part_path:
-                part_path.write_text(payload, encoding="utf-8")
+                part_path.write_bytes(msgspec.json.encode(disk))
             self._data = disk
             self._sig = self._stat_sig()
 

@@ -30,6 +30,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-08 01:21 UTC [blain]:**
+  - **Tasks:** `B-308`.
+  - **Summary:** Memory fix reviewed: bytes in/out manifests, narrow exceptions, spec delta, ADR 88, measurement
+
 - **2026-11-08 00:13 UTC [blain]:**
   - **Tasks:** `B-305`.
   - **Summary:** Reads and views survive older-schema files; compact migrates them and moves _extras values to typed columns (ADR 87)

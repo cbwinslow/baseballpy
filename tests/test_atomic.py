@@ -91,3 +91,56 @@ def test_manifest_is_parsed_only_when_the_file_changed(
     ManifestTracker(path).set_completed("b")  # another writer
     assert mine.is_completed("b")  # picked up through the changed stat
     assert len(reads) >= 1
+
+
+def test_manifest_large_entry_msgspec_roundtrip(tmp_path: Path) -> None:
+    """Zero-copy msgspec encoding saves and reads thousands of chunks without memory spikes."""
+    path = tmp_path / "_manifest.json"
+    tracker = ManifestTracker(path)
+    entries = {
+        f"chunk_{i}": {
+            "status": "COMPLETED",
+            "records_count": i * 10,
+            "etag": f'"etag_{i}"',
+            "completed_at": "2026-11-07T12:00:00Z",
+        }
+        for i in range(1000)
+    }
+    tracker.put_entries(entries)
+
+    # Verify reload from disk
+    reloaded = ManifestTracker(path)
+    assert reloaded.is_completed("chunk_0")
+    assert reloaded.is_completed("chunk_999")
+    chunk = reloaded.get_chunk("chunk_500")
+    assert chunk is not None
+    assert chunk["records_count"] == 5000
+
+
+def test_saving_a_large_manifest_does_not_build_a_big_string(tmp_path: Path) -> None:
+    """A save writes bytes straight to the file: the extra memory stays near the file size."""
+    import tracemalloc
+
+    path = tmp_path / "_manifest.json"
+    tracker = ManifestTracker(path)
+    tracker.put_entries(
+        {
+            f"g{i}": {"status": "COMPLETED", "records_count": i, "schema_sha256": "x" * 64}
+            for i in range(20_000)
+        }
+    )
+    size = path.stat().st_size
+    tracemalloc.start()
+    try:
+        tracker.set_completed("g1", records_count=1)
+        peak = tracemalloc.get_traced_memory()[1]
+    finally:
+        tracemalloc.stop()
+    assert peak < 3 * size
+
+
+def test_a_manifest_that_is_not_utf8_is_preserved_not_lost(tmp_path: Path) -> None:
+    path = tmp_path / "_manifest.json"
+    path.write_bytes(b'{"chunks": {"a": "\xff\xfe"}}')
+    assert ManifestTracker(path).get_chunk("a") is None
+    assert list(tmp_path.glob("*.corrupt-*"))
