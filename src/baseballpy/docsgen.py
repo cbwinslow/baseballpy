@@ -213,5 +213,5 @@ def generate_docs(docs_dir: Path, *, write: bool = True) -> dict[str, bool]:
         new = _with_sources_block(new, source, load_descriptions(docs_dir, source)[0])
         changed[str(path)] = new != current
         if write and new != current:
-            path.write_text(new, encoding="utf-8")
+            path.write_text(new, encoding="utf-8", newline="\n")
     return changed

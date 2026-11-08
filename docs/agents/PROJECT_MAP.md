@@ -52,7 +52,9 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `agent-coordination-and-audit-rotation` | 3 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
+| `cross-platform-support` | 5 | 1 | 1.6 |
 | `crosswalk-suite` | 0 | 1 | 1.1 |
+| `download-queue` | 0 | 6 | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 4 | 2 | 1.5, 1.6 |
@@ -151,6 +153,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 86: Compacted Files Are Written By Column Name, Not By Position
 - ADR 87: Files Written Under An Older Schema Are Read As-Is And Migrated By `compact`
 - ADR 88: Manifests Are Read And Written As Bytes
+- ADR 89: One Behavior On Linux, macOS And Windows
 
 ## Documentation pages (`docs/`)
 

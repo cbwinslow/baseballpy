@@ -49,7 +49,7 @@ def detect_layout(config: LakeConfig) -> int | None:
 def write_version(config: LakeConfig, version: int = LAYOUT_VERSION) -> None:
     """Atomically stamp the layout version."""
     with atomic_write(config.version_file, mode="w") as part:
-        part.write_text(f"{version}\n", encoding="utf-8")
+        part.write_text(f"{version}\n", encoding="utf-8", newline="\n")
 
 
 def ensure_version_file(config: LakeConfig) -> None:

@@ -5,6 +5,7 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 ## Unreleased
 
 ### Added
+- Cross-platform behavior (ADR 89): LF line endings for every written text file and in every checkout (`.gitattributes`), `spawn` worker processes, UTF-8 console output, and `tests/test_portability.py` enforcing it.
 - The default User-Agent is the one pybaseball sends (`python-requests/2.32.3`), overridable with `BASEBALLPY_USER_AGENT` or `HttpClient(user_agent=...)` (ADR 40).
 - `baseballpy backfill PLAN.toml` runs a staged historical backfill (free-space pre-flight, `--max-gb`, `--dry-run`, resume); measured throughput and the plan are in `docs/BACKFILL.md`.
 - `catalog status` says why a dataset is not in the lake (`ingest`: `default`, `opt_in`, `on_demand`, `api_only`, with a note) and `--gaps` lists only the MISSING datasets the default ingest should have filled; `catalog show` reports the same.

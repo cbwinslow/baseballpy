@@ -119,7 +119,7 @@ async def _stream_loop(
             return
         if jsonl_path is not None:
             jsonl_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(jsonl_path, "a", encoding="utf-8") as handle:
+            with open(jsonl_path, "a", encoding="utf-8", newline="\n") as handle:
                 for ev in batch:
                     handle.write(json.dumps(ev.to_dict()) + "\n")
         if duckdb_path is not None:

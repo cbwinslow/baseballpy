@@ -34,6 +34,15 @@ uv add "baseballpy[retrosheet]"  # alias; chadwickpy is installed by default
 uv add "baseballpy[all]"
 ```
 
+### Platforms
+
+Linux, macOS and Windows behave the same (ADR 89). CI runs the whole test suite on Ubuntu and Windows for Python 3.11 to 3.13. Everything is plain Python: no Windows tool, no cron or Task Scheduler is needed.
+
+- Text files are UTF-8 with LF line endings on every OS; the lake itself can be copied between systems.
+- Only one baseballpy process downloads from a host at a time (an OS file lock: `fcntl` on Linux and macOS, `msvcrt` on Windows). The lock does not work on some network shares (NFS); keep `BASEBALLPY_HOME` on a local disk.
+- Set `BASEBALLPY_HOME` to put the lake somewhere other than `~/.baseballpy`.
+- macOS is expected to work (same code path as Linux) but is not part of CI yet.
+
 **Older CPUs without AVX2** (for example a Xeon E5-2660 v2): the default Polars and DuckDB 2.x wheels die with an illegal-instruction error (exit code 132). Install `"polars[rtcompat]"` and `"duckdb<2"` (1.4.4 was tested) next to baseballpy; everything else is unchanged.
 
 ---

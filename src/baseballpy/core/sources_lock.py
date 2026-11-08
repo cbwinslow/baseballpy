@@ -115,7 +115,7 @@ def write_lock(lock: dict[str, dict[str, str]], config: LakeConfig | None = None
     for target in [user, PACKAGED_LOCK] if user.exists() else [PACKAGED_LOCK, user]:
         try:
             with atomic_write(target, mode="w") as part:
-                part.write_text(payload, encoding="utf-8")
+                part.write_text(payload, encoding="utf-8", newline="\n")
         except OSError as exc:
             logger.info("could not write lock to %s (%s); trying the next location", target, exc)
             continue

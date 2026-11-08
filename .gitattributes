@@ -1,0 +1,12 @@
+# Line endings are LF in the repository and in every checkout, on every OS (ADR 89).
+* text=auto eol=lf
+
+# Binary files are never converted.
+*.parquet binary
+*.gz binary
+*.zip binary
+*.duckdb binary
+*.png binary
+*.jpg binary
+*.pdf binary
+*.whl binary

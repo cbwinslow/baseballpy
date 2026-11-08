@@ -85,5 +85,5 @@ def fetch_tree(
         }
     )
     with atomic_write(cache, mode="w") as part:
-        part.write_text(body, encoding="utf-8")
+        part.write_text(body, encoding="utf-8", newline="\n")
     return entries

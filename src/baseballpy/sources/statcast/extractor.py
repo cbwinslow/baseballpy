@@ -450,6 +450,7 @@ class StatcastExtractor:
             cache.write_text(
                 json.dumps({"start": first.isoformat(), "end": last.isoformat()}),
                 encoding="utf-8",
+                newline="\n",
             )
         return first, min(last, self._today())
 
@@ -473,7 +474,7 @@ class StatcastExtractor:
             record = seasons[0]
             if season < self._today().year:
                 cache.parent.mkdir(parents=True, exist_ok=True)
-                cache.write_text(json.dumps(record), encoding="utf-8")
+                cache.write_text(json.dumps(record), encoding="utf-8", newline="\n")
         start = record.get("springStartDate") or record.get("regularSeasonStartDate")
         end = record.get("postSeasonEndDate") or record.get("seasonEndDate")
         if not start or not end:

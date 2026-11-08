@@ -1,5 +1,6 @@
 """Command-line interface for baseballpy."""
 
+import sys
 from pathlib import Path
 
 import click
@@ -45,6 +46,15 @@ def _print_licenses(ctx: click.Context, _param: click.Parameter, value: bool) ->
         ctx.exit()
 
 
+def use_utf8_streams() -> None:
+    """Print UTF-8 on every OS: a Windows console or a redirected pipe defaults to a legacy code
+    page, where table borders and accented names become '?' or raise (ADR 89). A no-op elsewhere."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None and (stream.encoding or "").lower().replace("-", "") != "utf8":
+            reconfigure(encoding="utf-8", errors="replace")
+
+
 @click.group()
 @click.version_option()
 @click.option(
@@ -57,7 +67,7 @@ def _print_licenses(ctx: click.Context, _param: click.Parameter, value: bool) ->
 )
 def main() -> None:
     """baseballpy: Fast, modular, and strongly-typed baseball data ingestion layer."""
-    pass
+    use_utf8_streams()
 
 
 @main.command("statcast")
@@ -290,7 +300,9 @@ def docs_coverage(docs_dir: Path, write_baseline: bool) -> None:
         old: dict[str, int] = _json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
         new = {s: max(old.get(s, 0), d) for s, (d, _) in coverage.items()}
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(_json.dumps(new, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        path.write_text(
+            _json.dumps(new, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
+        )
         console.print(f"Baseline written to [yellow]{path}[/yellow].")
 
 

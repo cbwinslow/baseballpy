@@ -62,7 +62,7 @@ def _log_event(
         "task_id": task_id,
         "details": details,
     }
-    with open(log_path, "a", encoding="utf-8") as f:
+    with open(log_path, "a", encoding="utf-8", newline="\n") as f:
         f.write(json.dumps(record) + "\n")
 
 
@@ -284,7 +284,7 @@ def agent_claim(
     # Remove placeholder if present
     text = text.replace("*(No active checkouts currently held — all tracks clear.)*\n\n", "")
 
-    board_path.write_text(text, encoding="utf-8")
+    board_path.write_text(text, encoding="utf-8", newline="\n")
     _log_event(
         log_path,
         agent_name,
@@ -342,7 +342,7 @@ def agent_release(task_id: str, summary: str, agent: str | None) -> None:
             count=1,
         )
 
-    board_path.write_text(text, encoding="utf-8")
+    board_path.write_text(text, encoding="utf-8", newline="\n")
     _log_event(
         log_path,
         agent_name,

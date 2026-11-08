@@ -8,6 +8,7 @@ keeps at most twice the worker count of files in flight.
 
 import atexit
 import concurrent.futures
+import multiprocessing
 import threading
 from collections import deque
 from collections.abc import Iterator, Sequence
@@ -69,7 +70,11 @@ def shared_pool(workers: int) -> concurrent.futures.ProcessPoolExecutor:
     with _pools_lock:
         pool = _pools.get(workers)
         if pool is None:
-            pool = concurrent.futures.ProcessPoolExecutor(max_workers=workers)
+            # spawn on every OS: fork (the Linux default before Python 3.14) copies a process that has
+            # HTTP and DuckDB threads running, which can deadlock in the child (ADR 89)
+            pool = concurrent.futures.ProcessPoolExecutor(
+                max_workers=workers, mp_context=multiprocessing.get_context("spawn")
+            )
             _pools[workers] = pool
         return pool
 

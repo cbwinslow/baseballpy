@@ -57,7 +57,7 @@ class Quarantine:
         directory = self.config.quarantine_dir / source / now.strftime("%Y-%m-%d")
         directory.mkdir(parents=True, exist_ok=True)
         path = directory / f"{dataset}-{uuid.uuid4().hex[:8]}.jsonl"
-        with open(path, "w", encoding="utf-8") as handle:
+        with open(path, "w", encoding="utf-8", newline="\n") as handle:
             for item in items:
                 line = {
                     "ts": now.isoformat(),

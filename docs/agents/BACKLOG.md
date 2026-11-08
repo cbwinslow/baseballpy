@@ -526,3 +526,11 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 |---|---|---|---|
 | B-311 | `crosswalk-suite 1.1`: unified game, team, venue crosswalk views and python helpers (bb.games, bb.teams, bb.venues, bb.players) | OPEN | views in DuckDB and python accessors verified with tests in test_crosswalk.py |
 | B-311 | crosswalk tests (`tests/test_crosswalk.py`) read the owner's real lake but the test home is isolated, so they fail anywhere without that lake; they are marked `live` for now. Give them small fixture data (a few players, teams, venues, games) so they run in the default gates | OPEN | the 5 tests pass in an empty home without the `live` marker |
+| B-312 | cross-platform-support 1.1 to 1.5: LF line endings and `.gitattributes`, `spawn` worker processes, UTF-8 console, an enforcing test, ADR 89 | DONE | tests/test_portability.py (9); full suite 1509 passed |
+| B-314 | `cross-platform-support 1.6`: README platforms section, CHANGELOG, gates, CI green on ubuntu and windows, merge the spec delta, archive | OPEN | change archived after CI is green |
+| B-313 | `download-queue 1.1`: `select_stages` and `baseballpy backfill --stage` | OPEN | see the change's tasks.md |
+| B-315 | `download-queue 1.2`: named single-instance lock, `LakeConfig.state_root` | OPEN | see the change's tasks.md |
+| B-316 | `download-queue 1.3`: `ingest/queue.py`: state file, rounds, retries with tenacity, stop event, child-process runner | OPEN | see the change's tasks.md |
+| B-317 | `download-queue 1.4`: `baseballpy run` command, CLI docs regenerated | OPEN | see the change's tasks.md |
+| B-318 | `download-queue 1.5`: tests/test_queue.py and a dry run against the built-in daily plan | OPEN | see the change's tasks.md |
+| B-319 | `download-queue 1.6`: status shows the queue; README, CHANGELOG, ADR 90, gates, spec merge, archive | OPEN | see the change's tasks.md |

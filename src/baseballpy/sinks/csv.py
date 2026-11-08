@@ -53,7 +53,7 @@ def _sidecar_text(schema: pa.Schema) -> str:
 
 def _write_sidecar(csv_path: Path, schema: pa.Schema) -> None:
     with atomic_write(sidecar_path(csv_path), mode="w") as part:
-        part.write_text(_sidecar_text(schema), encoding="utf-8")
+        part.write_text(_sidecar_text(schema), encoding="utf-8", newline="\n")
 
 
 class CsvSink:
