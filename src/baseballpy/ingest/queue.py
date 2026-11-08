@@ -33,6 +33,9 @@ EXIT_FAILED = 1
 EXIT_LIMIT = 2
 EXIT_INTERRUPTED = 130
 
+#: exit codes that end a stage for good: done, stopped by a limit, interrupted
+_FINAL = frozenset({0, 2, 130})
+
 PENDING = "pending"
 DONE = "done"
 FAILED = "failed"
@@ -242,7 +245,8 @@ def _attempt(
         stop=tenacity.stop_after_attempt(retries + 1),
         wait=tenacity.wait_exponential(multiplier=initial_wait, max=max_wait)
         + tenacity.wait_random(0, initial_wait),
-        retry=tenacity.retry_if_result(lambda code: code == EXIT_FAILED and not stop.is_set()),
+        # any other code is a failed or crashed attempt (a native crash is 139, -11 or 0xC0000005)
+        retry=tenacity.retry_if_result(lambda code: code not in _FINAL and not stop.is_set()),
         sleep=lambda seconds: _wait(stop, seconds),
         retry_error_callback=lambda state_: (
             state_.outcome.result() if state_.outcome else EXIT_FAILED
@@ -253,7 +257,7 @@ def _attempt(
     stage.finished_at = _now().isoformat()
     if code == EXIT_OK:
         stage.status, stage.last_error = DONE, ""
-    elif code == EXIT_FAILED:
+    elif code not in _FINAL:
         stage.status = FAILED
     return code
 

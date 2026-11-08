@@ -319,3 +319,20 @@ def test_the_speed_watch_prints_each_interval_and_stops_with_the_queue(
     watch.join(timeout=5)
     assert not watch.is_alive() and seen and seen[0] == 1.0
     assert "speed: test line" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("crash", [139, -11, 3221225477])
+def test_a_crashed_attempt_is_retried_like_a_failed_one(tmp_path: Path, crash: int) -> None:
+    """A native crash (exit 139, a signal, or 0xC0000005) must not skip the stage silently."""
+    calls: list[int] = []
+
+    def run(_name: str) -> int:
+        calls.append(len(calls))
+        return crash if len(calls) < 3 else EXIT_OK
+
+    report = run_queue("p", ["a"], run, retries=3, **_fast(tmp_path))
+    assert len(calls) == 3 and report.exit_code == 0
+    always = run_queue("p2", ["a"], lambda _n: crash, retries=1, **_fast(tmp_path))
+    assert always.failed == ["a"] and always.exit_code == 1
+    state = load_state(tmp_path / "state" / "queue.json", "p2")
+    assert state.stages["a"].status == "failed" and state.stages["a"].last_exit == crash

@@ -1,5 +1,6 @@
 """Two-phase atomic file writes and lock-protected checkpoint manifest tracking."""
 
+import json
 import logging
 import os
 import threading
@@ -12,7 +13,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, cast
 
-import msgspec
 import pyarrow as pa
 import pyarrow.parquet as pq
 
@@ -246,8 +246,8 @@ class ManifestTracker:
                 continue
             break
         try:
-            loaded = msgspec.json.decode(data)  # bytes in: no multi-MB str copy
-        except (msgspec.DecodeError, UnicodeDecodeError) as exc:
+            loaded = json.loads(data)
+        except ValueError as exc:  # bad JSON or bad UTF-8
             self._preserve_corrupt(f"{type(exc).__name__}: {exc}")
             return None
         if not isinstance(loaded, dict) or not isinstance(loaded.get("chunks", {}), dict):
@@ -368,10 +368,11 @@ class ManifestTracker:
                     merged[key] = entry
             disk["chunks"] = merged
             disk["updated_at"] = datetime.now(UTC).isoformat()
-            # bytes straight to the file: json.dumps built a multi-MB str on every chunk write
-            # and 12 threads doing that ran a 16,000-game MLB season out of memory (ADR 88)
+            # stdlib json, not msgspec: msgspec.json.encode crashed the process with a Windows access
+            # violation in this call (atomic.py save, three season runs, ADR 88 as amended); compact
+            # separators keep the file small, and saves are deferred in bulk runs (ADR 93)
             with atomic_write(self.path) as part_path:
-                part_path.write_bytes(msgspec.json.encode(disk))
+                part_path.write_bytes(json.dumps(disk, separators=(",", ":")).encode("utf-8"))
             self._data = disk
             self._sig = self._stat_sig()
 
