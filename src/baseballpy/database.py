@@ -11,6 +11,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 import duckdb
+import pyarrow as pa
 import pyarrow.parquet as pq
 
 from baseballpy.core.audit import default_audit_logger
@@ -53,6 +54,23 @@ class DatabaseTooNewError(RuntimeError):
 def is_newer_format(exc: BaseException) -> bool:
     """Whether a DuckDB error says the file comes from a newer DuckDB version."""
     return isinstance(exc, duckdb.IOException) and "newer version of DuckDB" in str(exc)
+
+
+def _mixed_schema_file(root: Path, schema: pa.Schema) -> str | None:
+    """Name of a file at the edges of ``root`` (first and last folder, first and last file) whose
+    columns differ from ``schema``, or None.
+
+    A strict view takes its columns from one file, so a dataset that mixes schemas silently loses
+    columns in SQL (ADR 87). Looking at the edges is cheap and catches the usual case: the oldest
+    seasons were written before the schema gained columns. ``baseballpy catalog layout`` checks all.
+    """
+    folders = sorted(p for p in root.iterdir() if p.is_dir())
+    for folder in dict.fromkeys([folders[0], folders[-1]] if folders else [root]):
+        files = sorted(folder.glob("*.parquet"))
+        for file in dict.fromkeys(files[:1] + files[-1:]):
+            if not pq.read_schema(file).equals(schema, check_metadata=False):
+                return file.name
+    return None
 
 
 def _view_sql(files_glob: Path, partitioned: bool, strict: bool) -> str:
@@ -261,7 +279,17 @@ class BaseballDatabase:
                 destination=str(self.db_path),
             ) as tracker:
                 views_registered = 0
+                specs = {s.view: s for s in DATASETS.values()}
                 for view, (pattern, partitioned, strict) in self.expected_views().items():
+                    if strict and (spec := specs.get(view)) is not None:
+                        odd = _mixed_schema_file(pattern.parent.parent, spec.schema)
+                        if odd is not None:
+                            logger.warning(
+                                "view %s: %s differs from the registered schema, so SQL may miss "
+                                "columns; run `baseballpy compact` to rewrite old files",
+                                view,
+                                odd,
+                            )
                     con.execute(
                         f"CREATE OR REPLACE VIEW {quote_ident(view)} AS "
                         f"{_view_sql(pattern, partitioned, strict)}"

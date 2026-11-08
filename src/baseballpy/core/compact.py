@@ -31,6 +31,7 @@ from baseballpy.core.compacted import (
 )
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec
+from baseballpy.core.evolve import migrate_dataset
 from baseballpy.core.stores import ProcessedStore, part_filename, schema_matches
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,8 @@ class CompactReport:
     files_before: int = 0
     files_after: int = 0
     empty_files: int = 0
+    migrated_files: int = 0  # files rewritten to the registered schema (ADR 87)
+    migrate_failed: int = 0
     bytes_before: int = 0
     bytes_after: int = 0
 
@@ -226,7 +229,9 @@ def compact_dataset(
     dry_run: bool = False,
     target_bytes: int = TARGET_BYTES,
 ) -> CompactReport:
-    """Compact one dataset (every season with at least two chunks and a small file to merge)."""
+    """Compact one dataset (every season with at least two chunks and a small file to merge).
+
+    Files written under an older schema are rewritten to the registered one first (ADR 87)."""
     cfg = config or LakeConfig()
     store = ProcessedStore(cfg)
     report = CompactReport(spec.key)
@@ -237,6 +242,10 @@ def compact_dataset(
     if not dry_run:
         _cleanup(root, manifest.chunks())
     _drop_empty_parts(spec, cfg, manifest.chunks(), report, dry_run=dry_run)
+    # files from before the schema gained columns first: only then do their chunks match the spec
+    migrated = migrate_dataset(spec, cfg, dry_run=dry_run)
+    report.migrated_files = migrated.files_rewritten
+    report.migrate_failed = len(migrated.failed)
     groups: dict[int | None, list[str]] = {}
     for key, entry in manifest.chunks().items():
         if (

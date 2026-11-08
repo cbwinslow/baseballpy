@@ -235,7 +235,7 @@ $BASEBALLPY_HOME
 Naming rules (a test enforces them): sources and datasets are `lower_snake_case`; a dataset lives at
 `processed/<source>/<dataset>`; its DuckDB view is `<source>_<dataset>`, except `mlb_api`, whose views
 start with `mlb_` (`mlb_schedule`); a chunk file is `part-<chunk>.parquet` and the chunk id says what
-it holds (a season, a date range, a game id); `compact-NNNN.parquet` is a merge of several chunks.
+it holds (a season, a date range, a game id); `compact-NNNN.parquet` is a merge of several chunks. `baseballpy compact` also rewrites files written before a schema gained columns, so old and new files share one schema.
 `baseballpy catalog layout` fails on a `processed/` folder that no registered dataset owns.
 
 - DuckDB views (`baseballpy db sync`) read only `processed/`; each registered dataset gets one view

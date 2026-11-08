@@ -357,6 +357,9 @@ Usage: baseballpy compact [OPTIONS]
   Every new file is read back and compared with its source chunks before the small files are
   removed. Chunks stay known to the download records, so later ingests still resume.
 
+  Files written before a schema gained columns are rewritten to the registered schema first; values
+  that sat in the `_extras` column move to their new columns (ADR 87).
+
 Options:
   --source TEXT   Limit to a source (repeatable).
   --dataset TEXT  Limit to a dataset name (repeatable).

@@ -54,6 +54,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
+| `lake-schema-evolution` | 4 | 2 | 1.5, 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `mlb-game-memory` | 1 | 0 | none |
 | `mlb-stats-route-406-and-deep-pools` | 6 | 4 | 1.2, 3.1 |
@@ -148,6 +149,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 84: Write Down And Test The Naming Rules; Unknown Processed Folders Fail The Layout Check
 - ADR 85: The Per-Game MLB Download Defaults To The Major Leagues
 - ADR 86: Compacted Files Are Written By Column Name, Not By Position
+- ADR 87: Files Written Under An Older Schema Are Read As-Is And Migrated By `compact`
 
 ## Documentation pages (`docs/`)
 

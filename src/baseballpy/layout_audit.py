@@ -136,7 +136,8 @@ def _processed_findings(config: LakeConfig, sources: set[str]) -> list[LayoutFin
                     LayoutKind.MIXED_SCHEMA,
                     spec.source,
                     label,
-                    f"{len(wrong)} file(s) differ from the registered schema, first: {wrong[0]}",
+                    f"{len(wrong)} file(s) differ from the registered schema, first: {wrong[0]};"
+                    " run `baseballpy compact` to rewrite them",
                 )
             )
         findings += _row_group_findings(spec.source, label, by_folder)

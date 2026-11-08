@@ -22,6 +22,9 @@ def compact_cmd(sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bo
 
     Every new file is read back and compared with its source chunks before the small files
     are removed. Chunks stay known to the download records, so later ingests still resume.
+
+    Files written before a schema gained columns are rewritten to the registered schema first;
+    values that sat in the `_extras` column move to their new columns (ADR 87).
     """
     catalog.register_all()
     config = LakeConfig()
@@ -37,9 +40,12 @@ def compact_cmd(sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bo
     )
     totals = [0, 0, 0, 0, 0]
     empty_files = 0
+    migrated = failed = 0
     for spec in specs:
         report = compact_dataset(spec, config, dry_run=dry_run)
         empty_files += report.empty_files
+        migrated += report.migrated_files
+        failed += report.migrate_failed
         if not report.groups:
             continue
         table.add_row(
@@ -68,6 +74,14 @@ def compact_cmd(sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bo
         console.print(
             f"{'would remove' if dry_run else 'removed'} {empty_files:,} empty (0 row) files"
         )
+    if migrated:
+        console.print(
+            f"{'would rewrite' if dry_run else 'rewrote'} {migrated:,} file(s) written under an "
+            "older schema to the registered one (values in _extras moved to their new columns)"
+        )
+    if failed:
+        console.print(f"[red]{failed:,} file(s) could not be rewritten (see the log)[/red]")
+        raise click.ClickException("some files kept their old schema")
 
 
 @click.command("compress-raw")

@@ -7,6 +7,8 @@ import narwhals as nw
 import polars as pl
 import pyarrow as pa
 
+from baseballpy.core.datasets import DatasetSpec
+
 #: ``arrow`` is accepted as another name for ``pyarrow``
 Backend = Literal["polars", "pandas", "pyarrow", "arrow"]
 
@@ -32,3 +34,26 @@ def scan(path: str | Path, *, hive_partitioning: bool = True) -> pl.LazyFrame:
     target = Path(path)
     pattern = str(target / "**" / "*.parquet") if target.is_dir() else str(target)
     return pl.scan_parquet(pattern, hive_partitioning=hive_partitioning)
+
+
+def scan_dataset(spec: DatasetSpec, root: Path) -> pl.LazyFrame:
+    """Lazily scan every part of a registered dataset under the registered columns (ADR 87).
+
+    Files written before the schema gained columns lack them: the cells come back empty instead of
+    the scan failing on the first file that differs. A column the schema does not have is still an
+    error, never dropped. Types of columns a file already holds are the file's own; only the
+    missing columns take the registered type.
+    """
+    registered = pl.from_arrow(spec.schema.empty_table())
+    if not isinstance(registered, pl.DataFrame):
+        raise TypeError("a schema must convert to a DataFrame")
+    first = next(iter(root.rglob("*.parquet")), None)
+    held = pl.read_parquet_schema(first) if first is not None else {}
+    schema = {name: held.get(name, dtype) for name, dtype in registered.schema.items()}
+    return pl.scan_parquet(
+        str(root / "**" / "*.parquet"),
+        hive_partitioning=spec.partition == "season",
+        schema=schema,
+        missing_columns="insert",
+        extra_columns="raise",
+    )

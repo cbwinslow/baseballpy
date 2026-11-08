@@ -870,5 +870,12 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Status:** Accepted (found when every major-league game run failed on 2026-11-07; follows the schema regeneration B-303).
 - **Context:** B-303 added typed columns (for example `person_name_slug`) to 142 datasets. Compacted files written earlier lack them, and rewriting such a file (when one of its chunks is downloaded again) failed with a column-name mismatch, so all 19 seasons of the per-game download stopped within 30 seconds.
 - **Decision:** `core/compacted.py::align_to_schema` lines a table up with the registered schema by name, with empty cells for new columns; an unknown column is an error.
-- **Consequences:** a schema can gain columns while old compacted files exist. Old files keep their old columns until their chunks are rewritten (`catalog layout` still reports them as MIXED_SCHEMA; not changed here).
+- **Consequences:** a schema can gain columns while old compacted files exist. Old files keep their old columns until their chunks are rewritten (`catalog layout` still reports them as MIXED_SCHEMA; ADR 87 migrates them).
 - **Alternatives rejected:** casting by position (the failure); dropping unknown columns (loses data); deleting compacted files on a schema change (loses the resume points).
+
+## ADR 87: Files Written Under An Older Schema Are Read As-Is And Migrated By `compact`
+- **Status:** Accepted (owner asked for the full fix, 2026-11-07; change `lake-schema-evolution`). Extends ADR 73 and 86.
+- **Context:** B-303 moved fields from `_extras` to typed columns in 142 datasets. `read` failed on mixed old and new files, strict DuckDB views silently lost the new columns, and the old values stayed in `_extras`.
+- **Decision:** `read` scans under the registered schema (missing columns empty, unknown columns refused). `compact` first rewrites each file that differs from the registered schema (`core/evolve.py`): values in `_extras` move to their typed columns with the ingest's own cast and quarantine, moved keys leave `_extras`, compacted chunk maps are kept, and a chunk is re-fingerprinted only when its old fingerprint proves the schema was the only difference. `db sync` and `catalog layout` point to `compact`.
+- **Consequences:** a regenerated schema no longer needs a re-download of old data and no longer breaks reads. Views stay strict and fast. A file that cannot be migrated is reported and left alone.
+- **Alternatives rejected:** `union_by_name` on all views (slow, hides the mix); tolerating old files forever (old values stay hidden in `_extras`); re-downloading everything (days of requests for data we hold).

@@ -18,9 +18,21 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Active Checkouts (Locked — Do Not Disturb)
 
+- **Task:** B-261
+  - **Agent:** Gemini
+  - **Claimed At:** 2026-11-07 22:08 UTC
+  - **Locked Areas:**
+    - `openspec/changes/modelling-data-needs/design.md`
+    - `openspec/changes/modelling-data-needs/tasks.md`
+  - **Status:** Recording modeling decisions D1 to D6
+
 ---
 
 ## Recent Completed Handoffs
+
+- **2026-11-08 00:13 UTC [blain]:**
+  - **Tasks:** `B-305`.
+  - **Summary:** Reads and views survive older-schema files; compact migrates them and moves _extras values to typed columns (ADR 87)
 
 - **2026-11-07 21:58 UTC [blain]:**
   - **Tasks:** `B-303`.

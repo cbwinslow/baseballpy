@@ -16,7 +16,7 @@ import polars as pl
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS, DatasetSpec
 from baseballpy.database import DatabaseTooNewError, is_newer_format
-from baseballpy.frames import Backend, to_dataframe
+from baseballpy.frames import Backend, scan_dataset, to_dataframe
 from baseballpy.sources import catalog
 
 
@@ -63,7 +63,7 @@ def read(
             f"no data for {spec.key} at {root}; run `baseballpy ingest {spec.source}` first"
         )
     partitioned = spec.partition == "season"
-    frame = pl.scan_parquet(str(root / "**" / "*.parquet"), hive_partitioning=partitioned)
+    frame = scan_dataset(spec, root)
     if seasons is not None:
         if not partitioned:
             raise ValueError(f"{spec.key} is not split by season; call read() without seasons")
