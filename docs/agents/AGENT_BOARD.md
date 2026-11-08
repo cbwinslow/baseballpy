@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-08 22:43 UTC [blain]:**
+  - **Tasks:** `B-360`.
+  - **Summary:** seven segment tests written first; fail as expected (module missing)
+
 - **2026-11-08 22:34 UTC [blain]:**
   - **Tasks:** `B-359`.
   - **Summary:** measured zstd levels, page and row-group size, row order on 250 real 2024 games; design section 3 updated
