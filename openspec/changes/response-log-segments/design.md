@@ -1,0 +1,114 @@
+# Design: response-log-segments
+
+The owner decided this design on 2026-11-08 after a review by an Opus design pass. This file says how it works,
+which numbers are measured and which are guessed, and what can go wrong.
+
+## 1. The flow for one source and one season
+
+```text
+fetch URL once -> journal record (zstd, flushed per game)
+               -> parse once -> rows for every dataset made from that URL (in memory, <= ~50 games)
+every 250 games or 10 minutes (to test):
+   _open/seg-NNNN.*.part  ->  rename into place  ->  append one line to segments.json   (= commit)
+```
+
+- **D1 One download, one stored copy.** A response is identified by the sha256 of its original bytes. Every dataset
+  made from it points at it with `_raw_sha256`. Nothing is stored per dataset on the raw side.
+- **D2 Parse once.** A response that feeds several datasets is parsed once and the parsed value is handed to each
+  normalizer. Which datasets come from which URL is data in the endpoint registry (one declarative table), not code
+  per source.
+- **D3 Journal.** `raw/<source>/season=Y/_open/journal.zst`: one record per response, each record its own zstd frame
+  (`pyarrow.Codec("zstd")`) with a length prefix, so a torn last record after a crash is detected and dropped. It is
+  flushed after each game. On restart the journal is replayed into the open batch: finished games are not fetched
+  again. The journal is deleted only after the segment's commit line exists.
+- **D4 Raw segment.** `raw/<source>/season=Y/seg-NNNN.parquet`, columns `url`, `fetched_at`, `status`, `etag`,
+  `sha256` (of the original bytes), `body` (the original bytes), plus `legacy_path` for rows made by the converter.
+  Parquet compresses `body` with zstd. Pages must be large enough to hold many bodies, or Parquet compresses each
+  body alone and the "many games together" gain below is lost (`data_page_size` is a writer option; the value is
+  measured in task 2.4).
+- **D5 Processed segments.** `processed/<source>/<dataset>/season=Y/seg-NNNN.parquet`, one per dataset per segment,
+  written with a `pyarrow.parquet.ParquetWriter` one row group of about 50 games at a time, so at most about 50 games
+  of rows are in memory. A dataset with no rows in a segment gets no file (its count in the commit line is 0).
+- **D6 Commit protocol.** Every file is first written in `_open/` with a name ending in `.part` (readers only match
+  `*.parquet`, and `_open` is hidden from pyarrow by its underscore). For processed files the `_open/` folder is the
+  dataset's own season folder (`processed/.../season=Y/_open/`), so the rename never crosses a disk, even when
+  `LakeConfig` puts `raw` and `processed` on different drives. Renames use the existing retry
+  (`core/atomic.py::_replace_with_retry`). The last step appends one JSON line to `raw/<source>/season=Y/segments.json`:
+  segment id, the game (chunk) ids, the sha256 of each file, row counts per dataset, the schema fingerprint per
+  dataset, the raw location. A game is stored only when its line exists. A torn last line is ignored.
+- **D7 Start-up.** For each season folder: delete `.part` files and renamed files that no line names, then replay
+  the journal. This is the same rule for a crash, a kill and a power cut.
+- **D8 One writer.** One writer per source and season. The existing host lock (`core/hostlock.py`, one downloader per
+  host) already gives this for downloads; the converter, the rebuild and the round-trip check take the same lock.
+
+## 2. The listing rule (no double count)
+
+- Views and `read` read `season=*/*.parquet` for a season-split dataset (one folder level, so `_open/` and
+  `_legacy/` are never read), and `*.parquet` for one that is not split. Today views use `**/*.parquet`; this
+  changes.
+- **Refresh of a committed segment** (rare: a corrected game, a schema rebuild): the new file takes the old file's
+  name and replaces it with one atomic rename. A reader sees the old rows or the new rows, never both. The refresh's
+  journal stays in `_open/` until its commit line is written; on start an open refresh is run again (it is
+  repeatable: same journal, same files), so a crash between renames never leaves a mixed segment for long.
+- **Migration of a season** (task 6.3): the old `part-*`/`compact-*` files are first moved into `season=Y/_legacy/`
+  (hidden), then the segments are renamed in. During that step a reader may see a season with no rows for a moment,
+  never with rows twice. `_legacy/` is deleted only after the row-count check passes.
+
+## 3. Numbers: measured and guessed
+
+**Measured** (read-only pass over the 2024 lake, 40 sampled files per dataset, 2026-11-08):
+
+| What | Size |
+|---|---|
+| live feed, one game, raw | 828 KB |
+| live feed, gzip (today) | 128 KB |
+| live feed, zstd level 9 | 102 KB |
+| live feed, zstd level 19 | 90 KB |
+| 30 live feeds compressed together, zstd 19 | 2.29 MB (gzip files today: 4.05 MB) |
+| boxscore, 30 games together, zstd 19 | 0.14 MB (gzip files today: 0.56 MB) |
+| 2024 feed files that were NOT byte-identical across the 4 datasets | 177 of about 83,000 |
+
+**Measured earlier** (carried over from the drafts and ADRs, not re-checked here):
+- `shared-raw-bytes` draft: `raw/mlb_api` held 23.3 GB, about 12 GB of it exact copies. It also gave 3.02 MB per live
+  feed and 0.57 MB per boxscore uncompressed, which does not match the 828 KB above; task 2.4 re-measures.
+- `batched-chunk-writes` draft and ADR 92: normalizing a game takes about 150 ms; storing 13 per-game chunks took
+  350 to 950 ms; one 611-column chunk took 96 ms to store; 50 games in one write cost 133 ms.
+- ADR 94: compacting a season's 38,000 small files took more than 45 minutes; the download takes about 35.
+
+**Guessed** (to be replaced by measurements in tasks 2.4, 4.4 and 5.4):
+- raw for 2008-2026 about 12-15 GB instead of about 47 GB today.
+- whole lake about 40-50 GB with all raw kept.
+- 250 games or 10 minutes per segment, 50 games per row group: chosen so memory stays small; not tested.
+- zstd 19 write speed is fast enough for a season (a few minutes against a 35-minute download).
+
+## 4. Risks and what we do about each
+
+| Risk | Mitigation |
+|---|---|
+| Windows file locks and antivirus hold a file during a rename or delete | Open files live only in `_open/`; renames and deletes use the existing retry; a rename that still fails stops the run loudly and the journal is replayed on the next start. |
+| Memory: wide tables grow about 28 times in memory on Windows (commit a885134) | Row groups of about 50 games written as they fill; nothing holds a whole segment. 250/50 are guesses; task 4.4 measures peak memory on a real season and adjusts. |
+| Double count between a refresh's rename and the old file's delete | Section 2: a refresh replaces the file under the same name (no second file), migration hides old files first (a short gap, never a double). Tested in `tests/test_segment_views.py`. |
+| Two writers on one season | Host lock (D8), also taken by the converter, rebuild and round-trip check. |
+| Live feed: many small files while games are in play | Out of scope here. Plan: one small segment per in-play game, replaced as it updates, merged into the day's segment once final. `compact` stays until that change. |
+| 177 of about 83,000 feed files in 2024 differ between the 4 datasets | Do not assume identical bytes. Task 1.3 finds out why before the converter is built. The converter checks each file's sha256 and keeps every distinct body as its own row. |
+| `_raw_sha256` added to every processed schema changes every schema digest, so every stored chunk would look stale ("A Schema Change Invalidates Stored Chunks") | Task 3.7: the lineage column is added by the generic writer and left out of the schema digest; old files read it as empty. Needs an ADR amendment if built differently. |
+| A raw-only move loses data we have not typed | The round-trip check (task group 8) only passes when the processed rows hold every value of the response; anything untyped shows up as a failure, and raw stays. |
+
+## 5. Prior art
+
+Not a fresh web search (that is task 1.2); from what is known and should be checked:
+- Web archives (the WARC format, ISO 28500) store each HTTP response once as a record with its digest in large
+  compressed files: the same idea as the raw segment.
+- DuckLake keeps a catalog of Parquet files in a database and can inline small changes; it would replace
+  `segments.json`. Not chosen now (ADR 97), revisit before the live feed.
+- pybaseball and baseballr cache raw responses as one file per request; that is today's layout.
+
+## 6. Rollback
+
+The git tag `pre-response-log` (already pushed) is the revert point. Until task group 7, the old per-game path and
+the old files stay readable, so a revert loses no data written in the old layout. Segments written before a revert
+are plain Parquet and stay readable with DuckDB or pyarrow directly.
+
+## 7. Evidence (filled in as tasks land)
+
+Nothing implemented yet.

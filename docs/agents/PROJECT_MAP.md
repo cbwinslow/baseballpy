@@ -51,16 +51,19 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
+| `batched-chunk-writes` | 0 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `download-throughput` | 5 | 4 | 2.2b, 2.3, 2.4, 2.5 |
+| `download-throughput` | 6 | 3 | 2.3, 2.4, 2.5 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 7 | 8 | 2.1, 2.2, 2.3, 2.4, 3.2, 3.3, 4.1, 3.5 |
+| `finish-mlb-history` | 9 | 6 | 2.1, 2.2, 2.3, 2.4, 3.2, 4.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 4 | 2 | 1.5, 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 7 | 4 | 1.2, 3.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
+| `response-log-segments` | 0 | 39 | 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 4.1, 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
+| `shared-raw-bytes` | 0 | 0 | none |
 
 ## Decisions (`docs/DECISIONS.md`)
 
@@ -157,6 +160,9 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 92: The Download Speed Is Measured, And The Limit Is In Our Own Work
 - ADR 93: A Bulk Download Must Not Pay For The Size Of The Lake At Every Chunk
 - ADR 94: Compaction Runs Beside The Next Download
+- ADR 95: Each Download Is Stored Once, In Parquet Segments Shared By Every Dataset Made From It
+- ADR 96: A Segment Counts Only When One Line In `segments.json` Says So; Readers Never See Rows Twice
+- ADR 97: Keep All Raw On The Laptop For Now; Own Segment Files, Not A Table Format
 
 ## Documentation pages (`docs/`)
 

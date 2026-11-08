@@ -543,16 +543,90 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-326 | `finish-mlb-history 2.4`: catalog audit against the providers | OPEN | no MISSING, REVIVED or ERROR |
 | B-327 | finish-mlb-history 3.1: five default datasets still missing | DONE | fixed or noted with evidence |
 | B-328 | `finish-mlb-history 3.2`: type the rare fields still in _extras | OPEN | no schema_drift for them |
-| B-329 | `finish-mlb-history 3.3`: open batched-chunk-writes (speed) | OPEN | change opened with measurements |
+| B-329 | finish-mlb-history 3.3: open batched-chunk-writes (speed) | DONE | change openspec/changes/batched-chunk-writes/ opened with proposal, design, tasks, and spec delta |
 | B-330 | finish-mlb-history 3.4: live end-to-end test of the streamer | DONE | a real game streamed and a stored game replayed |
 | B-331 | `finish-mlb-history 4.1`: v1 release steps of RELEASING.md | OWNER | TestPyPI install works; the owner tags |
 | B-332 | finish-mlb-history 4.2: macOS in the CI matrix | DONE | ci.yml tests on macos-latest |
 | B-333 | finish-mlb-history 4.3: Dependabot alerts and crosswalk fixtures (B-311) | DONE | alerts reviewed (oauthlib upgraded to 4.0.1 in uv.lock), crosswalk fixture tests pass in default gates |
-| B-334 | `finish-mlb-history 3.5`: open shared-raw-bytes: store each upstream response once (about 12 GB of copies in raw/mlb_api) | OPEN | change opened with the measurement |
+| B-334 | finish-mlb-history 3.5: open shared-raw-bytes: store each upstream response once (about 12 GB of copies in raw/mlb_api) | DONE | change openspec/changes/shared-raw-bytes/ opened with proposal, design, tasks, and spec delta |
 | B-335 | download-throughput 2.1: profile the per-game path (found the name-clash scan and the manifest rewrites) | DONE | design.md has the numbers |
 | B-336 | download-throughput 2.2: deferred manifest saves and the clash index (ADR 93) | DONE | tests/test_manifest_deferred.py (6); 1114 to 520-630 ms per game at lake size |
 | B-337 | `download-throughput 2.3`: cheaper normalization of the per-game payloads | OPEN | driven by 2.1 |
 | B-338 | `download-throughput 2.4`: owner decision: worker processes sharing the host's rate limit | OWNER | decision recorded in an ADR |
 | B-339 | `download-throughput 2.5`: rerun speed during a season and record before and after | OPEN | requests per second before and after |
 | B-340 | download-throughput 1.1 to 1.3: `baseballpy speed`, the queue's speed watch and the measurements, ADR 92 | DONE | tests/test_speed.py (6), tests/test_queue.py |
-| B-341 | `download-throughput 2.2b`: batched chunk writes (own change batched-chunk-writes): many games per Parquet file; about 110 ms of the remaining 520 ms per game | OPEN | change opened with measurements |
+| B-341 | download-throughput 2.2b: batched chunk writes (own change batched-chunk-writes) | DONE | change opened with measurements |
+
+## AG. Shared raw bytes (`shared-raw-bytes`), superseded
+
+Superseded on 2026-11-08 by response-log-segments (section AI, ADR 95). The rows stay for the record; their work is
+in section AI.
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-342 | shared-raw-bytes 1.1: RawStore support for `_blobs/` and `blob_ref` in manifest entries | SUPERSEDED (raw segments, B-357, B-358) | - |
+| B-343 | shared-raw-bytes 1.2: MlbGenericExtractor stores multi-dataset game payloads once in `_blobs` | SUPERSEDED (B-368) | - |
+| B-344 | shared-raw-bytes 1.3: `baseballpy deduplicate-raw` CLI command | SUPERSEDED (converter, B-372, B-373) | - |
+| B-345 | shared-raw-bytes 1.4: Unit tests in `tests/test_raw_shared.py` | SUPERSEDED (B-356, B-371) | - |
+| B-346 | shared-raw-bytes 1.5: Run `deduplicate-raw` on local lake to reclaim ~12 GB | SUPERSEDED (B-374) | - |
+| B-347 | shared-raw-bytes 1.6: Spec delta merge, ADR, archive | SUPERSEDED (ADR 95; archived unmerged by B-391) | - |
+
+## AH. Batched chunk writes (`batched-chunk-writes`), superseded
+
+Superseded on 2026-11-08 by response-log-segments (section AI, ADR 95 and ADR 96).
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-348 | batched-chunk-writes 1.1: ProcessedStore.put_batch supporting concatenated table writes | SUPERSEDED (B-361) | - |
+| B-349 | batched-chunk-writes 1.2: Ingest runner batch buffer with --batch-games option | SUPERSEDED (B-361, B-370) | - |
+| B-350 | batched-chunk-writes 1.3: Interruption and resume test with zero loss and zero duplicates | SUPERSEDED (B-356, B-360) | - |
+| B-351 | batched-chunk-writes 1.4: Benchmark ingest speed before and after on a sample season | SUPERSEDED (B-370) | - |
+| B-352 | batched-chunk-writes 1.5: Spec delta merge, ADR, archive | SUPERSEDED (ADR 95, ADR 96; archived unmerged by B-391) | - |
+
+## AI. Store each download once, in segments (`response-log-segments`)
+
+The owner's session owns this change (no board claim is made here; the main session claims each row). A row is done
+only with the four gates, `docs generate --check` and `openspec validate --specs` green, evidence in the change's
+`design.md`, and one commit. Tests are written first. Revert point: git tag `pre-response-log`.
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-353 | `response-log-segments 1.1`: this change: proposal, design, spec deltas, ADRs 95-97, backlog rows, drafts pointed here | READY | `openspec validate response-log-segments --strict` valid; project map regenerated; gates green; committed |
+| B-354 | `response-log-segments 1.2`: web search for prior art (WARC, DuckLake, pybaseball/baseballr raw caching) | READY | findings in design.md section 5 |
+| B-355 | `response-log-segments 1.3`: why 177 of about 83,000 2024 feed files differ between the 4 datasets | READY | cause recorded in design.md before B-371 |
+| B-356 | `response-log-segments 2.1`: tests first: tests/test_response_log.py (stored once, crash replay, torn record, no gzip copies) | READY | the four tests exist and fail for the right reason |
+| B-357 | `response-log-segments 2.2`: journal writer and reader in core/ (zstd frame per record, length prefix, flushed per game) | READY | after B-356; its tests pass |
+| B-358 | `response-log-segments 2.3`: raw segment writer behind SinkProtocol (Parquet, zstd, large pages) | READY | after B-357; tests/test_response_log.py passes |
+| B-359 | `response-log-segments 2.4`: measure zstd 9 against 19 and the page size on 2024 samples | READY | bytes and seconds in design.md section 3 replace the guesses |
+| B-360 | `response-log-segments 3.1`: tests first: tests/test_segments.py (row groups, lineage, commit line, start-up, torn line, second writer, refresh) | READY | after B-358; the tests exist and fail for the right reason |
+| B-361 | `response-log-segments 3.2`: processed segment writer (ParquetWriter, 50-game row groups, `_raw_sha256`, `.part` names in `_open/`) | READY | after B-360; its tests pass |
+| B-362 | `response-log-segments 3.3`: commit: renames with retry, one line in segments.json, start-up clean-up and journal replay | READY | after B-361; its tests pass |
+| B-363 | `response-log-segments 3.4`: refresh of a committed segment under the same name | READY | after B-362; refresh test passes |
+| B-364 | `response-log-segments 3.5`: one writer per source and season through core/hostlock.py | READY | after B-362; second-writer test passes |
+| B-365 | `response-log-segments 3.6`: cache check verifies segment files and response sha256s | READY | after B-362; tests/test_segments.py::test_cache_check_finds_a_damaged_segment passes |
+| B-366 | `response-log-segments 3.7`: add `_raw_sha256` without making old chunks stale | READY | after B-361; existing schema-digest tests still pass; ADR amendment if built another way |
+| B-367 | `response-log-segments 4.1`: tests first: tests/test_mlb_segments.py and tests/test_segment_views.py | READY | after B-362; the tests exist and fail for the right reason |
+| B-368 | `response-log-segments 4.2`: MLB per-game path on the response log (the registry maps URLs to datasets) | READY | after B-367; tests/test_mlb_segments.py passes |
+| B-369 | `response-log-segments 4.3`: views and read list `season=*/*.parquet` beside old files, never `_open/` or `_legacy/` | READY | after B-367; tests/test_segment_views.py passes |
+| B-370 | `response-log-segments 4.4`: one real season: peak memory, seconds per game, files per dataset; tune 250 games / 10 minutes / 50 per row group | LONG | after B-368; numbers in design.md |
+| B-371 | `response-log-segments 5.1`: tests first: tests/test_raw_convert.py | READY | after B-355; the tests exist and fail for the right reason |
+| B-372 | `response-log-segments 5.2`: converter command with `--dry-run` | READY | after B-371; dry-run test passes |
+| B-373 | `response-log-segments 5.3`: real conversion: read back every row, then remove the old copies of the season | READY | after B-372; tests/test_raw_convert.py passes |
+| B-374 | `response-log-segments 5.4`: dry run, then the real conversion of the lake, season by season | LONG | after B-373; disk before and after in design.md; `cache check` clean |
+| B-375 | `response-log-segments 6.1`: tests first: tests/test_segment_rebuild.py | READY | after B-373; the tests exist and fail for the right reason |
+| B-376 | `response-log-segments 6.2`: generic rebuild of a season from raw (also the schema-change path) | READY | after B-375; its tests pass |
+| B-377 | `response-log-segments 6.3`: per season: old files to `_legacy/`, segments in, counts and keys compared | LONG | after B-376; table in design.md |
+| B-378 | `response-log-segments 6.4`: delete a season's `_legacy/` only after its comparison passed | READY | after B-377; freed disk recorded |
+| B-379 | `response-log-segments 7.1`: tests first: no part files on the per-game path; the queue does not compact segment sources | READY | after B-378; the tests exist and fail for the right reason |
+| B-380 | `response-log-segments 7.2`: remove the per-game part writes and the queue's compaction for segment sources | READY | after B-379; tests pass; `compact` still works for part files |
+| B-381 | `response-log-segments 7.3`: catalog layout treats segments as normal; docs updated | READY | after B-380; `catalog layout` clean on a segment lake; `docs generate --check` green |
+| B-382 | `response-log-segments 8.1`: tests first: tests/test_raw_roundtrip.py | READY | after B-373; the tests exist and fail for the right reason |
+| B-383 | `response-log-segments 8.2`: round-trip check per segment | READY | after B-382; its tests pass; result for one real season in design.md |
+| B-384 | `response-log-segments 8.3`: optional move-raw command (moved, never deleted; location recorded) | READY | after B-383; its tests pass; not run on the real lake (owner keeps all raw) |
+| B-385 | `response-log-segments 9.1`: tests first: tests/test_segment_sources.py (a fake source through the registry only) | READY | after B-380; the test exists and fails for the right reason |
+| B-386 | `response-log-segments 9.2`: one generic function plus the registry field for responses and datasets | READY | after B-385; test passes; tests/test_architecture.py passes |
+| B-387 | `response-log-segments 9.3`: Statcast on segments | READY | after B-386; Statcast tests pass and one real window stored |
+| B-388 | `response-log-segments 9.4`: Retrosheet on segments | READY | after B-386; Retrosheet tests pass and one real season stored |
+| B-389 | `response-log-segments 9.5`: Lahman, Chadwick, Kalshi, Polymarket, FanGraphs, Baseball-Reference on segments, or a recorded reason per source | READY | after B-386; each source done or its reason in design.md |
+| B-390 | `response-log-segments 10.1`: tests first: tests/test_segments_e2e.py (a fake download readable through read and DuckDB at once) | READY | after B-369; the test passes |
+| B-391 | `response-log-segments 10.2`: merge the spec deltas, archive this change, archive the two drafts unmerged | DONE-WHEN-LAST | change archived; `openspec validate --specs` valid |

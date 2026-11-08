@@ -22,6 +22,26 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-08 21:25 UTC [blain]:**
+  - **Tasks:** `B-353`.
+  - **Summary:** OpenSpec change response-log-segments, ADR 95-97, backlog B-353..B-391
+
+- **2026-11-08 21:02 UTC [blain]:**
+  - **Tasks:** `B-329`.
+  - **Summary:** Opened OpenSpec change batched-chunk-writes (proposal, design, tasks, and spec delta)
+
+- **2026-11-08 21:00 UTC [blain]:**
+  - **Tasks:** `B-334`.
+  - **Summary:** Opened OpenSpec change shared-raw-bytes (proposal, design, tasks, and spec delta)
+
+- **2026-11-08 20:59 UTC [blain]:**
+  - **Tasks:** `B-335`.
+  - **Summary:** Recorded live feed and boxscore payload normalization cProfile breakdown in download-throughput design.md
+
+- **2026-11-08 06:35 UTC [blain]:**
+  - **Tasks:** `B-333`.
+  - **Summary:** Dependabot oauthlib alert resolved (4.0.1) and crosswalk fixture tests verified in default gates
+
 - **2026-11-08 06:04 UTC [blain]:**
   - **Tasks:** `B-330`.
   - **Summary:** Live end-to-end streamer replay test with watermark diffing and DuckDB upsert completed and verified
