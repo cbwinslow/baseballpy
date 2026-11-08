@@ -314,13 +314,14 @@ def child_compact_runner(
 
     Compaction merges the small files a stage wrote (a season of games is tens of thousands) into a
     few big ones, which returns disk space, and it brings files written under an older schema up to
-    date (ADR 87). It runs between stages, never beside a download.
+    date (ADR 87) only when asked: the queue passes ``--no-migrate``, because the one-time
+    rewrite of every old file takes hours and must not hold up the next download.
     """
 
     def run(name: str) -> int:
         worst = EXIT_OK
         for source in sources_of(name):
-            code = _run_child(["compact", "--source", source], stop, popen, grace)
+            code = _run_child(["compact", "--no-migrate", "--source", source], stop, popen, grace)
             worst = worst or code
         return worst
 

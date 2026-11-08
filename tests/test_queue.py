@@ -272,8 +272,8 @@ def test_the_compact_runner_runs_compact_for_every_source_of_the_stage() -> None
     )
     assert run("x") == 0
     assert [c.command[3:] for c in _Child.instances] == [
-        ["compact", "--source", "mlb_api"],
-        ["compact", "--source", "statcast"],
+        ["compact", "--no-migrate", "--source", "mlb_api"],
+        ["compact", "--no-migrate", "--source", "statcast"],
     ]
 
 

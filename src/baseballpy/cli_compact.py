@@ -17,7 +17,16 @@ console = Console()
 @click.option("--source", "sources", multiple=True, help="Limit to a source (repeatable).")
 @click.option("--dataset", "datasets", multiple=True, help="Limit to a dataset name (repeatable).")
 @click.option("--dry-run", is_flag=True, help="Show what would be merged; change nothing.")
-def compact_cmd(sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bool) -> None:
+@click.option(
+    "--migrate/--no-migrate",
+    default=True,
+    show_default=True,
+    help="First rewrite files written under an older schema (slow the first time; the download "
+    "queue skips it and leaves it to a run of its own).",
+)
+def compact_cmd(
+    sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bool, migrate: bool
+) -> None:
     """Merge each dataset's small chunk files into big ones (run when no ingest is running).
 
     Every new file is read back and compared with its source chunks before the small files
@@ -42,7 +51,7 @@ def compact_cmd(sources: tuple[str, ...], datasets: tuple[str, ...], dry_run: bo
     empty_files = 0
     migrated = failed = 0
     for spec in specs:
-        report = compact_dataset(spec, config, dry_run=dry_run)
+        report = compact_dataset(spec, config, dry_run=dry_run, migrate=migrate)
         empty_files += report.empty_files
         migrated += report.migrated_files
         failed += report.migrate_failed

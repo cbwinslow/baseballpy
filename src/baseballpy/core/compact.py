@@ -228,6 +228,7 @@ def compact_dataset(
     *,
     dry_run: bool = False,
     target_bytes: int = TARGET_BYTES,
+    migrate: bool = True,
 ) -> CompactReport:
     """Compact one dataset (every season with at least two chunks and a small file to merge).
 
@@ -243,9 +244,10 @@ def compact_dataset(
         _cleanup(root, manifest.chunks())
     _drop_empty_parts(spec, cfg, manifest.chunks(), report, dry_run=dry_run)
     # files from before the schema gained columns first: only then do their chunks match the spec
-    migrated = migrate_dataset(spec, cfg, dry_run=dry_run)
-    report.migrated_files = migrated.files_rewritten
-    report.migrate_failed = len(migrated.failed)
+    if migrate:
+        migrated = migrate_dataset(spec, cfg, dry_run=dry_run)
+        report.migrated_files = migrated.files_rewritten
+        report.migrate_failed = len(migrated.failed)
     groups: dict[int | None, list[str]] = {}
     for key, entry in manifest.chunks().items():
         if (

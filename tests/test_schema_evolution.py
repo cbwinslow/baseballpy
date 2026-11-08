@@ -210,3 +210,11 @@ def test_compact_rewrites_old_files_first(spec: DatasetSpec, lake: LakeConfig) -
     assert (report.migrated_files, report.migrate_failed) == (1, 0)
     slugs = bp.read("mlb_api.award_recipients", config=lake)[SLUG]
     assert slugs.null_count() == 0
+
+
+def test_compact_can_skip_the_migration(spec: DatasetSpec, lake: LakeConfig) -> None:
+    from baseballpy.core.compact import compact_dataset
+
+    skipped = compact_dataset(spec, lake, migrate=False)
+    assert skipped.migrated_files == 0
+    assert compact_dataset(spec, lake).migrated_files == 1  # still there for a run that asks
