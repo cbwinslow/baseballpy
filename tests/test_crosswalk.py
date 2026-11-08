@@ -1,16 +1,31 @@
-"""Tests for the crosswalk suite (views and top-level accessors)."""
+"""Tests for the crosswalk suite (views and top-level accessors).
+
+They read the owner's real lake (100,000+ players, real venues and games), which the isolated test
+home does not have, so they run with the live tests (`-m live`), not in the default gates.
+"""
 
 import polars as pl
 import pyarrow as pa
+import pytest
 
 import baseballpy as bb
+
+pytestmark = pytest.mark.live
 
 
 def test_player_crosswalk_accessor() -> None:
     df = bb.players()
     assert isinstance(df, pl.DataFrame)
     assert len(df) > 100_000
-    for col in ("key_mlbam", "key_retro", "key_bbref", "key_fangraphs", "key_person", "name_first", "name_last"):
+    for col in (
+        "key_mlbam",
+        "key_retro",
+        "key_bbref",
+        "key_fangraphs",
+        "key_person",
+        "name_first",
+        "name_last",
+    ):
         assert col in df.columns
 
     # Test pyarrow backend

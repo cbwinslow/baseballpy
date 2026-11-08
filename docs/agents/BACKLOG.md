@@ -525,4 +525,4 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-311 | `crosswalk-suite 1.1`: unified game, team, venue crosswalk views and python helpers (bb.games, bb.teams, bb.venues, bb.players) | OPEN | views in DuckDB and python accessors verified with tests in test_crosswalk.py |
-
+| B-311 | crosswalk tests (`tests/test_crosswalk.py`) read the owner's real lake but the test home is isolated, so they fail anywhere without that lake; they are marked `live` for now. Give them small fixture data (a few players, teams, venues, games) so they run in the default gates | OPEN | the 5 tests pass in an empty home without the `live` marker |
