@@ -123,6 +123,15 @@ Manifests MUST be safe under concurrent writers and MUST NOT silently discard co
 - **THEN** it is preserved as `_manifest.json.corrupt-<ts>` and an error is logged.
 - Verified by `tests/test_hardening.py::test_corrupt_manifest_is_preserved_and_logged`.
 
+### Requirement: Manifests Are Read And Written As Compact UTF-8 JSON
+A `ManifestTracker` MUST decode its manifest from the file's bytes and write it as compact UTF-8 JSON in one atomic write using only the standard library (a native JSON encoder crashed the process, ADR 88 as amended), with extra memory for a save staying under three times the file size. A manifest that is not valid JSON, not valid UTF-8 or not an object with a `chunks` mapping MUST be preserved as `*.corrupt-<timestamp>` and treated as absent.
+
+#### Scenario: Large and damaged manifests
+- **WHEN** a manifest of 20,000 chunks is saved, and a manifest with bytes that are not UTF-8 is read
+- **THEN** the extra memory of the save stays under three times the file size, and the damaged file is preserved and treated as absent
+- Verified by `tests/test_atomic.py::test_saving_a_large_manifest_does_not_build_a_big_string`, `tests/test_atomic.py::test_a_manifest_that_is_not_utf8_is_preserved_not_lost` and `tests/test_atomic.py::test_manifest_large_entry_msgspec_roundtrip`.
+
+
 ### Requirement: Dead-Letter Quarantine
 Rows failing coercion MUST be written to `quarantine/<source>/<date>/` with reason and context, and a structured warning MUST be logged.
 
