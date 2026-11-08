@@ -33,6 +33,7 @@ Commands:
   quarantine      Inspect and display dead-letter quarantine files and unparseable records.
   refs            Show or update the pinned upstream commit SHAs (reproducible GitHub sources).
   run             Work through a plan and keep it going: retry what fails, repeat it on a timer.
+  speed           Measure the download speed from the audit log and name what limits it.
   statcast        Download one date range of Statcast pitches into a single file (not the lake).
   status          Show what the lake holds per source, what is running and what needs attention.
   stream          Stream live pitch and play events for a game in real time or replay mode.
@@ -364,10 +365,13 @@ Usage: baseballpy compact [OPTIONS]
   that sat in the `_extras` column move to their new columns (ADR 87).
 
 Options:
-  --source TEXT   Limit to a source (repeatable).
-  --dataset TEXT  Limit to a dataset name (repeatable).
-  --dry-run       Show what would be merged; change nothing.
-  --help          Show this message and exit.
+  --source TEXT             Limit to a source (repeatable).
+  --dataset TEXT            Limit to a dataset name (repeatable).
+  --dry-run                 Show what would be merged; change nothing.
+  --migrate / --no-migrate  First rewrite files written under an older schema (slow the first time;
+                            the download queue skips it and leaves it to a run of its own).
+                            [default: migrate]
+  --help                    Show this message and exit.
 ```
 
 ## `baseballpy compress-raw`
@@ -688,6 +692,9 @@ Options:
   --retries INTEGER RANGE         [default: 3; x>=0]
   --wait-initial FLOAT RANGE      [default: 60.0; x>=0]
   --wait-max FLOAT RANGE          [default: 900.0; x>=0]
+  --speed-every TEXT              Every this often, measure the download speed from the audit log
+                                  and say what limits it (`baseballpy speed`). 0 turns it off.
+                                  [default: 10m]
   --max-gb FLOAT RANGE            [x>0]
   --min-free-gb FLOAT RANGE       [default: 5.0; x>=0]
   -c, --concurrency INTEGER RANGE
@@ -696,6 +703,23 @@ Options:
                                   disk space).  [default: compact]
   --dry-run                       Show the stages and the settings; run nothing.
   --help                          Show this message and exit.
+```
+
+## `baseballpy speed`
+
+```text
+Usage: baseballpy speed [OPTIONS]
+
+  Measure the download speed from the audit log and name what limits it.
+
+  Per host: requests per second against the rate limit, how long an answer takes, how much of the
+  in-flight allowance is used, and the limit in one sentence (the rate limit, the host, or the
+  program's own work). It reads the log only; it changes nothing.
+
+Options:
+  --minutes FLOAT RANGE  Look at this many minutes of the audit log.  [default: 10.0; x>=0.5]
+  --json                 Print the report as one JSON object.
+  --help                 Show this message and exit.
 ```
 
 ## `baseballpy statcast`

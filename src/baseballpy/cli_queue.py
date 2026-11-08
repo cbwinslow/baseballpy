@@ -13,6 +13,7 @@ from baseballpy.core.config import LakeConfig
 from baseballpy.core.hostlock import HostBusyError, claim_named
 from baseballpy.ingest.backfill import BackfillError, load_plan
 from baseballpy.ingest.queue import child_compact_runner, child_stage_runner, run_queue
+from baseballpy.ingest.speed import default_audit_path, measure
 
 console = Console()
 
@@ -39,6 +40,13 @@ def parse_duration(text: str) -> float:
 @click.option("--retries", type=click.IntRange(min=0), default=3, show_default=True)
 @click.option("--wait-initial", type=click.FloatRange(min=0), default=60.0, show_default=True)
 @click.option("--wait-max", type=click.FloatRange(min=0), default=900.0, show_default=True)
+@click.option(
+    "--speed-every",
+    default="10m",
+    show_default=True,
+    help="Every this often, measure the download speed from the audit log and say what limits "
+    "it (`baseballpy speed`). 0 turns it off.",
+)
 @click.option("--max-gb", type=click.FloatRange(min=0, min_open=True), default=None)
 @click.option("--min-free-gb", type=click.FloatRange(min=0), default=5.0, show_default=True)
 @click.option("--concurrency", "-c", type=click.IntRange(min=1), default=1)
@@ -57,6 +65,7 @@ def run_cmd(
     retries: int,
     wait_initial: float,
     wait_max: float,
+    speed_every: str,
     max_gb: float | None,
     min_free_gb: float,
     concurrency: int,
@@ -97,6 +106,7 @@ def run_cmd(
         raise click.ClickException(str(exc)) from exc
 
     stop = threading.Event()
+    watch = _start_speed_watch(speed_every, stop)
 
     def request_stop(signum: int, frame: types.FrameType | None) -> None:
         console.print("[yellow]Stopping: the running stage is ended and can be resumed.[/yellow]")
@@ -128,6 +138,9 @@ def run_cmd(
             on_event=lambda message: console.print(message),
         )
     finally:
+        stop.set()
+        if watch is not None:
+            watch.join(timeout=5)
         for number, handler in previous.items():
             signal.signal(number, handler)
     free_gb = _disk_usage(config.home)[0] / 1e9
@@ -136,6 +149,22 @@ def run_cmd(
         f"{free_gb:.1f} GB free." + (f" Stopped: {report.stopped}." if report.stopped else "")
     )
     ctx.exit(report.exit_code)
+
+
+def _start_speed_watch(every: str, stop: threading.Event) -> threading.Thread | None:
+    """A thread that prints the measured download speed every ``every`` until ``stop`` is set."""
+    seconds = 0.0 if every.strip() == "0" else parse_duration(every)
+    if seconds <= 0:
+        return None
+
+    def watch() -> None:
+        while not stop.wait(seconds):
+            report = measure(default_audit_path(), seconds=seconds)
+            console.print(report.line(), markup=False)
+
+    thread = threading.Thread(target=watch, name="speed-watch", daemon=True)
+    thread.start()
+    return thread
 
 
 def register_queue_command(main: click.Group) -> None:

@@ -541,11 +541,17 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-324 | `finish-mlb-history 2.2`: verify per-game coverage for 2008 to 2026 | OPEN | table in design.md |
 | B-325 | `finish-mlb-history 2.3`: final compact, layout clean, read award_recipients (closes B-306) | OPEN | catalog layout has no MIXED_SCHEMA |
 | B-326 | `finish-mlb-history 2.4`: catalog audit against the providers | OPEN | no MISSING, REVIVED or ERROR |
-| B-327 | `finish-mlb-history 3.1`: five default datasets still missing | OPEN | fixed or noted with evidence |
+| B-327 | finish-mlb-history 3.1: five default datasets still missing | DONE | fixed or noted with evidence |
 | B-328 | `finish-mlb-history 3.2`: type the rare fields still in _extras | OPEN | no schema_drift for them |
 | B-329 | `finish-mlb-history 3.3`: open batched-chunk-writes (speed) | OPEN | change opened with measurements |
-| B-330 | `finish-mlb-history 3.4`: live end-to-end test of the streamer | OPEN | a real game streamed and a stored game replayed |
+| B-330 | finish-mlb-history 3.4: live end-to-end test of the streamer | DONE | a real game streamed and a stored game replayed |
 | B-331 | `finish-mlb-history 4.1`: v1 release steps of RELEASING.md | OWNER | TestPyPI install works; the owner tags |
 | B-332 | finish-mlb-history 4.2: macOS in the CI matrix | DONE | ci.yml tests on macos-latest |
 | B-333 | `finish-mlb-history 4.3`: Dependabot alerts and crosswalk fixtures (B-311) | OPEN | alerts reviewed, tests run in the default gates |
 | B-334 | `finish-mlb-history 3.5`: open shared-raw-bytes: store each upstream response once (about 12 GB of copies in raw/mlb_api) | OPEN | change opened with the measurement |
+| B-335 | `download-throughput 2.1`: profile the normalization of a live feed and a boxscore payload | OPEN | top costs recorded in design.md |
+| B-336 | `download-throughput 2.2`: batched chunk writes (own change batched-chunk-writes) | OPEN | many games per file with the same resume guarantees |
+| B-337 | `download-throughput 2.3`: cheaper normalization of the per-game payloads | OPEN | driven by 2.1 |
+| B-338 | `download-throughput 2.4`: owner decision: worker processes sharing the host's rate limit | OWNER | decision recorded in an ADR |
+| B-339 | `download-throughput 2.5`: rerun speed during a season and record before and after | OPEN | requests per second before and after |
+| B-340 | download-throughput 1.1 to 1.3: `baseballpy speed`, the queue's speed watch and the measurements, ADR 92 | DONE | tests/test_speed.py (6), tests/test_queue.py |

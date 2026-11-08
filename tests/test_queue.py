@@ -288,3 +288,34 @@ def test_a_finished_stage_is_on_disk_before_its_compaction_runs(tmp_path: Path) 
 
     run_queue("p", ["a"], lambda _n: EXIT_OK, after_stage=compact, **_fast(tmp_path))
     assert seen == ["done"]
+
+
+def test_the_speed_watch_prints_each_interval_and_stops_with_the_queue(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    from baseballpy import cli_queue
+
+    class _Report:
+        def line(self) -> str:
+            return "speed: test line"
+
+    seen: list[float] = []
+
+    def fake_measure(path: Path, seconds: float) -> _Report:
+        seen.append(seconds)
+        return _Report()
+
+    monkeypatch.setattr(cli_queue, "measure", fake_measure)
+    monkeypatch.setattr(cli_queue, "default_audit_path", lambda: Path("audit.jsonl"))
+    stop = threading.Event()
+    assert cli_queue._start_speed_watch("0", stop) is None  # turned off
+    watch = cli_queue._start_speed_watch("1s", stop)
+    assert watch is not None
+    deadline = 50
+    while not seen and deadline:
+        stop.wait(0.1)
+        deadline -= 1
+    stop.set()
+    watch.join(timeout=5)
+    assert not watch.is_alive() and seen and seen[0] == 1.0
+    assert "speed: test line" in capsys.readouterr().out

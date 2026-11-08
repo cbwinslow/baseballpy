@@ -53,8 +53,9 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `agent-coordination-and-audit-rotation` | 3 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
+| `download-throughput` | 3 | 5 | 2.1, 2.2, 2.3, 2.4, 2.5 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 4 | 11 | 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 4.1, 4.3, 3.5 |
+| `finish-mlb-history` | 6 | 9 | 2.1, 2.2, 2.3, 2.4, 3.2, 3.3, 4.1, 4.3, 3.5 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 4 | 2 | 1.5, 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
@@ -155,6 +156,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 89: One Behavior On Linux, macOS And Windows
 - ADR 90: A Python Supervisor Keeps Downloads Running (`baseballpy run`)
 - ADR 91: A Games Run Fetches Only The Games, And The Queue Compacts Between Stages
+- ADR 92: The Download Speed Is Measured, And The Limit Is In Our Own Work
 
 ## Documentation pages (`docs/`)
 

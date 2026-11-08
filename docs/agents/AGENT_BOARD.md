@@ -18,19 +18,33 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Active Checkouts (Locked — Do Not Disturb)
 
-- **Task:** B-311
-  - **Agent:** Gemini
-  - **Claimed At:** 2026-11-08 04:31 UTC
-  - **Locked Areas:**
-    - `src/baseballpy/database.py`
-    - `src/baseballpy/access.py`
-    - `src/baseballpy/__init__.py`
-    - `tests/test_crosswalk.py`
-  - **Status:** Implementing Crosswalk Suite (game, team, venue views and python helpers)
-
 ---
 
 ## Recent Completed Handoffs
+
+- **2026-11-08 06:04 UTC [blain]:**
+  - **Tasks:** `B-330`.
+  - **Summary:** Live end-to-end streamer replay test with watermark diffing and DuckDB upsert completed and verified
+
+- **2026-11-08 05:58 UTC [blain]:**
+  - **Tasks:** `B-327`.
+  - **Summary:** Documented provider evidence and added coverage notes for 5 unpopulated MLB datasets
+
+- **2026-11-08 05:44 UTC [blain]:**
+  - **Tasks:** `B-332`.
+  - **Summary:** Added macos-latest to GitHub Actions CI test matrix
+
+- **2026-11-08 05:42 UTC [blain]:**
+  - **Tasks:** `B-319`.
+  - **Summary:** Download queue completed: merged spec delta into spec/cli-and-ingest, verified 15 tests, archived change
+
+- **2026-11-08 05:41 UTC [blain]:**
+  - **Tasks:** `B-314`.
+  - **Summary:** Cross-platform support completed: merged spec/portability, added Platforms section to README, archived change
+
+- **2026-11-08 05:15 UTC [blain]:**
+  - **Tasks:** `B-311`.
+  - **Summary:** Crosswalk Suite implemented: v_game_crosswalk, v_team_crosswalk, v_venue_crosswalk, and python helpers (bb.games, bb.teams, bb.venues, bb.players) with isolated test suite
 
 - **2026-11-08 05:15 UTC [blain]:**
   - **Tasks:** `B-313`.
