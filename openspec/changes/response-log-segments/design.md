@@ -23,9 +23,8 @@ every 250 games or 10 minutes (to test):
   again. The journal is deleted only after the segment's commit line exists.
 - **D4 Raw segment.** `raw/<source>/season=Y/seg-NNNN.parquet`, columns `url`, `fetched_at`, `status`, `etag`,
   `sha256` (of the original bytes), `body` (the original bytes), plus `legacy_path` for rows made by the converter.
-  Parquet compresses `body` with zstd. Pages must be large enough to hold many bodies, or Parquet compresses each
-  body alone and the "many games together" gain below is lost (`data_page_size` is a writer option; the value is
-  measured in task 2.4).
+  Parquet compresses `body` with zstd level 9. Task 2.4 measured that the page size does not matter for bodies of
+  100 KB and more, but the order of the rows does: one game's responses must stay next to each other (section 3).
 - **D5 Processed segments.** `processed/<source>/<dataset>/season=Y/seg-NNNN.parquet`, one per dataset per segment,
   written with a `pyarrow.parquet.ParquetWriter` one row group of about 50 games at a time, so at most about 50 games
   of rows are in memory. A dataset with no rows in a segment gets no file (its count in the commit line is 0).
@@ -75,11 +74,46 @@ every 250 games or 10 minutes (to test):
   350 to 950 ms; one 611-column chunk took 96 ms to store; 50 games in one write cost 133 ms.
 - ADR 94: compacting a season's 38,000 small files took more than 45 minutes; the download takes about 35.
 
-**Guessed** (to be replaced by measurements in tasks 2.4, 4.4 and 5.4):
-- raw for 2008-2026 about 12-15 GB instead of about 47 GB today.
-- whole lake about 40-50 GB with all raw kept.
-- 250 games or 10 minutes per segment, 50 games per row group: chosen so memory stays small; not tested.
-- zstd 19 write speed is fast enough for a season (a few minutes against a 35-minute download).
+**Measured in task 2.4** (2026-11-08, `RawSegmentSink`, 250 games from the 2024 season, every 11th game so the
+sample spans the season; four of the five URLs per game: live feed, boxscore, win probability, play by play;
+998 responses, 637 MB uncompressed; the same responses as gzip files today are 92.4 MB, 369 KB per game; CPU:
+Xeon Gold 5120, one writer thread):
+
+| zstd level | segment MB | KB per game | against gzip files | write seconds (250 games) |
+|---|---|---|---|---|
+| 3 | 35.9 | 144 | 0.39 | 1.5 |
+| 6 | 31.0 | 124 | 0.34 | 3.5 |
+| **9** | **28.0** | **112** | **0.30** | **5.4** |
+| 12 | 27.0 | 108 | 0.29 | 10.2 |
+| 15 | 26.5 | 106 | 0.29 | 40.6 |
+| 19 | 22.5 | 90 | 0.24 | 144.0 |
+
+- **Level 9 stays.** Level 19 is 20% smaller but takes 0.58 s per game, about as long as the download itself
+  (about 0.7 s per game), so a season would cost about 28 extra minutes of one core. Level 9 costs 22 ms per game.
+  Level 12 is 4% smaller for twice the time: not worth it.
+- **Keep one game's responses next to each other.** With the rows grouped by game the segment is 28.0 MB; sorted by
+  kind (all feeds, then all boxscores, ...) it is 69.0 MB at the same level (2.5 times larger). The live feed and
+  the play-by-play of one game repeat each other's plays, and zstd only finds the repeat when both are inside its
+  window. `ResponseLog` writes the rows in the order the units were added, which is by game; a test now keeps this
+  true (`test_the_responses_of_one_game_stay_next_to_each_other`).
+- **Page size and row-group size do not matter** at these sizes: pages of 1, 8 and 32 MB all gave 28.0 MB; row
+  groups of 100, 500 and 2000 rows gave 28.3, 28.0 and 28.0 MB. The guess "pages must be large" (section 1, D4)
+  was wrong for bodies of 100 KB and more; the constants stay (8 MB, 500 rows) because nothing is gained by changing
+  them.
+- **Disk for the whole history.** 112 KB per game for four URLs against 369 KB today, about 0.30. Seasons have about
+  2,900 games and 2008-2026 are 19 seasons, about 55,000 games, so about 6.2 GB for these four URLs. This is
+  extrapolated from 2024 only; older feeds are smaller (less tracking data), so it is probably an upper bound for
+  them. The fifth URL per game and Statcast, Retrosheet and the other sources are not included.
+
+**Guessed** (to be replaced by measurements in tasks 4.4 and 5.4):
+- whole lake about 40-50 GB with all raw kept. The raw part is now measured as much smaller than the earlier guess
+  (12-15 GB), so the lake estimate should drop; it is re-estimated after the converter has run (task 5.4).
+- 250 games or 10 minutes per segment, 50 games per row group of processed rows: chosen so memory stays small; not
+  tested.
+- the open units are kept in memory as bytes until the commit. In the sample, 250 games of four URLs are 637 MB
+  uncompressed, so an open segment of 250 games holds about 0.64 GB of bodies, and building the Parquet table
+  copies them. That is a real memory cost on a Windows machine with limited commit (ADR 92); task 4.4 measures peak
+  memory and may shorten the segment (for example 100 games) or write the table in chunks.
 
 ## 4. Risks and what we do about each
 

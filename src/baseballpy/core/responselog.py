@@ -43,8 +43,9 @@ from baseballpy.core.stores import schema_fingerprint
 JOURNAL_NAME = "journal.zst"
 OPEN_DIRNAME = "_open"
 COMMIT_NAME = "segments.json"
-#: zstd level of a raw segment and the size of its data pages (guesses, measured in task 2.4):
-#: pages must hold many bodies, or Parquet compresses each body alone and the shared gain is lost
+#: zstd level 9 is the knee measured in task 2.4 (28 MB for 250 games; level 19 is 20% smaller but 27 times
+#: slower). Page and row-group sizes made no difference at these body sizes. What does matter is the row
+#: order: the responses of one game stay next to each other, so zstd finds what they repeat.
 RAW_LEVEL = 9
 RAW_PAGE_BYTES = 8 * 1024 * 1024
 RAW_ROW_GROUP_ROWS = 500

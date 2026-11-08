@@ -14,7 +14,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [x] 2.1 tests first: `tests/test_response_log.py::test_each_response_is_stored_once_with_the_sha256_of_its_original_bytes`, `::test_a_crash_replays_the_journal_and_refetches_no_finished_game`, `::test_a_torn_last_journal_record_is_dropped`, `::test_a_source_on_segments_writes_no_per_dataset_or_gzip_raw_file`
 - [x] 2.2 journal writer and reader in `baseballpy/core/responselog.py` (the interface is fixed by the docstring of `tests/test_response_log.py`; remove the `xfail` marks of the tests it makes pass) (one zstd frame per record with `pyarrow.Codec`, length prefix, flushed per game)
 - [x] 2.3 raw segment writer behind `SinkProtocol` (Parquet, zstd, large data pages)
-- [ ] 2.4 measure on 2024 samples: zstd level 9 against 19 and the page size (bytes and write seconds); replace the guessed numbers in design.md section 3
+- [x] 2.4 measure on 2024 samples: zstd level 9 against 19 and the page size (bytes and write seconds); replace the guessed numbers in design.md section 3
 
 ## 3. Processed segments and the commit protocol
 - [ ] 3.1 tests first: `tests/test_segments.py::test_a_segment_writes_one_file_per_dataset_in_bounded_row_groups`, `::test_every_processed_row_names_its_response`, `::test_a_game_counts_only_after_its_commit_line`, `::test_start_up_deletes_uncommitted_files_and_replays_the_journal`, `::test_a_torn_commit_line_is_ignored`, `::test_a_second_writer_on_the_same_season_is_refused`, `::test_a_refresh_replaces_a_segment_under_the_same_name`

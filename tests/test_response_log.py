@@ -243,3 +243,17 @@ def test_the_raw_segment_sink_is_a_sink_protocol(tmp_path: Path) -> None:
     empty = RAW_SCHEMA.empty_table()
     assert sink.write(empty, str(tmp_path / "seg-0001.parquet")) == 0
     assert not list(tmp_path.glob("*.part"))
+
+
+def test_the_responses_of_one_game_stay_next_to_each_other(tmp_path: Path) -> None:
+    """Measured (design section 3): sorted by kind a segment is 2.5 times larger than grouped by game."""
+    response_class, log_class = _api()
+    config = LakeConfig(home=tmp_path)
+    log = log_class(config, SOURCE, SEASON)
+    games = ["745001", "745002", "745003"]
+    for game in games:
+        log.add_unit(game, _unit_responses(response_class, game))
+    log.commit()
+    rows = pq.read_table(next(_season_dir(config).glob("seg-*.parquet"))).to_pylist()
+    order = [row["url"].split("/game/")[1].split("/")[0] for row in rows]
+    assert order == [game for game in games for _ in range(2)]
