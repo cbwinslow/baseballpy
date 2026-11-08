@@ -1,5 +1,6 @@
 # Per-game MLB data (boxscore, live feed, play-by-play, win probability, linescore) for the seasons
-# not yet downloaded, newest first. Major leagues only (ADR 85). Run: baseballpy run plans/mlb-games-history.toml
+# not yet downloaded, newest first, then the live sources kept current. Major leagues only (ADR 85).
+# Run: baseballpy run plans/mlb-games-history.toml --every 24h
 # Each stage is one season; a finished season is compacted before the next starts (disk).
 
 [[stage]]
@@ -113,3 +114,24 @@ sources = ["mlb_api"]
 seasons = "2008"
 datasets = ["games"]
 estimate_gb = 3
+
+# After the history, keep the live sources current. Repeated every round (`--every 24h`), these
+# fetch only what is new: a rerun skips every chunk that is already complete.
+[[stage]]
+name = "markets"
+sources = ["kalshi", "polymarket"]
+estimate_gb = 0.1
+
+[[stage]]
+name = "statcast-current"
+sources = ["statcast"]
+seasons = "current"
+estimate_gb = 0.5
+
+[[stage]]
+name = "games current"
+sources = ["mlb_api"]
+seasons = "current"
+datasets = ["games"]
+estimate_gb = 0.5
+
