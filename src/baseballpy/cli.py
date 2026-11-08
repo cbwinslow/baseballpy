@@ -16,6 +16,7 @@ from baseballpy.cli_db import register_db_commands
 from baseballpy.cli_export import register_export_command
 from baseballpy.cli_ingest import register_commands
 from baseballpy.cli_quarantine import register_quarantine_commands
+from baseballpy.cli_queue import register_queue_command
 from baseballpy.cli_status import register_status_command
 from baseballpy.cli_stream import register_stream_command
 from baseballpy.clidocs import CLI_DOC_NAME, generate_cli_doc
@@ -594,6 +595,7 @@ def audit_rotate(max_mb: int, force: bool) -> None:
 
 register_commands(main, catalog)
 register_backfill_command(main)
+register_queue_command(main)
 register_cache_commands(main)
 register_export_command(main)
 register_catalog_commands(catalog)

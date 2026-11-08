@@ -76,3 +76,16 @@ def test_final_game_pks_keeps_only_the_wanted_levels(
     assert source.final_game_pks(2024, (1,)) == (1, 2)
     assert source.final_game_pks(2024, (1, 11)) == (1, 2, 3)
     assert source.final_game_pks(2024) == (1, 2, 3, 4)
+
+
+def test_a_games_run_fetches_only_the_games_not_the_season_datasets_again() -> None:
+    """The season datasets have their own job; repeating them in the games job re-sent hundreds of
+    requests per season and failed the job on the ones the provider refuses (ADR 91)."""
+    source = _Source()
+    adapter = MlbApiAdapter(source, calendar=_Calendar())
+    job = _games_job(adapter)
+    assert job.param("games_only") is True
+    adapter.run(job)
+    adapter.run(make_job("mlb_api", "season", games=True, season=2024))  # an older job id
+    assert source.calls[0][1]["include_season"] is False
+    assert source.calls[1][1]["include_season"] is True

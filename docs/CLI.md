@@ -32,6 +32,7 @@ Commands:
   probe           Check every provider route in seconds (run it before a long ingest).
   quarantine      Inspect and display dead-letter quarantine files and unparseable records.
   refs            Show or update the pinned upstream commit SHAs (reproducible GitHub sources).
+  run             Work through a plan and keep it going: retry what fails, repeat it on a timer.
   statcast        Download one date range of Statcast pitches into a single file (not the lake).
   status          Show what the lake holds per source, what is running and what needs attention.
   stream          Stream live pitch and play events for a game in real time or replay mode.
@@ -203,6 +204,8 @@ Options:
   -c, --concurrency INTEGER RANGE
                                   Max concurrent worker threads (minimum 1).  [x>=1]
   --json                          Print one JSON object per stage.
+  --stage TEXT                    Run only this stage of the plan (its name or 1-based number);
+                                  repeatable.
   --help                          Show this message and exit.
 ```
 
@@ -665,6 +668,36 @@ Options:
   --help     Show this message and exit.
 ```
 
+## `baseballpy run`
+
+```text
+Usage: baseballpy run [OPTIONS] PLAN
+
+  Work through a plan and keep it going: retry what fails, repeat it on a timer.
+
+  Each stage runs in its own child process, so a crash or a memory spike ends only that attempt. A
+  failed stage is retried with growing waits and the next stage still runs. State is kept in
+  `<home>/state/queue.json`; start the command again after a restart and it resumes the unfinished
+  round. Stop it with Ctrl-C. It needs no operating-system scheduler, so it works the same on Linux,
+  macOS and Windows.
+
+Options:
+  --every TEXT                    Start a new round this long after the last one began (30m, 6h, 1d)
+                                  and keep going until stopped. Without it the command ends when the
+                                  plan is done.
+  --retries INTEGER RANGE         [default: 3; x>=0]
+  --wait-initial FLOAT RANGE      [default: 60.0; x>=0]
+  --wait-max FLOAT RANGE          [default: 900.0; x>=0]
+  --max-gb FLOAT RANGE            [x>0]
+  --min-free-gb FLOAT RANGE       [default: 5.0; x>=0]
+  -c, --concurrency INTEGER RANGE
+                                  [x>=1]
+  --compact / --no-compact        After each finished stage, merge the small files it wrote (returns
+                                  disk space).  [default: compact]
+  --dry-run                       Show the stages and the settings; run nothing.
+  --help                          Show this message and exit.
+```
+
 ## `baseballpy statcast`
 
 ```text
@@ -736,5 +769,7 @@ Options:
   -c, --concurrency INTEGER RANGE
                                   Max concurrent worker threads (minimum 1).  [x>=1]
   --json                          Print one JSON object per stage.
+  --stage TEXT                    Run only this stage of the plan (its name or 1-based number);
+                                  repeatable.
   --help                          Show this message and exit.
 ```

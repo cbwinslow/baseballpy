@@ -21,7 +21,7 @@ again. Disk use is measured as the drop in free space, because that is what the 
 """
 
 import tomllib
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from importlib import resources
 from pathlib import Path
@@ -178,6 +178,27 @@ def parse_plan(data: Mapping[str, Any]) -> BackfillPlan:
     return BackfillPlan(tuple(stages))
 
 
+def select_stages(plan: BackfillPlan, wanted: Sequence[str]) -> BackfillPlan:
+    """The plan reduced to the stages named in ``wanted`` (a stage name or its 1-based number).
+
+    Stages stay in plan order. A name that matches no stage is refused with the list of stages, so
+    a typo never silently runs nothing.
+    """
+    if not wanted:
+        return plan
+    names = [stage.name for stage in plan.stages]
+    chosen: set[int] = set()
+    for item in wanted:
+        if item in names:
+            chosen.add(names.index(item))
+        elif item.isdigit() and 1 <= int(item) <= len(names):
+            chosen.add(int(item) - 1)
+        else:
+            listing = ", ".join(f"{i}: {n}" for i, n in enumerate(names, start=1))
+            raise BackfillError(f"no stage {item!r} in the plan ({listing})")
+    return BackfillPlan(tuple(stage for i, stage in enumerate(plan.stages) if i in chosen))
+
+
 def _datasets_for(stage: Stage, source: str) -> tuple[str, ...]:
     """The stage's ``datasets`` that belong to ``source`` (``source:name`` or a bare name)."""
     names = []
@@ -294,4 +315,5 @@ __all__ = [
     "plan_stage",
     "preflight",
     "run_backfill",
+    "select_stages",
 ]

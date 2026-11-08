@@ -175,6 +175,7 @@ class MlbApiSource:
         sport_ids: tuple[int, ...] | None = None,
         include_games: bool = False,
         max_games: int | None = None,
+        include_season: bool = True,
         include_history: bool = False,
         include_awards: bool = True,
         include_people_stats: bool = False,
@@ -186,6 +187,9 @@ class MlbApiSource:
 
         ``game_sport_ids`` picks the levels whose games get the per-game datasets: the major
         leagues by default, ``None`` for every level (about five times as many games).
+        ``include_season=False`` fetches only what the per-game datasets need (the schedule), so a
+        games-only run neither repeats the season datasets nor fails on the ones the provider
+        refuses (ADR 91).
 
         Order matters: reference lists and ``teams_season`` first (they define the fan-out for
         team-scoped endpoints and stats leaders), then everything else; per-game endpoints use the
@@ -193,7 +197,7 @@ class MlbApiSource:
         types (``career*``, ``yearByYear*``) ignore the season and take minutes per request, so they
         run only with ``include_history=True``.
         """
-        reports = self.ingest_reference(refresh)
+        reports = self.ingest_reference(refresh) if include_season else []
         sports = sport_ids if sport_ids is not None else self.all_sport_ids()
         reports.append(
             self.endpoints.ingest(
@@ -210,6 +214,7 @@ class MlbApiSource:
             and e.scope not in ("person_season",)
             and (include_awards or e.scope != "award_season")
             and (include_history or not e.heavy)
+            and (include_season or e.name == "schedule_hydrated")
         ]
         max_workers = min(self.endpoints.http.limit_for(STATSAPI_HOST), 8)
         if max_workers > 1 and len(season_eps) > 1:

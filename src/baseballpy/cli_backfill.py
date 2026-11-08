@@ -17,6 +17,7 @@ from baseballpy.ingest.backfill import (
     load_plan,
     plan_stage,
     run_backfill,
+    select_stages,
 )
 from baseballpy.ingest.types import JobStatus
 from baseballpy.sources.adapters import register_all_adapters
@@ -68,6 +69,12 @@ def _print_plan(plan: BackfillPlan, counts: dict[str, int], free_bytes: int) -> 
     help="Max concurrent worker threads (minimum 1).",
 )
 @click.option("--json", "as_json", is_flag=True, help="Print one JSON object per stage.")
+@click.option(
+    "--stage",
+    "stages",
+    multiple=True,
+    help="Run only this stage of the plan (its name or 1-based number); repeatable.",
+)
 @click.pass_context
 def backfill_cmd(
     ctx: click.Context,
@@ -78,6 +85,7 @@ def backfill_cmd(
     dry_run: bool,
     concurrency: int,
     as_json: bool,
+    stages: tuple[str, ...],
 ) -> None:
     """Run a plan of ingest stages (sources, seasons, datasets) into the lake.
 
@@ -92,7 +100,7 @@ def backfill_cmd(
         return _disk_usage(home)[0]
 
     try:
-        plan = load_plan(plan_file)
+        plan = select_stages(load_plan(plan_file), stages)
         sources = sorted({s for stage in plan.stages for s in stage.sources})
         adapters = get_adapters(sources)
         if dry_run:

@@ -40,26 +40,36 @@ def _try_lock(fd: int) -> bool:
     return True
 
 
-def claim_host(directory: Path, host: str) -> None:
-    """Claim ``host`` for this process (idempotent); raises :class:`HostBusyError` if taken."""
-    key = (str(directory), host)
+def claim_named(directory: Path, name: str, busy_message: str) -> None:
+    """Claim ``name`` for this process (idempotent); raises :class:`HostBusyError` if taken.
+
+    The same operating-system lock serves hosts and the download queue (one supervisor per home).
+    """
+    key = (str(directory), name)
     with _LOCK:
         if key in _HELD:
             return
         directory.mkdir(parents=True, exist_ok=True)
-        path = directory / f"{_SAFE.sub('_', host)}.lock"
+        path = directory / f"{_SAFE.sub('_', name)}.lock"
         fd = os.open(path, os.O_CREAT | os.O_RDWR)
         if os.fstat(fd).st_size == 0:
             os.write(fd, b"\0")  # Windows locks a byte range, so the file needs a byte to lock
         if not _try_lock(fd):
             os.close(fd)
-            raise HostBusyError(
-                f"another baseballpy process is already downloading from {host}: its speed caps "
-                "are per process, so a second one would double the request rate. Wait for it to "
-                "finish, or set BASEBALLPY_RATE_ALLOW_PARALLEL_PROCESSES=1 if you know the host "
-                "allows it."
-            )
+            raise HostBusyError(busy_message)
         _HELD[key] = fd
+
+
+def claim_host(directory: Path, host: str) -> None:
+    """Claim ``host`` for this process (idempotent); raises :class:`HostBusyError` if taken."""
+    claim_named(
+        directory,
+        host,
+        f"another baseballpy process is already downloading from {host}: its speed caps "
+        "are per process, so a second one would double the request rate. Wait for it to "
+        "finish, or set BASEBALLPY_RATE_ALLOW_PARALLEL_PROCESSES=1 if you know the host "
+        "allows it.",
+    )
 
 
 def release_all(directory: Path | None = None) -> None:
@@ -90,4 +100,4 @@ def busy_hosts(directory: Path) -> list[str]:
     return busy
 
 
-__all__ = ["HostBusyError", "busy_hosts", "claim_host", "release_all"]
+__all__ = ["HostBusyError", "busy_hosts", "claim_host", "claim_named", "release_all"]

@@ -32,6 +32,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-08 05:15 UTC [blain]:**
+  - **Tasks:** `B-313`.
+  - **Summary:** Python download queue (baseballpy run), games-only job, compaction between stages, history plan, finish-mlb-history change
+
 - **2026-11-08 04:54 UTC [blain]:**
   - **Tasks:** `B-312`.
   - **Summary:** Cross-platform fixes: LF writers, gitattributes, spawn pool, UTF-8 console, enforcing test

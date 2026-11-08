@@ -1,0 +1,115 @@
+# Per-game MLB data (boxscore, live feed, play-by-play, win probability, linescore) for the seasons
+# not yet downloaded, newest first. Major leagues only (ADR 85). Run: baseballpy run plans/mlb-games-history.toml
+# Each stage is one season; a finished season is compacted before the next starts (disk).
+
+[[stage]]
+name = "games 2024"
+sources = ["mlb_api"]
+seasons = "2024"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2023"
+sources = ["mlb_api"]
+seasons = "2023"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2021"
+sources = ["mlb_api"]
+seasons = "2021"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2020"
+sources = ["mlb_api"]
+seasons = "2020"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2019"
+sources = ["mlb_api"]
+seasons = "2019"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2018"
+sources = ["mlb_api"]
+seasons = "2018"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2017"
+sources = ["mlb_api"]
+seasons = "2017"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2016"
+sources = ["mlb_api"]
+seasons = "2016"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2015"
+sources = ["mlb_api"]
+seasons = "2015"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2014"
+sources = ["mlb_api"]
+seasons = "2014"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2013"
+sources = ["mlb_api"]
+seasons = "2013"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2012"
+sources = ["mlb_api"]
+seasons = "2012"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2011"
+sources = ["mlb_api"]
+seasons = "2011"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2010"
+sources = ["mlb_api"]
+seasons = "2010"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2009"
+sources = ["mlb_api"]
+seasons = "2009"
+datasets = ["games"]
+estimate_gb = 3
+
+[[stage]]
+name = "games 2008"
+sources = ["mlb_api"]
+seasons = "2008"
+datasets = ["games"]
+estimate_gb = 3

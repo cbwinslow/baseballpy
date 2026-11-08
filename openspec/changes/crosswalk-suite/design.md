@@ -56,3 +56,22 @@ Expose zero-copy, highly ergonomic convenience functions:
 - `bb.teams() -> pl.DataFrame`: Returns `v_team_crosswalk`
 - `bb.venues() -> pl.DataFrame`: Returns `v_venue_crosswalk`
 - `bb.crosswalk(id_value, from_type, to_type) -> Any | None`: Top-level re-export of Chadwick ID translation
+
+## Verification & Test Evidence
+
+1. **Unit & Isolation Test Suite (`tests/test_crosswalk.py`):**
+   - 5 isolated synthetic tests verify:
+     - `test_player_crosswalk_accessor`: Schema, columns, row count, and `backend="arrow"` vs `"polars"`.
+     - `test_crosswalk_id_resolver`: MLBAM <-> BRef <-> Retro ID translation.
+     - `test_team_crosswalk_accessor`: Schema and team identity mapping (NYY <-> NYA).
+     - `test_venue_crosswalk_accessor`: Ballpark specs, coordinates, roof/turf, fence dimensions.
+     - `test_game_crosswalk_accessor`: Schedule join with Retrosheet game IDs on date, team code, and game number.
+   - Result: `5 passed, 1 skipped in 7.52s`.
+
+2. **Quality Gates:**
+   - `ruff check src tests`: Passed (0 errors).
+   - `ruff format --check src tests`: Passed (288 files clean).
+   - `mypy --strict src tests/test_crosswalk.py`: Passed (175 source files clean).
+   - `openspec validate --specs`: Passed (21 specs passed).
+   - `docs generate --check`: Passed (docs up to date).
+

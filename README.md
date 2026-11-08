@@ -221,6 +221,15 @@ from the working directory.
 
 ---
 
+### Keep the lake up to date by itself
+
+```bash
+baseballpy run daily --every 6h     # runs forever; Ctrl-C stops it, running it again resumes
+baseballpy run full                 # works through the whole history once, retrying what fails
+```
+
+Each stage of the plan runs in its own child process, so a crash ends one attempt, not the run. A failed stage is retried with growing waits and the next stage still runs. Progress is in `<home>/state/queue.json` and on `baseballpy status`. It is plain Python: no cron, no Task Scheduler, the same on every OS. The speed limits per host still apply.
+
 ## Data Lake Layout
 
 Everything lives under `$BASEBALLPY_HOME` (default: `.baseballpy` in the project folder, else `~/.baseballpy`), layout version 2 (see

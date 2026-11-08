@@ -10,6 +10,7 @@ from rich.table import Table
 from baseballpy.cli_ingest import DatasetStatus, _disk_usage, find_orphans, scan_lake
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.hostlock import busy_hosts
+from baseballpy.ingest.queue import read_state
 
 console = Console()
 GB = 1_000_000_000
@@ -63,6 +64,46 @@ def _seasons(item: SourceSummary) -> str:
     )
 
 
+@dataclass
+class QueueOverview:
+    """The download queue's saved progress and whether a supervisor is running."""
+
+    plan: str
+    round: int
+    running: bool
+    done: list[str]
+    failed: dict[str, str]
+    next_round_at: str | None
+    updated_at: str
+
+    def line(self) -> str:
+        """One line for the status screen."""
+        return (
+            f"Queue: plan {self.plan}, round {self.round}, "
+            f"{'running' if self.running else 'not running'}; {len(self.done)} stage(s) done"
+            + (f"; failed: {', '.join(self.failed)}" if self.failed else "")
+            + (f"; next round {self.next_round_at}" if self.next_round_at else "")
+            + "."
+        )
+
+
+def queue_overview(config: LakeConfig) -> QueueOverview | None:
+    """The queue's saved progress, or None when `baseballpy run` was never used here."""
+    state = read_state(config.state_root / "queue.json")
+    if state is None:
+        return None
+    stages = state.stages
+    return QueueOverview(
+        plan=state.plan,
+        round=state.round,
+        running="queue" in busy_hosts(config.state_root),
+        done=sorted(n for n, s in stages.items() if s.status == "done"),
+        failed={n: s.last_error for n, s in stages.items() if s.status == "failed"},
+        next_round_at=state.next_round_at or None,
+        updated_at=state.updated_at,
+    )
+
+
 @click.command("status")
 @click.option("--json", "as_json", is_flag=True, help="Print the overview as one JSON object.")
 def status_cmd(as_json: bool) -> None:
@@ -81,6 +122,7 @@ def status_cmd(as_json: bool) -> None:
         else 0
     )
     orphans = len(find_orphans(config))
+    queue = queue_overview(config)
     report = {
         "home": str(config.home),
         "disk_free_gb": round(free / GB, 1),
@@ -88,6 +130,7 @@ def status_cmd(as_json: bool) -> None:
         "downloading_from": running,
         "quarantine_files": quarantined,
         "orphan_part_files": orphans,
+        "queue": None if queue is None else queue.__dict__,
         "sources": [s.__dict__ for s in summaries],
     }
     if as_json:
@@ -112,6 +155,8 @@ def status_cmd(as_json: bool) -> None:
         "Downloading now from: "
         + (", ".join(running) if running else "nothing (no ingest running).")
     )
+    if queue is not None:
+        console.print(queue.line())
     if quarantined:
         console.print(
             f"[yellow]{quarantined} quarantine file(s)[/yellow]: values that could not be typed "

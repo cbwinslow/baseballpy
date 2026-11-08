@@ -53,9 +53,10 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `agent-coordination-and-audit-rotation` | 3 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `cross-platform-support` | 5 | 1 | 1.6 |
-| `crosswalk-suite` | 0 | 1 | 1.1 |
-| `download-queue` | 0 | 6 | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6 |
+| `crosswalk-suite` | 1 | 0 | none |
+| `download-queue` | 5 | 1 | 1.6 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
+| `finish-mlb-history` | 3 | 11 | 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 4 | 2 | 1.5, 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
@@ -154,6 +155,8 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 87: Files Written Under An Older Schema Are Read As-Is And Migrated By `compact`
 - ADR 88: Manifests Are Read And Written As Bytes
 - ADR 89: One Behavior On Linux, macOS And Windows
+- ADR 90: A Python Supervisor Keeps Downloads Running (`baseballpy run`)
+- ADR 91: A Games Run Fetches Only The Games, And The Queue Compacts Between Stages
 
 ## Documentation pages (`docs/`)
 

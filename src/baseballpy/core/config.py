@@ -193,6 +193,11 @@ class LakeConfig(EnvSettings):
         return self.home / "locks"
 
     @property
+    def state_root(self) -> Path:
+        """Small state files of long-running commands (the download queue); never created here."""
+        return self.home / "state"
+
+    @property
     def exports_root(self) -> Path:
         """Root of exported files (Parquet, CSV, DuckDB) written by ``baseballpy export``."""
         return self.exports_root_override or (self.home / "exports")

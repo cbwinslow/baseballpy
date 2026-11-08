@@ -5,6 +5,7 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 ## Unreleased
 
 ### Added
+- `baseballpy run PLAN [--every 6h]`: a Python supervisor that keeps a plan running (child process per stage, retries with backoff, resumes after a restart, no OS scheduler; ADR 90), `baseballpy backfill --stage`, and the queue on the `status` screen.
 - Cross-platform behavior (ADR 89): LF line endings for every written text file and in every checkout (`.gitattributes`), `spawn` worker processes, UTF-8 console output, and `tests/test_portability.py` enforcing it.
 - The default User-Agent is the one pybaseball sends (`python-requests/2.32.3`), overridable with `BASEBALLPY_USER_AGENT` or `HttpClient(user_agent=...)` (ADR 40).
 - `baseballpy backfill PLAN.toml` runs a staged historical backfill (free-space pre-flight, `--max-gb`, `--dry-run`, resume); measured throughput and the plan are in `docs/BACKFILL.md`.

@@ -157,6 +157,7 @@ class MlbApiAdapter:
                             "mlb_api",
                             "season",
                             games=True,
+                            games_only=True,
                             season=season,
                             sports=sports.strip().lower().replace(" ", ""),
                             **selection.limit_params(),
@@ -203,6 +204,7 @@ class MlbApiAdapter:
                 season,
                 include_games=include_games,
                 max_games=job.limit,
+                include_season=not bool(job.param("games_only", False)),
                 game_sport_ids=parse_game_sports(str(job.param("sports", MAJOR_LEAGUES))),
                 refresh=refresh,
             )
