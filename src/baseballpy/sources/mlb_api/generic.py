@@ -7,6 +7,7 @@ sha256, writes one typed part per request and skips requests whose part is still
 """
 
 import concurrent.futures
+import contextlib
 import json
 import logging
 import threading
@@ -767,7 +768,15 @@ class MlbEndpointExtractor:
                 return _Outcome(0, False, self.missing, str(exc))
             return _Outcome(table.num_rows, was_cached, self.missing, None)
 
-        outcomes = [o for o in self._map_requests(requests, one) if o is not None]
+        with contextlib.ExitStack() as stack:
+            # one manifest rewrite per chunk is the cost that grows with the lake (ADR 93)
+            first_season = requests[0].season if requests else None
+            for manifest in (
+                self.cache_config.dataset_manifest("mlb_api", ep.name, "processed"),
+                self.cache_config.dataset_manifest("mlb_api", ep.name, "raw", first_season),
+            ):
+                stack.enter_context(manifest.deferred())
+            outcomes = [o for o in self._map_requests(requests, one) if o is not None]
         errors = [o.error for o in outcomes if o.error is not None]
         return EndpointReport(
             ep.name,

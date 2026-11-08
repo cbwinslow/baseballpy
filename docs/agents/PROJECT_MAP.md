@@ -10,7 +10,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `agent-runbooks` | 4 | 7 | 13 |
 | `audit-and-benchmarking` | 6 | 7 | 11 |
 | `bref-ingestion` | 3 | 3 | 10 |
-| `caching-and-invalidation` | 19 | 32 | 44 |
+| `caching-and-invalidation` | 20 | 33 | 47 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 21 | 32 | 53 |
@@ -47,19 +47,17 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-75 changes are archived under `openspec/changes/archive/`.
+77 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
-| `agent-coordination-and-audit-rotation` | 3 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `download-throughput` | 3 | 5 | 2.1, 2.2, 2.3, 2.4, 2.5 |
+| `download-throughput` | 5 | 4 | 2.2b, 2.3, 2.4, 2.5 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 6 | 9 | 2.1, 2.2, 2.3, 2.4, 3.2, 3.3, 4.1, 4.3, 3.5 |
+| `finish-mlb-history` | 7 | 8 | 2.1, 2.2, 2.3, 2.4, 3.2, 3.3, 4.1, 3.5 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 4 | 2 | 1.5, 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
-| `mlb-game-memory` | 1 | 0 | none |
 | `mlb-stats-route-406-and-deep-pools` | 7 | 4 | 1.2, 3.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
@@ -157,6 +155,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 90: A Python Supervisor Keeps Downloads Running (`baseballpy run`)
 - ADR 91: A Games Run Fetches Only The Games, And The Queue Compacts Between Stages
 - ADR 92: The Download Speed Is Measured, And The Limit Is In Our Own Work
+- ADR 93: A Bulk Download Must Not Pay For The Size Of The Lake At Every Chunk
 
 ## Documentation pages (`docs/`)
 

@@ -179,7 +179,7 @@ def _entry_time(entry: dict[str, Any]) -> str:
 
 
 #: manifests kept parsed in memory at once (see ``ManifestTracker.for_path``)
-MAX_SHARED_TRACKERS = 24
+MAX_SHARED_TRACKERS = 48
 _TRACKERS: "OrderedDict[str, ManifestTracker]" = OrderedDict()
 _TRACKERS_LOCK = threading.Lock()
 
@@ -200,6 +200,10 @@ class ManifestTracker:
         # (mtime_ns, size) of the file that ``_data`` mirrors; a matching stat means no re-parse
         self._sig: tuple[int, int] | None = None
         self._data: dict[str, Any] = self._load()
+        # saves held back while ``deferred`` is active: chunk id -> entry not yet on disk
+        self._defer = 0
+        self._defer_every = 1
+        self._pending: dict[str, dict[str, Any]] = {}
 
     @classmethod
     def for_path(cls, manifest_path: Path | str) -> "ManifestTracker":
@@ -282,6 +286,8 @@ class ManifestTracker:
             if sig is not None and sig == self._sig:
                 return
             self._data = self._load()
+            if self._pending:  # entries not yet saved are newer than the file
+                self._data.setdefault("chunks", {}).update(self._pending)
 
     def is_completed(self, chunk_id: str) -> bool:
         """Check if a chunk is recorded as completed."""
@@ -339,6 +345,12 @@ class ManifestTracker:
             self._data.setdefault("chunks", {}).update({k: dict(v) for k, v in entries.items()})
             self.save(_only=frozenset(entries))
 
+    def chunk_keys(self) -> frozenset[str]:
+        """The ids of every chunk on disk, without copying their entries."""
+        with self._rlock:
+            self.reload()
+            return frozenset(self._data.get("chunks", {}))
+
     def chunks(self) -> dict[str, dict[str, Any]]:
         """Snapshot of every chunk entry currently on disk."""
         with self._rlock:
@@ -350,7 +362,39 @@ class ManifestTracker:
     def _set(self, chunk_id: str, entry: dict[str, Any]) -> None:
         with self._rlock:
             self._data.setdefault("chunks", {})[chunk_id] = entry
+            if self._defer:
+                self._pending[chunk_id] = entry
+                if len(self._pending) >= self._defer_every:
+                    self.flush()
+                return
             self.save(_only=chunk_id)
+
+    @contextmanager
+    def deferred(self, every: int = 500) -> Generator[None, None, None]:
+        """Hold back saves while a bulk run records many chunks; save every ``every`` entries.
+
+        Every save rewrites the whole manifest, so recording one chunk at a time costs time
+        proportional to the manifest's size each (0.13 s at 29,000 entries, 13 per game). Entries
+        are visible to this process at once; other processes see them after each flush and at the
+        end. A crash loses at most ``every`` entries, whose chunks are simply fetched again.
+        """
+        with self._rlock:
+            self._defer += 1
+            self._defer_every = min(self._defer_every, every) if self._defer > 1 else every
+        try:
+            yield
+        finally:
+            with self._rlock:
+                self._defer -= 1
+                if self._defer == 0:
+                    self.flush()
+
+    def flush(self) -> None:
+        """Save the entries held back by ``deferred``."""
+        with self._rlock:
+            if self._pending:
+                self.save(_only=frozenset(self._pending))
+                self._pending.clear()
 
     def save(self, _only: str | frozenset[str] | None = None) -> None:
         """Merge with on-disk state under a file lock and atomically persist."""

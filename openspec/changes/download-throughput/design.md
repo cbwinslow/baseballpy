@@ -9,5 +9,12 @@
 ## Web check
 Python's GIL serializes pure-Python parsing in threads, which fits a flat rate with idle threads. The standard remedies are less Python per record (columnar libraries), fewer and larger writes, or processes. Parquet writers cost per column per row group, which is why a 611-column table is slow in small pieces.
 
+## What the per-game profile found (2026-11-08, real payloads from memory, no network, 40 games)
+- Cost per game with an empty lake: 526 ms; with both stores switched off, 414 ms: normalization (flatten the JSON, build typed columns) is most of it and is pure Python.
+- Cost per game with each of the 13 processed manifests holding 25,000 entries (what the lake has by the last seasons): 1,114 ms, about what the real download does. Two costs grow with the lake: (1) `ProcessedStore._refuse_name_clash` copied every manifest entry and tested each one at every put; (2) every put rewrote the whole manifest (0.13 s at 29,000 entries), 13 times a game; and the shared tracker cache (24) was smaller than the manifests in use (13 processed plus 13 raw), so a manifest could be parsed again and again.
+- After an index for the clash check (a set difference per put), deferred manifest saves in bulk runs (every 500 entries) and a tracker cache of 48: 520 to 630 ms per game at the same manifest size. About twice as fast, and no longer growing with the lake.
+- Normalizing in 8 worker processes was tried: 630 to 530 ms per game, and about 2.4 GB more committed memory. Not kept.
+- Not the cause of the crashes seen: the Windows commit limit. See the proposal's addendum.
+
 ## Evidence
 See the proposal. The scripts are throw-away probes (`probe_server.py`, `bench_put.py`, `prof_put.py`); their numbers are recorded here and in ADR 92.

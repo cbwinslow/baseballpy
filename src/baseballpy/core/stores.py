@@ -2,6 +2,7 @@
 
 import hashlib
 import logging
+import threading
 from collections.abc import Callable, Iterable, Mapping
 from pathlib import Path
 from typing import Any
@@ -107,6 +108,50 @@ def schema_matches(spec: DatasetSpec, entry: Mapping[str, Any] | None) -> bool:
     if not stored:
         return not spec.revision
     return bool(stored == spec_fingerprint(spec))
+
+
+class _ClashIndex:
+    """Which chunk owns each (season folder, lower-case file name) of one dataset.
+
+    Every put used to copy the whole manifest and test every other chunk (40,000 entries by the
+    last seasons of a game download, 13 times a game): time that grew with the lake. The index is
+    extended with the keys that are new since the last call, so a check costs a set difference.
+    """
+
+    def __init__(self, dataset: str) -> None:
+        self.dataset = dataset
+        self._keys: frozenset[str] = frozenset()
+        self._owner: dict[tuple[str, str], str] = {}
+        self._lock = threading.Lock()
+
+    def lookup(self, current: frozenset[str], prefix: str, folded: str) -> str | None:
+        """The chunk key that already owns ``folded`` inside ``prefix``, if any."""
+        with self._lock:
+            if self._keys - current:  # chunks were removed: start again
+                self._owner.clear()
+                added = current
+            else:
+                added = current - self._keys
+            for key in added:
+                folder, _, name = key.partition("/") if key.startswith("season=") else ("", "", key)
+                if "/" in name:
+                    continue
+                season = int(folder.removeprefix("season=")) if folder else None
+                owner_prefix = f"{folder}/" if folder else ""
+                self._owner.setdefault(
+                    (owner_prefix, part_filename(self.dataset, name, season).casefold()), key
+                )
+            self._keys = current
+            return self._owner.get((prefix, folded))
+
+
+_CLASH_INDEXES: dict[tuple[str, str], _ClashIndex] = {}
+_CLASH_LOCK = threading.Lock()
+
+
+def _clash_index(manifest_path: str, dataset: str) -> _ClashIndex:
+    with _CLASH_LOCK:
+        return _CLASH_INDEXES.setdefault((manifest_path, dataset), _ClashIndex(dataset))
 
 
 def part_filename(dataset: str, chunk_id: str, season: int | None = None) -> str:
@@ -249,14 +294,15 @@ class ProcessedStore:
         mine = part_filename(spec.name, chunk_id, season).casefold()  # case-insensitive disks too
         key = manifest_key(chunk_id, season)
         prefix = f"season={season}/" if season is not None else ""
-        for other in self.config.dataset_manifest(spec.source, spec.name, "processed").chunks():
-            if other == key or (prefix and not other.startswith(prefix)):
-                continue
+        manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
+        other = _clash_index(str(manifest.path), spec.name).lookup(
+            manifest.chunk_keys(), prefix, mine
+        )
+        if other is not None and other != key:
             name = other[len(prefix) :] if prefix else other
-            if "/" not in name and part_filename(spec.name, name, season).casefold() == mine:
-                raise ValueError(
-                    f"{spec.key}: chunks {chunk_id!r} and {name!r} would share the file {mine}"
-                )
+            raise ValueError(
+                f"{spec.key}: chunks {chunk_id!r} and {name!r} would share the file {mine}"
+            )
 
     def put(
         self,

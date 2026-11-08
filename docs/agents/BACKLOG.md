@@ -547,11 +547,12 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-330 | finish-mlb-history 3.4: live end-to-end test of the streamer | DONE | a real game streamed and a stored game replayed |
 | B-331 | `finish-mlb-history 4.1`: v1 release steps of RELEASING.md | OWNER | TestPyPI install works; the owner tags |
 | B-332 | finish-mlb-history 4.2: macOS in the CI matrix | DONE | ci.yml tests on macos-latest |
-| B-333 | `finish-mlb-history 4.3`: Dependabot alerts and crosswalk fixtures (B-311) | OPEN | alerts reviewed, tests run in the default gates |
+| B-333 | finish-mlb-history 4.3: Dependabot alerts and crosswalk fixtures (B-311) | DONE | alerts reviewed (oauthlib upgraded to 4.0.1 in uv.lock), crosswalk fixture tests pass in default gates |
 | B-334 | `finish-mlb-history 3.5`: open shared-raw-bytes: store each upstream response once (about 12 GB of copies in raw/mlb_api) | OPEN | change opened with the measurement |
-| B-335 | `download-throughput 2.1`: profile the normalization of a live feed and a boxscore payload | OPEN | top costs recorded in design.md |
-| B-336 | `download-throughput 2.2`: batched chunk writes (own change batched-chunk-writes) | OPEN | many games per file with the same resume guarantees |
+| B-335 | download-throughput 2.1: profile the per-game path (found the name-clash scan and the manifest rewrites) | DONE | design.md has the numbers |
+| B-336 | download-throughput 2.2: deferred manifest saves and the clash index (ADR 93) | DONE | tests/test_manifest_deferred.py (6); 1114 to 520-630 ms per game at lake size |
 | B-337 | `download-throughput 2.3`: cheaper normalization of the per-game payloads | OPEN | driven by 2.1 |
 | B-338 | `download-throughput 2.4`: owner decision: worker processes sharing the host's rate limit | OWNER | decision recorded in an ADR |
 | B-339 | `download-throughput 2.5`: rerun speed during a season and record before and after | OPEN | requests per second before and after |
 | B-340 | download-throughput 1.1 to 1.3: `baseballpy speed`, the queue's speed watch and the measurements, ADR 92 | DONE | tests/test_speed.py (6), tests/test_queue.py |
+| B-341 | `download-throughput 2.2b`: batched chunk writes (own change batched-chunk-writes): many games per Parquet file; about 110 ms of the remaining 520 ms per game | OPEN | change opened with measurements |
