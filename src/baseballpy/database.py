@@ -27,6 +27,9 @@ _SEASON_DIR = re.compile(r"season=(\d{4})")
 _SAFE_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 CROSSWALK_VIEW = "v_player_crosswalk"
+GAME_CROSSWALK_VIEW = "v_game_crosswalk"
+TEAM_CROSSWALK_VIEW = "v_team_crosswalk"
+VENUE_CROSSWALK_VIEW = "v_venue_crosswalk"
 SEASON_CATALOG_VIEW = "v_season_catalog"
 CROSSWALK_COLUMNS = (
     "key_person",
@@ -257,7 +260,14 @@ class BaseballDatabase:
         The database holds views only, so dropping loses nothing; without it a renamed table would
         leave its old view behind and every query of it would fail.
         """
-        keep = {*self.expected_views(), CROSSWALK_VIEW, SEASON_CATALOG_VIEW}
+        keep = {
+            *self.expected_views(),
+            CROSSWALK_VIEW,
+            GAME_CROSSWALK_VIEW,
+            TEAM_CROSSWALK_VIEW,
+            VENUE_CROSSWALK_VIEW,
+            SEASON_CATALOG_VIEW,
+        }
         for (name,) in con.execute(
             "SELECT table_name FROM information_schema.tables WHERE table_type = 'VIEW'"
         ).fetchall():
@@ -314,6 +324,91 @@ class BaseballDatabase:
                             "FROM chadwick_register"
                         )
                         views_registered += 1
+
+                if "mlb_schedule_hydrated" in existing:
+                    if "retrosheet_box_games" in existing:
+                        con.execute(
+                            f"CREATE OR REPLACE VIEW {GAME_CROSSWALK_VIEW} AS "  # noqa: S608 - constant view name
+                            "SELECT "
+                            "    s.game_pk, "
+                            "    r.game_id AS retro_game_id, "
+                            "    s.official_date AS game_date, "
+                            "    s.season, "
+                            "    s.game_number, "
+                            "    s.game_type, "
+                            "    s.teams_home_team_id AS home_team_id_mlb, "
+                            "    upper(s.teams_home_team_team_code) AS home_team_retro, "
+                            "    s.teams_home_team_name AS home_team_name, "
+                            "    s.teams_away_team_id AS away_team_id_mlb, "
+                            "    upper(s.teams_away_team_team_code) AS away_team_retro, "
+                            "    s.teams_away_team_name AS away_team_name, "
+                            "    s.venue_id, "
+                            "    s.venue_name "
+                            "FROM mlb_schedule_hydrated s "
+                            "LEFT JOIN retrosheet_box_games r "
+                            "  ON s.official_date = r.date "
+                            "  AND upper(s.teams_home_team_team_code) = r.hometeam "
+                            "  AND s.game_number = (CASE WHEN right(r.game_id, 1) = '0' THEN 1 ELSE cast(right(r.game_id, 1) as INT) END)"
+                        )
+                    else:
+                        con.execute(
+                            f"CREATE OR REPLACE VIEW {GAME_CROSSWALK_VIEW} AS "  # noqa: S608 - constant view name
+                            "SELECT "
+                            "    s.game_pk, "
+                            "    NULL::VARCHAR AS retro_game_id, "
+                            "    s.official_date AS game_date, "
+                            "    s.season, "
+                            "    s.game_number, "
+                            "    s.game_type, "
+                            "    s.teams_home_team_id AS home_team_id_mlb, "
+                            "    upper(s.teams_home_team_team_code) AS home_team_retro, "
+                            "    s.teams_home_team_name AS home_team_name, "
+                            "    s.teams_away_team_id AS away_team_id_mlb, "
+                            "    upper(s.teams_away_team_team_code) AS away_team_retro, "
+                            "    s.teams_away_team_name AS away_team_name, "
+                            "    s.venue_id, "
+                            "    s.venue_name "
+                            "FROM mlb_schedule_hydrated s"
+                        )
+                    views_registered += 1
+
+                if "mlb_teams_season" in existing:
+                    con.execute(
+                        f"CREATE OR REPLACE VIEW {TEAM_CROSSWALK_VIEW} AS "  # noqa: S608 - constant view name
+                        "SELECT DISTINCT "
+                        "    id AS team_id_mlb, "
+                        "    abbreviation AS team_abbr_mlb, "
+                        "    upper(team_code) AS team_code_retro, "
+                        "    name AS team_name, "
+                        "    league_id AS league_id_mlb, "
+                        "    division_id AS division_id_mlb, "
+                        "    active "
+                        "FROM mlb_teams_season"
+                    )
+                    views_registered += 1
+
+                if "mlb_venues_hydrated" in existing:
+                    con.execute(
+                        f"CREATE OR REPLACE VIEW {VENUE_CROSSWALK_VIEW} AS "  # noqa: S608 - constant view name
+                        "SELECT "
+                        "    id AS venue_id, "
+                        "    name AS venue_name, "
+                        "    location_city AS city, "
+                        "    location_state AS state, "
+                        "    location_country AS country, "
+                        "    location_default_coordinates_latitude AS latitude, "
+                        "    location_default_coordinates_longitude AS longitude, "
+                        "    location_elevation AS elevation, "
+                        "    field_info_capacity AS capacity, "
+                        "    field_info_roof_type AS roof_type, "
+                        "    field_info_turf_type AS turf_type, "
+                        "    field_info_left_line AS field_left_line, "
+                        "    field_info_center AS field_center, "
+                        "    field_info_right_line AS field_right_line, "
+                        "    active "
+                        "FROM mlb_venues_hydrated"
+                    )
+                    views_registered += 1
                 self._create_season_catalog(con)
                 views_registered += 1
                 self._drop_stale_views(con)

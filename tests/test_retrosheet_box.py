@@ -236,3 +236,34 @@ def test_two_way_player_listed_twice_in_a_lineup_has_unique_starter_keys() -> No
     assert keys == ("game_id", "player_id", "side", "position")
     rows = list(zip(*[starters[k].to_pylist() for k in keys], strict=True))
     assert len(rows) == 2 and len(set(rows)) == 2
+
+
+def test_option_a_historical_qualifiers_and_null_tokens() -> None:
+    """Option A: parse numeric values while retaining historical qualifiers in adjacent columns."""
+    text = (
+        "id,BOS191505010\n"
+        "version,3\n"
+        "info,attendance,5000c.\n"
+        'start,ruthb001,"Babe Ruth",0,9,\n'
+        "stat,bline,ruthb001,0,9,NA,4,1,2,1,0,1,2i,0,0,0,1,0,0,0,0,0,0\n"
+        "id,BOS191505020\n"
+        "version,3\n"
+        "info,attendance,700?\n"
+        "stat,bline,ruthb001,0,9,1,3,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0\n"
+    )
+    tables = parse_box_text(text)
+
+    # 1. Games: attendance parsed as numeric int32, attendance_qualifier parsed
+    games = tables.games
+    assert games.column("attendance").to_pylist() == [5000, 700]
+    assert games.column("attendance_qualifier").to_pylist() == ["circa", "uncertain"]
+
+    # 2. Starters: blank position parsed as None (NULL), not quarantined
+    starters = tables.starters
+    assert starters.column("position").to_pylist() == [None]
+
+    # 3. Batting: seq 'NA' parsed as None (NULL); rbi '2i' parsed as rbi=2, rbi_qualifier='inferred'
+    batting = tables.batting
+    assert batting.column("seq").to_pylist() == [None, 1]
+    assert batting.column("rbi").to_pylist() == [2, 0]
+    assert batting.column("rbi_qualifier").to_pylist() == ["inferred", None]

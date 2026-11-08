@@ -18,17 +18,27 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Active Checkouts (Locked — Do Not Disturb)
 
-- **Task:** B-261
+- **Task:** B-311
   - **Agent:** Gemini
-  - **Claimed At:** 2026-11-07 22:08 UTC
+  - **Claimed At:** 2026-11-08 04:31 UTC
   - **Locked Areas:**
-    - `openspec/changes/modelling-data-needs/design.md`
-    - `openspec/changes/modelling-data-needs/tasks.md`
-  - **Status:** Recording modeling decisions D1 to D6
+    - `src/baseballpy/database.py`
+    - `src/baseballpy/access.py`
+    - `src/baseballpy/__init__.py`
+    - `tests/test_crosswalk.py`
+  - **Status:** Implementing Crosswalk Suite (game, team, venue views and python helpers)
 
 ---
 
 ## Recent Completed Handoffs
+
+- **2026-11-08 04:33 UTC [blain]:**
+  - **Tasks:** `B-310`.
+  - **Summary:** Committed the B-302 work, fixed the NaN clash, regenerated the project map and coverage matrix
+
+- **2026-11-08 03:33 UTC [blain]:**
+  - **Tasks:** `B-261`.
+  - **Summary:** Closed out modelling-data-needs per owner directive (out of project scope; sabermetric modeling belongs in sabermetricspy)
 
 - **2026-11-08 01:43 UTC [blain]:**
   - **Tasks:** `B-309`.

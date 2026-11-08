@@ -1671,6 +1671,7 @@ Batting and base-running lines of the box-score accounts (stat,bline).
 | `triple` | int16 | yes | — | TODO |
 | `hr` | int16 | yes | — | TODO |
 | `rbi` | int16 | yes | — | TODO |
+| `rbi_qualifier` | string | yes | — | TODO |
 | `sh` | int16 | yes | — | TODO |
 | `sf` | int16 | yes | — | TODO |
 | `hbp` | int16 | yes | — | TODO |
@@ -1713,6 +1714,7 @@ Games of the box-score accounts (id, version, info lines).
 | `umprf` | string | yes | — | TODO |
 | `site` | string | yes | — | TODO |
 | `attendance` | int32 | yes | — | TODO |
+| `attendance_qualifier` | string | yes | — | TODO |
 | `temp` | int16 | yes | — | TODO |
 | `winddir` | string | yes | — | TODO |
 | `windspeed` | int16 | yes | — | TODO |

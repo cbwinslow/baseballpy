@@ -197,10 +197,13 @@ sections 1-13 and `docs/DECISIONS.md`. `tests/test_agent_rails.py` enforces what
 
 0. **Check the coordination board:** read `docs/agents/AGENT_BOARD.md` for active checkouts before
    editing. If a task or files are locked by another agent, do not touch them; pick an unassigned
-   backlog row instead. Claim your task with `baseballpy agent claim <task_id> [--agent <name>] [--files <paths>]`
+   backlog row instead. If there is no task in `docs/agents/BACKLOG.md` or on the board to check out,
+   you MUST create the task/OpenSpec change first, add its row to `BACKLOG.md`, and claim it.
+   Claim your task with `baseballpy agent claim <task_id> [--agent <name>] [--files <paths>]`
    (which enforces 4-hour stale lock checks, updates `AGENT_BOARD.md`, and logs a `TASK_CLAIMED` record to `docs/agents/agent_log.jsonl`).
 1. Find the task: a row in `docs/agents/BACKLOG.md` and, for source work, its card in
-   `docs/agents/tracks/`. No row, no card: open an OpenSpec change and add the row first.
+   `docs/agents/tracks/`. No row, no card: open an OpenSpec change, add the row to `BACKLOG.md`,
+   and claim it on the Agent Board before writing any code.
 2. Read the OpenSpec change (`proposal.md`, `design.md`, `tasks.md`, spec deltas) and the spec in
    `openspec/specs/` for the area. Code or docs edited without a covering change are a defect.
 3. Do the **reuse check** of `docs/agents/TOOLING.md`: name the designated tool that covers what you

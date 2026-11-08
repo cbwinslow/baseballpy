@@ -14,6 +14,7 @@ from typing import Any, TypeVar
 import pyarrow as pa
 import pyarrow.compute as pc
 
+from baseballpy.core.coerce import NULL_TOKENS
 from baseballpy.core.config import QuarantineConfig
 from baseballpy.core.lazy import lazy_singleton
 
@@ -186,7 +187,9 @@ def _normalised(value: Any, target: pa.DataType) -> Any:
     if not text:
         return None
     if pa.types.is_floating(target) and text.lower() in _SPECIAL_FLOATS:
-        return _SPECIAL_FLOATS[text.lower()]
+        return _SPECIAL_FLOATS[text.lower()]  # NaN is a float here, not a missing-value token
+    if text in NULL_TOKENS:
+        return None
     return value
 
 

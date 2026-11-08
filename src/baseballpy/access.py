@@ -15,7 +15,14 @@ import polars as pl
 
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS, DatasetSpec
-from baseballpy.database import DatabaseTooNewError, is_newer_format
+from baseballpy.database import (
+    CROSSWALK_VIEW,
+    GAME_CROSSWALK_VIEW,
+    TEAM_CROSSWALK_VIEW,
+    VENUE_CROSSWALK_VIEW,
+    DatabaseTooNewError,
+    is_newer_format,
+)
 from baseballpy.frames import Backend, scan_dataset, to_dataframe
 from baseballpy.sources import catalog
 
@@ -109,4 +116,56 @@ def sql(
     return to_dataframe(table, backend)
 
 
-__all__ = ["read", "resolve_dataset", "sql"]
+def players(
+    *,
+    backend: Backend = "polars",
+    config: LakeConfig | None = None,
+) -> Any:
+    """Return the unified player crosswalk as a DataFrame.
+
+    Maps player identifiers across Chadwick, MLBAM (Statcast/MLB API), Retrosheet,
+    Baseball-Reference, FanGraphs, and Lahman.
+    """
+    return sql(f"SELECT * FROM {CROSSWALK_VIEW}", backend=backend, config=config)
+
+
+def games(
+    season: int | None = None,
+    *,
+    backend: Backend = "polars",
+    config: LakeConfig | None = None,
+) -> Any:
+    """Return the unified game crosswalk as a DataFrame.
+
+    Maps MLBAM ``game_pk`` to Retrosheet ``retro_game_id``, official game date,
+    home/away team codes and IDs, game number (for doubleheaders), and venue.
+    """
+    where = f" WHERE season = {int(season)}" if season is not None else ""
+    return sql(f"SELECT * FROM {GAME_CROSSWALK_VIEW}{where}", backend=backend, config=config)
+
+
+def teams(
+    *,
+    backend: Backend = "polars",
+    config: LakeConfig | None = None,
+) -> Any:
+    """Return the unified team crosswalk as a DataFrame.
+
+    Maps MLBAM team ID and abbreviation to Retrosheet team code and official name.
+    """
+    return sql(f"SELECT * FROM {TEAM_CROSSWALK_VIEW}", backend=backend, config=config)
+
+
+def venues(
+    *,
+    backend: Backend = "polars",
+    config: LakeConfig | None = None,
+) -> Any:
+    """Return the unified venue crosswalk as a DataFrame.
+
+    Includes MLBAM venue ID, name, coordinates, elevation, roof, turf, and outfield dimensions.
+    """
+    return sql(f"SELECT * FROM {VENUE_CROSSWALK_VIEW}", backend=backend, config=config)
+
+
+__all__ = ["games", "players", "read", "resolve_dataset", "sql", "teams", "venues"]

@@ -7,7 +7,7 @@
   - [x] 2.1 `box_parser.py` (Latin-1 fallback, strict field counts; unknown kinds kept in `box_records`, interim)
   - [ ] 2.3 Typed datasets for the record kinds still kept raw in `box_records` (derive the layouts from the Retrosheet box-score format document once 1.1 provides it; never guess a layout)
   - [x] 2.2 Strict schemas + keys, registry entries, `RetrosheetSource.box_accounts` + `ingest_season` integration (typed: games, starters, batting; lossless: records)
-  - [ ] 2.4 Parse historical qualifiers (Option A: rbi_qualifier, attendance_qualifier, empty strings as null, accept NaN in float columns); drain quarantine
+  - [x] 2.4 Parse historical qualifiers (Option A: rbi_qualifier, attendance_qualifier, empty strings as null, accept NaN in float columns); drain quarantine
 - [x] 3. Tests <!-- id: 3 -->
   - [x] 3.1 Fixtures cut from real `.EBA/.EBN/.EBE/.EBR/.EBF` files (one per record kind and era)
   - [x] 3.2 Strict-layout and unknown-kind tests (Hypothesis deferred with the remaining typed kinds)

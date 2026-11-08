@@ -3,7 +3,9 @@
 from datetime import date, datetime
 from typing import Any
 
-NULL_TOKENS = frozenset({"", "NA", "N/A", "null", "None", "(null)", "<NA>", "NaN", "nan", "--"})
+NULL_TOKENS = frozenset(
+    {"", "NA", "N/A", "null", "None", "(null)", "<NA>", "NaN", "nan", "-", "--"}
+)
 
 
 class CoercionError(ValueError):

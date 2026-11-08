@@ -15,12 +15,14 @@ column names are confirmed against the official document.
 
 import csv
 import json
+import re
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Any
 
 import pyarrow as pa
 
+from baseballpy.core.coerce import NULL_TOKENS
 from baseballpy.core.quarantine import (
     collect_bad_values,
     record_bad_value,
@@ -49,6 +51,7 @@ INFO_COLUMNS: tuple[tuple[str, str], ...] = (
     ("umprf", "string"),
     ("site", "string"),
     ("attendance", "int32"),
+    ("attendance_qualifier", "string"),
     ("temp", "int16"),
     ("winddir", "string"),
     ("windspeed", "int16"),
@@ -65,7 +68,7 @@ INFO_COLUMNS: tuple[tuple[str, str], ...] = (
     ("gwrbi", "string"),
     ("oscorer", "string"),
 )
-_SENTINELS = frozenset({"", "unknown"})
+_SENTINELS = frozenset({"", "unknown"}) | NULL_TOKENS
 
 BOX_GAMES_SCHEMA = schema_from_columns(
     [("game_id", "string"), ("version", "int16"), *INFO_COLUMNS, ("source_file", "string")]
@@ -81,7 +84,26 @@ BOX_STARTERS_SCHEMA = schema_from_columns(
     ],
     extras=False,
 )
-_BLINE_TYPES = [("ab", "int16")] + [(c, "int16") for c in BLINE_STATS[1:]]
+_BLINE_COLUMNS: list[tuple[str, str]] = [
+    ("ab", "int16"),
+    ("r", "int16"),
+    ("h", "int16"),
+    ("double", "int16"),
+    ("triple", "int16"),
+    ("hr", "int16"),
+    ("rbi", "int16"),
+    ("rbi_qualifier", "string"),
+    ("sh", "int16"),
+    ("sf", "int16"),
+    ("hbp", "int16"),
+    ("bb", "int16"),
+    ("ibb", "int16"),
+    ("k", "int16"),
+    ("sb", "int16"),
+    ("cs", "int16"),
+    ("gidp", "int16"),
+    ("interference", "int16"),
+]
 BOX_BATTING_SCHEMA = schema_from_columns(
     [
         ("game_id", "string"),
@@ -89,7 +111,7 @@ BOX_BATTING_SCHEMA = schema_from_columns(
         ("side", "int8"),
         ("position", "int8"),
         ("seq", "int8"),
-        *_BLINE_TYPES,
+        *_BLINE_COLUMNS,
     ],
     extras=False,
 )
@@ -166,18 +188,54 @@ def _info_value(kind: str, value: str) -> Any:
     return value
 
 
+def _parse_qualifier(val: Any) -> tuple[Any, str | None]:
+    """Parse an integer value with optional historical qualifier (e.g. '2i' -> (2, 'inferred'))."""
+    if val is None:
+        return None, None
+    if isinstance(val, int):
+        return val, None
+    text = str(val).strip()
+    if not text or text in _SENTINELS:
+        return None, None
+    m = re.match(r"^(-?\d+)(.*)$", text)
+    if m:
+        num = int(m.group(1))
+        suffix = m.group(2).strip()
+        if suffix == "i":
+            qualifier = "inferred"
+        elif suffix in ("c.", "c", "circa"):
+            qualifier = "circa"
+        elif suffix in ("?", "uncertain"):
+            qualifier = "uncertain"
+        elif suffix in ("est", "est."):
+            qualifier = "estimated"
+        elif suffix:
+            qualifier = suffix
+        else:
+            qualifier = None
+        return num, qualifier
+    return val, None
+
+
 def _ints(values: list[str], number: int, what: str) -> list[Any]:
-    """The integers in ``values``; a non-integer is kept as text so the column build quarantines it.
+    """The integers in ``values``; sentinels/null tokens become None, unparseable text is kept for safe_array.
 
     Old box accounts hold stray cells such as ``2i``, ``NA`` or an empty field in numeric
-    positions; they become NULL in the table and a quarantine entry, never a failed season.
+    positions; null tokens become NULL in the table without failing the season.
     """
     out: list[Any] = []
     for v in values:
+        if v is None:
+            out.append(None)
+            continue
+        text = str(v).strip()
+        if not text or text in _SENTINELS:
+            out.append(None)
+            continue
         try:
-            out.append(int(v))
+            out.append(int(text))
         except ValueError:
-            out.append(v)
+            out.append(text)
     return out
 
 
@@ -269,7 +327,15 @@ def _read_record(
     elif kind == "stat" and len(parts) > 1 and parts[1] == "bline":
         if len(parts) != 23:
             raise BoxParseError(f"line {number}: bline record has {len(parts)} fields")
-        batting.append([current.game_id, parts[2], *_ints(parts[3:], number, "bline")])
+        rbi_num, rbi_qual = _parse_qualifier(parts[12])
+        batting_row = (
+            [current.game_id, parts[2]]
+            + _ints(parts[3:6], number, "bline")
+            + _ints(parts[6:12], number, "bline")
+            + [rbi_num, rbi_qual]
+            + _ints(parts[13:], number, "bline")
+        )
+        batting.append(batting_row)
     else:
         typed = kind in ("stat", "event") and len(parts) > 1
         label = f"{kind},{parts[1]}" if typed else kind
@@ -304,8 +370,18 @@ def _games_table(games: list[_Game], source_file: str) -> pa.Table:
             "version": g.version,
             "source_file": source_file,
         }
+        att_num: Any = None
+        att_qual: str | None = None
+        if "attendance" in g.info:
+            att_num, att_qual = _parse_qualifier(g.info["attendance"])
+
         for key, kind in INFO_COLUMNS:
-            row[key] = _info_value(kind, g.info[key]) if key in g.info else None
+            if key == "attendance":
+                row["attendance"] = att_num
+            elif key == "attendance_qualifier":
+                row["attendance_qualifier"] = att_qual
+            else:
+                row[key] = _info_value(kind, g.info[key]) if key in g.info else None
         extra = {k: v for k, v in g.info.items() if k not in known}
         row["_extras"] = json.dumps(extra) if extra else None
         game_rows.append(row)

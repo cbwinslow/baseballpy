@@ -454,11 +454,11 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-260 | modelling-data-needs 1.1: verify the "have" column against the lake | DONE | row counts and gaps per dataset verified against lake and written into design.md |
-| B-261 | `modelling-data-needs 1.2`: owner grilling, decisions D1 to D6 | OPEN | each decision answered and recorded |
-| B-262 | `modelling-data-needs 1.3`: open one change per missing source | OPEN | changes exist and are in the backlog |
-| B-263 | `modelling-data-needs 1.4`: as-of rule as a spec requirement with a test | OPEN | test fails if a feature uses data after first pitch |
-| B-265 | `modelling-data-needs 1.5`: sweep the feed per season for the first pregame stamp | OPEN | safe seasons written into design.md |
-| B-264 | `modelling-data-needs 1.6`: spec, ADR, gates, archive | OPEN | change archived |
+| B-261 | modelling-data-needs 1.2: owner grilling, decisions D1 to D6 | DONE | closed out per owner directive (out of project scope; belongs in sabermetricspy) |
+| B-262 | modelling-data-needs 1.3: open one change per missing source | DONE | closed out per owner directive |
+| B-263 | modelling-data-needs 1.4: as-of rule as a spec requirement with a test | DONE | closed out per owner directive |
+| B-265 | modelling-data-needs 1.5: sweep the feed per season for the first pregame stamp | DONE | closed out per owner directive |
+| B-264 | modelling-data-needs 1.6: spec, ADR, gates, archive | DONE | change archived |
 
 ## AC. Market sources (`market-sources`)
 
@@ -518,3 +518,11 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-307 | `lake-schema-evolution 1.6`: gates, merge the spec delta, archive the change | OPEN (after B-306) | change archived, `openspec validate --specs` green |
 | B-308 | mlb-game-memory: review and finish the B-301 fix: narrow exceptions, no silent fallback, spec delta, ADR 88, memory measurement | DONE | tests/test_atomic.py (8); 50,000-entry manifest saves in 0.08 s with about 15 MB extra memory |
 | B-309 | mlb-stats-route-406-and-deep-pools 3.4: type the fields still landing in `_extras` for the game feed, schedule_postseason, draft_prospects, team_affiliates and rosters (sampled from games that carry them) | DONE (review details and injuryType typed; rare fields without a sampled carrier and the 406 stats_* stay in `_extras`, listed in design.md) | `schema_drift` keys seen in the logs have typed columns, except the stats_* datasets blocked by the 406 (B-30) |
+| B-310 | repo-hygiene-and-docs-sync: make main's CI green again: commit the finished B-302 work, fix the NaN-versus-null-token clash it caused, regenerate the project map and coverage matrix | DONE | 1501 tests pass locally; CI result checked after the push |
+
+## AF. Crosswalk suite (`crosswalk-suite`)
+
+| ID | Task | Status | Done when |
+|---|---|---|---|
+| B-311 | `crosswalk-suite 1.1`: unified game, team, venue crosswalk views and python helpers (bb.games, bb.teams, bb.venues, bb.players) | OPEN | views in DuckDB and python accessors verified with tests in test_crosswalk.py |
+

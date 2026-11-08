@@ -209,7 +209,7 @@ def agent_claim(
     escaped_id = re.escape(task_id)
     existing_pattern = re.compile(
         rf"- \*\*Task:\*\*[^\n]*{escaped_id}[^\n]*\n"
-        r"(?:  - [^\n]+\n)*",
+        r"(?: {2,}[^\n]+\n)*",
         re.MULTILINE,
     )
     match = existing_pattern.search(text)
@@ -316,7 +316,7 @@ def agent_release(task_id: str, summary: str, agent: str | None) -> None:
     escaped_id = re.escape(task_id)
     block_pattern = re.compile(
         rf"- \*\*Task:\*\*[^\n]*{escaped_id}[^\n]*\n"
-        r"(?:  - [^\n]+\n)*\n*",
+        r"(?: {2,}[^\n]+\n)*\n*",
         re.MULTILINE,
     )
     match = block_pattern.search(text)
