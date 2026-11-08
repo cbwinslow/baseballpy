@@ -845,3 +845,20 @@ def test_datasets_cut_from_one_game_url_fetch_it_once(tmp_path: Path) -> None:
     assert route.call_count == 1
     for name in names:
         assert generic.read_endpoint(name, season=2024, config=lake).num_rows >= 0
+
+
+@respx.mock
+def test_a_cancelled_game_has_no_win_probability_and_that_is_not_a_failure(tmp_path: Path) -> None:
+    """The provider answers 404 for a game that never had plays; the schedule still lists it as
+    final. It is recorded as empty and counted, and a 404 on the boxscore still fails loudly."""
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    gone = respx.get(f"{MLB_BASE_URL}/v1/game/747861/winProbability").mock(
+        return_value=httpx.Response(404)
+    )
+    ctx = Context(season=2024, game_pks=(747861,))
+    first = extractor.ingest("game_win_probability", ctx)
+    assert (first.requests, first.missing, first.errors) == (1, 1, ())
+    again = extractor.ingest("game_win_probability", ctx)
+    assert (again.cached, gone.call_count) == (1, 1)  # not asked again
+    assert BY_NAME["game_boxscore_info"].tolerate_missing is False

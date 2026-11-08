@@ -957,6 +957,9 @@ ENDPOINTS: tuple[MlbEndpoint, ...] = (
         "Win probability after every play.",
         ("game_pk", "atBatIndex"),
         "game",
+        # the provider answers 404 for a game that never had plays (a cancelled game, which
+        # `schedule_hydrated` still lists as final): nothing to store, not a failure (ADR 91)
+        tolerate_missing=True,
     ),
     _ep(
         "game_play_by_play",
