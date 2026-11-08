@@ -9,8 +9,10 @@ memory. Each row carries ``_raw_sha256``, the sha256 of the response it was made
 Open files are written as ``processed/<source>/<dataset>/[season=Y/]_open/seg-NNNN.parquet.part``: in
 the dataset's own folder (a rename never crosses a disk), ending in ``.part`` and under an
 underscore folder, so readers that match ``seg-*.parquet`` or ``*.parquet`` never see them.
-Renaming them into place and the commit line belong to task 3.3 (B-362); until then ``commit`` and
-``refresh`` of :class:`SegmentWriter` raise ``NotImplementedError``.
+``SegmentWriter.commit`` closes the files, renames the raw segment and every dataset file into place,
+and only then appends the commit line (the line is the commit). On start, :class:`SegmentWriter`
+deletes every ``seg-*.parquet`` and ``.part`` file that no line names, replays the journal through
+``normalize`` and carries on. ``refresh`` raises ``NotImplementedError`` until task 3.4 (B-363).
 """
 
 from collections.abc import Callable, Mapping, Sequence
@@ -22,8 +24,14 @@ import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import _replace_with_retry
 from baseballpy.core.config import LakeConfig
-from baseballpy.core.responselog import OPEN_DIRNAME, Response, ResponseLog
-from baseballpy.core.stores import PARQUET_COMPRESSION
+from baseballpy.core.responselog import (
+    OPEN_DIRNAME,
+    Response,
+    ResponseLog,
+    append_commit_line,
+    file_sha256,
+)
+from baseballpy.core.stores import PARQUET_COMPRESSION, schema_fingerprint
 
 LINEAGE_COLUMN = "_raw_sha256"
 #: units (games) per row group of a processed segment file; memory holds about this many units of rows
@@ -52,8 +60,8 @@ def _replace(source: Path, target: Path) -> None:
 
 
 def _append_commit_line(path: Path, line: Mapping[str, object]) -> None:
-    """Append one JSON line to ``segments.json`` and flush it (task 3.3, B-362); a crash point of the tests."""
-    raise NotImplementedError("commit line: task 3.3 (B-362)")
+    """Append the commit line (the moment the segment counts); a crash point of the tests."""
+    append_commit_line(path, line)
 
 
 class ProcessedSegmentFiles:
@@ -78,6 +86,16 @@ class ProcessedSegmentFiles:
         self._pending_units = 0
         self._writers: dict[str, pq.ParquetWriter] = {}
         self._rows: dict[str, int] = {}
+        self._seen: set[str] = set()
+
+    @property
+    def segment(self) -> int:
+        """The number of the segment these files belong to."""
+        return self._segment
+
+    def datasets(self) -> frozenset[str]:
+        """Every dataset that was given rows, including those that had none (they get no file)."""
+        return frozenset(self._seen)
 
     def final_path(self, dataset: str) -> Path:
         """Where the file of ``dataset`` goes when the segment is committed."""
@@ -92,6 +110,7 @@ class ProcessedSegmentFiles:
     def add(self, rows: Mapping[str, DatasetRows]) -> None:
         """Take the rows of one unit; write a row group when ``row_group_units`` units are waiting."""
         for dataset, item in rows.items():
+            self._seen.add(dataset)
             if LINEAGE_COLUMN in item.table.column_names:
                 raise ValueError(f"{dataset}: the table already has a {LINEAGE_COLUMN} column")
             if item.table.num_rows == 0:
@@ -147,10 +166,10 @@ class ProcessedSegmentFiles:
 
 
 class SegmentWriter:
-    """The response log plus the processed files of one source and season (task 3.2 part).
+    """The response log plus the processed files of one source and season.
 
     ``add_unit`` journals the responses, parses them with ``normalize`` and hands the rows to the open
-    files. ``commit`` and ``refresh`` follow in tasks 3.3 and 3.4, the writer lock in task 3.5.
+    files; ``commit`` makes the segment count. The writer lock is added in task 3.5, ``refresh`` in 3.4.
     """
 
     def __init__(
@@ -162,11 +181,46 @@ class SegmentWriter:
         *,
         row_group_units: int = ROW_GROUP_UNITS,
     ) -> None:
-        self.log = ResponseLog(config, source, season)
+        self.config = config
+        self.source = source
+        self.season = season
+        self._row_group_units = row_group_units
         self._normalize = normalize
-        self._files = ProcessedSegmentFiles(
-            config, source, season, self.log.next_segment(), row_group_units
+        self.log = ResponseLog(config, source, season)
+        self._delete_unnamed_files()
+        self._files = self._new_files()
+        for unit_id, responses in self.log.open_units().items():  # the journal, parsed again
+            self._files.add(self._normalize(unit_id, responses))
+
+    def _new_files(self) -> ProcessedSegmentFiles:
+        return ProcessedSegmentFiles(
+            self.config, self.source, self.season, self.log.next_segment(), self._row_group_units
         )
+
+    def _dataset_folders(self) -> list[Path]:
+        """The season folder of every dataset of this source that exists on disk."""
+        base = self.config.processed_root / self.source
+        if not base.is_dir():
+            return []
+        folders = [
+            d if self.season is None else d / f"season={self.season}" for d in base.iterdir()
+        ]
+        return [folder for folder in folders if folder.is_dir()]
+
+    def _delete_unnamed_files(self) -> None:
+        """Start-up: delete every segment file and ``.part`` file that no commit line names."""
+        named = {
+            (dataset, info["file"])
+            for line in self.log.lines
+            for dataset, info in line.get("datasets", {}).items()
+        }
+        for folder in self._dataset_folders():
+            dataset = folder.parent.name if self.season is not None else folder.name
+            for path in folder.glob("seg-*.parquet"):
+                if (dataset, path.name) not in named:
+                    path.unlink(missing_ok=True)
+            for path in (folder / OPEN_DIRNAME).glob("*.part"):
+                path.unlink(missing_ok=True)
 
     def stored(self) -> frozenset[str]:
         """The ids of the units that are committed or in the journal."""
@@ -183,8 +237,38 @@ class SegmentWriter:
         self._files.add(rows)
 
     def commit(self) -> int | None:
-        """Rename the open files into place and append the commit line (task 3.3, B-362)."""
-        raise NotImplementedError("processed segment commit: task 3.3 (B-362)")
+        """Close the segment: rename every file into place, then append the commit line.
+
+        Returns the segment number, or ``None`` when no unit is open. A crash before the line leaves
+        files no line names; the next start deletes them and replays the journal.
+        """
+        files = self._files
+        if not self.log.open_units():
+            return None
+        counts = files.close()
+        line = self.log.stage_raw()
+        if line is None:  # pragma: no cover - open_units() was not empty
+            return None
+        datasets: dict[str, dict[str, object]] = {}
+        for dataset in sorted(files.datasets()):
+            if dataset not in counts:
+                datasets[dataset] = {"file": None, "rows": 0}
+                continue
+            part, final = files.part_path(dataset), files.final_path(dataset)
+            digest = file_sha256(part)
+            schema = schema_fingerprint(pq.read_schema(part))
+            _replace(part, final)
+            datasets[dataset] = {
+                "file": final.name,
+                "rows": counts[dataset],
+                "sha256": digest,
+                "schema_sha256": schema,
+            }
+        line["datasets"] = datasets
+        _append_commit_line(self.log.commit_path, line)
+        self.log.finish_commit(line)
+        self._files = self._new_files()
+        return int(line["segment"])
 
     def refresh(self, segment: int, units: Mapping[str, Sequence[Response]]) -> None:
         """Rewrite a committed segment under the same file names (task 3.4, B-363)."""

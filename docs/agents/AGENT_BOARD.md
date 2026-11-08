@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-08 23:49 UTC [blain]:**
+  - **Tasks:** `B-362`.
+  - **Summary:** segment commit: renames, commit line, start-up cleanup and journal replay; 5 of 7 segment tests pass
+
 - **2026-11-08 22:53 UTC [blain]:**
   - **Tasks:** `B-361`.
   - **Summary:** ProcessedSegmentFiles (50-unit row groups, _raw_sha256, .part in _open) and SegmentWriter skeleton built

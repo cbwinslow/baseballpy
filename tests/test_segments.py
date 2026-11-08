@@ -1,9 +1,9 @@
 """Processed segments (ADR 95, 96): one Parquet file per dataset per segment, counted only by a commit line.
 
-Written first (task 3.1, B-360). Task 3.2 (B-361) built the open files (``ProcessedSegmentFiles``);
-tasks 3.3 to 3.5 build ``commit``, ``refresh`` and the writer lock. Until then every test is an expected
-failure that must stop at one of those (``NotImplementedError``). Remove the ``xfail`` marks as the
-tests start to pass; a strict ``xfail`` that passes fails the run.
+Written first (task 3.1, B-360). Task 3.2 (B-361) built the open files (``ProcessedSegmentFiles``) and
+task 3.3 (B-362) the commit, start-up clean-up and journal replay. The tests of ``refresh`` (task 3.4)
+and of the writer lock (task 3.5) are expected failures until those tasks; remove their ``xfail`` marks
+then (a strict ``xfail`` that passes fails the run).
 
 The interface these tests fix (it extends ``ResponseLog`` of tasks 2.x):
 
@@ -41,21 +41,13 @@ from baseballpy.core.responselog import Response
 NOT_BUILT = pytest.mark.xfail(
     strict=True,
     raises=(ImportError, NotImplementedError),
-    reason="B-362..B-364: SegmentWriter.commit, refresh and the writer lock are not built yet",
+    reason="B-363: SegmentWriter.refresh is not built yet",
 )
 
 LOCK_NOT_BUILT = pytest.mark.xfail(
     strict=True,
     raises=(ImportError, NotImplementedError, pytest.fail.Exception),
     reason="B-364: the writer lock is not built yet (the second writer is not refused)",
-)
-
-#: the two crash tests catch ``RuntimeError`` (``NotImplementedError`` is one), so until the commit exists
-#: they stop at an assertion instead
-CRASH_NOT_BUILT = pytest.mark.xfail(
-    strict=True,
-    raises=(ImportError, NotImplementedError, AssertionError, pytest.fail.Exception),
-    reason="B-362: the commit and its crash points are not built yet",
 )
 
 FETCHED_AT = "2026-11-08T12:00:00+00:00"
@@ -144,7 +136,6 @@ def _rows(config: LakeConfig, dataset: str) -> list[dict[str, Any]]:
     return [row for path in _files(config, dataset) for row in pq.read_table(path).to_pylist()]
 
 
-@NOT_BUILT
 def test_a_segment_writes_one_file_per_dataset_in_bounded_row_groups(tmp_path: Path) -> None:
     config = LakeConfig(home=tmp_path)
     writer = _writer(tmp_path, row_group_units=50)
@@ -164,7 +155,6 @@ def test_a_segment_writes_one_file_per_dataset_in_bounded_row_groups(tmp_path: P
     assert line["datasets"]["plays"]["rows"] == 360 and line["datasets"]["empty"]["rows"] == 0
 
 
-@NOT_BUILT
 def test_every_processed_row_names_its_response(tmp_path: Path) -> None:
     config = LakeConfig(home=tmp_path)
     writer = _writer(tmp_path)
@@ -179,7 +169,6 @@ def test_every_processed_row_names_its_response(tmp_path: Path) -> None:
         assert by_sha[row["_raw_sha256"]].endswith(f"/game/{row['game_id']}/boxscore")
 
 
-@CRASH_NOT_BUILT
 def test_a_game_counts_only_after_its_commit_line(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -205,7 +194,6 @@ def test_a_game_counts_only_after_its_commit_line(
     assert again.committed_units() == frozenset(_games(3))
 
 
-@CRASH_NOT_BUILT
 def test_start_up_deletes_uncommitted_files_and_replays_the_journal(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -232,7 +220,6 @@ def test_start_up_deletes_uncommitted_files_and_replays_the_journal(
     assert len(_rows(config, "plays")) == 9 and len(_rows(config, "box")) == 3, "every game once"
 
 
-@NOT_BUILT
 def test_a_torn_commit_line_is_ignored(tmp_path: Path) -> None:
     config = LakeConfig(home=tmp_path)
     first = _writer(tmp_path)
@@ -325,3 +312,27 @@ def test_a_refresh_replaces_a_segment_under_the_same_name(
     restarted = _writer(tmp_path)  # the next start finishes the stopped refresh
     assert len(_rows(config, "plays")) == 14 and len(_rows(config, "box")) == 2
     assert restarted.committed_units() == frozenset(games)
+
+
+def test_a_journal_left_after_its_commit_line_is_not_committed_twice(tmp_path: Path) -> None:
+    """The run died after the line was written but before the journal was deleted."""
+    config = LakeConfig(home=tmp_path)
+    writer = _writer(tmp_path)
+    _add(writer, _games(2))
+    journal = (_raw_dir(config) / "_open" / "journal.zst").read_bytes()
+    assert writer.commit() == 1
+    release_all()
+    (_raw_dir(config) / "_open").mkdir(exist_ok=True)
+    (_raw_dir(config) / "_open" / "journal.zst").write_bytes(journal)
+
+    again = _writer(tmp_path)
+    assert again.committed_units() == frozenset(_games(2))
+    assert again.commit() is None, "nothing is open: the leftover journal held only committed games"
+    assert not (_raw_dir(config) / "_open" / "journal.zst").exists()
+    assert len(_rows(config, "box")) == 2 and [line["segment"] for line in _lines(config)] == [1]
+
+
+def test_committing_nothing_writes_nothing(tmp_path: Path) -> None:
+    config = LakeConfig(home=tmp_path)
+    assert _writer(tmp_path).commit() is None
+    assert _lines(config) == [] and not list(tmp_path.rglob("*.parquet"))

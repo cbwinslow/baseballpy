@@ -26,7 +26,7 @@ import json
 import os
 import struct
 import zlib
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from contextlib import suppress
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -222,12 +222,22 @@ def _segment_name(segment: int) -> str:
     return f"seg-{segment:04d}.parquet"
 
 
-def _file_sha256(path: Path) -> str:
+def file_sha256(path: Path) -> str:
+    """The sha256 of a file, read in blocks."""
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         while block := handle.read(1024 * 1024):
             digest.update(block)
     return digest.hexdigest()
+
+
+def append_commit_line(path: Path, line: Mapping[str, object]) -> None:
+    """Append one JSON line to ``segments.json`` and flush it to disk; this is the moment a segment counts."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("ab") as handle:
+        handle.write(json.dumps(line, separators=(",", ":")).encode("utf-8") + b"\n")
+        handle.flush()
+        os.fsync(handle.fileno())
 
 
 def read_commit_lines(path: Path) -> tuple[list[dict[str, Any]], int]:
@@ -305,12 +315,27 @@ class ResponseLog:
                     with suppress(OSError):
                         leftover.unlink()
         units, good = read_journal(self.journal_path)
-        self._units = units
-        if self.journal_path.exists() and self.journal_path.stat().st_size != good:
+        # a crash after the commit line but before the journal was deleted leaves units a line already names
+        self._units = {u: r for u, r in units.items() if u not in self._committed}
+        if len(self._units) != len(units):
+            if self._units:
+                self._rewrite_journal()
+            else:
+                self.journal_path.unlink(missing_ok=True)
+        elif self.journal_path.exists() and self.journal_path.stat().st_size != good:
             with self.journal_path.open("r+b") as handle:
                 handle.truncate(good)
                 handle.flush()
                 os.fsync(handle.fileno())
+
+    def _rewrite_journal(self) -> None:
+        """Write the open units to a fresh journal (atomic: the old one is replaced whole)."""
+        with atomic_write(self.journal_path) as part:
+            part.write_bytes(b"".join(encode_record(u, r) for u, r in self._units.items()))
+
+    def open_units(self) -> dict[str, list[Response]]:
+        """The units that are journalled and not yet committed (a copy)."""
+        return dict(self._units)
 
     def stored(self) -> frozenset[str]:
         """The ids of the units that are committed or in the journal."""
@@ -341,6 +366,20 @@ class ResponseLog:
         journal is deleted last. A crash anywhere leaves either nothing counted (the journal replays)
         or everything counted (a leftover journal holds only units a line already names).
         """
+        line = self.stage_raw()
+        if line is None:
+            return None
+        append_commit_line(self.commit_path, line)
+        self.finish_commit(line)
+        return int(line["segment"])
+
+    def stage_raw(self) -> dict[str, Any] | None:
+        """Write the open units as the raw segment file, in place, and return its commit line.
+
+        The line is not written: the caller adds what else belongs to the segment (the processed
+        files) and then calls :func:`append_commit_line` and :meth:`finish_commit`. ``None`` when no
+        unit is open.
+        """
         if not self._units:
             return None
         segment = self.next_segment()
@@ -348,27 +387,30 @@ class ResponseLog:
         path = self.season_dir / name
         table = self._table()
         RawSegmentSink().write(table, str(path))
-        line = {
+        return {
             "segment": segment,
             "units": sorted(self._units),
             "raw": name,
-            "files": {name: {"sha256": _file_sha256(path), "rows": table.num_rows}},
+            "files": {name: {"sha256": file_sha256(path), "rows": table.num_rows}},
             "schema_sha256": {"raw": schema_fingerprint(RAW_SCHEMA)},
             "committed_at": datetime.now(UTC).isoformat(),
         }
-        with self.commit_path.open("ab") as handle:
-            handle.write(json.dumps(line, separators=(",", ":")).encode("utf-8") + b"\n")
-            handle.flush()
-            os.fsync(handle.fileno())
+
+    def finish_commit(self, line: dict[str, Any]) -> None:
+        """After the line is on disk: count the units as stored and delete the journal."""
         self._lines.append(line)
-        for unit in self._units:
-            self._committed[unit] = name
+        for unit in line["units"]:
+            self._committed[unit] = str(line["raw"])
         self._units = {}
         with suppress(FileNotFoundError):
             self.journal_path.unlink()
         with suppress(OSError):
             self.journal_path.parent.rmdir()
-        return segment
+
+    @property
+    def lines(self) -> list[dict[str, Any]]:
+        """The commit lines read so far (a copy)."""
+        return list(self._lines)
 
     def _table(self) -> pa.Table:
         """One row per response of every open unit."""

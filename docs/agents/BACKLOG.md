@@ -600,7 +600,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-359 | response-log-segments 2.4: measure zstd 9 against 19 and the page size on 2024 samples | DONE | bytes and seconds in design.md section 3 replace the guesses |
 | B-360 | response-log-segments 3.1: tests first: tests/test_segments.py (row groups, lineage, commit line, start-up, torn line, second writer, refresh) | DONE | after B-358; the tests exist and fail for the right reason |
 | B-361 | response-log-segments 3.2: processed segment writer (ParquetWriter, 50-game row groups, `_raw_sha256`, `.part` names in `_open/`) | DONE | after B-360; its tests pass |
-| B-362 | `response-log-segments 3.3`: commit: renames with retry, one line in segments.json, start-up clean-up and journal replay | READY | after B-361; its tests pass |
+| B-362 | response-log-segments 3.3: commit: renames with retry, one line in segments.json, start-up clean-up and journal replay | DONE | after B-361; its tests pass |
 | B-363 | `response-log-segments 3.4`: refresh of a committed segment under the same name | READY | after B-362; refresh test passes |
 | B-364 | `response-log-segments 3.5`: one writer per source and season through core/hostlock.py | READY | after B-362; second-writer test passes |
 | B-365 | `response-log-segments 3.6`: cache check verifies segment files and response sha256s | READY | after B-362; tests/test_segments.py::test_cache_check_finds_a_damaged_segment passes |
