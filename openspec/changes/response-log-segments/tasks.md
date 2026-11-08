@@ -6,8 +6,8 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 7, and one commit is made. Rollback point: git tag `pre-response-log`; the old layout stays readable until group 7.
 
 ## 1. Specs, decisions, backlog
-- [ ] 1.1 this change: proposal, design, spec deltas, ADRs 95-97, backlog rows; the drafts `shared-raw-bytes` and `batched-chunk-writes` point here; `openspec validate response-log-segments --strict` passes; `scripts/project_map.py` regenerated; gates green
-- [ ] 1.2 web search for prior art (WARC, DuckLake, how pybaseball/baseballr/sportsdataverse keep raw responses) and record it in design.md section 5
+- [x] 1.1 this change: proposal, design, spec deltas, ADRs 95-97, backlog rows; the drafts `shared-raw-bytes` and `batched-chunk-writes` point here; `openspec validate response-log-segments --strict` passes; `scripts/project_map.py` regenerated; gates green
+- [x] 1.2 web search for prior art (WARC, DuckLake, how pybaseball/baseballr/sportsdataverse keep raw responses) and record it in design.md section 5
 - [ ] 1.3 find out why 177 of about 83,000 2024 feed files differ between the 4 datasets (which bytes differ, fetch times) and record it in design.md before group 5
 
 ## 2. Response log: journal and raw segment writer
@@ -26,7 +26,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [ ] 3.7 add `_raw_sha256` without making old chunks stale (left out of the schema digest; old files read it as empty); ADR amendment if built another way
 
 ## 4. MLB per-game path on segments
-- [ ] 4.1 tests first: `tests/test_mlb_segments.py::test_each_game_url_is_fetched_and_parsed_once_for_all_its_datasets`, `::test_segment_rows_equal_the_old_per_game_rows`; `tests/test_segment_views.py::test_views_and_read_see_a_segment_as_soon_as_it_commits`, `::test_open_and_legacy_folders_are_never_read`, `::test_old_part_files_and_segments_are_read_together`
+- [ ] 4.1 tests first: `tests/test_mlb_segments.py::test_each_game_url_is_fetched_and_parsed_once_for_all_its_datasets`, `::test_segment_rows_equal_the_old_per_game_rows`; `tests/test_segment_views.py::test_views_and_read_see_a_segment_as_soon_as_it_commits`, `::test_open_and_legacy_folders_are_never_read`, `tests/test_mlb_segments.py::test_an_empty_or_failed_response_never_marks_a_game_complete` (pybaseball's cache keeps empty results for future dates), `::test_old_part_files_and_segments_are_read_together`
 - [ ] 4.2 the endpoint registry says which datasets come from which URL; the per-game path writes through the response log and segments
 - [ ] 4.3 views and `read` list `season=*/*.parquet` (segments beside `part-*` and `compact-*`, never `_open/` or `_legacy/`)
 - [ ] 4.4 run one real season: peak memory, seconds per game, files per dataset; adjust 250 games / 10 minutes / 50 per row group; record in design.md

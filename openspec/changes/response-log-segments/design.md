@@ -96,12 +96,36 @@ every 250 games or 10 minutes (to test):
 
 ## 5. Prior art
 
-Not a fresh web search (that is task 1.2); from what is known and should be checked:
-- Web archives (the WARC format, ISO 28500) store each HTTP response once as a record with its digest in large
-  compressed files: the same idea as the raw segment.
-- DuckLake keeps a catalog of Parquet files in a database and can inline small changes; it would replace
-  `segments.json`. Not chosen now (ADR 97), revisit before the live feed.
-- pybaseball and baseballr cache raw responses as one file per request; that is today's layout.
+Web search done 2026-11-08 (task 1.2, standard mode, three searches; sources are mostly secondary pages, so the
+points below are what they say, not first-hand checks of the specs):
+- **WARC (ISO 28500, web archives).** One record per HTTP response (header block + body), written into large
+  files, each record compressed on its own (one gzip stream per record, joined end to end) so a single record can
+  be read without the rest. Identical content is recorded once as a "revisit" record that points at the first
+  record by digest; the format does not dedupe by itself, the writer must look up the digest. This is our raw
+  segment idea (one row per response, digest, big file). Differences: we use Parquet rows with zstd so DuckDB can
+  query the metadata, and one shared row serves all 13 datasets (the same job as a revisit record, without a
+  second record). Per-record compression is also why WARC dedupes badly inside the file; compressing a whole row
+  group together (our measurement: 2.29 MB vs 4.05 MB for 30 games) is the better fit.
+- **DuckLake (DuckDB Labs; 1.0 announced).** Data stays in Parquet, metadata lives in a SQL database. "Data
+  inlining" keeps small inserts (default limit 10 rows per insert) in the catalog and flushes them to Parquet
+  later, so small writes do not create tiny files. That is exactly our live-feed problem. Reported caveats: the
+  big speed claims come from DuckDB Labs or articles repeating them, not independent tests, and one source says
+  writes go through a single DuckDB process, the same limit as our one-writer rule. It needs a catalog database
+  file, and only DuckDB reads the table correctly. Not chosen now (ADR 97). Revisit before the live feed, and
+  measure its inlining then. Our `segments.json` stays plain files in the meantime.
+- **pybaseball.** Its cache is off by default (so it does not use the user's disk without asking), stores Parquet
+  or CSV, and lives in `~/.pybaseball/cache` (override with `PYBASEBALL_CACHE`). It caches the parsed result of a
+  call, not the raw response, and a known problem is that a call for a future date caches an empty result. Lesson
+  for us: never commit an empty or failed response as a finished game (task 4.x checks that a game is complete
+  only when all its URLs returned data). baseballr and the SportsDataverse packages: the search found nothing
+  about raw-response caching; the earlier guess in this file ("one file per request") was not confirmed and is
+  withdrawn.
+- **Conclusion.** Nothing found contradicts the design (large compressed files, one record per response with a
+  digest, plain Parquet for typed data). The only new design input is the pybaseball empty-result lesson, added as
+  a test requirement in task 4.1.
+
+Sources: motherduck.com/blog/ducklake-architecture-deep-dive, ducklake.select (data inlining, 2026-04-02),
+loc.gov/preservation/digital/formats/fdd/fdd000236.shtml (WARC), pypi.org/project/warcio, pypi.org/project/pybaseball.
 
 ## 6. Rollback
 

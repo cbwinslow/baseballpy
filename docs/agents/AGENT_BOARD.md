@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-08 21:29 UTC [blain]:**
+  - **Tasks:** `B-354`.
+  - **Summary:** prior-art search recorded in response-log-segments design section 5
+
 - **2026-11-08 21:25 UTC [blain]:**
   - **Tasks:** `B-353`.
   - **Summary:** OpenSpec change response-log-segments, ADR 95-97, backlog B-353..B-391

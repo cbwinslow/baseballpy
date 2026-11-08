@@ -591,8 +591,8 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 
 | ID | Task | Status | Done when |
 |---|---|---|---|
-| B-353 | `response-log-segments 1.1`: this change: proposal, design, spec deltas, ADRs 95-97, backlog rows, drafts pointed here | READY | `openspec validate response-log-segments --strict` valid; project map regenerated; gates green; committed |
-| B-354 | `response-log-segments 1.2`: web search for prior art (WARC, DuckLake, pybaseball/baseballr raw caching) | READY | findings in design.md section 5 |
+| B-353 | response-log-segments 1.1: this change: proposal, design, spec deltas, ADRs 95-97, backlog rows, drafts pointed here | DONE | `openspec validate response-log-segments --strict` valid; project map regenerated; gates green; committed |
+| B-354 | response-log-segments 1.2: web search for prior art (WARC, DuckLake, pybaseball/baseballr raw caching) | DONE | findings in design.md section 5 |
 | B-355 | `response-log-segments 1.3`: why 177 of about 83,000 2024 feed files differ between the 4 datasets | READY | cause recorded in design.md before B-371 |
 | B-356 | `response-log-segments 2.1`: tests first: tests/test_response_log.py (stored once, crash replay, torn record, no gzip copies) | READY | the four tests exist and fail for the right reason |
 | B-357 | `response-log-segments 2.2`: journal writer and reader in core/ (zstd frame per record, length prefix, flushed per game) | READY | after B-356; its tests pass |
