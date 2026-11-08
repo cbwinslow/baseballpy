@@ -860,6 +860,10 @@ Every play of a game (matchup, result, count, runners as JSON).
 | `review_details_in_progress` | bool | yes | `reviewDetails.inProgress` | TODO |
 | `review_details_review_type` | string | yes | `reviewDetails.reviewType` | TODO |
 | `review_details_challenge_team_id` | int32 | yes | `reviewDetails.challengeTeamId` | MLBAM identifier of the review details challenge team. (authored) |
+| `review_details_additional_reviews` | string | yes | `reviewDetails.additionalReviews` | TODO |
+| `review_details_player_id` | int32 | yes | `reviewDetails.player.id` | TODO |
+| `review_details_player_full_name` | string | yes | `reviewDetails.player.fullName` | TODO |
+| `review_details_player_link` | string | yes | `reviewDetails.player.link` | TODO |
 | `matchup_batter_hot_cold_zone_stats_stats` | string | yes | `matchup.batterHotColdZoneStats.stats` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -947,6 +951,10 @@ Win probability after every play.
 | `review_details_in_progress` | bool | yes | `reviewDetails.inProgress` | TODO |
 | `review_details_review_type` | string | yes | `reviewDetails.reviewType` | TODO |
 | `review_details_challenge_team_id` | int32 | yes | `reviewDetails.challengeTeamId` | MLBAM identifier of the review details challenge team. (authored) |
+| `review_details_additional_reviews` | string | yes | `reviewDetails.additionalReviews` | TODO |
+| `review_details_player_id` | int32 | yes | `reviewDetails.player.id` | TODO |
+| `review_details_player_full_name` | string | yes | `reviewDetails.player.fullName` | TODO |
+| `review_details_player_link` | string | yes | `reviewDetails.player.link` | TODO |
 | `matchup_batter_hot_cold_zone_stats_stats` | string | yes | `matchup.batterHotColdZoneStats.stats` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -9853,15 +9861,23 @@ Every pitch/action event of a final game (pitchData, hitData, details, count) wi
 | `details_violation_description` | string | yes | `details.violation.description` | TODO |
 | `details_violation_player_id` | int32 | yes | `details.violation.player.id` | MLBAM identifier of the details violation player. (authored) |
 | `details_violation_player_full_name` | string | yes | `details.violation.player.fullName` | Full name of the details violation player. (authored) |
-| `pfx_id` | string | yes | `pfxId` | MLBAM identifier of the pfx. (authored) |
+| `pitch_data_strike_zone_width` | double | yes | `pitchData.strikeZoneWidth` | TODO |
+| `pitch_data_strike_zone_depth` | double | yes | `pitchData.strikeZoneDepth` | TODO |
 | `review_details_is_overturned` | bool | yes | `reviewDetails.isOverturned` | TODO |
 | `review_details_in_progress` | bool | yes | `reviewDetails.inProgress` | TODO |
 | `review_details_review_type` | string | yes | `reviewDetails.reviewType` | TODO |
+| `review_details_challenge_team_id` | int32 | yes | `reviewDetails.challengeTeamId` | MLBAM identifier of the review details challenge team. (authored) |
+| `all_plays_review_details_additional_reviews` | string | yes | `allPlays.reviewDetails.additionalReviews` | TODO |
+| `all_plays_review_details_player_id` | int32 | yes | `allPlays.reviewDetails.player.id` | TODO |
+| `all_plays_review_details_player_full_name` | string | yes | `allPlays.reviewDetails.player.fullName` | TODO |
+| `all_plays_review_details_player_link` | string | yes | `allPlays.reviewDetails.player.link` | TODO |
+| `review_details_player_id` | int32 | yes | `reviewDetails.player.id` | TODO |
+| `review_details_player_full_name` | string | yes | `reviewDetails.player.fullName` | TODO |
+| `review_details_player_link` | string | yes | `reviewDetails.player.link` | TODO |
+| `injury_type` | string | yes | `injuryType` | TODO |
+| `pfx_id` | string | yes | `pfxId` | MLBAM identifier of the pfx. (authored) |
 | `umpire_id` | int32 | yes | `umpire.id` | MLBAM identifier of the umpire. (authored) |
 | `umpire_link` | string | yes | `umpire.link` | Relative MLB Stats API path of the umpire resource (prefix https://statsapi.mlb.com). (authored) |
-| `review_details_challenge_team_id` | int32 | yes | `reviewDetails.challengeTeamId` | MLBAM identifier of the review details challenge team. (authored) |
-| `pitch_data_strike_zone_width` | double | yes | `pitchData.strikeZoneWidth` | TODO |
-| `pitch_data_strike_zone_depth` | double | yes | `pitchData.strikeZoneDepth` | TODO |
 | `all_plays_matchup_batter_hot_cold_zone_stats_stats` | string | yes | `allPlays.matchup.batterHotColdZoneStats.stats` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -9942,6 +9958,10 @@ Every plate appearance of a final game from the live feed (result, about, count,
 | `review_details_in_progress` | bool | yes | `reviewDetails.inProgress` | TODO |
 | `review_details_review_type` | string | yes | `reviewDetails.reviewType` | TODO |
 | `review_details_challenge_team_id` | int32 | yes | `reviewDetails.challengeTeamId` | MLBAM identifier of the review details challenge team. (authored) |
+| `review_details_additional_reviews` | string | yes | `reviewDetails.additionalReviews` | TODO |
+| `review_details_player_id` | int32 | yes | `reviewDetails.player.id` | TODO |
+| `review_details_player_full_name` | string | yes | `reviewDetails.player.fullName` | TODO |
+| `review_details_player_link` | string | yes | `reviewDetails.player.link` | TODO |
 | `matchup_batter_hot_cold_zone_stats_stats` | string | yes | `matchup.batterHotColdZoneStats.stats` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 

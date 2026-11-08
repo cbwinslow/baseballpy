@@ -102,3 +102,9 @@ re-run on the direct route before the season-by-season rebuild is needed.
 ## As built: task 3.3 (2026-11-07)
 
 Re-probed all supported endpoints with `gen_mlb_schemas.py --skip-combos --only <all names>` (the `--only` merge keeps endpoints that return nothing). 142 endpoints gained typed columns (`*_name_slug`, `hot_cold_zone_stats_stats` and similar) that had been landing in `_extras`. 25 league-wide `stats_*` endpoints (projected, season, season advanced, outs above average, expected statistics, sabermetrics, last x games) lost columns in the new sample because `v1/stats` still answers 406 (B-30): their old tables, probe entries and fixtures were restored. They stay open for B-35 once the route answers 200. The count of 61 in the backlog was not recorded anywhere; the real number is 142.
+
+## As built: task 3.4 (2026-11-08)
+
+Regenerated the 31 game, roster, schedule and draft datasets with `gen_mlb_schemas.py --skip-combos --only ...`, with eight more sample games (`SAMPLE_GAMES`) that carry rare fields. Gained: challenge-review details with a player and `additional_reviews` in `game_feed_play_events`, `game_feed_plays`, `game_play_by_play` and `game_win_probability` (and `injuryType`). Nothing lost.
+
+Still in `_extras` (no data is lost, but the fields have no typed column yet because no sampled response carried them): `schedule_postseason` reschedule and resume fields and `status.reason`; `draft_prospects` `person.xrefIds`; `team_affiliates` conference; roster `parentTeamId` and `note`; `reviewDetails.additionalReviews` in the play-event twin; and the 25 league-wide `stats_*` datasets, which wait for the 406 (B-30). The next regeneration should add samples that carry them (a season with a rescheduled postseason game, a loaned player, a conference-bearing affiliate).

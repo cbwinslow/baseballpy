@@ -30,6 +30,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-08 01:43 UTC [blain]:**
+  - **Tasks:** `B-309`.
+  - **Summary:** Typed the game-feed review details and injuryType columns; rare fields and 406-blocked stats_* still in _extras (listed)
+
 - **2026-11-08 01:21 UTC [blain]:**
   - **Tasks:** `B-308`.
   - **Summary:** Memory fix reviewed: bytes in/out manifests, narrow exceptions, spec delta, ADR 88, measurement

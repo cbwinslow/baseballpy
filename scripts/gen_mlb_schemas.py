@@ -105,7 +105,9 @@ EXTRA_SEASONS = {
 SAMPLE_TEAMS = (147, 119)
 #: placeholder teams ("AL Champion", id 21) carry fields real teams lack (`placeholder`), found by a 2025 run
 PLACEHOLDER_TEAMS = {"team_affiliates": (21,)}
-SAMPLE_GAMES = (745000, 775296)
+# 745000, 775296: fixed 2024 games; the rest carry fields most games lack (challenge details with a
+# player, additional reviews, an injury type), found by their `schema_drift` in the lake (B-309)
+SAMPLE_GAMES = (745000, 775296, 777922, 778103, 781610, 787940, 776443, 777295)
 SAMPLE_PEOPLE = tuple(
     (pid, "")
     for pid in (

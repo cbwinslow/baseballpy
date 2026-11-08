@@ -142,11 +142,11 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `game_changes` | `mlb_game_changes` | `none` | 70 | `game_pk` | Games changed since a timestamp (incremental sync log; append-only). |
 | `game_feed_linescore_innings` | `mlb_game_feed_linescore_innings` | `season` | 12 | `game_pk`, `num` | Inning-by-inning linescore from the live feed. |
 | `game_feed_officials` | `mlb_game_feed_officials` | `season` | 7 | `game_pk`, `official_type` | Umpires of a final game from the live feed. |
-| `game_feed_play_events` | `mlb_game_feed_play_events` | `season` | 160 | `game_pk`, `all_plays_about_at_bat_index`, `index` | Every pitch/action event of a final game (pitchData, hitData, details, count) with its plate appearance's context. |
-| `game_feed_plays` | `mlb_game_feed_plays` | `season` | 65 | `game_pk`, `about_at_bat_index` | Every plate appearance of a final game from the live feed (result, about, count, matchup). |
+| `game_feed_play_events` | `mlb_game_feed_play_events` | `season` | 168 | `game_pk`, `all_plays_about_at_bat_index`, `index` | Every pitch/action event of a final game (pitchData, hitData, details, count) with its plate appearance's context. |
+| `game_feed_plays` | `mlb_game_feed_plays` | `season` | 69 | `game_pk`, `about_at_bat_index` | Every plate appearance of a final game from the live feed (result, about, count, matchup). |
 | `game_linescore` | `mlb_game_linescore` | `season` | 12 | `game_pk`, `num` | Inning-by-inning linescore of a game. |
-| `game_play_by_play` | `mlb_game_play_by_play` | `season` | 65 | `game_pk`, `at_bat_index` | Every play of a game (matchup, result, count, runners as JSON). |
-| `game_win_probability` | `mlb_game_win_probability` | `season` | 72 | `game_pk`, `at_bat_index` | Win probability after every play. |
+| `game_play_by_play` | `mlb_game_play_by_play` | `season` | 69 | `game_pk`, `at_bat_index` | Every play of a game (matchup, result, count, runners as JSON). |
+| `game_win_probability` | `mlb_game_win_probability` | `season` | 76 | `game_pk`, `at_bat_index` | Win probability after every play. |
 | `jobs_datacasters` | `mlb_jobs_datacasters` | `none` | 9 | `person_id` | Current datacasters (the upstream listing repeats some people, so the key is not unique). |
 | `jobs_official_scorers` | `mlb_jobs_official_scorers` | `none` | 9 | `person_id` | Current official scorers (the upstream listing repeats some people, so the key is not unique). |
 | `jobs_umpires` | `mlb_jobs_umpires` | `none` | 9 | `person_id` | Current umpire roster. |
