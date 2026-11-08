@@ -10,4 +10,3 @@
 - Metric and matchup families are opt-in (`families=("metrics","matchups")`); matchups require opposing ids.
 - Added `PROVIDER_ERRORS` (endpoints.py) for requests the provider answers with HTTP 500 for every subject, with evidence; found by the live check (`metricAverages` + pitching + `barreledBall`).
 - Decisions: ADR 38. Combination and unsupported counts are generated (`stat_combos.py`), not restated here.
-

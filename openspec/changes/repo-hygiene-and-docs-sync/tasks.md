@@ -40,4 +40,3 @@ Can start immediately for items 1-3 and 5 (independent of other changes); items 
 
 ## Status (2026-10-27)
 - Open: 4.1 (ruff `S`, `PLR*` rules), 4.3 (`tests/test_concurrency.py` only; property and CLI tests exist), 4.4 (markers are registered; the smoke split into `tests/live/` is not done), 4.5 (coverage gate), all of 5 (CI, packaging, mkdocs), 6.3 follow-up (45 requirements still lack a scenario for `openspec validate --specs`), 6.4 (archive after the above), 7.1-7.2.
-

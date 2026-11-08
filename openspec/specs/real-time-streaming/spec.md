@@ -120,4 +120,3 @@ an empty or partial snapshot.
 - **WHEN** the provider answers a projected request with only `gamePk`
 - **THEN** `SnapshotError` names the missing container and the raw bytes are quarantined
 - Verified by `tests/test_mlb_stream.py::test_a_projection_that_lacks_its_container_raises_and_is_quarantined`.
-
