@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any
 
 import pyarrow as pa
+import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
 from baseballpy.core.compacted import (
@@ -70,6 +71,31 @@ def _decoded(table: pa.Table) -> pa.Table:
                 index, field.name, table[field.name].cast(field.type.value_type)
             )
     return table
+
+
+def _same_rows(a: pa.Table, b: pa.Table) -> bool:
+    """Whether two tables hold the same values, with NaN equal to NaN.
+
+    ``Table.equals`` calls NaN different from NaN, so a chunk with a NaN in a float column (a leverage
+    index, for one) could never pass the read-back check and its dataset was never compacted.
+    """
+    if a.equals(b, check_metadata=False):
+        return True
+    if a.schema.names != b.schema.names or a.num_rows != b.num_rows:
+        return False
+    for name in a.column_names:
+        left, right = a[name].combine_chunks(), b[name].combine_chunks()
+        if left.equals(right):
+            continue
+        if not pa.types.is_floating(left.type) or left.type != right.type:
+            return False
+        same = pc.fill_null(pc.equal(left, right), False)
+        both_nan = pc.and_(pc.is_nan(left), pc.is_nan(right))
+        both_null = pc.and_(pc.is_null(left), pc.is_null(right))
+        agree = pc.or_(pc.or_(same, pc.fill_null(both_nan, False)), both_null)
+        if not pc.all(agree).as_py():
+            return False
+    return True
 
 
 def _group_key(key: str) -> int | None:
@@ -208,9 +234,9 @@ def _compact_group(
             for key, source in tables:
                 first, count = spans[key]
                 expected = source if source.schema.equals(spec.schema) else source.cast(spec.schema)
-                if count != int(entries[key]["records_count"]) or not _decoded(
-                    back.slice(first, count)
-                ).equals(_decoded(expected), check_metadata=False):
+                if count != int(entries[key]["records_count"]) or not _same_rows(
+                    _decoded(back.slice(first, count)), _decoded(expected)
+                ):
                     raise ValueError(f"{spec.key}: chunk {key} differs after compaction")
             report.rows += back.num_rows
             report.bytes_after += path.stat().st_size

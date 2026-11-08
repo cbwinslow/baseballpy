@@ -283,3 +283,20 @@ def test_a_part_locked_by_another_process_does_not_stop_the_compaction(
         p.name.startswith("part-")
         for p in lake.processed_dir(spec.source, spec.name, 2023).glob("*.parquet")
     )
+
+
+def test_nan_in_a_float_column_does_not_fail_the_read_back_check() -> None:
+    """A chunk with a NaN (a leverage index) could never be compacted: Arrow calls NaN != NaN."""
+    from baseballpy.core.compact import _same_rows
+
+    a = pa.table({"x": pa.array([1.0, float("nan"), None]), "y": ["a", "b", "c"]})
+    b = pa.table({"x": pa.array([1.0, float("nan"), None]), "y": ["a", "b", "c"]})
+    assert not a.equals(b)  # the reason for the helper
+    assert _same_rows(a, b)
+    assert not _same_rows(a, pa.table({"x": pa.array([1.0, 2.0, None]), "y": ["a", "b", "c"]}))
+    assert not _same_rows(
+        a, pa.table({"x": pa.array([1.0, float("nan"), None]), "y": ["a", "b", "z"]})
+    )
+    assert not _same_rows(
+        a, pa.table({"x": pa.array([1.0, float("nan"), 3.0]), "y": ["a", "b", "c"]})
+    )
