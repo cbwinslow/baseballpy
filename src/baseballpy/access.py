@@ -126,7 +126,7 @@ def players(
     Maps player identifiers across Chadwick, MLBAM (Statcast/MLB API), Retrosheet,
     Baseball-Reference, FanGraphs, and Lahman.
     """
-    return sql(f"SELECT * FROM {CROSSWALK_VIEW}", backend=backend, config=config)
+    return sql(f"SELECT * FROM {CROSSWALK_VIEW}", backend=backend, config=config)  # noqa: S608 - view names are module constants, season is an int
 
 
 def games(
@@ -141,7 +141,7 @@ def games(
     home/away team codes and IDs, game number (for doubleheaders), and venue.
     """
     where = f" WHERE season = {int(season)}" if season is not None else ""
-    return sql(f"SELECT * FROM {GAME_CROSSWALK_VIEW}{where}", backend=backend, config=config)
+    return sql(f"SELECT * FROM {GAME_CROSSWALK_VIEW}{where}", backend=backend, config=config)  # noqa: S608 - view names are module constants, season is an int
 
 
 def teams(
@@ -153,7 +153,7 @@ def teams(
 
     Maps MLBAM team ID and abbreviation to Retrosheet team code and official name.
     """
-    return sql(f"SELECT * FROM {TEAM_CROSSWALK_VIEW}", backend=backend, config=config)
+    return sql(f"SELECT * FROM {TEAM_CROSSWALK_VIEW}", backend=backend, config=config)  # noqa: S608 - view names are module constants, season is an int
 
 
 def venues(
@@ -165,7 +165,25 @@ def venues(
 
     Includes MLBAM venue ID, name, coordinates, elevation, roof, turf, and outfield dimensions.
     """
-    return sql(f"SELECT * FROM {VENUE_CROSSWALK_VIEW}", backend=backend, config=config)
+    return sql(f"SELECT * FROM {VENUE_CROSSWALK_VIEW}", backend=backend, config=config)  # noqa: S608 - view names are module constants, season is an int
 
 
-__all__ = ["games", "players", "read", "resolve_dataset", "sql", "teams", "venues"]
+# Aliases
+player_crosswalk = players
+game_crosswalk = games
+team_crosswalk = teams
+venue_crosswalk = venues
+
+__all__ = [
+    "game_crosswalk",
+    "games",
+    "player_crosswalk",
+    "players",
+    "read",
+    "resolve_dataset",
+    "sql",
+    "team_crosswalk",
+    "teams",
+    "venue_crosswalk",
+    "venues",
+]
