@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-08 21:49 UTC [blain]:**
+  - **Tasks:** `B-356`.
+  - **Summary:** four response-log tests written first; fail as expected (module missing)
+
 - **2026-11-08 21:46 UTC [blain]:**
   - **Tasks:** `B-355`.
   - **Summary:** cause found: same URL fetched on different days; recorded in design 5b

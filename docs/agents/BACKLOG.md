@@ -594,7 +594,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-353 | response-log-segments 1.1: this change: proposal, design, spec deltas, ADRs 95-97, backlog rows, drafts pointed here | DONE | `openspec validate response-log-segments --strict` valid; project map regenerated; gates green; committed |
 | B-354 | response-log-segments 1.2: web search for prior art (WARC, DuckLake, pybaseball/baseballr raw caching) | DONE | findings in design.md section 5 |
 | B-355 | response-log-segments 1.3: why 177 of about 83,000 2024 feed files differ between the 4 datasets | DONE | cause recorded in design.md before B-371 |
-| B-356 | `response-log-segments 2.1`: tests first: tests/test_response_log.py (stored once, crash replay, torn record, no gzip copies) | READY | the four tests exist and fail for the right reason |
+| B-356 | response-log-segments 2.1: tests first: tests/test_response_log.py (stored once, crash replay, torn record, no gzip copies) | DONE | the four tests exist and fail for the right reason |
 | B-357 | `response-log-segments 2.2`: journal writer and reader in core/ (zstd frame per record, length prefix, flushed per game) | READY | after B-356; its tests pass |
 | B-358 | `response-log-segments 2.3`: raw segment writer behind SinkProtocol (Parquet, zstd, large pages) | READY | after B-357; tests/test_response_log.py passes |
 | B-359 | `response-log-segments 2.4`: measure zstd 9 against 19 and the page size on 2024 samples | READY | bytes and seconds in design.md section 3 replace the guesses |
