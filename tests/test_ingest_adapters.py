@@ -322,6 +322,7 @@ class FakeMlbApiSource:
         sport_ids: tuple[int, ...] | None = None,
         include_games: bool = False,
         max_games: int | None = None,
+        include_season: bool = True,
         include_history: bool = False,
         include_awards: bool = True,
         include_people_stats: bool = False,

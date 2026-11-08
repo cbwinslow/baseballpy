@@ -14,7 +14,6 @@ concurrency on a rate-bound host made single requests slower, so the caps stay f
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from urllib.parse import urlsplit
 
 import msgspec
 
@@ -144,7 +143,7 @@ def measure(
     by_host: dict[str, list[_Event]] = {}
     for event in events:
         if event.operation == "http_request" and event.endpoint:
-            by_host.setdefault(urlsplit(event.endpoint).netloc, []).append(event)
+            by_host.setdefault(_host_of(event.endpoint), []).append(event)
         elif event.status == "SUCCESS" and event.operation.startswith("mlb_game_"):
             report.chunks_written += 1
     for host, items in sorted(by_host.items()):
@@ -171,6 +170,11 @@ def measure(
         speed.diagnosis = diagnose(speed)
         report.hosts.append(speed)
     return report
+
+
+def _host_of(url: str) -> str:
+    """``host`` of ``https://host/path`` (no network library is imported in the ingest layer)."""
+    return url.split("//", 1)[-1].split("/", 1)[0]
 
 
 def _pushed_back(event: _Event) -> bool:
