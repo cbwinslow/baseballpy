@@ -1,9 +1,9 @@
 """Processed segments (ADR 95, 96): one Parquet file per dataset per segment, counted only by a commit line.
 
-Written first (task 3.1, B-360). ``baseballpy.core.segments`` does not exist yet: tasks 3.2 to 3.5 build it.
-Until then every test is an expected failure that must fail because the module is missing
-(``ImportError``). Remove the ``xfail`` marks as the tests start to pass; a strict ``xfail`` that passes
-fails the run.
+Written first (task 3.1, B-360). Task 3.2 (B-361) built the open files (``ProcessedSegmentFiles``);
+tasks 3.3 to 3.5 build ``commit``, ``refresh`` and the writer lock. Until then every test is an expected
+failure that must stop at one of those (``NotImplementedError``). Remove the ``xfail`` marks as the
+tests start to pass; a strict ``xfail`` that passes fails the run.
 
 The interface these tests fix (it extends ``ResponseLog`` of tasks 2.x):
 
@@ -40,8 +40,22 @@ from baseballpy.core.responselog import Response
 
 NOT_BUILT = pytest.mark.xfail(
     strict=True,
-    raises=ImportError,
-    reason="B-361..B-364: baseballpy.core.segments is not built yet",
+    raises=(ImportError, NotImplementedError),
+    reason="B-362..B-364: SegmentWriter.commit, refresh and the writer lock are not built yet",
+)
+
+LOCK_NOT_BUILT = pytest.mark.xfail(
+    strict=True,
+    raises=(ImportError, NotImplementedError, pytest.fail.Exception),
+    reason="B-364: the writer lock is not built yet (the second writer is not refused)",
+)
+
+#: the two crash tests catch ``RuntimeError`` (``NotImplementedError`` is one), so until the commit exists
+#: they stop at an assertion instead
+CRASH_NOT_BUILT = pytest.mark.xfail(
+    strict=True,
+    raises=(ImportError, NotImplementedError, AssertionError, pytest.fail.Exception),
+    reason="B-362: the commit and its crash points are not built yet",
 )
 
 FETCHED_AT = "2026-11-08T12:00:00+00:00"
@@ -165,7 +179,7 @@ def test_every_processed_row_names_its_response(tmp_path: Path) -> None:
         assert by_sha[row["_raw_sha256"]].endswith(f"/game/{row['game_id']}/boxscore")
 
 
-@NOT_BUILT
+@CRASH_NOT_BUILT
 def test_a_game_counts_only_after_its_commit_line(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -191,7 +205,7 @@ def test_a_game_counts_only_after_its_commit_line(
     assert again.committed_units() == frozenset(_games(3))
 
 
-@NOT_BUILT
+@CRASH_NOT_BUILT
 def test_start_up_deletes_uncommitted_files_and_replays_the_journal(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -236,7 +250,7 @@ def test_a_torn_commit_line_is_ignored(tmp_path: Path) -> None:
     assert len(_rows(config, "box")) == 4
 
 
-@NOT_BUILT
+@LOCK_NOT_BUILT
 def test_a_second_writer_on_the_same_season_is_refused(tmp_path: Path) -> None:
     _api()  # a missing module fails here, before a child process is started
     holder_code = (

@@ -316,6 +316,14 @@ class ResponseLog:
         """The ids of the units that are committed or in the journal."""
         return frozenset(self._units) | frozenset(self._committed)
 
+    def committed_units(self) -> frozenset[str]:
+        """The ids of the units a commit line names."""
+        return frozenset(self._committed)
+
+    def next_segment(self) -> int:
+        """The number of the next segment: one after the last commit line."""
+        return 1 + max((int(line["segment"]) for line in self._lines), default=0)
+
     def add_unit(self, unit_id: str, responses: Sequence[Response]) -> None:
         """Append a finished unit to the journal; it is on disk when this returns."""
         record = encode_record(unit_id, responses)
@@ -335,7 +343,7 @@ class ResponseLog:
         """
         if not self._units:
             return None
-        segment = 1 + max((int(line["segment"]) for line in self._lines), default=0)
+        segment = self.next_segment()
         name = _segment_name(segment)
         path = self.season_dir / name
         table = self._table()

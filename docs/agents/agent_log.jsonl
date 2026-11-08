@@ -69,3 +69,5 @@
 {"timestamp": "2026-11-08T22:34:40Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-359", "details": "measured zstd levels, page and row-group size, row order on 250 real 2024 games; design section 3 updated"}
 {"timestamp": "2026-11-08T22:40:51Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-360", "details": "Claimed task B-360 (files: none; note: In progress)"}
 {"timestamp": "2026-11-08T22:43:18Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-360", "details": "seven segment tests written first; fail as expected (module missing)"}
+{"timestamp": "2026-11-08T22:43:49Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-361", "details": "Claimed task B-361 (files: none; note: In progress)"}
+{"timestamp": "2026-11-08T22:53:53Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-361", "details": "ProcessedSegmentFiles (50-unit row groups, _raw_sha256, .part in _open) and SegmentWriter skeleton built"}
