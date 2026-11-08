@@ -139,13 +139,17 @@ def _compact_group(
         name = key.split("/", 1)[1] if season is not None else key
         part = folder / _part_name(spec, name, season)
         if part.exists():
+            if holds_chunk(root, entry, key):
+                # left over by a run that stopped after writing the compacted file and before
+                # removing the part: the rows are already in the compacted file
+                if not dry_run:
+                    part.unlink()
+                continue
             sources.append((key, part.stat().st_size))
             parts.append(part)
-        elif holds_chunk(root, entry, key):
-            file = root / str(entry[INTO])
-            rows_in_file = max(1, pq.ParquetFile(file).metadata.num_rows)
-            sources.append((key, file.stat().st_size * int(entry["records_count"]) // rows_in_file))
-            old_compact.add(str(entry[INTO]))
+        # a chunk already inside a compacted file stays there: reading it back means reading its
+        # whole row group once per chunk (3,000 times for a season), and every slice keeps that row
+        # group alive: that took 17 GB of committed memory (2026-11-08, ADR 94)
     if len(sources) < 2 or not parts:
         return  # nothing small to merge
 

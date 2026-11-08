@@ -74,11 +74,16 @@ def test_a_rerun_changes_nothing_and_a_new_chunk_is_merged_in(
     compact_dataset(spec, lake)
     again = compact_dataset(spec, lake)
     assert again.groups == 0 and _files(lake, spec, 2023) == ["compact-0001.parquet"]
-    ProcessedStore(lake).put(spec, _pitches([96.0], 2023), chunk_id="d", season=2023)
+    store = ProcessedStore(lake)
+    store.put(spec, _pitches([96.0], 2023), chunk_id="d", season=2023)
+    lone = compact_dataset(spec, lake)
+    # one new chunk is not merged into the big file again (that meant reading the whole big file)
+    assert lone.groups == 0 and len(_files(lake, spec, 2023)) == 2
+    store.put(spec, _pitches([97.0], 2023), chunk_id="e", season=2023)
     merged = compact_dataset(spec, lake)
-    assert merged.groups == 1 and merged.chunks == 4
-    assert len(_files(lake, spec, 2023)) == 1
-    assert bp.read("statcast.pitches", seasons=2023, config=lake).height == 7
+    assert merged.groups == 1 and merged.chunks == 2
+    assert _files(lake, spec, 2023) == ["compact-0001.parquet", "compact-0002.parquet"]
+    assert bp.read("statcast.pitches", seasons=2023, config=lake).height == 8
 
 
 def test_a_chunk_downloaded_again_replaces_its_rows_and_never_duplicates(
