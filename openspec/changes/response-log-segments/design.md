@@ -127,6 +127,33 @@ points below are what they say, not first-hand checks of the specs):
 Sources: motherduck.com/blog/ducklake-architecture-deep-dive, ducklake.select (data inlining, 2026-04-02),
 loc.gov/preservation/digital/formats/fdd/fdd000236.shtml (WARC), pypi.org/project/warcio, pypi.org/project/pybaseball.
 
+## 5b. Why sibling raw files differ (task 1.3, found 2026-11-08, read-only, from the manifests and a JSON diff)
+
+The differing files are **not corruption and not a bug**. They are the same URL downloaded on different days.
+- **Live feed (4 datasets, one URL).** In 2024, 165 of 2,959 games differ. In every one, the odd dataset out is
+  `game_feed_linescore_innings` (142 fetched on 2026-11-07, 23 on 2026-11-08); the other three were fetched later
+  (2026-11-08) and agree with each other. 2025: 346 differ, all the same odd dataset, all fetched 2026-11-07. 2021:
+  1 differs (a different dataset, fetched 2026-11-08). The odd dataset was downloaded in an earlier run, and the other
+  three were downloaded again later.
+- **What changed between the two downloads.** MLB revises the finished game's live feed: a player gains a
+  `primaryNumber` or flips `active`/`lastPlayedDate`, the venue time zone changes (`EST`/`-5` to `EDT`/`-4`), and
+  hot/cold zone data appears or goes. Whole-game plays are the same. So the feed is **not immutable after the game**.
+- **Box scores (6 datasets, one URL).** In 2024, 8 games split 3 against 3, and the parsed JSON is **identical**: only
+  the bytes differ (formatting or key order). The two halves were fetched on different days too (2026-11-07 and
+  2026-11-08).
+- **What this means for the design.**
+  1. A raw row's identity is `(url, fetched_at, sha256)`, not the URL alone. A refetch that returns different bytes
+     is a new row, never an overwrite (this is already how the converter is specified; now it is evidence-based).
+  2. Today's processed tables are slightly inconsistent for these games: the three feed datasets come from the later
+     version and `game_feed_linescore_innings` from the earlier one. The new single fetch removes this by
+     construction.
+  3. Rebuild (group 6) rule, to be added to the spec: when a URL has more than one stored version, rebuild every
+     dataset from the **newest** version and keep the older rows in raw. This makes the 4 datasets agree again.
+  4. The converter's hash check (task 5.x) must expect different bytes and keep both bodies; it must not treat a
+     difference as an error. It records a count of such URLs in its report.
+- **Evidence:** scripts in the session scratchpad (`why_differ.py`, `odd.py`), read-only. Numbers above are from the
+  per-season `_manifest.json` files (`sha256`, `fetched_at`) plus a decoded JSON diff of two examples per group.
+
 ## 6. Rollback
 
 The git tag `pre-response-log` (already pushed) is the revert point. Until task group 7, the old per-game path and

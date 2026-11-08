@@ -8,7 +8,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 ## 1. Specs, decisions, backlog
 - [x] 1.1 this change: proposal, design, spec deltas, ADRs 95-97, backlog rows; the drafts `shared-raw-bytes` and `batched-chunk-writes` point here; `openspec validate response-log-segments --strict` passes; `scripts/project_map.py` regenerated; gates green
 - [x] 1.2 web search for prior art (WARC, DuckLake, how pybaseball/baseballr/sportsdataverse keep raw responses) and record it in design.md section 5
-- [ ] 1.3 find out why 177 of about 83,000 2024 feed files differ between the 4 datasets (which bytes differ, fetch times) and record it in design.md before group 5
+- [x] 1.3 find out why 177 of about 83,000 2024 feed files differ between the 4 datasets (which bytes differ, fetch times) and record it in design.md before group 5
 
 ## 2. Response log: journal and raw segment writer
 - [ ] 2.1 tests first: `tests/test_response_log.py::test_each_response_is_stored_once_with_the_sha256_of_its_original_bytes`, `::test_a_crash_replays_the_journal_and_refetches_no_finished_game`, `::test_a_torn_last_journal_record_is_dropped`, `::test_a_source_on_segments_writes_no_per_dataset_or_gzip_raw_file`
@@ -38,7 +38,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [ ] 5.4 dry run on the real lake, then the real run season by season; disk before and after in design.md (replaces the guessed raw size)
 
 ## 6. Rebuild processed segments from raw
-- [ ] 6.1 tests first: `tests/test_segment_rebuild.py::test_a_season_is_rebuilt_from_raw_with_the_same_rows`, `::test_a_schema_change_is_applied_by_rebuilding_from_raw`, `::test_old_files_are_hidden_before_segments_appear`
+- [ ] 6.1 tests first: `tests/test_segment_rebuild.py::test_a_season_is_rebuilt_from_raw_with_the_same_rows`, `::test_a_schema_change_is_applied_by_rebuilding_from_raw`, `::test_old_files_are_hidden_before_segments_appear`, `::test_a_url_with_two_stored_versions_is_rebuilt_from_the_newest_for_every_dataset` (design 5b)
 - [ ] 6.2 generic rebuild of a season's segments from its raw rows with the current normalizer (also the schema-change path, ADR 87)
 - [ ] 6.3 per season: old files to `_legacy/`, segments in, row counts and keys compared with the old files; table in design.md
 - [ ] 6.4 delete `_legacy/` of a season only after its comparison passed
