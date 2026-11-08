@@ -1,8 +1,8 @@
 """The response log (ADR 95): each HTTP response is stored once, a crash loses no finished game.
 
-Written first (task 2.1, B-356). ``baseballpy.core.responselog`` does not exist yet: task 2.2 (B-357)
-builds the journal and task 2.3 (B-358) the raw segment writer. Until then every test is an expected
-failure that must fail because the module is missing (``ImportError``), not for another reason.
+Written first (task 2.1, B-356). Task 2.2 (B-357) built the journal (``stored``, ``add_unit``); task 2.3
+(B-358) builds the raw segment writer (``commit``, ``read``). Until then every test is an expected
+failure that must stop at ``commit`` or ``read`` (``NotImplementedError``), not for another reason.
 Remove the ``xfail`` marks when the tests start to pass; a strict ``xfail`` that passes fails the run,
 so nobody can forget.
 
@@ -29,8 +29,8 @@ from baseballpy.core.config import LakeConfig
 
 NOT_BUILT = pytest.mark.xfail(
     strict=True,
-    raises=ImportError,
-    reason="B-357/B-358: baseballpy.core.responselog is not built yet",
+    raises=(ImportError, NotImplementedError),
+    reason="B-358: ResponseLog.commit and .read (the raw segment writer) are not built yet",
 )
 
 FETCHED_AT = "2026-11-08T12:00:00+00:00"

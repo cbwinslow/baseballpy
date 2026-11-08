@@ -61,3 +61,5 @@
 {"timestamp": "2026-11-08T21:46:49Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-355", "details": "cause found: same URL fetched on different days; recorded in design 5b"}
 {"timestamp": "2026-11-08T21:47:37Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-356", "details": "Claimed task B-356 (files: none; note: In progress)"}
 {"timestamp": "2026-11-08T21:49:27Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-356", "details": "four response-log tests written first; fail as expected (module missing)"}
+{"timestamp": "2026-11-08T21:50:13Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-357", "details": "Claimed task B-357 (files: none; note: In progress)"}
+{"timestamp": "2026-11-08T21:59:36Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-357", "details": "journal writer/reader built in core/responselog.py; 8 journal tests pass; 4 log tests await B-358"}

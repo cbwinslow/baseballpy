@@ -12,7 +12,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 
 ## 2. Response log: journal and raw segment writer
 - [x] 2.1 tests first: `tests/test_response_log.py::test_each_response_is_stored_once_with_the_sha256_of_its_original_bytes`, `::test_a_crash_replays_the_journal_and_refetches_no_finished_game`, `::test_a_torn_last_journal_record_is_dropped`, `::test_a_source_on_segments_writes_no_per_dataset_or_gzip_raw_file`
-- [ ] 2.2 journal writer and reader in `baseballpy/core/responselog.py` (the interface is fixed by the docstring of `tests/test_response_log.py`; remove the `xfail` marks of the tests it makes pass) (one zstd frame per record with `pyarrow.Codec`, length prefix, flushed per game)
+- [x] 2.2 journal writer and reader in `baseballpy/core/responselog.py` (the interface is fixed by the docstring of `tests/test_response_log.py`; remove the `xfail` marks of the tests it makes pass) (one zstd frame per record with `pyarrow.Codec`, length prefix, flushed per game)
 - [ ] 2.3 raw segment writer behind `SinkProtocol` (Parquet, zstd, large data pages)
 - [ ] 2.4 measure on 2024 samples: zstd level 9 against 19 and the page size (bytes and write seconds); replace the guessed numbers in design.md section 3
 
