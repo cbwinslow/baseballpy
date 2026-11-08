@@ -36,8 +36,11 @@ from baseballpy.core.stores import ProcessedStore, part_filename, schema_matches
 
 logger = logging.getLogger(__name__)
 
-#: input bytes (compressed) per compacted file; DuckDB advises 100 MB to 10 GB
-TARGET_BYTES = 400 * 1024 * 1024
+#: input bytes (compressed) per compacted file. A batch is held in memory several times over (read,
+#: joined, read back, compared) and wide tables (611 columns, mostly empty) grow about 28 times from
+#: their compressed size: 400 MB of inputs took 11 GB per dataset and, two at once, 22 GB of the
+#: machine's committed memory (2026-11-08). 64 MB keeps a batch near 1.5 GB.
+TARGET_BYTES = 64 * 1024 * 1024
 
 
 @dataclass
