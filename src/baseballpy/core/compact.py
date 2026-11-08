@@ -13,6 +13,7 @@ Run it when no ingest is running.
 """
 
 import logging
+import time
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
@@ -79,6 +80,24 @@ def _rel(root: Path, path: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
+def _unlink(path: Path) -> bool:
+    """Delete a file that is not needed any more; True when it is gone.
+
+    On Windows a file that was just written can be held open for a moment by the virus scanner or
+    the indexer, and the delete fails with a sharing violation (it stopped a compaction of 10,000 files
+    on 2026-11-08). The delete is tried for about two seconds; a file that stays locked is left for the
+    next run, which removes a part that sits beside its compacted copy.
+    """
+    for _ in range(40):
+        try:
+            path.unlink(missing_ok=True)
+            return True
+        except PermissionError:
+            time.sleep(0.05)
+    logger.warning("%s is in use by another process; it is left for the next compaction", path)
+    return False
+
+
 def _read_file(path: Path) -> pa.Table:
     """All rows of one Parquet file. ``ParquetFile.read`` is twice as fast as ``pq.read_table``
     on a single file (24 ms against 50 ms for a 611-column part), and a season has tens of thousands."""
@@ -110,7 +129,7 @@ def _cleanup(root: Path, chunks: dict[str, dict[str, Any]]) -> int:
     referenced = {str(e[INTO]) for e in chunks.values() if e.get(INTO)}
     for path in root.rglob(f"{COMPACT_PREFIX}*.parquet"):
         if _rel(root, path) not in referenced:
-            path.unlink()
+            _unlink(path)
             removed += 1
     return removed
 
@@ -143,7 +162,7 @@ def _compact_group(
                 # left over by a run that stopped after writing the compacted file and before
                 # removing the part: the rows are already in the compacted file
                 if not dry_run:
-                    part.unlink()
+                    _unlink(part)
                 continue
             sources.append((key, part.stat().st_size))
             parts.append(part)
@@ -209,10 +228,10 @@ def _compact_group(
         {key: {**entries[key], INTO: _rel(root, path)} for path, batch in written for key in batch}
     )
     for part in parts:
-        part.unlink()
+        _unlink(part)
     still = {str(e[INTO]) for e in manifest.chunks().values() if e.get(INTO)}
     for rel in old_compact - still:
-        (root / rel).unlink(missing_ok=True)
+        _unlink(root / rel)
 
 
 def _drop_empty_parts(
@@ -237,7 +256,7 @@ def _drop_empty_parts(
         if part.exists() and pq.read_metadata(part).num_rows == 0:
             report.empty_files += 1
             if not dry_run:
-                part.unlink()
+                _unlink(part)
 
 
 def compact_dataset(

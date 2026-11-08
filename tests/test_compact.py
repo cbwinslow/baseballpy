@@ -261,3 +261,25 @@ def test_threads_refreshing_chunks_of_one_compacted_file_lose_and_duplicate_noth
     assert speeds == [100.0 + i for i in range(16)]
     compact_dataset(spec, cfg)
     assert sorted(bp.read("statcast.pitches", seasons=2023, config=cfg)["release_speed"]) == speeds
+
+
+def test_a_part_locked_by_another_process_does_not_stop_the_compaction(
+    lake: LakeConfig, spec: DatasetSpec, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Windows can hold a just-written file for a moment (virus scanner): retry, then go on."""
+    real = Path.unlink
+    calls = {"n": 0}
+
+    def flaky(self: Path, missing_ok: bool = False) -> None:
+        if self.name.startswith("part-") and calls["n"] < 3:
+            calls["n"] += 1
+            raise PermissionError(32, "The process cannot access the file")
+        real(self, missing_ok=missing_ok)
+
+    monkeypatch.setattr(Path, "unlink", flaky)
+    report = compact_dataset(spec, lake)
+    assert calls["n"] == 3 and report.groups == 1
+    assert not any(
+        p.name.startswith("part-")
+        for p in lake.processed_dir(spec.source, spec.name, 2023).glob("*.parquet")
+    )
