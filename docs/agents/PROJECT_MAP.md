@@ -13,7 +13,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `caching-and-invalidation` | 19 | 32 | 44 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
-| `cli-and-ingest` | 18 | 27 | 45 |
+| `cli-and-ingest` | 21 | 32 | 53 |
 | `concurrency-and-rate-limiting` | 6 | 12 | 14 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
@@ -25,6 +25,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
+| `portability` | 3 | 3 | 7 |
 | `real-time-streaming` | 7 | 12 | 12 |
 | `retrosheet-ingestion` | 20 | 25 | 26 |
 | `statcast-ingestion` | 15 | 18 | 24 |
@@ -46,17 +47,14 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-72 changes are archived under `openspec/changes/archive/`.
+75 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `agent-coordination-and-audit-rotation` | 3 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `cross-platform-support` | 5 | 1 | 1.6 |
-| `crosswalk-suite` | 1 | 0 | none |
-| `download-queue` | 5 | 1 | 1.6 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 3 | 11 | 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3 |
+| `finish-mlb-history` | 4 | 11 | 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 4.1, 4.3, 3.5 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 4 | 2 | 1.5, 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |

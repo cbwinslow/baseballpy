@@ -12,3 +12,10 @@
 
 ## Evidence
 Filled in as the plan runs (see the tasks).
+
+## Disk (measured 2026-11-08)
+C: is 238 GB with 21 GB free. The lake is 72.9 GB: processed 38.8 GB (mlb_api 31.8, kalshi 3.3, statcast 2.1, retrosheet 1.2) and raw 33.6 GB (mlb_api 23.3, kalshi 4.0, statcast 3.6, retrosheet 2.2). The rest of the drive is other work: other projects about 9 GB, AppData about 56 GB (JetBrains 11, Claude session scratch 9.5, uv caches 6.7), `.cache` 8.9 GB, old copies `baseballpy_sc` 3 GB and `baseballpy_mlb` 1 GB. In `raw/mlb_api` the same response is kept once per dataset cut from it: the live feed four times (3.02 GB each) and the boxscore six times (0.57 GB each), about 12 GB of copies (task 3.5).
+
+## Compaction in the queue (found by the first unattended run)
+`compact --source mlb_api` also rewrote every old file (the ADR 87 migration) and spent 25+ minutes CPU bound before the next download could start. The queue now passes `--no-migrate`; the migration is task 2.3, run on its own when the downloads are done.
+

@@ -12,5 +12,7 @@
 - [ ] 3.3 open the change `batched-chunk-writes`: fewer files and manifest writes per game (the profile in this change's design)
 - [ ] 3.4 live end-to-end test of `baseballpy stream` on a real game and a replay of a stored game through it (own change if it needs code)
 - [ ] 4.1 v1 release steps of `docs/RELEASING.md`: changelog, version, `uv build`, `twine check`, TestPyPI in a clean environment (the owner decides the tag)
-- [ ] 4.2 add macOS to the CI matrix and fix what it finds
+- [x] 4.2 add macOS to the CI matrix and fix what it finds
 - [ ] 4.3 review the open Dependabot alerts and give the crosswalk tests fixtures (B-311)
+- [ ] 3.5 open the change `shared-raw-bytes`: each upstream response is stored once. `raw/mlb_api` is 23.3 GB and holds the live feed four times (3.02 GB each) and the boxscore six times (0.57 GB each), about 12 GB of copies (measured 2026-11-08)
+

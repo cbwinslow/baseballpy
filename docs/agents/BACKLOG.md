@@ -527,13 +527,13 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-311 | crosswalk-suite 1.1: unified game, team, venue crosswalk views and python helpers (bb.games, bb.teams, bb.venues, bb.players) | DONE | views in DuckDB and python accessors verified with tests in test_crosswalk.py |
 | B-311 | crosswalk tests (tests/test_crosswalk.py) read the owner's real lake but the test home is isolated, so they fail anywhere without that lake; they are marked `live` for now. Give them small fixture data (a few players, teams, venues, games) so they run in the default gates | DONE | the 5 tests pass in an empty home without the `live` marker |
 | B-312 | cross-platform-support 1.1 to 1.5: LF line endings and `.gitattributes`, `spawn` worker processes, UTF-8 console, an enforcing test, ADR 89 | DONE | tests/test_portability.py (9); full suite 1509 passed |
-| B-314 | `cross-platform-support 1.6`: README platforms section, CHANGELOG, gates, CI green on ubuntu and windows, merge the spec delta, archive | OPEN | change archived after CI is green |
+| B-314 | cross-platform-support 1.6: README platforms section, CHANGELOG, gates, CI green on ubuntu and windows, merge the spec delta, archive | DONE | change archived |
 | B-313 | download-queue 1.1: `select_stages` and `baseballpy backfill --stage` | DONE | tests/test_queue.py (12) |
 | B-315 | download-queue 1.2: named single-instance lock, `LakeConfig.state_root` | DONE | tests/test_queue.py (12) |
 | B-316 | download-queue 1.3: `ingest/queue.py`: state file, rounds, retries with tenacity, stop event, child-process runner | DONE | tests/test_queue.py (12) |
 | B-317 | download-queue 1.4: `baseballpy run` command, CLI docs regenerated | DONE | tests/test_queue.py (12) |
 | B-318 | download-queue 1.5: tests/test_queue.py and a dry run against the built-in daily plan | DONE | tests/test_queue.py (12) |
-| B-319 | `download-queue 1.6`: status shows the queue; README, CHANGELOG, ADR 90, gates, spec merge, archive | OPEN | see the change's tasks.md |
+| B-319 | download-queue 1.6: status shows the queue; README, CHANGELOG, ADR 90, gates, spec merge, archive | DONE | see the change's tasks.md |
 | B-320 | finish-mlb-history 1.1: games-only job (ADR 91) | DONE | tests/test_mlb_game_levels.py |
 | B-321 | finish-mlb-history 1.2: queue compaction after each stage | DONE | tests/test_queue.py |
 | B-322 | finish-mlb-history 1.3: plans/mlb-games-history.toml | DONE | dry run lists 16 stages |
@@ -546,5 +546,6 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-329 | `finish-mlb-history 3.3`: open batched-chunk-writes (speed) | OPEN | change opened with measurements |
 | B-330 | `finish-mlb-history 3.4`: live end-to-end test of the streamer | OPEN | a real game streamed and a stored game replayed |
 | B-331 | `finish-mlb-history 4.1`: v1 release steps of RELEASING.md | OWNER | TestPyPI install works; the owner tags |
-| B-332 | `finish-mlb-history 4.2`: macOS in the CI matrix | OPEN | CI green on macOS |
+| B-332 | finish-mlb-history 4.2: macOS in the CI matrix | DONE | ci.yml tests on macos-latest |
 | B-333 | `finish-mlb-history 4.3`: Dependabot alerts and crosswalk fixtures (B-311) | OPEN | alerts reviewed, tests run in the default gates |
+| B-334 | `finish-mlb-history 3.5`: open shared-raw-bytes: store each upstream response once (about 12 GB of copies in raw/mlb_api) | OPEN | change opened with the measurement |
