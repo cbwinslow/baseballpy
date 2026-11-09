@@ -53,4 +53,3 @@ FanGraphs and Baseball-Reference provide aggregated and proprietary metrics (e.g
 - Added `tests/test_coverage_matrix.py` (3 tests, all passing): validates generator synchronization, 100% presence of all registered datasets in the matrix, and metadata integrity.
 - Linked master coverage matrix in `README.md`.
 - Merged requirement `Cross-Source Reference Parity` into `openspec/specs/catalog-audit/spec.md`.
-
