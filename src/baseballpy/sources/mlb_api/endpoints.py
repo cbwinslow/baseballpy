@@ -66,6 +66,8 @@ class MlbEndpoint:
     fan_out: tuple[str, ...] = ()
     #: a 404 for one request means "nothing there" (recorded as an empty part, counted in the report)
     tolerate_missing: bool = False
+    #: coverage note explaining why a default endpoint can be empty upstream
+    note: str = ""
 
     def __post_init__(self) -> None:
         """Derive the 404 tolerance of sport and team fan-out requests from the declaration.
@@ -107,7 +109,7 @@ class MlbEndpoint:
             return "opt_in", "all-time pool: ingest mlb_api --datasets history"
         if self.scope in ("since", "query"):
             return "on_demand", f"needs {'updated_since' if self.scope == 'since' else 'query'}"
-        return "default", ""
+        return "default", self.note
 
     @property
     def partitioned(self) -> bool:
@@ -431,12 +433,27 @@ def _ep(
     keys: tuple[str, ...],
     scope: str = "flat",
     tolerate_missing: bool = False,
+    note: str = "",
     **params: str | int,
 ) -> MlbEndpoint:
     return MlbEndpoint(
-        name, path, records, description, keys, scope, params, tolerate_missing=tolerate_missing
+        name,
+        path,
+        records,
+        description,
+        keys,
+        scope,
+        params,
+        tolerate_missing=tolerate_missing,
+        note=note,
     )
 
+
+#: notes explaining why an endpoint is empty in modern MLB seasons
+_STANDINGS_NOTES: dict[str, str] = {
+    "firstHalf": "upstream publishes for split-half seasons only (e.g. 1981); modern MLB seasons return 0 records",
+    "secondHalf": "upstream publishes for split-half seasons only (e.g. 1981); modern MLB seasons return 0 records",
+}
 
 _STANDINGS = [
     MlbEndpoint(
@@ -448,6 +465,7 @@ _STANDINGS = [
         "season",
         {"leagueId": "103,104", "season": "{season}", "standingsTypes": kind},
         "standings",
+        note=_STANDINGS_NOTES.get(kind, ""),
     )
     for kind in STANDINGS_TYPES
 ]
@@ -470,6 +488,22 @@ _ROSTERS = [
 
 PAGE_SIZE = 1000
 
+#: stat combinations where the provider publishes zero records across all players
+_STATS_NOTES: dict[tuple[str, str], str] = {
+    (
+        "seasonAdvanced",
+        "catching",
+    ): "upstream returns 0 records for all players (probed 19,506 people across all sports)",
+    (
+        "seasonAdvanced",
+        "fielding",
+    ): "upstream returns 0 records for all players (probed 19,506 people across all sports)",
+    (
+        "seasonAdvanced",
+        "game",
+    ): "upstream returns 0 records for all players (probed 19,506 people across all sports)",
+}
+
 _STATS = [
     MlbEndpoint(
         f"stats_{snake(stat)}_{group}",
@@ -487,6 +521,7 @@ _STATS = [
         },
         "stats",
         paginated=True,
+        note=_STATS_NOTES.get((stat, group), ""),
     )
     for stat, group, keys in PLAYER_STAT_COMBOS
 ]

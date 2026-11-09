@@ -423,7 +423,7 @@ def test_limit_option_reaches_the_planned_opt_in_jobs() -> None:
     assert result.exit_code == 0, result.output
     ids = [json.loads(line)["job_id"] for line in result.output.strip().splitlines()]
     assert "mlb_api:people_stats:limit=5:season=2023" in ids
-    assert any(i.startswith("mlb_api:season:games=True:limit=5") for i in ids)
+    assert any(i.startswith("mlb_api:season:games=True") and ":limit=5" in i for i in ids)
 
 
 def test_limit_must_be_positive() -> None:

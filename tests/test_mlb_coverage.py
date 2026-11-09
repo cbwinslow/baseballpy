@@ -862,3 +862,18 @@ def test_a_cancelled_game_has_no_win_probability_and_that_is_not_a_failure(tmp_p
     again = extractor.ingest("game_win_probability", ctx)
     assert (again.cached, gone.call_count) == (1, 1)  # not asked again
     assert BY_NAME["game_boxscore_info"].tolerate_missing is False
+
+
+def test_unpopulated_default_endpoints_carry_coverage_notes() -> None:
+    expected = {
+        "standings_first_half": "split-half",
+        "standings_second_half": "split-half",
+        "stats_season_advanced_catching": "0 records",
+        "stats_season_advanced_fielding": "0 records",
+        "stats_season_advanced_game": "0 records",
+    }
+    for name, needle in expected.items():
+        ep = BY_NAME[name]
+        mode, note = ep.ingest_mode
+        assert mode == "default"
+        assert needle in note
