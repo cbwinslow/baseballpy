@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-09 03:25 UTC [blain]:**
+  - **Tasks:** `B-392`.
+  - **Summary:** read_part retries when a refresh moves the chunk it is reading
+
 - **2026-11-09 01:28 UTC [blain]:**
   - **Tasks:** `B-369`.
   - **Summary:** views/read/ProcessedStore list season=*/*.parquet, hide _open/_legacy/.part; migration never rewrites segment files

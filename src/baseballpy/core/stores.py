@@ -35,6 +35,8 @@ from baseballpy.core.upstream import ETAG, Fingerprint
 logger = logging.getLogger(__name__)
 
 PARQUET_COMPRESSION = "zstd"
+#: times a read looks again after a concurrent refresh moved the chunk it was reading
+READ_RETRIES = 5
 
 
 #: characters Windows forbids in a file name (a lake built on Linux must open on Windows)
@@ -485,14 +487,21 @@ class ProcessedStore:
     ) -> pa.Table:
         """Read one stored part back (an empty table for a chunk recorded with zero rows)."""
         path = self.part_path(spec, chunk_id, season)
-        if path.exists():
-            return pq.read_table(path)
         manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
         key = manifest_key(chunk_id, season)
-        entry = manifest.get_chunk(key)
-        if entry and holds_chunk(self._dataset_root(spec), entry, key):
-            return read_chunk(self._dataset_root(spec), entry, key)
-        return spec.schema.empty_table()
+        for _ in range(READ_RETRIES):
+            if path.exists():
+                return pq.read_table(path)
+            entry = manifest.get_chunk(key)
+            if not (entry and holds_chunk(self._dataset_root(spec), entry, key)):
+                return spec.schema.empty_table()
+            try:
+                return read_chunk(self._dataset_root(spec), entry, key)
+            except (KeyError, FileNotFoundError):
+                # a refresh took the chunk out of the compacted file (or the file was replaced)
+                # between the check and the read: it is a plain part now, so look again
+                continue
+        raise RuntimeError(f"{spec.key}: chunk {key} kept moving while it was read")
 
     def files(self, spec: DatasetSpec) -> list[Path]:
         """Every parquet part currently stored for ``spec``."""

@@ -87,3 +87,5 @@
 {"timestamp": "2026-11-09T01:14:13Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-368", "details": "game_segments.py: URL groups from the registry, one decode, ingest_game_segments; opt-in --option storage=segments"}
 {"timestamp": "2026-11-09T01:15:55Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-369", "details": "Claimed task B-369 (files: none; note: In progress)"}
 {"timestamp": "2026-11-09T01:28:02Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-369", "details": "views/read/ProcessedStore list season=*/*.parquet, hide _open/_legacy/.part; migration never rewrites segment files"}
+{"timestamp": "2026-11-09T03:14:32Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-392", "details": "Claimed task B-392 (files: none; note: In progress)"}
+{"timestamp": "2026-11-09T03:25:47Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-392", "details": "read_part retries when a refresh moves the chunk it is reading"}

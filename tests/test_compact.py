@@ -300,3 +300,49 @@ def test_nan_in_a_float_column_does_not_fail_the_read_back_check() -> None:
     assert not _same_rows(
         a, pa.table({"x": pa.array([1.0, float("nan"), 3.0]), "y": ["a", "b", "c"]})
     )
+
+
+def test_a_read_that_meets_a_refresh_of_its_chunk_looks_again(
+    tmp_path: Path, spec: DatasetSpec, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """CI (Ubuntu, Python 3.13) saw a KeyError: the chunk left the compacted file after the check."""
+    from baseballpy.core import stores as stores_module
+
+    cfg = LakeConfig(home=tmp_path)
+    store = ProcessedStore(cfg)
+    for index, chunk in enumerate(("c00", "c01")):
+        store.put(spec, _pitches([float(index)], 2023), chunk_id=chunk, season=2023)
+    compact_dataset(spec, cfg)
+
+    real = stores_module.read_chunk
+    calls = {"n": 0}
+
+    def refresh_first(*args: object, **kwargs: object) -> pa.Table:
+        calls["n"] += 1
+        if calls["n"] == 1:  # the refresh lands between the check and the read
+            store.put(spec, _pitches([99.0], 2023), chunk_id="c00", season=2023)
+        return real(*args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(stores_module, "read_chunk", refresh_first)
+    table = store.read_part(spec, "c00", 2023)
+    assert table.column("release_speed").to_pylist() == [99.0], "the new rows, not an error"
+    assert calls["n"] == 1
+
+
+def test_a_chunk_that_keeps_moving_is_an_error_not_an_empty_table(
+    tmp_path: Path, spec: DatasetSpec, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from baseballpy.core import stores as stores_module
+
+    cfg = LakeConfig(home=tmp_path)
+    store = ProcessedStore(cfg)
+    for index, chunk in enumerate(("c00", "c01")):
+        store.put(spec, _pitches([float(index)], 2023), chunk_id=chunk, season=2023)
+    compact_dataset(spec, cfg)
+
+    def always_gone(*args: object, **kwargs: object) -> pa.Table:
+        raise KeyError("season=2023/c00")
+
+    monkeypatch.setattr(stores_module, "read_chunk", always_gone)
+    with pytest.raises(RuntimeError, match="kept moving"):
+        store.read_part(spec, "c00", 2023)
