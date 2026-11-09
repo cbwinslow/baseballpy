@@ -390,3 +390,72 @@ def test_a_refresh_with_no_rows_for_a_dataset_removes_its_old_file(tmp_path: Pat
     writer.refresh(1, {game: _responses(game, plays=0) for game in games})
     assert _files(config, "plays") == [] and len(_rows(config, "box")) == 2
     assert _lines(config)[-1]["datasets"]["plays"] == {"file": None, "rows": 0}
+
+
+def _committed_lake(tmp_path: Path) -> LakeConfig:
+    config = LakeConfig(home=tmp_path)
+    writer = _writer(tmp_path)
+    _add(writer, _games(3))
+    writer.commit()
+    release_all()
+    return config
+
+
+def _verdicts(config: LakeConfig) -> dict[tuple[str, str], str]:
+    from baseballpy.cache_check import check_segments
+
+    return {(r.dataset, r.name): r.integrity for r in check_segments(config)}
+
+
+def _cache_check_exit(tmp_path: Path) -> tuple[int, str]:
+    from click.testing import CliRunner
+
+    from baseballpy.cli import main
+
+    result = CliRunner().invoke(
+        main, ["cache", "check", "--source", SOURCE], env={"BASEBALLPY_HOME": str(tmp_path)}
+    )
+    return result.exit_code, result.output
+
+
+def test_cache_check_finds_a_damaged_segment(tmp_path: Path) -> None:
+    config = _committed_lake(tmp_path)
+    assert _verdicts(config) == {
+        ("(raw segments)", "seg-0001.parquet"): "ok",
+        ("plays", "seg-0001.parquet"): "ok",
+        ("box", "seg-0001.parquet"): "ok",
+    }
+    assert _cache_check_exit(tmp_path)[0] == 0, "a clean lake exits 0"
+
+    raw_file = next(_raw_dir(config).glob("seg-*.parquet"))
+    data = bytearray(raw_file.read_bytes())
+    data[len(data) // 2] ^= 0xFF  # one byte changed on disk after the commit
+    raw_file.write_bytes(bytes(data))
+    _files(config, "box")[0].unlink()
+    plays = _files(config, "plays")[0]
+    plays.write_bytes(plays.read_bytes()[:-20])  # cut short
+
+    verdicts = _verdicts(config)
+    assert verdicts[("(raw segments)", "seg-0001.parquet")] == "corrupt"
+    assert verdicts[("box", "seg-0001.parquet")] == "missing"
+    assert verdicts[("plays", "seg-0001.parquet")] == "corrupt"
+    code, output = _cache_check_exit(tmp_path)
+    assert code == 1 and "seg-0001.parquet" in output
+
+
+def test_cache_check_finds_a_raw_row_whose_bytes_do_not_match_its_hash(tmp_path: Path) -> None:
+    from baseballpy.core.responselog import file_sha256
+
+    config = _committed_lake(tmp_path)
+    raw_file = next(_raw_dir(config).glob("seg-*.parquet"))
+    table = pq.read_table(raw_file)
+    bodies = table.column("body").to_pylist()
+    bodies[0] = bodies[0] + b" "  # a body that no longer matches its row's sha256
+    pq.write_table(table.set_column(5, "body", pa.array(bodies, pa.large_binary())), raw_file)
+    # the file is now consistent with a recomputed file hash, so only the row check can see it
+    path = _raw_dir(config) / "segments.json"
+    line = json.loads(path.read_text(encoding="utf-8").splitlines()[0])
+    line["files"][raw_file.name]["sha256"] = file_sha256(raw_file)
+    path.write_text(json.dumps(line, separators=(",", ":")) + "\n", encoding="utf-8")
+
+    assert _verdicts(config)[("(raw segments)", "seg-0001.parquet")] == "corrupt"

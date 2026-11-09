@@ -18,6 +18,7 @@ from baseballpy.cache_check import (
     UNREACHABLE,
     FileCheck,
     check_raw,
+    check_segments,
 )
 from baseballpy.core.config import LakeConfig
 
@@ -38,12 +39,14 @@ def cache_group() -> None:
 )
 @click.option("--json", "as_json", is_flag=True, help="Print every checked file as JSON.")
 def cache_check_cmd(sources: tuple[str, ...], upstream: bool, as_json: bool) -> None:
-    """Verify raw files against their recorded sha256 and optionally against upstream.
+    """Verify raw files and segment files against their recorded sha256, optionally against upstream.
 
     Exit code 1 when a file is missing or corrupt. Files whose upstream version changed are
     reported only: refresh them with ``baseballpy ingest <source> --refresh``.
     """
-    results = check_raw(LakeConfig(), sources=sources, upstream=upstream)
+    config = LakeConfig()
+    results = check_raw(config, sources=sources, upstream=upstream)
+    results += check_segments(config, sources=sources)
     broken = [r for r in results if r.integrity in (CORRUPT, MISSING)]
     if as_json:
         for r in results:

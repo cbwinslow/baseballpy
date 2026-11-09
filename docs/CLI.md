@@ -221,7 +221,7 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  check  Verify raw files against their recorded sha256 and optionally against upstream.
+  check  Verify raw files and segment files against their recorded sha256, optionally against...
 ```
 
 ## `baseballpy cache check`
@@ -229,7 +229,7 @@ Commands:
 ```text
 Usage: baseballpy cache check [OPTIONS]
 
-  Verify raw files against their recorded sha256 and optionally against upstream.
+  Verify raw files and segment files against their recorded sha256, optionally against upstream.
 
   Exit code 1 when a file is missing or corrupt. Files whose upstream version changed are reported
   only: refresh them with ``baseballpy ingest <source> --refresh``.

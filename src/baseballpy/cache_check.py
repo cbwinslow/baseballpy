@@ -3,18 +3,25 @@
 Integrity compares every raw file with the sha256 its manifest recorded (offline). The optional
 upstream check compares the git blob fingerprints stored at download time with the latest tree of
 each repository (two GitHub requests per repository, the tree listing is cached by commit).
+
+Segments (ADR 95) are checked by :func:`check_segments`: every file a commit line names must be there
+and match its recorded sha256, and every row of a raw segment must hold the bytes its own sha256 names.
 """
 
+import hashlib
 import logging
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
+
+import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import ManifestTracker
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.github_tree import TreeTruncatedError, fetch_tree
 from baseballpy.core.http import HttpStatusError, TransportError
 from baseballpy.core.rawfiles import logical_sha256, stored_path
+from baseballpy.core.responselog import COMMIT_NAME, file_sha256, read_commit_lines
 from baseballpy.core.sources_lock import SourceRef, resolve_latest_sha
 from baseballpy.core.upstream import GIT_BLOB, stored_fingerprint
 
@@ -57,6 +64,62 @@ def latest_blobs(config: LakeConfig) -> LatestBlobs:
         return {e.path: e.sha for e in entries}
 
     return lookup
+
+
+def _raw_rows_ok(path: Path) -> bool:
+    """True when every row of a raw segment holds the bytes its own sha256 names."""
+    with pq.ParquetFile(path) as handle:
+        for batch in handle.iter_batches(columns=["sha256", "body"], batch_size=64):
+            for sha, body in zip(
+                batch.column("sha256").to_pylist(), batch.column("body").to_pylist(), strict=True
+            ):
+                if hashlib.sha256(body).hexdigest() != sha:
+                    return False
+    return True
+
+
+def _file_verdict(path: Path, expected_sha256: str, *, raw_rows: bool = False) -> str:
+    if not path.is_file():
+        return MISSING
+    try:
+        if file_sha256(path) != expected_sha256:
+            return CORRUPT
+        if raw_rows and not _raw_rows_ok(path):
+            return CORRUPT
+    except (OSError, ValueError, pq.lib.ArrowException):
+        return CORRUPT  # unreadable counts as damaged
+    return OK
+
+
+def check_segments(config: LakeConfig, *, sources: Sequence[str] = ()) -> list[FileCheck]:
+    """Verdicts for every file the newest commit line of each segment names.
+
+    Raw segment: the file against the line's sha256 and every row's body against the row's sha256.
+    Processed segment files: the file against the line's sha256. The upstream verdict is
+    ``not_checked``: segments carry no git fingerprint.
+    """
+    results: list[FileCheck] = []
+    raw_root = config.raw_root
+    for commit_path in sorted(raw_root.rglob(COMMIT_NAME)):
+        source, _, season = _location(raw_root, commit_path.parent)
+        if sources and source not in sources:
+            continue
+        lines, _ = read_commit_lines(commit_path)
+        for line in {int(x["segment"]): x for x in lines}.values():
+            for name, info in sorted(line.get("files", {}).items()):
+                verdict = _file_verdict(commit_path.parent / name, info["sha256"], raw_rows=True)
+                results.append(
+                    FileCheck(source, "(raw segments)", season, name, verdict, NOT_CHECKED)
+                )
+            for dataset, info in sorted(line.get("datasets", {}).items()):
+                if not info.get("file"):
+                    continue  # the segment has no rows for this dataset
+                folder = config.processed_dir(source, dataset, season)
+                verdict = _file_verdict(folder / info["file"], info["sha256"])
+                results.append(
+                    FileCheck(source, dataset, season, info["file"], verdict, NOT_CHECKED)
+                )
+    return results
 
 
 def _location(raw_root: Path, directory: Path) -> tuple[str, str, int | None]:
