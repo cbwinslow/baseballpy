@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-09 01:14 UTC [blain]:**
+  - **Tasks:** `B-368`.
+  - **Summary:** game_segments.py: URL groups from the registry, one decode, ingest_game_segments; opt-in --option storage=segments
+
 - **2026-11-09 00:52 UTC [blain]:**
   - **Tasks:** `B-367`.
   - **Summary:** tests first for the MLB switch (4) and the view listing (2); all fail as expected

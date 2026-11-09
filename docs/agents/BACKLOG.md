@@ -606,7 +606,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-365 | response-log-segments 3.6: cache check verifies segment files and response sha256s | DONE | after B-362; tests/test_segments.py::test_cache_check_finds_a_damaged_segment passes |
 | B-366 | response-log-segments 3.7: add `_raw_sha256` without making old chunks stale | DONE | after B-361; existing schema-digest tests still pass; ADR amendment if built another way |
 | B-367 | response-log-segments 4.1: tests first: tests/test_mlb_segments.py and tests/test_segment_views.py | DONE | after B-362; the tests exist and fail for the right reason |
-| B-368 | `response-log-segments 4.2`: MLB per-game path on the response log (the registry maps URLs to datasets) | READY | after B-367; tests/test_mlb_segments.py passes |
+| B-368 | response-log-segments 4.2: MLB per-game path on the response log (the registry maps URLs to datasets) | DONE | after B-367; tests/test_mlb_segments.py passes |
 | B-369 | `response-log-segments 4.3`: views and read list `season=*/*.parquet` beside old files, never `_open/` or `_legacy/` | READY | after B-367; tests/test_segment_views.py passes |
 | B-370 | `response-log-segments 4.4`: one real season: peak memory, seconds per game, files per dataset; tune 250 games / 10 minutes / 50 per row group | LONG | after B-368; numbers in design.md |
 | B-371 | `response-log-segments 5.1`: tests first: tests/test_raw_convert.py | READY | after B-355; the tests exist and fail for the right reason |

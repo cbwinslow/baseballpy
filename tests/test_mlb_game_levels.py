@@ -89,3 +89,27 @@ def test_a_games_run_fetches_only_the_games_not_the_season_datasets_again() -> N
     adapter.run(make_job("mlb_api", "season", games=True, season=2024))  # an older job id
     assert source.calls[0][1]["include_season"] is False
     assert source.calls[1][1]["include_season"] is True
+
+
+def test_parse_game_storage() -> None:
+    from baseballpy.sources.mlb_api.adapter import parse_game_storage
+
+    assert parse_game_storage("parts") == "parts" and parse_game_storage(" Segments ") == "segments"
+    with pytest.raises(ValueError, match="bad --option storage"):
+        parse_game_storage("files")
+
+
+def test_the_storage_option_reaches_the_source_and_the_default_changes_no_job_id() -> None:
+    source = _Source()
+    adapter = MlbApiAdapter(source, calendar=_Calendar())
+    default = _games_job(adapter)
+    segments = _games_job(adapter, ("storage", "segments"))
+    assert default.param("storage") is None, (
+        "the default adds no parameter, so job ids stay the same"
+    )
+    assert segments.param("storage") == "segments" and segments.job_id != default.job_id
+    adapter.run(default)
+    adapter.run(segments)
+    assert [kw.get("game_segments", False) for _, kw in source.calls] == [False, True]
+    with pytest.raises(ValueError, match="bad --option storage"):
+        _games_job(adapter, ("storage", "files"))

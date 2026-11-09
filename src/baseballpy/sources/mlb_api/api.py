@@ -10,6 +10,7 @@ from baseballpy.core.config import STATSAPI_HOST, LakeConfig
 from baseballpy.core.lazy import lazy_singleton
 from baseballpy.sources.mlb_api.endpoints import SUPPORTED, Context, MlbEndpoint
 from baseballpy.sources.mlb_api.extractor import MlbApiExtractor
+from baseballpy.sources.mlb_api.game_segments import game_segment_reports, ingest_game_segments
 from baseballpy.sources.mlb_api.generic import (
     EndpointReport,
     MlbEndpointExtractor,
@@ -182,6 +183,7 @@ class MlbApiSource:
         max_people: int | None = None,
         game_sport_ids: tuple[int, ...] | None = (1,),
         refresh: bool = False,
+        game_segments: bool = False,
     ) -> list[EndpointReport]:
         """Ingest every season-scoped endpoint (and, optionally, per-game endpoints) of a season.
 
@@ -196,6 +198,10 @@ class MlbApiSource:
         final games of ``schedule_hydrated`` (``max_games`` bounds the number of games). All-time stat
         types (``career*``, ``yearByYear*``) ignore the season and take minutes per request, so they
         run only with ``include_history=True``.
+
+        ``game_segments=True`` stores the per-game datasets as segments (ADR 95: each URL once, one
+        raw copy, large Parquet files) instead of one chunk per game and dataset. It is opt-in until
+        a real season has been measured with it (task 4.4).
         """
         reports = self.ingest_reference(refresh) if include_season else []
         sports = sport_ids if sport_ids is not None else self.all_sport_ids()
@@ -244,6 +250,10 @@ class MlbApiSource:
         if include_games:
             pks = self.final_game_pks(season, game_sport_ids)
             pks = pks[:max_games] if max_games is not None else pks
+            if game_segments:
+                outcome = ingest_game_segments(self.endpoints, season, pks)
+                reports.extend(game_segment_reports(outcome, len(pks)))
+                return reports
             game_ctx = self._context(season, sports, pks)
             game_eps = sorted(
                 (e for e in SUPPORTED if e.scope == "game"), key=lambda e: (e.path, e.name)

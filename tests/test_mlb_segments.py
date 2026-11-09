@@ -1,9 +1,7 @@
 """The MLB per-game download on segments (ADR 95): each URL once, the same rows as before.
 
-Written first (task 4.1, B-367). ``baseballpy.sources.mlb_api.game_segments`` does not exist yet: tasks
-4.2 and 4.3 build it. Until then every test is an expected failure that must fail because the module
-is missing (``ImportError``). Remove the ``xfail`` marks as the tests start to pass; a strict
-``xfail`` that passes fails the run.
+Written first (task 4.1, B-367); ``baseballpy.sources.mlb_api.game_segments`` (task 4.2, B-368) made
+them pass.
 
 The interface these tests fix:
 
@@ -39,12 +37,6 @@ from baseballpy.sources.mlb_api import generic
 from baseballpy.sources.mlb_api.endpoints import MLB_BASE_URL, SUPPORTED, Context
 from baseballpy.sources.mlb_api.generic import MlbEndpointExtractor
 from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
-
-NOT_BUILT = pytest.mark.xfail(
-    strict=True,
-    raises=ImportError,
-    reason="B-368: baseballpy.sources.mlb_api.game_segments is not built yet",
-)
 
 FIXTURES = Path(__file__).parent / "fixtures" / "mlb"
 SEASON = 2024
@@ -100,7 +92,6 @@ def _calls(routes: dict[tuple[int, str], respx.Route]) -> dict[tuple[int, str], 
     return {key: route.call_count for key, route in routes.items()}
 
 
-@NOT_BUILT
 @respx.mock
 def test_each_game_url_is_fetched_and_parsed_once_for_all_its_datasets(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -138,7 +129,6 @@ def test_each_game_url_is_fetched_and_parsed_once_for_all_its_datasets(
         assert len(files) == 1, name
 
 
-@NOT_BUILT
 @respx.mock
 def test_segment_rows_equal_the_old_per_game_rows(tmp_path: Path) -> None:
     module = _api()
@@ -163,7 +153,6 @@ def test_segment_rows_equal_the_old_per_game_rows(tmp_path: Path) -> None:
         ), name
 
 
-@NOT_BUILT
 @respx.mock
 def test_an_empty_or_failed_response_never_marks_a_game_complete(tmp_path: Path) -> None:
     module = _api()
@@ -208,7 +197,6 @@ def test_an_empty_or_failed_response_never_marks_a_game_complete(tmp_path: Path)
     ), "stored games are not requested again"
 
 
-@NOT_BUILT
 @respx.mock
 def test_old_part_files_and_segments_are_read_together(tmp_path: Path) -> None:
     module = _api()
@@ -230,3 +218,23 @@ def test_old_part_files_and_segments_are_read_together(tmp_path: Path) -> None:
     assert set(by_game) == {old_game, new_game}
     assert by_game[old_game] is None, "rows of the old part files have no lineage"
     assert isinstance(by_game[new_game], str) and len(by_game[new_game]) == 64
+
+
+def test_a_segment_run_becomes_one_report_per_dataset_and_a_capped_list_of_failures() -> None:
+    from baseballpy.sources.mlb_api.game_segments import GameSegmentReport, game_segment_reports
+
+    report = GameSegmentReport(
+        stored=3,
+        already=2,
+        failed={pk: "HTTP 404" for pk in range(100, 150)},
+        segments=1,
+        rows={"game_linescore": 30},
+    )
+    reports = game_segment_reports(report, games=55)
+    by_name = {r.name: r for r in reports}
+    assert sorted(set(by_name) - {"game_segments"}) == GAME_DATASETS
+    assert by_name["game_linescore"].rows == 30 and by_name["game_linescore"].cached == 2
+    errors = by_name["game_segments"].errors
+    assert (
+        len(errors) == 21 and errors[-1] == "... and 30 more" and errors[0] == "game 100: HTTP 404"
+    )

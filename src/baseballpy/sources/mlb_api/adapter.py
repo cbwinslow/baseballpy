@@ -12,6 +12,20 @@ DEFAULT_DATASETS = ("reference", "season")
 #: ``--option sports=...`` for the per-game phase: major leagues unless told otherwise
 MAJOR_LEAGUES = "1"
 ALL_LEVELS = "all"
+#: how the per-game datasets are stored: one chunk per game and dataset, or segments (ADR 95)
+GAME_STORAGE_PARTS = "parts"
+GAME_STORAGE_SEGMENTS = "segments"
+
+
+def parse_game_storage(text: str) -> str:
+    """The value of ``--option storage=...``: ``parts`` (default) or ``segments``."""
+    cleaned = text.strip().lower()
+    if cleaned not in (GAME_STORAGE_PARTS, GAME_STORAGE_SEGMENTS):
+        raise ValueError(
+            f"bad --option storage={text!r}: use '{GAME_STORAGE_PARTS}' (one chunk per game and "
+            f"dataset) or '{GAME_STORAGE_SEGMENTS}' (large files, each response stored once)"
+        )
+    return cleaned
 
 
 def parse_game_sports(text: str) -> tuple[int, ...] | None:
@@ -152,6 +166,11 @@ class MlbApiAdapter:
                 if "games" in wanted:
                     sports = selection.option("sports", MAJOR_LEAGUES)
                     parse_game_sports(sports)  # a typo fails the plan, not the job hours later
+                    storage = parse_game_storage(selection.option("storage", GAME_STORAGE_PARTS))
+                    # only a non-default value is a parameter, so the ids of existing jobs do not change
+                    extra: dict[str, Any] = (
+                        {} if storage == GAME_STORAGE_PARTS else {"storage": storage}
+                    )
                     jobs.append(
                         make_job(
                             "mlb_api",
@@ -160,6 +179,7 @@ class MlbApiAdapter:
                             games_only=True,
                             season=season,
                             sports=sports.strip().lower().replace(" ", ""),
+                            **extra,
                             **selection.limit_params(),
                         )
                     )
@@ -207,6 +227,12 @@ class MlbApiAdapter:
                 include_season=not bool(job.param("games_only", False)),
                 game_sport_ids=parse_game_sports(str(job.param("sports", MAJOR_LEAGUES))),
                 refresh=refresh,
+                # passed only when asked for, so a source without the option keeps working
+                **(
+                    {"game_segments": True}
+                    if job.param("storage", GAME_STORAGE_PARTS) == GAME_STORAGE_SEGMENTS
+                    else {}
+                ),
             )
             return _result(job, reports)
 
