@@ -1,9 +1,7 @@
 """Processed segments (ADR 95, 96): one Parquet file per dataset per segment, counted only by a commit line.
 
-Written first (task 3.1, B-360). Task 3.2 (B-361) built the open files (``ProcessedSegmentFiles``) and
-task 3.3 (B-362) the commit, start-up clean-up and journal replay. The tests of ``refresh`` (task 3.4)
-and of the writer lock (task 3.5) are expected failures until those tasks; remove their ``xfail`` marks
-then (a strict ``xfail`` that passes fails the run).
+Written first (task 3.1, B-360); tasks 3.2 to 3.5 (B-361 to B-364) built the open files, the commit,
+the refresh and the writer lock, and made these tests pass.
 
 The interface these tests fix (it extends ``ResponseLog`` of tasks 2.x):
 
@@ -37,18 +35,6 @@ import pytest
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.hostlock import HostBusyError, release_all
 from baseballpy.core.responselog import Response
-
-NOT_BUILT = pytest.mark.xfail(
-    strict=True,
-    raises=(ImportError, NotImplementedError),
-    reason="B-363: SegmentWriter.refresh is not built yet",
-)
-
-LOCK_NOT_BUILT = pytest.mark.xfail(
-    strict=True,
-    raises=(ImportError, NotImplementedError, pytest.fail.Exception),
-    reason="B-364: the writer lock is not built yet (the second writer is not refused)",
-)
 
 FETCHED_AT = "2026-11-08T12:00:00+00:00"
 SOURCE = "mlb_api"
@@ -237,7 +223,6 @@ def test_a_torn_commit_line_is_ignored(tmp_path: Path) -> None:
     assert len(_rows(config, "box")) == 4
 
 
-@LOCK_NOT_BUILT
 def test_a_second_writer_on_the_same_season_is_refused(tmp_path: Path) -> None:
     _api()  # a missing module fails here, before a child process is started
     holder_code = (
@@ -258,9 +243,11 @@ def test_a_second_writer_on_the_same_season_is_refused(tmp_path: Path) -> None:
     try:
         assert holder.stdout is not None and holder.stdout.readline().strip() == "held"
         before = sorted(tmp_path.rglob("*"))
-        with pytest.raises(HostBusyError, match="mlb_api"):
+        with pytest.raises(HostBusyError, match="mlb_api season 2024"):
             _writer(tmp_path)
         assert sorted(tmp_path.rglob("*")) == before, "the first writer's files are untouched"
+        _, writer_class = _api()  # another season of the same source is not blocked
+        writer_class(LakeConfig(home=tmp_path), "mlb_api", 2023, lambda u, r: {})
     finally:
         assert holder.stdin is not None
         holder.stdin.write("\n")

@@ -30,6 +30,7 @@ import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import _replace_with_retry, atomic_write
 from baseballpy.core.config import LakeConfig
+from baseballpy.core.hostlock import claim_named
 from baseballpy.core.responselog import (
     OPEN_DIRNAME,
     Response,
@@ -174,8 +175,24 @@ class ProcessedSegmentFiles:
         self._pending_units = 0
 
 
+def claim_season(config: LakeConfig, source: str, season: int | None) -> None:
+    """Take the writer lock of one source and season (idempotent in a process); ``HostBusyError`` if taken."""
+    label = source if season is None else f"{source} season {season}"
+    claim_named(
+        config.locks_root,
+        f"segments-{source}" + ("" if season is None else f"-{season}"),
+        f"another baseballpy process is writing the segments of {label}: wait for it to finish "
+        "(one writer per source and season keeps the commit lines and the files consistent).",
+    )
+
+
 class SegmentWriter:
     """The response log plus the processed files of one source and season.
+
+    The writer takes the lock ``segments-<source>-<season>`` of ``core/hostlock.py`` before it touches a
+    file, and keeps it until the process ends; a second process that asks for the same source and
+    season gets ``HostBusyError`` and changes nothing. The converter, the rebuild and the round-trip
+    check take the same lock through :func:`claim_season`.
 
     ``add_unit`` journals the responses, parses them with ``normalize`` and hands the rows to the open
     files; ``commit`` makes the segment count. The writer lock is added in task 3.5, ``refresh`` in 3.4.
@@ -190,6 +207,7 @@ class SegmentWriter:
         *,
         row_group_units: int = ROW_GROUP_UNITS,
     ) -> None:
+        claim_season(config, source, season)  # before any file is read, renamed or deleted
         self.config = config
         self.source = source
         self.season = season

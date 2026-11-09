@@ -21,7 +21,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [x] 3.2 processed segment writer in `baseballpy/core/segments.py` (the interface is fixed by the docstring of `tests/test_segments.py`; remove the `xfail` marks of the tests it makes pass): `ParquetWriter`, row groups of about 50 games, `_raw_sha256`, `.part` names in `_open/`
 - [x] 3.3 commit: renames with the existing retry, one line appended to `segments.json`, start-up clean-up and journal replay
 - [x] 3.4 refresh of a committed segment (same name, open refresh run again on start)
-- [ ] 3.5 one writer per source and season through `core/hostlock.py`
+- [x] 3.5 one writer per source and season through `core/hostlock.py`
 - [ ] 3.6 `baseballpy cache check` verifies segment files and response sha256s from `segments.json`; test `tests/test_segments.py::test_cache_check_finds_a_damaged_segment`
 - [ ] 3.7 add `_raw_sha256` without making old chunks stale (left out of the schema digest; old files read it as empty); ADR amendment if built another way
 

@@ -76,7 +76,7 @@ A segment MUST be committed by renaming its files from `_open/` into place (with
 - Verified by `tests/test_segments.py::test_a_game_counts_only_after_its_commit_line`, `tests/test_segments.py::test_start_up_deletes_uncommitted_files_and_replays_the_journal` and `tests/test_segments.py::test_a_torn_commit_line_is_ignored`.
 
 ### Requirement: One Writer Per Source And Season
-Only one process MUST write the segments of one source and season at a time; downloads, the converter, the rebuild and the round-trip check MUST take the existing host lock, and a second writer MUST be refused with a message that names the lock holder.
+Only one process MUST write the segments of one source and season at a time; downloads, the converter, the rebuild and the round-trip check MUST take the existing host lock, and a second writer MUST be refused with a message that names the source and season being written (the lock file does not record the process that holds it).
 
 #### Scenario: Second writer
 - **WHEN** a second writer starts on a season that is being written
