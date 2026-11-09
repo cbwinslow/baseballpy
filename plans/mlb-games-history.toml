@@ -134,4 +134,3 @@ sources = ["mlb_api"]
 seasons = "current"
 datasets = ["games"]
 estimate_gb = 0.5
-

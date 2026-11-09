@@ -237,4 +237,3 @@ The supervisor MUST keep its state in an atomically written file and, when start
 - **WHEN** a stage is run by the child-process runner
 - **THEN** it starts the current Python (`sys.executable`) with the `backfill` command and `--stage`, maps its exit code, and terminates the child when the stop event is set
 - Verified by `tests/test_queue.py::test_the_child_runner_uses_the_current_python_and_stops_the_child`.
-

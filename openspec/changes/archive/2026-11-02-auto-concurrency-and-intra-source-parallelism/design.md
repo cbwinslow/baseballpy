@@ -38,12 +38,12 @@ def resolve_concurrency(
         if job_count is not None and job_count > 0:
             return min(target, job_count)
         return target
-    
+
     try:
         val = int(concurrency)
     except (ValueError, TypeError):
         raise ValueError(f"concurrency must be an integer >= 1 or 'auto'; got {concurrency!r}")
-    
+
     if val < 1:
         raise ValueError(f"concurrency must be at least 1; got {val}")
     return val
@@ -70,4 +70,3 @@ def resolve_concurrency(
 - `baseballpy ingest` CLI in `src/baseballpy/cli_ingest.py` defaults to `auto` concurrency and displays resolved worker count in UI.
 - All 1,213 test cases passed in 296s (`tests/test_auto_concurrency.py`, `tests/test_ingest_runner.py`, `tests/test_cli_ingest.py`).
 - Strict typing (114 modules clean with `mypy --strict src`), linting (`ruff check .`), formatting (`ruff format --check .`), and docs sync (`baseballpy docs generate --check`) green.
-

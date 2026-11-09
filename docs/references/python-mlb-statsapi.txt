@@ -392,11 +392,11 @@ This example shows how to retrieve detailed information for a specific MLB seaso
 
 ```python
 >>> import mlbstatsapi
->>> 
+>>>
 >>> mlb = mlbstatsapi.Mlb()
->>> 
+>>>
 >>> season = mlb.get_season(season_id=2022)
->>> 
+>>>
 >>> print(season)
 Season(seasonid=2022, haswildcard=True, preseasonstartdate=2022-01-01, preseasonenddate=2022-03-16, seasonstartdate=2022-03-17, springstartdate=2022-03-17, springenddate=2022-04-06, regularseasonstartdate=2022-04-07, lastdate1sthalf=2022-07-17, allstardate=2022-07-19, firstdate2ndhalf=2022-07-21, regularseasonenddate=2022-10-05, postseasonstartdate=2022-10-07, postseasonenddate=2022-11-05, seasonenddate=2022-11-05, offseasonstartdate=2022-11-06, offseasonenddate=2022-12-31, seasonlevelgamedaytype=P, gamelevelgamedaytype=P, qualifierplateappearances=3.1, qualifieroutspitched=6000.0)
 ```
@@ -411,9 +411,9 @@ This snippet demonstrates how to get a team's ID and then retrieve detailed team
 
 ```python
 >>> import mlbstatsapi
->>> 
+>>>
 >>> mlb = mlbstatsapi.Mlb()
->>> 
+>>>
 >>> team_id = mlb.get_team_id("Seattle Mariners")
 >>> print(team_id)
 [136]
@@ -1849,9 +1849,9 @@ Retrieves detailed information about one or more MLB venues using their IDs. Thi
 
 ```python
 >>> import mlbstatsapi
->>> 
+>>>
 >>> mlb = mlbstatsapi.Mlb()
->>> 
+>>>
 >>> venue_ids = mlb.get_venue_id("PNC Park")
 [31]
 >>>
@@ -1990,11 +1990,11 @@ This snippet demonstrates how to initialize the mlbstatsapi client and retrieve 
 
 ```python
 >>> import mlbstatsapi
->>> 
+>>>
 >>> mlb = mlbstatsapi.Mlb()
->>> 
+>>>
 >>> seasons = mlb.get_seasons(sport_id=1)
->>> 
+>>>
 >>> print(seasons)
 [Season(seasonid=1876), Season(seasonid=1877), Season(seasonid=1878), ..., Season(seasonid=2022)]
 ```
@@ -2203,11 +2203,11 @@ This Python code snippet demonstrates how to use the `mlbstatsapi` library to fe
 
 ```python
 >>> import mlbstatsapi
->>> 
+>>>
 >>> mlb = mlbstatsapi.Mlb()
->>> 
+>>>
 >>> awards = mlb.get_awards(award_id = 'MLBHOF', sportId = 1, season = 2017, leagueId = 103)
->>> 
+>>>
 >>> print(awards)
 [Award(id=MLBHOF, name=Hall Of Fame, date=2017-01-18, season=2017, team=Team(id=140, link=/api/v1/teams/140), player=Person(id=121358, link=/api/v1/people/121358, primaryposition=Position(code='2', name='Catcher', type='Catcher', abbreviation='C'), namefirstlast=Ivan Rodriguez), votes=336), Award(id=MLBHOF, name=Hall Of Fame, date=2017-01-18, season=2017, team=Team(id=117, link=/api/v1/teams/117), player=Person(id=110432, link=/api/v1/people/110432, primaryposition=Position(code='3', name='First Base', type='Infielder', abbreviation='1B'), namefirstlast=Jeff Bagwell), votes=381), Award(id=MLBHOF, name=Hall Of Fame, date=2017-01-18, season=2017, team=Team(id=120, link=/api/v1/teams/120), player=Person(id=120891, link=/api/v1/people/120891, primaryposition=Position(code='7', name='Outfielder', type='Outfielder', abbreviation='LF'), namefirstlast=Tim Raines), votes=380)]
 ```
@@ -3187,7 +3187,7 @@ Retrieves MLB draft data for a specific year and optionally filters by round. Th
 >>> mlb = mlbstatsapi.Mlb()
 >>>
 >>> draft_year = mlb.get_draft(year_id = 2018)
->>> 
+>>>
 >>> print(draft_year)
 [Round(round=1, picks=[DraftPick(), DraftPick(), DraftPick()], Round(round=2, picks=[DraftPick(), DraftPick(), DraftPick()])]
 >>>
@@ -4932,7 +4932,7 @@ This function searches for a venue by its name and returns its corresponding ID.
 
 ```python
 >>> import mlbstatsapi
->>> 
+>>>
 >>> mlb = mlbstatsapi.Mlb()
 >>>
 >>> venue_ids = mlb.get_venue_id("PNC Park")
