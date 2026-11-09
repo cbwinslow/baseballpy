@@ -26,9 +26,9 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [x] 3.7 add `_raw_sha256` without making old chunks stale (left out of the schema digest; old files read it as empty); ADR amendment if built another way
 
 ## 4. MLB per-game path on segments
-- [ ] 4.1 tests first: `tests/test_mlb_segments.py::test_each_game_url_is_fetched_and_parsed_once_for_all_its_datasets`, `::test_segment_rows_equal_the_old_per_game_rows`; `tests/test_segment_views.py::test_views_and_read_see_a_segment_as_soon_as_it_commits`, `::test_open_and_legacy_folders_are_never_read`, `tests/test_mlb_segments.py::test_an_empty_or_failed_response_never_marks_a_game_complete` (pybaseball's cache keeps empty results for future dates), `::test_old_part_files_and_segments_are_read_together`
-- [ ] 4.2 the endpoint registry says which datasets come from which URL; the per-game path writes through the response log and segments
-- [ ] 4.3 views and `read` list `season=*/*.parquet` (segments beside `part-*` and `compact-*`, never `_open/` or `_legacy/`)
+- [x] 4.1 tests first: `tests/test_mlb_segments.py::test_each_game_url_is_fetched_and_parsed_once_for_all_its_datasets`, `::test_segment_rows_equal_the_old_per_game_rows`; `tests/test_segment_views.py::test_views_and_read_see_a_segment_as_soon_as_it_commits`, `::test_open_and_legacy_folders_are_never_read`, `tests/test_mlb_segments.py::test_an_empty_or_failed_response_never_marks_a_game_complete` (pybaseball's cache keeps empty results for future dates), `::test_old_part_files_and_segments_are_read_together`
+- [ ] 4.2 `baseballpy/sources/mlb_api/game_segments.py` (interface fixed by the docstring of `tests/test_mlb_segments.py`; remove its `xfail` marks): `game_url_groups()` from the endpoint registry (same path = same URL), `decode_body`, `ingest_game_segments`; the per-game path writes through the response log and segments
+- [ ] 4.3 views and `read` list `season=*/*.parquet` (segments beside `part-*` and `compact-*`, never `_open/` or `_legacy/`); a segment file is not reported as "differs from the registered schema" (the lineage column is expected); empty `_open/` folders are removed after a commit; remove the `xfail` marks of `tests/test_segment_views.py`
 - [ ] 4.4 run one real season: peak memory, seconds per game, files per dataset; adjust 250 games / 10 minutes / 50 per row group; record in design.md
 
 ## 5. Converter for the existing raw files

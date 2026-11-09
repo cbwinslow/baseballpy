@@ -81,3 +81,5 @@
 {"timestamp": "2026-11-09T00:24:46Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-365", "details": "cache check verifies segment files and every raw row's hash"}
 {"timestamp": "2026-11-09T00:25:51Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-366", "details": "Claimed task B-366 (files: none; note: In progress)"}
 {"timestamp": "2026-11-09T00:35:21Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-366", "details": "lineage column kept out of the registered schema digest; scan_dataset reads old parts and segment files together"}
+{"timestamp": "2026-11-09T00:40:03Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-367", "details": "Claimed task B-367 (files: none; note: In progress)"}
+{"timestamp": "2026-11-09T00:52:06Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-367", "details": "tests first for the MLB switch (4) and the view listing (2); all fail as expected"}
