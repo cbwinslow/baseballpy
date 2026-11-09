@@ -18,3 +18,12 @@ Python's GIL serializes pure-Python parsing in threads, which fits a flat rate w
 
 ## Evidence
 See the proposal. The scripts are throw-away probes (`probe_server.py`, `bench_put.py`, `prof_put.py`); their numbers are recorded here and in ADR 92.
+
+### Task 2.1 Normalization Profile (cProfile on live feed and boxscore payloads, 2026-11-08)
+- Sampled real fixture payloads (`game_feed_plays.json`, `game_feed_play_events.json`, `game_boxscore_players.json`):
+  - Normalization speed: ~11.5 ms per endpoint (~34.5 ms for the 3-dataset subset; ~150 ms for all 13 endpoints of a complete game).
+  - Internal time distribution across 1.726 s (50 iterations of 3 endpoints):
+    1. `from_records` (column-by-column value extraction): 0.448 s tottime (1.305 s cumtime, 75.6% of normalization). Dominated by iterating over 42,250 field-value extractions via dict `.get()` (302,400 calls, 0.099 s) and Arrow array building.
+    2. `_array` and `safe_array` (type checking and Arrow chunk construction): 0.445 s tottime (0.708 s cumtime, 41.0%).
+    3. `_flatten` and `_walk` (nested JSON structure traversal and list serialization): 0.205 s tottime (0.369 s cumtime, 21.4%).
+- **Architectural Takeaway:** Normalization CPU time (~150 ms/game) is dwarfed by unbatched filesystem operations (~350–950 ms/game across 13 individual Parquet file writes and 13 manifest atomic updates). Therefore, `batched-chunk-writes` (Task 2.2) targets the true 70–80% bottleneck.
