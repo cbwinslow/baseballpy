@@ -271,6 +271,16 @@ To relocate the lake: `export BASEBALLPY_HOME=/path/to/lake` (individual tiers c
 
 ---
 
+## Platforms & Portability
+
+`baseballpy` behaves identically and produces byte-identical files across Linux, macOS, and Windows (ADR 89):
+- **Line Endings:** All written text and JSON files use explicit `newline="\n"` (LF) line endings; `.gitattributes` enforces LF checkouts across platforms.
+- **Multiprocessing Pools:** Worker process pools explicitly use the `spawn` start method (`multiprocessing.get_context("spawn")`), ensuring thread safety with DuckDB and HTTP connection pools on both POSIX and Windows.
+- **Console Encoding:** Terminal output dynamically reconfigures to UTF-8 on Windows consoles to render box-drawing tables and international player accents cleanly.
+- **Background Downloads:** The download supervisor (`baseballpy run`) is implemented purely in Python using file-based host locks (`hostlock.py`) without relying on platform-specific schedulers (cron, Task Scheduler, or systemd).
+
+---
+
 ## Architecture & Specifications
 
 - **Master Dataset Coverage Matrix:** Exhaustive cross-source comparison against `pybaseball`, `baseballr`, and `MLB-StatsAPI` in [docs/MASTER_COVERAGE_MATRIX.md](docs/MASTER_COVERAGE_MATRIX.md).
