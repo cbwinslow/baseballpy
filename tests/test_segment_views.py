@@ -1,9 +1,6 @@
 """DuckDB views and ``read`` over segment files: visible at once, and ``_open``/``_legacy`` never read.
 
-Written first (task 4.1, B-367). Until task 4.3 (B-369) changes the file listing, both tests are expected
-failures: today views and ``read`` take every ``*.parquet`` below the dataset folder (``**/*.parquet``)
-and a view warns that a segment file "differs from the registered schema" because of its lineage
-column. Remove the ``xfail`` marks when 4.3 lands; a strict ``xfail`` that passes fails the run.
+Written first (task 4.1, B-367); task 4.3 (B-369) made the listing follow the rule below and these pass.
 
 The listing rule fixed here (design section 2): a season-split dataset is read from
 ``season=*/*.parquet`` (one folder level), an unsplit one from ``*.parquet``; the files may be
@@ -31,12 +28,6 @@ from baseballpy.database import BaseballDatabase
 from baseballpy.sources import catalog
 from baseballpy.sources.mlb_api.endpoints import BY_NAME
 from baseballpy.sources.mlb_api.generic import MlbRecordNormalizer
-
-LISTING_NOT_CHANGED = pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="B-369: views and read still list **/*.parquet and warn about the lineage column",
-)
 
 FIXTURES = Path(__file__).parent / "fixtures" / "mlb"
 SEASON = 2024
@@ -80,7 +71,6 @@ def _count_read(config: LakeConfig) -> int:
     return int(read(f"mlb_api.{DATASET}", backend="pyarrow", config=config).num_rows)
 
 
-@LISTING_NOT_CHANGED
 def test_views_and_read_see_a_segment_as_soon_as_it_commits(
     tmp_path: Path, caplog: pytest.LogCaptureFixture
 ) -> None:
@@ -105,7 +95,6 @@ def test_views_and_read_see_a_segment_as_soon_as_it_commits(
     con.close()
 
 
-@LISTING_NOT_CHANGED
 def test_open_and_legacy_folders_are_never_read(tmp_path: Path) -> None:
     catalog.register_all()
     config = LakeConfig(home=tmp_path)
@@ -128,3 +117,30 @@ def test_open_and_legacy_folders_are_never_read(tmp_path: Path) -> None:
     spec = get_dataset("mlb_api", DATASET)
     assert spec.partition == "season"
     con.close()
+
+
+def test_old_parts_and_segments_in_one_view_merge_by_column_name_without_a_warning(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    from baseballpy.core.stores import ProcessedStore
+
+    catalog.register_all()
+    config = LakeConfig(home=tmp_path)
+    spec = get_dataset("mlb_api", DATASET)
+    payload = json.loads((FIXTURES / "game_linescore.json").read_text(encoding="utf-8"))
+    old = MlbRecordNormalizer().normalize(BY_NAME[DATASET], payload, extra={"game_pk": 745000})
+    ProcessedStore(config).put(spec, old, chunk_id="game_linescore_745000", season=SEASON)
+    _commit(config, ["745001"])
+
+    con = BaseballDatabase(db_path=":memory:", cache_config=config).connect()
+    assert "differs from the registered schema" not in caplog.text
+    assert _count_view(con) == old.num_rows * 2
+    nulls = con.execute(f"SELECT count(*) FROM {VIEW} WHERE _raw_sha256 IS NULL").fetchone()  # noqa: S608
+    assert nulls is not None and nulls[0] == old.num_rows, "the old rows have no lineage"
+    con.close()
+
+
+def test_a_commit_leaves_no_empty_open_folder_in_a_dataset(tmp_path: Path) -> None:
+    config = LakeConfig(home=tmp_path)
+    _commit(config, ["745000"])
+    assert not (_dataset_dir(config) / "_open").exists()

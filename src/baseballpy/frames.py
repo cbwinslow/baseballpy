@@ -8,6 +8,7 @@ import polars as pl
 import pyarrow as pa
 
 from baseballpy.core.datasets import DatasetSpec, with_lineage
+from baseballpy.core.listing import dataset_files, dataset_glob
 
 #: ``arrow`` is accepted as another name for ``pyarrow``
 Backend = Literal["polars", "pandas", "pyarrow", "arrow"]
@@ -48,17 +49,18 @@ def scan_dataset(spec: DatasetSpec, root: Path) -> pl.LazyFrame:
     response each row was made from. When a dataset holds segment files the scan has that column, empty
     for the rows of older files; a dataset without segment files comes back exactly as registered.
     """
-    has_segments = next(root.rglob("seg-*.parquet"), None) is not None
+    by_season = spec.partition == "season"
+    files = dataset_files(root, by_season=by_season)
+    has_segments = any(p.name.startswith("seg-") for p in files)
     schema_to_scan = with_lineage(spec.schema) if has_segments else spec.schema
     registered = pl.from_arrow(schema_to_scan.empty_table())
     if not isinstance(registered, pl.DataFrame):
         raise TypeError("a schema must convert to a DataFrame")
-    first = next(iter(root.rglob("*.parquet")), None)
-    held = pl.read_parquet_schema(first) if first is not None else {}
+    held = pl.read_parquet_schema(files[0]) if files else {}
     schema = {name: held.get(name, dtype) for name, dtype in registered.schema.items()}
     return pl.scan_parquet(
-        str(root / "**" / "*.parquet"),
-        hive_partitioning=spec.partition == "season",
+        str(dataset_glob(root, by_season=by_season)),
+        hive_partitioning=by_season,
         schema=schema,
         missing_columns="insert",
         extra_columns="raise",

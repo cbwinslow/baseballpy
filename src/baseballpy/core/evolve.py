@@ -33,6 +33,7 @@ from baseballpy.core.compacted import (
 )
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec
+from baseballpy.core.listing import visible_parquet
 from baseballpy.core.quarantine import Quarantine
 from baseballpy.core.schema_tools import EXTRAS, UPSTREAM_KEY, map_to_schema
 from baseballpy.core.stores import part_filename, spec_fingerprint
@@ -197,7 +198,9 @@ def migrate_dataset(
     manifest = cfg.dataset_manifest(spec.source, spec.name, "processed")
     entries = manifest.chunks()
     done: dict[str, str] = {}  # file -> fingerprint its chunks carried if it was only a column gap
-    for path in sorted(root.rglob("*.parquet")):
+    for path in sorted(visible_parquet(root)):
+        if path.name.startswith("seg-"):
+            continue  # a segment file is rebuilt from raw, never rewritten: its commit line names its sha256
         report.files_checked += 1
         if not _differs(path, spec.schema):
             continue

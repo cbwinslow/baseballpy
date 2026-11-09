@@ -117,3 +117,28 @@ def test_a_column_the_schema_does_not_have_is_still_an_error(tmp_path: Path) -> 
     _write(tmp_path, "seg-0001.parquet", table)
     with pytest.raises(pl.exceptions.PolarsError):
         scan_dataset(_spec(), tmp_path).collect()
+
+
+def test_migration_and_compaction_never_rewrite_a_segment_file(tmp_path: Path) -> None:
+    """A segment file is named by a commit line (its sha256): rewriting it would break the check."""
+    from baseballpy.core.compact import compact_dataset
+    from baseballpy.core.datasets import get_dataset
+    from baseballpy.core.evolve import migrate_dataset
+    from baseballpy.sources import catalog
+
+    catalog.register_all()
+    config = LakeConfig(home=tmp_path)
+    spec = get_dataset("mlb_api", "game_linescore")
+    folder = config.processed_dir("mlb_api", "game_linescore", 2024)
+    folder.mkdir(parents=True)
+    table = spec.schema.empty_table()
+    seg = folder / "seg-0001.parquet"
+    pq.write_table(
+        with_lineage(spec.schema).empty_table(), seg
+    )  # the extra column is what a migration would call "different"
+    before = seg.read_bytes()
+
+    report = migrate_dataset(spec, config)
+    compact_dataset(spec, config, migrate=True)
+    assert seg.read_bytes() == before
+    assert report.files_rewritten == 0 and table.num_rows == 0

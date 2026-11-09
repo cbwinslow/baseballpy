@@ -22,6 +22,7 @@ from its journal; the raw file keeps every old row and adds the new responses (d
 """
 
 from collections.abc import Callable, Mapping, Sequence
+from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -286,6 +287,8 @@ class SegmentWriter:
             digest = file_sha256(part)
             schema = schema_fingerprint(pq.read_schema(part))
             _replace(part, final)
+            with suppress(OSError):
+                part.parent.rmdir()  # the empty _open folder of the dataset
             datasets[dataset] = {
                 "file": final.name,
                 "rows": counts[dataset],

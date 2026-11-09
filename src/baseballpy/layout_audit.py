@@ -18,6 +18,7 @@ import pyarrow.parquet as pq
 from baseballpy.core.compacted import COMPACT_PREFIX, INTO, chunk_map
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS
+from baseballpy.core.listing import visible_parquet
 from baseballpy.core.rawfiles import is_compressible, is_packed
 from baseballpy.sources import catalog
 
@@ -104,7 +105,7 @@ def _processed_findings(config: LakeConfig, sources: set[str]) -> list[LayoutFin
             continue
         label = f"{spec.name}"
         by_folder: dict[Path, list[Path]] = defaultdict(list)
-        for path in root.rglob("*.parquet"):
+        for path in visible_parquet(root):  # a segment being written is not a tiny file
             by_folder[path.parent].append(path)
         parts = [p for files in by_folder.values() for p in files if p.name.startswith("part-")]
         crowded = {f: len(fs) for f, fs in by_folder.items() if len(fs) > MAX_PART_FILES}

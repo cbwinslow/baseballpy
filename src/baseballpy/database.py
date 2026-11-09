@@ -16,8 +16,9 @@ import pyarrow.parquet as pq
 
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
-from baseballpy.core.datasets import DATASETS
+from baseballpy.core.datasets import DATASETS, with_lineage
 from baseballpy.core.layout import hint_if_legacy
+from baseballpy.core.listing import dataset_files, dataset_glob, visible_parquet
 from baseballpy.core.sql import quote_ident, quote_literal
 from baseballpy.sources import catalog
 
@@ -59,21 +60,33 @@ def is_newer_format(exc: BaseException) -> bool:
     return isinstance(exc, duckdb.IOException) and "newer version of DuckDB" in str(exc)
 
 
-def _mixed_schema_file(root: Path, schema: pa.Schema) -> str | None:
-    """Name of a file at the edges of ``root`` (first and last folder, first and last file) whose
-    columns differ from ``schema``, or None.
+def _schema_state(files: list[Path], schema: pa.Schema) -> tuple[str | None, bool]:
+    """``(odd file, mixed kinds)`` from the files at the edges of a dataset (first and last folder, first
+    and last file of each).
 
-    A strict view takes its columns from one file, so a dataset that mixes schemas silently loses
-    columns in SQL (ADR 87). Looking at the edges is cheap and catches the usual case: the oldest
-    seasons were written before the schema gained columns. ``baseballpy catalog layout`` checks all.
+    A file is either a *legacy* file (exactly the registered columns) or a *segment* file (the registered
+    columns plus the lineage column, ADR 95). ``odd`` is a file that is neither: a strict view takes its
+    columns from one file, so such a file silently loses columns in SQL (ADR 87). ``mixed`` is true when
+    both kinds are present: the view then merges columns by name, which is correct and needs no warning.
+    ``baseballpy catalog layout`` checks every file.
     """
-    folders = sorted(p for p in root.iterdir() if p.is_dir())
-    for folder in dict.fromkeys([folders[0], folders[-1]] if folders else [root]):
-        files = sorted(folder.glob("*.parquet"))
-        for file in dict.fromkeys(files[:1] + files[-1:]):
-            if not pq.read_schema(file).equals(schema, check_metadata=False):
-                return file.name
-    return None
+    by_folder: dict[Path, list[Path]] = {}
+    for path in files:
+        by_folder.setdefault(path.parent, []).append(path)
+    folders = sorted(by_folder)
+    edge = dict.fromkeys([folders[0], folders[-1]] if folders else [])
+    kinds: set[str] = set()
+    for folder in edge:
+        group = by_folder[folder]
+        for file in dict.fromkeys(group[:1] + group[-1:]):
+            held = pq.read_schema(file)
+            if held.equals(schema, check_metadata=False):
+                kinds.add("legacy")
+            elif held.equals(with_lineage(schema), check_metadata=False):
+                kinds.add("segment")
+            else:
+                return file.name, False
+    return None, len(kinds) > 1
 
 
 def _view_sql(files_glob: Path, partitioned: bool, strict: bool) -> str:
@@ -159,9 +172,14 @@ class BaseballDatabase:
         finally:
             con.close()
 
-    def _dataset_files(self, source: str, dataset: str) -> list[Path]:
+    def _dataset_files(
+        self, source: str, dataset: str, *, by_season: bool | None = None
+    ) -> list[Path]:
+        """The data files of a dataset: by the registered layout, or any layout when ``by_season`` is None."""
         root = self.cache_config.processed_dir(source, dataset)
-        return sorted(root.rglob("*.parquet")) if root.exists() else []
+        if by_season is None:
+            return sorted(visible_parquet(root))
+        return dataset_files(root, by_season=by_season)
 
     def expected_views(self) -> dict[str, tuple[Path, bool, bool]]:
         """``view -> (parquet glob, hive-partitioned, strict schema)`` for datasets with data.
@@ -174,9 +192,10 @@ class BaseballDatabase:
         known: set[tuple[str, str]] = set()
         for spec in DATASETS.values():
             known.add((spec.source, spec.name))
-            if self._dataset_files(spec.source, spec.name):
+            by_season = spec.partition == "season"
+            if self._dataset_files(spec.source, spec.name, by_season=by_season):
                 root = self.cache_config.processed_dir(spec.source, spec.name)
-                views[spec.view] = (root / "**" / "*.parquet", spec.partition == "season", True)
+                views[spec.view] = (dataset_glob(root, by_season=by_season), by_season, True)
         processed = self.cache_config.processed_root
         if processed.exists():
             for source_dir in sorted(p for p in processed.iterdir() if p.is_dir()):
@@ -216,7 +235,7 @@ class BaseballDatabase:
         processed = self.cache_config.processed_root
         if not processed.exists():
             return []
-        for path in processed.rglob("*.parquet"):
+        for path in visible_parquet(processed):
             rel = path.relative_to(processed).parts
             if len(rel) < 3:
                 continue
@@ -292,7 +311,9 @@ class BaseballDatabase:
                 specs = {s.view: s for s in DATASETS.values()}
                 for view, (pattern, partitioned, strict) in self.expected_views().items():
                     if strict and (spec := specs.get(view)) is not None:
-                        odd = _mixed_schema_file(pattern.parent.parent, spec.schema)
+                        files = self._dataset_files(spec.source, spec.name, by_season=partitioned)
+                        odd, mixed = _schema_state(files, spec.schema)
+                        strict = not mixed
                         if odd is not None:
                             logger.warning(
                                 "view %s: %s differs from the registered schema, so SQL may miss "

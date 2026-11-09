@@ -20,6 +20,7 @@ from baseballpy.core.compacted import (
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec, with_lineage
 from baseballpy.core.layout import ensure_version_file, hint_if_legacy
+from baseballpy.core.listing import dataset_files
 from baseballpy.core.rawfiles import (
     GZIP,
     GZIP_SUFFIX,
@@ -495,15 +496,13 @@ class ProcessedStore:
 
     def files(self, spec: DatasetSpec) -> list[Path]:
         """Every parquet part currently stored for ``spec``."""
-        root = self.dataset_dir(spec)
-        return sorted(root.rglob("*.parquet")) if root.exists() else []
+        return dataset_files(self.dataset_dir(spec), by_season=spec.partition == "season")
 
     def read(
         self, spec: DatasetSpec, season: int | None = None, columns: list[str] | None = None
     ) -> pa.Table:
         """Concatenate the stored parts (optionally one season, optionally some columns) into one table."""
-        root = self.dataset_dir(spec, season)
-        parts = sorted(root.rglob("*.parquet")) if root.exists() else []
+        parts = self._parts(spec, season)
         if not parts:
             schema = (
                 spec.schema
@@ -517,9 +516,12 @@ class ProcessedStore:
 
     def row_count(self, spec: DatasetSpec, season: int | None = None) -> int:
         """Total rows across all parts (of one season if given), read from parquet footers."""
-        root = self.dataset_dir(spec, season)
-        parts = sorted(root.rglob("*.parquet")) if root.exists() else []
-        return sum(pq.ParquetFile(p).metadata.num_rows for p in parts)
+        return sum(pq.ParquetFile(p).metadata.num_rows for p in self._parts(spec, season))
+
+    def _parts(self, spec: DatasetSpec, season: int | None) -> list[Path]:
+        """The data files of one season, or of every season of a split dataset (hidden files left out)."""
+        by_season = spec.partition == "season" and season is None
+        return dataset_files(self.dataset_dir(spec, season), by_season=by_season)
 
 
 def reprocess(
