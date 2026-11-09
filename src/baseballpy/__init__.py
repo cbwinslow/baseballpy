@@ -11,7 +11,17 @@ from typing import Any
 import polars as pl
 import pyarrow as pa
 
-from baseballpy.access import read, sql
+from baseballpy.access import (
+    game_crosswalk,
+    games,
+    player_crosswalk,
+    players,
+    read,
+    sql,
+    team_crosswalk,
+    venue_crosswalk,
+    venues,
+)
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.migrate import MigrationReport, migrate_layout
 from baseballpy.core.protocols import (
@@ -234,6 +244,14 @@ __all__ = [
     "to_duckdb",
     "to_parquet",
     "to_polars",
+    # Crosswalk Suite Accessors
+    "game_crosswalk",
+    "games",
+    "player_crosswalk",
+    "players",
+    "team_crosswalk",
+    "venue_crosswalk",
+    "venues",
     # Convenience Functions - Statcast
     "get_leaderboard",
     "statcast",
