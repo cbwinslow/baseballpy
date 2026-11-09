@@ -604,7 +604,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-363 | response-log-segments 3.4: refresh of a committed segment under the same name | DONE | after B-362; refresh test passes |
 | B-364 | response-log-segments 3.5: one writer per source and season through core/hostlock.py | DONE | after B-362; second-writer test passes |
 | B-365 | response-log-segments 3.6: cache check verifies segment files and response sha256s | DONE | after B-362; tests/test_segments.py::test_cache_check_finds_a_damaged_segment passes |
-| B-366 | `response-log-segments 3.7`: add `_raw_sha256` without making old chunks stale | READY | after B-361; existing schema-digest tests still pass; ADR amendment if built another way |
+| B-366 | response-log-segments 3.7: add `_raw_sha256` without making old chunks stale | DONE | after B-361; existing schema-digest tests still pass; ADR amendment if built another way |
 | B-367 | `response-log-segments 4.1`: tests first: tests/test_mlb_segments.py and tests/test_segment_views.py | READY | after B-362; the tests exist and fail for the right reason |
 | B-368 | `response-log-segments 4.2`: MLB per-game path on the response log (the registry maps URLs to datasets) | READY | after B-367; tests/test_mlb_segments.py passes |
 | B-369 | `response-log-segments 4.3`: views and read list `season=*/*.parquet` beside old files, never `_open/` or `_legacy/` | READY | after B-367; tests/test_segment_views.py passes |

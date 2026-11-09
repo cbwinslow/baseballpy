@@ -7,7 +7,7 @@ import narwhals as nw
 import polars as pl
 import pyarrow as pa
 
-from baseballpy.core.datasets import DatasetSpec
+from baseballpy.core.datasets import DatasetSpec, with_lineage
 
 #: ``arrow`` is accepted as another name for ``pyarrow``
 Backend = Literal["polars", "pandas", "pyarrow", "arrow"]
@@ -43,8 +43,14 @@ def scan_dataset(spec: DatasetSpec, root: Path) -> pl.LazyFrame:
     the scan failing on the first file that differs. A column the schema does not have is still an
     error, never dropped. Types of columns a file already holds are the file's own; only the
     missing columns take the registered type.
+
+    Segment files (``seg-*.parquet``, ADR 95) carry one more column, ``_raw_sha256``: the sha256 of the
+    response each row was made from. When a dataset holds segment files the scan has that column, empty
+    for the rows of older files; a dataset without segment files comes back exactly as registered.
     """
-    registered = pl.from_arrow(spec.schema.empty_table())
+    has_segments = next(root.rglob("seg-*.parquet"), None) is not None
+    schema_to_scan = with_lineage(spec.schema) if has_segments else spec.schema
+    registered = pl.from_arrow(schema_to_scan.empty_table())
     if not isinstance(registered, pl.DataFrame):
         raise TypeError("a schema must convert to a DataFrame")
     first = next(iter(root.rglob("*.parquet")), None)

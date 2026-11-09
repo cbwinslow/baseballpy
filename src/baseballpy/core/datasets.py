@@ -28,6 +28,18 @@ SOURCES = (
 IngestMode = Literal["default", "opt_in", "on_demand", "api_only"]
 
 
+#: the column every row of a segment file carries: the sha256 of the response it was made from (ADR 95).
+#: It is not part of a dataset's registered schema, so adding it changes no stored digest.
+LINEAGE_COLUMN = "_raw_sha256"
+
+
+def with_lineage(schema: pa.Schema) -> pa.Schema:
+    """``schema`` plus the lineage column (a nullable string, last), the schema of a segment file."""
+    if LINEAGE_COLUMN in schema.names:
+        return schema
+    return schema.append(pa.field(LINEAGE_COLUMN, pa.string()))
+
+
 @dataclass(frozen=True)
 class DatasetSpec:
     """Static description of one dataset (one ``processed/<source>/<name>/`` directory)."""

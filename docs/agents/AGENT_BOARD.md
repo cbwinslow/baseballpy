@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-09 00:35 UTC [blain]:**
+  - **Tasks:** `B-366`.
+  - **Summary:** lineage column kept out of the registered schema digest; scan_dataset reads old parts and segment files together
+
 - **2026-11-09 00:24 UTC [blain]:**
   - **Tasks:** `B-365`.
   - **Summary:** cache check verifies segment files and every raw row's hash

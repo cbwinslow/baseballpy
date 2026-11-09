@@ -30,6 +30,7 @@ import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import _replace_with_retry, atomic_write
 from baseballpy.core.config import LakeConfig
+from baseballpy.core.datasets import LINEAGE_COLUMN
 from baseballpy.core.hostlock import claim_named
 from baseballpy.core.responselog import (
     OPEN_DIRNAME,
@@ -42,7 +43,6 @@ from baseballpy.core.responselog import (
 )
 from baseballpy.core.stores import PARQUET_COMPRESSION, schema_fingerprint
 
-LINEAGE_COLUMN = "_raw_sha256"
 REFRESH_PREFIX = "refresh-"
 #: units (games) per row group of a processed segment file; memory holds about this many units of rows
 ROW_GROUP_UNITS = 50

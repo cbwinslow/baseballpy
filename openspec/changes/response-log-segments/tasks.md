@@ -23,7 +23,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [x] 3.4 refresh of a committed segment (same name, open refresh run again on start)
 - [x] 3.5 one writer per source and season through `core/hostlock.py`
 - [x] 3.6 `baseballpy cache check` verifies segment files and response sha256s from `segments.json`; test `tests/test_segments.py::test_cache_check_finds_a_damaged_segment`
-- [ ] 3.7 add `_raw_sha256` without making old chunks stale (left out of the schema digest; old files read it as empty); ADR amendment if built another way
+- [x] 3.7 add `_raw_sha256` without making old chunks stale (left out of the schema digest; old files read it as empty); ADR amendment if built another way
 
 ## 4. MLB per-game path on segments
 - [ ] 4.1 tests first: `tests/test_mlb_segments.py::test_each_game_url_is_fetched_and_parsed_once_for_all_its_datasets`, `::test_segment_rows_equal_the_old_per_game_rows`; `tests/test_segment_views.py::test_views_and_read_see_a_segment_as_soon_as_it_commits`, `::test_open_and_legacy_folders_are_never_read`, `tests/test_mlb_segments.py::test_an_empty_or_failed_response_never_marks_a_game_complete` (pybaseball's cache keeps empty results for future dates), `::test_old_part_files_and_segments_are_read_together`

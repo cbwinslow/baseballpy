@@ -79,3 +79,5 @@
 {"timestamp": "2026-11-09T00:13:53Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-364", "details": "one writer per source and season through the host lock; all seven segment tests pass"}
 {"timestamp": "2026-11-09T00:15:40Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-365", "details": "Claimed task B-365 (files: none; note: In progress)"}
 {"timestamp": "2026-11-09T00:24:46Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-365", "details": "cache check verifies segment files and every raw row's hash"}
+{"timestamp": "2026-11-09T00:25:51Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-366", "details": "Claimed task B-366 (files: none; note: In progress)"}
+{"timestamp": "2026-11-09T00:35:21Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-366", "details": "lineage column kept out of the registered schema digest; scan_dataset reads old parts and segment files together"}

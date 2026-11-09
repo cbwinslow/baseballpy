@@ -18,7 +18,7 @@ from baseballpy.core.compacted import (
     release_chunk,
 )
 from baseballpy.core.config import LakeConfig
-from baseballpy.core.datasets import DatasetSpec
+from baseballpy.core.datasets import DatasetSpec, with_lineage
 from baseballpy.core.layout import ensure_version_file, hint_if_legacy
 from baseballpy.core.rawfiles import (
     GZIP,
@@ -94,6 +94,23 @@ def spec_fingerprint(spec: DatasetSpec) -> str:
     if not spec.revision:
         return digest
     return hashlib.sha256(f"{digest};revision={spec.revision}".encode()).hexdigest()
+
+
+def segment_fingerprint(spec: DatasetSpec) -> str:
+    """The digest of a segment file of ``spec``: its schema plus the lineage column.
+
+    It is the digest of the file's own columns, which is what a commit line records. The parser
+    ``revision`` is not in it (the writer does not know the spec), so a revision bump is applied by
+    rebuilding the season from raw, which the rebuild does for every segment it is asked to. The
+    ``spec_fingerprint`` of the same spec is unchanged by the lineage column, so no chunk written
+    before it looks stale.
+    """
+    return schema_fingerprint(with_lineage(spec.schema))
+
+
+def segment_matches(spec: DatasetSpec, stored_digest: str | None) -> bool:
+    """False when a segment file was written under a different schema than ``spec`` has now."""
+    return bool(stored_digest) and stored_digest == segment_fingerprint(spec)
 
 
 def schema_matches(spec: DatasetSpec, entry: Mapping[str, Any] | None) -> bool:
