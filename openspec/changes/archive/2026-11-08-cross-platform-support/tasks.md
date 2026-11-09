@@ -5,4 +5,4 @@
 - [x] 1.3 `spawn` for the Retrosheet parse pool
 - [x] 1.4 UTF-8 console streams in the CLI
 - [x] 1.5 tests/test_portability.py (9 tests)
-- [ ] 1.6 README "Platforms" section, CHANGELOG, ADR 89, gates, CI green on ubuntu and windows, merge spec delta, archive
+- [x] 1.6 README "Platforms" section, CHANGELOG, ADR 89, gates, CI green on ubuntu and windows, merge spec delta, archive

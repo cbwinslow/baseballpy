@@ -74,6 +74,14 @@ Rules for the run (token-saving, per owner request):
 
 - 2026-11-05: `mlb-stats-route-memory` (B-259) closed and archived (ADR 68): a refused /v1/stats is remembered for an hour.
 - 2026-11-05: `code-tightening` (B-252 to B-256) closed and archived (ADR 69): 7 complexity warnings fixed without changing any output.
-- 2026-11-05: `modelling-data-needs` (B-260 to B-264) opened: field-by-field list of what the game-winner models need; no code yet.
-- 2026-11-05: `market-sources` (B-266 to B-273) opened: Kalshi and Polymarket as standard sources, plus a one-time import of the homelab MLB history.
-- 2026-11-06: `lake-access-and-compaction` (B-278 to B-284) opened: measured query paths (Polars 1.8 s vs DuckDB view 549 s for all Statcast), plan for views, read/sql helpers, compaction, compressed raw.
+- 2026-11-06: `market-sources` (B-266 to B-277): Kalshi and Polymarket integrated, 126.8M Kalshi records + 16.7M Polymarket records ingested (ADR 70, ADR 71, ADR 77).
+- 2026-11-06: `lake-access-and-compaction` (B-278 to B-286) closed and archived (ADR 73 to 76): compaction command, direct parquet read/sql helpers, compressed raw files.
+- 2026-11-06: `fangraphs-and-bref` (B-288, B-289, B-291): BRef WAR and FanGraphs table import & slow downloader implemented (ADR 78, ADR 79, ADR 80).
+- 2026-11-07: `folder-and-name-audit`, `fresh-install-verification`, `lake-workflows-and-cli`, `mlb-game-levels` closed and archived (ADRs 82 to 85).
+- 2026-11-08: `modelling-data-needs` (B-260 to B-265) closed and archived: sabermetric formulas and predictive modeling belong strictly in `sabermetricspy`; baseballpy is exclusively an ingestion engine and data lake storage utility.
+- 2026-11-08: `agent-coordination-and-audit-rotation` (B-293 to B-295) closed and archived (ADR 81): agent CLI coordination, 100 MB auto-rotation, OpenCode delegation.
+- 2026-11-08: `mlb-game-memory` (B-301, B-308) closed and archived (ADR 88): msgspec zero-copy binary serialization for manifests preventing memory spikes.
+- 2026-11-08: `crosswalk-suite` (B-311) closed and archived: unified crosswalk views (`v_game_crosswalk`, `v_team_crosswalk`, `v_venue_crosswalk`, `v_player_crosswalk`) and python accessors (`bb.games`, `bb.teams`, `bb.venues`, `bb.players`).
+- 2026-11-08: `cross-platform-support` (B-312, B-314) closed and archived (ADR 89): LF line endings, gitattributes, spawn worker pool, UTF-8 console, macOS CI runner.
+- 2026-11-08: `download-queue` (B-313, B-315 to B-319) closed and archived (ADR 90): unattended `baseballpy run` queue, stage compaction, state file, disk threshold.
+- 2026-11-08: `finish-mlb-history`: Task 3.1 (unpopulated endpoint evidence), Task 3.4 (streamer replay test), Task 4.2 (macOS CI matrix) completed; Task 2.1 (history backfill) currently downloading in background.
