@@ -196,22 +196,27 @@ class RawSegmentSink:
     its footer is checked, then it is renamed into place with the Windows retry of ``core.atomic``.
     """
 
+    def write_part(self, table: pa.Table, part: Path, **kwargs: Any) -> int:
+        """Write ``table`` to the open file ``part`` (no rename) and check its footer."""
+        part.parent.mkdir(parents=True, exist_ok=True)
+        pq.write_table(
+            table,
+            part,
+            compression="zstd",
+            compression_level=int(kwargs.get("level", RAW_LEVEL)),
+            data_page_size=int(kwargs.get("page_bytes", RAW_PAGE_BYTES)),
+            row_group_size=int(kwargs.get("row_group_rows", RAW_ROW_GROUP_ROWS)),
+            use_dictionary=False,
+        )
+        rows = pq.ParquetFile(part).metadata.num_rows  # raises if the footer is corrupt
+        if rows != table.num_rows:
+            raise ValueError(f"parquet footer row count {rows} != table rows {table.num_rows}")
+        return int(table.num_rows)
+
     def write(self, table: pa.Table, destination: str, **kwargs: Any) -> int:
         """Write ``table`` to ``destination``; returns the number of rows."""
         with atomic_write(Path(destination)) as part:
-            pq.write_table(
-                table,
-                part,
-                compression="zstd",
-                compression_level=int(kwargs.get("level", RAW_LEVEL)),
-                data_page_size=int(kwargs.get("page_bytes", RAW_PAGE_BYTES)),
-                row_group_size=int(kwargs.get("row_group_rows", RAW_ROW_GROUP_ROWS)),
-                use_dictionary=False,
-            )
-            rows = pq.ParquetFile(part).metadata.num_rows  # raises if the footer is corrupt
-            if rows != table.num_rows:
-                raise ValueError(f"parquet footer row count {rows} != table rows {table.num_rows}")
-        return int(table.num_rows)
+            return self.write_part(table, part, **kwargs)
 
     def write_stream(self, reader: pa.RecordBatchReader, destination: str, **kwargs: Any) -> int:
         """Write the batches of ``reader`` as one segment file; returns the number of rows."""
@@ -303,12 +308,15 @@ class ResponseLog:
             with self.commit_path.open("r+b") as handle:
                 handle.truncate(good)
         self._lines = lines
-        named = {name for line in lines for name in line.get("files", {})}
+        named = {
+            name for line in lines for name in line.get("files", {})
+        }  # a refresh keeps the name
         for unit in (u for line in lines for u in line.get("units", [])):
             self._committed[unit] = ""
         if self.season_dir.is_dir():
             for leftover in (
                 *self.season_dir.glob("*.part"),
+                *(self.season_dir / OPEN_DIRNAME).glob("*.part"),
                 *self.season_dir.glob("seg-*.parquet"),
             ):
                 if leftover.name not in named:
@@ -412,9 +420,54 @@ class ResponseLog:
         """The commit lines read so far (a copy)."""
         return list(self._lines)
 
+    def latest_lines(self) -> dict[int, dict[str, Any]]:
+        """The newest line of each segment: a refresh writes a second line for the same segment."""
+        return {int(line["segment"]): line for line in self._lines}
+
+    def stage_raw_refresh(
+        self, old: Mapping[str, Any], units: Mapping[str, Sequence[Response]]
+    ) -> tuple[Path, dict[str, Any]]:
+        """Write the raw file of a refreshed segment as an open file and return it with its new line.
+
+        Raw is never overwritten (design 5b): the new file holds every old row and, beside it, each new
+        response that is not in it yet (same url, bytes and fetch time). Run again after a crash that
+        renamed it, it comes out the same.
+        """
+        name = str(old["raw"])
+        old_table = pq.read_table(self.season_dir / name).cast(RAW_SCHEMA)
+        have = set(
+            zip(
+                old_table.column("url").to_pylist(),
+                old_table.column("sha256").to_pylist(),
+                old_table.column("fetched_at").to_pylist(),
+                strict=True,
+            )
+        )
+        fresh = [
+            response
+            for responses in units.values()
+            for response in responses
+            if (response.url, response.sha256, response.fetched_at) not in have
+        ]
+        table = pa.concat_tables([old_table, self._table_of(fresh)])
+        part = self.season_dir / OPEN_DIRNAME / f"{name}.part"
+        rows = RawSegmentSink().write_part(table, part)
+        line = dict(old)
+        line["files"] = {name: {"sha256": file_sha256(part), "rows": rows}}
+        line["refresh"] = int(old.get("refresh", 0)) + 1
+        line["refreshed_at"] = datetime.now(UTC).isoformat()
+        return part, line
+
+    def record_refresh(self, line: dict[str, Any]) -> None:
+        """After the new line of a refreshed segment is on disk."""
+        self._lines.append(line)
+
     def _table(self) -> pa.Table:
         """One row per response of every open unit."""
-        rows = [response for unit in self._units.values() for response in unit]
+        return self._table_of([response for unit in self._units.values() for response in unit])
+
+    @staticmethod
+    def _table_of(rows: Sequence[Response]) -> pa.Table:
         return pa.table(
             {
                 "url": [r.url for r in rows],

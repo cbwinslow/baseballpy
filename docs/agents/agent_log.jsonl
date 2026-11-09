@@ -73,3 +73,5 @@
 {"timestamp": "2026-11-08T22:53:53Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-361", "details": "ProcessedSegmentFiles (50-unit row groups, _raw_sha256, .part in _open) and SegmentWriter skeleton built"}
 {"timestamp": "2026-11-08T23:39:43Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-362", "details": "Claimed task B-362 (files: none; note: In progress)"}
 {"timestamp": "2026-11-08T23:49:18Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-362", "details": "segment commit: renames, commit line, start-up cleanup and journal replay; 5 of 7 segment tests pass"}
+{"timestamp": "2026-11-08T23:50:29Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-363", "details": "Claimed task B-363 (files: none; note: In progress)"}
+{"timestamp": "2026-11-09T00:00:17Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-363", "details": "refresh of a committed segment under the same names; raw keeps old rows; stopped refresh finished on start"}

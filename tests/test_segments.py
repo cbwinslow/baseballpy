@@ -268,7 +268,6 @@ def test_a_second_writer_on_the_same_season_is_refused(tmp_path: Path) -> None:
         holder.wait(timeout=30)
 
 
-@NOT_BUILT
 def test_a_refresh_replaces_a_segment_under_the_same_name(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -336,3 +335,71 @@ def test_committing_nothing_writes_nothing(tmp_path: Path) -> None:
     config = LakeConfig(home=tmp_path)
     assert _writer(tmp_path).commit() is None
     assert _lines(config) == [] and not list(tmp_path.rglob("*.parquet"))
+
+
+def test_a_refresh_keeps_every_old_raw_row_and_adds_the_new_responses(tmp_path: Path) -> None:
+    """Raw is never overwritten: a refetch with different bytes is a new row (design 5b)."""
+    config = LakeConfig(home=tmp_path)
+    writer = _writer(tmp_path)
+    games = _games(2)
+    _add(writer, games)
+    writer.commit()
+    raw_file = next(_raw_dir(config).glob("seg-*.parquet"))
+    before = pq.read_table(raw_file).to_pylist()
+
+    writer.refresh(1, {game: _responses(game, plays=5) for game in games})
+    after = pq.read_table(raw_file).to_pylist()
+    assert len(before) == 4 and len(after) == 6, (
+        "the two corrected feeds are added, the boxscores are the same"
+    )
+    assert {row["sha256"] for row in before} <= {row["sha256"] for row in after}
+    lines = _lines(config)
+    assert [line["segment"] for line in lines] == [1, 1] and lines[1]["refresh"] == 1
+    assert lines[1]["files"][raw_file.name]["rows"] == 6
+    # the newest processed rows name raw rows that exist
+    shas = {row["sha256"] for row in after}
+    assert {row["_raw_sha256"] for row in _rows(config, "plays")} <= shas
+
+
+def test_a_refresh_must_name_exactly_the_units_of_a_committed_segment(tmp_path: Path) -> None:
+    writer = _writer(tmp_path)
+    _add(writer, _games(2))
+    writer.commit()
+    with pytest.raises(ValueError, match="not committed"):
+        writer.refresh(9, {})
+    with pytest.raises(ValueError, match="exactly its units"):
+        writer.refresh(1, {"745000": _responses("745000")})
+
+
+def test_a_refresh_journal_whose_line_is_already_written_is_not_run_twice(tmp_path: Path) -> None:
+    config = LakeConfig(home=tmp_path)
+    writer = _writer(tmp_path)
+    games = _games(2)
+    _add(writer, games)
+    writer.commit()
+    writer.refresh(1, {game: _responses(game, plays=5) for game in games})
+    journal = _raw_dir(config) / "_open" / "refresh-0001.zst"
+    assert not journal.exists(), "deleted when the refresh is done"
+    # the run died after the line, before the journal was deleted: put the journal back
+    from baseballpy.core.responselog import encode_record
+
+    journal.parent.mkdir(exist_ok=True)
+    journal.write_bytes(b"".join(encode_record(g, _responses(g, plays=5)) for g in games))
+    release_all()
+    # the journal is the very one the line names (same refresh id), so nothing runs again
+    _writer(tmp_path)
+    assert len(_rows(config, "plays")) == 10 and len(_rows(config, "box")) == 2
+    assert not journal.exists()
+    assert [line["segment"] for line in _lines(config)] == [1, 1], "no third line"
+
+
+def test_a_refresh_with_no_rows_for_a_dataset_removes_its_old_file(tmp_path: Path) -> None:
+    config = LakeConfig(home=tmp_path)
+    writer = _writer(tmp_path)
+    games = _games(2)
+    _add(writer, games)
+    writer.commit()
+    assert _files(config, "plays")
+    writer.refresh(1, {game: _responses(game, plays=0) for game in games})
+    assert _files(config, "plays") == [] and len(_rows(config, "box")) == 2
+    assert _lines(config)[-1]["datasets"]["plays"] == {"file": None, "rows": 0}

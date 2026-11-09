@@ -12,7 +12,13 @@ underscore folder, so readers that match ``seg-*.parquet`` or ``*.parquet`` neve
 ``SegmentWriter.commit`` closes the files, renames the raw segment and every dataset file into place,
 and only then appends the commit line (the line is the commit). On start, :class:`SegmentWriter`
 deletes every ``seg-*.parquet`` and ``.part`` file that no line names, replays the journal through
-``normalize`` and carries on. ``refresh`` raises ``NotImplementedError`` until task 3.4 (B-363).
+``normalize`` and carries on.
+
+``refresh`` rewrites a committed segment under the same file names: the new responses are first
+written to ``_open/refresh-NNNN.zst``; the new files are built beside the old ones, each is renamed
+over the old file of the same name (a reader sees the old or the new rows of that file, never both),
+and a second line for the segment is appended. A refresh that stops half way is run again on start
+from its journal; the raw file keeps every old row and adds the new responses (design 5b).
 """
 
 from collections.abc import Callable, Mapping, Sequence
@@ -22,18 +28,21 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.core.atomic import _replace_with_retry
+from baseballpy.core.atomic import _replace_with_retry, atomic_write
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.responselog import (
     OPEN_DIRNAME,
     Response,
     ResponseLog,
     append_commit_line,
+    encode_record,
     file_sha256,
+    read_journal,
 )
 from baseballpy.core.stores import PARQUET_COMPRESSION, schema_fingerprint
 
 LINEAGE_COLUMN = "_raw_sha256"
+REFRESH_PREFIX = "refresh-"
 #: units (games) per row group of a processed segment file; memory holds about this many units of rows
 ROW_GROUP_UNITS = 50
 
@@ -188,6 +197,7 @@ class SegmentWriter:
         self._normalize = normalize
         self.log = ResponseLog(config, source, season)
         self._delete_unnamed_files()
+        self._finish_refreshes()
         self._files = self._new_files()
         for unit_id, responses in self.log.open_units().items():  # the journal, parsed again
             self._files.add(self._normalize(unit_id, responses))
@@ -211,7 +221,7 @@ class SegmentWriter:
         """Start-up: delete every segment file and ``.part`` file that no commit line names."""
         named = {
             (dataset, info["file"])
-            for line in self.log.lines
+            for line in self.log.latest_lines().values()
             for dataset, info in line.get("datasets", {}).items()
         }
         for folder in self._dataset_folders():
@@ -270,6 +280,69 @@ class SegmentWriter:
         self._files = self._new_files()
         return int(line["segment"])
 
+    def _refresh_journal(self, segment: int) -> Path:
+        return self.log.season_dir / OPEN_DIRNAME / f"{REFRESH_PREFIX}{segment:04d}.zst"
+
     def refresh(self, segment: int, units: Mapping[str, Sequence[Response]]) -> None:
-        """Rewrite a committed segment under the same file names (task 3.4, B-363)."""
-        raise NotImplementedError("segment refresh: task 3.4 (B-363)")
+        """Rewrite a committed segment under the same file names, from the new responses of its units.
+
+        ``units`` must name exactly the units of the segment. The new responses are journalled first, so
+        a refresh that stops half way is finished by the next start.
+        """
+        old = self.log.latest_lines().get(segment)
+        if old is None:
+            raise ValueError(f"segment {segment} is not committed")
+        if set(units) != set(old["units"]):
+            raise ValueError(f"a refresh of segment {segment} must name exactly its units")
+        journal = self._refresh_journal(segment)
+        with atomic_write(journal) as part:
+            part.write_bytes(b"".join(encode_record(u, list(r)) for u, r in units.items()))
+        self._apply_refresh(segment, units, file_sha256(journal))
+
+    def _finish_refreshes(self) -> None:
+        """Start-up: run again every refresh whose journal is still there."""
+        folder = self.log.season_dir / OPEN_DIRNAME
+        for journal in sorted(folder.glob(f"{REFRESH_PREFIX}*.zst")):
+            segment = int(journal.stem.removeprefix(REFRESH_PREFIX))
+            line = self.log.latest_lines().get(segment)
+            refresh_id = file_sha256(journal)
+            if line is not None and line.get("refresh_id") != refresh_id:
+                units, _ = read_journal(journal)
+                self._apply_refresh(segment, units, refresh_id)
+            journal.unlink(missing_ok=True)  # its line is already on disk, or the segment is gone
+
+    def _apply_refresh(
+        self, segment: int, units: Mapping[str, Sequence[Response]], refresh_id: str
+    ) -> None:
+        """Build the new files, rename each over its old one, append the new line, delete the journal."""
+        old = self.log.latest_lines()[segment]
+        files = ProcessedSegmentFiles(
+            self.config, self.source, self.season, segment, self._row_group_units
+        )
+        for unit_id, responses in units.items():
+            files.add(self._normalize(unit_id, responses))
+        counts = files.close()
+        raw_part, line = self.log.stage_raw_refresh(old, units)
+        datasets: dict[str, dict[str, object]] = {}
+        for dataset in sorted(files.datasets()):
+            if dataset not in counts:
+                datasets[dataset] = {"file": None, "rows": 0}
+                continue
+            part, final = files.part_path(dataset), files.final_path(dataset)
+            datasets[dataset] = {
+                "file": final.name,
+                "rows": counts[dataset],
+                "sha256": file_sha256(part),
+                "schema_sha256": schema_fingerprint(pq.read_schema(part)),
+            }
+            _replace(part, final)
+        for dataset, info in old.get("datasets", {}).items():
+            if info.get("file") and datasets.get(dataset, {}).get("file") is None:
+                files.final_path(dataset).unlink(missing_ok=True)  # the refresh has no row for it
+                datasets.setdefault(dataset, {"file": None, "rows": 0})
+        _replace(raw_part, self.log.season_dir / str(line["raw"]))
+        line["datasets"] = datasets
+        line["refresh_id"] = refresh_id
+        _append_commit_line(self.log.commit_path, line)
+        self.log.record_refresh(line)
+        self._refresh_journal(segment).unlink(missing_ok=True)
