@@ -5,7 +5,9 @@ from collections.abc import AsyncIterator, Generator
 from pathlib import Path
 
 import duckdb
+import httpx
 import pytest
+import respx
 from click.testing import CliRunner
 
 from baseballpy.cli import main
@@ -192,3 +194,131 @@ def test_live_event_schema_covers_every_to_dict_key_with_declared_types() -> Non
     assert str(schema.field("start_speed").type) == "double"
     assert str(schema.field("ts_utc").type) == "int64"
     assert str(schema.field("is_pitch").type) == "bool"
+
+
+@respx.mock
+def test_stream_end_to_end_replay_and_duckdb_watermark(tmp_path: Path, runner: CliRunner) -> None:
+    """End-to-end replay test of baseballpy stream with real GamedayLiveStreamer, watermark diffing and DuckDB upsert."""
+    game_pk = 745000
+    feed_url = f"https://statsapi.mlb.com/api/v1.1/game/{game_pk}/feed/live"
+    game_doc = {
+        "metaData": {"timeStamp": "20240623_210000"},
+        "gameData": {"status": {"abstractGameState": "Final", "detailedState": "Final"}},
+        "liveData": {
+            "plays": {
+                "allPlays": [
+                    {
+                        "about": {
+                            "atBatIndex": 0,
+                            "inning": 1,
+                            "isTopInning": True,
+                            "isComplete": True,
+                            "endTime": "2024-06-23T18:05:00Z",
+                        },
+                        "matchup": {"batter": {"id": 592450}, "pitcher": {"id": 543037}},
+                        "result": {"event": "Single", "description": "Judge singles to center."},
+                        "count": {"balls": 1, "strikes": 1, "outs": 0},
+                        "playEvents": [
+                            {
+                                "index": 0,
+                                "isPitch": True,
+                                "startTime": "2024-06-23T18:01:00Z",
+                                "details": {"type": {"code": "FF"}, "description": "Called Strike"},
+                                "pitchData": {"startSpeed": 97.5},
+                                "count": {"balls": 0, "strikes": 1, "outs": 0},
+                            },
+                            {
+                                "index": 1,
+                                "isPitch": True,
+                                "startTime": "2024-06-23T18:02:00Z",
+                                "details": {"type": {"code": "CH"}, "description": "Ball"},
+                                "pitchData": {"startSpeed": 88.2},
+                                "count": {"balls": 1, "strikes": 1, "outs": 0},
+                            },
+                        ],
+                    },
+                    {
+                        "about": {
+                            "atBatIndex": 1,
+                            "inning": 1,
+                            "isTopInning": True,
+                            "isComplete": True,
+                            "endTime": "2024-06-23T18:10:00Z",
+                        },
+                        "matchup": {"batter": {"id": 660271}, "pitcher": {"id": 543037}},
+                        "result": {
+                            "event": "Strikeout",
+                            "description": "Ohtani strikes out swinging.",
+                        },
+                        "count": {"balls": 0, "strikes": 3, "outs": 1},
+                        "playEvents": [
+                            {
+                                "index": 0,
+                                "isPitch": True,
+                                "startTime": "2024-06-23T18:06:00Z",
+                                "details": {
+                                    "type": {"code": "SL"},
+                                    "description": "Swinging Strike",
+                                },
+                                "pitchData": {"startSpeed": 85.0},
+                                "count": {"balls": 0, "strikes": 1, "outs": 0},
+                            },
+                        ],
+                    },
+                ]
+            }
+        },
+    }
+    route = respx.get(feed_url).mock(return_value=httpx.Response(200, json=game_doc))
+    duckdb_file = tmp_path / "stream_e2e.duckdb"
+
+    # 1. First run: stream live events into DuckDB without replay
+    res1 = runner.invoke(main, ["stream", str(game_pk), "--duckdb", str(duckdb_file)])
+    assert res1.exit_code == 0, res1.output
+    assert route.call_count == 1
+    assert "events seen" in res1.output
+
+    # Check duckdb count after first run
+    con = duckdb.connect(str(duckdb_file))
+    try:
+        first_count = con.execute("SELECT count(*) FROM live_events").fetchone()[0]
+        assert first_count > 0
+        unique_pks = con.execute(
+            "SELECT count(DISTINCT (game_pk, at_bat_index, event_index)) FROM live_events"
+        ).fetchone()[0]
+        assert unique_pks == first_count
+    finally:
+        con.close()
+
+    # 2. Second run without --replay: watermark prevents re-emitting
+    res2 = runner.invoke(main, ["stream", str(game_pk), "--duckdb", str(duckdb_file)])
+    assert res2.exit_code == 0, res2.output
+    assert "0 events seen, 0 events written" in res2.output
+
+    con = duckdb.connect(str(duckdb_file))
+    try:
+        assert con.execute("SELECT count(*) FROM live_events").fetchone()[0] == first_count
+    finally:
+        con.close()
+
+    # 3. Third run with --replay: ignores watermark, replays all events, upserts idempotently
+    res3 = runner.invoke(main, ["stream", str(game_pk), "--duckdb", str(duckdb_file), "--replay"])
+    assert res3.exit_code == 0, res3.output
+    assert f"{first_count} events seen, {first_count} events written" in res3.output
+
+    con = duckdb.connect(str(duckdb_file))
+    try:
+        replay_count = con.execute("SELECT count(*) FROM live_events").fetchone()[0]
+        assert replay_count == first_count, "idempotent upsert preserves exact event count"
+        unique_pks = con.execute(
+            "SELECT count(DISTINCT (game_pk, at_bat_index, event_index)) FROM live_events"
+        ).fetchone()[0]
+        assert unique_pks == first_count
+
+        # Verify typed attributes
+        judge_pitch = con.execute(
+            "SELECT pitch_type, start_speed, description FROM live_events WHERE at_bat_index = 0 AND event_index = 0"
+        ).fetchone()
+        assert judge_pitch == ("FF", 97.5, "Called Strike")
+    finally:
+        con.close()
