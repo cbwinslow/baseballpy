@@ -4,6 +4,38 @@ A complete reference guide mapping every dataset to its designated Python functi
 
 ---
 
+## Start here
+
+Five steps from install to your first query. Everything lands under one folder (`$BASEBALLPY_HOME`, by default
+`.baseballpy`): `raw/` keeps what the provider sent, `processed/<source>/<dataset>/` holds typed Parquet, and
+`databases/baseball.duckdb` holds views over it.
+
+1. **Install.** `pip install baseballpy` (or `uv add baseballpy`).
+2. **See what a command would download.** Add `--dry-run`: it lists the jobs, how many season folders you
+   already hold, and a typical size for the rest. Nothing is downloaded.
+3. **Download.** The same command without `--dry-run`. Runs are polite to the providers, safe to stop and
+   rerun, and skip what you already hold.
+4. **See what you hold.** `baseballpy catalog status` (what is held and why something is not), or in SQL
+   `SELECT * FROM v_season_catalog` (every dataset and season with rows, files, bytes and the view to query).
+5. **Use it.** `bp.read("statcast.pitches", seasons=2024)` gives a DataFrame (Polars, pandas or PyArrow),
+   `bp.sql("SELECT ... FROM statcast_pitches")` runs DuckDB, and `baseballpy export` writes Parquet, CSV,
+   DuckDB or PostgreSQL (details in section 0 below).
+
+First command per source (add `--dry-run` to preview):
+
+| Source | First command | What you get |
+|---|---|---|
+| `statcast` | `baseballpy ingest statcast -s 2024 -d pitches` | every MLB pitch of 2024 (about 80 MB) |
+| `retrosheet` | `baseballpy ingest retrosheet -s 2024` | events, games, rosters and box scores of 2024 |
+| `chadwick` | `baseballpy ingest chadwick` | the player ID register that joins the other sources |
+| `lahman` | `baseballpy ingest lahman` | 27 season-level history tables, 1871 to 2025 |
+| `mlb_api` | `baseballpy ingest mlb_api -s 2024` | schedules, teams, rosters, standings, awards (per-game data: `-d games`) |
+
+Tip: `baseballpy status` shows what is running or held, and `baseballpy catalog list` lists every dataset with
+its columns.
+
+---
+
 ## 0. Load data from the lake (two doors)
 
 After downloading, there are two ways to get rows into Python. Both read the same Parquet files.

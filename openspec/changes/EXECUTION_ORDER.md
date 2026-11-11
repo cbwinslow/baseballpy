@@ -92,3 +92,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-11: `download-lake-contract` (B-428 to B-431, ADR 105): one lake-shape contract for a fresh download, tested for Statcast, Retrosheet, Chadwick, Lahman, the MLB game datasets and 274 MLB endpoints; compaction keeps an all-empty dataset's view.
 - 2026-11-11: `contract-leaderboards-reference` (B-434, B-433 narrowed): Savant leaderboards and Retrosheet reference files pass the lake contract; Kalshi, Polymarket, FanGraphs and Baseball-Reference stay deferred.
 - 2026-11-11: `dry-run-estimate` (B-435 to B-438, ADR 106): `ingest --dry-run` reports held and missing season folders and a typical size from a measured table.
+- 2026-11-11: `quickstart-start-here` (B-440, B-441): the quickstart opens with a checked five-step Start-here path and a first command per core source.

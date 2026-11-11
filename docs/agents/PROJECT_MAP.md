@@ -7,7 +7,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 | Spec | Requirements | Scenarios | Tests cited |
 |---|---|---|---|
-| `agent-runbooks` | 5 | 8 | 14 |
+| `agent-runbooks` | 6 | 9 | 15 |
 | `audit-and-benchmarking` | 6 | 7 | 11 |
 | `bref-ingestion` | 3 | 3 | 10 |
 | `caching-and-invalidation` | 21 | 35 | 50 |
@@ -47,7 +47,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-87 changes are archived under `openspec/changes/archive/`.
+88 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
