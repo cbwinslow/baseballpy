@@ -986,3 +986,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** archive the two drafts unmerged; close `download-throughput` 2.3 and 2.5 as superseded; give the eight market and FanGraphs/Baseball-Reference rows the status DEFERRED (cards and rows stay); remove `HANDOFF_2026-10-30.md`, `HANDOFF_B43.md`, `FINAL_REPORT.md` and `GOAL_LAKE_REPAIR.md` from `docs/agents/` (git history keeps them). No document is added.
 - **Consequences:** fewer active changes and open rows; deferred work can resume by changing a status; the history stays readable in the archive and in git.
 - **Alternatives rejected:** deleting rows (loses the trail); archiving the market and FanGraphs changes (their code and data exist and may return); leaving the old files (they send agents to a state that no longer exists).
+
+## ADR 103: Cache Decisions Go Through The Store
+- **Status:** Accepted (task B-409 of the reproducibility directive, 2026-11-11; change `cache-check-through-store`).
+- **Context:** `ProcessedStore.is_cached` and `has_part` know a chunk may live in a part file or inside a compacted file. The Statcast pitch extractor tested for the part file by name, so after `baseballpy compact` every window of a compacted season was downloaded again (test: `cached_chunks` 0 instead of 3) and a cache hit tried to read a file that no longer exists. The same user would get different behaviour depending on whether they had compacted (AGENTS.md section 15).
+- **Decision:** `_is_chunk_fresh` asks `store.has_part` and a cache hit reads `store.read_part`; a chunk its compacted file lacks is already "not stored" for the store, so it downloads again.
+- **Consequences:** compacted and plain seasons behave alike; the part-file name check is gone from the Statcast pitch path. Retrosheet's quality check and parent lookup still read `part_path` (B-424); leaderboards and Lahman hold one chunk per folder, which compaction never merges.
+- **Alternatives rejected:** teaching the extractor about compacted files (a second copy of the logic in the store).

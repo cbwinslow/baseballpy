@@ -647,7 +647,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-406 | product-mandate-reproducible-outputs 1.2: contract text (AGENTS 0 and 15, CLAUDE, project.md, README), ADR 100, spec requirement | DONE | after B-405; the test, docs generate --check and openspec validate --specs pass |
 | B-407 | product-mandate-reproducible-outputs 1.3: gates, archive and commit | DONE | after B-406; gates green, change archived |
 | B-408 | `product-mandate-reproducible-outputs 2.1`: rebuild check (run a workflow into a scratch home and compare it with the lake) | READY | a change rebuild-check exists with design and tests |
-| B-409 | `product-mandate-reproducible-outputs 2.2`: ingest re-fetches a chunk its compacted file lacks | READY | test passes (fix if it fails first) |
+| B-409 | product-mandate-reproducible-outputs 2.2: ingest re-fetches a chunk its compacted file lacks | DONE | test passes (fix if it fails first) |
 | B-410 | product-mandate-reproducible-outputs 2.3: the queue never marks a stage done when its after-step failed | DONE | a test shows the stage stays failed and retries |
 | B-411 | `product-mandate-reproducible-outputs 2.4`: compaction output is deterministic | READY | a test compares two runs byte for byte |
 | B-412 | `product-mandate-reproducible-outputs 2.5`: determinism audit of each source in docs/sources | READY | every source page states what is pinned, live and varying |
@@ -659,3 +659,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-418 | backlog-consolidation 1.3: defer the market-sources and fangraphs-and-bref rows | DONE | after B-417; no row of those changes says OPEN |
 | B-419 | backlog-consolidation 1.4: retire four stale agent files and fix their references | DONE | after B-418; no reference outside history |
 | B-420 | backlog-consolidation 1.5: ADR 102, gates, archive, commit | DONE | after B-419; gates green, change archived |
+| B-421 | cache-check-through-store 1.1: tests first for compacted Statcast chunks (served from the lake; lost file downloads again; lacking chunk not cached) | DONE | the Statcast tests fail against the current code |
+| B-422 | cache-check-through-store 1.2: Statcast pitch extractor asks the store (has_part, read_part) | DONE | after B-421; the new tests and tests/test_statcast*.py pass |
+| B-423 | cache-check-through-store 1.3: spec, ADR 103, gates, close B-409, archive | DONE | after B-422; gates green, change archived |
+| B-424 | retrosheet quality check and parent lookup read part_path directly and skip a compacted chunk: use has_part and read_part (found by cache-check-through-store; no compaction of these chunks today) | READY | a test with a compacted roster chunk; gates green |

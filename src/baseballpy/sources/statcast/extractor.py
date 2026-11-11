@@ -6,7 +6,6 @@ import json
 import logging
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from pathlib import Path
 from typing import Any
 
 import pyarrow as pa
@@ -220,12 +219,6 @@ class StatcastExtractor:
         """Deterministic chunk id: ``<start>_<end>`` (only unfiltered chunks are persisted)."""
         return f"{start_dt.isoformat()}_{end_dt.isoformat()}"
 
-    def _get_cache_path(self, start_dt: date, end_dt: date, minors: bool = False) -> Path:
-        """Path of the processed part for a date chunk (``season=YYYY/part-<chunk>.parquet``)."""
-        return self.store.part_path(
-            self._spec(minors), self._chunk_id(start_dt, end_dt), start_dt.year
-        )
-
     def keep_documents(self, refresh: bool = False) -> list[str]:
         """Keep Savant's data dictionary page; returns the names of newly stored pages."""
         with default_audit_logger.track(
@@ -250,19 +243,22 @@ class StatcastExtractor:
     def _is_chunk_fresh(
         self,
         chunk_id: str,
-        cache_path: Path,
         start_dt: date,
         end_dt: date,
         refresh: bool,
         minors: bool = False,
     ) -> tuple[bool, int]:
-        """Return (fresh, recorded_row_count) per the freshness policy."""
+        """Return (fresh, recorded_row_count) per the freshness policy.
+
+        Stored means the store holds the chunk, as a part file or inside a compacted file (a test for
+        the part file name made a compacted season download again on every run).
+        """
         manifest = self.manifest_minors if minors else self.manifest
         entry = manifest.get_chunk(manifest_key(chunk_id, start_dt.year))
         if entry is None:
             return False, 0
         rows = int(entry.get("records_count", 0) or 0)
-        if rows > 0 and not cache_path.exists():
+        if rows > 0 and not self.store.has_part(self._spec(minors), chunk_id, start_dt.year):
             return False, rows
         if not schema_matches(self._spec(minors), entry):
             return False, rows  # written under another schema or parser revision (ADR 49, 51)
@@ -319,17 +315,17 @@ class StatcastExtractor:
         query = query or StatcastQuery()
         persisted = self.cache_config.enabled and query.is_unfiltered
         spec = self._spec(query.minors)
-        cache_path = self._get_cache_path(start_dt, end_dt, query.minors)
         chunk_id = self._chunk_id(start_dt, end_dt)
 
         if persisted:
-            fresh, rows = self._is_chunk_fresh(
-                chunk_id, cache_path, start_dt, end_dt, refresh, query.minors
-            )
+            fresh, rows = self._is_chunk_fresh(chunk_id, start_dt, end_dt, refresh, query.minors)
             if fresh:
                 if rows == 0:
                     return spec.schema.empty_table(), True
-                return pq.read_table(cache_path, schema=spec.schema), True
+                stored = self.store.read_part(spec, chunk_id, start_dt.year)
+                return (
+                    stored if stored.schema.equals(spec.schema) else stored.cast(spec.schema)
+                ), True
 
         table = await self._fetch_window(start_dt, end_dt, query)
 

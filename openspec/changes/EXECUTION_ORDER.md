@@ -87,3 +87,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-08: `finish-mlb-history`: Task 3.1 (unpopulated endpoint evidence), Task 3.4 (streamer replay test), Task 4.2 (macOS CI matrix) completed; Task 2.1 (history backfill) currently downloading in background.
 - 2026-11-11: `queue-after-step-failure` (B-413 to B-415, B-410) closed and archived (ADR 101): a stage whose compaction failed is failed and retried.
 - 2026-11-11: `backlog-consolidation` (B-416 to B-420, ADR 102): `shared-raw-bytes` and `batched-chunk-writes` archived unmerged; `download-throughput` 2.3 and 2.5 superseded; `market-sources` and `fangraphs-and-bref` open rows DEFERRED; four stale agent files retired.
+- 2026-11-11: `cache-check-through-store` (B-421 to B-423, B-409) closed and archived (ADR 103): the Statcast pitch cache checks go through the store, so a compacted season is not downloaded again.

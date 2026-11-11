@@ -14,7 +14,7 @@ Order: 1.1 -> 1.2 -> 1.3. Tasks 2.x are follow-ups; each opens its own change wh
 - [ ] 2.1 Rebuild check: run a source's workflow for a small window into a scratch `BASEBALLPY_HOME` and
   compare with the lake (row counts, schema digest, per-chunk content hash); report differences.
   Done when a change `rebuild-check` exists with its design and tests.
-- [ ] 2.2 Ingest re-fetches a chunk the records call done whose compacted file lacks it (test, then fix if
+- [x] 2.2 Ingest re-fetches a chunk the records call done whose compacted file lacks it (test, then fix if
   it fails). Done when the test passes.
 - [x] 2.3 The queue stops marking a stage "done" when its after-step failed (it marked MLB 2018 to 2021
   done with `after-stage step exited with 1`). Done when a test shows the stage stays failed and retries.

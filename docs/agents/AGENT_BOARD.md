@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 21:46 UTC [blain]:**
+  - **Tasks:** `B-421`.
+  - **Summary:** cache-check-through-store: Statcast pitch cache checks go through the store (ADR 103); closes B-409
+
 - **2026-11-11 21:27 UTC [blain]:**
   - **Tasks:** `B-416`.
   - **Summary:** backlog-consolidation: drafts archived, two tasks superseded, 8 rows deferred, 4 stale files retired (ADR 102)
