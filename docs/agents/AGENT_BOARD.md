@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 21:16 UTC [blain]:**
+  - **Tasks:** `B-413`.
+  - **Summary:** queue-after-step-failure: a failed after-step fails the stage and retries it (ADR 101); closes B-410
+
 - **2026-11-11 20:56 UTC [blain]:**
   - **Tasks:** `B-405`.
   - **Summary:** product mission and reproducible-outputs contract (AGENTS 0 and 15, ADR 100); follow-ups 2.1-2.5 mapped

@@ -240,25 +240,58 @@ def test_status_shows_the_queue(tmp_path: Path, monkeypatch: pytest.MonkeyPatch)
     assert "plan daily, round 1, not running; 1 stage(s) done; failed: b" in overview.line()
 
 
-def test_a_finished_stage_is_compacted_and_a_compact_failure_does_not_fail_it(
-    tmp_path: Path,
-) -> None:
+def test_a_failed_after_step_fails_the_stage_and_it_runs_again(tmp_path: Path) -> None:
+    """A stage is done only when its download and its compaction both worked (AGENTS.md s15 rule 6)."""
+    stop = threading.Event()
+    downloads: list[str] = []
     after: list[str] = []
+
+    def run(name: str) -> int:
+        downloads.append(name)
+        return EXIT_OK
 
     def compact(name: str) -> int:
         after.append(name)
+        if name == "b" and after.count("b") >= 2:
+            stop.set()  # the second try of b worked: end the run
+            return EXIT_OK
         return EXIT_FAILED if name == "b" else EXIT_OK
 
+    options = _fast(tmp_path, stop=stop)
+    guard = threading.Timer(10.0, stop.set)  # a queue that never retries must fail, not hang
+    guard.start()
+    try:
+        report = run_queue(
+            "p",
+            ["a", "b"],
+            run,
+            every=86400,
+            retries=0,
+            failed_wait=0.01,
+            after_stage=compact,
+            **options,
+        )
+    finally:
+        guard.cancel()
+    assert after == ["a", "b", "b"]  # b was compacted again after it failed
+    assert downloads == ["a", "b", "b"] and report.exit_code == EXIT_INTERRUPTED
+    state = load_state(tmp_path / "state" / "queue.json", "p")
+    assert state.stages["a"].status == "done"
+    assert state.stages["b"].status == "done" and state.stages["b"].last_error == ""
+
+
+def test_the_last_stages_after_step_is_settled_before_the_report(tmp_path: Path) -> None:
     report = run_queue(
         "p",
         ["a", "b"],
         lambda _n: EXIT_OK,
-        after_stage=compact,
+        after_stage=lambda name: EXIT_FAILED if name == "b" else EXIT_OK,
         **_fast(tmp_path),
     )
-    assert after == ["a", "b"] and report.exit_code == 0
+    assert report.failed == ["b"] and report.exit_code == EXIT_FAILED
     state = load_state(tmp_path / "state" / "queue.json", "p")
-    assert state.stages["b"].status == "done" and "after-stage" in state.stages["b"].last_error
+    assert state.stages["b"].status == "failed" and "after-stage" in state.stages["b"].last_error
+    assert state.stages["a"].status == "done"
 
 
 def test_the_compact_runner_runs_compact_for_every_source_of_the_stage() -> None:

@@ -648,6 +648,9 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-407 | product-mandate-reproducible-outputs 1.3: gates, archive and commit | DONE | after B-406; gates green, change archived |
 | B-408 | `product-mandate-reproducible-outputs 2.1`: rebuild check (run a workflow into a scratch home and compare it with the lake) | READY | a change rebuild-check exists with design and tests |
 | B-409 | `product-mandate-reproducible-outputs 2.2`: ingest re-fetches a chunk its compacted file lacks | READY | test passes (fix if it fails first) |
-| B-410 | `product-mandate-reproducible-outputs 2.3`: the queue never marks a stage done when its after-step failed | READY | a test shows the stage stays failed and retries |
+| B-410 | product-mandate-reproducible-outputs 2.3: the queue never marks a stage done when its after-step failed | DONE | a test shows the stage stays failed and retries |
 | B-411 | `product-mandate-reproducible-outputs 2.4`: compaction output is deterministic | READY | a test compares two runs byte for byte |
 | B-412 | `product-mandate-reproducible-outputs 2.5`: determinism audit of each source in docs/sources | READY | every source page states what is pinned, live and varying |
+| B-413 | queue-after-step-failure 1.1: tests first for a failed after-step failing the stage | DONE | the new tests fail against the current code |
+| B-414 | queue-after-step-failure 1.2: settle marks the stage failed; the round settles before the report | DONE | after B-413; test_queue passes |
+| B-415 | queue-after-step-failure 1.3: spec, ADR 101, gates, archive (closes B-410) | DONE | after B-414; gates green, change archived |

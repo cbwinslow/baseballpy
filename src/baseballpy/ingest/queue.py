@@ -139,8 +139,8 @@ def run_queue(
     ``failed_wait`` seconds (30 minutes) with only the failed stages (a disk that compaction frees,
     a host that was down).
     ``after_stage(name)`` runs after a stage ends well (compaction) in the background, beside the next
-    stage (one at a time: the next one waits for it); a failure there is recorded and reported but
-    does not fail the stage.
+    stage (one at a time: the next one waits for it); a failure there fails the stage (it is not done
+    until its compaction worked, AGENTS.md section 15) and the stage runs again like any failed one.
     """
 
     def say(message: str) -> None:
@@ -227,6 +227,10 @@ def _run_rounds(
                 report.stopped = f"{name} stopped at a size or disk limit"
                 break
             report.failed.append(name)
+        background.settle()  # the last stage's compaction counts before the round is judged
+        for name in stages:
+            if state.stages[name].status == FAILED and name not in report.failed:
+                report.failed.append(name)
         save_state(state_path, state)
         report.rounds = state.round
         if report.stopped:
@@ -293,6 +297,8 @@ class _Background:
             stage = self._state.stages.get(name)
             message = f"after-stage step exited with {code}"
             if stage is not None:
+                # a stage is done only when its compaction worked too: it runs again like any failed one
+                stage.status = FAILED
                 stage.last_error = message
                 save_state(self._state_path, self._state)
             self._say(f"{name}: {message}")

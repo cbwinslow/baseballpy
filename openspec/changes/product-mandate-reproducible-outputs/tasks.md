@@ -16,7 +16,7 @@ Order: 1.1 -> 1.2 -> 1.3. Tasks 2.x are follow-ups; each opens its own change wh
   Done when a change `rebuild-check` exists with its design and tests.
 - [ ] 2.2 Ingest re-fetches a chunk the records call done whose compacted file lacks it (test, then fix if
   it fails). Done when the test passes.
-- [ ] 2.3 The queue stops marking a stage "done" when its after-step failed (it marked MLB 2018 to 2021
+- [x] 2.3 The queue stops marking a stage "done" when its after-step failed (it marked MLB 2018 to 2021
   done with `after-stage step exited with 1`). Done when a test shows the stage stays failed and retries.
 - [ ] 2.4 Compaction output is deterministic: the same chunks give byte-identical compacted files
   regardless of the order of work. Done when a test compares two runs.
