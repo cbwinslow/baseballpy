@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 21:56 UTC [blain]:**
+  - **Tasks:** `B-425`.
+  - **Summary:** deterministic-compaction: guard tests, ADR 104, AGENTS s15 rule 1 reworded; closes B-411
+
 - **2026-11-11 21:46 UTC [blain]:**
   - **Tasks:** `B-421`.
   - **Summary:** cache-check-through-store: Statcast pitch cache checks go through the store (ADR 103); closes B-409

@@ -993,3 +993,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** `_is_chunk_fresh` asks `store.has_part` and a cache hit reads `store.read_part`; a chunk its compacted file lacks is already "not stored" for the store, so it downloads again.
 - **Consequences:** compacted and plain seasons behave alike; the part-file name check is gone from the Statcast pitch path. Retrosheet's quality check and parent lookup still read `part_path` (B-424); leaderboards and Lahman hold one chunk per folder, which compaction never merges.
 - **Alternatives rejected:** teaching the extractor about compacted files (a second copy of the logic in the store).
+
+## ADR 104: Compaction Is Deterministic In The Bytes And In The Rows
+- **Status:** Accepted (task B-411 of the reproducibility directive, 2026-11-11; change `deterministic-compaction`).
+- **Context:** AGENTS.md section 15 demands the same outputs for every user. Compaction rewrites files after a download, so a user who downloaded the same chunks in another order, or compacted at another time, must not end with different data.
+- **Decision:** guard it with tests. The same chunks compacted in one run give byte-identical files whatever order they were stored in (sorted chunk keys, fixed codec and row-group size, no timestamp); a rerun rewrites nothing; compacting in two stages gives the same rows as once. The grouping into files may differ with history (a later compaction does not merge old compacted files, ADR 94) and is not guaranteed; readers must not depend on it or on row order. AGENTS.md section 15 rule 1 says so.
+- **Consequences:** a sabotaged compaction (unsorted keys) fails the first test. The file grouping becomes canonical when `response-log-segments` writes a season once.
+- **Alternatives rejected:** re-merging compacted files on every run (rewrites large files for no change in the rows); promising identical file names for any history (not true today).

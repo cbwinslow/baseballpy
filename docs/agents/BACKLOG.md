@@ -649,7 +649,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-408 | `product-mandate-reproducible-outputs 2.1`: rebuild check (run a workflow into a scratch home and compare it with the lake) | READY | a change rebuild-check exists with design and tests |
 | B-409 | product-mandate-reproducible-outputs 2.2: ingest re-fetches a chunk its compacted file lacks | DONE | test passes (fix if it fails first) |
 | B-410 | product-mandate-reproducible-outputs 2.3: the queue never marks a stage done when its after-step failed | DONE | a test shows the stage stays failed and retries |
-| B-411 | `product-mandate-reproducible-outputs 2.4`: compaction output is deterministic | READY | a test compares two runs byte for byte |
+| B-411 | product-mandate-reproducible-outputs 2.4: compaction output is deterministic | DONE | a test compares two runs byte for byte |
 | B-412 | `product-mandate-reproducible-outputs 2.5`: determinism audit of each source in docs/sources | READY | every source page states what is pinned, live and varying |
 | B-413 | queue-after-step-failure 1.1: tests first for a failed after-step failing the stage | DONE | the new tests fail against the current code |
 | B-414 | queue-after-step-failure 1.2: settle marks the stage failed; the round settles before the report | DONE | after B-413; test_queue passes |
@@ -663,3 +663,6 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-422 | cache-check-through-store 1.2: Statcast pitch extractor asks the store (has_part, read_part) | DONE | after B-421; the new tests and tests/test_statcast*.py pass |
 | B-423 | cache-check-through-store 1.3: spec, ADR 103, gates, close B-409, archive | DONE | after B-422; gates green, change archived |
 | B-424 | retrosheet quality check and parent lookup read part_path directly and skip a compacted chunk: use has_part and read_part (found by cache-check-through-store; no compaction of these chunks today) | READY | a test with a compacted roster chunk; gates green |
+| B-425 | deterministic-compaction 1.1: tests that compaction is deterministic (byte-identical files, rerun, staged) | DONE | the three tests pass; a sabotaged compact makes the first fail |
+| B-426 | deterministic-compaction 1.2: requirement, ADR 104, reword AGENTS.md s15 rule 1, close B-411 | DONE | after B-425; docs and spec checks pass |
+| B-427 | deterministic-compaction 1.3: gates, archive, commit | DONE | after B-426; gates green, change archived |

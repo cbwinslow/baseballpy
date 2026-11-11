@@ -18,7 +18,7 @@ Order: 1.1 -> 1.2 -> 1.3. Tasks 2.x are follow-ups; each opens its own change wh
   it fails). Done when the test passes.
 - [x] 2.3 The queue stops marking a stage "done" when its after-step failed (it marked MLB 2018 to 2021
   done with `after-stage step exited with 1`). Done when a test shows the stage stays failed and retries.
-- [ ] 2.4 Compaction output is deterministic: the same chunks give byte-identical compacted files
+- [x] 2.4 Compaction output is deterministic: the same chunks give byte-identical compacted files
   regardless of the order of work. Done when a test compares two runs.
 - [ ] 2.5 Determinism audit of each source (what is pinned, what is live, what varies between runs) with the
   result in each `docs/sources/<source>.md`. Done when every source states it.

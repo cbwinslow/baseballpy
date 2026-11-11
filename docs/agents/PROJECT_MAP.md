@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 11 | 13 | 46 |
+| `lake-access` | 12 | 15 | 49 |
 | `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -47,7 +47,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-83 changes are archived under `openspec/changes/archive/`.
+84 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -60,7 +60,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lake-schema-evolution` | 4 | 2 | 1.5, 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 7 | 4 | 1.2, 3.1 |
-| `product-mandate-reproducible-outputs` | 5 | 3 | 2.1, 2.4, 2.5 |
+| `product-mandate-reproducible-outputs` | 6 | 2 | 2.1, 2.5 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `response-log-segments` | 18 | 21 | 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
@@ -169,6 +169,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 101: A Stage Whose After-Step Failed Is Not Done
 - ADR 102: Tidy The Backlog By Superseding, Deferring And Retiring, Not Deleting
 - ADR 103: Cache Decisions Go Through The Store
+- ADR 104: Compaction Is Deterministic In The Bytes And In The Rows
 
 ## Documentation pages (`docs/`)
 

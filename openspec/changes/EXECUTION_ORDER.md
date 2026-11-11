@@ -88,3 +88,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-11: `queue-after-step-failure` (B-413 to B-415, B-410) closed and archived (ADR 101): a stage whose compaction failed is failed and retried.
 - 2026-11-11: `backlog-consolidation` (B-416 to B-420, ADR 102): `shared-raw-bytes` and `batched-chunk-writes` archived unmerged; `download-throughput` 2.3 and 2.5 superseded; `market-sources` and `fangraphs-and-bref` open rows DEFERRED; four stale agent files retired.
 - 2026-11-11: `cache-check-through-store` (B-421 to B-423, B-409) closed and archived (ADR 103): the Statcast pitch cache checks go through the store, so a compacted season is not downloaded again.
+- 2026-11-11: `deterministic-compaction` (B-425 to B-427, B-411) closed and archived (ADR 104): compaction is guarded to give byte-identical files for the same chunks and the same rows for any history.
