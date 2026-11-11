@@ -680,3 +680,6 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-439 | dry-run estimate: resolve group names (games, leaderboards, people_stats) to the datasets they fetch, from a registry field, so the biggest downloads are estimated | READY | `ingest mlb_api -s 2024 -d games --dry-run` shows datasets and an estimate |
 | B-440 | quickstart-start-here 1.1: test first for the Start-here section of the quickstart | DONE | the test fails for the missing section |
 | B-441 | quickstart-start-here 1.2: write the section; spec requirement; gates; archive | DONE | after B-440; test passes, gates green |
+| B-442 | final-product-definition 1.1: test first for the per-source Final Product table in the constitution | DONE | the test fails for the missing section |
+| B-443 | final-product-definition 1.2: write the section, Road to v1, ADR 107 and the requirement | DONE | after B-442; the tests pass |
+| B-444 | final-product-definition 1.3: gates, archive, commit | DONE | after B-443; gates green, change archived |

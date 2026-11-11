@@ -52,8 +52,50 @@ Module names behind the boxes (2026-10-29): extract and parse live together per 
 `baseballpy.sources.<source>` (there is no `baseballpy.extract` or `baseballpy.parse` package),
 strict Arrow schemas are generated into each source's `tables.py`, orchestration is
 `baseballpy.ingest` (`IngestAdapter`, `plan_jobs`, `run_jobs`), storage is `baseballpy.core.stores`,
-and sinks are `baseballpy.sinks`. FanGraphs and Baseball-Reference are planned, not implemented
-(`docs/ROADMAP.md`). The method for working on the project is `docs/agents/WORK_BREAKDOWN.md`.
+and sinks are `baseballpy.sinks`. FanGraphs and Baseball-Reference exist as optional, deferred sources
+(ADR 102; see The Final Product). The method for working on the project is `docs/agents/WORK_BREAKDOWN.md`.
+
+## The Final Product
+
+A Python library and CLI (PyPI) that gives every user the same tables from the same workflow, for history and for
+live data (`AGENTS.md` sections 0 and 15). One pipeline for every source:
+
+```text
+provider -> download (one polite HttpClient: rate limits, retries, resumable)
+         -> raw (what the provider sent, kept, with sha256)        raw/<source>/...
+         -> typed Arrow (registered schema; bad cells quarantined)
+         -> processed Parquet                                       processed/<source>/<dataset>/[season=YYYY/]
+         -> DuckDB views (views only) + bp.read / bp.sql + export (Parquet, CSV, DuckDB, PostgreSQL, ...)
+```
+
+**Target layout (ADR 95 to 97).** Raw answers are stored once in `raw/<source>/season=YYYY/seg-NNNN.parquet`
+(one row per distinct URL and body, with its sha256), committed by one line in `segments.json`; processed data is
+`seg-NNNN.parquet` per dataset and season (each row names its raw answer in `_raw_sha256`); a source without
+seasons keeps one file per dataset. The old layout (`part-*` and `compact-*` files, one raw file per dataset) is
+still read and is rebuilt from raw. A user sees the same folders, view names and columns in both.
+
+| Source | Downloaded from | Same results because | Layout today | First command | Proved by |
+|---|---|---|---|---|---|
+| `statcast` | Baseball Savant CSV: pitches in 5-day windows (bisected at the 25,000-row cap), minor-league pitches, leaderboards | live upstream: every answer kept (raw), deterministic processing | parts and compacted; raw per dataset (gzip) | `baseballpy ingest statcast -s 2024 -d pitches` | lake contract tests (pitches, leaderboards) |
+| `retrosheet` | the Chadwick GitHub mirror of Retrosheet at a pinned commit: event, box, roster and schedule files per season, parsed with `chadwickpy` | pinned git SHA (`core/sources_lock.json`) | parts and compacted; raw per file | `baseballpy ingest retrosheet -s 2024` | lake contract tests (season and reference) |
+| `chadwick` | the Chadwick register at a pinned commit (sharded people files, names, links, countries) | pinned git SHA | one file per dataset | `baseballpy ingest chadwick` | lake contract test |
+| `lahman` | the SABR release mirrored at a pinned commit (`cbwinslow/lahman-database-csv`) or a user's own import | pinned git SHA or the user's file | one file per table | `baseballpy ingest lahman` | lake contract test |
+| `mlb_api` | `statsapi.mlb.com`: the endpoint registry (reference, season, per-game, people and history units) and the live game feed streamer | live upstream: every answer kept (raw), deterministic processing | parts and compacted; per-game segments available with `--option storage=segments`; raw per dataset | `baseballpy ingest mlb_api -s 2024` | lake contract tests (games as parts and as segments, every endpoint with a recorded answer) |
+| `kalshi`, `polymarket` | prediction-market APIs (optional; deferred, ADR 102) | live upstream, raw kept | parts | `baseballpy ingest kalshi --dry-run` | not yet (B-433) |
+| `fangraphs`, `bref` | homelab import of FanGraphs tables; Baseball-Reference WAR files (optional; deferred, ADR 102) | the files imported | parts | `baseballpy ingest bref --dry-run` | not yet (B-433) |
+
+What users can rely on, for every source: `baseballpy ingest <source> --dry-run` says what a command would
+download and what is already held; downloads are polite, resumable and skip what is held; `baseballpy catalog
+status` and the view `v_season_catalog` say what the lake holds; `bp.read(...)`, `bp.sql(...)` and `baseballpy
+export` give DataFrames (Polars, pandas, PyArrow), DuckDB, Parquet, CSV and PostgreSQL; every download is logged
+(`logs/audit.jsonl`); nothing is dropped silently (bad cells go to `quarantine/`, unknown columns to `_extras`).
+
+**Definition of done for the whole product.** (1) The lake contract passes for every core source on the target
+layout. (2) The real lake is rebuilt from raw with the finished code and compared with the old one (row counts and
+keys per dataset and season); old processed files go only after that comparison, raw is never deleted (ADR 107).
+(3) For each core source a scratch download for a small window equals the lake (the rebuild check, B-408).
+(4) Source pages and column descriptions state their coverage; every decision is an ADR and every behaviour has a
+spec scenario with a test. (5) The owner runs the release steps (`docs/RELEASING.md`).
 
 ## Architectural Invariants
 1. **Strictly Typed Columnar Data, Never Raw Strings:**

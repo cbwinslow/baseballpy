@@ -93,3 +93,28 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-11: `contract-leaderboards-reference` (B-434, B-433 narrowed): Savant leaderboards and Retrosheet reference files pass the lake contract; Kalshi, Polymarket, FanGraphs and Baseball-Reference stay deferred.
 - 2026-11-11: `dry-run-estimate` (B-435 to B-438, ADR 106): `ingest --dry-run` reports held and missing season folders and a typical size from a measured table.
 - 2026-11-11: `quickstart-start-here` (B-440, B-441): the quickstart opens with a checked five-step Start-here path and a first command per core source.
+
+## Road to v1 (written 2026-11-11; the owner's directive: finalize the download workflows, then rebuild)
+
+The download queue (`baseballpy run`) stays **stopped** until step 5. Raw files are kept (ADR 97, ADR 107).
+
+1. **Done:** the workflow is guarded: lake contract for Statcast, Retrosheet, Chadwick, Lahman and MLB
+   (`download-lake-contract`, ADR 105); one compaction at a time (ADR 99); stage honesty (ADR 101); cache checks
+   through the store (ADR 103); deterministic compaction (ADR 104); the estimate in `--dry-run` (ADR 106); the
+   quickstart path; the raw converter and its dry run (`response-log-segments` 5.1 to 5.3).
+2. **Next, code:** rebuild processed segments from raw with the current code (`response-log-segments` group 6);
+   remove the old per-game path and make segments the MLB default (group 7); the rebuild check B-408; the
+   round-trip check (group 8).
+3. **Then the other sources on segments** (group 9: Statcast, Retrosheet, then Chadwick and Lahman or a recorded
+   reason), each proved by the lake contract before and after.
+4. **Owner decisions, with numbers shown first:** run the real raw conversion season by season (5.4, dry-run
+   numbers in `response-log-segments` design 7.y; old files kept until the rebuild matches); rebuild the real
+   lake (6.3); delete the old processed files of a season only after its comparison passed (6.4).
+5. **Restart the queue** for current-season downloads once the lake is on the final layout; the 2011 per-game
+   gaps (provider HTTP 500) are probed and recorded as empty with evidence (`compact-one-writer` 2.4).
+6. **Release** (owner): `docs/RELEASING.md`.
+
+Open improvements that do not block v1: group names in `--dry-run` (B-439), Retrosheet quality check through the
+store (B-424), the contract for deferred sources (B-433), prebuilt snapshots (B-432), column descriptions for
+Statcast and Retrosheet.
+- 2026-11-11: `final-product-definition` (B-442 to B-444, ADR 107): the constitution defines the final product per source; Road to v1 written; a test keeps the table in step with the registry.

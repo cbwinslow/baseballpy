@@ -7,7 +7,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 | Spec | Requirements | Scenarios | Tests cited |
 |---|---|---|---|
-| `agent-runbooks` | 6 | 9 | 15 |
+| `agent-runbooks` | 7 | 10 | 17 |
 | `audit-and-benchmarking` | 6 | 7 | 11 |
 | `bref-ingestion` | 3 | 3 | 10 |
 | `caching-and-invalidation` | 21 | 35 | 50 |
@@ -47,7 +47,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-88 changes are archived under `openspec/changes/archive/`.
+89 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -172,6 +172,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 104: Compaction Is Deterministic In The Bytes And In The Rows
 - ADR 105: A Fresh Download Must Match One Lake Shape, Tested For Every Source
 - ADR 106: A Dry Run Says What A Command Would Download, From Measured Sizes
+- ADR 107: Rebuild Processed Data From Raw Into The Final Layout; Keep All Raw
 
 ## Documentation pages (`docs/`)
 

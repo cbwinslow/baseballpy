@@ -235,3 +235,38 @@ for example 2008: 49,500 -> 21,842 (27,658 copies, 56%), 2019: 50,824 -> 22,707 
 24,893, 2025: 170,2xx -> 70,121, 2026: 174,0xx -> 80,402; between 578 and 1,784 URLs per season have more than one
 body (all kept). The old files are 15.8 to 20 GB uncompressed per full season; segments store them zstd-compressed
 once. Not yet run for real (task 5.4, the owner decides).
+
+
+### 7.z Group 6 (rebuild from raw): the open design question and the recommended answer (2026-11-11)
+
+**What the code is today.** `SegmentWriter` (`core/segments.py`) commits a raw segment and its processed files
+together, under one line in `segments.json`; the line's `units` are the writer's units (for MLB, one game: its
+`game_pk`). The converter (`core/rawsegconvert.py`, tasks 5.1 to 5.3) writes raw-only segments whose `units` are
+URLs and which have no processed files. `SegmentWriter.refresh(segment, units)` already rewrites a committed
+segment under the same file names from new responses of exactly its units.
+
+**The gap.** A rebuild must turn the converter's raw rows into processed segment files for the datasets cut from
+them, without downloading and without writing the raw bodies a second time. That needs the raw rows grouped by the
+same units the writer uses (a game), and a way to add processed files to an existing raw segment's line.
+
+**Options.**
+
+- **A (recommended). Give the converter the writer's units.** A source declares, in the registry (design D2, task
+  9.2), how a URL maps to its unit (MLB: the `game_pk` of a game URL; a URL outside any game is its own unit). The
+  converter groups raw rows by unit, so a raw segment holds whole games and its line names game ids. A rebuild is
+  then `refresh`-like: for a committed raw segment, read its rows (no network), normalize each unit with the current
+  normalizer, write the processed files under the segment's number and add them to a second line for the same
+  segment (the `refresh_id` mechanism already used by a refresh). When a URL has two stored versions the rebuild
+  uses the newest for every dataset (design 5b rule 3), so the four feed datasets agree.
+  - Pro: one writer and one line format; the same path serves a schema change (ADR 87); the converted raw is not
+    copied again; `ingest_game_segments` and the rebuild share `game_normalizer`.
+  - Con: the converter needs the unit mapping first (a small registry field and a test), and the raw segments
+    already written by a dry-run-free test lake would differ (none exist on the real lake yet).
+- **B. Keep raw-only legacy lines and write processed segments in new lines that point at raw segments by sha.**
+  - Pro: no change to the converter.
+  - Con: two kinds of lines; a game's responses may sit in different raw segments; every reader and the cache
+    check must follow the pointers; harder to prove "same files for every user".
+
+**Decision needed from the owner only if A is rejected.** Otherwise the order is: (1) unit mapping field and the
+converter grouping by unit (tests first), (2) `rebuild` in `core/segments.py` (tasks 6.1 and 6.2, the four tests
+named in the task), (3) the comparison table on a real season, old files kept in `_legacy/` (6.3).
