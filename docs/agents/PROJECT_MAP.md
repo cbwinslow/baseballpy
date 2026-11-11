@@ -173,6 +173,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 105: A Fresh Download Must Match One Lake Shape, Tested For Every Source
 - ADR 106: A Dry Run Says What A Command Would Download, From Measured Sizes
 - ADR 107: Rebuild Processed Data From Raw Into The Final Layout; Keep All Raw
+- ADR 108: Old Data May Be Backed Up Compressed And Downloaded Again; A Sample Proves Sameness
 
 ## Documentation pages (`docs/`)
 

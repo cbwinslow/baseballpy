@@ -646,7 +646,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-405 | product-mandate-reproducible-outputs 1.1: test first for the mission and reproducibility sections of the contract | DONE | the test fails for the missing sections |
 | B-406 | product-mandate-reproducible-outputs 1.2: contract text (AGENTS 0 and 15, CLAUDE, project.md, README), ADR 100, spec requirement | DONE | after B-405; the test, docs generate --check and openspec validate --specs pass |
 | B-407 | product-mandate-reproducible-outputs 1.3: gates, archive and commit | DONE | after B-406; gates green, change archived |
-| B-408 | `product-mandate-reproducible-outputs 2.1`: rebuild check (run a workflow into a scratch home and compare it with the lake) | READY | a change rebuild-check exists with design and tests |
+| B-408 | `product-mandate-reproducible-outputs 2.1`: rebuild check (run a workflow into a scratch home and compare it with the lake; the sample form is B-446, ADR 108) | READY | a change rebuild-check exists with design and tests |
 | B-409 | product-mandate-reproducible-outputs 2.2: ingest re-fetches a chunk its compacted file lacks | DONE | test passes (fix if it fails first) |
 | B-410 | product-mandate-reproducible-outputs 2.3: the queue never marks a stage done when its after-step failed | DONE | a test shows the stage stays failed and retries |
 | B-411 | product-mandate-reproducible-outputs 2.4: compaction output is deterministic | DONE | a test compares two runs byte for byte |
@@ -684,3 +684,4 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-443 | final-product-definition 1.2: write the section, Road to v1, ADR 107 and the requirement | DONE | after B-442; the tests pass |
 | B-444 | final-product-definition 1.3: gates, archive, commit | DONE | after B-443; gates green, change archived |
 | B-445 | response-log-segments 6.0: the converter groups raw rows by the writer's unit (registry resolver; MLB game number) | DONE | two new tests in tests/test_raw_convert.py; gates green |
+| B-446 | sample comparison tool (ADR 108): download a few games, days or files per source into a scratch home and compare with the lake (raw sha256, processed rows and keys); same job as the rebuild check B-408 | READY | a report per source; a difference is explained or fixed |

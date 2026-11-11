@@ -107,7 +107,7 @@ The download queue (`baseballpy run`) stays **stopped** until step 5. Raw files 
    round-trip check (group 8).
 3. **Then the other sources on segments** (group 9: Statcast, Retrosheet, then Chadwick and Lahman or a recorded
    reason), each proved by the lake contract before and after.
-4. **Owner decisions, with numbers shown first:** run the real raw conversion season by season (5.4, dry-run
+4. **Replace or rebuild the real lake, either way (ADR 108):** where raw is kept and the rebuild is cheap, rebuild; where old files have drifted, move them to a compressed backup folder (the homelab if the laptop is short of disk) and download them again with the finished code. A small sample is downloaded and compared first (the raw bytes by sha256, processed rows and keys). **Owner decisions, with numbers shown first:** run the real raw conversion season by season (5.4, dry-run
    numbers in `response-log-segments` design 7.y; old files kept until the rebuild matches); rebuild the real
    lake (6.3); delete the old processed files of a season only after its comparison passed (6.4).
 5. **Restart the queue** for current-season downloads once the lake is on the final layout; the 2011 per-game
