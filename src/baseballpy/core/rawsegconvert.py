@@ -22,6 +22,7 @@ season (the host lock of ``core/hostlock.py``).
 import logging
 import zlib
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -152,8 +153,13 @@ def convert_raw_to_segments(
     dry_run: bool = True,
     remove_old: bool = False,
     segment_bytes: int = SEGMENT_BYTES,
+    unit_of: Callable[[str], str] | None = None,
 ) -> SegmentConvertReport:
-    """Convert the old raw files of ``source`` and ``season`` to raw segments (see the module docstring)."""
+    """Convert the old raw files of ``source`` and ``season`` to raw segments (see the module docstring).
+
+    ``unit_of`` maps a URL to its unit (for MLB, the game number); rows are grouped by unit, a unit is never
+    split across segments and the commit line names units, not URLs. The default is the URL itself.
+    """
     report = SegmentConvertReport()
     files, report.skipped = _old_files(config, source, season)
     groups: dict[tuple[str, str], list[_OldFile]] = defaultdict(list)
@@ -174,7 +180,9 @@ def convert_raw_to_segments(
     claim_season(config, source, season)
     lock = f"segments-{source}-{season}"
     try:
-        return _convert(config, source, season, groups, files, report, remove_old, segment_bytes)
+        return _convert(
+            config, source, season, groups, files, report, remove_old, segment_bytes, unit_of or str
+        )
     finally:
         release_named(config.locks_root, lock)
 
@@ -188,6 +196,7 @@ def _convert(
     report: SegmentConvertReport,
     remove_old: bool,
     segment_bytes: int,
+    unit_of: Callable[[str], str],
 ) -> SegmentConvertReport:
     raw = RawStore(config)
     # step 1: every sha256 against the manifest, before anything is written
@@ -210,16 +219,17 @@ def _convert(
     log = ResponseLog(config, source, season)
     season_dir = log.season_dir
     held = _held_pairs(season_dir) if season_dir.is_dir() else set()
-    todo = sorted(pair for pair in groups if pair not in held)
+    todo = sorted((pair for pair in groups if pair not in held), key=lambda p: (unit_of(p[0]), p))
 
     # step 2: write the new bodies as bounded segment files (not yet committed)
     written: list[tuple[str, dict[str, Any]]] = []
     number = log.next_segment()
     batch: list[dict[str, Any]] = []
+    units_in_batch: set[str] = set()
     size = 0
 
     def flush() -> None:
-        nonlocal number, batch, size
+        nonlocal number, batch, size, units_in_batch
         if not batch:
             return
         name = _segment_name(number)
@@ -229,11 +239,14 @@ def _convert(
             "sha256": file_sha256(season_dir / name),
             "rows": table.num_rows,
         }
-        written.append((name, {"units": sorted({row["url"] for row in batch}), "info": info}))
+        written.append((name, {"units": sorted(units_in_batch), "info": info}))
         number += 1
-        batch, size = [], 0
+        batch, size, units_in_batch = [], 0, set()
 
     for pair in todo:
+        unit = unit_of(pair[0])
+        if size >= segment_bytes and unit not in units_in_batch:
+            flush()  # a segment closes only between units, so a game is never split
         sources_of_pair = groups[pair]
         first = sources_of_pair[0]
         body = raw.get(source, first.dataset, first.name, season)
@@ -250,8 +263,7 @@ def _convert(
             }
         )
         size += len(body)
-        if size >= segment_bytes:
-            flush()
+        units_in_batch.add(unit)
     flush()
 
     # step 3: read everything back before anything counts

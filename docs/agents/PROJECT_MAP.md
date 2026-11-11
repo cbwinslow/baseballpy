@@ -62,7 +62,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `mlb-stats-route-406-and-deep-pools` | 7 | 4 | 1.2, 3.1 |
 | `product-mandate-reproducible-outputs` | 6 | 2 | 2.1, 2.5 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
-| `response-log-segments` | 21 | 18 | 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
+| `response-log-segments` | 22 | 18 | 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
 
 ## Decisions (`docs/DECISIONS.md`)

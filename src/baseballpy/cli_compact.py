@@ -12,7 +12,9 @@ from baseballpy.core.datasets import DATASETS, DatasetSpec
 from baseballpy.core.hostlock import HostBusyError
 from baseballpy.core.rawconvert import compress_raw
 from baseballpy.core.rawsegconvert import convert_raw_to_segments
+from baseballpy.core.units import unit_resolver
 from baseballpy.sources import catalog
+from baseballpy.sources.adapters import register_all_adapters
 
 console = Console()
 
@@ -186,6 +188,8 @@ def convert_raw_cmd(source: str, seasons: tuple[int, ...], apply: bool, remove_o
     if remove_old and not apply:
         raise click.UsageError("--remove-old needs --apply")
     config = LakeConfig()
+    register_all_adapters()
+    unit_of = unit_resolver(source)
     chosen = list(seasons) or _raw_seasons(config, source)
     if not chosen:
         raise click.ClickException(f"no raw season folders of {source} under {config.raw_root}")
@@ -194,7 +198,7 @@ def convert_raw_cmd(source: str, seasons: tuple[int, ...], apply: bool, remove_o
     problems = 0
     for season in chosen:
         report = convert_raw_to_segments(
-            config, source, season, dry_run=not apply, remove_old=remove_old
+            config, source, season, dry_run=not apply, remove_old=remove_old, unit_of=unit_of
         )
         table.add_row(
             str(season),

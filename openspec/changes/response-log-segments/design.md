@@ -270,3 +270,10 @@ same units the writer uses (a game), and a way to add processed files to an exis
 **Decision needed from the owner only if A is rejected.** Otherwise the order is: (1) unit mapping field and the
 converter grouping by unit (tests first), (2) `rebuild` in `core/segments.py` (tasks 6.1 and 6.2, the four tests
 named in the task), (3) the comparison table on a real season, old files kept in `_legacy/` (6.3).
+
+**Option A, step 1 done (2026-11-11, task 6.0):** `core/units.py` (a registry of URL-to-unit resolvers),
+`sources/mlb_api/game_segments.py::game_unit` (the game number, built from the endpoint registry's game URLs; any
+other URL is its own unit), registered in `register_all_adapters`; `convert_raw_to_segments(..., unit_of=...)` sorts
+the new bodies by unit, closes a segment only between units and names units in the commit line; the `convert-raw`
+command passes the source's resolver. Tests: `tests/test_raw_convert.py` (two new, failing first). Next: tasks 6.1
+and 6.2 (the rebuild).

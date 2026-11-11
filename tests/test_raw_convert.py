@@ -216,3 +216,40 @@ def test_the_convert_raw_command_defaults_to_a_dry_run(
     applied = CliRunner().invoke(main, ["convert-raw", "mlb_api", "--season", "2024", "--apply"])
     assert applied.exit_code == 0, applied.output
     assert len(_segment_rows(config)) == 3 and set(_tree(config)) >= set(before)
+
+
+def test_game_unit_maps_every_game_url_to_its_pk_and_leaves_other_urls_alone() -> None:
+    """The unit of a raw row is the unit the segment writer uses (a game), taken from the endpoint registry."""
+    from baseballpy.sources.mlb_api.game_segments import game_unit, game_url_groups
+
+    for group in game_url_groups():
+        assert game_unit(group.url(745000)) == "745000", group.path
+    assert game_unit("https://statsapi.mlb.com/api/v1/teams?season=2024") == (
+        "https://statsapi.mlb.com/api/v1/teams?season=2024"
+    )
+
+
+def test_raw_rows_are_grouped_by_unit_and_a_unit_is_never_split(tmp_path: Path) -> None:
+    from baseballpy.sources.mlb_api.game_segments import game_unit
+
+    config = LakeConfig(home=tmp_path)
+    raw = RawStore(config)
+    for pk in (745001, 745000):  # stored in the "wrong" order on purpose
+        for dataset, template, body in (
+            ("game_feed_plays", "v1.1/game/{pk}/feed/live", FEED_BODY + str(pk).encode()),
+            ("game_boxscore_info", "v1/game/{pk}/boxscore", BOX_BODY + str(pk).encode()),
+        ):
+            url = f"https://statsapi.mlb.com/api/{template.format(pk=pk)}"
+            raw.put(SOURCE, dataset, f"{dataset}_{pk}.json", body, season=SEASON, source_ref=url)
+    report = convert_raw_to_segments(
+        config, SOURCE, SEASON, dry_run=False, segment_bytes=1, unit_of=game_unit
+    )
+    assert report.verified and len(report.segments) == 2, "one segment per game at this size"
+    folder = config.raw_root / SOURCE / f"season={SEASON}"
+    lines = [
+        json.loads(x) for x in (folder / "segments.json").read_text(encoding="utf-8").splitlines()
+    ]
+    assert [line["units"] for line in lines] == [["745000"], ["745001"]]
+    for line in lines:
+        urls = [row["url"] for row in pq.read_table(folder / line["raw"]).to_pylist()]
+        assert len(urls) == 2 and all(f"/{line['units'][0]}/" in u for u in urls)

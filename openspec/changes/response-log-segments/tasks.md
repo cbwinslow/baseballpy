@@ -38,6 +38,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [ ] 5.4 dry run on the real lake, then the real run season by season; disk before and after in design.md (replaces the guessed raw size)
 
 ## 6. Rebuild processed segments from raw
+- [x] 6.0 the converter groups raw rows by the writer's unit (a registry resolver: MLB game number); a unit is never split across segments (design 7.z option A, step 1)
 - [ ] 6.1 tests first: `tests/test_segment_rebuild.py::test_a_season_is_rebuilt_from_raw_with_the_same_rows`, `::test_a_schema_change_is_applied_by_rebuilding_from_raw`, `::test_old_files_are_hidden_before_segments_appear`, `::test_a_url_with_two_stored_versions_is_rebuilt_from_the_newest_for_every_dataset` (design 5b)
 - [ ] 6.2 generic rebuild of a season's segments from its raw rows with the current normalizer (also the schema-change path, ADR 87)
 - [ ] 6.3 per season: old files to `_legacy/`, segments in, row counts and keys compared with the old files; table in design.md

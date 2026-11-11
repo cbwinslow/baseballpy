@@ -100,12 +100,17 @@ Rewriting a committed segment MUST write the new files in `_open/` and rename ea
 - Verified by `tests/test_segments.py::test_cache_check_finds_a_damaged_segment`.
 
 ### Requirement: Old Raw Files Are Converted Without Losing A Byte
-A converter MUST turn a source's existing raw files into raw segments: check each file against its old manifest sha256, keep every distinct body as one row with its old path, read every row back, and remove a season's old files only after the whole season verified. A file that does not match MUST stay and be reported. `--dry-run` MUST change nothing and report files, copies, distinct bodies and bytes saved per season; a rerun MUST change nothing.
+A converter MUST turn a source's existing raw files into raw segments: check each file against its old manifest sha256, keep every distinct body as one row with its old path, read every row back, and remove a season's old files only after the whole season verified. A file that does not match MUST stay and be reported. `--dry-run` MUST change nothing and report files, copies, distinct bodies and bytes saved per season; a rerun MUST change nothing. The converter MUST group raw rows by the unit the segment writer stores (a source registers a URL-to-unit resolver; for MLB the game number), never split a unit across segments, and name units in the commit line.
 
 #### Scenario: Dry run, distinct bodies, verify first, rerun
 - **WHEN** a season with four copies of most feeds, two different bodies for one feed and one damaged file is converted, first as a dry run and then for real, twice
 - **THEN** the dry run changes nothing, both different bodies are kept, the damaged file stays and is reported, old copies go only after the season verified, and the rerun changes nothing
 - Verified by `tests/test_raw_convert.py::test_the_dry_run_reports_and_changes_nothing`, `tests/test_raw_convert.py::test_every_sha256_is_checked_against_the_old_manifest`, `tests/test_raw_convert.py::test_distinct_bodies_are_all_kept`, `tests/test_raw_convert.py::test_copies_are_removed_only_after_the_whole_season_verifies` and `tests/test_raw_convert.py::test_a_rerun_changes_nothing`.
+
+#### Scenario: Raw rows are grouped by game
+- **WHEN** the raw files of two games are converted with segments small enough that each game fills one
+- **THEN** each raw segment holds the answers of one game only and its commit line names that game, and every game URL of the endpoint registry resolves to its game number
+- Verified by `tests/test_raw_convert.py::test_raw_rows_are_grouped_by_unit_and_a_unit_is_never_split` and `tests/test_raw_convert.py::test_game_unit_maps_every_game_url_to_its_pk_and_leaves_other_urls_alone`.
 
 ### Requirement: Processed Segments Are Rebuilt From Raw
 A rebuild MUST make the processed segments of a season from its raw segments with the current normalizer, without network access; a segment whose recorded schema fingerprint differs from the dataset's current schema MUST be rebuilt this way. When a season's old `part-*`/`compact-*` files are replaced, they MUST first be moved to `_legacy/` and deleted only after the row counts and keys of the new segments equal theirs.

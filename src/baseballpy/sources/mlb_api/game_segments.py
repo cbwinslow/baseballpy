@@ -12,6 +12,7 @@ URL answered 200 with a body that decodes, or answered 404 for a dataset whose e
 again on the next run.
 """
 
+import re
 import time
 from collections import deque
 from collections.abc import Callable, Mapping, Sequence
@@ -83,6 +84,30 @@ def game_url_groups() -> list[UrlGroup]:
         UrlGroup(path, params, tuple(sorted(eps, key=lambda e: e.name)))
         for (path, params), eps in sorted(grouped.items())
     ]
+
+
+def _game_url_patterns() -> list[re.Pattern[str]]:
+    """One pattern per URL of a game, from the registry; the game number is the only capture group."""
+    patterns = []
+    for group in game_url_groups():
+        template = re.escape(f"{MLB_BASE_URL}/{group.path}")
+        patterns.append(
+            re.compile(template.replace(re.escape("{game_pk}"), r"(\d+)") + r"(?:\?.*)?")
+        )
+    return patterns
+
+
+def game_unit(url: str) -> str:
+    """The unit a raw answer belongs to: the game number of a game URL, else the URL itself.
+
+    This is the unit ``ingest_game_segments`` writes (``str(game_pk)``), so converted raw segments hold
+    whole games and a rebuild can find them without downloading anything.
+    """
+    for pattern in _game_url_patterns():
+        match = pattern.fullmatch(url)
+        if match:
+            return match.group(1)
+    return url
 
 
 def decode_body(body: bytes) -> Any:

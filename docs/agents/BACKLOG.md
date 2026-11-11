@@ -683,3 +683,4 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-442 | final-product-definition 1.1: test first for the per-source Final Product table in the constitution | DONE | the test fails for the missing section |
 | B-443 | final-product-definition 1.2: write the section, Road to v1, ADR 107 and the requirement | DONE | after B-442; the tests pass |
 | B-444 | final-product-definition 1.3: gates, archive, commit | DONE | after B-443; gates green, change archived |
+| B-445 | response-log-segments 6.0: the converter groups raw rows by the writer's unit (registry resolver; MLB game number) | DONE | two new tests in tests/test_raw_convert.py; gates green |
