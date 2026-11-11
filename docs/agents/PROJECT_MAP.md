@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 12 | 15 | 49 |
+| `lake-access` | 13 | 18 | 57 |
 | `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -47,7 +47,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-84 changes are archived under `openspec/changes/archive/`.
+85 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -170,6 +170,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 102: Tidy The Backlog By Superseding, Deferring And Retiring, Not Deleting
 - ADR 103: Cache Decisions Go Through The Store
 - ADR 104: Compaction Is Deterministic In The Bytes And In The Rows
+- ADR 105: A Fresh Download Must Match One Lake Shape, Tested For Every Source
 
 ## Documentation pages (`docs/`)
 

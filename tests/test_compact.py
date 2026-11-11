@@ -346,3 +346,38 @@ def test_a_chunk_that_keeps_moving_is_an_error_not_an_empty_table(
     monkeypatch.setattr(stores_module, "read_chunk", always_gone)
     with pytest.raises(RuntimeError, match="kept moving"):
         store.read_part(spec, "c00", 2023)
+
+
+def test_a_dataset_whose_chunks_are_all_empty_keeps_one_empty_file_and_its_view(
+    tmp_path: Path, spec: DatasetSpec
+) -> None:
+    """Compaction must not make a dataset vanish: the same download has the same views before and after."""
+    import duckdb
+
+    cfg = LakeConfig(home=tmp_path / "all_empty")
+    store = ProcessedStore(cfg)
+    for chunk in ("n2", "n1"):
+        store.put(
+            spec, spec.schema.empty_table(), chunk_id=chunk, season=2023, metadata={"empty": True}
+        )
+    BaseballDatabase(cache_config=cfg).sync_views()
+    assert _view_count(cfg, spec) == 0  # an empty table is still a table
+
+    compact_dataset(spec, cfg)
+    assert _files(cfg, spec, 2023) == ["part-n1.parquet"]  # one file kept: the first chunk's
+    assert store.is_cached(spec, "n1", 2023) and store.is_cached(spec, "n2", 2023)
+    BaseballDatabase(cache_config=cfg).sync_views()
+    assert _view_count(cfg, spec) == 0, "the view must survive compaction"
+    compact_dataset(spec, cfg)  # idempotent
+    assert _files(cfg, spec, 2023) == ["part-n1.parquet"]
+    assert duckdb is not None
+
+
+def _view_count(cfg: LakeConfig, spec: DatasetSpec) -> int:
+    import duckdb
+
+    con = duckdb.connect(str(cfg.database_path), read_only=True)
+    try:
+        return int(con.execute(f"SELECT count(*) FROM {spec.view}").fetchone()[0])  # type: ignore[index]  # noqa: S608
+    finally:
+        con.close()

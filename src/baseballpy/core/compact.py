@@ -274,13 +274,20 @@ def _drop_empty_parts(
     The manifest already says "COMPLETED, 0 rows", which counts as stored without a file.
     A file is removed only when its own footer also says 0 rows.
     """
-    for key, entry in chunks.items():
+    # A dataset in which no chunk has rows keeps one empty file (the first chunk's), so it still has a
+    # typed, queryable (empty) view: the same download must give the same views before and after
+    # compaction (AGENTS.md section 15).
+    kept_one = any(int(entry.get("records_count") or 0) > 0 for entry in chunks.values())
+    for key, entry in sorted(chunks.items()):
         if entry.get("status") != "COMPLETED" or entry.get("records_count") != 0:
             continue
         season = _group_key(key)
         name = key.split("/", 1)[1] if season is not None else key
         part = config.processed_dir(spec.source, spec.name, season) / _part_name(spec, name, season)
         if part.exists() and pq.read_metadata(part).num_rows == 0:
+            if not kept_one:
+                kept_one = True
+                continue
             report.empty_files += 1
             if not dry_run:
                 _unlink(part)

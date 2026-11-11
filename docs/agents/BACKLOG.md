@@ -666,3 +666,9 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-425 | deterministic-compaction 1.1: tests that compaction is deterministic (byte-identical files, rerun, staged) | DONE | the three tests pass; a sabotaged compact makes the first fail |
 | B-426 | deterministic-compaction 1.2: requirement, ADR 104, reword AGENTS.md s15 rule 1, close B-411 | DONE | after B-425; docs and spec checks pass |
 | B-427 | deterministic-compaction 1.3: gates, archive, commit | DONE | after B-426; gates green, change archived |
+| B-428 | download-lake-contract 1.1: lake_contract helper and Statcast and Retrosheet download tests with negative controls | DONE | tests pass; controls fail as expected |
+| B-429 | download-lake-contract 1.2: Chadwick and Lahman downloads under the contract | DONE | after B-428; pass (code fixes if not) |
+| B-430 | download-lake-contract 1.3: MLB API game-level downloads under the contract | DONE | after B-429; pass (code fixes if not) |
+| B-431 | download-lake-contract 1.4: spec, ADR 105, docs, archive | DONE | after B-430; evidence in design.md |
+| B-432 | prebuilt Parquet snapshots for new users (a release or export of the processed tier, in the spirit of boxball): needs a licence and hosting decision first (docs/DATA_LICENSES.md) | DEFERRED (owner agreed 2026-11-11; no work yet) | an OpenSpec change with the licence check and the hosting choice |
+| B-433 | download contract for the rest: Statcast leaderboards, Retrosheet reference units, Kalshi, Polymarket, FanGraphs, Baseball-Reference (each a download test plus assert_lake_contract) | READY | each source passes the contract (code fixes if not) |
