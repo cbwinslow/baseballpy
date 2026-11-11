@@ -4,6 +4,8 @@ Fast, modular, and strongly-typed baseball data ingestion layer for Python.
 
 Unified extraction, normalization, and ingestion for **Statcast (Baseball Savant)**, **MLB Stats API**, **Lahman Database**, **Chadwick Register**, and **Retrosheet** into **DuckDB**, **Polars**, **PyArrow**, and **dlt** (PostgreSQL, Snowflake, BigQuery, MotherDuck).
 
+**Built to be reproducible:** the same workflow gives the same tables for every user (pinned upstream versions, deterministic file layout), for history and for live data, readable with DuckDB, PyArrow, Polars, pandas, Parquet, CSV and PostgreSQL.
+
 ---
 
 ## Key Features

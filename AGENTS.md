@@ -1,6 +1,17 @@
 # baseballpy — Agent Contract & Engineering Mandates
 
-Read `openspec/project.md` and `docs/DECISIONS.md` before making architectural or implementation changes.
+Read sections 0 and 15 (what the product is and the reproducible-outputs rules), `openspec/project.md` and `docs/DECISIONS.md` before making architectural or implementation changes.
+
+---
+
+## 0. Product Mission (read this before anything else)
+
+`baseballpy` is a **reusable Python library and command-line tool, distributed on PyPI**, that downloads, ingests and maintains MLB baseball data for other people: **historical** data in bulk (resumable, polite to the providers) and **real-time** data during the seasons. Its users model and analyse the data with **DuckDB, PyArrow, Polars, pandas, Parquet files, CSV and PostgreSQL** (and other warehouses through `dlt`), so the on-disk layout, the table names and the column types are a public contract.
+
+1. **The product is the code and its workflows, not the data on one machine.** The lake on the owner's computer is a *test oracle*: it shows what the workflows produced and lets us check that a fresh run gives the same output. It is never the deliverable. Data can be downloaded again; the workflows are what every user depends on.
+2. **Every user who runs the same workflow gets the same results** (section 15). A feature that works only on the owner's lake, or only after hand-edited files, is not done.
+3. **Effort goes to the download, ingest, compaction and read workflows first.** Use the existing data to confirm that the workflows would produce it again; do not spend a session massaging files.
+4. Every change is judged by one question: *if a stranger installs this from PyPI and runs the workflow, do they get what the documentation promises, every time?*
 
 ---
 
@@ -235,6 +246,7 @@ sections 1-13 and `docs/DECISIONS.md`. `tests/test_agent_rails.py` enforces what
    full diff review; Lahman only from `cbwinslow/lahman-database-csv` or user-supplied data; commit after
    every green slice, never push unless the owner says so; heavy runs go to the homelab; stop only
    background jobs you started.
+10. **Product mission and reproducible outputs** (sections 0 and 15) come first: fix the workflow code with a test and rebuild the data with it; never settle for repairing files by hand.
 
 ### 14.3 Banned patterns (reviewers reject these)
 
@@ -259,3 +271,18 @@ one conventional commit whose body lists the reuse-check answers, the evidence a
 Stop, record the block (what was tried, dates, commands) in the change, mark the backlog row
 OWNER/EXTERNAL, ask the owner once in one short list, and move to the next ready card. Never build a
 workaround for a block you did not research (section 13.2).
+
+---
+
+## 15. Reproducible Outputs (binding for every change)
+
+The same inputs MUST give the same outputs for every user, machine and run. This is how the library stays trustworthy as a PyPI package.
+
+1. **Same means:** the same rows, schema (names, order, types), record counts, chunk and file names, partition layout and, for compacted files, the same bytes. Only values that are explicitly lineage or time-of-download (`fetched_at`, audit timestamps) may differ, and they live in manifests and logs, not in data columns unless documented.
+2. **Inputs are pinned or kept.** Git-hosted sources are pinned to a SHA (`core/sources_lock.json`). Closed seasons and fixed date windows are repeatable. Live inputs (Statcast, the MLB API) cannot be pinned, so every response is kept (raw) and processing is deterministic: a rebuild from raw is identical.
+3. **Deterministic processing.** Sort order, chunk grouping, file numbering and batching depend only on the data and the registry, never on thread timing, directory listing order, the clock, the machine or the number of workers. No machine-specific paths or values in outputs.
+4. **Fix the code, not the files.** A data defect is repaired in this order: find the code path that produced it; write a test that fails; fix the code; rebuild the data with the workflow and compare with the old output; only then replace files. Hand edits of data files are a **last resort**: write them down in the change, keep a backup, and follow them with a rebuild by the workflow. If the workflow cannot rebuild the data, that is the bug.
+5. **Prove sameness.** For each source there is a rebuild check: run the workflow for a small window into a scratch `BASEBALLPY_HOME` and compare it with the lake (row counts, schema digest, chunk content). A change to a workflow is not done until its output is shown to match what the previous code produced, or the difference is explained in the change.
+6. **Jobs that fail are failures.** A stage, job or after-step that failed is never reported as done; the next run retries it.
+7. **One layout for every user.** Readers (`baseballpy.read`, `baseballpy.sql`, the DuckDB views, `export`) see the same tables whether the data came from history or from the live stream, and whether files are parts, compacted files or segments.
+8. **Real-time and history agree.** The live path and the bulk path write the same typed tables; a game fetched live and later rebuilt from history gives the same rows.

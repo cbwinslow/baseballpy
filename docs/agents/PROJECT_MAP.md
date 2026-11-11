@@ -7,7 +7,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 
 | Spec | Requirements | Scenarios | Tests cited |
 |---|---|---|---|
-| `agent-runbooks` | 4 | 7 | 13 |
+| `agent-runbooks` | 5 | 8 | 14 |
 | `audit-and-benchmarking` | 6 | 7 | 11 |
 | `bref-ingestion` | 3 | 3 | 10 |
 | `caching-and-invalidation` | 20 | 33 | 47 |
@@ -61,6 +61,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lake-schema-evolution` | 4 | 2 | 1.5, 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 7 | 4 | 1.2, 3.1 |
+| `product-mandate-reproducible-outputs` | 3 | 5 | 2.1, 2.2, 2.3, 2.4, 2.5 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `response-log-segments` | 18 | 21 | 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
@@ -166,6 +167,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 97: Keep All Raw On The Laptop For Now; Own Segment Files, Not A Table Format
 - ADR 98: `v_season_catalog` Is The Lake Inventory
 - ADR 99: One Compaction Per Dataset At A Time
+- ADR 100: The Product Is The Workflow Code; Outputs Must Be Reproducible For Every User
 
 ## Documentation pages (`docs/`)
 

@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 20:56 UTC [blain]:**
+  - **Tasks:** `B-405`.
+  - **Summary:** product mission and reproducible-outputs contract (AGENTS 0 and 15, ADR 100); follow-ups 2.1-2.5 mapped
+
 - **2026-11-11 20:31 UTC [blain]:**
   - **Tasks:** `B-397`.
   - **Summary:** compact-one-writer 1.1-1.4: per-dataset compaction lock (ADR 99); repair tasks 2.2-2.4 stay open

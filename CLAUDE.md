@@ -4,6 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `baseballpy` ingests Statcast (Baseball Savant), the MLB Stats API, Lahman, the Chadwick Register and Retrosheet into typed Parquet (queried through DuckDB views). GPL-3.0-or-later (ADR 26; upstream data licenses in `docs/DATA_LICENSES.md`).
 
+## What this project is (read first)
+
+`baseballpy` is a reusable Python library and CLI, to be published on PyPI, for downloading, ingesting and maintaining MLB data (historical in bulk and real-time during the season) so that other people can model it with DuckDB, PyArrow, Polars, pandas, Parquet, CSV and PostgreSQL. It must give the **same results** for every user who runs the same workflow. The data lake on the owner's machine is only a test oracle: fix the download/ingest/compact code (with a test) and rebuild the data with the workflow; hand-editing data files is a last resort (`AGENTS.md` sections 0 and 15).
+
 ## How to talk to the owner (every reply, no exceptions)
 
 The owner is not a full-time programmer and gets confused by jargon. Every reply MUST:
@@ -23,7 +27,8 @@ Suggested shape: *Summary*, *What I found / did*, *What happens next*, *Question
 2. **Tools before code:** run the reuse check of `docs/agents/TOOLING.md` (pyarrow, polars, duckdb, narwhals, msgspec, httpx/tenacity/aiolimiter, dlt, pydantic-settings, click/rich, hypothesis). `Grep` for an existing helper. Custom code needs one sentence of evidence for what the tool cannot do.
 3. **Registry and data, not names:** no hard-coded dataset, endpoint or season lists; one declarative table plus one generic function; keep Protocol boundaries (`IngestAdapter`, `SinkProtocol`).
 4. **OpenSpec always:** spec delta with a `Verified by` test, ADR per decision, tick `tasks.md`, evidence in `design.md`, archive finished changes.
-5. **Small slices, evidence or not done:** one card per commit, the four gates plus `docs generate --check` and `openspec validate --specs`, release lock with `baseballpy agent release <task_id> "<summary>"` (updating `docs/agents/AGENT_BOARD.md` and `docs/agents/agent_log.jsonl`), command output pasted, "not verified" said plainly.
+5. **Product first:** the product is a PyPI library whose workflows give the same results for every user; fix the code and rebuild data with it, never just edit data files (`AGENTS.md` sections 0 and 15).
+6. **Small slices, evidence or not done:** one card per commit, the four gates plus `docs generate --check` and `openspec validate --specs`, release lock with `baseballpy agent release <task_id> "<summary>"` (updating `docs/agents/AGENT_BOARD.md` and `docs/agents/agent_log.jsonl`), command output pasted, "not verified" said plainly.
 
 How the project is partitioned into tasks: `docs/agents/WORK_BREAKDOWN.md`. Current source under review: Chadwick (`docs/agents/tracks/01-chadwick.md`).
 

@@ -3,6 +3,8 @@
 ## What It Is
 `baseballpy` is the next-generation, high-performance, strongly-typed baseball data ingestion layer for Python. It provides researchers, sabermetricians, data engineers, and sports analytics applications with a unified, modern interface to download, cache, normalize, and ingest baseball datasets across all major internet repositories.
 
+**Product mission:** `baseballpy` is a reusable library and CLI distributed on PyPI. It downloads, ingests and maintains historical and real-time MLB data for other people, who query it with DuckDB, PyArrow, Polars, pandas, Parquet, CSV and PostgreSQL. Every user who runs the same workflow MUST get the same results (same rows, schema, names and bytes). The owner's lake is a test oracle, not the deliverable; defects are fixed in the workflow code and the data is rebuilt by it (`AGENTS.md` sections 0 and 15).
+
 Supported and planned data sources:
 - **Statcast (Baseball Savant):** Pitch-level tracking data, batted-ball trajectories, expected metrics (xBA, xwOBA, xSLG), sprint speed, arm strength, catcher pop times, and swing tracking.
 - **MLB Stats API (`statsapi.mlb.com`):** Official schedule, live Gameday JSON feeds, boxscores, play-by-play, team/player rosters, transactions, draft, and awards.

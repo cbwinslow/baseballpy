@@ -117,3 +117,20 @@ def test_source_code_uses_no_banned_libraries() -> None:
                 if any(name == b or name.startswith(f"{b}.") for b in banned):
                     offenders.append(f"{path.relative_to(SRC).as_posix()}:{node.lineno} {name}")
     assert offenders == []
+
+
+def test_the_contract_states_the_product_and_reproducibility_mandate() -> None:
+    """The mission and the sameness of outputs are in the contract files (change
+    product-mandate-reproducible-outputs); removing them must fail the suite."""
+    agents = AGENTS.read_text(encoding="utf-8")
+    assert "## 0. Product Mission" in agents
+    assert "## 15. Reproducible Outputs" in agents
+    mission = agents.split("## 0. Product Mission", 1)[1].split("\n## ", 1)[0]
+    for phrase in ("PyPI", "historical", "real-time", "test oracle", "DuckDB", "PostgreSQL"):
+        assert phrase in mission, f"mission lacks {phrase!r}"
+    rules = agents.split("## 15. Reproducible Outputs", 1)[1]
+    for phrase in ("same", "fix the code", "rebuild", "last resort", "pinned"):
+        assert phrase in rules, f"reproducibility rules lack {phrase!r}"
+    for path in (CLAUDE, ROOT / "openspec" / "project.md"):
+        text = path.read_text(encoding="utf-8")
+        assert "PyPI" in text and "same results" in text, f"{path.name} lacks the mission"

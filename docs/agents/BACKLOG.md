@@ -643,3 +643,11 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-402 | `compact-one-writer 2.2`: repair the three season-2023 orphans (team_roster_all_time, team_roster_coach, award_recipients) | READY | catalog layout --source mlb_api shows no ORPHAN_COMPACT |
 | B-403 | `compact-one-writer 2.3`: compact the eight mixed-shape MLB game tables, one at a time, with row-count checks | READY | after B-398; catalog layout --source mlb_api shows no MIXED_SCHEMA |
 | B-404 | `compact-one-writer 2.4`: probe the 2011 HTTP 500 games and record them as empty with evidence | READY | the queue plan no longer retries them |
+| B-405 | product-mandate-reproducible-outputs 1.1: test first for the mission and reproducibility sections of the contract | DONE | the test fails for the missing sections |
+| B-406 | product-mandate-reproducible-outputs 1.2: contract text (AGENTS 0 and 15, CLAUDE, project.md, README), ADR 100, spec requirement | DONE | after B-405; the test, docs generate --check and openspec validate --specs pass |
+| B-407 | product-mandate-reproducible-outputs 1.3: gates, archive and commit | DONE | after B-406; gates green, change archived |
+| B-408 | `product-mandate-reproducible-outputs 2.1`: rebuild check (run a workflow into a scratch home and compare it with the lake) | READY | a change rebuild-check exists with design and tests |
+| B-409 | `product-mandate-reproducible-outputs 2.2`: ingest re-fetches a chunk its compacted file lacks | READY | test passes (fix if it fails first) |
+| B-410 | `product-mandate-reproducible-outputs 2.3`: the queue never marks a stage done when its after-step failed | READY | a test shows the stage stays failed and retries |
+| B-411 | `product-mandate-reproducible-outputs 2.4`: compaction output is deterministic | READY | a test compares two runs byte for byte |
+| B-412 | `product-mandate-reproducible-outputs 2.5`: determinism audit of each source in docs/sources | READY | every source page states what is pinned, live and varying |
