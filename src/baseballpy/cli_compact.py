@@ -11,6 +11,7 @@ from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS, DatasetSpec
 from baseballpy.core.hostlock import HostBusyError
 from baseballpy.core.rawconvert import compress_raw
+from baseballpy.core.rawsegconvert import convert_raw_to_segments
 from baseballpy.sources import catalog
 
 console = Console()
@@ -144,7 +145,89 @@ def compress_raw_cmd(sources: tuple[str, ...], dry_run: bool) -> None:
         raise click.ClickException(f"{len(report.skipped)} file(s) were left as they are")
 
 
+def _raw_seasons(config: LakeConfig, source: str) -> list[int]:
+    """Every season folder any dataset of ``source`` has under ``raw/``."""
+    root = config.raw_root / source
+    found = {
+        int(p.name.removeprefix("season="))
+        for p in root.glob("*/season=*")
+        if p.is_dir() and p.name.removeprefix("season=").isdigit()
+    }
+    return sorted(found)
+
+
+@click.command("convert-raw")
+@click.argument("source")
+@click.option(
+    "--season",
+    "seasons",
+    type=int,
+    multiple=True,
+    help="Season (repeatable; default: every season held).",
+)
+@click.option(
+    "--apply",
+    is_flag=True,
+    help="Write the raw segments (the default is a dry run that only reports).",
+)
+@click.option(
+    "--remove-old",
+    is_flag=True,
+    help="After a verified conversion, delete the old raw files (their records then say which "
+    "segment holds the bytes). Needs --apply.",
+)
+def convert_raw_cmd(source: str, seasons: tuple[int, ...], apply: bool, remove_old: bool) -> None:
+    """Store a source's raw answers once, in raw segments (ADR 95), instead of once per dataset.
+
+    Run it when no ingest is running. Every old file is checked against its recorded sha256, every new
+    segment is read back, and nothing is deleted unless --apply --remove-old is given and the whole
+    season verified. Different bodies of one URL are all kept.
+    """
+    if remove_old and not apply:
+        raise click.UsageError("--remove-old needs --apply")
+    config = LakeConfig()
+    chosen = list(seasons) or _raw_seasons(config, source)
+    if not chosen:
+        raise click.ClickException(f"no raw season folders of {source} under {config.raw_root}")
+    mode = "writing" if apply else "dry run"
+    table = Table("Season", "Files", "URLs", "Bodies", "Copies", "Multi", "MB", "Segs", "Removed")
+    problems = 0
+    for season in chosen:
+        report = convert_raw_to_segments(
+            config, source, season, dry_run=not apply, remove_old=remove_old
+        )
+        table.add_row(
+            str(season),
+            f"{report.files:,}",
+            f"{report.urls:,}",
+            f"{report.distinct_bodies:,}",
+            f"{report.copies:,}",
+            f"{report.differing_urls:,}",
+            f"{report.bytes_before / 1e6:,.1f}",
+            str(len(report.segments)),
+            f"{report.removed:,}",
+        )
+        if report.skipped:
+            problems += 1
+            for label, why in list(report.skipped.items())[:5]:
+                console.print(f"[red]{season} {label}: {why}[/red]")
+        elif apply and not report.verified:
+            problems += 1
+            console.print(
+                f"[red]{season}: the read-back failed, nothing was kept (see the log)[/red]"
+            )
+    console.print(table)
+    console.print(
+        "Bodies = distinct answers (URL + sha256) that would be stored; Copies = old files repeating "
+        "another file's bytes; Multi = URLs with more than one body (all kept); MB = old size."
+    )
+    console.print(f"{mode}: {len(chosen)} season(s) of {source}")
+    if problems:
+        raise click.ClickException(f"{problems} season(s) were not converted")
+
+
 def register_compact_command(group: click.Group) -> None:
     """Attach ``compact`` to the main group."""
     group.add_command(compact_cmd)
     group.add_command(compress_raw_cmd)
+    group.add_command(convert_raw_cmd)

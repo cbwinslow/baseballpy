@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 23:24 UTC [blain]:**
+  - **Tasks:** `B-371`.
+  - **Summary:** response-log-segments 5.1-5.3: raw converter (convert-raw) with dry run, sha256 check, read-back, rollback; dry run on the real MLB lake
+
 - **2026-11-11 22:47 UTC [blain]:**
   - **Tasks:** `B-440`.
   - **Summary:** quickstart-start-here: checked five-step Start-here path in docs/QUICKSTART.md

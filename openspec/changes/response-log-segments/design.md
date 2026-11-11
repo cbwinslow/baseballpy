@@ -219,3 +219,19 @@ because of the `_raw_sha256` lineage column. `layout_audit._schema_mismatches` n
 registered schema plus the lineage column (`tests/test_layout_audit.py`, failing first). With that, the segment
 download passes the contract: seg-only names, types, `check_segments` checksums, views and counts, and a second
 run fetches nothing. Still open in 7.3: no TINY_FILES for segments, and the docs.
+
+### 7.y Raw converter (tasks 5.1 to 5.3, 2026-11-11)
+
+`baseballpy/core/rawsegconvert.py::convert_raw_to_segments` and the command `baseballpy convert-raw SOURCE
+[--season Y] [--apply] [--remove-old]` (default: a dry run). `tests/test_raw_convert.py` (7 tests, failing first):
+dry run changes nothing; a file whose bytes do not match its manifest sha256 (or cannot be read, or has no url)
+stops the season with nothing written or removed; distinct bodies of one URL are all kept (`legacy_path` names
+every copy); a failed read-back rolls the new segment back and keeps every old file; old files go only with
+`--remove-old` after a verified read-back, and their manifest entries become `stored: segment` with
+`segment_sha256` (so `cache check` still passes); a rerun writes nothing.
+
+**Dry run on the real lake (manifests only, 54 seconds, 2026-11-11), MLB, per season:** old files -> distinct bodies,
+for example 2008: 49,500 -> 21,842 (27,658 copies, 56%), 2019: 50,824 -> 22,707 (28,117 copies), 2024: 53,890 ->
+24,893, 2025: 170,2xx -> 70,121, 2026: 174,0xx -> 80,402; between 578 and 1,784 URLs per season have more than one
+body (all kept). The old files are 15.8 to 20 GB uncompressed per full season; segments store them zstd-compressed
+once. Not yet run for real (task 5.4, the owner decides).

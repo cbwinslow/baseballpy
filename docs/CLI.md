@@ -23,6 +23,7 @@ Commands:
   catalog         Inspect and audit what the registry covers.
   compact         Merge each dataset's small chunk files into big ones (run when no ingest is...
   compress-raw    Gzip raw text files (json, csv) of the configured sources (run when no ingest...
+  convert-raw     Store a source's raw answers once, in raw segments (ADR 95), instead of once...
   db              Manage the DuckDB catalog (views over processed/ Parquet).
   docs            Generate the per-dataset column dictionaries in docs/sources/*.md.
   doctor          Diagnose data lake layout, disk usage, package versions, and orphan files.
@@ -392,6 +393,25 @@ Options:
   --source TEXT  Limit to a source (repeatable).
   --dry-run      Show what would be compressed; change nothing.
   --help         Show this message and exit.
+```
+
+## `baseballpy convert-raw`
+
+```text
+Usage: baseballpy convert-raw [OPTIONS] SOURCE
+
+  Store a source's raw answers once, in raw segments (ADR 95), instead of once per dataset.
+
+  Run it when no ingest is running. Every old file is checked against its recorded sha256, every new
+  segment is read back, and nothing is deleted unless --apply --remove-old is given and the whole
+  season verified. Different bodies of one URL are all kept.
+
+Options:
+  --season INTEGER  Season (repeatable; default: every season held).
+  --apply           Write the raw segments (the default is a dry run that only reports).
+  --remove-old      After a verified conversion, delete the old raw files (their records then say
+                    which segment holds the bytes). Needs --apply.
+  --help            Show this message and exit.
 ```
 
 ## `baseballpy db`
