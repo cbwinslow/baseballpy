@@ -29,7 +29,7 @@ the download queue starts compactions by itself.
 ## Out of scope
 
 - Ingest versus compact in one dataset (separate decision; the docstring rule stays).
-- Repairing the damaged data: that is the lake-repair work (`docs/agents/GOAL_LAKE_REPAIR.md`), recorded
+- Repairing the damaged data: that is the lake-repair work (the repair tasks 2.1 to 2.4 below), recorded
   as tasks B-401 to B-404 so it is mapped, not as code.
 - A detector for "file holds other chunks than the records say": `catalog layout` already reports it
   (ORPHAN_COMPACT "lacks N chunk(s)").

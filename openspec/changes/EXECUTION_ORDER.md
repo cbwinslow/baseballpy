@@ -86,3 +86,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-08: `download-queue` (B-313, B-315 to B-319) closed and archived (ADR 90): unattended `baseballpy run` queue, stage compaction, state file, disk threshold.
 - 2026-11-08: `finish-mlb-history`: Task 3.1 (unpopulated endpoint evidence), Task 3.4 (streamer replay test), Task 4.2 (macOS CI matrix) completed; Task 2.1 (history backfill) currently downloading in background.
 - 2026-11-11: `queue-after-step-failure` (B-413 to B-415, B-410) closed and archived (ADR 101): a stage whose compaction failed is failed and retried.
+- 2026-11-11: `backlog-consolidation` (B-416 to B-420, ADR 102): `shared-raw-bytes` and `batched-chunk-writes` archived unmerged; `download-throughput` 2.3 and 2.5 superseded; `market-sources` and `fangraphs-and-bref` open rows DEFERRED; four stale agent files retired.

@@ -47,14 +47,13 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-79 changes are archived under `openspec/changes/archive/`.
+82 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
-| `batched-chunk-writes` | 0 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
-| `download-throughput` | 6 | 3 | 2.3, 2.4, 2.5 |
+| `download-throughput` | 8 | 1 | 2.4 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `finish-mlb-history` | 9 | 6 | 2.1, 2.2, 2.3, 2.4, 3.2, 4.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
@@ -65,7 +64,6 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `response-log-segments` | 18 | 21 | 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
-| `shared-raw-bytes` | 0 | 0 | none |
 
 ## Decisions (`docs/DECISIONS.md`)
 
@@ -169,6 +167,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 99: One Compaction Per Dataset At A Time
 - ADR 100: The Product Is The Workflow Code; Outputs Must Be Reproducible For Every User
 - ADR 101: A Stage Whose After-Step Failed Is Not Done
+- ADR 102: Tidy The Backlog By Superseding, Deferring And Retiring, Not Deleting
 
 ## Documentation pages (`docs/`)
 
@@ -188,11 +187,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/agents/AGENT_BOARD.md`
 - `docs/agents/AGY_DELEGATION.md`
 - `docs/agents/BACKLOG.md`
-- `docs/agents/FINAL_REPORT.md`
-- `docs/agents/GOAL_LAKE_REPAIR.md`
 - `docs/agents/GOAL_SEEK_PROMPT.md`
-- `docs/agents/HANDOFF_2026-10-30.md`
-- `docs/agents/HANDOFF_B43.md`
 - `docs/agents/LOOP_PROMPT.md`
 - `docs/agents/NEXT_GOAL.md`
 - `docs/agents/PROJECT_MAP.md`

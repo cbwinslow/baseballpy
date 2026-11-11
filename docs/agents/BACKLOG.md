@@ -109,7 +109,7 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 | B-40 | dlt-pipeline-core 1.2: load into DuckDB and Parquet and compare | DONE: three endpoints, 5 live requests, compared | columns, types, row counts and code size compared with the current path, about 20 requests |
 | B-41 | dlt-pipeline-core 1.3: record what dlt replaced and what it could not | DONE: findings in design.md | findings in design.md |
 | B-42 | dlt-pipeline-core 2.1: ADR 42 adopt or reject | DONE: ADR 42 | ADR 42 cites the numbers |
-| B-43 | dlt-pipeline-core 3.1: DltAdapter behind IngestAdapter (design REJECTED by the owner 2026-10-29; redesign first, see docs/agents/HANDOFF_B43.md) | DONE (superseded by ADR 44 and export-workflow, B-76..B-85) | a new design the owner approves: existing tools used better (Arrow interchange, SinkProtocol sinks incl. CSV, dlt, narwhals), uniform and registry-driven |
+| B-43 | dlt-pipeline-core 3.1: DltAdapter behind IngestAdapter (design REJECTED by the owner 2026-10-29; redesign first, the old handoff note is in git history) | DONE (superseded by ADR 44 and export-workflow, B-76..B-85) | a new design the owner approves: existing tools used better (Arrow interchange, SinkProtocol sinks incl. CSV, dlt, narwhals), uniform and registry-driven |
 | B-44 | dlt-pipeline-core 3.2: retire flatten, _extras and drift paths replaced by contracts | DONE (superseded by ADR 44 and export-workflow, B-76..B-85) | tests, docs generate, gates green |
 | B-45 | reference-docs 3: cross-check endpoints and column types against the reference docs | DONE (routes cross-checked by `scripts/endpoint_crosscheck.py`; the references document parameters, not response column types, so types stay confirmed by live-probed samples) | `docs/references/ENDPOINT_CROSSCHECK.md` lists every registry endpoint with its documented route and types in each reference and any disagreement with the live-probed schema |
 
@@ -465,16 +465,16 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-266 | market-sources 1.1: owner decisions M1 to M4 | DONE | decisions recorded in design.md (M1 all MLB markets, M2 API downloaders first) |
-| B-267 | `market-sources 1.2`: probe and research both APIs | OPEN | evidence in design.md |
+| B-267 | `market-sources 1.2`: probe and research both APIs | DEFERRED (not the MLB core; owner 2026-11-11) | evidence in design.md |
 | B-268 | market-sources 1.3: measure the homelab MLB subset, pick the transfer route | DONE | numbers and route in design.md (Kalshi candles 213M / 1.4GB, Polymarket 604M / 0.9GB) |
 | B-269 | market-sources 2.1: Kalshi trades and candlesticks code, per open date, opt-in (ADR 71) | DONE | 3 real dates: 6,078 requests, 0 retries, 346,259 trades and 18,061 candles, none in _extras |
 | B-270 | market-sources 2.2: Polymarket source (catalog, hourly prices), ADR 77 | DONE | tests/test_polymarket.py (13), tests/test_infer_types.py (3); real run 11,653 events, 233,923 markets, 467,846 outcomes |
-| B-271 | `market-sources 3.1`: one-time import of the homelab MLB subset | OPEN | typed Parquet in the lake, sample checked against the APIs |
-| B-272 | `market-sources 3.2`: close the gap to today | OPEN | no missing days between import and now |
-| B-273 | `market-sources 4.1`: docs, specs, ADRs, gates, archive | OPEN | change archived |
+| B-271 | `market-sources 3.1`: one-time import of the homelab MLB subset | DEFERRED (not the MLB core; owner 2026-11-11) | typed Parquet in the lake, sample checked against the APIs |
+| B-272 | `market-sources 3.2`: close the gap to today | DEFERRED (not the MLB core; owner 2026-11-11) | no missing days between import and now |
+| B-273 | `market-sources 4.1`: docs, specs, ADRs, gates, archive | DEFERRED (not the MLB core; owner 2026-11-11) | change archived |
 | B-274 | market-sources 2.1 part 1: Kalshi catalog (series, events, markets), signing, decimal types, ADR 70 | DONE | 189 series, 55,197 events, 900,555 markets in the lake, speed audit clean, 13 Kalshi tests pass |
 | B-275 | market-sources 2.3: run the full Kalshi trades and candlesticks backfill, tune the speed | DONE | all 447 open dates complete (110,994,885 trades, 14,903,320 candles, compacted to 11 files) |
-| B-276 | `market-sources 2.4`: contract check of the Kalshi routes against the official OpenAPI spec | OPEN | a test or command flags new and removed routes |
+| B-276 | `market-sources 2.4`: contract check of the Kalshi routes against the official OpenAPI spec | DEFERRED (not the MLB core; owner 2026-11-11) | a test or command flags new and removed routes |
 | B-277 | market-sources: one baseballpy process per host (OS file lock), ADR 72 | DONE | tests/test_hostlock.py: second process refused, crash frees the host, opt-out works |
 
 ## AD. Lake access and compaction (`lake-access-and-compaction`)
@@ -490,12 +490,12 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-284 | lake-access-and-compaction 3.2: spec, ADR, docs, gates, archive | DONE | specs lake-access and caching-and-invalidation, ADR 73 to 76, change archived |
 | B-285 | lake-access-and-compaction: manifest parsed only when its file changed (three MLB seasons failed with MemoryError and took about 6 h each) | DONE | tests/test_atomic.py: 50 lookups, zero parses, other writers still seen |
 | B-286 | coverage audit saw only part- files and guessed 31 Statcast windows; now counts download records and the cached calendar (found by the on-track review) | DONE | tests/test_coverage_audit.py, tests/test_compact.py: Statcast 2024 shows 51 of 51 |
-| B-287 | `market-sources 2.5`: Polymarket trades (v2), live snapshots, batch price route | OPEN | owner decision on trader identities; trades or an unsupported verdict with probe evidence |
+| B-287 | `market-sources 2.5`: Polymarket trades (v2), live snapshots, batch price route | DEFERRED (not the MLB core; owner 2026-11-11) | owner decision on trader identities; trades or an unsupported verdict with probe evidence |
 | B-288 | fangraphs-and-bref 1.1 to 1.3: Baseball-Reference WAR from its published files, FanGraphs not downloaded, ADR 78 | DONE | tests/test_bref.py (7), tests/test_slow_hosts.py (3); real run 126,547 + 57,884 rows, 0 extra requests |
 | B-289 | fangraphs-and-bref 2.1: import of the FanGraphs tables held on the homelab (owner said yes), ADR 79 | DONE | tests/test_fangraphs.py (9); 1,219,323 rows equal to the homelab, column totals compared |
-| B-290 | `fangraphs-and-bref 2.2`: Baseball-Reference daily WAR archive as an opt-in dataset | OPEN | WAR as of each day, 2018 onward |
+| B-290 | `fangraphs-and-bref 2.2`: Baseball-Reference daily WAR archive as an opt-in dataset | DEFERRED (not the MLB core; owner 2026-11-11) | WAR as of each day, 2018 onward |
 | B-291 | fangraphs-and-bref 3.1: slow honest FanGraphs downloader for leaderboards and projections, `--option` switch, ADR 80 | DONE | tests/test_fangraphs_download.py (16); live: 35 requests all 200, 2024 batting equals the homelab copy in 478 columns |
-| B-292 | `fangraphs-and-bref 3.2`: downloaders for guts and park factors (web pages), prospects and splits (POST) | OPEN | each dataset downloadable or recorded as not possible with evidence |
+| B-292 | `fangraphs-and-bref 3.2`: downloaders for guts and park factors (web pages), prospects and splits (POST) | DEFERRED (not the MLB core; owner 2026-11-11) | each dataset downloadable or recorded as not possible with evidence |
 
 ## AE. Agent coordination and audit rotation (`agent-coordination-and-audit-rotation`)
 
@@ -551,9 +551,9 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-334 | finish-mlb-history 3.5: open shared-raw-bytes: store each upstream response once (about 12 GB of copies in raw/mlb_api) | DONE | change openspec/changes/shared-raw-bytes/ opened with proposal, design, tasks, and spec delta |
 | B-335 | download-throughput 2.1: profile the per-game path (found the name-clash scan and the manifest rewrites) | DONE | design.md has the numbers |
 | B-336 | download-throughput 2.2: deferred manifest saves and the clash index (ADR 93) | DONE | tests/test_manifest_deferred.py (6); 1114 to 520-630 ms per game at lake size |
-| B-337 | `download-throughput 2.3`: cheaper normalization of the per-game payloads | OPEN | driven by 2.1 |
+| B-337 | download-throughput 2.3: cheaper normalization of the per-game payloads | SUPERSEDED (ADR 95; closed by backlog-consolidation) | driven by 2.1 |
 | B-338 | `download-throughput 2.4`: owner decision: worker processes sharing the host's rate limit | OWNER | decision recorded in an ADR |
-| B-339 | `download-throughput 2.5`: rerun speed during a season and record before and after | OPEN | requests per second before and after |
+| B-339 | download-throughput 2.5: rerun speed during a season and record before and after | SUPERSEDED (ADR 95; closed by backlog-consolidation) | requests per second before and after |
 | B-340 | download-throughput 1.1 to 1.3: `baseballpy speed`, the queue's speed watch and the measurements, ADR 92 | DONE | tests/test_speed.py (6), tests/test_queue.py |
 | B-341 | download-throughput 2.2b: batched chunk writes (own change batched-chunk-writes) | DONE | change opened with measurements |
 
@@ -569,7 +569,7 @@ in section AI.
 | B-344 | shared-raw-bytes 1.3: `baseballpy deduplicate-raw` CLI command | SUPERSEDED (converter, B-372, B-373) | - |
 | B-345 | shared-raw-bytes 1.4: Unit tests in `tests/test_raw_shared.py` | SUPERSEDED (B-356, B-371) | - |
 | B-346 | shared-raw-bytes 1.5: Run `deduplicate-raw` on local lake to reclaim ~12 GB | SUPERSEDED (B-374) | - |
-| B-347 | shared-raw-bytes 1.6: Spec delta merge, ADR, archive | SUPERSEDED (ADR 95; archived unmerged by B-391) | - |
+| B-347 | shared-raw-bytes 1.6: Spec delta merge, ADR, archive | SUPERSEDED (ADR 95; archived unmerged by B-416) | - |
 
 ## AH. Batched chunk writes (`batched-chunk-writes`), superseded
 
@@ -581,7 +581,7 @@ Superseded on 2026-11-08 by response-log-segments (section AI, ADR 95 and ADR 96
 | B-349 | batched-chunk-writes 1.2: Ingest runner batch buffer with --batch-games option | SUPERSEDED (B-361, B-370) | - |
 | B-350 | batched-chunk-writes 1.3: Interruption and resume test with zero loss and zero duplicates | SUPERSEDED (B-356, B-360) | - |
 | B-351 | batched-chunk-writes 1.4: Benchmark ingest speed before and after on a sample season | SUPERSEDED (B-370) | - |
-| B-352 | batched-chunk-writes 1.5: Spec delta merge, ADR, archive | SUPERSEDED (ADR 95, ADR 96; archived unmerged by B-391) | - |
+| B-352 | batched-chunk-writes 1.5: Spec delta merge, ADR, archive | SUPERSEDED (ADR 95, ADR 96; archived unmerged by B-416) | - |
 
 ## AI. Store each download once, in segments (`response-log-segments`)
 
@@ -629,7 +629,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-388 | `response-log-segments 9.4`: Retrosheet on segments | READY | after B-386; Retrosheet tests pass and one real season stored |
 | B-389 | `response-log-segments 9.5`: Lahman, Chadwick, Kalshi, Polymarket, FanGraphs, Baseball-Reference on segments, or a recorded reason per source | READY | after B-386; each source done or its reason in design.md |
 | B-390 | `response-log-segments 10.1`: tests first: tests/test_segments_e2e.py (a fake download readable through read and DuckDB at once) | READY | after B-369; the test passes |
-| B-391 | `response-log-segments 10.2`: merge the spec deltas, archive this change, archive the two drafts unmerged | DONE-WHEN-LAST | change archived; `openspec validate --specs` valid |
+| B-391 | `response-log-segments 10.2`: merge the spec deltas and archive this change (the two drafts were archived by backlog-consolidation) | DONE-WHEN-LAST | change archived; `openspec validate --specs` valid |
 | B-392 | fix: a read of a compacted chunk raised KeyError when a refresh moved the chunk between the check and the read (CI Ubuntu 3.13, `test_threads_refreshing_chunks_of_one_compacted_file_lose_and_duplicate_nothing`) | DONE | `ProcessedStore.read_part` looks again (up to 5 times) and raises if the chunk keeps moving; two tests in tests/test_compact.py |
 | B-393 | lake-inventory-columns 1.1: tests first for the inventory columns of v_season_catalog | DONE | the new test fails for the missing columns |
 | B-394 | lake-inventory-columns 1.2: view_name, bytes, last_written_at in v_season_catalog | DONE | after B-393; the new test and the old catalog test pass |
@@ -654,3 +654,8 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-413 | queue-after-step-failure 1.1: tests first for a failed after-step failing the stage | DONE | the new tests fail against the current code |
 | B-414 | queue-after-step-failure 1.2: settle marks the stage failed; the round settles before the report | DONE | after B-413; test_queue passes |
 | B-415 | queue-after-step-failure 1.3: spec, ADR 101, gates, archive (closes B-410) | DONE | after B-414; gates green, change archived |
+| B-416 | backlog-consolidation 1.1: archive shared-raw-bytes and batched-chunk-writes unmerged; fix wording of task 10.2 | DONE | the folders are in archive/ and the backlog tests pass |
+| B-417 | backlog-consolidation 1.2: close download-throughput 2.3 and 2.5 as superseded by ADR 95 | DONE | after B-416; tasks ticked with the reason |
+| B-418 | backlog-consolidation 1.3: defer the market-sources and fangraphs-and-bref rows | DONE | after B-417; no row of those changes says OPEN |
+| B-419 | backlog-consolidation 1.4: retire four stale agent files and fix their references | DONE | after B-418; no reference outside history |
+| B-420 | backlog-consolidation 1.5: ADR 102, gates, archive, commit | DONE | after B-419; gates green, change archived |

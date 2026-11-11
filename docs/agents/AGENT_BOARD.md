@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 21:27 UTC [blain]:**
+  - **Tasks:** `B-416`.
+  - **Summary:** backlog-consolidation: drafts archived, two tasks superseded, 8 rows deferred, 4 stale files retired (ADR 102)
+
 - **2026-11-11 21:16 UTC [blain]:**
   - **Tasks:** `B-413`.
   - **Summary:** queue-after-step-failure: a failed after-step fails the stage and retries it (ADR 101); closes B-410

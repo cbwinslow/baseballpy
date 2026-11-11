@@ -62,4 +62,4 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 
 ## 10. End to end and closing
 - [ ] 10.1 tests first: `tests/test_segments_e2e.py::test_a_fake_download_is_readable_through_read_and_duckdb_at_once`
-- [ ] 10.2 merge the spec deltas, archive this change, archive the two drafts as superseded without merging their deltas
+- [ ] 10.2 merge the spec deltas, archive this change (the two superseded drafts were archived by backlog-consolidation)
