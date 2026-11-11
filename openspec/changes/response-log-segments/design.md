@@ -115,6 +115,18 @@ Xeon Gold 5120, one writer thread):
   copies them. That is a real memory cost on a Windows machine with limited commit (ADR 92); task 4.4 measures peak
   memory and may shorten the segment (for example 100 games) or write the table in chunks.
 
+**Measured in task 4.4 (B-370, 2026-11-11):** one real season, 2014, 2,949 games, scratch home,
+`--option storage=segments`, one worker process, defaults (250 games / 10 minutes / 50 per row group).
+- 1,580 s wall (0.54 s per game, bound by the host rate limit); 12 segments.
+- peak memory: 3.50 GB commit charge, 2.30 GB working set. This is high for a 250-game segment; it is the open
+  bodies plus the Parquet table copy. Not yet tuned: a 100-game segment is the first thing to try if a small machine
+  complains (ADR 92).
+- raw: 12 files, 0.17 GB for the season. Processed: 13 datasets x 12 files, 0.58 GB in total (largest: win
+  probability 134 MB, feed plays 117 MB, play by play 117 MB, play events 98 MB).
+- rows equal the old path for 7 datasets checked (linescore 26,901; boxscore players 198,092; feed plays 222,236;
+  play events 866,068; win probability 222,236; play by play 222,236; boxscore teams 5,898).
+- not done: no run with 100 games per segment to compare memory; the default of the games stage is not switched yet.
+
 ## 4. Risks and what we do about each
 
 | Risk | Mitigation |

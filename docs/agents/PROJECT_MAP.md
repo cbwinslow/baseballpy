@@ -61,7 +61,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `mlb-stats-route-406-and-deep-pools` | 7 | 4 | 1.2, 3.1 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
-| `response-log-segments` | 17 | 22 | 4.4, 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
+| `response-log-segments` | 18 | 21 | 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
 | `shared-raw-bytes` | 0 | 0 | none |
 
@@ -184,6 +184,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/agents/AGY_DELEGATION.md`
 - `docs/agents/BACKLOG.md`
 - `docs/agents/FINAL_REPORT.md`
+- `docs/agents/GOAL_LAKE_REPAIR.md`
 - `docs/agents/GOAL_SEEK_PROMPT.md`
 - `docs/agents/HANDOFF_2026-10-30.md`
 - `docs/agents/HANDOFF_B43.md`

@@ -608,7 +608,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-367 | response-log-segments 4.1: tests first: tests/test_mlb_segments.py and tests/test_segment_views.py | DONE | after B-362; the tests exist and fail for the right reason |
 | B-368 | response-log-segments 4.2: MLB per-game path on the response log (the registry maps URLs to datasets) | DONE | after B-367; tests/test_mlb_segments.py passes |
 | B-369 | response-log-segments 4.3: views and read list `season=*/*.parquet` beside old files, never `_open/` or `_legacy/` | DONE | after B-367; tests/test_segment_views.py passes |
-| B-370 | `response-log-segments 4.4`: one real season: peak memory, seconds per game, files per dataset; tune 250 games / 10 minutes / 50 per row group | LONG | after B-368; numbers in design.md |
+| B-370 | response-log-segments 4.4: one real season: peak memory, seconds per game, files per dataset; tune 250 games / 10 minutes / 50 per row group | DONE | after B-368; numbers in design.md section 3 (2014: 0.54 s per game, peak commit 3.5 GB, rows equal) |
 | B-371 | `response-log-segments 5.1`: tests first: tests/test_raw_convert.py | READY | after B-355; the tests exist and fail for the right reason |
 | B-372 | `response-log-segments 5.2`: converter command with `--dry-run` | READY | after B-371; dry-run test passes |
 | B-373 | `response-log-segments 5.3`: real conversion: read back every row, then remove the old copies of the season | READY | after B-372; tests/test_raw_convert.py passes |
