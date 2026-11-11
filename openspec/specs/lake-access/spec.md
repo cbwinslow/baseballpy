@@ -160,3 +160,8 @@ same lake-shape contract as the other sources, before and after compaction.
 - **WHEN** every supported leaderboard is downloaded for one season from its recorded page, and a Retrosheet season and its reference files are downloaded
 - **THEN** the lake-shape contract holds, and holds again after compaction
 - Verified by `tests/test_download_contract.py::test_every_statcast_leaderboard_download_has_the_lake_shape` and `tests/test_download_contract.py::test_a_fresh_retrosheet_download_has_the_lake_shape`.
+
+#### Scenario: A segment download matches the same shape
+- **WHEN** MLB games are downloaded as segments (ADR 95) into an empty home
+- **THEN** every processed file is a `seg-NNNN.parquet` with the registered columns plus the lineage column, the layout check reports no mixed schema, the raw segments and processed segment files match their commit-line checksums, each dataset has its view with the right count, and a second run fetches nothing
+- Verified by `tests/test_download_contract.py::test_a_fresh_mlb_game_download_as_segments_has_the_lake_shape` and `tests/test_layout_audit.py::test_a_segment_file_with_the_lineage_column_is_not_a_mixed_schema`.

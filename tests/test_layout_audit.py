@@ -113,3 +113,22 @@ def test_the_layout_command_prints_json_and_sets_the_exit_code(
     bad = CliRunner().invoke(main, ["catalog", "layout", "--source", "statcast", "--json"])
     assert bad.exit_code == 1
     assert json.loads(bad.output)[0]["kind"] == "MIXED_SCHEMA"
+
+
+def test_a_segment_file_with_the_lineage_column_is_not_a_mixed_schema(
+    lake: LakeConfig, spec: DatasetSpec
+) -> None:
+    """A segment (ADR 95) adds `_raw_sha256` to the registered columns; that is its normal shape."""
+    from baseballpy.core.datasets import with_lineage
+
+    folder = lake.processed_dir(spec.source, spec.name, 2023)
+    folder.mkdir(parents=True)
+    table = _pitches([90.0], 2023)
+    lineage = pa.array(["ab" * 32], pa.string())
+    segment = table.append_column(with_lineage(spec.schema).field("_raw_sha256"), lineage)
+    pq.write_table(segment, folder / "seg-0001.parquet")
+    assert LayoutKind.MIXED_SCHEMA not in _kinds(lake)
+    # a segment missing a registered column is still caught
+    short = segment.drop_columns(["release_speed"])
+    pq.write_table(short, folder / "seg-0002.parquet")
+    assert LayoutKind.MIXED_SCHEMA in _kinds(lake)

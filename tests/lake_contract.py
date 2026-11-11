@@ -18,11 +18,12 @@ from collections.abc import Sequence
 from pathlib import Path
 
 import duckdb
+import pyarrow as pa
 import pyarrow.parquet as pq
 
-from baseballpy.cache_check import OK, check_raw
+from baseballpy.cache_check import OK, check_raw, check_segments
 from baseballpy.core.config import LakeConfig
-from baseballpy.core.datasets import DATASETS
+from baseballpy.core.datasets import DATASETS, LINEAGE_COLUMN
 from baseballpy.core.sql import quote_ident
 from baseballpy.database import BaseballDatabase
 from baseballpy.layout_audit import audit_layout
@@ -60,8 +61,13 @@ def assert_lake_contract(config: LakeConfig, sources: Sequence[str]) -> dict[str
                 assert SEASON_DIR.match(rel.parts[1]), f"{path}: not in a season=YYYY folder"
             assert FILE_NAME.match(path.name), f"{path}: unexpected file name"
             schema = pq.read_schema(path)
-            assert [f.name for f in schema] == [f.name for f in spec.schema], f"{path}: columns"
-            assert [f.type for f in schema] == [f.type for f in spec.schema], f"{path}: types"
+            expected = list(spec.schema)
+            if path.name.startswith(
+                "seg-"
+            ):  # a segment names the response each row came from (ADR 95)
+                expected.append(pa.field(LINEAGE_COLUMN, pa.string()))
+            assert [f.name for f in schema] == [f.name for f in expected], f"{path}: columns"
+            assert [f.type for f in schema] == [f.type for f in expected], f"{path}: types"
             rows = pq.read_metadata(path).num_rows
             rows_by_dataset[(source, dataset)] = rows_by_dataset.get((source, dataset), 0) + rows
         leftovers = [
@@ -71,7 +77,10 @@ def assert_lake_contract(config: LakeConfig, sources: Sequence[str]) -> dict[str
         ]
         assert not leftovers, f"half-written files: {leftovers}"
 
-    for check in check_raw(config, sources=tuple(sources)):
+    for check in [
+        *check_raw(config, sources=tuple(sources)),
+        *check_segments(config, sources=tuple(sources)),
+    ]:
         assert check.integrity == OK, (
             f"raw {check.source}/{check.dataset}/{check.name}: {check.integrity}"
         )

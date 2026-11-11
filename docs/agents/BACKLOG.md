@@ -619,7 +619,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-378 | `response-log-segments 6.4`: delete a season's `_legacy/` only after its comparison passed | READY | after B-377; freed disk recorded |
 | B-379 | `response-log-segments 7.1`: tests first: no part files on the per-game path; the queue does not compact segment sources | READY | after B-378; the tests exist and fail for the right reason |
 | B-380 | `response-log-segments 7.2`: remove the per-game part writes and the queue's compaction for segment sources | READY | after B-379; tests pass; `compact` still works for part files |
-| B-381 | `response-log-segments 7.3`: catalog layout treats segments as normal; docs updated | READY | after B-380; `catalog layout` clean on a segment lake; `docs generate --check` green |
+| B-381 | `response-log-segments 7.3`: catalog layout treats segments as normal (the schema check is done, 2026-11-11; no TINY_FILES for segments and the docs are still open); docs updated | READY | after B-380; `catalog layout` clean on a segment lake; `docs generate --check` green |
 | B-382 | `response-log-segments 8.1`: tests first: tests/test_raw_roundtrip.py | READY | after B-373; the tests exist and fail for the right reason |
 | B-383 | `response-log-segments 8.2`: round-trip check per segment | READY | after B-382; its tests pass; result for one real season in design.md |
 | B-384 | `response-log-segments 8.3`: optional move-raw command (moved, never deleted; location recorded) | READY | after B-383; its tests pass; not run on the real lake (owner keeps all raw) |

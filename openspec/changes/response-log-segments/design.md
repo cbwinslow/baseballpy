@@ -209,3 +209,13 @@ are plain Parquet and stay readable with DuckDB or pyarrow directly.
 ## 7. Evidence (filled in as tasks land)
 
 Nothing implemented yet.
+
+### 7.x Lake contract on segments (2026-11-11, part of task 7.3)
+
+`tests/test_download_contract.py::test_a_fresh_mlb_game_download_as_segments_has_the_lake_shape` downloads three
+MLB games with `ingest_game_segments` into an empty home and runs the shared lake contract
+(`tests/lake_contract.py`, ADR 105). It failed first: `catalog layout` reported `seg-0001.parquet` as MIXED_SCHEMA
+because of the `_raw_sha256` lineage column. `layout_audit._schema_mismatches` now compares a `seg-*` file with the
+registered schema plus the lineage column (`tests/test_layout_audit.py`, failing first). With that, the segment
+download passes the contract: seg-only names, types, `check_segments` checksums, views and counts, and a second
+run fetches nothing. Still open in 7.3: no TINY_FILES for segments, and the docs.

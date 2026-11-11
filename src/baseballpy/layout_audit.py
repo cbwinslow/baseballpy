@@ -17,7 +17,7 @@ import pyarrow.parquet as pq
 
 from baseballpy.core.compacted import COMPACT_PREFIX, INTO, chunk_map
 from baseballpy.core.config import LakeConfig
-from baseballpy.core.datasets import DATASETS
+from baseballpy.core.datasets import DATASETS, with_lineage
 from baseballpy.core.listing import visible_parquet
 from baseballpy.core.rawfiles import is_compressible, is_packed
 from baseballpy.sources import catalog
@@ -154,8 +154,10 @@ def _schema_mismatches(schema: pa.Schema, paths: list[Path]) -> list[str]:
         except OSError as exc:
             bad.append(f"{path.name} ({exc})")
             continue
-        if not found.equals(schema, check_metadata=False):
-            names = set(found.names) ^ set(schema.names)
+        # a segment file carries the lineage column after the registered ones (ADR 95)
+        expected = with_lineage(schema) if path.name.startswith("seg-") else schema
+        if not found.equals(expected, check_metadata=False):
+            names = set(found.names) ^ set(expected.names)
             bad.append(f"{path.name} (columns differing: {sorted(names)[:3] or 'types'})")
     return bad
 

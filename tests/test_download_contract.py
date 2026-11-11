@@ -11,10 +11,11 @@ from pathlib import Path
 import httpx
 import respx
 from conftest import RetroRepo
-from lake_contract import assert_lake_contract
+from lake_contract import assert_lake_contract, processed_files
 from test_chadwick_coverage import _serve_everything
 from test_lahman_workflow import _repo
 from test_mlb_coverage import COVERED, _fixture
+from test_mlb_segments import PKS, _mock_games
 from test_retrosheet_coverage import full_season
 from test_statcast_coverage import _fixture as _savant_fixture
 from test_statcast_pitches import _by_window
@@ -26,6 +27,7 @@ from baseballpy.sources import catalog
 from baseballpy.sources.chadwick.ingest import ingest as ingest_chadwick
 from baseballpy.sources.lahman.api import LahmanSource
 from baseballpy.sources.mlb_api.endpoints import MLB_BASE_URL, Context, requests_for
+from baseballpy.sources.mlb_api.game_segments import ingest_game_segments
 from baseballpy.sources.mlb_api.generic import MlbEndpointExtractor
 from baseballpy.sources.retrosheet.api import RetrosheetSource
 from baseballpy.sources.statcast.extractor import (
@@ -258,3 +260,22 @@ def test_every_statcast_leaderboard_download_has_the_lake_shape(tmp_path: Path) 
 
     _compact_source(lake, "statcast")
     assert assert_lake_contract(lake, ["statcast"]) == views
+
+
+@respx.mock
+def test_a_fresh_mlb_game_download_as_segments_has_the_lake_shape(tmp_path: Path) -> None:
+    """The planned final layout (ADR 95): seg-NNNN files, each response stored once, same contract."""
+    routes = _mock_games(PKS)
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    report = ingest_game_segments(extractor, 2024, list(PKS))
+    assert report.stored == len(PKS) and not report.failed
+    views = assert_lake_contract(lake, ["mlb_api"])
+    assert views
+    files = [p.name for p in processed_files(lake, "mlb_api")]
+    assert files and all(name.startswith("seg-") for name in files)
+
+    calls = {key: route.call_count for key, route in routes.items()}
+    again = ingest_game_segments(extractor, 2024, list(PKS))
+    assert again.stored == 0 and again.already == len(PKS)
+    assert {key: route.call_count for key, route in routes.items()} == calls
