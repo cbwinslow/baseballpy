@@ -151,3 +151,12 @@ MUST hold after compaction, and a second run MUST NOT download again.
 - **WHEN** a stray file name, a wrong column type or an unregistered folder is added to a downloaded lake
 - **THEN** the contract check fails
 - Verified by `tests/test_download_contract.py::test_the_contract_catches_a_stray_file_a_wrong_type_and_an_unknown_folder`.
+
+### Requirement: Savant Leaderboards And Retrosheet Reference Files Match The Shape
+Every supported Savant leaderboard downloaded for a season, and Retrosheet's reference ingest, MUST satisfy the
+same lake-shape contract as the other sources, before and after compaction.
+
+#### Scenario: Leaderboards and reference files
+- **WHEN** every supported leaderboard is downloaded for one season from its recorded page, and a Retrosheet season and its reference files are downloaded
+- **THEN** the lake-shape contract holds, and holds again after compaction
+- Verified by `tests/test_download_contract.py::test_every_statcast_leaderboard_download_has_the_lake_shape` and `tests/test_download_contract.py::test_a_fresh_retrosheet_download_has_the_lake_shape`.

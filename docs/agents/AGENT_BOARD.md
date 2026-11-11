@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 22:20 UTC [blain]:**
+  - **Tasks:** `B-434`.
+  - **Summary:** contract-leaderboards-reference: leaderboards and Retrosheet reference under the contract; no production change
+
 - **2026-11-11 22:08 UTC [blain]:**
   - **Tasks:** `B-428`.
   - **Summary:** download-lake-contract: one lake-shape contract for fresh downloads (ADR 105); compaction keeps an all-empty dataset's view; remaining sources B-433

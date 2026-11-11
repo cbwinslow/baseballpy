@@ -90,3 +90,4 @@ Rules for the run (token-saving, per owner request):
 - 2026-11-11: `cache-check-through-store` (B-421 to B-423, B-409) closed and archived (ADR 103): the Statcast pitch cache checks go through the store, so a compacted season is not downloaded again.
 - 2026-11-11: `deterministic-compaction` (B-425 to B-427, B-411) closed and archived (ADR 104): compaction is guarded to give byte-identical files for the same chunks and the same rows for any history.
 - 2026-11-11: `download-lake-contract` (B-428 to B-431, ADR 105): one lake-shape contract for a fresh download, tested for Statcast, Retrosheet, Chadwick, Lahman, the MLB game datasets and 274 MLB endpoints; compaction keeps an all-empty dataset's view.
+- 2026-11-11: `contract-leaderboards-reference` (B-434, B-433 narrowed): Savant leaderboards and Retrosheet reference files pass the lake contract; Kalshi, Polymarket, FanGraphs and Baseball-Reference stay deferred.

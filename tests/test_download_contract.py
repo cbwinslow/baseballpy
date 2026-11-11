@@ -16,6 +16,7 @@ from test_chadwick_coverage import _serve_everything
 from test_lahman_workflow import _repo
 from test_mlb_coverage import COVERED, _fixture
 from test_retrosheet_coverage import full_season
+from test_statcast_coverage import _fixture as _savant_fixture
 from test_statcast_pitches import _by_window
 
 from baseballpy.core.compact import compact_dataset
@@ -32,6 +33,8 @@ from baseballpy.sources.statcast.extractor import (
     SAVANT_BASE_URL,
     StatcastExtractor,
 )
+from baseballpy.sources.statcast.lb_catalog import SAVANT_BASE, SUPPORTED
+from baseballpy.sources.statcast.leaderboards import StatcastLeaderboardExtractor
 
 
 def _compact_source(config: LakeConfig, source: str) -> None:
@@ -74,6 +77,7 @@ def test_a_fresh_retrosheet_download_has_the_lake_shape(
     lake = LakeConfig(home=tmp_path / "lake")
     source = RetrosheetSource(cache_config=lake)
     source.ingest_season(2024)
+    source.ingest_reference()  # biographical and park files, documents
     views = assert_lake_contract(lake, ["retrosheet"])
     assert views, "the season produced datasets"
     assert all(rows > 0 for rows in views.values()) or any(rows > 0 for rows in views.values())
@@ -236,3 +240,21 @@ def test_every_mlb_endpoint_download_has_the_lake_shape(tmp_path: Path) -> None:
 
     _compact_source(lake, "mlb_api")
     assert assert_lake_contract(lake, ["mlb_api"]) == views
+
+
+@respx.mock
+def test_every_statcast_leaderboard_download_has_the_lake_shape(tmp_path: Path) -> None:
+    """All supported Savant leaderboards for one season, from their recorded pages."""
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = StatcastLeaderboardExtractor(cache_config=lake)
+    for definition in SUPPORTED:
+        respx.get(f"{SAVANT_BASE}/{definition.route}").mock(
+            return_value=httpx.Response(200, content=_savant_fixture(definition.slug))
+        )
+    reports = extractor.ingest_all(years=[2024])
+    assert reports
+    views = assert_lake_contract(lake, ["statcast"])
+    assert len(views) >= len(SUPPORTED) // 2, views
+
+    _compact_source(lake, "statcast")
+    assert assert_lake_contract(lake, ["statcast"]) == views

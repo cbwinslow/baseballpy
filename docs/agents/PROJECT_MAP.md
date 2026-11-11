@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 13 | 18 | 57 |
+| `lake-access` | 14 | 19 | 58 |
 | `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -47,7 +47,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-85 changes are archived under `openspec/changes/archive/`.
+86 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|

@@ -671,4 +671,5 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-430 | download-lake-contract 1.3: MLB API game-level downloads under the contract | DONE | after B-429; pass (code fixes if not) |
 | B-431 | download-lake-contract 1.4: spec, ADR 105, docs, archive | DONE | after B-430; evidence in design.md |
 | B-432 | prebuilt Parquet snapshots for new users (a release or export of the processed tier, in the spirit of boxball): needs a licence and hosting decision first (docs/DATA_LICENSES.md) | DEFERRED (owner agreed 2026-11-11; no work yet) | an OpenSpec change with the licence check and the hosting choice |
-| B-433 | download contract for the rest: Statcast leaderboards, Retrosheet reference units, Kalshi, Polymarket, FanGraphs, Baseball-Reference (each a download test plus assert_lake_contract) | READY | each source passes the contract (code fixes if not) |
+| B-433 | download contract for the deferred sources: Kalshi, Polymarket, FanGraphs, Baseball-Reference (a download test plus assert_lake_contract each; leaderboards and Retrosheet reference are done by contract-leaderboards-reference) | DEFERRED (with their sources, ADR 102) | each source passes the contract when resumed |
+| B-434 | contract-leaderboards-reference 1.2: gates, spec requirement, archive, commit | DONE | gates green, change archived |
