@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 01:48 UTC [blain]:**
+  - **Tasks:** `B-393`.
+  - **Summary:** v_season_catalog is the lake inventory: view_name, bytes, last_written_at; ADR 98; change archived
+
 - **2026-11-09 03:25 UTC [blain]:**
   - **Tasks:** `B-392`.
   - **Summary:** read_part retries when a refresh moves the chunk it is reading

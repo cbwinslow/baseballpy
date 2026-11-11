@@ -217,6 +217,54 @@ def test_season_catalog_and_crosswalk_views(lake: LakeConfig) -> None:
     assert con.execute("SELECT count(*) FROM v_player_crosswalk").fetchone() == (3,)
 
 
+def test_season_catalog_is_the_lake_inventory(lake: LakeConfig) -> None:
+    """One row per dataset and season says which view to query, how big it is and when it changed."""
+    from datetime import UTC, datetime
+
+    from baseballpy.sources.lahman.api import lahman_spec
+
+    table = pa.table({"playerID": ["a"], "awardID": ["MVP"]})
+    ProcessedStore(lake).put(lahman_spec("awards_players", table.schema), table)
+    con = BaseballDatabase(db_path=":memory:", cache_config=lake).connect()
+
+    cols = [r[0] for r in con.execute("DESCRIBE v_season_catalog").fetchall()]
+    assert cols == [
+        "source",
+        "dataset",
+        "season",
+        "row_count",
+        "files",
+        "view_name",
+        "bytes",
+        "last_written_at",
+    ]
+
+    rows = {
+        (src, ds, season): (view, size, written)
+        for src, ds, season, view, size, written in con.execute(
+            "SELECT source, dataset, season, view_name, bytes, last_written_at FROM v_season_catalog"
+        ).fetchall()
+    }
+    # a registered, season-partitioned dataset: the registry view name and the real file sizes
+    folder = lake.processed_root / "statcast" / "pitches" / "season=2023"
+    files = list(folder.glob("*.parquet"))
+    view, size, written = rows[("statcast", "pitches", 2023)]
+    assert view == "statcast_pitches"
+    assert size == sum(f.stat().st_size for f in files) > 0
+    newest = max(f.stat().st_mtime for f in files)
+    assert (
+        abs((written.replace(tzinfo=UTC) - datetime.fromtimestamp(newest, UTC)).total_seconds()) < 1
+    )
+    # a dataset without seasons has a NULL season, and a folder the registry does not know falls
+    # back to <source>_<dataset>
+    assert rows[("chadwick", "register", None)][0] == "chadwick_register"
+    assert rows[("lahman", "awards_players", None)][0] == "lahman_awards_players"
+    # an older query that names only the first five columns keeps working
+    assert con.execute(
+        "SELECT dataset, season, row_count, files FROM v_season_catalog WHERE source = 'statcast'"
+    ).fetchall() == [("pitches", 2023, 2, 1), ("pitches", 2024, 2, 1)]
+
+
 def test_read_only_requires_views_then_works(lake: LakeConfig, tmp_path: Path) -> None:
     db_file = tmp_path / "ro.duckdb"
     duckdb.connect(str(db_file)).close()  # an empty database file, no views yet

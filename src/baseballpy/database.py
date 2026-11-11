@@ -8,6 +8,7 @@ import logging
 import re
 from collections.abc import Generator
 from contextlib import contextmanager
+from datetime import UTC, datetime
 from pathlib import Path
 
 import duckdb
@@ -229,9 +230,15 @@ class BaseballDatabase:
             )
         return len(existing)
 
-    def _season_catalog_rows(self) -> list[tuple[str, str, int | None, int, int]]:
-        """``(source, dataset, season, rows, files)`` computed from parquet footers."""
-        grouped: dict[tuple[str, str, int | None], list[int]] = {}
+    def _season_catalog_rows(
+        self,
+    ) -> list[tuple[str, str, int | None, int, int, str, int, float]]:
+        """``(source, dataset, season, rows, files, view, bytes, newest_mtime)`` per season folder.
+
+        Rows come from the Parquet footers; ``view`` is the registry view name (the lower-cased
+        ``<source>_<dataset>`` for a folder the registry does not know, as ``expected_views`` does).
+        """
+        grouped: dict[tuple[str, str, int | None], list[float]] = {}
         processed = self.cache_config.processed_root
         if not processed.exists():
             return []
@@ -241,36 +248,55 @@ class BaseballDatabase:
                 continue
             match = next((m for part in rel if (m := _SEASON_DIR.fullmatch(part))), None)
             season = int(match.group(1)) if match else None
-            entry = grouped.setdefault((rel[0], rel[1], season), [0, 0])
+            stat = path.stat()
+            entry = grouped.setdefault((rel[0], rel[1], season), [0, 0, 0, 0.0])
             entry[0] += pq.ParquetFile(path).metadata.num_rows
             entry[1] += 1
+            entry[2] += stat.st_size
+            entry[3] = max(entry[3], stat.st_mtime)
+        views = {(s.source, s.name): s.view for s in DATASETS.values()}
         return [
-            (src, ds, season, rows, files)
-            for (src, ds, season), (rows, files) in sorted(
+            (
+                src,
+                ds,
+                season,
+                int(rows),
+                int(files),
+                views.get((src, ds)) or f"{src}_{ds}".lower(),
+                int(size),
+                newest,
+            )
+            for (src, ds, season), (rows, files, size, newest) in sorted(
                 grouped.items(), key=lambda kv: (kv[0][0], kv[0][1], kv[0][2] or 0)
             )
         ]
 
     def _create_season_catalog(self, con: duckdb.DuckDBPyConnection) -> None:
+        """The lake inventory: what is held per dataset and season, where to query it, how big."""
         rows = self._season_catalog_rows()
         if not rows:
             con.execute(
                 f"CREATE OR REPLACE VIEW {SEASON_CATALOG_VIEW} AS "
                 "SELECT NULL::VARCHAR AS source, NULL::VARCHAR AS dataset, "
                 "NULL::SMALLINT AS season, NULL::BIGINT AS row_count, "
-                "NULL::BIGINT AS files WHERE false"
+                "NULL::BIGINT AS files, NULL::VARCHAR AS view_name, "
+                "NULL::BIGINT AS bytes, NULL::TIMESTAMP AS last_written_at WHERE false"
             )
             return
         values = ", ".join(
             f"({quote_literal(src)}, {quote_literal(ds)}, "
-            f"{'NULL' if season is None else season}, {n}, {files})"
-            for src, ds, season, n, files in rows
+            f"{'NULL' if season is None else season}, {n}, {files}, {quote_literal(view)}, "
+            f"{size}, {quote_literal(datetime.fromtimestamp(newest, UTC).strftime('%Y-%m-%d %H:%M:%S'))})"
+            for src, ds, season, n, files, view, size, newest in rows
         )
         con.execute(
             f"CREATE OR REPLACE VIEW {SEASON_CATALOG_VIEW} AS "  # noqa: S608 - constant view name
             f"SELECT source::VARCHAR AS source, dataset::VARCHAR AS dataset, "
-            f"season::SMALLINT AS season, row_count::BIGINT AS row_count, files::BIGINT AS files "
-            f"FROM (VALUES {values}) AS t(source, dataset, season, row_count, files)"
+            f"season::SMALLINT AS season, row_count::BIGINT AS row_count, files::BIGINT AS files, "
+            f"view_name::VARCHAR AS view_name, bytes::BIGINT AS bytes, "
+            f"last_written_at::TIMESTAMP AS last_written_at "
+            f"FROM (VALUES {values}) AS t(source, dataset, season, row_count, files, view_name, "
+            f"bytes, last_written_at)"
         )
 
     def _drop_stale_views(self, con: duckdb.DuckDBPyConnection) -> None:

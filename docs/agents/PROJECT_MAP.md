@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 9 | 10 | 43 |
+| `lake-access` | 10 | 11 | 44 |
 | `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -47,7 +47,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-77 changes are archived under `openspec/changes/archive/`.
+78 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -163,6 +163,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 95: Each Download Is Stored Once, In Parquet Segments Shared By Every Dataset Made From It
 - ADR 96: A Segment Counts Only When One Line In `segments.json` Says So; Readers Never See Rows Twice
 - ADR 97: Keep All Raw On The Laptop For Now; Own Segment Files, Not A Table Format
+- ADR 98: `v_season_catalog` Is The Lake Inventory
 
 ## Documentation pages (`docs/`)
 

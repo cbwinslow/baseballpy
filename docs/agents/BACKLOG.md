@@ -631,3 +631,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-390 | `response-log-segments 10.1`: tests first: tests/test_segments_e2e.py (a fake download readable through read and DuckDB at once) | READY | after B-369; the test passes |
 | B-391 | `response-log-segments 10.2`: merge the spec deltas, archive this change, archive the two drafts unmerged | DONE-WHEN-LAST | change archived; `openspec validate --specs` valid |
 | B-392 | fix: a read of a compacted chunk raised KeyError when a refresh moved the chunk between the check and the read (CI Ubuntu 3.13, `test_threads_refreshing_chunks_of_one_compacted_file_lose_and_duplicate_nothing`) | DONE | `ProcessedStore.read_part` looks again (up to 5 times) and raises if the chunk keeps moving; two tests in tests/test_compact.py |
+| B-393 | lake-inventory-columns 1.1: tests first for the inventory columns of v_season_catalog | DONE | the new test fails for the missing columns |
+| B-394 | lake-inventory-columns 1.2: view_name, bytes, last_written_at in v_season_catalog | DONE | after B-393; the new test and the old catalog test pass |
+| B-395 | lake-inventory-columns 1.3: docs, ADR 98 and spec requirement | DONE | after B-394; docs generate --check and openspec validate --specs pass |
+| B-396 | lake-inventory-columns 1.4: gates and live check on the real lake, archive | DONE | after B-395; output in design.md, change archived |

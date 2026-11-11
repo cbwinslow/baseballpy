@@ -81,3 +81,16 @@ Writing a compacted file MUST line each chunk up with the registered schema by c
 - **WHEN** a chunk written before a schema gained `name_slug` and a chunk written after are compacted together, and a chunk with an unknown column is offered
 - **THEN** the file holds all rows with `name_slug` empty for the old ones, and the unknown column is refused
 - Verified by `tests/test_compacted_schema.py::test_old_rows_get_empty_new_columns`, `tests/test_compacted_schema.py::test_a_column_the_schema_lacks_is_refused_not_dropped` and `tests/test_compacted_schema.py::test_old_and_new_chunks_are_written_into_one_file`.
+
+### Requirement: The Season Catalog Is The Lake Inventory
+`baseballpy db sync` MUST build the view `v_season_catalog` with one row per source, dataset and season
+(season NULL for unpartitioned datasets) and the columns `source`, `dataset`, `season`, `row_count`,
+`files`, `view_name`, `bytes` and `last_written_at`. `view_name` MUST be the DuckDB view that serves the
+dataset (the registry view name, or `<source>_<dataset>` for an unregistered folder), `bytes` MUST be the
+total size of the visible Parquet files and `last_written_at` the newest modification time of those files.
+
+#### Scenario: A person asks what the lake holds
+- **WHEN** the database is synced and `v_season_catalog` is queried for a source
+- **THEN** each held season of each dataset has its row count, file count, byte size, last write time and
+  the view name to query, and an older query that selects only the first five columns still works
+- Verified by `tests/test_database.py::test_season_catalog_is_the_lake_inventory`.

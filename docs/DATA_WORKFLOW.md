@@ -43,6 +43,22 @@ Move or split the lake with environment variables: `BASEBALLPY_HOME` moves every
 `BASEBALLPY_RAW_ROOT_OVERRIDE`, `BASEBALLPY_PROCESSED_ROOT_OVERRIDE`, `BASEBALLPY_QUARANTINE_ROOT_OVERRIDE`,
 `BASEBALLPY_HTTP_CACHE_ROOT_OVERRIDE` and `BASEBALLPY_DATABASE_PATH_OVERRIDE` move one part.
 
+## What does the lake hold? (the inventory)
+
+After `baseballpy db sync` (an ingest runs it for you) the view `v_season_catalog` lists every dataset and
+season that has data: `source`, `dataset`, `season` (empty for datasets without seasons), `row_count`,
+`files`, `view_name` (the DuckDB view to query), `bytes` and `last_written_at` (the newest file time,
+UTC; a compaction rewrites files, so it is not the provider download time).
+
+```sql
+SELECT dataset, season, row_count, round(bytes / 1e6, 1) AS mb, last_written_at
+FROM v_season_catalog WHERE source = 'retrosheet' ORDER BY dataset, season;
+```
+
+The view shows what is held. What should be held, and what is missing, is `baseballpy catalog status`
+and `baseballpy catalog coverage`; per-chunk download times and checksums are in the `_manifest.json`
+files (`baseballpy cache check` verifies them).
+
 ## How "is my copy still current?" is decided
 
 One function, `baseballpy.core.upstream.is_current`, makes the decision. In order:

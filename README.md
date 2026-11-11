@@ -258,7 +258,10 @@ it holds (a season, a date range, a game id); `compact-NNNN.parquet` is a merge 
 
 - DuckDB views (`baseballpy db sync`) read only `processed/`; each registered dataset gets one view
   (`statcast_pitches`, `retrosheet_events`, `retrosheet_events_postseason`, `lahman_batting`,
-  `chadwick_register`, `mlb_schedule`, ...), plus `v_player_crosswalk` and `v_season_catalog`.
+  `chadwick_register`, `mlb_schedule`, ...), plus `v_player_crosswalk` and `v_season_catalog`, the
+  inventory of the lake: one row per dataset and season with `row_count`, `files`, `view_name` (what to
+  query), `bytes` and `last_written_at` (UTC). Example:
+  `SELECT dataset, season, row_count, bytes FROM v_season_catalog WHERE source = 'statcast'`.
 - GitHub-hosted sources (Retrosheet, Chadwick Register, Lahman) are fetched at commit SHAs pinned in
   `src/baseballpy/core/sources_lock.json`; `baseballpy refs show` lists them and
   `baseballpy refs update` moves them forward. Override per source with
