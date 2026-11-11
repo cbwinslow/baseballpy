@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 22:25 UTC [blain]:**
+  - **Tasks:** `B-435`.
+  - **Summary:** dry-run-estimate: ingest --dry-run reports held and missing season folders and a typical size (ADR 106)
+
 - **2026-11-11 22:20 UTC [blain]:**
   - **Tasks:** `B-434`.
   - **Summary:** contract-leaderboards-reference: leaderboards and Retrosheet reference under the contract; no production change

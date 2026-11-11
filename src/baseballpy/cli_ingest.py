@@ -20,6 +20,7 @@ from baseballpy.core.concurrency import resolve_concurrency
 from baseballpy.core.config import LakeConfig, get_config
 from baseballpy.core.datasets import DATASETS, DatasetSpec
 from baseballpy.ingest.adapters import ADAPTERS, IngestAdapter, get_adapters
+from baseballpy.ingest.estimate import Estimate, estimate
 from baseballpy.ingest.runner import plan_jobs, run_jobs
 from baseballpy.ingest.selection import parse_seasons
 from baseballpy.ingest.types import Job, JobStatus, RunReport, Selection
@@ -371,7 +372,7 @@ def ingest_cmd(
     except (ValueError, KeyError) as exc:
         raise click.BadParameter(str(exc)) from exc
 
-    planned_jobs = _plan_all(
+    selections = _selections(
         adapters,
         seasons,
         split_datasets(datasets, tuple(adapters)),
@@ -379,6 +380,7 @@ def ingest_cmd(
         limit=limit,
         options=_parse_options(options),
     )
+    planned_jobs = _plan_all(adapters, selections)
 
     if not planned_jobs:
         if not as_json:
@@ -386,7 +388,7 @@ def ingest_cmd(
         ctx.exit(0)
 
     if dry_run:
-        _print_dry_run(planned_jobs, as_json=as_json)
+        _print_dry_run(planned_jobs, estimate(selections.values()), as_json=as_json)
         ctx.exit(0)
 
     try:
@@ -434,7 +436,7 @@ def _parse_options(raw: tuple[str, ...]) -> tuple[tuple[str, str], ...]:
     return tuple(pairs)
 
 
-def _plan_all(
+def _selections(
     adapters: Mapping[str, IngestAdapter],
     seasons: str | None,
     by_source: Mapping[str, tuple[str, ...]],
@@ -442,18 +444,17 @@ def _plan_all(
     refresh: bool,
     limit: int | None,
     options: tuple[tuple[str, str], ...] = (),
-) -> list[Job]:
-    """The planned jobs of every adapter in source order; a bad season selection is a usage error."""
-    planned: list[Job] = []
+) -> dict[str, Selection]:
+    """One selection per source in source order; a bad season selection is a usage error."""
+    chosen: dict[str, Selection] = {}
     try:
         for source in sorted(adapters):
-            adapter = adapters[source]
             parsed = (
-                parse_seasons(seasons, all_seasons=adapter.all_seasons)
+                parse_seasons(seasons, all_seasons=adapters[source].all_seasons)
                 if seasons is not None
                 else ()
             )
-            selection = Selection(
+            chosen[source] = Selection(
                 seasons=parsed,
                 sources=(source,),
                 datasets=by_source.get(source, ()),
@@ -461,7 +462,20 @@ def _plan_all(
                 limit=limit,
                 options=options,
             )
-            planned.extend(plan_jobs({source: adapter}, selection))
+    except ValueError as exc:
+        raise click.BadParameter(str(exc)) from exc
+    return chosen
+
+
+def _plan_all(
+    adapters: Mapping[str, IngestAdapter],
+    selections: Mapping[str, Selection],
+) -> list[Job]:
+    """The planned jobs of every adapter in source order; a bad dataset name is a usage error."""
+    planned: list[Job] = []
+    try:
+        for source in sorted(adapters):
+            planned.extend(plan_jobs({source: adapters[source]}, selections[source]))
     except ValueError as exc:
         message = str(exc)
         if message.startswith("unknown dataset"):
@@ -494,8 +508,21 @@ def _job_json(
     )
 
 
-def _print_dry_run(planned_jobs: Sequence[Job], *, as_json: bool) -> None:
-    """Print the plan without running anything."""
+def _human_bytes(count: int) -> str:
+    size = float(count)
+    for unit in ("B", "KB", "MB", "GB"):
+        if size < 1000 or unit == "GB":
+            return f"{size:,.0f} {unit}" if unit == "B" else f"{size:,.1f} {unit}"
+        size /= 1000
+    return f"{size:,.1f} GB"  # pragma: no cover - the loop always returns
+
+
+def _print_dry_run(planned_jobs: Sequence[Job], summary: Estimate, *, as_json: bool) -> None:
+    """Print the plan and what it would download, without running anything.
+
+    ``--json`` stays one object per job (machine readers rely on it); the estimate is a footer of the
+    table output and ``baseballpy.ingest.estimate.estimate`` in Python.
+    """
     if as_json:
         for job in planned_jobs:
             click.echo(_job_json(job.job_id, JobStatus.PLANNED, None, 0.0, "", None))
@@ -510,6 +537,28 @@ def _print_dry_run(planned_jobs: Sequence[Job], *, as_json: bool) -> None:
         table.add_row(job.source, job.task, params_str, "[cyan]planned[/cyan]")
     console.print(table)
     console.print(f"Planned {len(planned_jobs)} job(s).")
+    console.print("[bold]Estimate[/bold] (nothing is downloaded)")
+    console.print(
+        f"  {summary.datasets} dataset(s), {summary.folders_total} season folder(s): "
+        f"{summary.folders_held} already held, {summary.folders_missing} to download"
+    )
+    if summary.folders_missing and summary.bytes_typical:
+        when = f", measured {summary.measured_on}" if summary.measured_on else ""
+        console.print(
+            f"  about {_human_bytes(summary.bytes_typical)} for what is missing "
+            f"(typical size: the median of measured seasons{when})"
+        )
+    if summary.unknown_datasets:
+        console.print(
+            f"  {summary.unknown_datasets} dataset(s) have no measured size (not counted)"
+        )
+    if not summary.seasons_given:
+        console.print(
+            f"  {summary.unestimated_datasets} dataset(s) are split by season and no seasons were "
+            "given (-s): not estimated"
+        )
+    if summary.unresolved:
+        console.print("  fetched as a group, not estimated: " + ", ".join(summary.unresolved))
 
 
 def _announce_run(job_count: int, workers: int) -> None:

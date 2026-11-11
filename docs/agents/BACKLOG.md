@@ -673,3 +673,8 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-432 | prebuilt Parquet snapshots for new users (a release or export of the processed tier, in the spirit of boxball): needs a licence and hosting decision first (docs/DATA_LICENSES.md) | DEFERRED (owner agreed 2026-11-11; no work yet) | an OpenSpec change with the licence check and the hosting choice |
 | B-433 | download contract for the deferred sources: Kalshi, Polymarket, FanGraphs, Baseball-Reference (a download test plus assert_lake_contract each; leaderboards and Retrosheet reference are done by contract-leaderboards-reference) | DEFERRED (with their sources, ADR 102) | each source passes the contract when resumed |
 | B-434 | contract-leaderboards-reference 1.2: gates, spec requirement, archive, commit | DONE | gates green, change archived |
+| B-435 | dry-run-estimate 1.1: tests first for the dry-run estimate (held vs missing, unknowns, CLI footer and JSON summary) | DONE | the tests fail for the missing module |
+| B-436 | dry-run-estimate 1.2: scripts/measure_dataset_sizes.py and the first measurement from the real lake | DONE | after B-435; typical_sizes.json lists the datasets the lake holds |
+| B-437 | dry-run-estimate 1.3: ingest/estimate.py and the dry-run footer | DONE | after B-436; the new tests pass |
+| B-438 | dry-run-estimate 1.4: spec, ADR 106, docs, gates, archive | DONE | after B-437; evidence in design.md |
+| B-439 | dry-run estimate: resolve group names (games, leaderboards, people_stats) to the datasets they fetch, from a registry field, so the biggest downloads are estimated | READY | `ingest mlb_api -s 2024 -d games --dry-run` shows datasets and an estimate |

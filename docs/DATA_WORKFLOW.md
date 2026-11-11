@@ -43,6 +43,16 @@ Move or split the lake with environment variables: `BASEBALLPY_HOME` moves every
 `BASEBALLPY_RAW_ROOT_OVERRIDE`, `BASEBALLPY_PROCESSED_ROOT_OVERRIDE`, `BASEBALLPY_QUARANTINE_ROOT_OVERRIDE`,
 `BASEBALLPY_HTTP_CACHE_ROOT_OVERRIDE` and `BASEBALLPY_DATABASE_PATH_OVERRIDE` move one part.
 
+## What would this command download? (`--dry-run`)
+
+`baseballpy ingest <source> -s 2024 -d pitches --dry-run` lists the planned jobs and then an **Estimate**:
+how many datasets and season folders the command covers, how many your lake already holds, how many it would
+download, and about how big the missing ones are. The size is a *typical* one: the median size of one season
+of that dataset, measured on a real lake (`src/baseballpy/core/typical_sizes.json`, written by
+`scripts/measure_dataset_sizes.py`). A dataset that was never measured is counted as "no measured size", never
+as zero. Give the seasons (`-s`) to get an estimate for season-split datasets; names that are fetched as a
+group (for example `games`) are listed as not estimated. Nothing is downloaded and no network is used.
+
 ## What does the lake hold? (the inventory)
 
 After `baseballpy db sync` (an ingest runs it for you) the view `v_season_catalog` lists every dataset and

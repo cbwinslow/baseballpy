@@ -13,7 +13,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `caching-and-invalidation` | 21 | 35 | 50 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
-| `cli-and-ingest` | 22 | 34 | 55 |
+| `cli-and-ingest` | 23 | 35 | 57 |
 | `concurrency-and-rate-limiting` | 6 | 12 | 14 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
@@ -47,7 +47,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-86 changes are archived under `openspec/changes/archive/`.
+87 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -171,6 +171,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 103: Cache Decisions Go Through The Store
 - ADR 104: Compaction Is Deterministic In The Bytes And In The Rows
 - ADR 105: A Fresh Download Must Match One Lake Shape, Tested For Every Source
+- ADR 106: A Dry Run Says What A Command Would Download, From Measured Sizes
 
 ## Documentation pages (`docs/`)
 

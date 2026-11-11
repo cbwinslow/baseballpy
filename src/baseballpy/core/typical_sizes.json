@@ -1,0 +1,1026 @@
+{
+ "datasets": {
+  "bref.war_batting": {
+   "bytes_per_folder": 85263,
+   "folders_measured": 156
+  },
+  "bref.war_pitching": {
+   "bytes_per_folder": 51947,
+   "folders_measured": 156
+  },
+  "chadwick.register": {
+   "bytes_per_folder": 23914291,
+   "folders_measured": 1
+  },
+  "chadwick.register_countries": {
+   "bytes_per_folder": 6748,
+   "folders_measured": 1
+  },
+  "chadwick.register_links": {
+   "bytes_per_folder": 314659,
+   "folders_measured": 1
+  },
+  "chadwick.register_names": {
+   "bytes_per_folder": 60092,
+   "folders_measured": 1
+  },
+  "fangraphs.batting": {
+   "bytes_per_folder": 71079858,
+   "folders_measured": 1
+  },
+  "fangraphs.fielding": {
+   "bytes_per_folder": 14638170,
+   "folders_measured": 1
+  },
+  "fangraphs.guts": {
+   "bytes_per_folder": 9723,
+   "folders_measured": 1
+  },
+  "fangraphs.park_factors": {
+   "bytes_per_folder": 810729,
+   "folders_measured": 1
+  },
+  "fangraphs.park_factors_handedness": {
+   "bytes_per_folder": 112074,
+   "folders_measured": 1
+  },
+  "fangraphs.pitching": {
+   "bytes_per_folder": 59211080,
+   "folders_measured": 1
+  },
+  "fangraphs.projection": {
+   "bytes_per_folder": 103234829,
+   "folders_measured": 1
+  },
+  "fangraphs.prospects": {
+   "bytes_per_folder": 10840379,
+   "folders_measured": 1
+  },
+  "fangraphs.split_batting": {
+   "bytes_per_folder": 11021313,
+   "folders_measured": 1
+  },
+  "fangraphs.split_pitching": {
+   "bytes_per_folder": 6432347,
+   "folders_measured": 1
+  },
+  "kalshi.candlesticks": {
+   "bytes_per_folder": 155531726,
+   "folders_measured": 1
+  },
+  "kalshi.events": {
+   "bytes_per_folder": 688209,
+   "folders_measured": 1
+  },
+  "kalshi.markets": {
+   "bytes_per_folder": 39105056,
+   "folders_measured": 1
+  },
+  "kalshi.series": {
+   "bytes_per_folder": 20569,
+   "folders_measured": 1
+  },
+  "kalshi.trades": {
+   "bytes_per_folder": 3079836132,
+   "folders_measured": 1
+  },
+  "lahman.allstar_full": {
+   "bytes_per_folder": 41603,
+   "folders_measured": 1
+  },
+  "lahman.appearances": {
+   "bytes_per_folder": 1311052,
+   "folders_measured": 1
+  },
+  "lahman.awards_managers": {
+   "bytes_per_folder": 3496,
+   "folders_measured": 1
+  },
+  "lahman.awards_players": {
+   "bytes_per_folder": 63159,
+   "folders_measured": 1
+  },
+  "lahman.awards_share_managers": {
+   "bytes_per_folder": 5249,
+   "folders_measured": 1
+  },
+  "lahman.awards_share_players": {
+   "bytes_per_folder": 40576,
+   "folders_measured": 1
+  },
+  "lahman.batting": {
+   "bytes_per_folder": 1598849,
+   "folders_measured": 1
+  },
+  "lahman.batting_post": {
+   "bytes_per_folder": 149198,
+   "folders_measured": 1
+  },
+  "lahman.college_playing": {
+   "bytes_per_folder": 89222,
+   "folders_measured": 1
+  },
+  "lahman.fielding": {
+   "bytes_per_folder": 1611012,
+   "folders_measured": 1
+  },
+  "lahman.fielding_of": {
+   "bytes_per_folder": 59574,
+   "folders_measured": 1
+  },
+  "lahman.fielding_of_split": {
+   "bytes_per_folder": 365268,
+   "folders_measured": 1
+  },
+  "lahman.fielding_post": {
+   "bytes_per_folder": 146492,
+   "folders_measured": 1
+  },
+  "lahman.hall_of_fame": {
+   "bytes_per_folder": 41018,
+   "folders_measured": 1
+  },
+  "lahman.home_games": {
+   "bytes_per_folder": 43967,
+   "folders_measured": 1
+  },
+  "lahman.managers": {
+   "bytes_per_folder": 33026,
+   "folders_measured": 1
+  },
+  "lahman.managers_half": {
+   "bytes_per_folder": 4342,
+   "folders_measured": 1
+  },
+  "lahman.parks": {
+   "bytes_per_folder": 13228,
+   "folders_measured": 1
+  },
+  "lahman.people": {
+   "bytes_per_folder": 1218839,
+   "folders_measured": 1
+  },
+  "lahman.pitching": {
+   "bytes_per_folder": 1247577,
+   "folders_measured": 1
+  },
+  "lahman.pitching_post": {
+   "bytes_per_folder": 111037,
+   "folders_measured": 1
+  },
+  "lahman.salaries": {
+   "bytes_per_folder": 125429,
+   "folders_measured": 1
+  },
+  "lahman.schools": {
+   "bytes_per_folder": 31676,
+   "folders_measured": 1
+  },
+  "lahman.series_post": {
+   "bytes_per_folder": 5510,
+   "folders_measured": 1
+  },
+  "lahman.teams": {
+   "bytes_per_folder": 195163,
+   "folders_measured": 1
+  },
+  "lahman.teams_franchises": {
+   "bytes_per_folder": 4213,
+   "folders_measured": 1
+  },
+  "lahman.teams_half": {
+   "bytes_per_folder": 3942,
+   "folders_measured": 1
+  },
+  "mlb_api.award_recipients": {
+   "bytes_per_folder": 133090,
+   "folders_measured": 19
+  },
+  "mlb_api.divisions_season": {
+   "bytes_per_folder": 8610,
+   "folders_measured": 19
+  },
+  "mlb_api.draft_picks": {
+   "bytes_per_folder": 259532,
+   "folders_measured": 19
+  },
+  "mlb_api.draft_prospects": {
+   "bytes_per_folder": 489259,
+   "folders_measured": 19
+  },
+  "mlb_api.free_agents": {
+   "bytes_per_folder": 30779,
+   "folders_measured": 19
+  },
+  "mlb_api.game_boxscore_info": {
+   "bytes_per_folder": 915191,
+   "folders_measured": 19
+  },
+  "mlb_api.game_boxscore_officials": {
+   "bytes_per_folder": 464039,
+   "folders_measured": 19
+  },
+  "mlb_api.game_boxscore_pitching_notes": {
+   "bytes_per_folder": 154501,
+   "folders_measured": 19
+  },
+  "mlb_api.game_boxscore_players": {
+   "bytes_per_folder": 36641283,
+   "folders_measured": 19
+  },
+  "mlb_api.game_boxscore_teams": {
+   "bytes_per_folder": 82630703,
+   "folders_measured": 19
+  },
+  "mlb_api.game_boxscore_top_performers": {
+   "bytes_per_folder": 2120799,
+   "folders_measured": 19
+  },
+  "mlb_api.game_feed_linescore_innings": {
+   "bytes_per_folder": 489990,
+   "folders_measured": 19
+  },
+  "mlb_api.game_feed_officials": {
+   "bytes_per_folder": 434962,
+   "folders_measured": 19
+  },
+  "mlb_api.game_feed_play_events": {
+   "bytes_per_folder": 113308031,
+   "folders_measured": 19
+  },
+  "mlb_api.game_feed_plays": {
+   "bytes_per_folder": 140941684,
+   "folders_measured": 19
+  },
+  "mlb_api.game_linescore": {
+   "bytes_per_folder": 403381,
+   "folders_measured": 19
+  },
+  "mlb_api.game_play_by_play": {
+   "bytes_per_folder": 141067641,
+   "folders_measured": 19
+  },
+  "mlb_api.game_win_probability": {
+   "bytes_per_folder": 158490504,
+   "folders_measured": 19
+  },
+  "mlb_api.jobs_datacasters": {
+   "bytes_per_folder": 10027,
+   "folders_measured": 1
+  },
+  "mlb_api.jobs_official_scorers": {
+   "bytes_per_folder": 10668,
+   "folders_measured": 1
+  },
+  "mlb_api.jobs_umpires": {
+   "bytes_per_folder": 6815,
+   "folders_measured": 1
+  },
+  "mlb_api.leagues_season": {
+   "bytes_per_folder": 21291,
+   "folders_measured": 19
+  },
+  "mlb_api.players_season": {
+   "bytes_per_folder": 1632262,
+   "folders_measured": 19
+  },
+  "mlb_api.ref_awards": {
+   "bytes_per_folder": 17192,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_baseball_stats": {
+   "bytes_per_folder": 6748,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_conferences": {
+   "bytes_per_folder": 3895,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_divisions": {
+   "bytes_per_folder": 7290,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_event_types": {
+   "bytes_per_folder": 3189,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_game_status": {
+   "bytes_per_folder": 5194,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_game_types": {
+   "bytes_per_folder": 1124,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_hit_trajectories": {
+   "bytes_per_folder": 1122,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_job_types": {
+   "bytes_per_folder": 7905,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_languages": {
+   "bytes_per_folder": 1986,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_league": {
+   "bytes_per_folder": 25133,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_league_leader_types": {
+   "bytes_per_folder": 1503,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_logical_events": {
+   "bytes_per_folder": 1367,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_metrics": {
+   "bytes_per_folder": 2016,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_pitch_types": {
+   "bytes_per_folder": 1252,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_platforms": {
+   "bytes_per_folder": 1457,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_positions": {
+   "bytes_per_folder": 5246,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_review_reasons": {
+   "bytes_per_folder": 1395,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_roster_types": {
+   "bytes_per_folder": 1761,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_schedule_event_types": {
+   "bytes_per_folder": 1283,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_schedule_types": {
+   "bytes_per_folder": 1019,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_situation_codes": {
+   "bytes_per_folder": 10141,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_sports": {
+   "bytes_per_folder": 3204,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_standings_types": {
+   "bytes_per_folder": 1721,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_stat_groups": {
+   "bytes_per_folder": 870,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_stat_types": {
+   "bytes_per_folder": 1364,
+   "folders_measured": 1
+  },
+  "mlb_api.ref_wind_direction": {
+   "bytes_per_folder": 1087,
+   "folders_measured": 1
+  },
+  "mlb_api.schedule_hydrated": {
+   "bytes_per_folder": 8281935,
+   "folders_measured": 19
+  },
+  "mlb_api.schedule_postseason": {
+   "bytes_per_folder": 29240,
+   "folders_measured": 19
+  },
+  "mlb_api.schedule_postseason_series": {
+   "bytes_per_folder": 10446,
+   "folders_measured": 19
+  },
+  "mlb_api.seasons_all": {
+   "bytes_per_folder": 16033,
+   "folders_measured": 1
+  },
+  "mlb_api.standings_by_conference": {
+   "bytes_per_folder": 35444,
+   "folders_measured": 19
+  },
+  "mlb_api.standings_by_division": {
+   "bytes_per_folder": 35568,
+   "folders_measured": 19
+  },
+  "mlb_api.standings_by_league": {
+   "bytes_per_folder": 35424,
+   "folders_measured": 19
+  },
+  "mlb_api.standings_by_organization": {
+   "bytes_per_folder": 100258,
+   "folders_measured": 18
+  },
+  "mlb_api.standings_current_half": {
+   "bytes_per_folder": 35573,
+   "folders_measured": 19
+  },
+  "mlb_api.standings_division_leaders": {
+   "bytes_per_folder": 29480,
+   "folders_measured": 19
+  },
+  "mlb_api.standings_regular_season": {
+   "bytes_per_folder": 35583,
+   "folders_measured": 19
+  },
+  "mlb_api.standings_spring_training": {
+   "bytes_per_folder": 45235,
+   "folders_measured": 18
+  },
+  "mlb_api.standings_wild_card": {
+   "bytes_per_folder": 32575,
+   "folders_measured": 19
+  },
+  "mlb_api.standings_wild_card_with_leaders": {
+   "bytes_per_folder": 35565,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_expected_statistics_hitting": {
+   "bytes_per_folder": 283193,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_expected_statistics_pitching": {
+   "bytes_per_folder": 265026,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_last_x_games_fielding": {
+   "bytes_per_folder": 929402,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_last_x_games_hitting": {
+   "bytes_per_folder": 583082,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_last_x_games_pitching": {
+   "bytes_per_folder": 916398,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_leaders": {
+   "bytes_per_folder": 1702537,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_outs_above_average_catching": {
+   "bytes_per_folder": 58659,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_outs_above_average_fielding": {
+   "bytes_per_folder": 58659,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_outs_above_average_game": {
+   "bytes_per_folder": 58587,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_outs_above_average_hitting": {
+   "bytes_per_folder": 58643,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_outs_above_average_pitching": {
+   "bytes_per_folder": 58659,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_outs_above_average_running": {
+   "bytes_per_folder": 58643,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_outs_above_average_streak": {
+   "bytes_per_folder": 58623,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_outs_above_average_team": {
+   "bytes_per_folder": 58587,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_projected_hitting": {
+   "bytes_per_folder": 156598,
+   "folders_measured": 7
+  },
+  "mlb_api.stats_projected_pitching": {
+   "bytes_per_folder": 155884,
+   "folders_measured": 7
+  },
+  "mlb_api.stats_projected_zips2_yr_hitting": {
+   "bytes_per_folder": 64823,
+   "folders_measured": 18
+  },
+  "mlb_api.stats_projected_zips2_yr_pitching": {
+   "bytes_per_folder": 53490,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_projected_zips3_yr_hitting": {
+   "bytes_per_folder": 64370,
+   "folders_measured": 18
+  },
+  "mlb_api.stats_projected_zips3_yr_pitching": {
+   "bytes_per_folder": 52462,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_projected_zips_hitting": {
+   "bytes_per_folder": 65290,
+   "folders_measured": 18
+  },
+  "mlb_api.stats_projected_zips_pitching": {
+   "bytes_per_folder": 54004,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_sabermetrics_fielding": {
+   "bytes_per_folder": 54625,
+   "folders_measured": 17
+  },
+  "mlb_api.stats_sabermetrics_hitting": {
+   "bytes_per_folder": 168387,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_sabermetrics_pitching": {
+   "bytes_per_folder": 127719,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_season_advanced_hitting": {
+   "bytes_per_folder": 578335,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_season_advanced_pitching": {
+   "bytes_per_folder": 803060,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_season_catching": {
+   "bytes_per_folder": 134708,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_season_fielding": {
+   "bytes_per_folder": 1206934,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_season_game": {
+   "bytes_per_folder": 694184,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_season_hitting": {
+   "bytes_per_folder": 584854,
+   "folders_measured": 19
+  },
+  "mlb_api.stats_season_pitching": {
+   "bytes_per_folder": 778239,
+   "folders_measured": 19
+  },
+  "mlb_api.team_affiliates": {
+   "bytes_per_folder": 76334,
+   "folders_measured": 19
+  },
+  "mlb_api.team_alumni": {
+   "bytes_per_folder": 959869,
+   "folders_measured": 19
+  },
+  "mlb_api.team_coaches": {
+   "bytes_per_folder": 99546,
+   "folders_measured": 19
+  },
+  "mlb_api.team_history": {
+   "bytes_per_folder": 16855,
+   "folders_measured": 1
+  },
+  "mlb_api.team_personnel": {
+   "bytes_per_folder": 37423,
+   "folders_measured": 19
+  },
+  "mlb_api.team_roster_40_man": {
+   "bytes_per_folder": 464001,
+   "folders_measured": 19
+  },
+  "mlb_api.team_roster_active": {
+   "bytes_per_folder": 462778,
+   "folders_measured": 19
+  },
+  "mlb_api.team_roster_all_time": {
+   "bytes_per_folder": 6950782,
+   "folders_measured": 19
+  },
+  "mlb_api.team_roster_coach": {
+   "bytes_per_folder": 103637,
+   "folders_measured": 19
+  },
+  "mlb_api.team_roster_depth_chart": {
+   "bytes_per_folder": 39732,
+   "folders_measured": 19
+  },
+  "mlb_api.team_roster_full_roster": {
+   "bytes_per_folder": 467882,
+   "folders_measured": 19
+  },
+  "mlb_api.team_roster_full_season": {
+   "bytes_per_folder": 467882,
+   "folders_measured": 19
+  },
+  "mlb_api.team_roster_gameday": {
+   "bytes_per_folder": 339358,
+   "folders_measured": 19
+  },
+  "mlb_api.team_roster_non_roster_invitees": {
+   "bytes_per_folder": 24910,
+   "folders_measured": 18
+  },
+  "mlb_api.team_stats_at_game_start_catching": {
+   "bytes_per_folder": 36889,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_at_game_start_fielding": {
+   "bytes_per_folder": 37628,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_at_game_start_hitting": {
+   "bytes_per_folder": 56331,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_at_game_start_pitching": {
+   "bytes_per_folder": 87413,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_by_date_range_catching": {
+   "bytes_per_folder": 36848,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_by_date_range_fielding": {
+   "bytes_per_folder": 25140,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_by_date_range_hitting": {
+   "bytes_per_folder": 44959,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_by_date_range_pitching": {
+   "bytes_per_folder": 66253,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_game_log_catching": {
+   "bytes_per_folder": 36755,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_game_log_fielding": {
+   "bytes_per_folder": 37494,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_game_log_hitting": {
+   "bytes_per_folder": 56202,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_game_log_pitching": {
+   "bytes_per_folder": 87279,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_last_x_games_catching": {
+   "bytes_per_folder": 36821,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_last_x_games_fielding": {
+   "bytes_per_folder": 25105,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_last_x_games_hitting": {
+   "bytes_per_folder": 44931,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_last_x_games_pitching": {
+   "bytes_per_folder": 66226,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_season_advanced_catching": {
+   "bytes_per_folder": 42464,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_season_advanced_fielding": {
+   "bytes_per_folder": 30927,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_season_advanced_hitting": {
+   "bytes_per_folder": 43083,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_season_advanced_pitching": {
+   "bytes_per_folder": 61212,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_season_catching": {
+   "bytes_per_folder": 42235,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_season_fielding": {
+   "bytes_per_folder": 30698,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_season_hitting": {
+   "bytes_per_folder": 44989,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_season_pitching": {
+   "bytes_per_folder": 66659,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_vs_opponents_fielding": {
+   "bytes_per_folder": 25652,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_vs_opponents_hitting": {
+   "bytes_per_folder": 47459,
+   "folders_measured": 19
+  },
+  "mlb_api.team_stats_vs_opponents_pitching": {
+   "bytes_per_folder": 73812,
+   "folders_measured": 19
+  },
+  "mlb_api.teams_season": {
+   "bytes_per_folder": 66989,
+   "folders_measured": 19
+  },
+  "mlb_api.transactions_season": {
+   "bytes_per_folder": 1681347,
+   "folders_measured": 19
+  },
+  "mlb_api.venues_hydrated": {
+   "bytes_per_folder": 92911,
+   "folders_measured": 1
+  },
+  "polymarket.events": {
+   "bytes_per_folder": 1533291,
+   "folders_measured": 1
+  },
+  "polymarket.markets": {
+   "bytes_per_folder": 61186737,
+   "folders_measured": 1
+  },
+  "polymarket.outcomes": {
+   "bytes_per_folder": 26655458,
+   "folders_measured": 1
+  },
+  "polymarket.prices": {
+   "bytes_per_folder": 57161026,
+   "folders_measured": 1
+  },
+  "retrosheet.box_batting_lines": {
+   "bytes_per_folder": 142445,
+   "folders_measured": 132
+  },
+  "retrosheet.box_games": {
+   "bytes_per_folder": 37614,
+   "folders_measured": 132
+  },
+  "retrosheet.box_records": {
+   "bytes_per_folder": 1090793,
+   "folders_measured": 132
+  },
+  "retrosheet.box_starters": {
+   "bytes_per_folder": 76279,
+   "folders_measured": 132
+  },
+  "retrosheet.boxscores_batting": {
+   "bytes_per_folder": 411887,
+   "folders_measured": 118
+  },
+  "retrosheet.boxscores_pitching": {
+   "bytes_per_folder": 205965,
+   "folders_measured": 118
+  },
+  "retrosheet.daily_splits": {
+   "bytes_per_folder": 1416189,
+   "folders_measured": 118
+  },
+  "retrosheet.discrepancies": {
+   "bytes_per_folder": 26063,
+   "folders_measured": 89
+  },
+  "retrosheet.events": {
+   "bytes_per_folder": 4013806,
+   "folders_measured": 118
+  },
+  "retrosheet.events_deduced": {
+   "bytes_per_folder": 194460,
+   "folders_measured": 58
+  },
+  "retrosheet.events_postseason": {
+   "bytes_per_folder": 186737,
+   "folders_measured": 123
+  },
+  "retrosheet.gamelogs": {
+   "bytes_per_folder": 207634,
+   "folders_measured": 155
+  },
+  "retrosheet.gamelogs_postseason": {
+   "bytes_per_folder": 495002,
+   "folders_measured": 1
+  },
+  "retrosheet.reference_ballparks": {
+   "bytes_per_folder": 20496,
+   "folders_measured": 1
+  },
+  "retrosheet.reference_biofile": {
+   "bytes_per_folder": 1197858,
+   "folders_measured": 1
+  },
+  "retrosheet.reference_biofile0": {
+   "bytes_per_folder": 1309381,
+   "folders_measured": 1
+  },
+  "retrosheet.reference_coaches": {
+   "bytes_per_folder": 66510,
+   "folders_measured": 1
+  },
+  "retrosheet.reference_ejections": {
+   "bytes_per_folder": 402393,
+   "folders_measured": 1
+  },
+  "retrosheet.reference_relatives": {
+   "bytes_per_folder": 14735,
+   "folders_measured": 1
+  },
+  "retrosheet.reference_teams": {
+   "bytes_per_folder": 6915,
+   "folders_measured": 1
+  },
+  "retrosheet.rosters": {
+   "bytes_per_folder": 69502,
+   "folders_measured": 155
+  },
+  "retrosheet.schedule": {
+   "bytes_per_folder": 11506,
+   "folders_measured": 150
+  },
+  "retrosheet.schedule_original": {
+   "bytes_per_folder": 14743,
+   "folders_measured": 1
+  },
+  "retrosheet.substitutions": {
+   "bytes_per_folder": 228031,
+   "folders_measured": 118
+  },
+  "retrosheet.umpires": {
+   "bytes_per_folder": 2529,
+   "folders_measured": 155
+  },
+  "statcast.leaderboard_abs_challenges": {
+   "bytes_per_folder": 177337,
+   "folders_measured": 1
+  },
+  "statcast.leaderboard_active_spin": {
+   "bytes_per_folder": 22720,
+   "folders_measured": 7
+  },
+  "statcast.leaderboard_arm_strength": {
+   "bytes_per_folder": 24433,
+   "folders_measured": 7
+  },
+  "statcast.leaderboard_baserunning": {
+   "bytes_per_folder": 43071,
+   "folders_measured": 11
+  },
+  "statcast.leaderboard_baserunning_run_value": {
+   "bytes_per_folder": 28298,
+   "folders_measured": 11
+  },
+  "statcast.leaderboard_basestealing_run_value": {
+   "bytes_per_folder": 50484,
+   "folders_measured": 11
+  },
+  "statcast.leaderboard_bat_tracking": {
+   "bytes_per_folder": 77975,
+   "folders_measured": 4
+  },
+  "statcast.leaderboard_batted_ball": {
+   "bytes_per_folder": 91732,
+   "folders_measured": 19
+  },
+  "statcast.leaderboard_catch_probability": {
+   "bytes_per_folder": 15320,
+   "folders_measured": 11
+  },
+  "statcast.leaderboard_catcher_blocking": {
+   "bytes_per_folder": 12352,
+   "folders_measured": 9
+  },
+  "statcast.leaderboard_catcher_framing": {
+   "bytes_per_folder": 12397,
+   "folders_measured": 19
+  },
+  "statcast.leaderboard_exit_velocity_batter": {
+   "bytes_per_folder": 37515,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_exit_velocity_batter_team": {
+   "bytes_per_folder": 7774,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_exit_velocity_pitcher": {
+   "bytes_per_folder": 37351,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_exit_velocity_pitcher_team": {
+   "bytes_per_folder": 7686,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_expected_statistics_batter": {
+   "bytes_per_folder": 40009,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_expected_statistics_pitcher": {
+   "bytes_per_folder": 48757,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_fielding_run_value": {
+   "bytes_per_folder": 33931,
+   "folders_measured": 19
+  },
+  "statcast.leaderboard_home_runs": {
+   "bytes_per_folder": 19060,
+   "folders_measured": 11
+  },
+  "statcast.leaderboard_outfield_jump": {
+   "bytes_per_folder": 11201,
+   "folders_measured": 11
+  },
+  "statcast.leaderboard_outs_above_average": {
+   "bytes_per_folder": 19098,
+   "folders_measured": 11
+  },
+  "statcast.leaderboard_park_factors": {
+   "bytes_per_folder": 10843,
+   "folders_measured": 19
+  },
+  "statcast.leaderboard_percentile_rankings_batter": {
+   "bytes_per_folder": 24708,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_percentile_rankings_pitcher": {
+   "bytes_per_folder": 26979,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_pitch_arsenal_stats": {
+   "bytes_per_folder": 104344,
+   "folders_measured": 10
+  },
+  "statcast.leaderboard_pitch_arsenals": {
+   "bytes_per_folder": 20796,
+   "folders_measured": 19
+  },
+  "statcast.leaderboard_pitch_clock": {
+   "bytes_per_folder": 3947,
+   "folders_measured": 4
+  },
+  "statcast.leaderboard_pitch_movement": {
+   "bytes_per_folder": 134574,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_pitch_tempo": {
+   "bytes_per_folder": 27651,
+   "folders_measured": 15
+  },
+  "statcast.leaderboard_poptime": {
+   "bytes_per_folder": 8129,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_rolling": {
+   "bytes_per_folder": 58435,
+   "folders_measured": 1
+  },
+  "statcast.leaderboard_running_splits": {
+   "bytes_per_folder": 28936,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_spin_direction_pitches": {
+   "bytes_per_folder": 66693,
+   "folders_measured": 7
+  },
+  "statcast.leaderboard_sprint_speed": {
+   "bytes_per_folder": 16326,
+   "folders_measured": 12
+  },
+  "statcast.leaderboard_swing_path_attack_angle": {
+   "bytes_per_folder": 67111,
+   "folders_measured": 4
+  },
+  "statcast.leaderboard_swing_take": {
+   "bytes_per_folder": 63238,
+   "folders_measured": 19
+  },
+  "statcast.pitches": {
+   "bytes_per_folder": 81490031,
+   "folders_measured": 19
+  },
+  "statcast.pitches_minors": {
+   "bytes_per_folder": 96730868,
+   "folders_measured": 6
+  }
+ },
+ "measured_on": "2026-11-11",
+ "what": "median bytes of one season folder (or the whole folder for datasets without seasons)"
+}
