@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 10 | 11 | 44 |
+| `lake-access` | 11 | 13 | 46 |
 | `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -53,6 +53,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|
 | `batched-chunk-writes` | 0 | 0 | none |
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
+| `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
 | `download-throughput` | 6 | 3 | 2.3, 2.4, 2.5 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `finish-mlb-history` | 9 | 6 | 2.1, 2.2, 2.3, 2.4, 3.2, 4.1 |
@@ -164,6 +165,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 96: A Segment Counts Only When One Line In `segments.json` Says So; Readers Never See Rows Twice
 - ADR 97: Keep All Raw On The Laptop For Now; Own Segment Files, Not A Table Format
 - ADR 98: `v_season_catalog` Is The Lake Inventory
+- ADR 99: One Compaction Per Dataset At A Time
 
 ## Documentation pages (`docs/`)
 

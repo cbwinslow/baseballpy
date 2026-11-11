@@ -6,9 +6,10 @@ import click
 from rich.console import Console
 from rich.table import Table
 
-from baseballpy.core.compact import compact_dataset
+from baseballpy.core.compact import CompactReport, compact_dataset
 from baseballpy.core.config import LakeConfig
-from baseballpy.core.datasets import DATASETS
+from baseballpy.core.datasets import DATASETS, DatasetSpec
+from baseballpy.core.hostlock import HostBusyError
 from baseballpy.core.rawconvert import compress_raw
 from baseballpy.sources import catalog
 
@@ -65,12 +66,17 @@ def compact_cmd(
     totals = [0, 0, 0, 0, 0]
     empty_files = 0
     migrated = failed = 0
+    busy: list[str] = []
+
+    def run(spec: DatasetSpec) -> CompactReport | None:
+        try:
+            return compact_dataset(spec, config, dry_run=dry_run, migrate=migrate)
+        except HostBusyError:
+            busy.append(spec.key)  # another process is compacting it: leave it alone
+            return None
+
     with ThreadPoolExecutor(max_workers=min(jobs, len(specs))) as pool:
-        reports = list(
-            pool.map(
-                lambda spec: compact_dataset(spec, config, dry_run=dry_run, migrate=migrate), specs
-            )
-        )
+        reports = [r for r in pool.map(run, specs) if r is not None]
     for report in reports:
         empty_files += report.empty_files
         migrated += report.migrated_files
@@ -108,9 +114,15 @@ def compact_cmd(
             f"{'would rewrite' if dry_run else 'rewrote'} {migrated:,} file(s) written under an "
             "older schema to the registered one (values in _extras moved to their new columns)"
         )
+    if busy:
+        console.print(
+            f"[yellow]skipped, busy (another process is compacting it): {', '.join(busy)}[/yellow]"
+        )
     if failed:
         console.print(f"[red]{failed:,} file(s) could not be rewritten (see the log)[/red]")
         raise click.ClickException("some files kept their old schema")
+    if busy:
+        raise click.ClickException(f"{len(busy)} dataset(s) were busy and skipped")
 
 
 @click.command("compress-raw")

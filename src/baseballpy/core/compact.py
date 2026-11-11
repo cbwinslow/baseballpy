@@ -34,6 +34,7 @@ from baseballpy.core.compacted import (
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec
 from baseballpy.core.evolve import migrate_dataset
+from baseballpy.core.hostlock import claim_named, release_named
 from baseballpy.core.stores import ProcessedStore, part_filename, schema_matches
 
 logger = logging.getLogger(__name__)
@@ -295,13 +296,42 @@ def compact_dataset(
 ) -> CompactReport:
     """Compact one dataset (every season with at least two chunks and a small file to merge).
 
-    Files written under an older schema are rewritten to the registered one first (ADR 87)."""
+    Files written under an older schema are rewritten to the registered one first (ADR 87).
+
+    A second compaction of the same dataset (another process) is refused with ``HostBusyError``
+    before any file is touched: two runs once picked the same ``compact-NNNN`` numbers and
+    overwrote each other's files (change ``compact-one-writer``). A dry run reads only and needs
+    no lock.
+    """
     cfg = config or LakeConfig()
-    store = ProcessedStore(cfg)
     report = CompactReport(spec.key)
-    root = cfg.processed_dir(spec.source, spec.name)
-    if not root.exists():
+    if not cfg.processed_dir(spec.source, spec.name).exists():
         return report
+    if dry_run:
+        return _compact_dataset_locked(spec, cfg, report, True, target_bytes, migrate)
+    name = f"compact-{spec.source}-{spec.name}"
+    claim_named(
+        cfg.locks_root,
+        name,
+        f"another baseballpy process is compacting {spec.key}: two compactions pick the same "
+        "file numbers and overwrite each other. Wait for it to finish.",
+    )
+    try:
+        return _compact_dataset_locked(spec, cfg, report, False, target_bytes, migrate)
+    finally:
+        release_named(cfg.locks_root, name)
+
+
+def _compact_dataset_locked(
+    spec: DatasetSpec,
+    cfg: LakeConfig,
+    report: CompactReport,
+    dry_run: bool,
+    target_bytes: int,
+    migrate: bool,
+) -> CompactReport:
+    store = ProcessedStore(cfg)
+    root = cfg.processed_dir(spec.source, spec.name)
     manifest = cfg.dataset_manifest(spec.source, spec.name, "processed")
     if not dry_run:
         _cleanup(root, manifest.chunks())

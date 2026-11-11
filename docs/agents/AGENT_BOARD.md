@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 20:31 UTC [blain]:**
+  - **Tasks:** `B-397`.
+  - **Summary:** compact-one-writer 1.1-1.4: per-dataset compaction lock (ADR 99); repair tasks 2.2-2.4 stay open
+
 - **2026-11-11 01:48 UTC [blain]:**
   - **Tasks:** `B-393`.
   - **Summary:** v_season_catalog is the lake inventory: view_name, bytes, last_written_at; ADR 98; change archived

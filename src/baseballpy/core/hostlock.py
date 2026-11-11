@@ -72,6 +72,14 @@ def claim_host(directory: Path, host: str) -> None:
     )
 
 
+def release_named(directory: Path, name: str) -> None:
+    """Give up this process's claim on ``name`` (nothing happens when it holds no such claim)."""
+    with _LOCK:
+        fd = _HELD.pop((str(directory), name), None)
+        if fd is not None:
+            os.close(fd)  # closing the descriptor drops the OS lock
+
+
 def release_all(directory: Path | None = None) -> None:
     """Give up this process's claims (all of them, or those under one lock folder)."""
     with _LOCK:
@@ -100,4 +108,11 @@ def busy_hosts(directory: Path) -> list[str]:
     return busy
 
 
-__all__ = ["HostBusyError", "busy_hosts", "claim_host", "claim_named", "release_all"]
+__all__ = [
+    "HostBusyError",
+    "busy_hosts",
+    "claim_host",
+    "claim_named",
+    "release_all",
+    "release_named",
+]

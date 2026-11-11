@@ -635,3 +635,11 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-394 | lake-inventory-columns 1.2: view_name, bytes, last_written_at in v_season_catalog | DONE | after B-393; the new test and the old catalog test pass |
 | B-395 | lake-inventory-columns 1.3: docs, ADR 98 and spec requirement | DONE | after B-394; docs generate --check and openspec validate --specs pass |
 | B-396 | lake-inventory-columns 1.4: gates and live check on the real lake, archive | DONE | after B-395; output in design.md, change archived |
+| B-397 | compact-one-writer 1.1: tests first for the per-dataset compaction lock | DONE | the new tests fail for the missing lock |
+| B-398 | compact-one-writer 1.2: release_named in hostlock; compact_dataset claims and releases the lock; the command skips a busy dataset | DONE | after B-397; the new tests, test_compact and test_hostlock pass |
+| B-399 | compact-one-writer 1.3: docs, ADR 99 and spec requirement | DONE | after B-398; docs generate --check and openspec validate --specs pass |
+| B-400 | compact-one-writer 1.4: gates and live check on the real lake, archive | DONE | after B-399; output in design.md, change archived |
+| B-401 | compact-one-writer 2.1: repair mlb_api.game_boxscore_players season 2019 from the saved raw | DONE | 225,837 rows, 2,965 games, 0 duplicates on the registered key (design.md section 6) |
+| B-402 | `compact-one-writer 2.2`: repair the three season-2023 orphans (team_roster_all_time, team_roster_coach, award_recipients) | READY | catalog layout --source mlb_api shows no ORPHAN_COMPACT |
+| B-403 | `compact-one-writer 2.3`: compact the eight mixed-shape MLB game tables, one at a time, with row-count checks | READY | after B-398; catalog layout --source mlb_api shows no MIXED_SCHEMA |
+| B-404 | `compact-one-writer 2.4`: probe the 2011 HTTP 500 games and record them as empty with evidence | READY | the queue plan no longer retries them |

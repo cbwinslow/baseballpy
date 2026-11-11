@@ -59,6 +59,14 @@ The view shows what is held. What should be held, and what is missing, is `baseb
 and `baseballpy catalog coverage`; per-chunk download times and checksums are in the `_manifest.json`
 files (`baseballpy cache check` verifies them).
 
+## Compaction: one at a time per dataset
+
+`baseballpy compact` merges small chunk files into big `compact-NNNN.parquet` files. It takes a
+lock per dataset (`compact-<source>-<dataset>` in `$BASEBALLPY_HOME/locks`), so two compactions of
+one dataset can never run together: a second one is skipped ("skipped, busy") and the command exits
+non-zero. Other datasets are not blocked and `--dry-run` needs no lock. Run it when no ingest is
+running; to check the result run `baseballpy catalog layout`.
+
 ## How "is my copy still current?" is decided
 
 One function, `baseballpy.core.upstream.is_current`, makes the decision. In order:
