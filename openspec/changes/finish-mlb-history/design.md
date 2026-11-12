@@ -18,4 +18,3 @@ C: is 238 GB with 21 GB free. The lake is 72.9 GB: processed 38.8 GB (mlb_api 31
 
 ## Compaction in the queue (found by the first unattended run)
 `compact --source mlb_api` also rewrote every old file (the ADR 87 migration) and spent 25+ minutes CPU bound before the next download could start. The queue now passes `--no-migrate`; the migration is task 2.3, run on its own when the downloads are done.
-

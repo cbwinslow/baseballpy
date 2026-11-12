@@ -4,4 +4,3 @@
 - Evidence per slice is pasted into the commit message (gates and the complexity count).
 - Evidence 1.3: `requests_for` old (git HEAD) vs new over 364 endpoints x 6 contexts = 2,184 comparisons, 0 differences; `parse_box_text` old vs new over 428 real box-account files, all four tables equal. (The comparison parsed real files, so it wrote duplicate quarantine files; the 50 duplicates were removed, 219 original cells remain.)
 - Evidence 1.4: `StatcastAdapter.run` old vs new, 7,680 stubbed cases (documents/pitches/leaderboards/game_feed/unknown x reports x calendar x refresh), 0 differences. Complexity check clean at 15.
-

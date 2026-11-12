@@ -341,7 +341,7 @@ Baseball researchers, data engineers, and automated agent pipelines operate acro
 
 ### Context
 1. **Lahman Database Distribution Limitations:**
-   The legacy `chadwickbureau/baseballdatabank` repository is defunct and discontinued at 2021, while the official Society for American Baseball Research (SABR) distribution utilizes `sabr.app.box.com` which employs dynamic session tokens, breaking automated scrapers. 
+   The legacy `chadwickbureau/baseballdatabank` repository is defunct and discontinued at 2021, while the official Society for American Baseball Research (SABR) distribution utilizes `sabr.app.box.com` which employs dynamic session tokens, breaking automated scrapers.
 2. **Chadwick Register Upstream Sharding:**
    Upstream `chadwickbureau/register` deprecated and removed the monolithic `data/people.csv` (returning HTTP 404), replacing it with 16 hexadecimal partitions (`people-0.csv` through `people-f.csv`) alongside metadata files `names.csv` (nicknames and aliases) and `links.csv` (external entity URLs).
 
