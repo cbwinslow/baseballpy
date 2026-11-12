@@ -47,3 +47,10 @@ event file specification: info field names, values and sentinels (documented in 
 - Quarantined cells counted as a loss: now a known verdict when the quarantine holds at least as many rows.
 - Event-derived tables had no check: rows are counted against raw lines for all 156 seasons (events 15,844,833; postseason 416,864; deduced 278,885; substitutions 1,737,383), all exact.
 - Open: compare event values with the original Chadwick C tools on one season; cross-check `boxscores_*` with `playerlogs.zip`; the game-log date parser drops a bad date without quarantining it (to verify).
+
+## 7. Full-lake results and what the first all-source run found (2026-11-12)
+- Statcast `pitches` (15,007,133 rows) and `pitches_minors` (4,536,245 rows, 91,845 other-version rows checked by key) equal the raw text after the 64-bit rebuild; the rebuild parsed the stored raw files (no download for 7 of 25 seasons' windows except the 192 requests for windows Savant had split at its row cap).
+- Savant's own 2026 files repeat every `hit_into_play` pitch (35,430 rows of 909,080, byte-identical in the raw files): kept and documented (ADR 115).
+- Retrosheet rosters: empty fields were `''` (now NULL, revision 2) and 1 name had a leading space; 138,160 rows now equal.
+- The first all-source run showed false alarms that the check itself caused and that are fixed: spaces round a cell (a note, both directions), whole numbers written as `2.0`, non-padded dates (`4/19/1966`), and positional matching of re-ordered rows (now a skipped verdict, not a loss).
+- Still open: FanGraphs `batting`, `fielding` and `pitching` show 2 cells whose stored `playerteamid` differs from the raw file (2026 rows; the raw file was fetched after the processed rows, so a re-ingest or a re-parse from raw should settle it); MLB, Kalshi and Polymarket raw files are JSON and have no reader yet (task 1.5).
