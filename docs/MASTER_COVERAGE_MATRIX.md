@@ -4,10 +4,10 @@ This document provides an exhaustive catalog of all baseball datasets across the
 ecosystem, comparing `baseballpy` against `pybaseball`, `baseballr`, `MLB-StatsAPI`, and the
 official MLB OpenAPI specification.
 
-- **Total Registered Datasets in baseballpy:** 480
+- **Total Registered Datasets in baseballpy:** 491
 - **MLB Stats API:** 365 datasets across 65 API routes
 - **Statcast (Baseball Savant):** 38 datasets (MLB pitches, Minor League pitches, 36 leaderboards)
-- **Retrosheet:** 25 datasets (PBP events, game logs, boxscores, rosters)
+- **Retrosheet:** 36 datasets (PBP events, game logs, boxscores, rosters)
 - **Lahman Database:** 27 datasets (complete historical database 1871–present)
 - **Chadwick Bureau:** 4 datasets (universal player ID crosswalk)
 - **Kalshi:** 5 datasets (MLB prediction-market catalog)
@@ -532,16 +532,18 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `register_links` | `chadwick_register_links` | `none` | 4 | `key_person`, `source`, `value` | External player identifiers by source (data/links.csv). |
 | `register_names` | `chadwick_register_names` | `none` | 17 | `key_person`, `altname_type`, `altname_lang`, `altname_last`, `altname_first`, `altname_given`, `altname_nick`, `altname_matrilineal`, `altname_date_start`, `altname_date_end` | Alternate names, spellings and nicknames (data/names.csv). |
 
-### RETROSHEET (25 datasets)
+### RETROSHEET (36 datasets)
 
 | Dataset Name | View Name | Partition | Columns | Primary Keys | Description |
 | :--- | :--- | :--- | :---: | :--- | :--- |
+| `ballparks0` | `retrosheet_ballparks0` | `none` | 7 | `park_id` | Ballparks with first and last game dates (biodata.zip ballparks0.csv). |
 | `box_batting_lines` | `retrosheet_box_batting_lines` | `season` | 23 | `game_id`, `player_id`, `side`, `seq` | Batting and base-running lines of the box-score accounts (stat,bline). |
 | `box_games` | `retrosheet_box_games` | `season` | 35 | `game_id` | Games of the box-score accounts (id, version, info lines). |
 | `box_records` | `retrosheet_box_records` | `season` | 5 | `game_id`, `line_no` | Every other box-account record (pinch hitters/runners, fielding, pitching, team totals, line scores, events, comments, unknown kinds) as parsed fields plus the raw line. |
 | `box_starters` | `retrosheet_box_starters` | `season` | 6 | `game_id`, `player_id`, `side`, `position` | Starting lineups of the box-score accounts (start lines). |
 | `boxscores_batting` | `retrosheet_boxscores_batting` | `season` | 24 | `game_id`, `team_id`, `slot`, `seq` | Batting box score lines. |
 | `boxscores_pitching` | `retrosheet_boxscores_pitching` | `season` | 26 | `game_id`, `team_id`, `pitcher_id`, `seq` | Pitching box score lines. |
+| `coaches0` | `retrosheet_coaches0` | `none` | 7 | `coach_id`, `year`, `team_id`, `role`, `first_g` | Coaches by year, team and role (biodata.zip coaches0.csv). |
 | `daily_splits` | `retrosheet_daily_splits` | `season` | 154 | `GAME_ID`, `TEAM_ID`, `PLAYER_ID`, `SLOT_CT`, `SEQ_CT` | Daily player appearance lines. |
 | `discrepancies` | `retrosheet_discrepancies` | `season` | 16 | `disc_id` | Known data discrepancies (seasons/<year>/*discs.csv). |
 | `events` | `retrosheet_events` | `season` | 165 | `GAME_ID`, `EVENT_ID` | Regular-season play-by-play events. |
@@ -549,6 +551,11 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `events_postseason` | `retrosheet_events_postseason` | `season` | 165 | `GAME_ID`, `EVENT_ID` | Postseason and all-star play-by-play events. |
 | `gamelogs` | `retrosheet_gamelogs` | `season` | 162 | `date`, `game_num`, `home_team` | Regular-season game logs. |
 | `gamelogs_postseason` | `retrosheet_gamelogs_postseason` | `none` | 162 | `date`, `game_num`, `home_team` | Postseason and all-star game logs. |
+| `manager_logs` | `retrosheet_manager_logs` | `none` | 113 | `mgr`, `gid`, `team`, `stattype` | Team lines of every game a manager managed (mgrlogs.zip: <id>_mlog.csv). |
+| `managers0` | `retrosheet_managers0` | `none` | 6 | `manager_id` | Managers with first and last game dates (biodata.zip managers0.csv). |
+| `player_batting_logs` | `retrosheet_player_batting_logs` | `none` | 41 | `id`, `gid`, `team`, `stattype`, `b_lp`, `b_seq` | Batting lines of every player game (playerlogs.zip, one file per player: <id>_b.csv). |
+| `player_fielding_logs` | `retrosheet_player_fielding_logs` | `none` | 30 | `id`, `gid`, `team`, `stattype`, `d_seq`, `d_pos` | Fielding lines of every player game (playerlogs.zip: <id>_f.csv). |
+| `player_pitching_logs` | `retrosheet_player_pitching_logs` | `none` | 44 | `id`, `gid`, `stattype`, `p_seq` | Pitching lines of every player game (playerlogs.zip: <id>_p.csv). |
 | `reference_ballparks` | `retrosheet_reference_ballparks` | `none` | 10 | `park_id` | Ballparks (reference/ballparks.csv). |
 | `reference_biofile` | `retrosheet_reference_biofile` | `none` | 34 | `player_id` | Biographical file (reference/biofile.csv). |
 | `reference_biofile0` | `retrosheet_reference_biofile0` | `none` | 33 | `player_id` | Biographical file, ISO-date edition (reference/biofile0.csv). |
@@ -560,7 +567,11 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `schedule` | `retrosheet_schedule` | `season` | 14 | `game_date`, `game_number`, `visitor_team`, `visitor_game_number`, `home_team` | Season schedules (seasons/<year>/<year>schedule.csv). |
 | `schedule_original` | `retrosheet_schedule_original` | `season` | 13 | `game_date`, `game_number`, `visitor_team`, `visitor_game_number`, `home_team` | Original pre-disruption schedules (seasons/<year>/<year>sched-orig.csv). |
 | `substitutions` | `retrosheet_substitutions` | `season` | 26 | `GAME_ID`, `EVENT_ID`, `SUB_ID`, `SUB_FLD_CD` | In-game substitutions. |
+| `teams0` | `retrosheet_teams0` | `none` | 6 | `team_id`, `first_g` | Teams with first and last game dates (biodata.zip teams0.csv). |
+| `transactions` | `retrosheet_transactions` | `none` | 17 | `transaction_id`, `player`, `type`, `from_team`, `from_league`, `to_team`, `to_league`, `draft_type`, `draft_round`, `pick_number`, `info` | Transactions database (trades, draft, free agency, injured list, ...), tranDB.zip. |
+| `umpire_logs` | `retrosheet_umpire_logs` | `none` | 50 | `umpire_id`, `gid`, `gs`, `inn`, `pos` | Game info and ejections of every game an umpire worked (umplogs.zip: <id>_ulog.csv). |
 | `umpires` | `retrosheet_umpires` | `season` | 4 | `umpire_id` | Umpires working each season (seasons/<year>/UMPIRES<year>.txt). |
+| `umpires0` | `retrosheet_umpires0` | `none` | 6 | `umpire_id` | Umpires with first and last game dates (biodata.zip umpires0.csv). |
 
 ### KALSHI (5 datasets)
 

@@ -20,6 +20,21 @@ from baseballpy.sources import catalog
 
 #: (dataset key, column) -> why the text type is right although the values look numeric
 KNOWN_TEXT: dict[tuple[str, str], str] = {
+    **{
+        (
+            "retrosheet.manager_logs",
+            f"inn{i}",
+        ): "line score: x means the inning was not played, ? unknown"
+        for i in range(1, 29)
+    },
+    (
+        "retrosheet.transactions",
+        "primary_date",
+    ): "partial dates exist (a 00 month or day means not known)",
+    (
+        "retrosheet.transactions",
+        "secondary_date",
+    ): "partial dates exist (same format as primary_date)",
     (
         "retrosheet.events",
         "BAT_PLAY_TX",

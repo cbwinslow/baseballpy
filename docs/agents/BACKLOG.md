@@ -687,4 +687,3 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-446 | sample-compare 1.1: tests first for compare_lakes and the verify-sample command (ADR 108; same job as the rebuild check B-408, sample form) | DONE | the tests fail for the missing module |
 | B-447 | sample-compare 1.2: ingest/sample.py (compare_lakes, scratch ingest) and the verify-sample command | DONE | after B-446; the new tests pass |
 | B-448 | sample-compare 1.3: real sample runs, spec, ADR note, docs, gates, archive | DONE | after B-447; evidence in design.md |
-| B-452 | `retrosheet-site-files 1.4`: compare with the lake and the live mirror; propose what to codify; spec, ADR, gates, archive | READY | the files are downloaded (done); report and follow-up change |

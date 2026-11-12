@@ -6,6 +6,7 @@ import pyarrow as pa
 
 from baseballpy.core.schema_tools import schema_from_columns
 from baseballpy.sources.retrosheet import _chadwick_adapter as cw
+from baseballpy.sources.retrosheet.site_tables import SITE_COLUMNS, SITE_KEYS
 from baseballpy.sources.retrosheet.tables import RETROSHEET_COLUMNS, RETROSHEET_KEYS
 
 DAILY_COLUMNS = cw.DAILY_COLUMNS
@@ -525,9 +526,10 @@ RETROSHEET_SUBSTITUTIONS_SCHEMA = pa.schema(RETROSHEET_SUBSTITUTIONS_FIELDS)
 # 8. Flat-file datasets (reference/*.csv, schedules, umpires, discrepancies): generated from the
 # real upstream headers by scripts/gen_schemas.py (see tables.py)
 RETROSHEET_FLAT_SCHEMAS: dict[str, pa.Schema] = {
-    dataset: schema_from_columns(columns) for dataset, columns in RETROSHEET_COLUMNS.items()
+    dataset: schema_from_columns(columns)
+    for dataset, columns in {**RETROSHEET_COLUMNS, **SITE_COLUMNS}.items()
 }
-RETROSHEET_FLAT_KEYS = RETROSHEET_KEYS
+RETROSHEET_FLAT_KEYS = {**RETROSHEET_KEYS, **SITE_KEYS}
 
 RETROSHEET_BALLPARKS_SCHEMA = RETROSHEET_FLAT_SCHEMAS["reference_ballparks"]
 RETROSHEET_TEAMS_SCHEMA = RETROSHEET_FLAT_SCHEMAS["reference_teams"]

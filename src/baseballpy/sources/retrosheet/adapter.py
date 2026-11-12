@@ -6,13 +6,14 @@ from typing import Any
 from baseballpy.core.datasets import datasets_for
 from baseballpy.ingest.results import counts_to_result
 from baseballpy.ingest.types import Job, JobResult, Selection, make_job
-from baseballpy.sources.retrosheet.api import REFERENCE_UNIT, UNITS, unit_of, units_for
+from baseballpy.sources.retrosheet.api import REFERENCE_UNIT, SITE_UNIT, UNITS, unit_of, units_for
+from baseballpy.sources.retrosheet.site import SITE_DATASETS
 
 
 def known_datasets() -> list[str]:
     """Every name ``--datasets`` accepts: registry dataset names, ingest units and ``reference``."""
     names = {d.name for d in datasets_for("retrosheet")}
-    return sorted(names | set(UNITS) | {REFERENCE_UNIT})
+    return sorted(names | set(UNITS) | {REFERENCE_UNIT, SITE_UNIT})
 
 
 class RetrosheetAdapter:
@@ -49,7 +50,8 @@ class RetrosheetAdapter:
                 )
             units = units_for(selection.datasets)
             has_reference = REFERENCE_UNIT in units
-            season_units = tuple(u for u in units if u != REFERENCE_UNIT)
+            has_site = SITE_UNIT in units
+            season_units = tuple(u for u in units if u not in (REFERENCE_UNIT, SITE_UNIT))
             if season_units and not selection.seasons:
                 raise ValueError(
                     f"retrosheet dataset(s) {list(season_units)} are stored per season: "
@@ -57,11 +59,16 @@ class RetrosheetAdapter:
                 )
         else:
             has_reference = True
+            has_site = False  # opt-in: a default run never contacts retrosheet.org
             season_units = ()
 
         jobs: list[Job] = []
         if has_reference:
             jobs.append(make_job("retrosheet", "reference"))
+        if has_site:
+            asked = [d for d in selection.datasets if unit_of(d) == SITE_UNIT and d != SITE_UNIT]
+            names = asked or list(SITE_DATASETS)
+            jobs.append(make_job("retrosheet", "site", datasets=",".join(names)))
 
         for season in selection.seasons or ():
             if selection.datasets:
@@ -85,6 +92,12 @@ class RetrosheetAdapter:
         if job.task == "reference":
             report_dict = source.ingest_reference(refresh=refresh)
             return counts_to_result(job, report_dict.values())
+
+        if job.task == "site":
+            names_param = job.param("datasets")
+            names = tuple(str(names_param).split(",")) if names_param else None
+            site_counts = source.ingest_site(names, refresh=refresh)
+            return counts_to_result(job, site_counts.values())
 
         if job.task == "season":
             season_val = job.param("season")

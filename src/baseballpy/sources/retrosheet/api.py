@@ -21,13 +21,23 @@ from baseballpy.core.datasets import DatasetSpec, datasets_for, get_dataset
 from baseballpy.core.github_tree import TreeTruncatedError
 from baseballpy.core.http import HttpStatusError, TransportError
 from baseballpy.core.lazy import lazy_singleton
-from baseballpy.core.stores import ProcessedStore, manifest_key
+from baseballpy.core.stores import ProcessedStore, RawStore, manifest_key
 from baseballpy.core.upstream import Fingerprint, stored_fingerprint
 from baseballpy.sources import catalog
 from baseballpy.sources.retrosheet.box_parser import decode_box, parse_box_text
 from baseballpy.sources.retrosheet.downloader import RetrosheetDownloader
 from baseballpy.sources.retrosheet.pool import parse_stream
 from baseballpy.sources.retrosheet.quality import columns_needed, quality_report
+from baseballpy.sources.retrosheet.site import (
+    RAW_DATASET as SITE_RAW_DATASET,
+)
+from baseballpy.sources.retrosheet.site import (
+    SITE_DATASETS,
+    fetch_site_files,
+    files_for,
+    site_batches,
+    site_client,
+)
 from baseballpy.sources.retrosheet.tree import POSTSEASON_GAMELOG_KINDS, RetroFile
 
 logger = logging.getLogger(__name__)
@@ -70,6 +80,9 @@ SEASON_DATASETS = tuple(UNITS)
 #: unit that ingests the season-less datasets (every ``reference/*.csv`` and the postseason game logs)
 REFERENCE_UNIT = "reference"
 
+#: unit that ingests the opt-in datasets parsed from retrosheet.org's own files (the datasets of the ``SITE_DATASETS`` table); never part of a default run
+SITE_UNIT = "site"
+
 #: registry dataset name -> the ingest unit that writes it (pinned to the registry by a test)
 DATASET_UNIT: dict[str, str] = {
     dataset: unit for unit, (_, outputs) in UNITS.items() for dataset, _ in outputs
@@ -95,8 +108,10 @@ PARSE: dict[str, tuple[str, str]] = {
 
 def unit_of(name: str) -> str | None:
     """The ingest unit a unit name or registry dataset name belongs to (``None`` = unknown)."""
-    if name in UNITS or name == REFERENCE_UNIT:
+    if name in UNITS or name in (REFERENCE_UNIT, SITE_UNIT):
         return name
+    if name in SITE_DATASETS:
+        return SITE_UNIT
     if name in DATASET_UNIT:
         return DATASET_UNIT[name]
     if name == "gamelogs_postseason" or name.startswith("reference_"):
@@ -739,6 +754,63 @@ class RetrosheetSource:
             rows = len(self.postseason_game_logs(kind, refresh))
             done[f"gamelogs_postseason:{kind}"] = None if was and not refresh else rows
         return done
+
+    def ingest_site(
+        self, datasets: Sequence[str] | None = None, refresh: bool = False
+    ) -> dict[str, int | None]:
+        """Ingest the site datasets from retrosheet.org's published zips (opt-in).
+
+        A zip already in ``raw/retrosheet/site_files/`` is used as it is (no request); a missing one is fetched
+        politely first (robots.txt, one request every four seconds, stop at the first refusal). A dataset whose
+        zip is unchanged since it was built is skipped. Returns rows written per dataset (``None`` = current).
+        """
+        names = tuple(datasets) if datasets else tuple(SITE_DATASETS)
+        unknown = [n for n in names if n not in SITE_DATASETS]
+        if unknown:
+            raise ValueError(f"unknown site dataset(s): {unknown}; known: {sorted(SITE_DATASETS)}")
+        config = self.cache_config
+        with default_audit_logger.track(
+            operation="retrosheet_ingest_site",
+            source="retrosheet",
+            endpoint="site",
+            destination=str(config.processed_root / "retrosheet"),
+        ) as tracker:
+            raw = RawStore(config)
+            wanted = files_for(names)
+            todo = [
+                f
+                for f in wanted
+                if refresh or not raw.exists("retrosheet", SITE_RAW_DATASET, f.name)
+            ]
+            if todo:
+                report = fetch_site_files(
+                    site_client(config.locks_root), config, todo, refresh=refresh
+                )
+                if report.stopped or report.failed or report.blocked:
+                    raise RuntimeError(
+                        f"retrosheet.org fetch incomplete: stopped={report.stopped!r} failed={report.failed} "
+                        f"blocked={report.blocked}"
+                    )
+            done: dict[str, int | None] = {}
+            for name in names:
+                zip_path = raw.path_for(
+                    "retrosheet", SITE_RAW_DATASET, SITE_DATASETS[name].zip_name
+                )
+                expected = Fingerprint(INPUT_SET, hashlib.sha256(zip_path.read_bytes()).hexdigest())
+                if not refresh and self._current(name, "data", None, expected):
+                    done[name] = None
+                    continue
+                done[name] = self.store.put_stream(
+                    _spec(name),
+                    site_batches(config, name),
+                    chunk_id="data",
+                    season=None,
+                    source_ref=SITE_DATASETS[name].zip_name,
+                    metadata={"upstream": expected.to_dict()},
+                )
+            tracker.set_records(sum(n or 0 for n in done.values()))
+            tracker.set_cache_hit(all(n is None for n in done.values()))
+            return done
 
     def ingest_all(
         self,

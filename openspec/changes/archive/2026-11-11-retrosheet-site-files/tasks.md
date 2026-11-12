@@ -7,5 +7,5 @@
   `scripts/fetch_retrosheet_site.py`. Done when 1.1 passes.
 - [x] 1.3 Run it for real, stage by stage (core, bundles after a size probe, discrepancies, official totals), the
   result (files, bytes, seconds, any refusal) recorded in `design.md`. Done when every group ran or stopped with a reason.
-- [ ] 1.4 Compare the files with what we hold and with the live GitHub mirror, list what is new, propose what to
+- [x] 1.4 Compare the files with what we hold and with the live GitHub mirror, list what is new, propose what to
   codify (a follow-up change); spec requirement, ADR, gates, archive.

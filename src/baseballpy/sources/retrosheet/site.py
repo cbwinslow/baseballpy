@@ -17,10 +17,13 @@ not in this table: they come from the mirror.
 import logging
 import shutil
 import urllib.robotparser
+import zipfile
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from pathlib import PurePosixPath
 
-from baseballpy import __version__
+import pyarrow as pa
+
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, HttpStatusError, TransportError
@@ -142,8 +145,209 @@ SITE_FILES: tuple[SiteFile, ...] = (
 )
 
 
+@dataclass(frozen=True)
+class SiteDataset:
+    """One typed dataset parsed from a member of a stored site zip (registry name -> where it comes from)."""
+
+    zip_name: str
+    member: str
+    description: str
+    #: upstream header -> column name (the others are snake_cased); files without a header use ``header``
+    renames: tuple[tuple[str, str], ...] = ()
+    header: str | None = None
+    key: tuple[str, ...] = ()
+    #: columns holding ``YYYYMMDD`` dates: ``date32`` when every value is a valid date, else text (partial dates such as ``19520000``)
+    dates: tuple[str, ...] = ()
+    #: columns kept as the upstream text on purpose (partial dates: a ``00`` month or day means "not known")
+    text: tuple[str, ...] = ()
+    #: many member files of one zip (every member whose name ends with this) become one table; ``member`` is then empty
+    suffix: str = ""
+    #: a column added from the member's file name (the part before ``suffix``) when the files do not carry the id
+    id_column: str = ""
+    #: columns that are numbers although a few upstream cells are not (a stray ``?``, a misplaced id): typed from the
+    #: numbers; the odd cells are quarantined (and stay in the raw zip), never silently dropped
+    numeric: tuple[str, ...] = ()
+
+
+#: the site datasets of phase 1 (opt-in: a default ingest never contacts retrosheet.org). The column types are
+#: generated from the real files by ``scripts/gen_retrosheet_site_schemas.py`` into ``site_tables.py``.
+SITE_DATASETS: dict[str, SiteDataset] = {
+    "transactions": SiteDataset(
+        "tranDB.zip",
+        "tran.txt",
+        "Transactions database (trades, draft, free agency, injured list, ...), tranDB.zip.",
+        header=(
+            "primary_date,time,approximate,secondary_date,secondary_approximate,transaction_id,player,"
+            "type,from_team,from_league,to_team,to_league,draft_type,draft_round,pick_number,info"
+        ),
+        #: a trade shares one id across its players, so the id alone is not a key; one exact duplicate row exists upstream (kept)
+        key=(
+            "transaction_id",
+            "player",
+            "type",
+            "from_team",
+            "from_league",
+            "to_team",
+            "to_league",
+            "draft_type",
+            "draft_round",
+            "pick_number",
+            "info",
+        ),
+        text=("primary_date", "secondary_date"),
+    ),
+    "managers0": SiteDataset(
+        "biodata.zip",
+        "managers0.csv",
+        "Managers with first and last game dates (biodata.zip managers0.csv).",
+        renames=(("id", "manager_id"), ("lastname", "last_name"), ("firstname", "first_name")),
+        key=("manager_id",),
+        dates=("first_g", "last_g"),
+    ),
+    "umpires0": SiteDataset(
+        "biodata.zip",
+        "umpires0.csv",
+        "Umpires with first and last game dates (biodata.zip umpires0.csv).",
+        renames=(("id", "umpire_id"), ("lastname", "last_name"), ("firstname", "first_name")),
+        key=("umpire_id",),
+        dates=("first_g", "last_g"),
+    ),
+    "coaches0": SiteDataset(
+        "biodata.zip",
+        "coaches0.csv",
+        "Coaches by year, team and role (biodata.zip coaches0.csv).",
+        renames=(("id", "coach_id"), ("team", "team_id")),
+        key=("coach_id", "year", "team_id", "role", "first_g"),
+        dates=("first_g", "last_g"),
+    ),
+    "ballparks0": SiteDataset(
+        "biodata.zip",
+        "ballparks0.csv",
+        "Ballparks with first and last game dates (biodata.zip ballparks0.csv).",
+        renames=(("site", "park_id"),),
+        key=("park_id",),
+        dates=("first_g", "last_g"),
+    ),
+    "teams0": SiteDataset(
+        "biodata.zip",
+        "teams0.csv",
+        "Teams with first and last game dates (biodata.zip teams0.csv).",
+        renames=(("team", "team_id"),),
+        key=("team_id", "first_g"),
+        dates=("first_g", "last_g"),
+    ),
+    "player_batting_logs": SiteDataset(
+        "playerlogs.zip",
+        "",
+        "Batting lines of every player game (playerlogs.zip, one file per player: <id>_b.csv).",
+        key=("id", "gid", "team", "stattype", "b_lp", "b_seq"),
+        dates=("date",),
+        suffix="_b.csv",
+    ),
+    "player_fielding_logs": SiteDataset(
+        "playerlogs.zip",
+        "",
+        "Fielding lines of every player game (playerlogs.zip: <id>_f.csv).",
+        key=("id", "gid", "team", "stattype", "d_seq", "d_pos"),
+        dates=("date",),
+        numeric=("d_pos",),  # upstream: "?" in 11 rows
+        suffix="_f.csv",
+    ),
+    "player_pitching_logs": SiteDataset(
+        "playerlogs.zip",
+        "",
+        "Pitching lines of every player game (playerlogs.zip: <id>_p.csv).",
+        key=("id", "gid", "stattype", "p_seq"),
+        dates=("date",),
+        suffix="_p.csv",
+    ),
+    "manager_logs": SiteDataset(
+        "mgrlogs.zip",
+        "",
+        "Team lines of every game a manager managed (mgrlogs.zip: <id>_mlog.csv).",
+        key=("mgr", "gid", "team", "stattype"),
+        dates=("date",),
+        numeric=("b_k", "p_k"),  # upstream: one "?" in each
+        # a line score keeps its text: "x" means the inning was not played, "?" unknown (as in the game logs)
+        text=tuple(f"inn{i}" for i in range(1, 29)),
+        suffix="_mlog.csv",
+    ),
+    "umpire_logs": SiteDataset(
+        "umplogs.zip",
+        "",
+        "Game info and ejections of every game an umpire worked (umplogs.zip: <id>_ulog.csv).",
+        key=("umpire_id", "gid", "gs", "inn", "pos"),
+        dates=("date",),
+        suffix="_ulog.csv",
+        id_column="umpire_id",
+        numeric=("temp",),  # upstream: "unknown" in 3 rows
+    ),
+}
+
+_FILES_BY_NAME = {f.name: f for f in SITE_FILES}
+
+
+def files_for(datasets: Sequence[str]) -> list[SiteFile]:
+    """The site files (once each, in order) the named datasets are parsed from."""
+    names = dict.fromkeys(SITE_DATASETS[d].zip_name for d in datasets)
+    return [_FILES_BY_NAME[n] for n in names]
+
+
+def _member_names(archive: zipfile.ZipFile, spec: SiteDataset, name: str) -> list[str]:
+    """The member files of ``spec`` in the opened zip (the one ``member``, or every file ending with ``suffix``)."""
+    wanted = (
+        [n for n in archive.namelist() if n.endswith(spec.suffix)] if spec.suffix else [spec.member]
+    )
+    if not wanted or (not spec.suffix and spec.member not in archive.namelist()):
+        raise ValueError(f"{spec.zip_name} has no member for {name} ({spec.suffix or spec.member})")
+    return sorted(wanted)
+
+
+def site_batches(
+    config: LakeConfig, name: str, *, batch_members: int = 500
+) -> "Iterator[pa.Table]":
+    """The typed table of one site dataset in batches of ``batch_members`` member files (no request).
+
+    Each member is read as text, an id column is added from the file name when the dataset says so, a batch is joined
+    and mapped onto the registered schema (strict types, quarantine, unknown columns kept in ``_extras``).
+    """
+    from baseballpy.core.schema_tools import map_to_schema, read_csv_strings
+    from baseballpy.sources.retrosheet.schema import RETROSHEET_FLAT_SCHEMAS
+
+    spec = SITE_DATASETS[name]
+    raw = RawStore(config)
+    if not raw.exists("retrosheet", RAW_DATASET, spec.zip_name):
+        raise FileNotFoundError(
+            f"{spec.zip_name} is not in the raw lake: fetch it first (baseballpy ingest retrosheet -d {name})"
+        )
+    schema = RETROSHEET_FLAT_SCHEMAS[name]
+    header = spec.header.split(",") if spec.header else None
+    path = raw.path_for("retrosheet", RAW_DATASET, spec.zip_name)
+    with zipfile.ZipFile(path) as archive:
+        members = _member_names(archive, spec, name)
+        for start in range(0, len(members), batch_members):
+            parts: list[pa.Table] = []
+            for member in members[start : start + batch_members]:
+                table = read_csv_strings(archive.read(member), header=header)
+                if spec.id_column:
+                    stem = PurePosixPath(member).name.removesuffix(spec.suffix)
+                    table = table.append_column(
+                        spec.id_column, pa.array([stem] * table.num_rows, pa.string())
+                    )
+                parts.append(table)
+            joined = pa.concat_tables(parts, promote_options="default")
+            yield map_to_schema(joined, schema, source="retrosheet", dataset=name)
+
+
+def read_site_datasets(config: LakeConfig, datasets: Sequence[str]) -> "dict[str, pa.Table]":
+    """The named site datasets as whole tables (no request; a missing zip raises)."""
+    return {name: pa.concat_tables(site_batches(config, name)) for name in datasets}
+
+
 def site_client(lock_dir: "object | None" = None) -> HttpClient:
     """The gentle client of the site: one request every four seconds, one connection, no retries."""
+    from baseballpy import __version__
+
     rates = RateLimitConfig(
         default_requests_per_second=REQUESTS_PER_SECOND,
         host_rates={SITE_HOST: REQUESTS_PER_SECOND},
@@ -253,7 +457,12 @@ def fetch_site_files(
 
 __all__ = [
     "BASE_URL",
+    "SITE_DATASETS",
     "SITE_FILES",
+    "SiteDataset",
+    "files_for",
+    "read_site_datasets",
+    "site_batches",
     "SITE_HOST",
     "SiteFile",
     "SiteReport",

@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-12 03:50 UTC [blain]:**
+  - **Tasks:** `B-454`.
+  - **Summary:** site datasets and logs built, ingested, audited; footer cache; changes archived
+
 - **2026-11-12 02:21 UTC [blain]:**
   - **Tasks:** `B-449`.
   - **Summary:** polite Retrosheet site fetcher, streaming download, real runs recorded; phase 1 datasets next

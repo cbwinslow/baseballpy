@@ -208,3 +208,52 @@ and the box score tiebreaker `int16`.
 - **WHEN** a daily split row and a box score row are parsed
 - **THEN** the dates are `date32` values and the tiebreaker is an integer
 - Verified by `tests/test_retrosheet.py::test_parse_daily_splits` and `tests/test_retrosheet_box.py::test_the_tiebreaker_is_a_number_not_text`.
+
+### Requirement: The Site Fetcher Is Polite And Obeys robots.txt
+The Retrosheet site fetcher MUST read `robots.txt` before any file request and MUST NOT request a path it
+disallows; MUST use one connection and at most one request every four seconds with a User-Agent that names the
+library and carries no personal data; MUST stop the whole run at the first 403, 429, 503 or connection error and
+report it; MUST skip files already stored and store each file with its sha256; and MUST audit-log and time every
+download.
+
+#### Scenario: Disallowed paths, throttling and reruns
+- **WHEN** the fetcher is given a path that robots.txt disallows, then files where the first answers 429, then files that all answer 200 twice
+- **THEN** the disallowed path is never requested, the 429 stops the run with the remaining files unrequested, and the second run of the good files makes no file request
+- Verified by `tests/test_retrosheet_site.py::test_robots_disallowed_paths_are_never_requested`, `tests/test_retrosheet_site.py::test_a_throttle_answer_stops_the_whole_run` and `tests/test_retrosheet_site.py::test_files_are_stored_once_and_skipped_on_a_rerun`.
+
+#### Scenario: Paced and honestly identified
+- **WHEN** the site client is built
+- **THEN** its host rate is at most one request per four seconds, its concurrency is one, and its User-Agent starts with `baseballpy/`
+- Verified by `tests/test_retrosheet_site.py::test_the_client_is_paced_and_honestly_identified`.
+
+### Requirement: Site Datasets Are Opt-In And Typed
+The Retrosheet datasets parsed from retrosheet.org's own files (the `SITE_DATASETS` table) MUST be registered as opt-in with strict
+schemas generated from the real files, MUST be ingested by the same `ingest retrosheet` command through a `site`
+unit, and a default Retrosheet ingest MUST NOT plan a job that contacts retrosheet.org; a zip already stored MUST NOT
+be requested again, and partial dates MUST stay the upstream text.
+
+#### Scenario: Registered opt-in and not planned by default
+- **WHEN** the registry is loaded and a default Retrosheet ingest is planned, then a site dataset is named
+- **THEN** the six site datasets are `opt_in` with strict schemas and keys, the default plan has no site job, and naming a site dataset plans one `site` job
+- Verified by `tests/test_retrosheet_site_datasets.py::test_the_six_site_datasets_are_registered_opt_in_and_strict` and `tests/test_retrosheet_site_datasets.py::test_a_default_ingest_never_plans_a_site_job_but_a_site_dataset_does`.
+
+#### Scenario: Stored zips become typed tables without a request
+- **WHEN** the site zips are already stored and the site datasets are ingested twice with the network blocked
+- **THEN** typed tables are written with the registered schema (partial dates kept as text), and the second run finds every dataset current
+- Verified by `tests/test_retrosheet_site_datasets.py::test_stored_zips_become_typed_tables_without_any_request` and `tests/test_retrosheet_site_datasets.py::test_ingest_site_writes_typed_parquet_then_skips_a_current_dataset`.
+
+### Requirement: Player, Manager And Umpire Logs Are Tables
+The Retrosheet player (batting, fielding, pitching), manager and umpire logs MUST be ingestible as opt-in typed
+datasets through the `site` unit: every member file of a kind becomes rows of one table, streamed in batches, an
+umpire log row MUST carry the umpire id taken from its file name, and columns the schema does not know MUST be kept
+in `_extras`.
+
+#### Scenario: Members become one typed table
+- **WHEN** a zip of log files with two members per kind is ingested
+- **THEN** one table per kind holds every row of every member with the registered types, the umpire id comes from the file name, and an unknown column is kept in `_extras`
+- Verified by `tests/test_retrosheet_site_logs.py::test_members_become_one_typed_table_per_kind`.
+
+#### Scenario: Batches, end to end and a current rerun
+- **WHEN** members are read one per batch, and the logs are ingested twice with the network blocked
+- **THEN** the batches add up to the same rows, the Parquet is written with the registered schema, and the second run finds every dataset current
+- Verified by `tests/test_retrosheet_site_logs.py::test_batches_add_up_to_the_same_rows` and `tests/test_retrosheet_site_logs.py::test_logs_ingest_end_to_end_then_skip`.

@@ -1036,3 +1036,16 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** the generator probes every season from the first Statcast season and an all-empty season gives no type evidence; `scripts/audit_column_types.py` lists text columns that hold only numbers or dates, and a column stays text only with a reason recorded in the audit; affected datasets are downloaded or rebuilt again after a schema change (ADR 49).
 - **Consequences:** sums, sorts and joins work on the typed columns; no column was lost (checked old against new schema: 0 lost, 2 added); the audit is part of the Retrosheet and Statcast definition of done.
 - **Alternatives rejected:** guessing types from column names (types come from data); leaving text and casting in queries (every user would repeat the cast).
+
+## ADR 110: Retrosheet's Own Files Are Opt-In Datasets In The Same Source; Odd Cells Are Quarantined, Not Dropped
+- **Status:** Accepted (owner decisions, 2026-11-11: "one workflow", "make entries for them", "shouldn't we turn them into tables?"; three consulted models advised keeping the logs raw, the owner chose tables).
+- **Context:** retrosheet.org publishes tables the GitHub mirror lacks: transactions, five biography tables, and player, manager and umpire logs (13.7 million rows). The site once banned the owner for heavy scraping.
+- **Decision:** eleven strictly typed datasets in the `retrosheet` source, ingested by the same command through a `site` unit, all `opt_in` (a default run never contacts retrosheet.org); zips are stored raw once and never re-requested; a missing zip is fetched politely (robots.txt, one request every four seconds, stop at the first refusal). Types come from the data. Columns that are numbers except for a few upstream stray cells (`?`, `unknown`, a misplaced id) are declared numeric and the odd cells go to quarantine; line scores stay text; partial dates stay text. Exact upstream duplicate rows are kept.
+- **Consequences:** every Retrosheet file we hold is a table or an explicit raw-only entry; users read them with `baseballpy.read("retrosheet.<name>")` or SQL.
+- **Alternatives rejected:** a separate source (two Retrosheet workflows); leaving the logs raw (not queryable); deleting duplicate or odd rows (nothing is dropped).
+
+## ADR 111: The View Refresh Caches Parquet Footer Row Counts
+- **Status:** Accepted (owner goal: the tool must be easy and fast).
+- **Context:** the end of every ingest rebuilt the lake inventory by opening 176,897 Parquet footers: about 35 minutes.
+- **Decision:** cache row counts by path, size and modification time in `cache/footer_rows.json`; open a footer only for new or changed files, 16 at a time.
+- **Consequences:** the refresh takes 256 seconds the first time and about 2 minutes after; the remaining cost is the number of small files, which the segment rebuild removes.

@@ -16,6 +16,7 @@ from baseballpy.sources.retrosheet.api import (
     ACCESSORS,
     DATASET_UNIT,
     REFERENCE_UNIT,
+    SITE_UNIT,
     UNITS,
     RetrosheetSource,
     unit_of,
@@ -32,7 +33,7 @@ def test_every_registry_dataset_belongs_to_exactly_one_unit() -> None:
     assert [n for n in names if unit_of(n) is None] == []
     # the table in api.py and the registry cannot drift apart
     written = {dataset for _, outputs in UNITS.values() for dataset, _ in outputs}
-    season_names = {n for n in names if unit_of(n) != REFERENCE_UNIT}
+    season_names = {n for n in names if unit_of(n) not in (REFERENCE_UNIT, SITE_UNIT)}
     assert written == season_names == set(DATASET_UNIT)
 
 
@@ -41,7 +42,7 @@ def test_every_registry_dataset_is_selectable() -> None:
     for name in _registry():
         jobs = adapter.plan(Selection(datasets=(name,), seasons=(2023,)))
         assert jobs, name
-        task = "reference" if unit_of(name) == REFERENCE_UNIT else "season"
+        task = {REFERENCE_UNIT: "reference", SITE_UNIT: "site"}.get(unit_of(name) or "", "season")
         assert [j.task for j in jobs] == [task], name
     assert set(_registry()) <= set(known_datasets())
 
@@ -83,10 +84,12 @@ def test_every_registry_dataset_is_selectable_and_readable(
     retro_repo.mount()
     source = RetrosheetSource(cache_config=LakeConfig(home=tmp_path))
     names = _registry()
-    assert {n for n in names if unit_of(n) != REFERENCE_UNIT} <= set(
+    assert {n for n in names if unit_of(n) not in (REFERENCE_UNIT, SITE_UNIT)} <= set(
         ACCESSORS
     )  # the table covers the registry
     for name in names:
+        if unit_of(name) == SITE_UNIT:
+            continue  # opt-in files of retrosheet.org: covered by test_retrosheet_site_datasets and _logs
         if name.startswith("reference_") and name.removeprefix("reference_") not in reference:
             continue  # this fake repository publishes only two reference files
         season = None if unit_of(name) == REFERENCE_UNIT else 2024

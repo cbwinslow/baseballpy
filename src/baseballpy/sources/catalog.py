@@ -30,6 +30,7 @@ from baseballpy.sources.polymarket.schema import POLYMARKET_KEYS, POLYMARKET_SCH
 from baseballpy.sources.retrosheet import schema as retro
 from baseballpy.sources.retrosheet.box_parser import SCHEMAS as BOX_SCHEMAS
 from baseballpy.sources.retrosheet.schema import RETROSHEET_FLAT_KEYS, RETROSHEET_FLAT_SCHEMAS
+from baseballpy.sources.retrosheet.site import SITE_DATASETS
 from baseballpy.sources.statcast.lb_catalog import SUPPORTED as SAVANT_LEADERBOARDS
 from baseballpy.sources.statcast.lb_schema import LEADERBOARD_SCHEMAS
 from baseballpy.sources.statcast.schema import STATCAST_SCHEMA
@@ -43,6 +44,13 @@ RETROSHEET_COVERAGE_NOTES = {
     "discrepancies": "upstream has *discs.csv files for 1988 and earlier only",
     "schedule_original": "upstream has the original schedule for 2020 only",
 }
+
+
+#: the site datasets are not in the GitHub mirror: they come from retrosheet.org, so they are opt-in
+RETROSHEET_SITE_NOTE = (
+    "from retrosheet.org (not in the GitHub mirror); opt-in: ingest it with -d <name>, one request every "
+    "4 seconds, robots.txt obeyed"
+)
 
 
 def _add(
@@ -471,6 +479,7 @@ def register_all() -> dict[str, DatasetSpec]:
         "discrepancies": "Known data discrepancies (seasons/<year>/*discs.csv).",
     }
     seasonal = {"schedule", "schedule_original", "umpires", "discrepancies"}
+    site_set = SITE_DATASETS
     for flat_name, flat_schema in RETROSHEET_FLAT_SCHEMAS.items():
         _add(
             "retrosheet",
@@ -478,10 +487,15 @@ def register_all() -> dict[str, DatasetSpec]:
             f"retrosheet_{flat_name}",
             flat_schema,
             RETROSHEET_FLAT_KEYS[flat_name],
-            flat_descriptions[flat_name],
+            site_set[flat_name].description
+            if flat_name in site_set
+            else flat_descriptions[flat_name],
             f"{retro_doc}#dataset-{flat_name}",
             "season" if flat_name in seasonal else "none",
-            ingest_note=RETROSHEET_COVERAGE_NOTES.get(flat_name, ""),
+            ingest="opt_in" if flat_name in site_set else "default",
+            ingest_note=RETROSHEET_SITE_NOTE
+            if flat_name in site_set
+            else RETROSHEET_COVERAGE_NOTES.get(flat_name, ""),
         )
 
     box_doc = f"{retro_doc}#3b-box-score-game-accounts-eba-ebn-ebe-ebr-ebf"

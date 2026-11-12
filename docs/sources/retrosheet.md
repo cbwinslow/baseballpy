@@ -91,6 +91,14 @@ Every CSV in the tree's `reference/` directory is ingested by header name: `ball
 - `biofile` and `biofile0` describe the same 27,049 people with different headers and encodings; both are kept.
 - Column order never matters: columns are matched by upstream header name, unknown columns land in `_extras` (JSON) with a one-time `schema_drift` warning.
 
+### 8. Files from retrosheet.org (opt-in, the `site` unit)
+The GitHub mirror does not carry everything Retrosheet publishes. Eleven more datasets are parsed from zips on retrosheet.org itself; they are **opt-in**, so a default `baseballpy ingest retrosheet` never contacts that site. Ingest them with `baseballpy ingest retrosheet -d site` (all) or `-d transactions -d umpire_logs` (some); read them with `baseballpy.read("retrosheet.transactions")` or SQL on the view `retrosheet_transactions`.
+- `transactions` (`tranDB.zip`): trades, draft, free agency, injured list and more, 101,594 rows. Dates stay text because some are partial (`19520000`: month and day unknown); `transaction_id` is shared by the players of a trade.
+- `managers0`, `umpires0`, `coaches0`, `ballparks0`, `teams0` (`biodata.zip`): biography tables with first and last game dates.
+- `player_batting_logs`, `player_fielding_logs`, `player_pitching_logs` (`playerlogs.zip`, one CSV per player): every player game line, 5.8 million, 5.3 million and 1.3 million rows.
+- `manager_logs` (`mgrlogs.zip`): 506,098 team game lines; `umpire_logs` (`umplogs.zip`): 771,683 rows, with an `umpire_id` column taken from the file name.
+A zip already in `raw/retrosheet/site_files/` is never requested again; a missing one is fetched politely: robots.txt obeyed, one request every four seconds, the run stops at the first 403, 429 or 503. A few rows are exact duplicates upstream (2 in transactions, 7 in batting logs, 3 in umpire logs) and are kept. The event CSV bundles, the Negro Leagues bundle and the 184 official-totals ledgers are downloadable raw files only, not tables yet. Attribution: "The information used here was obtained free of charge from and is copyrighted by Retrosheet."
+
 ## Freshness
 Retrosheet data is immutable at a pinned commit, and what is stored is judged by git fingerprints (ADR 43, ADR 48):
 - **Raw files:** each file records the git blob SHA the pinned tree lists for it. When the pin moves (`baseballpy refs update`) only files whose blob SHA changed are downloaded again; unchanged files are kept. A file stored before fingerprints existed is judged by the pinned commit it was recorded at.
@@ -1775,3 +1783,634 @@ Starting lineups of the box-score accounts (start lines).
 | `position` | int8 | yes | — | TODO |
 
 <!-- END GENERATED:retrosheet.box_starters -->
+
+<!-- BEGIN GENERATED:retrosheet.site_ballparks0 -->
+### Dataset: site_ballparks0
+
+Ballparks with first and last game dates (biodata.zip ballparks0.csv).
+
+- **View:** `retrosheet_site_ballparks0`
+- **Processed path:** `processed/retrosheet/site_ballparks0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `park_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `park_id` | string | yes | `site` | TODO |
+| `name` | string | yes | — | TODO |
+| `city` | string | yes | — | TODO |
+| `state` | string | yes | — | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.site_ballparks0 -->
+
+<!-- BEGIN GENERATED:retrosheet.site_coaches0 -->
+### Dataset: site_coaches0
+
+Coaches by year, team and role (biodata.zip coaches0.csv).
+
+- **View:** `retrosheet_site_coaches0`
+- **Processed path:** `processed/retrosheet/site_coaches0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `coach_id`, `year`, `team_id`, `role`, `first_g`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `coach_id` | string | yes | `id` | TODO |
+| `year` | int16 | yes | — | TODO |
+| `team_id` | string | yes | `team` | TODO |
+| `role` | string | yes | — | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.site_coaches0 -->
+
+<!-- BEGIN GENERATED:retrosheet.site_managers0 -->
+### Dataset: site_managers0
+
+Managers with first and last game dates (biodata.zip managers0.csv).
+
+- **View:** `retrosheet_site_managers0`
+- **Processed path:** `processed/retrosheet/site_managers0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `manager_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `manager_id` | string | yes | `id` | TODO |
+| `last_name` | string | yes | `lastname` | TODO |
+| `first_name` | string | yes | `firstname` | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.site_managers0 -->
+
+<!-- BEGIN GENERATED:retrosheet.site_teams0 -->
+### Dataset: site_teams0
+
+Teams with first and last game dates (biodata.zip teams0.csv).
+
+- **View:** `retrosheet_site_teams0`
+- **Processed path:** `processed/retrosheet/site_teams0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `team_id`, `first_g`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `team_id` | string | yes | `team` | TODO |
+| `city` | string | yes | — | TODO |
+| `nickname` | string | yes | — | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.site_teams0 -->
+
+<!-- BEGIN GENERATED:retrosheet.site_transactions -->
+### Dataset: site_transactions
+
+Transactions database (trades, draft, free agency, injured list, ...), tranDB.zip.
+
+- **View:** `retrosheet_site_transactions`
+- **Processed path:** `processed/retrosheet/site_transactions/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `transaction_id`, `player`, `type`, `from_team`, `from_league`, `to_team`, `to_league`, `draft_type`, `draft_round`, `pick_number`, `info`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `primary_date` | string | yes | — | TODO |
+| `time` | int16 | yes | — | TODO |
+| `approximate` | string | yes | — | TODO |
+| `secondary_date` | string | yes | — | TODO |
+| `secondary_approximate` | string | yes | — | TODO |
+| `transaction_id` | int32 | yes | — | TODO |
+| `player` | string | yes | — | TODO |
+| `type` | string | yes | — | TODO |
+| `from_team` | string | yes | — | TODO |
+| `from_league` | string | yes | — | TODO |
+| `to_team` | string | yes | — | TODO |
+| `to_league` | string | yes | — | TODO |
+| `draft_type` | string | yes | — | TODO |
+| `draft_round` | int16 | yes | — | TODO |
+| `pick_number` | int16 | yes | — | TODO |
+| `info` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.site_transactions -->
+
+<!-- BEGIN GENERATED:retrosheet.site_umpires0 -->
+### Dataset: site_umpires0
+
+Umpires with first and last game dates (biodata.zip umpires0.csv).
+
+- **View:** `retrosheet_site_umpires0`
+- **Processed path:** `processed/retrosheet/site_umpires0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `umpire_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `umpire_id` | string | yes | `id` | TODO |
+| `last_name` | string | yes | `lastname` | TODO |
+| `first_name` | string | yes | `firstname` | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.site_umpires0 -->
+
+<!-- BEGIN GENERATED:retrosheet.ballparks0 -->
+### Dataset: ballparks0
+
+Ballparks with first and last game dates (biodata.zip ballparks0.csv).
+
+- **View:** `retrosheet_ballparks0`
+- **Processed path:** `processed/retrosheet/ballparks0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `park_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `park_id` | string | yes | `site` | TODO |
+| `name` | string | yes | — | TODO |
+| `city` | string | yes | — | TODO |
+| `state` | string | yes | — | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.ballparks0 -->
+
+<!-- BEGIN GENERATED:retrosheet.coaches0 -->
+### Dataset: coaches0
+
+Coaches by year, team and role (biodata.zip coaches0.csv).
+
+- **View:** `retrosheet_coaches0`
+- **Processed path:** `processed/retrosheet/coaches0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `coach_id`, `year`, `team_id`, `role`, `first_g`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `coach_id` | string | yes | `id` | TODO |
+| `year` | int16 | yes | — | TODO |
+| `team_id` | string | yes | `team` | TODO |
+| `role` | string | yes | — | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.coaches0 -->
+
+<!-- BEGIN GENERATED:retrosheet.manager_logs -->
+### Dataset: manager_logs
+
+Team lines of every game a manager managed (mgrlogs.zip: <id>_mlog.csv).
+
+- **View:** `retrosheet_manager_logs`
+- **Processed path:** `processed/retrosheet/manager_logs/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `mgr`, `gid`, `team`, `stattype`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `inn1` | string | yes | — | TODO |
+| `inn2` | string | yes | — | TODO |
+| `inn3` | string | yes | — | TODO |
+| `inn4` | string | yes | — | TODO |
+| `inn5` | string | yes | — | TODO |
+| `inn6` | string | yes | — | TODO |
+| `inn7` | string | yes | — | TODO |
+| `inn8` | string | yes | — | TODO |
+| `inn9` | string | yes | — | TODO |
+| `inn10` | string | yes | — | TODO |
+| `inn11` | string | yes | — | TODO |
+| `inn12` | string | yes | — | TODO |
+| `inn13` | string | yes | — | TODO |
+| `inn14` | string | yes | — | TODO |
+| `inn15` | string | yes | — | TODO |
+| `inn16` | string | yes | — | TODO |
+| `inn17` | string | yes | — | TODO |
+| `inn18` | string | yes | — | TODO |
+| `inn19` | string | yes | — | TODO |
+| `inn20` | string | yes | — | TODO |
+| `inn21` | string | yes | — | TODO |
+| `inn22` | string | yes | — | TODO |
+| `inn23` | string | yes | — | TODO |
+| `inn24` | string | yes | — | TODO |
+| `inn25` | string | yes | — | TODO |
+| `inn26` | string | yes | — | TODO |
+| `inn27` | string | yes | — | TODO |
+| `inn28` | string | yes | — | TODO |
+| `lob` | int16 | yes | — | TODO |
+| `mgr` | string | yes | — | TODO |
+| `stattype` | string | yes | — | TODO |
+| `b_pa` | int16 | yes | — | TODO |
+| `b_ab` | int16 | yes | — | TODO |
+| `b_r` | int16 | yes | — | TODO |
+| `b_h` | int16 | yes | — | TODO |
+| `b_d` | int16 | yes | — | TODO |
+| `b_t` | int16 | yes | — | TODO |
+| `b_hr` | int16 | yes | — | TODO |
+| `b_rbi` | int16 | yes | — | TODO |
+| `b_sh` | int16 | yes | — | TODO |
+| `b_sf` | int16 | yes | — | TODO |
+| `b_hbp` | int16 | yes | — | TODO |
+| `b_w` | int16 | yes | — | TODO |
+| `b_iw` | int16 | yes | — | TODO |
+| `b_k` | int16 | yes | — | TODO |
+| `b_sb` | int16 | yes | — | TODO |
+| `b_cs` | int16 | yes | — | TODO |
+| `b_gdp` | int16 | yes | — | TODO |
+| `b_xi` | int16 | yes | — | TODO |
+| `b_roe` | int16 | yes | — | TODO |
+| `p_ipouts` | int16 | yes | — | TODO |
+| `p_noout` | int16 | yes | — | TODO |
+| `p_bfp` | int16 | yes | — | TODO |
+| `p_h` | int16 | yes | — | TODO |
+| `p_d` | int16 | yes | — | TODO |
+| `p_t` | int16 | yes | — | TODO |
+| `p_hr` | int16 | yes | — | TODO |
+| `p_r` | int16 | yes | — | TODO |
+| `p_er` | int16 | yes | — | TODO |
+| `p_w` | int16 | yes | — | TODO |
+| `p_iw` | int16 | yes | — | TODO |
+| `p_k` | int16 | yes | — | TODO |
+| `p_hbp` | int16 | yes | — | TODO |
+| `p_wp` | int16 | yes | — | TODO |
+| `p_bk` | int16 | yes | — | TODO |
+| `p_sh` | int16 | yes | — | TODO |
+| `p_sf` | int16 | yes | — | TODO |
+| `p_sb` | int16 | yes | — | TODO |
+| `p_cs` | int16 | yes | — | TODO |
+| `p_pb` | int16 | yes | — | TODO |
+| `d_po` | int16 | yes | — | TODO |
+| `d_a` | int16 | yes | — | TODO |
+| `d_e` | int16 | yes | — | TODO |
+| `d_dp` | int16 | yes | — | TODO |
+| `d_tp` | int16 | yes | — | TODO |
+| `d_pb` | int16 | yes | — | TODO |
+| `d_wp` | int16 | yes | — | TODO |
+| `d_sb` | int16 | yes | — | TODO |
+| `d_cs` | int16 | yes | — | TODO |
+| `start_l1` | string | yes | — | TODO |
+| `start_l2` | string | yes | — | TODO |
+| `start_l3` | string | yes | — | TODO |
+| `start_l4` | string | yes | — | TODO |
+| `start_l5` | string | yes | — | TODO |
+| `start_l6` | string | yes | — | TODO |
+| `start_l7` | string | yes | — | TODO |
+| `start_l8` | string | yes | — | TODO |
+| `start_l9` | string | yes | — | TODO |
+| `start_f1` | string | yes | — | TODO |
+| `start_f2` | string | yes | — | TODO |
+| `start_f3` | string | yes | — | TODO |
+| `start_f4` | string | yes | — | TODO |
+| `start_f5` | string | yes | — | TODO |
+| `start_f6` | string | yes | — | TODO |
+| `start_f7` | string | yes | — | TODO |
+| `start_f8` | string | yes | — | TODO |
+| `start_f9` | string | yes | — | TODO |
+| `start_f10` | string | yes | — | TODO |
+| `date` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `vishome` | string | yes | — | TODO |
+| `opp` | string | yes | — | TODO |
+| `win` | int16 | yes | — | TODO |
+| `loss` | int16 | yes | — | TODO |
+| `tie` | int16 | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `eject` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.manager_logs -->
+
+<!-- BEGIN GENERATED:retrosheet.managers0 -->
+### Dataset: managers0
+
+Managers with first and last game dates (biodata.zip managers0.csv).
+
+- **View:** `retrosheet_managers0`
+- **Processed path:** `processed/retrosheet/managers0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `manager_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `manager_id` | string | yes | `id` | TODO |
+| `last_name` | string | yes | `lastname` | TODO |
+| `first_name` | string | yes | `firstname` | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.managers0 -->
+
+<!-- BEGIN GENERATED:retrosheet.player_batting_logs -->
+### Dataset: player_batting_logs
+
+Batting lines of every player game (playerlogs.zip, one file per player: <id>_b.csv).
+
+- **View:** `retrosheet_player_batting_logs`
+- **Processed path:** `processed/retrosheet/player_batting_logs/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`, `gid`, `team`, `stattype`, `b_lp`, `b_seq`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `id` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `b_lp` | int16 | yes | — | TODO |
+| `b_seq` | int16 | yes | — | TODO |
+| `stattype` | string | yes | — | TODO |
+| `b_pa` | int16 | yes | — | TODO |
+| `b_ab` | int16 | yes | — | TODO |
+| `b_r` | int16 | yes | — | TODO |
+| `b_h` | int16 | yes | — | TODO |
+| `b_d` | int16 | yes | — | TODO |
+| `b_t` | int16 | yes | — | TODO |
+| `b_hr` | int16 | yes | — | TODO |
+| `b_rbi` | int16 | yes | — | TODO |
+| `b_sh` | int16 | yes | — | TODO |
+| `b_sf` | int16 | yes | — | TODO |
+| `b_hbp` | int16 | yes | — | TODO |
+| `b_w` | int16 | yes | — | TODO |
+| `b_iw` | int16 | yes | — | TODO |
+| `b_k` | int16 | yes | — | TODO |
+| `b_sb` | int16 | yes | — | TODO |
+| `b_cs` | int16 | yes | — | TODO |
+| `b_gdp` | int16 | yes | — | TODO |
+| `b_xi` | int16 | yes | — | TODO |
+| `b_roe` | int16 | yes | — | TODO |
+| `dh` | int16 | yes | — | TODO |
+| `ph` | int16 | yes | — | TODO |
+| `pr` | int16 | yes | — | TODO |
+| `date` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `vishome` | string | yes | — | TODO |
+| `opp` | string | yes | — | TODO |
+| `win` | int16 | yes | — | TODO |
+| `loss` | int16 | yes | — | TODO |
+| `tie` | int16 | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `eject` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.player_batting_logs -->
+
+<!-- BEGIN GENERATED:retrosheet.player_fielding_logs -->
+### Dataset: player_fielding_logs
+
+Fielding lines of every player game (playerlogs.zip: <id>_f.csv).
+
+- **View:** `retrosheet_player_fielding_logs`
+- **Processed path:** `processed/retrosheet/player_fielding_logs/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`, `gid`, `team`, `stattype`, `d_seq`, `d_pos`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `id` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `d_seq` | int16 | yes | — | TODO |
+| `d_pos` | int16 | yes | — | TODO |
+| `stattype` | string | yes | — | TODO |
+| `d_ifouts` | int16 | yes | — | TODO |
+| `d_po` | int16 | yes | — | TODO |
+| `d_a` | int16 | yes | — | TODO |
+| `d_e` | int16 | yes | — | TODO |
+| `d_dp` | int16 | yes | — | TODO |
+| `d_tp` | int16 | yes | — | TODO |
+| `d_pb` | int16 | yes | — | TODO |
+| `d_wp` | int16 | yes | — | TODO |
+| `d_sb` | int16 | yes | — | TODO |
+| `d_cs` | int16 | yes | — | TODO |
+| `d_gs` | int16 | yes | — | TODO |
+| `date` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `vishome` | string | yes | — | TODO |
+| `opp` | string | yes | — | TODO |
+| `win` | int16 | yes | — | TODO |
+| `loss` | int16 | yes | — | TODO |
+| `tie` | int16 | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `eject` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.player_fielding_logs -->
+
+<!-- BEGIN GENERATED:retrosheet.player_pitching_logs -->
+### Dataset: player_pitching_logs
+
+Pitching lines of every player game (playerlogs.zip: <id>_p.csv).
+
+- **View:** `retrosheet_player_pitching_logs`
+- **Processed path:** `processed/retrosheet/player_pitching_logs/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`, `gid`, `stattype`, `p_seq`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `id` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `p_seq` | int16 | yes | — | TODO |
+| `stattype` | string | yes | — | TODO |
+| `p_ipouts` | int16 | yes | — | TODO |
+| `p_noout` | int16 | yes | — | TODO |
+| `p_bfp` | int16 | yes | — | TODO |
+| `p_h` | int16 | yes | — | TODO |
+| `p_d` | int16 | yes | — | TODO |
+| `p_t` | int16 | yes | — | TODO |
+| `p_hr` | int16 | yes | — | TODO |
+| `p_r` | int16 | yes | — | TODO |
+| `p_er` | int16 | yes | — | TODO |
+| `p_w` | int16 | yes | — | TODO |
+| `p_iw` | int16 | yes | — | TODO |
+| `p_k` | int16 | yes | — | TODO |
+| `p_hbp` | int16 | yes | — | TODO |
+| `p_wp` | int16 | yes | — | TODO |
+| `p_bk` | int16 | yes | — | TODO |
+| `p_sh` | int16 | yes | — | TODO |
+| `p_sf` | int16 | yes | — | TODO |
+| `p_sb` | int16 | yes | — | TODO |
+| `p_cs` | int16 | yes | — | TODO |
+| `p_pb` | int16 | yes | — | TODO |
+| `wp` | int16 | yes | — | TODO |
+| `lp` | int16 | yes | — | TODO |
+| `save` | int16 | yes | — | TODO |
+| `p_gs` | int16 | yes | — | TODO |
+| `p_gf` | int16 | yes | — | TODO |
+| `p_cg` | int16 | yes | — | TODO |
+| `date` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `vishome` | string | yes | — | TODO |
+| `opp` | string | yes | — | TODO |
+| `win` | int16 | yes | — | TODO |
+| `loss` | int16 | yes | — | TODO |
+| `tie` | int16 | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `eject` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.player_pitching_logs -->
+
+<!-- BEGIN GENERATED:retrosheet.teams0 -->
+### Dataset: teams0
+
+Teams with first and last game dates (biodata.zip teams0.csv).
+
+- **View:** `retrosheet_teams0`
+- **Processed path:** `processed/retrosheet/teams0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `team_id`, `first_g`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `team_id` | string | yes | `team` | TODO |
+| `city` | string | yes | — | TODO |
+| `nickname` | string | yes | — | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.teams0 -->
+
+<!-- BEGIN GENERATED:retrosheet.transactions -->
+### Dataset: transactions
+
+Transactions database (trades, draft, free agency, injured list, ...), tranDB.zip.
+
+- **View:** `retrosheet_transactions`
+- **Processed path:** `processed/retrosheet/transactions/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `transaction_id`, `player`, `type`, `from_team`, `from_league`, `to_team`, `to_league`, `draft_type`, `draft_round`, `pick_number`, `info`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `primary_date` | string | yes | — | TODO |
+| `time` | int16 | yes | — | TODO |
+| `approximate` | string | yes | — | TODO |
+| `secondary_date` | string | yes | — | TODO |
+| `secondary_approximate` | string | yes | — | TODO |
+| `transaction_id` | int32 | yes | — | TODO |
+| `player` | string | yes | — | TODO |
+| `type` | string | yes | — | TODO |
+| `from_team` | string | yes | — | TODO |
+| `from_league` | string | yes | — | TODO |
+| `to_team` | string | yes | — | TODO |
+| `to_league` | string | yes | — | TODO |
+| `draft_type` | string | yes | — | TODO |
+| `draft_round` | int16 | yes | — | TODO |
+| `pick_number` | int16 | yes | — | TODO |
+| `info` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.transactions -->
+
+<!-- BEGIN GENERATED:retrosheet.umpire_logs -->
+### Dataset: umpire_logs
+
+Game info and ejections of every game an umpire worked (umplogs.zip: <id>_ulog.csv).
+
+- **View:** `retrosheet_umpire_logs`
+- **Processed path:** `processed/retrosheet/umpire_logs/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `umpire_id`, `gid`, `gs`, `inn`, `pos`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `visteam` | string | yes | — | TODO |
+| `hometeam` | string | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `date` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `gs` | int16 | yes | — | TODO |
+| `inn` | int16 | yes | — | TODO |
+| `pos` | string | yes | — | TODO |
+| `starttime` | string | yes | — | TODO |
+| `daynight` | string | yes | — | TODO |
+| `innings` | int16 | yes | — | TODO |
+| `tiebreaker` | int16 | yes | — | TODO |
+| `usedh` | string | yes | — | TODO |
+| `htbf` | string | yes | — | TODO |
+| `timeofgame` | int16 | yes | — | TODO |
+| `attendance` | int32 | yes | — | TODO |
+| `fieldcond` | string | yes | — | TODO |
+| `precip` | string | yes | — | TODO |
+| `sky` | string | yes | — | TODO |
+| `temp` | int16 | yes | — | TODO |
+| `winddir` | string | yes | — | TODO |
+| `windspeed` | int16 | yes | — | TODO |
+| `oscorer` | string | yes | — | TODO |
+| `forfeit` | string | yes | — | TODO |
+| `suspend` | int32 | yes | — | TODO |
+| `umphome` | string | yes | — | TODO |
+| `ump1b` | string | yes | — | TODO |
+| `ump2b` | string | yes | — | TODO |
+| `ump3b` | string | yes | — | TODO |
+| `umplf` | string | yes | — | TODO |
+| `umprf` | string | yes | — | TODO |
+| `wp` | string | yes | — | TODO |
+| `lp` | string | yes | — | TODO |
+| `save` | string | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `vruns` | int16 | yes | — | TODO |
+| `hruns` | int16 | yes | — | TODO |
+| `wteam` | string | yes | — | TODO |
+| `lteam` | string | yes | — | TODO |
+| `line` | string | yes | — | TODO |
+| `batteries` | string | yes | — | TODO |
+| `lineups` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `season` | int16 | yes | — | TODO |
+| `uid` | string | yes | — | TODO |
+| `eject` | int16 | yes | — | TODO |
+| `umpire_id` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.umpire_logs -->
+
+<!-- BEGIN GENERATED:retrosheet.umpires0 -->
+### Dataset: umpires0
+
+Umpires with first and last game dates (biodata.zip umpires0.csv).
+
+- **View:** `retrosheet_umpires0`
+- **Processed path:** `processed/retrosheet/umpires0/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `umpire_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `umpire_id` | string | yes | `id` | TODO |
+| `last_name` | string | yes | `lastname` | TODO |
+| `first_name` | string | yes | `firstname` | TODO |
+| `first_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `last_g` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.umpires0 -->
