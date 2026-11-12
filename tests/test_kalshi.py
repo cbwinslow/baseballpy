@@ -363,14 +363,19 @@ def test_a_fresh_kalshi_download_has_the_lake_shape(tmp_path: Path) -> None:
     assert views.get("kalshi_markets") == 4
 
 
-def test_the_round_trip_check_counts_kalshi_pages_and_finds_a_lost_row(tmp_path: Path) -> None:
+def test_the_round_trip_check_counts_kalshi_pages_and_finds_a_lost_row(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """The raw pages are JSON: the distinct tickers in them are the rows the table must hold."""
     import pyarrow as pa
     import pyarrow.parquet as pq
 
     from baseballpy.core.roundtrip import roundtrip_dataset
+    from baseballpy.ingest import adapters as adapter_registry
     from baseballpy.sources.adapters import register_all_adapters
 
+    # other tests may have registered fake adapters: start from an empty registry so this one is order-proof
+    monkeypatch.setattr(adapter_registry, "ADAPTERS", {})
     register_all_adapters()
     _, _, config = _ingest(tmp_path)
     spec = get_dataset("kalshi", "markets")

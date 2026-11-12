@@ -46,6 +46,16 @@ HTTP_OPERATION = "http_request"
 HTTP_SOURCE = "http"
 
 
+#: wall-clock seconds at perf_counter zero: the wall clock alone ticks only every ~15 ms on Windows, which made
+#: back-to-back requests look as if they overlapped in the audit log
+_CLOCK_OFFSET = time.time() - time.perf_counter()
+
+
+def _now() -> datetime:
+    """The current UTC time with the resolution of ``perf_counter`` (never earlier than a request that ended)."""
+    return datetime.fromtimestamp(_CLOCK_OFFSET + time.perf_counter(), UTC)
+
+
 def _audit_attempt(
     url: str, sent_at: datetime, elapsed: float, status: int | None, outcome: str, error: str | None
 ) -> None:
@@ -301,7 +311,7 @@ class HttpClient:
         async def _once() -> HttpResult:
             async with semaphore, limiter:
                 started = time.perf_counter()
-                sent_at = datetime.now(UTC)
+                sent_at = _now()
                 hook = self._header_hooks.get(host)
                 attempt_headers = (
                     req_headers if hook is None else {**req_headers, **hook("GET", url)}
@@ -385,7 +395,7 @@ class HttpClient:
         size = 0
         async with self._semaphore_for(host), self._limiter_for(host):
             started = time.perf_counter()
-            sent_at = datetime.now(UTC)
+            sent_at = _now()
             hook = self._header_hooks.get(host)
             headers = {} if hook is None else dict(hook("GET", url))
             try:
