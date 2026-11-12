@@ -361,3 +361,24 @@ def test_a_fresh_kalshi_download_has_the_lake_shape(tmp_path: Path) -> None:
     _ingest(tmp_path)
     views = assert_lake_contract(LakeConfig(base_dir=tmp_path), ["kalshi"])
     assert views.get("kalshi_markets") == 4
+
+
+def test_the_round_trip_check_counts_kalshi_pages_and_finds_a_lost_row(tmp_path: Path) -> None:
+    """The raw pages are JSON: the distinct tickers in them are the rows the table must hold."""
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    from baseballpy.core.roundtrip import roundtrip_dataset
+    from baseballpy.sources.adapters import register_all_adapters
+
+    register_all_adapters()
+    _, _, config = _ingest(tmp_path)
+    spec = get_dataset("kalshi", "markets")
+    check = roundtrip_dataset(config, spec)
+    assert check.status == "ok" and check.raw_rows == 4 and check.compared == 4, check
+    for part in ProcessedStore(config).files(spec):  # drop one row from one stored file
+        table = pq.read_table(part)
+        pq.write_table(table.slice(1) if table.num_rows > 1 else pa.table({}), part)
+        break
+    lost = roundtrip_dataset(config, spec)
+    assert lost.status == "loss" and lost.losses[0].kind == "row_missing", lost

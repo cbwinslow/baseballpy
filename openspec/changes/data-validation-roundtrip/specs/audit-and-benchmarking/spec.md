@@ -21,3 +21,8 @@ written with a leading zero or a plus sign MUST be typed as text.
 - **WHEN** a full check runs on a dataset with an extra processed row, a flipped true/false cell, an unread raw column held in `_extras` under another name, cells that the quarantine explains, and event files whose lines are counted
 - **THEN** the extra row is `row_extra`, the flipped cell is a changed cell, the unread column is a loss, the quarantined cells are a known verdict, and a lost or invented event row is found by the count
 - Verified by `tests/test_roundtrip.py::test_full_mode_reads_every_file_and_reports_rows_the_raw_text_does_not_have`, `tests/test_roundtrip.py::test_a_true_false_column_is_compared_too`, `tests/test_roundtrip.py::test_extras_must_hold_the_unread_column_by_name`, `tests/test_roundtrip.py::test_cells_that_are_in_the_quarantine_are_a_known_verdict_not_a_loss` and `tests/test_retrosheet_linecounts.py::test_a_lost_or_an_invented_row_is_found_by_the_count`.
+
+#### Scenario: JSON page sources are checked by counting the distinct ids in the raw pages
+- **WHEN** the check runs on a Kalshi or Polymarket dataset whose raw files are gzipped JSON pages
+- **THEN** the distinct record ids in the raw pages are the rows the table must hold; a missing row is `row_missing`, an invented one `row_extra`, and the verdict says that rows were counted, not cells compared
+- Verified by `tests/test_kalshi.py::test_the_round_trip_check_counts_kalshi_pages_and_finds_a_lost_row`.

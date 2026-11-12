@@ -30,6 +30,9 @@
 - Keys arrive in `camelCase` and are stored as `snake_case` (`clobTokenIds` is `clob_token_ids`). Prices and quantities written as decimals are exact `decimal` columns; times are `timestamp[us, UTC]`; the lists Polymarket sends as JSON text (`outcomes`, `clobTokenIds`, `outcomePrices`) and nested values (`tags`, `series`) stay JSON text. Outcome token ids are 77-digit numbers and are kept as text.
 - A key the probe has not seen goes to `_extras` with a one-time `schema_drift` warning; rerun the generator to type it.
 
+## How the data is verified (2026-11-12)
+`baseballpy verify-roundtrip polymarket` counts the distinct ids in the raw JSON pages and compares them with the stored rows: `events` 11,653 and `markets` 233,923 (nested in the event pages) are exact. `outcomes` and `prices` are not counted yet.
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:polymarket.description_sources -->

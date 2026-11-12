@@ -101,6 +101,8 @@ RawReader = Callable[[LakeConfig, DatasetSpec, int, int | None, bool], Iterable[
 _READERS: dict[str, RawReader] = {}
 #: ``(source, dataset)`` -> ``counter(config, season)``: rows the season must hold, counted from raw files that are not CSV
 CountCheck = Callable[[LakeConfig, int], int]
+#: the "season" a count check is asked about for a dataset that has no seasons
+UNPARTITIONED = 0
 _COUNTS: dict[tuple[str, str], CountCheck] = {}
 
 
@@ -715,16 +717,23 @@ def _count_check(config: LakeConfig, spec: DatasetSpec, check: DatasetCheck) -> 
         if base.is_dir()
         else []
     )
+    if not seasons and base.is_dir():
+        seasons = [UNPARTITIONED]  # a dataset without seasons: all its rows against one count
     for season in seasons:
+        folder = (
+            base
+            if season == UNPARTITIONED
+            else config.processed_dir(spec.source, spec.name, season)
+        )
         have = sum(
             pq.ParquetFile(f).metadata.num_rows
-            for f in config.processed_dir(spec.source, spec.name, season).glob("*.parquet")
+            for f in folder.rglob("*.parquet")
             if not f.name.startswith("_")
         )
         want = counter(config, season)
         check.raw_rows += want
         check.compared += min(have, want)
-        check.files.append(f"season={season}")
+        check.files.append("all rows" if season == UNPARTITIONED else f"season={season}")
         if want > have:
             check.losses.append(
                 Loss(
@@ -744,7 +753,7 @@ def _count_check(config: LakeConfig, spec: DatasetSpec, check: DatasetCheck) -> 
                 )
             )
     check.notes.append(
-        "counts only: the raw event files are not CSV, so rows are counted, cells are not compared"
+        "counts only: the raw files are not CSV, so rows are counted, cells are not compared"
     )
     check.quarantined = _quarantine_rows(config, spec)
     check.status = "loss" if check.losses else "ok"

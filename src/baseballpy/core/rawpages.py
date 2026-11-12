@@ -1,0 +1,72 @@
+"""Distinct records in a source's raw answer pages, for the round-trip check of JSON sources.
+
+Kalshi and Polymarket keep every answer they received as one gzip of JSON lines per request series (the shared
+``RawLog``: one line per page, the page text in ``body``). The cell check cannot read that, so the check counts
+instead: the distinct keys that all the raw pages hold are the rows the processed table must have (a record seen on
+two pages, or live and archived, is stored once).
+"""
+
+import gzip
+import json
+from collections.abc import Callable, Iterator, Sequence
+from pathlib import Path
+
+from baseballpy.core.config import LakeConfig
+
+
+def page_bodies(folder: Path) -> Iterator[dict[str, object]]:
+    """The decoded body of every page in every ``*.jsonl.gz`` file of ``folder``."""
+    if not folder.is_dir():
+        return
+    for path in sorted(folder.glob("*.jsonl.gz")):
+        with gzip.open(path, "rt", encoding="utf-8") as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                body = json.loads(line).get("body")
+                if isinstance(body, str):
+                    decoded = json.loads(body)
+                    if isinstance(decoded, dict):
+                        yield decoded
+
+
+def distinct_keys(
+    config: LakeConfig,
+    dataset_folder: tuple[str, str],
+    list_name: str,
+    key: str,
+    nested: Sequence[str] = (),
+) -> int:
+    """Distinct ``key`` values of the records listed under ``list_name`` in the pages of one raw folder.
+
+    ``nested`` names a list inside each record whose items are counted instead (Polymarket markets sit inside events).
+    """
+    source, dataset = dataset_folder
+    seen: set[object] = set()
+    for body in page_bodies(config.raw_dir(source, dataset)):
+        records = body.get(list_name)
+        if not isinstance(records, list):
+            continue
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+            items: list[object] = [record]
+            for name in nested:
+                inner = record.get(name)
+                items = [i for i in inner if isinstance(i, dict)] if isinstance(inner, list) else []
+            seen.update(i[key] for i in items if isinstance(i, dict) and key in i)
+    return len(seen)
+
+
+def pages_counter(
+    source: str, folder: str, list_name: str, key: str, nested: Sequence[str] = ()
+) -> Callable[[LakeConfig, int], int]:
+    """:func:`distinct_keys` of one raw folder, in the shape the round-trip check registers."""
+
+    def count(config: LakeConfig, _season: int) -> int:
+        return distinct_keys(config, (source, folder), list_name, key, nested)
+
+    return count
+
+
+__all__ = ["distinct_keys", "page_bodies", "pages_counter"]

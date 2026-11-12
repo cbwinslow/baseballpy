@@ -81,6 +81,22 @@ def register_all_adapters() -> None:
 
     for dataset in RULES:  # event files are not CSV: their rows are counted against the raw lines
         register_count_check("retrosheet", dataset, counter(dataset))
+    from baseballpy.core.rawpages import pages_counter
+
+    # Kalshi and Polymarket keep JSON pages: the distinct ids in the raw pages are the rows the tables must hold
+    # (kalshi series is left out on purpose: the raw pages list every series, the table keeps the MLB ones)
+    register_count_check(
+        "kalshi", "events", pages_counter("kalshi", "events", "events", "event_ticker")
+    )
+    register_count_check(
+        "kalshi", "markets", pages_counter("kalshi", "markets", "markets", "ticker")
+    )
+    register_count_check(
+        "polymarket", "events", pages_counter("polymarket", "events", "events", "id")
+    )
+    register_count_check(
+        "polymarket", "markets", pages_counter("polymarket", "events", "events", "id", ("markets",))
+    )
     from baseballpy.sources.mlb_api.game_segments import (
         game_dataset_names,
         game_normalizer,
