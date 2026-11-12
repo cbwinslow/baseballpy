@@ -74,4 +74,3 @@ Expose zero-copy, highly ergonomic convenience functions:
    - `mypy --strict src tests/test_crosswalk.py`: Passed (175 source files clean).
    - `openspec validate --specs`: Passed (21 specs passed).
    - `docs generate --check`: Passed (docs up to date).
-
