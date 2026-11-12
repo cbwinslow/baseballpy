@@ -322,9 +322,9 @@ def test_cells_that_are_in_the_quarantine_are_a_known_verdict_not_a_loss(
 def test_spaces_round_a_raw_cell_are_a_note_not_a_loss(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """The parsers trim cells (' Paul' is stored as 'Paul'): the check counts them in a note, not as a changed cell."""
+    """A cell that differs only in the spaces round it (' Paul' stored as 'Paul') is a note, not a changed cell."""
     spec = _spec(monkeypatch, GOOD_COLUMNS)
     raw = RAW.replace(b",a,x", b", a ,x")  # note of row 1 has spaces round it in the raw text
     check = roundtrip_dataset(_lake(tmp_path, spec, raw, _good_table(spec)), spec)
     assert check.status == "ok", check
-    assert any("spaces round the text" in n for n in check.notes)
+    assert any("only in the spaces round the text" in n for n in check.notes)

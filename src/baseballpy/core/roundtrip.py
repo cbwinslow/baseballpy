@@ -343,8 +343,11 @@ def _int_mismatch(raw: Column, out: Column, both: Column) -> Column:
 
 def _date_mismatch(raw: Column, out: Column, both: Column, fmt: str) -> Column:
     """A date by the text it would have in the raw format (compared as text, in Arrow)."""
-    written = pc.strftime(out, format=fmt)
-    differ = pc.fill_null(pc.not_equal(pc.utf8_trim_whitespace(raw), written), False)
+    parsed = pc.cast(
+        pc.strptime(pc.utf8_trim_whitespace(raw), format=fmt, unit="s", error_is_null=True),
+        pa.date32(),
+    )
+    differ = pc.fill_null(pc.or_(pc.is_null(parsed), pc.not_equal(parsed, out)), False)
     return pc.and_(both, differ)
 
 
@@ -378,8 +381,8 @@ def _compare_aligned(
 ) -> None:
     """Compare every mapped column of two tables with the same length and row order.
 
-    Text is compared after trimming the spaces round the raw cell (the parsers trim them: ``' Paul'`` is stored as
-    ``'Paul'``); how many cells that touched is a note, not a loss.
+    Text is compared exactly; a cell that differs only in the spaces round it (``' Paul'`` stored as ``'Paul'``, or the
+    other way) is counted in a note, not as a loss.
     """
     for field_ in spec.schema:
         if field_.name in _SKIP or field_.name not in columns:
@@ -398,11 +401,13 @@ def _compare_aligned(
         if pa.types.is_string(type_) or pa.types.is_large_string(type_):
             out_text = pc.cast(out_col, pa.string())
             bad = pc.and_(both, pc.fill_null(pc.not_equal(raw_col, out_text), False))
-            trimmed_raw = pc.utf8_trim_whitespace(raw_col)
-            spaces_only = pc.and_(bad, pc.fill_null(pc.equal(trimmed_raw, out_text), False))
+            same_trimmed = pc.equal(
+                pc.utf8_trim_whitespace(raw_col), pc.utf8_trim_whitespace(out_text)
+            )
+            spaces_only = pc.and_(bad, pc.fill_null(same_trimmed, False))
             if _sum(spaces_only):
                 notes.append(
-                    f"{field_.name}: {_sum(spaces_only):,} cell(s) had spaces round the text, stored trimmed"
+                    f"{field_.name}: {_sum(spaces_only):,} cell(s) differ only in the spaces round the text"
                 )
                 bad = pc.and_(bad, pc.invert(spaces_only))
         elif pa.types.is_integer(type_):
@@ -433,9 +438,14 @@ def _canonical_pair(field_: pa.Field, raw: Column, out: Column) -> tuple[Column,
     if pa.types.is_dictionary(type_):
         return raw, pc.cast(out, pa.string())
     if pa.types.is_string(type_) or pa.types.is_large_string(type_):
-        return pc.utf8_trim_whitespace(raw), pc.cast(out, pa.string())  # parsers trim cells
+        # spaces round the text are not compared (some parsers trim cells, some keep them)
+        return pc.utf8_trim_whitespace(raw), pc.utf8_trim_whitespace(pc.cast(out, pa.string()))
     if pa.types.is_integer(type_):
-        return pc.utf8_trim_whitespace(raw), pc.cast(out, pa.string())
+        # a whole number the provider wrote as a decimal (``2.0``) is the integer 2
+        whole = pc.replace_substring_regex(
+            pc.utf8_trim_whitespace(raw), pattern=r"^(-?[0-9]+)\.0+$", replacement=r"\1"
+        )
+        return whole, pc.cast(out, pa.string())
     if pa.types.is_floating(type_):
         return _parse_float(raw), pc.cast(out, pa.float64())
     if pa.types.is_date32(type_):
@@ -601,6 +611,7 @@ def roundtrip_dataset(
     check.quarantined = _quarantine_rows(config, spec)
     losses: _Losses = {}
     not_compared: set[str] = set()
+    by_position = False
     for season in dict.fromkeys(s.season for s in samples):
         held = _processed_table(config, spec, season)
         if held is None:
@@ -646,6 +657,7 @@ def roundtrip_dataset(
                 out_used = processed.take(pc.drop_null(index))
             elif len(mine) == 1 and part_count == 1 and processed.num_rows == raw.num_rows:
                 raw_used, out_used = raw, processed
+                by_position = True
             else:
                 check.status = "skipped"
                 check.reason = (
@@ -670,6 +682,15 @@ def roundtrip_dataset(
                         extra,
                         f"key {example[0]!r} is in the processed data only",
                     )
+    if by_position and any(x.count * 100 > check.compared for x in losses.values()):
+        # rows were matched by position because no key could be used; many differences mean the processed rows
+        # are in another order than the raw file, so the comparison proves nothing
+        check.status = "skipped"
+        check.reason = (
+            "no usable key column and the processed rows are not in the raw file's order: "
+            "positional comparison is not valid"
+        )
+        return check
     if not_compared:
         check.notes.append("columns not compared (type): " + ", ".join(sorted(not_compared)))
     check.losses = [
