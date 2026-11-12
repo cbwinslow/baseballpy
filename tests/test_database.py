@@ -323,3 +323,45 @@ def test_sync_drops_a_view_whose_data_folder_is_gone(lake: LakeConfig, tmp_path:
     con.close()
     assert "lahman_people" not in names
     assert {"statcast_pitches", "chadwick_register", "v_season_catalog"} <= names
+
+
+def test_the_inventory_reads_a_file_footer_only_when_the_file_is_new_or_changed(
+    lake: LakeConfig, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Counting rows opened every Parquet footer on every sync (176,897 files took about 35 minutes)."""
+    import baseballpy.database as database
+
+    reads: list[str] = []
+    real = database.pq.ParquetFile
+
+    def counting(path: object, *args: object, **kwargs: object) -> object:
+        reads.append(str(path))
+        return real(path, *args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(database.pq, "ParquetFile", counting)
+    db = BaseballDatabase(db_path=":memory:", cache_config=lake)
+    first = db._season_catalog_rows()
+    assert reads, "the first run has to read the footers"
+    reads.clear()
+    assert db._season_catalog_rows() == first, "the answer is the same"
+    assert reads == [], "a second run reads no footer"
+    changed = next(p for p in lake.processed_root.rglob("*.parquet") if "2023" in str(p))
+    ProcessedStore(lake).put(
+        get_dataset("statcast", "pitches"),
+        pa.table(
+            {
+                "pitch_type": ["FF", "SL", "CU"],
+                "release_speed": [97.5, 85.2, 80.0],
+                "pitcher": [1, 2, 3],
+                "game_year": [2023, 2023, 2023],
+            }
+        ),
+        chunk_id="a",
+        season=2023,
+    )
+    reads.clear()
+    rows = {(r[1], r[2]): r[3] for r in db._season_catalog_rows()}
+    assert rows[("pitches", 2023)] == 3, "a rewritten file is counted again"
+    assert len(reads) == 1 and "2023" in reads[0], (
+        f"only the changed file is read: {reads} ({changed})"
+    )

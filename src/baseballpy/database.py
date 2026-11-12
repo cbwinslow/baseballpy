@@ -4,9 +4,12 @@ Views are registry-driven (:data:`baseballpy.core.datasets.DATASETS`), read only
 ``processed/`` Parquet (never ``raw/`` or ``cache/``), and hold no data copies.
 """
 
+import json
 import logging
+import os
 import re
 from collections.abc import Generator
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
@@ -59,6 +62,26 @@ class DatabaseTooNewError(RuntimeError):
 def is_newer_format(exc: BaseException) -> bool:
     """Whether a DuckDB error says the file comes from a newer DuckDB version."""
     return isinstance(exc, duckdb.IOException) and "newer version of DuckDB" in str(exc)
+
+
+def _load_footer_cache(path: Path) -> dict[str, list[int]]:
+    """Row counts of Parquet footers already read: ``relative path -> [size, mtime_ns, rows]`` (empty when unreadable)."""
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _save_footer_cache(path: Path, entries: dict[str, list[int]]) -> None:
+    """Write the footer cache atomically; a failure only costs the next run a re-read, so it is logged, not raised."""
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        staging = path.with_name(path.name + ".tmp")
+        staging.write_text(json.dumps(entries), encoding="utf-8", newline="\n")
+        staging.replace(path)
+    except OSError as exc:
+        logger.warning("could not save the footer cache %s: %s", path, exc)
 
 
 def _schema_state(files: list[Path], schema: pa.Schema) -> tuple[str | None, bool]:
@@ -242,18 +265,44 @@ class BaseballDatabase:
         processed = self.cache_config.processed_root
         if not processed.exists():
             return []
+        cache_path = self.cache_config.home / "cache" / "footer_rows.json"
+        known = _load_footer_cache(cache_path)
+        found: list[tuple[Path, tuple[str, ...], int | None, os.stat_result]] = []
         for path in visible_parquet(processed):
             rel = path.relative_to(processed).parts
             if len(rel) < 3:
                 continue
             match = next((m for part in rel if (m := _SEASON_DIR.fullmatch(part))), None)
-            season = int(match.group(1)) if match else None
-            stat = path.stat()
+            found.append((path, rel, int(match.group(1)) if match else None, path.stat()))
+        # a footer is opened only for a new or changed file, and those reads (disk waits) run side by side
+        todo = [
+            f
+            for f in found
+            if not (
+                (c := known.get("/".join(f[1]))) is not None
+                and c[0] == f[3].st_size
+                and c[1] == f[3].st_mtime_ns
+            )
+        ]
+        with ThreadPoolExecutor(max_workers=16) as pool:
+            counted = dict(
+                zip(
+                    ("/".join(f[1]) for f in todo),
+                    pool.map(lambda f: pq.ParquetFile(f[0]).metadata.num_rows, todo),
+                    strict=True,
+                )
+            )
+        kept: dict[str, list[int]] = {}
+        for _path, rel, season, stat in found:
+            key = "/".join(rel)
+            num_rows = counted[key] if key in counted else known[key][2]
+            kept[key] = [stat.st_size, stat.st_mtime_ns, num_rows]
             entry = grouped.setdefault((rel[0], rel[1], season), [0, 0, 0, 0.0])
-            entry[0] += pq.ParquetFile(path).metadata.num_rows
+            entry[0] += num_rows
             entry[1] += 1
             entry[2] += stat.st_size
             entry[3] = max(entry[3], stat.st_mtime)
+        _save_footer_cache(cache_path, kept)
         views = {(s.source, s.name): s.view for s in DATASETS.values()}
         return [
             (
