@@ -64,7 +64,8 @@
       "fullName": "Aaron Judge",
       "link": "/api/v1/people/592450",
       "firstName": "Aaron",
-      "lastName": "Judge"
+      "lastName": "Judge",
+      "nameSlug": "aaron-judge-592450"
      },
      "sport": {
       "id": 1,
@@ -131,7 +132,8 @@
       "fullName": "Pete Alonso",
       "link": "/api/v1/people/624413",
       "firstName": "Pete",
-      "lastName": "Alonso"
+      "lastName": "Alonso",
+      "nameSlug": "pete-alonso-624413"
      },
      "sport": {
       "id": 1,
@@ -198,7 +200,8 @@
       "fullName": "Kyle Schwarber",
       "link": "/api/v1/people/656941",
       "firstName": "Kyle",
-      "lastName": "Schwarber"
+      "lastName": "Schwarber",
+      "nameSlug": "kyle-schwarber-656941"
      },
      "sport": {
       "id": 1,
@@ -268,7 +271,8 @@
       "fullName": "Oneil Cruz",
       "link": "/api/v1/people/665833",
       "firstName": "Oneil",
-      "lastName": "Cruz"
+      "lastName": "Cruz",
+      "nameSlug": "oneil-cruz-665833"
      },
      "sport": {
       "id": 1,
@@ -335,7 +339,8 @@
       "fullName": "Freddie Freeman",
       "link": "/api/v1/people/518692",
       "firstName": "Freddie",
-      "lastName": "Freeman"
+      "lastName": "Freeman",
+      "nameSlug": "freddie-freeman-518692"
      },
      "sport": {
       "id": 1,
@@ -402,7 +407,8 @@
       "fullName": "Gunnar Henderson",
       "link": "/api/v1/people/683002",
       "firstName": "Gunnar",
-      "lastName": "Henderson"
+      "lastName": "Henderson",
+      "nameSlug": "gunnar-henderson-683002"
      },
      "sport": {
       "id": 1,
@@ -469,7 +475,8 @@
       "fullName": "Josh Jung",
       "link": "/api/v1/people/673962",
       "firstName": "Josh",
-      "lastName": "Jung"
+      "lastName": "Jung",
+      "nameSlug": "josh-jung-673962"
      },
      "sport": {
       "id": 1,
@@ -536,7 +543,8 @@
       "fullName": "Max Muncy",
       "link": "/api/v1/people/571970",
       "firstName": "Max",
-      "lastName": "Muncy"
+      "lastName": "Muncy",
+      "nameSlug": "max-muncy-571970"
      },
      "sport": {
       "id": 1,
@@ -603,7 +611,8 @@
       "fullName": "Isaac Paredes",
       "link": "/api/v1/people/670623",
       "firstName": "Isaac",
-      "lastName": "Paredes"
+      "lastName": "Paredes",
+      "nameSlug": "isaac-paredes-670623"
      },
      "sport": {
       "id": 1,
@@ -670,7 +679,8 @@
       "fullName": "Brent Rooker",
       "link": "/api/v1/people/667670",
       "firstName": "Brent",
-      "lastName": "Rooker"
+      "lastName": "Rooker",
+      "nameSlug": "brent-rooker-667670"
      },
      "sport": {
       "id": 1,
@@ -737,7 +747,8 @@
       "fullName": "Giancarlo Stanton",
       "link": "/api/v1/people/519317",
       "firstName": "Giancarlo",
-      "lastName": "Stanton"
+      "lastName": "Stanton",
+      "nameSlug": "giancarlo-stanton-519317"
      },
      "sport": {
       "id": 1,

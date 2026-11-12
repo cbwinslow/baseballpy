@@ -67,7 +67,8 @@
       "fullName": "Garrett Crochet",
       "link": "/api/v1/people/676979",
       "firstName": "Garrett",
-      "lastName": "Crochet"
+      "lastName": "Crochet",
+      "nameSlug": "garrett-crochet-676979"
      },
      "sport": {
       "id": 1,
@@ -137,7 +138,8 @@
       "fullName": "Logan Webb",
       "link": "/api/v1/people/657277",
       "firstName": "Logan",
-      "lastName": "Webb"
+      "lastName": "Webb",
+      "nameSlug": "logan-webb-657277"
      },
      "sport": {
       "id": 1,
@@ -207,7 +209,8 @@
       "fullName": "Paul Skenes",
       "link": "/api/v1/people/694973",
       "firstName": "Paul",
-      "lastName": "Skenes"
+      "lastName": "Skenes",
+      "nameSlug": "paul-skenes-694973"
      },
      "sport": {
       "id": 1,
@@ -280,7 +283,8 @@
       "fullName": "Chris Bassitt",
       "link": "/api/v1/people/605135",
       "firstName": "Chris",
-      "lastName": "Bassitt"
+      "lastName": "Bassitt",
+      "nameSlug": "chris-bassitt-605135"
      },
      "sport": {
       "id": 1,
@@ -350,7 +354,8 @@
       "fullName": "Shane Baz",
       "link": "/api/v1/people/669358",
       "firstName": "Shane",
-      "lastName": "Baz"
+      "lastName": "Baz",
+      "nameSlug": "shane-baz-669358"
      },
      "sport": {
       "id": 1,
@@ -420,7 +425,8 @@
       "fullName": "Brendan Beck",
       "link": "/api/v1/people/694341",
       "firstName": "Brendan",
-      "lastName": "Beck"
+      "lastName": "Beck",
+      "nameSlug": "brendan-beck-694341"
      },
      "sport": {
       "id": 1,
@@ -490,7 +496,8 @@
       "fullName": "Matthew Boyd",
       "link": "/api/v1/people/571510",
       "firstName": "Matthew",
-      "lastName": "Boyd"
+      "lastName": "Boyd",
+      "nameSlug": "matthew-boyd-571510"
      },
      "sport": {
       "id": 1,
@@ -560,7 +567,8 @@
       "fullName": "Kris Bubic",
       "link": "/api/v1/people/663460",
       "firstName": "Kris",
-      "lastName": "Bubic"
+      "lastName": "Bubic",
+      "nameSlug": "kris-bubic-663460"
      },
      "sport": {
       "id": 1,
@@ -630,7 +638,8 @@
       "fullName": "Edward Cabrera",
       "link": "/api/v1/people/665795",
       "firstName": "Edward",
-      "lastName": "Cabrera"
+      "lastName": "Cabrera",
+      "nameSlug": "edward-cabrera-665795"
      },
      "sport": {
       "id": 1,
@@ -700,7 +709,8 @@
       "fullName": "Noah Cameron",
       "link": "/api/v1/people/702070",
       "firstName": "Noah",
-      "lastName": "Cameron"
+      "lastName": "Cameron",
+      "nameSlug": "noah-cameron-702070"
      },
      "sport": {
       "id": 1,
@@ -770,7 +780,8 @@
       "fullName": "Bubba Chandler",
       "link": "/api/v1/people/696149",
       "firstName": "Bubba",
-      "lastName": "Chandler"
+      "lastName": "Chandler",
+      "nameSlug": "bubba-chandler-696149"
      },
      "sport": {
       "id": 1,
@@ -840,7 +851,8 @@
       "fullName": "Caden Dana",
       "link": "/api/v1/people/702674",
       "firstName": "Caden",
-      "lastName": "Dana"
+      "lastName": "Dana",
+      "nameSlug": "caden-dana-702674"
      },
      "sport": {
       "id": 1,
@@ -910,7 +922,8 @@
       "fullName": "Kohl Drake",
       "link": "/api/v1/people/684442",
       "firstName": "Kohl",
-      "lastName": "Drake"
+      "lastName": "Drake",
+      "nameSlug": "kohl-drake-684442"
      },
      "sport": {
       "id": 1,
@@ -980,7 +993,8 @@
       "fullName": "Daniel Eagen",
       "link": "/api/v1/people/811666",
       "firstName": "Daniel",
-      "lastName": "Eagen"
+      "lastName": "Eagen",
+      "nameSlug": "daniel-eagen-811666"
      },
      "sport": {
       "id": 1,
@@ -1050,7 +1064,8 @@
       "fullName": "Connelly Early",
       "link": "/api/v1/people/813349",
       "firstName": "Connelly",
-      "lastName": "Early"
+      "lastName": "Early",
+      "nameSlug": "connelly-early-813349"
      },
      "sport": {
       "id": 1,
@@ -1120,7 +1135,8 @@
       "fullName": "Didier Fuentes",
       "link": "/api/v1/people/800311",
       "firstName": "Didier",
-      "lastName": "Fuentes"
+      "lastName": "Fuentes",
+      "nameSlug": "didier-fuentes-800311"
      },
      "sport": {
       "id": 1,
@@ -1190,7 +1206,8 @@
       "fullName": "Spencer Giesting",
       "link": "/api/v1/people/801517",
       "firstName": "Spencer",
-      "lastName": "Giesting"
+      "lastName": "Giesting",
+      "nameSlug": "spencer-giesting-801517"
      },
      "sport": {
       "id": 1,
@@ -1260,7 +1277,8 @@
       "fullName": "Logan Gilbert",
       "link": "/api/v1/people/669302",
       "firstName": "Logan",
-      "lastName": "Gilbert"
+      "lastName": "Gilbert",
+      "nameSlug": "logan-gilbert-669302"
      },
      "sport": {
       "id": 1,
@@ -1330,7 +1348,8 @@
       "fullName": "Hunter Greene",
       "link": "/api/v1/people/668881",
       "firstName": "Hunter",
-      "lastName": "Greene"
+      "lastName": "Greene",
+      "nameSlug": "hunter-greene-668881"
      },
      "sport": {
       "id": 1,
@@ -1400,7 +1419,8 @@
       "fullName": "Clay Holmes",
       "link": "/api/v1/people/605280",
       "firstName": "Clay",
-      "lastName": "Holmes"
+      "lastName": "Holmes",
+      "nameSlug": "clay-holmes-605280"
      },
      "sport": {
       "id": 1,
@@ -1470,7 +1490,8 @@
       "fullName": "Gage Jump",
       "link": "/api/v1/people/695611",
       "firstName": "Gage",
-      "lastName": "Jump"
+      "lastName": "Jump",
+      "nameSlug": "gage-jump-695611"
      },
      "sport": {
       "id": 1,
@@ -1540,7 +1561,8 @@
       "fullName": "Mitch Keller",
       "link": "/api/v1/people/656605",
       "firstName": "Mitch",
-      "lastName": "Keller"
+      "lastName": "Keller",
+      "nameSlug": "mitch-keller-656605"
      },
      "sport": {
       "id": 1,
@@ -1610,7 +1632,8 @@
       "fullName": "Merrill Kelly",
       "link": "/api/v1/people/518876",
       "firstName": "Merrill",
-      "lastName": "Kelly"
+      "lastName": "Kelly",
+      "nameSlug": "merrill-kelly-518876"
      },
      "sport": {
       "id": 1,
@@ -1680,7 +1703,8 @@
       "fullName": "Michael King",
       "link": "/api/v1/people/650633",
       "firstName": "Michael",
-      "lastName": "King"
+      "lastName": "King",
+      "nameSlug": "michael-king-650633"
      },
      "sport": {
       "id": 1,
@@ -1750,7 +1774,8 @@
       "fullName": "Dean Kremer",
       "link": "/api/v1/people/665152",
       "firstName": "Dean",
-      "lastName": "Kremer"
+      "lastName": "Kremer",
+      "nameSlug": "dean-kremer-665152"
      },
      "sport": {
       "id": 1,
@@ -1820,7 +1845,8 @@
       "fullName": "Carlos Lagrange",
       "link": "/api/v1/people/801739",
       "firstName": "Carlos",
-      "lastName": "Lagrange"
+      "lastName": "Lagrange",
+      "nameSlug": "carlos-lagrange-801739"
      },
      "sport": {
       "id": 1,
@@ -1890,7 +1916,8 @@
       "fullName": "Matthew Liberatore",
       "link": "/api/v1/people/669461",
       "firstName": "Matthew",
-      "lastName": "Liberatore"
+      "lastName": "Liberatore",
+      "nameSlug": "matthew-liberatore-669461"
      },
      "sport": {
       "id": 1,
@@ -1960,7 +1987,8 @@
       "fullName": "Nick Martinez",
       "link": "/api/v1/people/607259",
       "firstName": "Nick",
-      "lastName": "Martinez"
+      "lastName": "Martinez",
+      "nameSlug": "nick-martinez-607259"
      },
      "sport": {
       "id": 1,
@@ -2030,7 +2058,8 @@
       "fullName": "Shane McClanahan",
       "link": "/api/v1/people/663556",
       "firstName": "Shane",
-      "lastName": "McClanahan"
+      "lastName": "McClanahan",
+      "nameSlug": "shane-mcclanahan-663556"
      },
      "sport": {
       "id": 1,
@@ -2100,7 +2129,8 @@
       "fullName": "Jacob Misiorowski",
       "link": "/api/v1/people/694819",
       "firstName": "Jacob",
-      "lastName": "Misiorowski"
+      "lastName": "Misiorowski",
+      "nameSlug": "jacob-misiorowski-694819"
      },
      "sport": {
       "id": 1,
@@ -2170,7 +2200,8 @@
       "fullName": "Kade Morris",
       "link": "/api/v1/people/695034",
       "firstName": "Kade",
-      "lastName": "Morris"
+      "lastName": "Morris",
+      "nameSlug": "kade-morris-695034"
      },
      "sport": {
       "id": 1,
@@ -2240,7 +2271,8 @@
       "fullName": "Aaron Nola",
       "link": "/api/v1/people/605400",
       "firstName": "Aaron",
-      "lastName": "Nola"
+      "lastName": "Nola",
+      "nameSlug": "aaron-nola-605400"
      },
      "sport": {
       "id": 1,
@@ -2310,7 +2342,8 @@
       "fullName": "Andre Pallante",
       "link": "/api/v1/people/669467",
       "firstName": "Andre",
-      "lastName": "Pallante"
+      "lastName": "Pallante",
+      "nameSlug": "andre-pallante-669467"
      },
      "sport": {
       "id": 1,
@@ -2380,7 +2413,8 @@
       "fullName": "Mitchell Parker",
       "link": "/api/v1/people/680730",
       "firstName": "Mitchell",
-      "lastName": "Parker"
+      "lastName": "Parker",
+      "nameSlug": "mitchell-parker-680730"
      },
      "sport": {
       "id": 1,
@@ -2450,7 +2484,8 @@
       "fullName": "Nick Pivetta",
       "link": "/api/v1/people/601713",
       "firstName": "Nick",
-      "lastName": "Pivetta"
+      "lastName": "Pivetta",
+      "nameSlug": "nick-pivetta-601713"
      },
      "sport": {
       "id": 1,
@@ -2520,7 +2555,8 @@
       "fullName": "Drew Rasmussen",
       "link": "/api/v1/people/656876",
       "firstName": "Drew",
-      "lastName": "Rasmussen"
+      "lastName": "Rasmussen",
+      "nameSlug": "drew-rasmussen-656876"
      },
      "sport": {
       "id": 1,
@@ -2590,7 +2626,8 @@
       "fullName": "Elmer Rodríguez",
       "link": "/api/v1/people/695684",
       "firstName": "Elmer",
-      "lastName": "Rodríguez"
+      "lastName": "Rodríguez",
+      "nameSlug": "elmer-rodriguez-695684"
      },
      "sport": {
       "id": 1,
@@ -2660,7 +2697,8 @@
       "fullName": "Grant Rogers",
       "link": "/api/v1/people/814804",
       "firstName": "Grant",
-      "lastName": "Rogers"
+      "lastName": "Rogers",
+      "nameSlug": "grant-rogers-814804"
      },
      "sport": {
       "id": 1,
@@ -2730,7 +2768,8 @@
       "fullName": "Brett Sears",
       "link": "/api/v1/people/822412",
       "firstName": "Brett",
-      "lastName": "Sears"
+      "lastName": "Sears",
+      "nameSlug": "brett-sears-822412"
      },
      "sport": {
       "id": 1,
@@ -2800,7 +2839,8 @@
       "fullName": "JP Sears",
       "link": "/api/v1/people/676664",
       "firstName": "JP",
-      "lastName": "Sears"
+      "lastName": "Sears",
+      "nameSlug": "jp-sears-676664"
      },
      "sport": {
       "id": 1,
@@ -2870,7 +2910,8 @@
       "fullName": "Cade Smith",
       "link": "/api/v1/people/671922",
       "firstName": "Cade",
-      "lastName": "Smith"
+      "lastName": "Smith",
+      "nameSlug": "cade-smith-671922"
      },
      "sport": {
       "id": 1,
@@ -2940,7 +2981,8 @@
       "fullName": "Robby Snelling",
       "link": "/api/v1/people/702281",
       "firstName": "Robby",
-      "lastName": "Snelling"
+      "lastName": "Snelling",
+      "nameSlug": "robby-snelling-702281"
      },
      "sport": {
       "id": 1,
@@ -3010,7 +3052,8 @@
       "fullName": "José Soriano",
       "link": "/api/v1/people/667755",
       "firstName": "José",
-      "lastName": "Soriano"
+      "lastName": "Soriano",
+      "nameSlug": "jose-soriano-667755"
      },
      "sport": {
       "id": 1,
@@ -3080,7 +3123,8 @@
       "fullName": "Jeffrey Springs",
       "link": "/api/v1/people/605488",
       "firstName": "Jeffrey",
-      "lastName": "Springs"
+      "lastName": "Springs",
+      "nameSlug": "jeffrey-springs-605488"
      },
      "sport": {
       "id": 1,
@@ -3150,7 +3194,8 @@
       "fullName": "Justin Steele",
       "link": "/api/v1/people/657006",
       "firstName": "Justin",
-      "lastName": "Steele"
+      "lastName": "Steele",
+      "nameSlug": "justin-steele-657006"
      },
      "sport": {
       "id": 1,
@@ -3220,7 +3265,8 @@
       "fullName": "Michael Wacha",
       "link": "/api/v1/people/608379",
       "firstName": "Michael",
-      "lastName": "Wacha"
+      "lastName": "Wacha",
+      "nameSlug": "michael-wacha-608379"
      },
      "sport": {
       "id": 1,
@@ -3290,7 +3336,8 @@
       "fullName": "Ryan Weiss",
       "link": "/api/v1/people/680802",
       "firstName": "Ryan",
-      "lastName": "Weiss"
+      "lastName": "Weiss",
+      "nameSlug": "ryan-weiss-680802"
      },
      "sport": {
       "id": 1,
@@ -3360,7 +3407,8 @@
       "fullName": "Zack Wheeler",
       "link": "/api/v1/people/554430",
       "firstName": "Zack",
-      "lastName": "Wheeler"
+      "lastName": "Wheeler",
+      "nameSlug": "zack-wheeler-554430"
      },
      "sport": {
       "id": 1,
@@ -3430,7 +3478,8 @@
       "fullName": "Brandon Woodruff",
       "link": "/api/v1/people/605540",
       "firstName": "Brandon",
-      "lastName": "Woodruff"
+      "lastName": "Woodruff",
+      "nameSlug": "brandon-woodruff-605540"
      },
      "sport": {
       "id": 1,

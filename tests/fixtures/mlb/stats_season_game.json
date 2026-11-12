@@ -24,7 +24,8 @@
       "fullName": "Pete Alonso",
       "link": "/api/v1/people/624413",
       "firstName": "Pete",
-      "lastName": "Alonso"
+      "lastName": "Alonso",
+      "nameSlug": "pete-alonso-624413"
      },
      "sport": {
       "id": 1,
@@ -53,7 +54,8 @@
       "fullName": "Nick Castellanos",
       "link": "/api/v1/people/592206",
       "firstName": "Nick",
-      "lastName": "Castellanos"
+      "lastName": "Castellanos",
+      "nameSlug": "nick-castellanos-592206"
      },
      "sport": {
       "id": 1,
@@ -82,7 +84,8 @@
       "fullName": "Matt Olson",
       "link": "/api/v1/people/621566",
       "firstName": "Matt",
-      "lastName": "Olson"
+      "lastName": "Olson",
+      "nameSlug": "matt-olson-621566"
      },
      "sport": {
       "id": 1,
@@ -114,7 +117,8 @@
       "fullName": "Michael Busch",
       "link": "/api/v1/people/683737",
       "firstName": "Michael",
-      "lastName": "Busch"
+      "lastName": "Busch",
+      "nameSlug": "michael-busch-683737"
      },
      "sport": {
       "id": 1,
@@ -143,7 +147,8 @@
       "fullName": "Andrés Giménez",
       "link": "/api/v1/people/665926",
       "firstName": "Andrés",
-      "lastName": "Giménez"
+      "lastName": "Giménez",
+      "nameSlug": "andres-gimenez-665926"
      },
      "sport": {
       "id": 1,
@@ -172,7 +177,8 @@
       "fullName": "Francisco Lindor",
       "link": "/api/v1/people/596019",
       "firstName": "Francisco",
-      "lastName": "Lindor"
+      "lastName": "Lindor",
+      "nameSlug": "francisco-lindor-596019"
      },
      "sport": {
       "id": 1,
@@ -201,7 +207,8 @@
       "fullName": "Manny Machado",
       "link": "/api/v1/people/592518",
       "firstName": "Manny",
-      "lastName": "Machado"
+      "lastName": "Machado",
+      "nameSlug": "manny-machado-592518"
      },
      "sport": {
       "id": 1,
@@ -230,7 +237,8 @@
       "fullName": "Christopher Morel",
       "link": "/api/v1/people/666624",
       "firstName": "Christopher",
-      "lastName": "Morel"
+      "lastName": "Morel",
+      "nameSlug": "christopher-morel-666624"
      },
      "sport": {
       "id": 1,
@@ -259,7 +267,8 @@
       "fullName": "Josh Naylor",
       "link": "/api/v1/people/647304",
       "firstName": "Josh",
-      "lastName": "Naylor"
+      "lastName": "Naylor",
+      "nameSlug": "josh-naylor-647304"
      },
      "sport": {
       "id": 1,
@@ -288,7 +297,8 @@
       "fullName": "Ceddanne Rafaela",
       "link": "/api/v1/people/678882",
       "firstName": "Ceddanne",
-      "lastName": "Rafaela"
+      "lastName": "Rafaela",
+      "nameSlug": "ceddanne-rafaela-678882"
      },
      "sport": {
       "id": 1,

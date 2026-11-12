@@ -38,7 +38,8 @@
       "fullName": "Chris Sale",
       "link": "/api/v1/people/519242",
       "firstName": "Chris",
-      "lastName": "Sale"
+      "lastName": "Sale",
+      "nameSlug": "chris-sale-519242"
      },
      "league": {
       "id": 104,
@@ -86,7 +87,8 @@
       "fullName": "Tarik Skubal",
       "link": "/api/v1/people/669373",
       "firstName": "Tarik",
-      "lastName": "Skubal"
+      "lastName": "Skubal",
+      "nameSlug": "tarik-skubal-669373"
      },
      "league": {
       "id": 103,
@@ -134,7 +136,8 @@
       "fullName": "Zack Wheeler",
       "link": "/api/v1/people/554430",
       "firstName": "Zack",
-      "lastName": "Wheeler"
+      "lastName": "Wheeler",
+      "nameSlug": "zack-wheeler-554430"
      },
      "league": {
       "id": 104,

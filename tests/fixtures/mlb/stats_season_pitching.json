@@ -87,7 +87,8 @@
       "fullName": "Eddy Alvarez",
       "link": "/api/v1/people/657193",
       "firstName": "Eddy",
-      "lastName": "Alvarez"
+      "lastName": "Alvarez",
+      "nameSlug": "eddy-alvarez-657193"
      },
      "league": {
       "id": 104,
@@ -184,7 +185,8 @@
       "fullName": "Shane Bieber",
       "link": "/api/v1/people/669456",
       "firstName": "Shane",
-      "lastName": "Bieber"
+      "lastName": "Bieber",
+      "nameSlug": "shane-bieber-669456"
      },
      "league": {
       "id": 103,
@@ -281,7 +283,8 @@
       "fullName": "David Bote",
       "link": "/api/v1/people/623520",
       "firstName": "David",
-      "lastName": "Bote"
+      "lastName": "Bote",
+      "nameSlug": "david-bote-623520"
      },
      "league": {
       "id": 104,
@@ -381,7 +384,8 @@
       "fullName": "Weston Wilson",
       "link": "/api/v1/people/642215",
       "firstName": "Weston",
-      "lastName": "Wilson"
+      "lastName": "Wilson",
+      "nameSlug": "weston-wilson-642215"
      },
      "league": {
       "id": 104,
@@ -478,7 +482,8 @@
       "fullName": "Patrick Wisdom",
       "link": "/api/v1/people/621550",
       "firstName": "Patrick",
-      "lastName": "Wisdom"
+      "lastName": "Wisdom",
+      "nameSlug": "patrick-wisdom-621550"
      },
      "league": {
       "id": 104,

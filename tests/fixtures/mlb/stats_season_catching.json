@@ -65,7 +65,8 @@
       "fullName": "Joe Hudson",
       "link": "/api/v1/people/621529",
       "firstName": "Joe",
-      "lastName": "Hudson"
+      "lastName": "Hudson",
+      "nameSlug": "joe-hudson-621529"
      },
      "league": {
       "id": 104,
@@ -140,7 +141,8 @@
       "fullName": "Ben Rice",
       "link": "/api/v1/people/700250",
       "firstName": "Ben",
-      "lastName": "Rice"
+      "lastName": "Rice",
+      "nameSlug": "ben-rice-700250"
      },
      "league": {
       "id": 103,
@@ -215,7 +217,8 @@
       "fullName": "Austin Wynns",
       "link": "/api/v1/people/642851",
       "firstName": "Austin",
-      "lastName": "Wynns"
+      "lastName": "Wynns",
+      "nameSlug": "austin-wynns-642851"
      },
      "league": {
       "id": 104,

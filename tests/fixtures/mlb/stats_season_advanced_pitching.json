@@ -81,7 +81,8 @@
       "fullName": "Justin Verlander",
       "link": "/api/v1/people/434378",
       "firstName": "Justin",
-      "lastName": "Verlander"
+      "lastName": "Verlander",
+      "nameSlug": "justin-verlander-434378"
      },
      "league": {
       "id": 103,
@@ -172,7 +173,8 @@
       "fullName": "Kenley Jansen",
       "link": "/api/v1/people/445276",
       "firstName": "Kenley",
-      "lastName": "Jansen"
+      "lastName": "Jansen",
+      "nameSlug": "kenley-jansen-445276"
      },
      "league": {
       "id": 103,
@@ -263,7 +265,8 @@
       "fullName": "Jesse Chavez",
       "link": "/api/v1/people/445926",
       "firstName": "Jesse",
-      "lastName": "Chavez"
+      "lastName": "Chavez",
+      "nameSlug": "jesse-chavez-445926"
      },
      "league": {
       "id": 104,

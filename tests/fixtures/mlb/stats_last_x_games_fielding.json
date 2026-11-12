@@ -8,7 +8,7 @@
    "group": {
     "displayName": "fielding"
    },
-   "totalSplits": 568,
+   "totalSplits": 567,
    "exemptions": [],
    "splits": [
     {
@@ -45,7 +45,8 @@
       "fullName": "Andrew Abbott",
       "link": "/api/v1/people/671096",
       "firstName": "Andrew",
-      "lastName": "Abbott"
+      "lastName": "Abbott",
+      "nameSlug": "andrew-abbott-671096"
      },
      "league": {
       "id": 104,
@@ -100,7 +101,8 @@
       "fullName": "Bryan Abreu",
       "link": "/api/v1/people/650556",
       "firstName": "Bryan",
-      "lastName": "Abreu"
+      "lastName": "Abreu",
+      "nameSlug": "bryan-abreu-650556"
      },
      "league": {
       "id": 103,
@@ -155,7 +157,8 @@
       "fullName": "José Abreu",
       "link": "/api/v1/people/547989",
       "firstName": "José",
-      "lastName": "Abreu"
+      "lastName": "Abreu",
+      "nameSlug": "jose-abreu-547989"
      },
      "league": {
       "id": 103,
@@ -213,7 +216,8 @@
       "fullName": "Slade Cecconi",
       "link": "/api/v1/people/677944",
       "firstName": "Slade",
-      "lastName": "Cecconi"
+      "lastName": "Cecconi",
+      "nameSlug": "slade-cecconi-677944"
      },
      "league": {
       "id": 104,
@@ -268,7 +272,8 @@
       "fullName": "Matt Chapman",
       "link": "/api/v1/people/656305",
       "firstName": "Matt",
-      "lastName": "Chapman"
+      "lastName": "Chapman",
+      "nameSlug": "matt-chapman-656305"
      },
      "league": {
       "id": 104,
@@ -323,7 +328,8 @@
       "fullName": "Jesse Chavez",
       "link": "/api/v1/people/445926",
       "firstName": "Jesse",
-      "lastName": "Chavez"
+      "lastName": "Chavez",
+      "nameSlug": "jesse-chavez-445926"
      },
      "league": {
       "id": 104,
@@ -378,7 +384,8 @@
       "fullName": "Jazz Chisholm Jr.",
       "link": "/api/v1/people/665862",
       "firstName": "Jazz",
-      "lastName": "Chisholm"
+      "lastName": "Chisholm",
+      "nameSlug": "jazz-chisholm-665862"
      },
      "league": {
       "id": 104,
@@ -433,7 +440,8 @@
       "fullName": "Angel Chivilli",
       "link": "/api/v1/people/683409",
       "firstName": "Angel",
-      "lastName": "Chivilli"
+      "lastName": "Chivilli",
+      "nameSlug": "angel-chivilli-683409"
      },
      "league": {
       "id": 104,
@@ -488,7 +496,8 @@
       "fullName": "Aaron Civale",
       "link": "/api/v1/people/650644",
       "firstName": "Aaron",
-      "lastName": "Civale"
+      "lastName": "Civale",
+      "nameSlug": "aaron-civale-650644"
      },
      "league": {
       "id": 104,
@@ -543,7 +552,8 @@
       "fullName": "Gerrit Cole",
       "link": "/api/v1/people/543037",
       "firstName": "Gerrit",
-      "lastName": "Cole"
+      "lastName": "Cole",
+      "nameSlug": "gerrit-cole-543037"
      },
      "league": {
       "id": 103,
@@ -598,7 +608,8 @@
       "fullName": "Roansy Contreras",
       "link": "/api/v1/people/672710",
       "firstName": "Roansy",
-      "lastName": "Contreras"
+      "lastName": "Contreras",
+      "nameSlug": "roansy-contreras-672710"
      },
      "league": {
       "id": 103,
@@ -653,7 +664,8 @@
       "fullName": "Patrick Corbin",
       "link": "/api/v1/people/571578",
       "firstName": "Patrick",
-      "lastName": "Corbin"
+      "lastName": "Corbin",
+      "nameSlug": "patrick-corbin-571578"
      },
      "league": {
       "id": 104,
@@ -708,7 +720,8 @@
       "fullName": "Nestor Cortes",
       "link": "/api/v1/people/641482",
       "firstName": "Nestor",
-      "lastName": "Cortes"
+      "lastName": "Cortes",
+      "nameSlug": "nestor-cortes-641482"
      },
      "league": {
       "id": 103,
@@ -763,7 +776,8 @@
       "fullName": "Danny Coulombe",
       "link": "/api/v1/people/543056",
       "firstName": "Danny",
-      "lastName": "Coulombe"
+      "lastName": "Coulombe",
+      "nameSlug": "danny-coulombe-543056"
      },
      "league": {
       "id": 103,
@@ -818,7 +832,8 @@
       "fullName": "J.P. Crawford",
       "link": "/api/v1/people/641487",
       "firstName": "J.P.",
-      "lastName": "Crawford"
+      "lastName": "Crawford",
+      "nameSlug": "j-p-crawford-641487"
      },
      "league": {
       "id": 103,
@@ -873,7 +888,8 @@
       "fullName": "Kutter Crawford",
       "link": "/api/v1/people/676710",
       "firstName": "Kutter",
-      "lastName": "Crawford"
+      "lastName": "Crawford",
+      "nameSlug": "kutter-crawford-676710"
      },
      "league": {
       "id": 103,
@@ -928,7 +944,8 @@
       "fullName": "Cooper Criswell",
       "link": "/api/v1/people/681867",
       "firstName": "Cooper",
-      "lastName": "Criswell"
+      "lastName": "Criswell",
+      "nameSlug": "cooper-criswell-681867"
      },
      "league": {
       "id": 103,
@@ -983,7 +1000,8 @@
       "fullName": "Jeff Criswell",
       "link": "/api/v1/people/676105",
       "firstName": "Jeff",
-      "lastName": "Criswell"
+      "lastName": "Criswell",
+      "nameSlug": "jeff-criswell-676105"
      },
      "league": {
       "id": 104,
@@ -1038,7 +1056,8 @@
       "fullName": "Garrett Crochet",
       "link": "/api/v1/people/676979",
       "firstName": "Garrett",
-      "lastName": "Crochet"
+      "lastName": "Crochet",
+      "nameSlug": "garrett-crochet-676979"
      },
      "league": {
       "id": 103,
@@ -1093,7 +1112,8 @@
       "fullName": "Pete Crow-Armstrong",
       "link": "/api/v1/people/691718",
       "firstName": "Pete",
-      "lastName": "Crow-Armstrong"
+      "lastName": "Crow-Armstrong",
+      "nameSlug": "pete-crow-armstrong-691718"
      },
      "league": {
       "id": 104,
@@ -1148,7 +1168,8 @@
       "fullName": "Fernando Cruz",
       "link": "/api/v1/people/518585",
       "firstName": "Fernando",
-      "lastName": "Cruz"
+      "lastName": "Cruz",
+      "nameSlug": "fernando-cruz-518585"
      },
      "league": {
       "id": 104,
@@ -1203,7 +1224,8 @@
       "fullName": "Yu Darvish",
       "link": "/api/v1/people/506433",
       "firstName": "Yu",
-      "lastName": "Darvish"
+      "lastName": "Darvish",
+      "nameSlug": "yu-darvish-506433"
      },
      "league": {
       "id": 104,
@@ -1267,7 +1289,8 @@
       "fullName": "Henry Davis",
       "link": "/api/v1/people/680779",
       "firstName": "Henry",
-      "lastName": "Davis"
+      "lastName": "Davis",
+      "nameSlug": "henry-davis-680779"
      },
      "league": {
       "id": 104,
@@ -1322,7 +1345,8 @@
       "fullName": "Bryan De La Cruz",
       "link": "/api/v1/people/650559",
       "firstName": "Bryan",
-      "lastName": "De La Cruz"
+      "lastName": "De La Cruz",
+      "nameSlug": "bryan-de-la-cruz-650559"
      },
      "league": {
       "id": 104,
@@ -1377,7 +1401,8 @@
       "fullName": "Enyel De Los Santos",
       "link": "/api/v1/people/660853",
       "firstName": "Enyel",
-      "lastName": "De Los Santos"
+      "lastName": "De Los Santos",
+      "nameSlug": "enyel-de-los-santos-660853"
      },
      "league": {
       "id": 103,
@@ -1432,7 +1457,8 @@
       "fullName": "Reid Detmers",
       "link": "/api/v1/people/672282",
       "firstName": "Reid",
-      "lastName": "Detmers"
+      "lastName": "Detmers",
+      "nameSlug": "reid-detmers-672282"
      },
      "league": {
       "id": 103,
@@ -1487,7 +1513,8 @@
       "fullName": "Chris Devenski",
       "link": "/api/v1/people/606965",
       "firstName": "Chris",
-      "lastName": "Devenski"
+      "lastName": "Devenski",
+      "nameSlug": "chris-devenski-606965"
      },
      "league": {
       "id": 103,
@@ -1542,7 +1569,8 @@
       "fullName": "Brenton Doyle",
       "link": "/api/v1/people/686668",
       "firstName": "Brenton",
-      "lastName": "Doyle"
+      "lastName": "Doyle",
+      "nameSlug": "brenton-doyle-686668"
      },
      "league": {
       "id": 104,
@@ -1606,7 +1634,8 @@
       "fullName": "Logan Driscoll",
       "link": "/api/v1/people/686482",
       "firstName": "Logan",
-      "lastName": "Driscoll"
+      "lastName": "Driscoll",
+      "nameSlug": "logan-driscoll-686482"
      },
      "league": {
       "id": 103,
@@ -1661,7 +1690,8 @@
       "fullName": "Dane Dunning",
       "link": "/api/v1/people/641540",
       "firstName": "Dane",
-      "lastName": "Dunning"
+      "lastName": "Dunning",
+      "nameSlug": "dane-dunning-641540"
      },
      "league": {
       "id": 103,
@@ -1716,7 +1746,8 @@
       "fullName": "Jhoan Duran",
       "link": "/api/v1/people/661395",
       "firstName": "Jhoan",
-      "lastName": "Duran"
+      "lastName": "Duran",
+      "nameSlug": "jhoan-duran-661395"
      },
      "league": {
       "id": 103,
@@ -1771,7 +1802,8 @@
       "fullName": "Edwin Díaz",
       "link": "/api/v1/people/621242",
       "firstName": "Edwin",
-      "lastName": "Díaz"
+      "lastName": "Díaz",
+      "nameSlug": "edwin-diaz-621242"
      },
      "league": {
       "id": 104,
@@ -1835,7 +1867,8 @@
       "fullName": "Elias Díaz",
       "link": "/api/v1/people/553869",
       "firstName": "Elias",
-      "lastName": "Díaz"
+      "lastName": "Díaz",
+      "nameSlug": "elias-diaz-553869"
      },
      "league": {
       "id": 104,
@@ -1890,7 +1923,8 @@
       "fullName": "Bryce Elder",
       "link": "/api/v1/people/693821",
       "firstName": "Bryce",
-      "lastName": "Elder"
+      "lastName": "Elder",
+      "nameSlug": "bryce-elder-693821"
      },
      "league": {
       "id": 104,
@@ -1945,7 +1979,8 @@
       "fullName": "Fraser Ellard",
       "link": "/api/v1/people/686642",
       "firstName": "Fraser",
-      "lastName": "Ellard"
+      "lastName": "Ellard",
+      "nameSlug": "fraser-ellard-686642"
      },
      "league": {
       "id": 103,
@@ -2000,7 +2035,8 @@
       "fullName": "Kent Emanuel",
       "link": "/api/v1/people/592288",
       "firstName": "Kent",
-      "lastName": "Emanuel"
+      "lastName": "Emanuel",
+      "nameSlug": "kent-emanuel-592288"
      },
      "league": {
       "id": 104,
@@ -2055,7 +2091,8 @@
       "fullName": "Christian Encarnacion-Strand",
       "link": "/api/v1/people/687952",
       "firstName": "Christian",
-      "lastName": "Encarnacion-Strand"
+      "lastName": "Encarnacion-Strand",
+      "nameSlug": "christian-encarnacion-strand-687952"
      },
      "league": {
       "id": 104,
@@ -2110,7 +2147,8 @@
       "fullName": "Mason Englert",
       "link": "/api/v1/people/669438",
       "firstName": "Mason",
-      "lastName": "Englert"
+      "lastName": "Englert",
+      "nameSlug": "mason-englert-669438"
      },
      "league": {
       "id": 103,
@@ -2165,7 +2203,8 @@
       "fullName": "Lucas Erceg",
       "link": "/api/v1/people/668674",
       "firstName": "Lucas",
-      "lastName": "Erceg"
+      "lastName": "Erceg",
+      "nameSlug": "lucas-erceg-668674"
      },
      "league": {
       "id": 103,
@@ -2220,7 +2259,8 @@
       "fullName": "Joey Estes",
       "link": "/api/v1/people/683155",
       "firstName": "Joey",
-      "lastName": "Estes"
+      "lastName": "Estes",
+      "nameSlug": "joey-estes-683155"
      },
      "league": {
       "id": 103,
@@ -2275,7 +2315,8 @@
       "fullName": "Thairo Estrada",
       "link": "/api/v1/people/642731",
       "firstName": "Thairo",
-      "lastName": "Estrada"
+      "lastName": "Estrada",
+      "nameSlug": "thairo-estrada-642731"
      },
      "league": {
       "id": 104,
@@ -2330,7 +2371,8 @@
       "fullName": "Carlos Estévez",
       "link": "/api/v1/people/608032",
       "firstName": "Carlos",
-      "lastName": "Estévez"
+      "lastName": "Estévez",
+      "nameSlug": "carlos-estevez-608032"
      },
      "league": {
       "id": 104,
@@ -2385,7 +2427,8 @@
       "fullName": "Alex Faedo",
       "link": "/api/v1/people/656412",
       "firstName": "Alex",
-      "lastName": "Faedo"
+      "lastName": "Faedo",
+      "nameSlug": "alex-faedo-656412"
      },
      "league": {
       "id": 103,
@@ -2440,7 +2483,8 @@
       "fullName": "Bailey Falter",
       "link": "/api/v1/people/663559",
       "firstName": "Bailey",
-      "lastName": "Falter"
+      "lastName": "Falter",
+      "nameSlug": "bailey-falter-663559"
      },
      "league": {
       "id": 104,
@@ -2495,7 +2539,8 @@
       "fullName": "Calvin Faucher",
       "link": "/api/v1/people/676534",
       "firstName": "Calvin",
-      "lastName": "Faucher"
+      "lastName": "Faucher",
+      "nameSlug": "calvin-faucher-676534"
      },
      "league": {
       "id": 104,
@@ -2550,7 +2595,8 @@
       "fullName": "Erick Fedde",
       "link": "/api/v1/people/607200",
       "firstName": "Erick",
-      "lastName": "Fedde"
+      "lastName": "Fedde",
+      "nameSlug": "erick-fedde-607200"
      },
      "league": {
       "id": 104,
@@ -2605,7 +2651,8 @@
       "fullName": "Ryan Feltner",
       "link": "/api/v1/people/663372",
       "firstName": "Ryan",
-      "lastName": "Feltner"
+      "lastName": "Feltner",
+      "nameSlug": "ryan-feltner-663372"
      },
      "league": {
       "id": 104,
@@ -2660,7 +2707,8 @@
       "fullName": "José A. Ferrer",
       "link": "/api/v1/people/678606",
       "firstName": "José A.",
-      "lastName": "Ferrer"
+      "lastName": "Ferrer",
+      "nameSlug": "jose-a-ferrer-678606"
      },
      "league": {
       "id": 104,
@@ -2715,7 +2763,8 @@
       "fullName": "David Festa",
       "link": "/api/v1/people/701581",
       "firstName": "David",
-      "lastName": "Festa"
+      "lastName": "Festa",
+      "nameSlug": "david-festa-701581"
      },
      "league": {
       "id": 103,
@@ -2770,7 +2819,8 @@
       "fullName": "Matt Festa",
       "link": "/api/v1/people/670036",
       "firstName": "Matt",
-      "lastName": "Festa"
+      "lastName": "Festa",
+      "nameSlug": "matt-festa-670036"
      },
      "league": {
       "id": 103,
@@ -2825,7 +2875,8 @@
       "fullName": "J.P. Feyereisen",
       "link": "/api/v1/people/656420",
       "firstName": "J.P.",
-      "lastName": "Feyereisen"
+      "lastName": "Feyereisen",
+      "nameSlug": "j-p-feyereisen-656420"
      },
      "league": {
       "id": 104,
@@ -2880,7 +2931,8 @@
       "fullName": "Kyle Finnegan",
       "link": "/api/v1/people/640448",
       "firstName": "Kyle",
-      "lastName": "Finnegan"
+      "lastName": "Finnegan",
+      "nameSlug": "kyle-finnegan-640448"
      },
      "league": {
       "id": 104,
@@ -2935,7 +2987,8 @@
       "fullName": "Jack Flaherty",
       "link": "/api/v1/people/656427",
       "firstName": "Jack",
-      "lastName": "Flaherty"
+      "lastName": "Flaherty",
+      "nameSlug": "jack-flaherty-656427"
      },
      "league": {
       "id": 104,

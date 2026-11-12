@@ -93,7 +93,7 @@ the four gates plus `docs generate --check` and `openspec validate --specs`; re-
 | ID | Task | Status | Done when |
 |---|---|---|---|
 | B-31 | mlb-stats-route-406-and-deep-pools 1.1: research the 406 | DONE (design.md; no report found, idea: record the Accept header on the next retest) | sources (pybaseball, MLB-StatsAPI, baseballr issues) and findings in the change's design.md |
-| B-32 | `mlb-stats-route-406-and-deep-pools 1.2`: retest the route | EXTERNAL (one request per hour at most; still 406 on 2026-10-30, control 200) | the date league-wide v1/stats answers 200 again, with a v1/teams control, is recorded |
+| B-32 | `mlb-stats-route-406-and-deep-pools 1.2`: retest the route | DONE (answered 200 on 2026-11-12, control v1/teams 200) | the date league-wide v1/stats answers 200 again, with a v1/teams control, is recorded |
 | B-33 | mlb-stats-route-406-and-deep-pools 2.1: generator guard and 406 as provider error | DONE | an empty combo table is never written, a 406 is logged and not marked unsupported, tests |
 | B-34 | mlb-stats-route-406-and-deep-pools 2.2: smaller pages or per-season split for the three deep pools | DONE (adaptive halving of the page after a 5xx, respx test; live run waits for the 406 to clear, B-35) | respx tests; the pools page without 503 in a later live run |
 | B-35 | `mlb-stats-route-406-and-deep-pools 3.1`: re-run the 15 failed pools and a modern season | after B-32 and B-34 (LONG, homelab) | rows and errors recorded in design.md |

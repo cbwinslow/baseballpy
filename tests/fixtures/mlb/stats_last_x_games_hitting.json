@@ -60,7 +60,8 @@
       "fullName": "Shohei Ohtani",
       "link": "/api/v1/people/660271",
       "firstName": "Shohei",
-      "lastName": "Ohtani"
+      "lastName": "Ohtani",
+      "nameSlug": "shohei-ohtani-660271"
      },
      "league": {
       "id": 104,
@@ -130,7 +131,8 @@
       "fullName": "Nick Castellanos",
       "link": "/api/v1/people/592206",
       "firstName": "Nick",
-      "lastName": "Castellanos"
+      "lastName": "Castellanos",
+      "nameSlug": "nick-castellanos-592206"
      },
      "league": {
       "id": 104,
@@ -200,7 +202,8 @@
       "fullName": "Will Brennan",
       "link": "/api/v1/people/686823",
       "firstName": "Will",
-      "lastName": "Brennan"
+      "lastName": "Brennan",
+      "nameSlug": "will-brennan-686823"
      },
      "league": {
       "id": 103,
@@ -273,7 +276,8 @@
       "fullName": "Jackson Merrill",
       "link": "/api/v1/people/701538",
       "firstName": "Jackson",
-      "lastName": "Merrill"
+      "lastName": "Merrill",
+      "nameSlug": "jackson-merrill-701538"
      },
      "league": {
       "id": 104,
@@ -343,7 +347,8 @@
       "fullName": "Logan O'Hoppe",
       "link": "/api/v1/people/681351",
       "firstName": "Logan",
-      "lastName": "O'Hoppe"
+      "lastName": "O'Hoppe",
+      "nameSlug": "logan-o-hoppe-681351"
      },
      "league": {
       "id": 103,
@@ -413,7 +418,8 @@
       "fullName": "Bobby Witt Jr.",
       "link": "/api/v1/people/677951",
       "firstName": "Bobby",
-      "lastName": "Witt"
+      "lastName": "Witt",
+      "nameSlug": "bobby-witt-677951"
      },
      "league": {
       "id": 103,

@@ -30,7 +30,8 @@
        "name": "Outfielder",
        "type": "Outfielder",
        "abbreviation": "CF"
-      }
+      },
+      "nameSlug": "gregory-garrett-656448"
      },
      "sport": {
       "id": 1,
@@ -60,7 +61,8 @@
        "name": "Third Base",
        "type": "Infielder",
        "abbreviation": "3B"
-      }
+      },
+      "nameSlug": "matthew-duffy-622110"
      },
      "sport": {
       "id": 1,
@@ -90,7 +92,8 @@
        "name": "Third Base",
        "type": "Infielder",
        "abbreviation": "3B"
-      }
+      },
+      "nameSlug": "brian-anderson-605119"
      },
      "sport": {
       "id": 1,

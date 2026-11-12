@@ -2,7 +2,7 @@
 
 - [ ] 1. The 406
   - [x] 1.1 Web-search how others handle 406 on `v1/stats` and record sources and findings in `design.md`
-  - [ ] 1.2 Retest the route (at most one request per hour; control with `v1/teams`); record the date it answers 200 again
+  - [x] 1.2 Retest the route (at most one request per hour; control with `v1/teams`); record the date it answers 200 again (answered 200 on 2026-11-12, control v1/teams 200; verify-sample of mlb_api 2024 got 3,709 projected hitting rows where the 406-window fallback had stored 652)
 - [x] 2. Code
   - [x] 2.1 `gen_mlb_schemas.py` refuses to write an empty `PLAYER_STAT_COMBOS`/league combo table; a 406 is logged with its status and reported as a provider error, never `unsupported`; tests
   - [x] 2.2 The three deep single-season pools use smaller pages or a per-season split; respx tests (delegate the code to agy, review the diff)

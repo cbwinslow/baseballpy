@@ -67,7 +67,8 @@
       "fullName": "Logan Webb",
       "link": "/api/v1/people/657277",
       "firstName": "Logan",
-      "lastName": "Webb"
+      "lastName": "Webb",
+      "nameSlug": "logan-webb-657277"
      },
      "sport": {
       "id": 1,
@@ -137,7 +138,8 @@
       "fullName": "Garrett Crochet",
       "link": "/api/v1/people/676979",
       "firstName": "Garrett",
-      "lastName": "Crochet"
+      "lastName": "Crochet",
+      "nameSlug": "garrett-crochet-676979"
      },
      "sport": {
       "id": 1,
@@ -207,7 +209,8 @@
       "fullName": "Zac Gallen",
       "link": "/api/v1/people/668678",
       "firstName": "Zac",
-      "lastName": "Gallen"
+      "lastName": "Gallen",
+      "nameSlug": "zac-gallen-668678"
      },
      "sport": {
       "id": 1,
@@ -280,7 +283,8 @@
       "fullName": "Nick Pivetta",
       "link": "/api/v1/people/601713",
       "firstName": "Nick",
-      "lastName": "Pivetta"
+      "lastName": "Pivetta",
+      "nameSlug": "nick-pivetta-601713"
      },
      "sport": {
       "id": 1,
@@ -350,7 +354,8 @@
       "fullName": "Quinn Priester",
       "link": "/api/v1/people/682990",
       "firstName": "Quinn",
-      "lastName": "Priester"
+      "lastName": "Priester",
+      "nameSlug": "quinn-priester-682990"
      },
      "sport": {
       "id": 1,
@@ -420,7 +425,8 @@
       "fullName": "Chris Sale",
       "link": "/api/v1/people/519242",
       "firstName": "Chris",
-      "lastName": "Sale"
+      "lastName": "Sale",
+      "nameSlug": "chris-sale-519242"
      },
      "sport": {
       "id": 1,
@@ -490,7 +496,8 @@
       "fullName": "Cam Schlittler",
       "link": "/api/v1/people/693645",
       "firstName": "Cam",
-      "lastName": "Schlittler"
+      "lastName": "Schlittler",
+      "nameSlug": "cam-schlittler-693645"
      },
      "sport": {
       "id": 1,
@@ -560,7 +567,8 @@
       "fullName": "José Soriano",
       "link": "/api/v1/people/667755",
       "firstName": "José",
-      "lastName": "Soriano"
+      "lastName": "Soriano",
+      "nameSlug": "jose-soriano-667755"
      },
      "sport": {
       "id": 1,
@@ -630,7 +638,8 @@
       "fullName": "Jeffrey Springs",
       "link": "/api/v1/people/605488",
       "firstName": "Jeffrey",
-      "lastName": "Springs"
+      "lastName": "Springs",
+      "nameSlug": "jeffrey-springs-605488"
      },
      "sport": {
       "id": 1,
@@ -700,7 +709,8 @@
       "fullName": "Jameson Taillon",
       "link": "/api/v1/people/592791",
       "firstName": "Jameson",
-      "lastName": "Taillon"
+      "lastName": "Taillon",
+      "nameSlug": "jameson-taillon-592791"
      },
      "sport": {
       "id": 1,
@@ -770,7 +780,8 @@
       "fullName": "Jonah Tong",
       "link": "/api/v1/people/804636",
       "firstName": "Jonah",
-      "lastName": "Tong"
+      "lastName": "Tong",
+      "nameSlug": "jonah-tong-804636"
      },
      "sport": {
       "id": 1,
@@ -840,7 +851,8 @@
       "fullName": "Michael Wacha",
       "link": "/api/v1/people/608379",
       "firstName": "Michael",
-      "lastName": "Wacha"
+      "lastName": "Wacha",
+      "nameSlug": "michael-wacha-608379"
      },
      "sport": {
       "id": 1,
@@ -910,7 +922,8 @@
       "fullName": "Zack Wheeler",
       "link": "/api/v1/people/554430",
       "firstName": "Zack",
-      "lastName": "Wheeler"
+      "lastName": "Wheeler",
+      "nameSlug": "zack-wheeler-554430"
      },
      "sport": {
       "id": 1,
@@ -980,7 +993,8 @@
       "fullName": "Gavin Williams",
       "link": "/api/v1/people/668909",
       "firstName": "Gavin",
-      "lastName": "Williams"
+      "lastName": "Williams",
+      "nameSlug": "gavin-williams-668909"
      },
      "sport": {
       "id": 1,

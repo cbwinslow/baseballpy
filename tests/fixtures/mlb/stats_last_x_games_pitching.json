@@ -87,7 +87,8 @@
       "fullName": "Kris Bubic",
       "link": "/api/v1/people/663460",
       "firstName": "Kris",
-      "lastName": "Bubic"
+      "lastName": "Bubic",
+      "nameSlug": "kris-bubic-663460"
      },
      "league": {
       "id": 103,
@@ -184,7 +185,8 @@
       "fullName": "Emmanuel Clase",
       "link": "/api/v1/people/661403",
       "firstName": "Emmanuel",
-      "lastName": "Clase"
+      "lastName": "Clase",
+      "nameSlug": "emmanuel-clase-661403"
      },
      "league": {
       "id": 103,
@@ -281,7 +283,8 @@
       "fullName": "Alexis Díaz",
       "link": "/api/v1/people/664747",
       "firstName": "Alexis",
-      "lastName": "Díaz"
+      "lastName": "Díaz",
+      "nameSlug": "alexis-diaz-664747"
      },
      "league": {
       "id": 104,
@@ -381,7 +384,8 @@
       "fullName": "Hunter Gaddis",
       "link": "/api/v1/people/683769",
       "firstName": "Hunter",
-      "lastName": "Gaddis"
+      "lastName": "Gaddis",
+      "nameSlug": "hunter-gaddis-683769"
      },
      "league": {
       "id": 103,
@@ -478,7 +482,8 @@
       "fullName": "Matt Moore",
       "link": "/api/v1/people/519043",
       "firstName": "Matt",
-      "lastName": "Moore"
+      "lastName": "Moore",
+      "nameSlug": "matt-moore-519043"
      },
      "league": {
       "id": 103,
@@ -575,7 +580,8 @@
       "fullName": "Ryan Pressly",
       "link": "/api/v1/people/519151",
       "firstName": "Ryan",
-      "lastName": "Pressly"
+      "lastName": "Pressly",
+      "nameSlug": "ryan-pressly-519151"
      },
      "league": {
       "id": 103,
@@ -672,7 +678,8 @@
       "fullName": "Tanner Rainey",
       "link": "/api/v1/people/663432",
       "firstName": "Tanner",
-      "lastName": "Rainey"
+      "lastName": "Rainey",
+      "nameSlug": "tanner-rainey-663432"
      },
      "league": {
       "id": 104,

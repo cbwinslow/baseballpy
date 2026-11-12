@@ -63,7 +63,8 @@
       "fullName": "Spencer Strider",
       "link": "/api/v1/people/675911",
       "firstName": "Spencer",
-      "lastName": "Strider"
+      "lastName": "Strider",
+      "nameSlug": "spencer-strider-675911"
      },
      "sport": {
       "id": 1,
@@ -129,7 +130,8 @@
       "fullName": "Max Fried",
       "link": "/api/v1/people/608331",
       "firstName": "Max",
-      "lastName": "Fried"
+      "lastName": "Fried",
+      "nameSlug": "max-fried-608331"
      },
      "sport": {
       "id": 1,
@@ -195,7 +197,8 @@
       "fullName": "Framber Valdez",
       "link": "/api/v1/people/664285",
       "firstName": "Framber",
-      "lastName": "Valdez"
+      "lastName": "Valdez",
+      "nameSlug": "framber-valdez-664285"
      },
      "sport": {
       "id": 1,
@@ -264,7 +267,8 @@
       "fullName": "Dean Kremer",
       "link": "/api/v1/people/665152",
       "firstName": "Dean",
-      "lastName": "Kremer"
+      "lastName": "Kremer",
+      "nameSlug": "dean-kremer-665152"
      },
      "sport": {
       "id": 1,
@@ -330,7 +334,8 @@
       "fullName": "Lance Lynn",
       "link": "/api/v1/people/458681",
       "firstName": "Lance",
-      "lastName": "Lynn"
+      "lastName": "Lynn",
+      "nameSlug": "lance-lynn-458681"
      },
      "sport": {
       "id": 1,
@@ -396,7 +401,8 @@
       "fullName": "Bobby Miller",
       "link": "/api/v1/people/676272",
       "firstName": "Bobby",
-      "lastName": "Miller"
+      "lastName": "Miller",
+      "nameSlug": "bobby-miller-676272"
      },
      "sport": {
       "id": 1,
@@ -462,7 +468,8 @@
       "fullName": "Nick Pivetta",
       "link": "/api/v1/people/601713",
       "firstName": "Nick",
-      "lastName": "Pivetta"
+      "lastName": "Pivetta",
+      "nameSlug": "nick-pivetta-601713"
      },
      "sport": {
       "id": 1,
@@ -528,7 +535,8 @@
       "fullName": "Jose Quintana",
       "link": "/api/v1/people/500779",
       "firstName": "Jose",
-      "lastName": "Quintana"
+      "lastName": "Quintana",
+      "nameSlug": "jose-quintana-500779"
      },
      "sport": {
       "id": 1,
@@ -594,7 +602,8 @@
       "fullName": "Patrick Sandoval",
       "link": "/api/v1/people/663776",
       "firstName": "Patrick",
-      "lastName": "Sandoval"
+      "lastName": "Sandoval",
+      "nameSlug": "patrick-sandoval-663776"
      },
      "sport": {
       "id": 1,
@@ -660,7 +669,8 @@
       "fullName": "Clarke Schmidt",
       "link": "/api/v1/people/657376",
       "firstName": "Clarke",
-      "lastName": "Schmidt"
+      "lastName": "Schmidt",
+      "nameSlug": "clarke-schmidt-657376"
      },
      "sport": {
       "id": 1,
@@ -726,7 +736,8 @@
       "fullName": "Brady Singer",
       "link": "/api/v1/people/663903",
       "firstName": "Brady",
-      "lastName": "Singer"
+      "lastName": "Singer",
+      "nameSlug": "brady-singer-663903"
      },
      "sport": {
       "id": 1,
@@ -792,7 +803,8 @@
       "fullName": "Ranger Suarez",
       "link": "/api/v1/people/624133",
       "firstName": "Ranger",
-      "lastName": "Suarez"
+      "lastName": "Suarez",
+      "nameSlug": "ranger-suarez-624133"
      },
      "sport": {
       "id": 1,
@@ -858,7 +870,8 @@
       "fullName": "Justin Verlander",
       "link": "/api/v1/people/434378",
       "firstName": "Justin",
-      "lastName": "Verlander"
+      "lastName": "Verlander",
+      "nameSlug": "justin-verlander-434378"
      },
      "sport": {
       "id": 1,
@@ -924,7 +937,8 @@
       "fullName": "Taijuan Walker",
       "link": "/api/v1/people/592836",
       "firstName": "Taijuan",
-      "lastName": "Walker"
+      "lastName": "Walker",
+      "nameSlug": "taijuan-walker-592836"
      },
      "sport": {
       "id": 1,

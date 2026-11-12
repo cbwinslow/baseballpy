@@ -3575,6 +3575,7 @@ League-wide hitting stats, type expectedStatistics (player pool ALL).
 | `player_primary_position_name` | string | yes | `player.primaryPosition.name` | Name of the player primary position. (authored) |
 | `player_primary_position_type` | string | yes | `player.primaryPosition.type` | TODO |
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
@@ -3615,6 +3616,7 @@ League-wide pitching stats, type expectedStatistics (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
@@ -3672,6 +3674,7 @@ League-wide fielding stats, type lastXGames (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -3761,6 +3764,7 @@ League-wide hitting stats, type lastXGames (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -3868,6 +3872,7 @@ League-wide pitching stats, type lastXGames (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -3975,6 +3980,7 @@ League-wide catching stats, type outsAboveAverage (player pool ALL).
 | `player_primary_position_name` | string | yes | `player.primaryPosition.name` | Name of the player primary position. (authored) |
 | `player_primary_position_type` | string | yes | `player.primaryPosition.type` | TODO |
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -4029,6 +4035,7 @@ League-wide fielding stats, type outsAboveAverage (player pool ALL).
 | `player_primary_position_name` | string | yes | `player.primaryPosition.name` | Name of the player primary position. (authored) |
 | `player_primary_position_type` | string | yes | `player.primaryPosition.type` | TODO |
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -4083,6 +4090,7 @@ League-wide hitting stats, type outsAboveAverage (player pool ALL).
 | `player_primary_position_name` | string | yes | `player.primaryPosition.name` | Name of the player primary position. (authored) |
 | `player_primary_position_type` | string | yes | `player.primaryPosition.type` | TODO |
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -4137,6 +4145,7 @@ League-wide pitching stats, type outsAboveAverage (player pool ALL).
 | `player_primary_position_name` | string | yes | `player.primaryPosition.name` | Name of the player primary position. (authored) |
 | `player_primary_position_type` | string | yes | `player.primaryPosition.type` | TODO |
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -4191,6 +4200,7 @@ League-wide running stats, type outsAboveAverage (player pool ALL).
 | `player_primary_position_name` | string | yes | `player.primaryPosition.name` | Name of the player primary position. (authored) |
 | `player_primary_position_type` | string | yes | `player.primaryPosition.type` | TODO |
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -4266,6 +4276,7 @@ League-wide hitting stats, type projected (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
@@ -4346,6 +4357,7 @@ League-wide pitching stats, type projected (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
@@ -4391,6 +4403,7 @@ League-wide fielding stats, type sabermetrics (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -4452,6 +4465,7 @@ League-wide hitting stats, type sabermetrics (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -4510,6 +4524,7 @@ League-wide pitching stats, type sabermetrics (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -4595,6 +4610,7 @@ League-wide catching stats, type seasonAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -4655,6 +4671,7 @@ League-wide fielding stats, type seasonAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -4740,6 +4757,7 @@ League-wide hitting stats, type seasonAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -4841,6 +4859,7 @@ League-wide pitching stats, type seasonAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -4926,6 +4945,7 @@ League-wide catching stats, type season (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -4986,6 +5006,7 @@ League-wide fielding stats, type season (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -5074,6 +5095,7 @@ League-wide hitting stats, type season (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -5181,6 +5203,7 @@ League-wide pitching stats, type season (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -9878,7 +9901,6 @@ Every pitch/action event of a final game (pitchData, hitData, details, count) wi
 | `pfx_id` | string | yes | `pfxId` | MLBAM identifier of the pfx. (authored) |
 | `umpire_id` | int32 | yes | `umpire.id` | MLBAM identifier of the umpire. (authored) |
 | `umpire_link` | string | yes | `umpire.link` | Relative MLB Stats API path of the umpire resource (prefix https://statsapi.mlb.com). (authored) |
-| `all_plays_matchup_batter_hot_cold_zone_stats_stats` | string | yes | `allPlays.matchup.batterHotColdZoneStats.stats` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.game_feed_play_events -->
@@ -18492,6 +18514,7 @@ League-wide game stats, type outsAboveAverage (player pool ALL).
 | `player_primary_position_name` | string | yes | `player.primaryPosition.name` | Name of the player primary position. (authored) |
 | `player_primary_position_type` | string | yes | `player.primaryPosition.type` | TODO |
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -18546,6 +18569,7 @@ League-wide streak stats, type outsAboveAverage (player pool ALL).
 | `player_primary_position_name` | string | yes | `player.primaryPosition.name` | Name of the player primary position. (authored) |
 | `player_primary_position_type` | string | yes | `player.primaryPosition.type` | TODO |
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -18600,6 +18624,7 @@ League-wide team stats, type outsAboveAverage (player pool ALL).
 | `player_primary_position_name` | string | yes | `player.primaryPosition.name` | Name of the player primary position. (authored) |
 | `player_primary_position_type` | string | yes | `player.primaryPosition.type` | TODO |
 | `player_primary_position_abbreviation` | string | yes | `player.primaryPosition.abbreviation` | Abbreviation of the player primary position. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `game_type` | string | yes | `gameType` | Game type code: S = Spring Training, R = Regular Season, F = Wild Card, D = Division Series, L = League Championship Series, W = World Series, C = Championship, P = Postseason, A = All-Star Game, I = Intrasquad, E = Exhibition. (src: mlb_game_types) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -18635,6 +18660,7 @@ League-wide game stats, type seasonAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
@@ -18678,6 +18704,7 @@ League-wide game stats, type season (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_abbreviation` | string | yes | `sport.abbreviation` | Abbreviation of the sport. (authored) |
@@ -21775,6 +21802,7 @@ League-wide hitting stats, type projected_Zips2YR, parameters {} (player pool AL
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
@@ -21859,6 +21887,7 @@ League-wide pitching stats, type projected_Zips2YR, parameters {} (player pool A
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
@@ -21944,6 +21973,7 @@ League-wide hitting stats, type projected_Zips3YR, parameters {} (player pool AL
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
@@ -22028,6 +22058,7 @@ League-wide pitching stats, type projected_Zips3YR, parameters {} (player pool A
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
@@ -22113,6 +22144,7 @@ League-wide hitting stats, type projected_Zips, parameters {} (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
@@ -22197,6 +22229,7 @@ League-wide pitching stats, type projected_Zips, parameters {} (player pool ALL)
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |

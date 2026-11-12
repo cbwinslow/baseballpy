@@ -588,7 +588,6 @@
     "link": "/api/v1/people/592351",
     "firstName": "Jonathan",
     "lastName": "Gray",
-    "primaryNumber": "22",
     "birthDate": "1991-11-05",
     "currentAge": 35,
     "birthCity": "Shawnee",
@@ -596,7 +595,7 @@
     "birthCountry": "USA",
     "height": "6' 4\"",
     "weight": 225,
-    "active": true,
+    "active": false,
     "primaryPosition": {
      "code": "1",
      "name": "Pitcher",
@@ -612,6 +611,7 @@
     "isPlayer": true,
     "isVerified": true,
     "draftYear": 2013,
+    "lastPlayedDate": "2025-08-16",
     "mlbDebutDate": "2015-08-04",
     "batSide": {
      "code": "R",
@@ -983,7 +983,7 @@
     "link": "/api/v1/people/571760",
     "firstName": "Andrew",
     "lastName": "Heaney",
-    "primaryNumber": "33",
+    "primaryNumber": "25",
     "birthDate": "1991-06-05",
     "currentAge": 35,
     "birthCity": "Oklahoma City",
@@ -991,7 +991,7 @@
     "birthCountry": "USA",
     "height": "6' 2\"",
     "weight": 200,
-    "active": true,
+    "active": false,
     "primaryPosition": {
      "code": "1",
      "name": "Pitcher",
@@ -1008,6 +1008,7 @@
     "isVerified": true,
     "draftYear": 2012,
     "pronunciation": "HEE-nee",
+    "lastPlayedDate": "2025-09-27",
     "mlbDebutDate": "2014-06-19",
     "batSide": {
      "code": "L",
@@ -1582,7 +1583,6 @@
     "link": "/api/v1/people/669674",
     "firstName": "Samuel",
     "lastName": "Long",
-    "primaryNumber": "73",
     "birthDate": "1995-07-08",
     "currentAge": 31,
     "birthCity": "Fair Oaks",
@@ -1590,7 +1590,7 @@
     "birthCountry": "USA",
     "height": "6' 1\"",
     "weight": 185,
-    "active": true,
+    "active": false,
     "primaryPosition": {
      "code": "1",
      "name": "Pitcher",
@@ -1605,6 +1605,7 @@
     "isPlayer": true,
     "isVerified": true,
     "draftYear": 2016,
+    "lastPlayedDate": "2025-09-28",
     "mlbDebutDate": "2021-06-09",
     "batSide": {
      "code": "L",
