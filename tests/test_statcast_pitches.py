@@ -58,7 +58,7 @@ def test_era_specific_columns_are_null_before_they_existed() -> None:
     )  # PITCHf/x era: no batted-ball data
     assert new.column("launch_speed").null_count < new.num_rows
     assert new.schema.field("age_pit").type == pa.int16()
-    assert new.schema.field("home_win_exp").type == pa.float32()
+    assert new.schema.field("home_win_exp").type == pa.float64()
     assert new.schema.field("game_type").type == STATCAST_SCHEMA.field("game_type").type
 
 

@@ -1056,3 +1056,17 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** a route that the provider's live menu links and that answers data is a registered dataset (generated schema, fixture, docs) or is listed unsupported with the request tried and the answer; `rebuild-segments` rebuilds a season's processed files from its raw segments with no download, hides old files in `_legacy/` first, and deletes them only after the rebuilt row counts equal the old ones.
 - **Consequences:** Statcast has 48 leaderboards plus pitches; Retrosheet has 18 more opt-in tables; MLB 2008 is on the final layout (1,864,223 rows equal); the other MLB seasons follow the same two commands, one season at a time.
 - **Alternatives rejected:** keeping the 2026-10-27 probe as final (it was wrong); rebuilding by downloading again (hours of requests; the raw answers are already held).
+
+## ADR 113: Types Are Proved Against The Provider's Text; Decimals Are 64-Bit; Identifiers Are Text
+- **Status:** Accepted (owner goal, 2026-11-12: "validate all of the columns and the data in the rows"; "these mistakes seem preventable").
+- **Context:** a round-trip check of raw text against processed cells found two real losses: Statcast pitches stored 50 decimal columns as 32-bit floats (`85.8` became `85.80000305175781`) and Chadwick `key_npb` dropped leading zeros. The providers' own documentation gives no types, so nothing in the specifications would have caught either.
+- **Decision:** `baseballpy verify-roundtrip` and `core/roundtrip.py` compare every cell; the lake contract runs it on every fresh download in the tests; `infer_type_name` types a number with a leading zero or plus sign as text; a test forbids 32-bit floats in the registry; the rules are AGENTS.md section 3B and the findings are written into each source page.
+- **Consequences:** a type mistake fails the build instead of reaching the lake; Statcast pitches and minors are rebuilt as `double` (about two hours of downloads, 2.5% larger files); event-derived Retrosheet tables remain unchecked by this tool (their raw form is not CSV) and are listed as skipped.
+- **Alternatives rejected:** trusting the generators (the Chadwick generator produced the loss); only comparing a fresh download with the lake (it compares the pipeline with itself).
+
+## ADR 114: Concurrency Is Decided From Live, Measured Memory, Not A Fixed Number
+- **Status:** Accepted (owner, 2026-11-12: "have better diagnostics or something that determines the threads or memory usage to prevent computer freezing; I want it to be dynamic, not some low arbitrary number").
+- **Context:** `-c auto` used the CPU count (25 jobs); a Statcast pitch season job holds hundreds of thousands of rows, so 25 at once froze a 96 GB computer. Windows also ran out of commit (RAM + page file) while RAM was free, and workers of a crashed run stayed alive holding 27.6 GB.
+- **Decision:** `MemoryGovernor` starts jobs only while measured memory allows (reserve = a share of the machine, growth per job measured, commit headroom counted); pool workers exit with their parent; the process pool is sized from the memory left; the status is announced and shown by `doctor`; holds are audit-logged.
+- **Consequences:** no fixed worker number to tune; a small machine runs fewer jobs, a large one more; a hold is visible in the log; the worker count stays an upper bound.
+- **Alternatives rejected:** a lower fixed cap (arbitrary and wrong on every other machine); `psutil` (a dependency for what `ctypes` and `/proc` give).

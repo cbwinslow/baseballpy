@@ -103,7 +103,7 @@ def test_statcast_normalizer_survives_arbitrary_cells(
     table = StatcastNormalizer(quarantine=q).normalize(csv.encode())
     assert table.schema.field("game_pk").type == pa.int32()
     assert table.schema.field("game_date").type == pa.date32()
-    assert table.schema.field("release_speed").type == pa.float32()
+    assert table.schema.field("release_speed").type == pa.float64()
     assert len(table) == len([r for r in rows if any(c.strip() for c in r)]) or len(table) <= len(
         rows
     )

@@ -461,7 +461,7 @@ class RetrosheetRosterParser:
                         "bats": parts[3],
                         "throws": parts[4],
                         "team": parts[5],
-                        "position": parts[6] if len(parts) > 6 else "",
+                        "position": parts[6] or None if len(parts) > 6 else None,
                         "year": year,
                         "roster": roster,
                         "_extras": extras_val,

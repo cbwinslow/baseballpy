@@ -40,6 +40,7 @@ Commands:
   status            Show what the lake holds per source, what is running and what needs attention.
   stream            Stream live pitch and play events for a game in real time or replay mode.
   update            Bring the lake up to date: this season of Statcast and the MLB API, and the...
+  verify-roundtrip  Check that no value of the provider's text was lost or changed in our...
   verify-sample     Download a small sample into a scratch home and compare it with the lake.
 ```
 
@@ -843,6 +844,28 @@ Options:
   --stage TEXT                    Run only this stage of the plan (its name or 1-based number);
                                   repeatable.
   --help                          Show this message and exit.
+```
+
+## `baseballpy verify-roundtrip`
+
+```text
+Usage: baseballpy verify-roundtrip [OPTIONS] [SOURCES]...
+
+  Check that no value of the provider's text was lost or changed in our processed tables.
+
+  For each dataset it re-reads sampled raw CSV files as text and compares every cell with the stored
+  value (integers by their text, so a dropped leading zero shows; floats by value, so a 32-bit float
+  shows), lists non-empty raw cells stored as NULL, raw rows missing from the processed data, and
+  raw columns no schema column or _extras reads. Offline and read-only. Datasets whose raw files are
+  not CSV are reported as skipped with the reason, never as clean. Exit code 1 when any dataset
+  shows a loss.
+
+Options:
+  -d, --datasets TEXT    Dataset name(s) to check (repeatable; default: all).
+  --files INTEGER RANGE  Raw files compared per dataset, spread over its seasons.  [default: 3;
+                         x>=1]
+  --json                 Print the verdicts as JSON.
+  --help                 Show this message and exit.
 ```
 
 ## `baseballpy verify-sample`

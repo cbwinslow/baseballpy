@@ -24,7 +24,9 @@ logger = logging.getLogger(__name__)
 
 #: ``PlayerIdType.value`` is the register column and the ``PlayerRecord`` field; these sets say how
 #: an id of that type is compared (integers are coerced, some text ids ignore case).
-_INT_IDS = frozenset({PlayerIdType.MLBAM, PlayerIdType.FANGRAPHS, PlayerIdType.NPB})
+_INT_IDS = frozenset(
+    {PlayerIdType.MLBAM, PlayerIdType.FANGRAPHS}
+)  # NPB ids are text: 01305137 has a leading zero
 _CASEFOLDED_IDS = frozenset(
     {
         PlayerIdType.PERSON,
@@ -96,7 +98,7 @@ class PlayerRecord:
     key_bbref: str | None = None
     key_bbref_minors: str | None = None
     key_fangraphs: int | None = None
-    key_npb: int | None = None
+    key_npb: str | None = None
     key_sr_nfl: str | None = None
     key_sr_nba: str | None = None
     key_sr_nhl: str | None = None
@@ -289,7 +291,7 @@ class ChadwickRegister:
         uuid: str | None = None,
         person: str | None = None,
         bbref_minors: str | None = None,
-        npb: int | None = None,
+        npb: str | None = None,
         wikidata: str | None = None,
     ) -> PlayerRecord | None:
         """Resolve a single player by any known identifier (the first given id that is found wins)."""

@@ -92,7 +92,7 @@ def test_roster_rows_short_quarantined_and_extra_fields_kept(
 
     # 5 fields (short, should be quarantined)
     row_5 = "short01,Short,Player,R,R"
-    # 6 fields (position should be empty string "")
+    # 6 fields (position is NULL: the raw line has no such field)
     row_6 = "six01,Six,Player,L,L,BOS"
     # 7 fields (position given)
     row_7 = "seven01,Seven,Player,R,R,BOS,OF"
@@ -109,10 +109,10 @@ def test_roster_rows_short_quarantined_and_extra_fields_kept(
         assert isinstance(table, pa.Table)
         assert len(table) == 3
 
-        # 6-field row: position is "", _extras is None
+        # 6-field row: position is NULL, _extras is None
         assert table["player_id"][0].as_py() == "six01"
         assert table["team"][0].as_py() == "BOS"
-        assert table["position"][0].as_py() == ""
+        assert table["position"][0].as_py() is None
         assert table["year"][0].as_py() == 2024
         assert table["_extras"][0].as_py() is None
 

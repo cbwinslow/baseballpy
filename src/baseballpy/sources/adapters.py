@@ -69,6 +69,13 @@ def register_all_adapters() -> None:
     register_adapter("polymarket", _polymarket_factory)
     register_adapter("bref", _bref_factory)
     register_adapter("fangraphs", _fangraphs_factory)
+    from baseballpy.core.roundtrip import register_raw_reader
+    from baseballpy.sources.statcast.roundtrip import raw_reader as statcast_raw_reader
+
+    register_raw_reader("statcast", statcast_raw_reader)  # leaderboard pages decode to rows
+    from baseballpy.sources.retrosheet.roundtrip import raw_reader as retrosheet_raw_reader
+
+    register_raw_reader("retrosheet", retrosheet_raw_reader)  # zips, headerless logs and rosters
     from baseballpy.sources.mlb_api.game_segments import (
         game_dataset_names,
         game_normalizer,

@@ -12,7 +12,7 @@ CHADWICK_COLUMNS: dict[str, tuple[tuple[str, str], ...]] = {
         ("key_bbref", "string"),
         ("key_bbref_minors", "string"),
         ("key_fangraphs", "int32"),
-        ("key_npb", "int32"),
+        ("key_npb", "string"),
         ("key_sr_nfl", "string"),
         ("key_sr_nba", "string"),
         ("key_sr_nhl", "string"),

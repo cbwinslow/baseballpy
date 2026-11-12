@@ -1,5 +1,6 @@
 """CLI: ``baseballpy verify-sample`` downloads a small sample and compares it with the lake (ADR 108)."""
 
+import json
 import shutil
 import tempfile
 from pathlib import Path
@@ -9,8 +10,11 @@ from rich.console import Console
 from rich.table import Table
 
 from baseballpy.core.config import LakeConfig
+from baseballpy.core.datasets import DATASETS
+from baseballpy.core.roundtrip import roundtrip_lake
 from baseballpy.ingest import sample as sample_module
 from baseballpy.sources import catalog
+from baseballpy.sources.adapters import register_all_adapters
 
 console = Console()
 
@@ -80,6 +84,82 @@ def verify_sample_cmd(
         console.print("the sample matches the lake")
 
 
+@click.command("verify-roundtrip")
+@click.argument("sources", nargs=-1)
+@click.option(
+    "-d", "--datasets", multiple=True, help="Dataset name(s) to check (repeatable; default: all)."
+)
+@click.option(
+    "--files",
+    "sample_files",
+    type=click.IntRange(min=1),
+    default=3,
+    show_default=True,
+    help="Raw files compared per dataset, spread over its seasons.",
+)
+@click.option("--json", "as_json", is_flag=True, help="Print the verdicts as JSON.")
+def verify_roundtrip_cmd(
+    sources: tuple[str, ...], datasets: tuple[str, ...], sample_files: int, as_json: bool
+) -> None:
+    """Check that no value of the provider's text was lost or changed in our processed tables.
+
+    For each dataset it re-reads sampled raw CSV files as text and compares every cell with the stored value
+    (integers by their text, so a dropped leading zero shows; floats by value, so a 32-bit float shows),
+    lists non-empty raw cells stored as NULL, raw rows missing from the processed data, and raw columns no
+    schema column or _extras reads. Offline and read-only. Datasets whose raw files are not CSV are
+    reported as skipped with the reason, never as clean. Exit code 1 when any dataset shows a loss.
+    """
+    catalog.register_all()
+    register_all_adapters()  # the sources register how their raw files are read
+    specs = [
+        spec
+        for spec in sorted(DATASETS.values(), key=lambda s: s.key)
+        if (not sources or spec.source in sources) and (not datasets or spec.name in datasets)
+    ]
+    if not specs:
+        raise click.ClickException("no registered dataset matches the sources and datasets given")
+    checks = roundtrip_lake(LakeConfig(), specs, sample_files=sample_files)
+    if as_json:
+        click.echo(
+            json.dumps(
+                [c.__dict__ | {"losses": [loss.__dict__ for loss in c.losses]} for c in checks],
+                default=str,
+            )
+        )
+    else:
+        table = Table(
+            "Source", "Dataset", "Status", "Files", "Raw rows", "Compared", "Quarantined", "Detail"
+        )
+        for c in checks:
+            detail = (
+                c.reason
+                or "; ".join(c.notes)
+                or "; ".join(
+                    f"{loss.kind} {loss.column or '-'} x{loss.count:,} ({loss.example})"
+                    for loss in c.losses[:3]
+                )
+            )
+            colour = {"ok": "green", "loss": "red", "skipped": "yellow"}[c.status]
+            table.add_row(
+                c.source,
+                c.dataset,
+                f"[{colour}]{c.status}[/{colour}]",
+                str(len(c.files)),
+                f"{c.raw_rows:,}",
+                f"{c.compared:,}",
+                f"{c.quarantined:,}",
+                detail[:160],
+            )
+        console.print(table)
+        counts = {s: sum(1 for c in checks if c.status == s) for s in ("ok", "loss", "skipped")}
+        console.print(
+            f"{counts['ok']} clean, {counts['loss']} with a loss, {counts['skipped']} skipped"
+        )
+    if any(c.status == "loss" for c in checks):
+        raise SystemExit(1)
+
+
 def register_sample_command(group: click.Group) -> None:
     """Attach ``verify-sample`` to the main group."""
     group.add_command(verify_sample_cmd)
+    group.add_command(verify_roundtrip_cmd)

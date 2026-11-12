@@ -92,6 +92,18 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
 
 ---
 
+## 3B. Column Type Rules (binding; each one came from a real loss found by `baseballpy verify-roundtrip`, 2026-11-12)
+
+1. **Identifiers and codes are text.** A value written with a leading zero or a plus sign (`01405134`, `007`, `+5`) is never a number: stored as an integer it loses what the provider wrote (Chadwick `key_npb` lost its zeros on 331 people). `infer_type_name` enforces it; a hand-written schema must too.
+2. **Decimals are 64-bit floats.** Never `float32`: the text `85.8` becomes `85.80000305175781` and `release_speed == 85.8` is false for the user (Statcast pitches had 50 such columns). `tests/test_schema_rules.py` fails on any `float32` column.
+3. **The provider's own specification comes first.** Before typing a column, read the provider's documentation (data dictionary, file spec) and record what it says, or that it says nothing, in the source page under `docs/sources/`. The Savant CSV documentation and the Chadwick README give no types, so the rule is: keep what was written.
+4. **Sentinel values stay as written and are documented.** Retrosheet writes `0` for an unknown temperature, attendance or game length and `-1` for an unknown wind speed; the table keeps the number and the source page says what it means. Never turn a sentinel into NULL without a recorded reason.
+5. **An empty cell is NULL; a missing field is NULL.** Not an empty string (a roster line without a position was stored as `""`).
+6. **Prove it, do not assume it.** After any schema change, new dataset or parser change run `baseballpy verify-roundtrip SOURCE`: it compares every cell of the provider's text with the stored value. The lake contract (`tests/lake_contract.py`) runs the same check on every fresh download in the tests, so a loss fails the build. A dataset it cannot check (raw files that are not CSV) is listed as skipped, never as clean.
+7. **A parser change that alters values without altering the schema bumps the dataset's `revision`** (otherwise the stored chunks are judged current and nothing is rebuilt).
+
+---
+
 ## 4. Concurrency, Async & Rate-Limiting Contracts
 
 1. **Host-Specific Rate Limiting (Token Bucket):**
@@ -104,6 +116,15 @@ Components in `baseballpy` MUST be strictly modular, decoupled, and isolated to 
    - All concurrent downloads MUST be bounded by an explicit in-flight limit **per host** (`asyncio.Semaphore(max_concurrency)` for each host, default 4; `host_concurrency` overrides single hosts) on top of the host's token bucket, so a slow host never holds another host's slots (ADR 57). Fan-out inside a source (the requests of one endpoint, the windows of a season) uses a pool of at most `max_concurrency` workers behind those same gates.
 3. **Jittered Exponential Backoff:**
    - Wrap transient failures (HTTP 429, 500, 502, 503, 504, `httpx.ConnectTimeout`) in retry policies with exponential backoff and randomized jitter (via `tenacity`).
+
+---
+
+### 4A. Memory (binding; ADR 114)
+
+1. **Concurrency is an upper bound, never a target.** `-c auto` is the CPU count; the `MemoryGovernor` (`core/memguard.py`) decides, from live and measured memory, whether one more job or worker may start. Do not replace it with a smaller fixed number, and do not start jobs, threads or process pools by any other route.
+2. **Process pools must not outlive their parent.** A worker exits when its parent is gone (`watch_parent`); a new pool must use that initializer and be sized with the governor.
+3. **Never turn millions of cells into Python lists.** Compare and count in Arrow (`value_counts`, joins, compute kernels); a table of 5 million rows must stay in a few GB.
+4. **Windows runs out of commit before RAM.** "Paging file too small" (`WinError 1455`) means the commit limit, not RAM; `baseballpy doctor` shows the usable figure the governor uses.
 
 ---
 

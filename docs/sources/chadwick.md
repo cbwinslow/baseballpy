@@ -27,12 +27,12 @@
 
 ## Schema notes (verified against the real data)
 - All shards share one 40-column header; schemas are **generated from the real headers** (`scripts/gen_schemas.py chadwick`) and enforced by header name, so column order never matters.
-- `key_mlbam`, `key_fangraphs` and `key_npb` are integers; `key_retro`, `key_bbref`, `key_sr_*`, `key_wikidata` are text; `*_first`/`*_last` year columns are `int16`.
+- `key_mlbam` and `key_fangraphs` are integers; `key_npb` is **text** (NPB ids such as `01405134` carry a leading zero; the round-trip check of 2026-11-12 found it stored as `1405134` for 331 people, and the register code, tests and schema now keep it as written); `key_retro`, `key_bbref`, `key_sr_*`, `key_wikidata` are text; `*_first`/`*_last` year columns are `int16`.
 - `names.csv` columns are `altname_*` (not `name_*`): `altname_type`, `altname_lang`, `altname_last`, `altname_first`, `altname_given`, `altname_matrilineal`, `altname_nick`, `altname_date_start`, `altname_date_end`.
 - `links.csv` identifies the external system in `source` (e.g. `tsncards`) and its identifier in `value`.
 - Country code `NA` (Namibia) is data, not NULL; only empty cells are NULL.
 - **Keys (from the upstream README):** `key_uuid` is the primary key and is never re-used. `key_person` is the first 8 hex digits of it: unique within one release, but upstream may re-use a short key for a different identity over time. `names` and `links` refer to people by `key_person`, so join them only against the register of the same release. The upstream README is kept at `raw/chadwick/register/README.md` (with its sha256).
-- `key_bbref_minors` is filled for every person (it is not limited to minor leaguers) and is a different id space from `key_bbref`; `key_npb` is an integer.
+- `key_bbref_minors` is filled for every person (it is not limited to minor leaguers) and is a different id space from `key_bbref`; `key_npb` is text with leading zeros. The upstream README (checked 2026-11-12) describes each `key_*` column only as the person's identifier on that site and gives no type or format, so every id column keeps the text as written (`key_mlbam` and `key_fangraphs` are the two that are plain numbers).
 - Upstream quirks (verified 2026-10-29 on the pinned commit): `links.source` holds `tsncardS` (capital S) on a few rows besides `tsncards`; one `names.csv` row names a `key_person` that is not in the register. Both are kept as published.
 - Selecting data: any of the four datasets can be ingested by name (`baseballpy ingest chadwick -d register_names`); one ingest downloads the files once and reports the rows of each dataset.
 - Any column the schema does not know is preserved as JSON in the trailing `_extras` column and logged once as `schema_drift`.
@@ -114,7 +114,7 @@ Master player-ID crosswalk (data/people-*.csv shards).
 | `key_bbref` | string | yes | — | The person's identifier on Major League pages on baseball-reference.com. (src: chadwick_readme) |
 | `key_bbref_minors` | string | yes | — | The person's identifier on minor league pages on baseball-reference.com. (src: chadwick_readme) |
 | `key_fangraphs` | int32 | yes | — | The person's identifier on fangraphs.com. (src: chadwick_readme) |
-| `key_npb` | int32 | yes | — | The person's identifier on the NPB official site, npb.or.jp. (src: chadwick_readme) |
+| `key_npb` | string | yes | — | The person's identifier on the NPB official site, npb.or.jp. (src: chadwick_readme) |
 | `key_sr_nfl` | string | yes | — | The person's identifier on pro-football-reference.com. (src: chadwick_readme) |
 | `key_sr_nba` | string | yes | — | The person's identifier on basketball-reference.com. (src: chadwick_readme) |
 | `key_sr_nhl` | string | yes | — | The person's identifier on hockey-reference.com. (src: chadwick_readme) |

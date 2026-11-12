@@ -9,7 +9,8 @@ the same workflow finds the same folders, names, types and views:
 2. every Parquet file has the registered column names and types, in the registered order;
 3. no folder belongs to an unregistered dataset, no file is a half-written ``.part``;
 4. the raw files recorded in the manifests exist and match their sha256;
-5. ``baseballpy db sync`` makes one view per dataset that has data, named by the registry, and counting
+5. no value of the provider's text is lost or changed (``baseballpy.core.roundtrip``);
+6. ``baseballpy db sync`` makes one view per dataset that has data, named by the registry, and counting
    exactly the rows in the files.
 """
 
@@ -24,10 +25,12 @@ import pyarrow.parquet as pq
 from baseballpy.cache_check import OK, check_raw, check_segments
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS, LINEAGE_COLUMN
+from baseballpy.core.roundtrip import roundtrip_dataset
 from baseballpy.core.sql import quote_ident
 from baseballpy.database import BaseballDatabase
 from baseballpy.layout_audit import audit_layout
 from baseballpy.sources import catalog
+from baseballpy.sources.adapters import register_all_adapters
 
 FILE_NAME = re.compile(r"^(part-.+|compact-\d{4}|seg-\d{4})\.parquet$")
 SEASON_DIR = re.compile(r"^season=\d{4}$")
@@ -84,6 +87,15 @@ def assert_lake_contract(config: LakeConfig, sources: Sequence[str]) -> dict[str
         assert check.integrity == OK, (
             f"raw {check.source}/{check.dataset}/{check.name}: {check.integrity}"
         )
+
+    # 4b. no value of the provider's text was lost or changed on its way into the typed tables
+    register_all_adapters()
+    for (source, dataset), spec in sorted(specs.items()):
+        if source in sources and (source, dataset) in rows_by_dataset:
+            verdict = roundtrip_dataset(config, spec)
+            assert verdict.status != "loss", f"round trip {spec.key}: " + "; ".join(
+                f"{x.kind} {x.column} x{x.count} ({x.example})" for x in verdict.losses[:4]
+            )
 
     BaseballDatabase(cache_config=config).sync_views()
     counted: dict[str, int] = {}

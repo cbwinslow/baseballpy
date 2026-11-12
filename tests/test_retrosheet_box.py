@@ -277,3 +277,18 @@ def test_option_a_historical_qualifiers_and_null_tokens() -> None:
     assert batting.column("seq").to_pylist() == [None, 1]
     assert batting.column("rbi").to_pylist() == [2, 0]
     assert batting.column("rbi_qualifier").to_pylist() == ["inferred", None]
+
+
+def test_the_scoring_and_entry_info_fields_are_typed_columns_not_extras() -> None:
+    """scorer, howscored, pitches, inputprogvers, htbf and fieldcon were hidden in _extras for 8,787 real games."""
+    text = (
+        "id,TEST19000101\nversion,1\ninfo,visteam,AAA\ninfo,hometeam,BBB\ninfo,date,1900/01/01\ninfo,number,0\n"
+        'info,scorer,"Braves"\ninfo,howscored,park\ninfo,pitches,none\ninfo,inputprogvers,"version 7RS(19) of 07/07/92"\n'
+        'info,htbf,true\ninfo,fieldcon,dry\ninfo,inputter,"C. Chestnut"\n'
+    )
+    games = parse_box_text(text, "t.EBA").games
+    row = games.to_pylist()[0]
+    assert row["scorer"] == "Braves" and row["howscored"] == "park" and row["pitches"] == "none"
+    assert row["inputprogvers"] == "version 7RS(19) of 07/07/92" and row["fieldcon"] == "dry"
+    assert row["htbf"] is True and row["inputter"] == "C. Chestnut"
+    assert row["_extras"] is None, "every info key of these games has its own column"

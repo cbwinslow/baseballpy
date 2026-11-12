@@ -550,7 +550,7 @@ or train any derived sabermetric metric without web scraping dependencies.
 | :--- | :--- | :--- | :---: | :--- | :--- |
 | `ballparks0` | `retrosheet_ballparks0` | `none` | 7 | `park_id` | Ballparks with first and last game dates (biodata.zip ballparks0.csv). |
 | `box_batting_lines` | `retrosheet_box_batting_lines` | `season` | 23 | `game_id`, `player_id`, `side`, `seq` | Batting and base-running lines of the box-score accounts (stat,bline). |
-| `box_games` | `retrosheet_box_games` | `season` | 35 | `game_id` | Games of the box-score accounts (id, version, info lines). |
+| `box_games` | `retrosheet_box_games` | `season` | 45 | `game_id` | Games of the box-score accounts (id, version, info lines). |
 | `box_records` | `retrosheet_box_records` | `season` | 5 | `game_id`, `line_no` | Every other box-account record (pinch hitters/runners, fielding, pitching, team totals, line scores, events, comments, unknown kinds) as parsed fields plus the raw line. |
 | `box_starters` | `retrosheet_box_starters` | `season` | 6 | `game_id`, `player_id`, `side`, `position` | Starting lineups of the box-score accounts (start lines). |
 | `boxscores_batting` | `retrosheet_boxscores_batting` | `season` | 24 | `game_id`, `team_id`, `slot`, `seq` | Batting box score lines. |

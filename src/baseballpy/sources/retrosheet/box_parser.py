@@ -67,6 +67,17 @@ INFO_COLUMNS: tuple[tuple[str, str], ...] = (
     ("save", "string"),
     ("gwrbi", "string"),
     ("oscorer", "string"),
+    # scoring and data-entry fields (retrosheet.org/eventfile.htm): the quoted text is kept without its quotes
+    ("scorer", "string"),
+    ("howscored", "string"),
+    ("pitches", "string"),
+    ("inputter", "string"),
+    ("inputtime", "string"),
+    ("inputprogvers", "string"),
+    ("edittime", "string"),
+    ("translator", "string"),
+    ("htbf", "bool"),
+    ("fieldcon", "string"),  # an upstream misspelling of fieldcond in 127 games, kept as written
 )
 _SENTINELS = frozenset({"", "unknown"}) | NULL_TOKENS
 

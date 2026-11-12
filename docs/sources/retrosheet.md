@@ -72,6 +72,9 @@ One row per pitcher appearance (dataset `boxscores_pitching`).
 
 **Interim, honest status.** The official layout document (`https://www.retrosheet.org/boxfile.txt`) was not reachable from the build environment, so only the kinds whose layout is confirmed by both the data and independent descriptions are typed; every other record is kept losslessly in `box_records` (nothing is dropped) until the OpenSpec change `retrosheet-box-accounts` task 1.1 supplies the document and the remaining kinds get typed datasets. Field counts are strict: an unexpected count raises `BoxParseError` rather than guessing. Files are UTF-8 (Latin-1 fallback); innings played/pitched are stored as outs in the raw lines (as published).
 
+#### Box-score info fields and their sentinels (spec: retrosheet.org/eventfile.htm, read 2026-11-12)
+The scoring and entry fields were hidden in `_extras` for 8,787 games until the round-trip check; they are now typed columns of `box_games`: `scorer`, `howscored`, `pitches` (`pitches`, `count` or `none`), `inputter`, `inputtime`, `inputprogvers`, `edittime`, `translator` (text) and `htbf` (boolean: the home team batted first, normally absent). `fieldcon` (127 games) is an upstream misspelling of `fieldcond` and is kept as its own column as written. Values that mean "unknown" are **kept as written, not turned into NULL**: `temp` `0`, `attendance` `0` (also the first game of a doubleheader), `timeofgame` `0`, `windspeed` `-1`, `starttime` `0:00` or `unknown`, and the text `unknown` in `precip`, `sky`, `winddir`, `fieldcond`, `daynight`. A model must treat them as missing. `gametype` was added in 2023 (`regular`, `exhibition`, `preseason`, `allstar`, `playoff`, `worldseries`, `lcs`, `divisionseries`, `wildcard`, `championship`). Roster lines without a 7th field have a NULL `position`.
+
 ### 4. Daily Player Splits (`daily`)
 Derived with `chadwickpy.tools.daily.daily_lines` (154 columns) — dataset `daily_splits`.
 
@@ -1739,6 +1742,16 @@ Games of the box-score accounts (id, version, info lines).
 | `save` | string | yes | — | TODO |
 | `gwrbi` | string | yes | — | TODO |
 | `oscorer` | string | yes | — | TODO |
+| `scorer` | string | yes | — | TODO |
+| `howscored` | string | yes | — | TODO |
+| `pitches` | string | yes | — | TODO |
+| `inputter` | string | yes | — | TODO |
+| `inputtime` | string | yes | — | TODO |
+| `inputprogvers` | string | yes | — | TODO |
+| `edittime` | string | yes | — | TODO |
+| `translator` | string | yes | — | TODO |
+| `htbf` | bool | yes | — | TODO |
+| `fieldcon` | string | yes | — | TODO |
 | `source_file` | string | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 

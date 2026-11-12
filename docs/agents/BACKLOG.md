@@ -676,6 +676,8 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-437 | dry-run-estimate 1.3: ingest/estimate.py and the dry-run footer | DONE | after B-436; the new tests pass |
 | B-438 | dry-run-estimate 1.4: spec, ADR 106, docs, gates, archive | DONE | after B-437; evidence in design.md |
 | B-439 | dry-run estimate: resolve group names (games, leaderboards, people_stats) to the datasets they fetch, from a registry field, so the biggest downloads are estimated | READY | `ingest mlb_api -s 2024 -d games --dry-run` shows datasets and an estimate |
+| B-464 | `data-validation-roundtrip 1.5`: float64 for Statcast pitches/pitches_minors and four MLB columns; rebuild stored chunks | after 1.4 | round-trip clean; sizes recorded |
+| B-466 | `data-validation-roundtrip 1.7`: verify-sample per source, gates, spec merge, ADR, archive | after 1.5 and 1.6 | each source compared with a fresh sample |
 | B-440 | quickstart-start-here 1.1: test first for the Start-here section of the quickstart | DONE | the test fails for the missing section |
 | B-441 | quickstart-start-here 1.2: write the section; spec requirement; gates; archive | DONE | after B-440; test passes, gates green |
 | B-442 | final-product-definition 1.1: test first for the per-source Final Product table in the constitution | DONE | the test fails for the missing section |

@@ -52,13 +52,13 @@ def test_statcast_normalizer_schema_and_types() -> None:
     # Check key columns and types
     assert table.schema.field("game_pk").type == pa.int32()
     assert table.schema.field("game_date").type == pa.date32()
-    assert table.schema.field("release_speed").type == pa.float32()
+    assert table.schema.field("release_speed").type == pa.float64()
     assert table.schema.field("at_bat_number").type == pa.int16()
     assert table.schema.field("pitch_number").type == pa.int16()
 
     # Bat tracking metrics (2024+)
-    assert table.schema.field("bat_speed").type == pa.float32()
-    assert table.schema.field("swing_length").type == pa.float32()
+    assert table.schema.field("bat_speed").type == pa.float64()
+    assert table.schema.field("swing_length").type == pa.float64()
 
     # Dictionary-encoded types
     assert pa.types.is_dictionary(table.schema.field("pitch_type").type)

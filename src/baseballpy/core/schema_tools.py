@@ -113,11 +113,17 @@ def schema_from_columns(columns: Iterable[ColumnDef], *, extras: bool = True) ->
     return pa.schema(fields)
 
 
+#: a number written with a leading zero or a plus sign ("01405134", "007", "+5", "01.5"; not "0", "0.5", "-7")
+_CODE_LIKE = re.compile(r"^[+]|^-?0\d")
+
+
 def infer_type_name(values: Iterable[str | None]) -> str:
     """Propose a type name from a full sample of string cells (conservative, never ``int8``).
 
     Integers narrow to ``int16`` only when every value is within +-20000 (leaving headroom),
     otherwise ``int32``/``int64``; ISO dates become ``date32``; anything else is ``string``.
+    A number written with a leading zero or a plus sign (``01405134``, ``007``, ``+5``) is an identifier or a code,
+    not a quantity: it is ``string``, because a number type would store ``1405134`` and lose what the provider wrote.
     """
     seen = False
     is_int = is_float = is_date = True
@@ -129,6 +135,8 @@ def infer_type_name(values: Iterable[str | None]) -> str:
         if value in NULL_TOKENS:
             continue
         seen = True
+        if _CODE_LIKE.match(value):
+            return "string"
         if is_int:
             try:
                 number = int(value)

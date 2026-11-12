@@ -299,3 +299,16 @@ def test_boxscores_include_substitutes_and_relievers_not_just_starters(tmp_path:
     assert starters == {"vpit1", "hpit1"}
     by_pitcher = dict(zip(pitchers["pitcher_id"], pitchers["seq"], strict=True))
     assert by_pitcher["vpit1"] == 1 and by_pitcher["vpit2"] == 2
+
+
+def test_a_roster_line_without_a_position_has_a_null_position(tmp_path: Path) -> None:
+    """The round-trip check found '' where the raw line had no 7th field; an empty cell is NULL in this project."""
+    from baseballpy.sources.retrosheet.parser import RetrosheetRosterParser
+
+    path = tmp_path / "BOS2024.ROS"
+    path.write_text(
+        "aaaa001,Smith,Al,R,R,BOS,P\nbbbb001,Jones,Bo,L,L,BOS\ncccc001,Poe,Cy,?,?,BOS,\n",
+        encoding="utf-8",
+    )
+    table = RetrosheetRosterParser().parse_files([path], 2024)
+    assert table.column("position").to_pylist() == ["P", None, None]

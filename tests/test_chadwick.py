@@ -155,7 +155,7 @@ _FULL_IDS_CSV = (
     "key_wikidata,name_last,name_first,name_given,birth_year,birth_month,birth_day,"
     "mlb_played_first,mlb_played_last\n"
     "270bfa31,270bfa31-f65b-4d2b-a54a-09dca1b6a000,660271,ohtas001,ohtansh01,otani-000sho,19755,"
-    "1305137,Q4391858,Ohtani,Shohei,Shohei,1994,7,5,2018,2024\n"
+    "01305137,Q4391858,Ohtani,Shohei,Shohei,1994,7,5,2018,2024\n"
     "a1b2c3d4,a1b2c3d4-0000-4000-8000-000000000001,592450,judga001,judgeaa01,judge-000aar,15640,"
     ",Q1234,Judge,Aaron,Aaron James,1992,4,26,2016,2024\n"
 )
@@ -396,3 +396,12 @@ def test_names_links_and_countries_are_reachable_from_python() -> None:
     bare = _register_from_rows([{"name_last": "A", "name_first": "B", "name_given": "B"}])
     assert bare.links_for("p0000000") == [] and bare.names_for("p0000000") == []
     assert bare.country("US") is None and bare.links_table is None
+
+
+def test_npb_ids_keep_their_leading_zero_and_are_looked_up_as_text() -> None:
+    """The NPB id 01305137 is an identifier: stored as 1305137 it would no longer be what the provider wrote."""
+    register = _full_register()
+    ohtani = register.resolve(mlbam=660271)
+    assert ohtani is not None and ohtani.key_npb == "01305137"
+    assert register.resolve_id("01305137", PlayerIdType.NPB, PlayerIdType.MLBAM) == 660271
+    assert register.resolve_id("1305137", PlayerIdType.NPB, PlayerIdType.MLBAM) is None

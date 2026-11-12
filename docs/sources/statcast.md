@@ -8,6 +8,9 @@ is from that probe, not from memory.
 - **Rate limit:** 2.5 requests/second through the shared `HttpClient` (token bucket, retries, HTTP/2).
 - **Server cap:** a pitch search returns at most 25,000 rows; `baseballpy` bisects any window that reaches it
   and raises `TruncatedResultError` if a single day still hits it (nothing is ever truncated silently).
+- **Precision (decided 2026-11-12):** every decimal column is a 64-bit float. The pitch tables used 32-bit floats until the round-trip check showed that the text `85.8` was stored as `85.80000305175781` and `-0.4576421044460543` as `-0.4576421082019806` (50 columns, differences up to 7e-6). The 64-bit form costs 2.5% of file size (2024: 96.7 MB to 99.1 MB).
+- **What Savant's own documentation says (read 2026-11-12, baseballsavant.mlb.com/csv-docs):** it gives units for some fields (`release_speed` in MPH, `pfx_x` in feet) but **no data types and no precision** for any column, and says `batter`, `pitcher`, `fielder_2`..`fielder_9` are MLB player ids and `game_pk` the game id. Two things to remember: (1) **`plate_x` changed meaning in 2026**: through 2025 it measures from the front of the plate, from 2026 from the middle of the plate to match the ABS system, so a model that spans the change must adjust; (2) the documentation lists `vy0` twice (the second entry is `vz0`), a labelling error in the provider's page.
+- **Savant revises data and the raw windows overlap.** A window that hits the 25,000-row cap is stored as the capped window and as its halves, and the same pitch fetched at different times can differ in some columns. The processed data keeps one version per key. The round-trip check therefore reports key coverage, not values, for such seasons (minor leagues 2026: 1,123,498 raw rows hold 869,226 distinct keys, all present).
 - **Typing:** every dataset has a strict PyArrow schema generated from the live headers; columns that appear
   later land in a trailing `_extras` JSON column (and log `schema_drift` once); uncastable cells are quarantined.
 
@@ -203,28 +206,28 @@ Pitch-level Statcast search results.
 | `outs_when_up` | int8 | yes | — | Pre-pitch number of outs. (src: savant_csv_docs) |
 | `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | The type of pitch derived from Statcast. (src: savant_csv_docs) |
 | `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — | The name of the pitch derived from the Statcast Data. (src: savant_csv_docs) |
-| `release_speed` | float | yes | — | Pitch velocity in MPH. Values from 2008-16 are via PitchFX, and adjusted to roughly out-of-hand release point. All velocities from 2017 and beyond are Statcast, which are reported out-of-hand. All velocities are thus on the same scale. (src: savant_csv_docs) |
-| `effective_speed` | float | yes | — | Derived speed based on the the extension of the pitcher's release. (src: savant_csv_docs) |
-| `release_spin_rate` | float | yes | — | TODO |
-| `release_extension` | float | yes | — | Release extension of pitch in feet as tracked by Statcast. (src: savant_csv_docs) |
-| `spin_axis` | float | yes | — | The Spin Axis in the 2D X-Z plane in degrees from 0 to 360, such that 180 represents a pure backspin fastball and 0 degrees represents a pure topspin (12-6) curveball (src: savant_csv_docs) |
-| `release_pos_x` | float | yes | — | Horizontal Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
-| `release_pos_y` | float | yes | — | Release position of pitch measured in feet from the catcher's perspective. (src: savant_csv_docs) |
-| `release_pos_z` | float | yes | — | Vertical Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
-| `arm_angle` | float | yes | — | The angle between a line parallel to the ground and a l line extending from the location of the pitcher's throwing shoulder and the location of the ball at the time of the pitch. (src: savant_csv_docs) |
+| `release_speed` | double | yes | — | Pitch velocity in MPH. Values from 2008-16 are via PitchFX, and adjusted to roughly out-of-hand release point. All velocities from 2017 and beyond are Statcast, which are reported out-of-hand. All velocities are thus on the same scale. (src: savant_csv_docs) |
+| `effective_speed` | double | yes | — | Derived speed based on the the extension of the pitcher's release. (src: savant_csv_docs) |
+| `release_spin_rate` | double | yes | — | TODO |
+| `release_extension` | double | yes | — | Release extension of pitch in feet as tracked by Statcast. (src: savant_csv_docs) |
+| `spin_axis` | double | yes | — | The Spin Axis in the 2D X-Z plane in degrees from 0 to 360, such that 180 represents a pure backspin fastball and 0 degrees represents a pure topspin (12-6) curveball (src: savant_csv_docs) |
+| `release_pos_x` | double | yes | — | Horizontal Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `release_pos_y` | double | yes | — | Release position of pitch measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `release_pos_z` | double | yes | — | Vertical Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `arm_angle` | double | yes | — | The angle between a line parallel to the ground and a l line extending from the location of the pitcher's throwing shoulder and the location of the ball at the time of the pitch. (src: savant_csv_docs) |
 | `zone` | int8 | yes | — | Zone location of the ball when it crosses the plate from the catcher's perspective. (src: savant_csv_docs) |
-| `plate_x` | float | yes | — | Horizontal position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
-| `plate_z` | float | yes | — | Vertical position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
-| `sz_top` | float | yes | — | Top of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, top of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the top of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
-| `sz_bot` | float | yes | — | Bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the bottom of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
-| `pfx_x` | float | yes | — | Horizontal movement in feet from the catcher's perspective. (src: savant_csv_docs) |
-| `pfx_z` | float | yes | — | Vertical movement in feet from the catcher's perpsective. (src: savant_csv_docs) |
-| `vx0` | float | yes | — | The velocity of the pitch, in feet per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
-| `vy0` | float | yes | — | The velocity of the pitch, in feet per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
-| `vz0` | float | yes | — | TODO |
-| `ax` | float | yes | — | The acceleration of the pitch, in feet per second per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
-| `ay` | float | yes | — | The acceleration of the pitch, in feet per second per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
-| `az` | float | yes | — | The acceleration of the pitch, in feet per second per second, in z-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `plate_x` | double | yes | — | Horizontal position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
+| `plate_z` | double | yes | — | Vertical position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
+| `sz_top` | double | yes | — | Top of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, top of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the top of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
+| `sz_bot` | double | yes | — | Bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the bottom of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
+| `pfx_x` | double | yes | — | Horizontal movement in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `pfx_z` | double | yes | — | Vertical movement in feet from the catcher's perpsective. (src: savant_csv_docs) |
+| `vx0` | double | yes | — | The velocity of the pitch, in feet per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `vy0` | double | yes | — | The velocity of the pitch, in feet per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `vz0` | double | yes | — | TODO |
+| `ax` | double | yes | — | The acceleration of the pitch, in feet per second per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `ay` | double | yes | — | The acceleration of the pitch, in feet per second per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `az` | double | yes | — | The acceleration of the pitch, in feet per second per second, in z-dimension, determined at y=50 feet. (src: savant_csv_docs) |
 | `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Side of the plate batter is standing. (src: savant_csv_docs) |
 | `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Hand pitcher throws with. (src: savant_csv_docs) |
 | `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Short hand of pitch result. B = ball, S = strike, X = in play. (src: savant_csv_docs) |
@@ -233,22 +236,22 @@ Pitch-level Statcast search results.
 | `des` | string | yes | — | Plate appearance description from game day. (src: savant_csv_docs) |
 | `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Batted ball type, ground_ball, line_drive, fly_ball, popup. (src: savant_csv_docs) |
 | `hit_location` | int8 | yes | — | Position of first fielder to touch the ball. (src: savant_csv_docs) |
-| `launch_speed` | float | yes | — | Exit velocity of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
-| `launch_angle` | float | yes | — | Launch angle of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
+| `launch_speed` | double | yes | — | Exit velocity of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
+| `launch_angle` | double | yes | — | Launch angle of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
 | `launch_speed_angle` | int8 | yes | — | Launch speed/angle zone based on launch angle and exit velocity. Weak Topped Under Flare/Burner Solid Contact Barrel (src: savant_csv_docs) |
-| `hit_distance_sc` | float | yes | — | TODO |
-| `hc_x` | float | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
-| `hc_y` | float | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
-| `bat_speed` | float | yes | — | TODO |
-| `swing_length` | float | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
-| `estimated_ba_using_speedangle` | float | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
-| `estimated_woba_using_speedangle` | float | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
-| `woba_value` | float | yes | — | wOBA value based on result of play. (src: savant_csv_docs) |
-| `woba_denom` | float | yes | — | wOBA denominator based on result of play. (src: savant_csv_docs) |
-| `babip_value` | float | yes | — | BABIP value based on result of play. (src: savant_csv_docs) |
-| `iso_value` | float | yes | — | ISO value based on result of play. (src: savant_csv_docs) |
-| `delta_home_win_exp` | float | yes | — | The change in Win Expectancy before the Plate Appearance and after the Plate Appearance (src: savant_csv_docs) |
-| `delta_run_exp` | float | yes | — | The change in Run Expectancy before the Pitch and after the Pitch (src: savant_csv_docs) |
+| `hit_distance_sc` | double | yes | — | TODO |
+| `hc_x` | double | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
+| `hc_y` | double | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
+| `bat_speed` | double | yes | — | TODO |
+| `swing_length` | double | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
+| `estimated_ba_using_speedangle` | double | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
+| `estimated_woba_using_speedangle` | double | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
+| `woba_value` | double | yes | — | wOBA value based on result of play. (src: savant_csv_docs) |
+| `woba_denom` | double | yes | — | wOBA denominator based on result of play. (src: savant_csv_docs) |
+| `babip_value` | double | yes | — | BABIP value based on result of play. (src: savant_csv_docs) |
+| `iso_value` | double | yes | — | ISO value based on result of play. (src: savant_csv_docs) |
+| `delta_home_win_exp` | double | yes | — | The change in Win Expectancy before the Plate Appearance and after the Plate Appearance (src: savant_csv_docs) |
+| `delta_run_exp` | double | yes | — | The change in Run Expectancy before the Pitch and after the Pitch (src: savant_csv_docs) |
 | `on_1b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 1B. (src: savant_csv_docs) |
 | `on_2b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 2B. (src: savant_csv_docs) |
 | `on_3b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 3B. (src: savant_csv_docs) |
@@ -278,14 +281,14 @@ Pitch-level Statcast search results.
 | `tfs_zulu_deprecated` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
 | `umpire` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
 | `sv_id` | string | yes | — | Non-unique Id of play event per game. (src: savant_csv_docs) |
-| `miss_distance` | float | yes | — | TODO |
-| `estimated_slg_using_speedangle` | float | yes | — | TODO |
-| `delta_pitcher_run_exp` | float | yes | — | TODO |
-| `hyper_speed` | float | yes | — | Savant display name: Adjusted EV. Adjusted Exit Velocity sets every batted ball hit below 88 mph as 88 mph, otherwise it uses the actual Exit Velocity (src: savant_csv_docs) |
+| `miss_distance` | double | yes | — | TODO |
+| `estimated_slg_using_speedangle` | double | yes | — | TODO |
+| `delta_pitcher_run_exp` | double | yes | — | TODO |
+| `hyper_speed` | double | yes | — | Savant display name: Adjusted EV. Adjusted Exit Velocity sets every batted ball hit below 88 mph as 88 mph, otherwise it uses the actual Exit Velocity (src: savant_csv_docs) |
 | `home_score_diff` | int16 | yes | — | Home score minus Away score (src: savant_csv_docs) |
 | `bat_score_diff` | int16 | yes | — | Batting team score less Pitching team score (src: savant_csv_docs) |
-| `home_win_exp` | float | yes | — | Home team win expectancy (src: savant_csv_docs) |
-| `bat_win_exp` | float | yes | — | Bat team win expectancy (src: savant_csv_docs) |
+| `home_win_exp` | double | yes | — | Home team win expectancy (src: savant_csv_docs) |
+| `bat_win_exp` | double | yes | — | Bat team win expectancy (src: savant_csv_docs) |
 | `age_pit_legacy` | int16 | yes | — | pitcher age on 6/30 (src: savant_csv_docs) |
 | `age_bat_legacy` | int16 | yes | — | batter age on 6/30 (src: savant_csv_docs) |
 | `age_pit` | int16 | yes | — | pitcher age on 12/31 (src: savant_csv_docs) |
@@ -296,14 +299,14 @@ Pitch-level Statcast search results.
 | `batter_days_since_prev_game` | int16 | yes | — | number of days since batter's last game (src: savant_csv_docs) |
 | `pitcher_days_until_next_game` | int16 | yes | — | number of days until the pitcher's next game (src: savant_csv_docs) |
 | `batter_days_until_next_game` | int16 | yes | — | number of days until the batter's next game (src: savant_csv_docs) |
-| `api_break_z_with_gravity` | float | yes | — | Vertical break with gravity included (src: savant_csv_docs) |
-| `api_break_x_arm` | float | yes | — | Break, in inches, of a pitch to the pitcher's arm side. (src: savant_csv_docs) |
-| `api_break_x_batter_in` | float | yes | — | Break, in inches, of a pitch toward the batter's side of plate. (src: savant_csv_docs) |
-| `attack_angle` | float | yes | — | Attack Angle measures the vertical angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to the ground. (src: savant_csv_docs) |
-| `attack_direction` | float | yes | — | Attack Direction measures the horizontal angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to a line from home plate to straightaway center field. (src: savant_csv_docs) |
-| `swing_path_tilt` | float | yes | — | The vertical angular orientation of the "plane" of the swing, as compared to the ground, defined by the path of the bat in the 40 ms prior to contact, which approximates a slice of a flat disc in shape. (src: savant_csv_docs) |
-| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the X (horizontal) direction. (src: savant_csv_docs) |
-| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the Y (mound-to-plate) direction. (src: savant_csv_docs) |
+| `api_break_z_with_gravity` | double | yes | — | Vertical break with gravity included (src: savant_csv_docs) |
+| `api_break_x_arm` | double | yes | — | Break, in inches, of a pitch to the pitcher's arm side. (src: savant_csv_docs) |
+| `api_break_x_batter_in` | double | yes | — | Break, in inches, of a pitch toward the batter's side of plate. (src: savant_csv_docs) |
+| `attack_angle` | double | yes | — | Attack Angle measures the vertical angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to the ground. (src: savant_csv_docs) |
+| `attack_direction` | double | yes | — | Attack Direction measures the horizontal angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to a line from home plate to straightaway center field. (src: savant_csv_docs) |
+| `swing_path_tilt` | double | yes | — | The vertical angular orientation of the "plane" of the swing, as compared to the ground, defined by the path of the bat in the 40 ms prior to contact, which approximates a slice of a flat disc in shape. (src: savant_csv_docs) |
+| `intercept_ball_minus_batter_pos_x_inches` | double | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the X (horizontal) direction. (src: savant_csv_docs) |
+| `intercept_ball_minus_batter_pos_y_inches` | double | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the Y (mound-to-plate) direction. (src: savant_csv_docs) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.pitches -->
@@ -1553,28 +1556,28 @@ Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
 | `outs_when_up` | int8 | yes | — | Pre-pitch number of outs. (src: savant_csv_docs) |
 | `pitch_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | The type of pitch derived from Statcast. (src: savant_csv_docs) |
 | `pitch_name` | dictionary<values=string, indices=int8, ordered=0> | yes | — | The name of the pitch derived from the Statcast Data. (src: savant_csv_docs) |
-| `release_speed` | float | yes | — | Pitch velocity in MPH. Values from 2008-16 are via PitchFX, and adjusted to roughly out-of-hand release point. All velocities from 2017 and beyond are Statcast, which are reported out-of-hand. All velocities are thus on the same scale. (src: savant_csv_docs) |
-| `effective_speed` | float | yes | — | Derived speed based on the the extension of the pitcher's release. (src: savant_csv_docs) |
-| `release_spin_rate` | float | yes | — | TODO |
-| `release_extension` | float | yes | — | Release extension of pitch in feet as tracked by Statcast. (src: savant_csv_docs) |
-| `spin_axis` | float | yes | — | The Spin Axis in the 2D X-Z plane in degrees from 0 to 360, such that 180 represents a pure backspin fastball and 0 degrees represents a pure topspin (12-6) curveball (src: savant_csv_docs) |
-| `release_pos_x` | float | yes | — | Horizontal Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
-| `release_pos_y` | float | yes | — | Release position of pitch measured in feet from the catcher's perspective. (src: savant_csv_docs) |
-| `release_pos_z` | float | yes | — | Vertical Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
-| `arm_angle` | float | yes | — | The angle between a line parallel to the ground and a l line extending from the location of the pitcher's throwing shoulder and the location of the ball at the time of the pitch. (src: savant_csv_docs) |
+| `release_speed` | double | yes | — | Pitch velocity in MPH. Values from 2008-16 are via PitchFX, and adjusted to roughly out-of-hand release point. All velocities from 2017 and beyond are Statcast, which are reported out-of-hand. All velocities are thus on the same scale. (src: savant_csv_docs) |
+| `effective_speed` | double | yes | — | Derived speed based on the the extension of the pitcher's release. (src: savant_csv_docs) |
+| `release_spin_rate` | double | yes | — | TODO |
+| `release_extension` | double | yes | — | Release extension of pitch in feet as tracked by Statcast. (src: savant_csv_docs) |
+| `spin_axis` | double | yes | — | The Spin Axis in the 2D X-Z plane in degrees from 0 to 360, such that 180 represents a pure backspin fastball and 0 degrees represents a pure topspin (12-6) curveball (src: savant_csv_docs) |
+| `release_pos_x` | double | yes | — | Horizontal Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `release_pos_y` | double | yes | — | Release position of pitch measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `release_pos_z` | double | yes | — | Vertical Release Position of the ball measured in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `arm_angle` | double | yes | — | The angle between a line parallel to the ground and a l line extending from the location of the pitcher's throwing shoulder and the location of the ball at the time of the pitch. (src: savant_csv_docs) |
 | `zone` | int8 | yes | — | Zone location of the ball when it crosses the plate from the catcher's perspective. (src: savant_csv_docs) |
-| `plate_x` | float | yes | — | Horizontal position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
-| `plate_z` | float | yes | — | Vertical position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
-| `sz_top` | float | yes | — | Top of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, top of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the top of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
-| `sz_bot` | float | yes | — | Bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the bottom of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
-| `pfx_x` | float | yes | — | Horizontal movement in feet from the catcher's perspective. (src: savant_csv_docs) |
-| `pfx_z` | float | yes | — | Vertical movement in feet from the catcher's perpsective. (src: savant_csv_docs) |
-| `vx0` | float | yes | — | The velocity of the pitch, in feet per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
-| `vy0` | float | yes | — | The velocity of the pitch, in feet per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
-| `vz0` | float | yes | — | TODO |
-| `ax` | float | yes | — | The acceleration of the pitch, in feet per second per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
-| `ay` | float | yes | — | The acceleration of the pitch, in feet per second per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
-| `az` | float | yes | — | The acceleration of the pitch, in feet per second per second, in z-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `plate_x` | double | yes | — | Horizontal position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
+| `plate_z` | double | yes | — | Vertical position of the ball when it crosses home plate from the catcher's perspective. Through 2025, this was front-of-plate. From 2026 on, this is middle-of-plate to align with the ABS system. (src: savant_csv_docs) |
+| `sz_top` | double | yes | — | Top of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, top of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the top of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
+| `sz_bot` | double | yes | — | Bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. Through 2025, bottom of the batter's strike zone set by the operator when the ball is halfway to the plate. From 2026 on, this is the bottom of the batter's ABS-defined strike zone. (src: savant_csv_docs) |
+| `pfx_x` | double | yes | — | Horizontal movement in feet from the catcher's perspective. (src: savant_csv_docs) |
+| `pfx_z` | double | yes | — | Vertical movement in feet from the catcher's perpsective. (src: savant_csv_docs) |
+| `vx0` | double | yes | — | The velocity of the pitch, in feet per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `vy0` | double | yes | — | The velocity of the pitch, in feet per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `vz0` | double | yes | — | TODO |
+| `ax` | double | yes | — | The acceleration of the pitch, in feet per second per second, in x-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `ay` | double | yes | — | The acceleration of the pitch, in feet per second per second, in y-dimension, determined at y=50 feet. (src: savant_csv_docs) |
+| `az` | double | yes | — | The acceleration of the pitch, in feet per second per second, in z-dimension, determined at y=50 feet. (src: savant_csv_docs) |
 | `stand` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Side of the plate batter is standing. (src: savant_csv_docs) |
 | `p_throws` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Hand pitcher throws with. (src: savant_csv_docs) |
 | `type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Short hand of pitch result. B = ball, S = strike, X = in play. (src: savant_csv_docs) |
@@ -1583,22 +1586,22 @@ Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
 | `des` | string | yes | — | Plate appearance description from game day. (src: savant_csv_docs) |
 | `bb_type` | dictionary<values=string, indices=int8, ordered=0> | yes | — | Batted ball type, ground_ball, line_drive, fly_ball, popup. (src: savant_csv_docs) |
 | `hit_location` | int8 | yes | — | Position of first fielder to touch the ball. (src: savant_csv_docs) |
-| `launch_speed` | float | yes | — | Exit velocity of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
-| `launch_angle` | float | yes | — | Launch angle of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
+| `launch_speed` | double | yes | — | Exit velocity of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
+| `launch_angle` | double | yes | — | Launch angle of the batted ball as tracked by Statcast. For the limited subset of batted balls not tracked directly, estimates are included based on the process described here . (src: savant_csv_docs) |
 | `launch_speed_angle` | int8 | yes | — | Launch speed/angle zone based on launch angle and exit velocity. Weak Topped Under Flare/Burner Solid Contact Barrel (src: savant_csv_docs) |
-| `hit_distance_sc` | float | yes | — | TODO |
-| `hc_x` | float | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
-| `hc_y` | float | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
-| `bat_speed` | float | yes | — | TODO |
-| `swing_length` | float | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
-| `estimated_ba_using_speedangle` | float | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
-| `estimated_woba_using_speedangle` | float | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
-| `woba_value` | float | yes | — | wOBA value based on result of play. (src: savant_csv_docs) |
-| `woba_denom` | float | yes | — | wOBA denominator based on result of play. (src: savant_csv_docs) |
-| `babip_value` | float | yes | — | BABIP value based on result of play. (src: savant_csv_docs) |
-| `iso_value` | float | yes | — | ISO value based on result of play. (src: savant_csv_docs) |
-| `delta_home_win_exp` | float | yes | — | The change in Win Expectancy before the Plate Appearance and after the Plate Appearance (src: savant_csv_docs) |
-| `delta_run_exp` | float | yes | — | The change in Run Expectancy before the Pitch and after the Pitch (src: savant_csv_docs) |
+| `hit_distance_sc` | double | yes | — | TODO |
+| `hc_x` | double | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
+| `hc_y` | double | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
+| `bat_speed` | double | yes | — | TODO |
+| `swing_length` | double | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
+| `estimated_ba_using_speedangle` | double | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
+| `estimated_woba_using_speedangle` | double | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
+| `woba_value` | double | yes | — | wOBA value based on result of play. (src: savant_csv_docs) |
+| `woba_denom` | double | yes | — | wOBA denominator based on result of play. (src: savant_csv_docs) |
+| `babip_value` | double | yes | — | BABIP value based on result of play. (src: savant_csv_docs) |
+| `iso_value` | double | yes | — | ISO value based on result of play. (src: savant_csv_docs) |
+| `delta_home_win_exp` | double | yes | — | The change in Win Expectancy before the Plate Appearance and after the Plate Appearance (src: savant_csv_docs) |
+| `delta_run_exp` | double | yes | — | The change in Run Expectancy before the Pitch and after the Pitch (src: savant_csv_docs) |
 | `on_1b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 1B. (src: savant_csv_docs) |
 | `on_2b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 2B. (src: savant_csv_docs) |
 | `on_3b` | int32 | yes | — | Pre-pitch MLB Player Id of Runner on 3B. (src: savant_csv_docs) |
@@ -1628,14 +1631,14 @@ Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
 | `tfs_zulu_deprecated` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
 | `umpire` | string | yes | — | * Deprecated field from old tracking system. (src: savant_csv_docs) |
 | `sv_id` | string | yes | — | Non-unique Id of play event per game. (src: savant_csv_docs) |
-| `miss_distance` | float | yes | — | TODO |
-| `estimated_slg_using_speedangle` | float | yes | — | TODO |
-| `delta_pitcher_run_exp` | float | yes | — | TODO |
-| `hyper_speed` | float | yes | — | Savant display name: Adjusted EV. Adjusted Exit Velocity sets every batted ball hit below 88 mph as 88 mph, otherwise it uses the actual Exit Velocity (src: savant_csv_docs) |
+| `miss_distance` | double | yes | — | TODO |
+| `estimated_slg_using_speedangle` | double | yes | — | TODO |
+| `delta_pitcher_run_exp` | double | yes | — | TODO |
+| `hyper_speed` | double | yes | — | Savant display name: Adjusted EV. Adjusted Exit Velocity sets every batted ball hit below 88 mph as 88 mph, otherwise it uses the actual Exit Velocity (src: savant_csv_docs) |
 | `home_score_diff` | int16 | yes | — | Home score minus Away score (src: savant_csv_docs) |
 | `bat_score_diff` | int16 | yes | — | Batting team score less Pitching team score (src: savant_csv_docs) |
-| `home_win_exp` | float | yes | — | Home team win expectancy (src: savant_csv_docs) |
-| `bat_win_exp` | float | yes | — | Bat team win expectancy (src: savant_csv_docs) |
+| `home_win_exp` | double | yes | — | Home team win expectancy (src: savant_csv_docs) |
+| `bat_win_exp` | double | yes | — | Bat team win expectancy (src: savant_csv_docs) |
 | `age_pit_legacy` | int16 | yes | — | pitcher age on 6/30 (src: savant_csv_docs) |
 | `age_bat_legacy` | int16 | yes | — | batter age on 6/30 (src: savant_csv_docs) |
 | `age_pit` | int16 | yes | — | pitcher age on 12/31 (src: savant_csv_docs) |
@@ -1646,14 +1649,14 @@ Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
 | `batter_days_since_prev_game` | int16 | yes | — | number of days since batter's last game (src: savant_csv_docs) |
 | `pitcher_days_until_next_game` | int16 | yes | — | number of days until the pitcher's next game (src: savant_csv_docs) |
 | `batter_days_until_next_game` | int16 | yes | — | number of days until the batter's next game (src: savant_csv_docs) |
-| `api_break_z_with_gravity` | float | yes | — | Vertical break with gravity included (src: savant_csv_docs) |
-| `api_break_x_arm` | float | yes | — | Break, in inches, of a pitch to the pitcher's arm side. (src: savant_csv_docs) |
-| `api_break_x_batter_in` | float | yes | — | Break, in inches, of a pitch toward the batter's side of plate. (src: savant_csv_docs) |
-| `attack_angle` | float | yes | — | Attack Angle measures the vertical angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to the ground. (src: savant_csv_docs) |
-| `attack_direction` | float | yes | — | Attack Direction measures the horizontal angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to a line from home plate to straightaway center field. (src: savant_csv_docs) |
-| `swing_path_tilt` | float | yes | — | The vertical angular orientation of the "plane" of the swing, as compared to the ground, defined by the path of the bat in the 40 ms prior to contact, which approximates a slice of a flat disc in shape. (src: savant_csv_docs) |
-| `intercept_ball_minus_batter_pos_x_inches` | float | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the X (horizontal) direction. (src: savant_csv_docs) |
-| `intercept_ball_minus_batter_pos_y_inches` | float | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the Y (mound-to-plate) direction. (src: savant_csv_docs) |
+| `api_break_z_with_gravity` | double | yes | — | Vertical break with gravity included (src: savant_csv_docs) |
+| `api_break_x_arm` | double | yes | — | Break, in inches, of a pitch to the pitcher's arm side. (src: savant_csv_docs) |
+| `api_break_x_batter_in` | double | yes | — | Break, in inches, of a pitch toward the batter's side of plate. (src: savant_csv_docs) |
+| `attack_angle` | double | yes | — | Attack Angle measures the vertical angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to the ground. (src: savant_csv_docs) |
+| `attack_direction` | double | yes | — | Attack Direction measures the horizontal angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to a line from home plate to straightaway center field. (src: savant_csv_docs) |
+| `swing_path_tilt` | double | yes | — | The vertical angular orientation of the "plane" of the swing, as compared to the ground, defined by the path of the bat in the 40 ms prior to contact, which approximates a slice of a flat disc in shape. (src: savant_csv_docs) |
+| `intercept_ball_minus_batter_pos_x_inches` | double | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the X (horizontal) direction. (src: savant_csv_docs) |
+| `intercept_ball_minus_batter_pos_y_inches` | double | yes | — | Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the Y (mound-to-plate) direction. (src: savant_csv_docs) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.pitches_minors -->

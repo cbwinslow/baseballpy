@@ -64,3 +64,17 @@ def test_long_or_scientific_numbers_in_text_are_floats_when_asked() -> None:
     assert infer(["1.5e-05", "2"], max_text_scale=8) == "float64"
     assert infer(["0.285", "1.5"], max_text_scale=8) == "decimal(9,3)"
     assert infer(["0.2857142857142857"]) == "decimal(38,16)", "without the option, exact decimals"
+
+
+def test_numbers_with_leading_zeros_or_a_plus_sign_are_text() -> None:
+    """Identifiers such as the NPB id 01405134 are not numbers: a number type would drop the zeros (round-trip check)."""
+    from baseballpy.core.schema_tools import infer_type_name
+
+    assert infer_type_name(["01405134", "03905157", "7"]) == "string"
+    assert infer_type_name(["007", None]) == "string"
+    assert infer_type_name(["+5", "6"]) == "string"
+    assert infer_type_name(["01.5", "2.5"]) == "string", "a decimal with a leading zero is text too"
+    # these are plain numbers and stay numbers
+    assert infer_type_name(["0", "-7", "12"]) == "int16"
+    assert infer_type_name(["0.5", "-0.25", "10"]) == "float64"
+    assert infer_type_name(["0", "100000"]) == "int32"

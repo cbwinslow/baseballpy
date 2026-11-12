@@ -383,7 +383,7 @@ Official pitching boxscore lines.
 | `team_id` | int32 | yes | — | MLBAM identifier of the team. (authored) |
 | `player_id` | int32 | yes | — | MLBAM identifier of the player. (authored) |
 | `player_name` | string | yes | — | Name of the player. (authored) |
-| `ip` | float | yes | — | TODO |
+| `ip` | double | yes | — | TODO |
 | `h` | int16 | yes | — | TODO |
 | `r` | int16 | yes | — | TODO |
 | `er` | int16 | yes | — | TODO |
@@ -491,9 +491,9 @@ League and division standings.
 | `team_name` | string | yes | — | Name of the team. (authored) |
 | `wins` | int16 | yes | — | TODO |
 | `losses` | int16 | yes | — | TODO |
-| `win_pct` | float | yes | — | TODO |
-| `games_back` | float | yes | — | TODO |
-| `wild_card_gb` | float | yes | — | TODO |
+| `win_pct` | double | yes | — | TODO |
+| `games_back` | double | yes | — | TODO |
+| `wild_card_gb` | double | yes | — | TODO |
 | `run_differential` | int16 | yes | — | TODO |
 | `streak` | string | yes | — | TODO |
 | `elim_num` | int16 | yes | — | TODO |

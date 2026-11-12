@@ -13,7 +13,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `caching-and-invalidation` | 21 | 35 | 50 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
-| `cli-and-ingest` | 24 | 36 | 60 |
+| `cli-and-ingest` | 25 | 39 | 66 |
 | `concurrency-and-rate-limiting` | 6 | 12 | 14 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
@@ -41,18 +41,19 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 12 |
-| `retrosheet` | 43 | archived | yes | yes | yes | 1030/2081 (49%) | 25 |
+| `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
 | `statcast` | 50 | archived | yes | yes | yes | 321/1765 (18%) | 17 |
 | `mlb_api` | 365 | archived | yes | yes | yes | 9486/16957 (55%) | 28 |
 
 ## Active changes (`openspec/changes/`)
 
-96 changes are archived under `openspec/changes/archive/`.
+97 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
+| `data-validation-roundtrip` | 5 | 2 | 1.5, 1.7 |
 | `download-throughput` | 8 | 1 | 2.4 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `finish-mlb-history` | 9 | 6 | 2.1, 2.2, 2.3, 2.4, 3.2, 4.1 |
@@ -178,6 +179,8 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 110: Retrosheet's Own Files Are Opt-In Datasets In The Same Source; Odd Cells Are Quarantined, Not Dropped
 - ADR 111: The View Refresh Caches Parquet Footer Row Counts
 - ADR 112: Every Route Of A Provider's Live Menu Is Registered Or Explained; MLB Processed Files Are Rebuilt From Raw Segments
+- ADR 113: Types Are Proved Against The Provider's Text; Decimals Are 64-Bit; Identifiers Are Text
+- ADR 114: Concurrency Is Decided From Live, Measured Memory, Not A Fixed Number
 
 ## Documentation pages (`docs/`)
 
