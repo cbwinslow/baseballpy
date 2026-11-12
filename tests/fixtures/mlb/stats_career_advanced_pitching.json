@@ -79,7 +79,8 @@
       "fullName": "Don Aase",
       "link": "/api/v1/people/110003",
       "firstName": "Don",
-      "lastName": "Aase"
+      "lastName": "Aase",
+      "nameSlug": "don-aase-110003"
      },
      "league": {
       "id": 103,
@@ -132,7 +133,8 @@
       "fullName": "Bert Abbey",
       "link": "/api/v1/people/110006",
       "firstName": "Bert",
-      "lastName": "Abbey"
+      "lastName": "Abbey",
+      "nameSlug": "bert-abbey-110006"
      },
      "sport": {
       "id": 1,
@@ -179,7 +181,8 @@
       "fullName": "Charlie Abbey",
       "link": "/api/v1/people/110007",
       "firstName": "Charlie",
-      "lastName": "Abbey"
+      "lastName": "Abbey",
+      "nameSlug": "charlie-abbey-110007"
      },
      "sport": {
       "id": 1,

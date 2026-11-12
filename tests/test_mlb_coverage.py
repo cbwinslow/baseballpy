@@ -121,6 +121,28 @@ def test_iter_records_carries_wrapper_fields_and_fails_loudly_on_shape_changes()
         list(iter_records({"dates": 5}, ("dates", "x")))
 
 
+def test_page_boundary_copies_are_not_repeated_on_every_row_of_a_stats_page() -> None:
+    """The tied splits of a page edge are rows of some page already: the wrapper list is left in the raw page."""
+    split = {"player": {"id": 7}, "stat": {"hits": 1}}
+    page = {
+        "stats": [
+            {
+                "totalSplits": 2,
+                "splitsTiedWithLimit": [split],
+                "splitsTiedWithOffset": [split],
+                "playerPool": "ALL",
+                "splits": [split, {"player": {"id": 8}, "stat": {"hits": 2}}],
+            }
+        ]
+    }
+    rows = list(iter_records(page, ("stats", "*", "splits")))
+    assert [r["player.id"] for r in rows] == [7, 8]
+    assert all(
+        "stats.splitsTiedWithLimit" not in r and "stats.splitsTiedWithOffset" not in r for r in rows
+    )
+    assert rows[0]["stats.totalSplits"] == 2 and rows[0]["stats.playerPool"] == "ALL"
+
+
 def test_trim_payload_keeps_wrapper_and_first_records() -> None:
     payload = {"copyright": "c", "teams": [{"id": i} for i in range(10)]}
     trimmed = trim_payload(payload, ("teams",), 3)

@@ -63,7 +63,8 @@
       "fullName": "Trey Lunsford",
       "link": "/api/v1/people/408064",
       "firstName": "Trey",
-      "lastName": "Lunsford"
+      "lastName": "Lunsford",
+      "nameSlug": "trey-lunsford-408064"
      },
      "league": {
       "id": 104,
@@ -136,7 +137,8 @@
       "fullName": "Harry Spilman",
       "link": "/api/v1/people/122599",
       "firstName": "Harry",
-      "lastName": "Spilman"
+      "lastName": "Spilman",
+      "nameSlug": "harry-spilman-122599"
      },
      "league": {
       "id": 104,
@@ -209,7 +211,8 @@
       "fullName": "Harry Spilman",
       "link": "/api/v1/people/122599",
       "firstName": "Harry",
-      "lastName": "Spilman"
+      "lastName": "Spilman",
+      "nameSlug": "harry-spilman-122599"
      },
      "league": {
       "id": 104,

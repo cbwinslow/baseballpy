@@ -2905,8 +2905,6 @@ League-wide catching stats, type careerAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
 | `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
@@ -2953,6 +2951,7 @@ League-wide catching stats, type careerAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -2986,8 +2985,6 @@ League-wide fielding stats, type careerAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_assists` | int32 | yes | `stat.assists` | Assist: counting statistic (fielding, catching); lookup parameter `a`. (src: mlb_baseball_stats) |
@@ -3010,6 +3007,7 @@ League-wide fielding stats, type careerAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -3056,8 +3054,6 @@ League-wide hitting stats, type careerAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
@@ -3073,6 +3069,7 @@ League-wide hitting stats, type careerAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `sport_id_2` | int32 | yes | `sport.id` | TODO |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `num_teams` | int32 | yes | `numTeams` | TODO |
@@ -3129,8 +3126,6 @@ League-wide pitching stats, type careerAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_winning_percentage` | string | yes | `stat.winningPercentage` | TODO |
 | `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` | TODO |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
@@ -3194,6 +3189,7 @@ League-wide pitching stats, type careerAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -3227,8 +3223,6 @@ League-wide catching stats, type career (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
 | `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
@@ -3275,6 +3269,7 @@ League-wide catching stats, type career (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -3308,8 +3303,6 @@ League-wide fielding stats, type career (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_assists` | int32 | yes | `stat.assists` | Assist: counting statistic (fielding, catching); lookup parameter `a`. (src: mlb_baseball_stats) |
@@ -3332,6 +3325,7 @@ League-wide fielding stats, type career (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -3378,8 +3372,6 @@ League-wide hitting stats, type career (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
 | `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
@@ -3421,6 +3413,7 @@ League-wide hitting stats, type career (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -3454,8 +3447,6 @@ League-wide pitching stats, type career (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
@@ -3525,6 +3516,7 @@ League-wide pitching stats, type career (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -3558,8 +3550,6 @@ League-wide hitting stats, type expectedStatistics (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
@@ -3603,8 +3593,6 @@ League-wide pitching stats, type expectedStatistics (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_avg` | string | yes | `stat.avg` | battingAverage: rate or derived statistic (hitting, pitching, catching); lookup parameter `avg`. (src: mlb_baseball_stats) |
@@ -3644,8 +3632,6 @@ League-wide fielding stats, type lastXGames (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -3717,8 +3703,6 @@ League-wide hitting stats, type lastXGames (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -3798,8 +3782,6 @@ League-wide pitching stats, type lastXGames (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -3947,8 +3929,6 @@ League-wide catching stats, type outsAboveAverage (player pool ALL).
 | `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_attempts` | int32 | yes | `stat.attempts` | TODO |
 | `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` | TODO |
@@ -4002,8 +3982,6 @@ League-wide fielding stats, type outsAboveAverage (player pool ALL).
 | `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_attempts` | int32 | yes | `stat.attempts` | TODO |
 | `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` | TODO |
@@ -4057,8 +4035,6 @@ League-wide hitting stats, type outsAboveAverage (player pool ALL).
 | `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_attempts` | int32 | yes | `stat.attempts` | TODO |
 | `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` | TODO |
@@ -4112,8 +4088,6 @@ League-wide pitching stats, type outsAboveAverage (player pool ALL).
 | `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_attempts` | int32 | yes | `stat.attempts` | TODO |
 | `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` | TODO |
@@ -4167,8 +4141,6 @@ League-wide running stats, type outsAboveAverage (player pool ALL).
 | `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_attempts` | int32 | yes | `stat.attempts` | TODO |
 | `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` | TODO |
@@ -4223,8 +4195,6 @@ League-wide hitting stats, type projected (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -4305,8 +4275,6 @@ League-wide pitching stats, type projected (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -4386,8 +4354,6 @@ League-wide fielding stats, type sabermetrics (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_position_code` | string | yes | `stat.position.code` | Code of the stat position. (authored) |
@@ -4437,8 +4403,6 @@ League-wide hitting stats, type sabermetrics (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_woba` | double | yes | `stat.woba` | woba: rate or derived statistic (hitting, pitching). (src: mlb_baseball_stats) |
@@ -4499,8 +4463,6 @@ League-wide pitching stats, type sabermetrics (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_fip` | double | yes | `stat.fip` | FIP: rate or derived statistic (pitching). (src: mlb_baseball_stats) |
@@ -4558,8 +4520,6 @@ League-wide catching stats, type seasonAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
@@ -4644,8 +4604,6 @@ League-wide fielding stats, type seasonAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
@@ -4714,8 +4672,6 @@ League-wide hitting stats, type seasonAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
@@ -4791,8 +4747,6 @@ League-wide pitching stats, type seasonAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
@@ -4893,8 +4847,6 @@ League-wide catching stats, type season (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
@@ -4979,8 +4931,6 @@ League-wide fielding stats, type season (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
@@ -5049,8 +4999,6 @@ League-wide hitting stats, type season (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
@@ -5129,8 +5077,6 @@ League-wide pitching stats, type season (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
@@ -5237,8 +5183,6 @@ League-wide catching stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -5286,6 +5230,7 @@ League-wide catching stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -5319,8 +5264,6 @@ League-wide fielding stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -5345,6 +5288,7 @@ League-wide fielding stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -5358,6 +5302,14 @@ League-wide fielding stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
 | `stat_passed_ball` | int32 | yes | `stat.passedBall` | TODO |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` | TODO |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.stats_stats_single_season_advanced_fielding -->
@@ -5379,8 +5331,6 @@ League-wide hitting stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
@@ -5402,6 +5352,7 @@ League-wide hitting stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -5454,8 +5405,6 @@ League-wide pitching stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
 | `stat_winning_percentage` | string | yes | `stat.winningPercentage` | TODO |
@@ -5486,6 +5435,7 @@ League-wide pitching stats, type statsSingleSeasonAdvanced (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -5554,8 +5504,6 @@ League-wide catching stats, type statsSingleSeason (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -5603,6 +5551,7 @@ League-wide catching stats, type statsSingleSeason (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -5636,8 +5585,6 @@ League-wide fielding stats, type statsSingleSeason (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -5662,6 +5609,7 @@ League-wide fielding stats, type statsSingleSeason (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -5675,6 +5623,14 @@ League-wide fielding stats, type statsSingleSeason (player pool ALL).
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
 | `stat_passed_ball` | int32 | yes | `stat.passedBall` | TODO |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
+| `stat_catcher_era` | string | yes | `stat.catcherERA` | TODO |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_wild_pitches` | int32 | yes | `stat.wildPitches` | TODO |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.stats_stats_single_season_fielding -->
@@ -5696,8 +5652,6 @@ League-wide hitting stats, type statsSingleSeason (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -5727,6 +5681,7 @@ League-wide hitting stats, type statsSingleSeason (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -5774,8 +5729,6 @@ League-wide pitching stats, type statsSingleSeason (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_age` | int32 | yes | `stat.age` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -5821,6 +5774,7 @@ League-wide pitching stats, type statsSingleSeason (player pool ALL).
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
 | `league_name` | string | yes | `league.name` | Name of the league. (authored) |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
@@ -6261,8 +6215,6 @@ Team catching stats, type atGameStart.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
 | `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
@@ -6325,8 +6277,6 @@ Team fielding stats, type atGameStart.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -6377,8 +6327,6 @@ Team hitting stats, type atGameStart.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
@@ -6447,8 +6395,6 @@ Team pitching stats, type atGameStart.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -6544,8 +6490,6 @@ Team catching stats, type byDateRange.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
 | `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
 | `stat_strike_outs` | int32 | yes | `stat.strikeOuts` | TODO |
@@ -6598,8 +6542,6 @@ Team fielding stats, type byDateRange.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_assists` | int32 | yes | `stat.assists` | Assist: counting statistic (fielding, catching); lookup parameter `a`. (src: mlb_baseball_stats) |
@@ -6640,8 +6582,6 @@ Team hitting stats, type byDateRange.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
 | `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
@@ -6700,8 +6640,6 @@ Team pitching stats, type byDateRange.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
@@ -6787,8 +6725,6 @@ Team catching stats, type careerAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
 | `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
@@ -6842,8 +6778,6 @@ Team fielding stats, type careerAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_assists` | int32 | yes | `stat.assists` | Assist: counting statistic (fielding, catching); lookup parameter `a`. (src: mlb_baseball_stats) |
@@ -6882,8 +6816,6 @@ Team hitting stats, type careerAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
 | `stat_left_on_base` | int32 | yes | `stat.leftOnBase` | leftOnBase: counting statistic (hitting); lookup parameter `lob`. (src: mlb_baseball_stats) |
@@ -6938,8 +6870,6 @@ Team pitching stats, type careerAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_winning_percentage` | string | yes | `stat.winningPercentage` | TODO |
 | `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` | TODO |
 | `stat_batters_faced` | int32 | yes | `stat.battersFaced` | TODO |
@@ -7015,8 +6945,6 @@ Team catching stats, type career.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
 | `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
@@ -7070,8 +6998,6 @@ Team fielding stats, type career.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_assists` | int32 | yes | `stat.assists` | Assist: counting statistic (fielding, catching); lookup parameter `a`. (src: mlb_baseball_stats) |
@@ -7110,8 +7036,6 @@ Team hitting stats, type career.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
 | `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
@@ -7169,8 +7093,6 @@ Team pitching stats, type career.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
@@ -7254,8 +7176,6 @@ Team catching stats, type careerPlayoffs.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
@@ -7309,8 +7229,6 @@ Team fielding stats, type careerPlayoffs.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -7350,8 +7268,6 @@ Team hitting stats, type careerPlayoffs.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
@@ -7382,6 +7298,13 @@ Team hitting stats, type careerPlayoffs.
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_stats_career_playoffs_hitting -->
@@ -7403,8 +7326,6 @@ Team pitching stats, type careerPlayoffs.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -7444,6 +7365,30 @@ Team pitching stats, type careerPlayoffs.
 | `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
+| `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
+| `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` | saveOpportunities: counting statistic (pitching); lookup parameter `svo`. (src: mlb_baseball_stats) |
+| `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
+| `stat_strikes` | int32 | yes | `stat.strikes` | TODO |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` | TODO |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_stats_career_playoffs_pitching -->
@@ -7465,8 +7410,6 @@ Team catching stats, type careerRegularSeason.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
@@ -7520,8 +7463,6 @@ Team fielding stats, type careerRegularSeason.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -7561,8 +7502,6 @@ Team hitting stats, type careerRegularSeason.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
@@ -7593,6 +7532,13 @@ Team hitting stats, type careerRegularSeason.
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_stats_career_regular_season_hitting -->
@@ -7614,8 +7560,6 @@ Team pitching stats, type careerRegularSeason.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -7655,6 +7599,30 @@ Team pitching stats, type careerRegularSeason.
 | `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
+| `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
+| `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` | saveOpportunities: counting statistic (pitching); lookup parameter `svo`. (src: mlb_baseball_stats) |
+| `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
+| `stat_strikes` | int32 | yes | `stat.strikes` | TODO |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` | TODO |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_stats_career_regular_season_pitching -->
@@ -7719,8 +7687,6 @@ Team catching stats, type gameLog.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
 | `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
@@ -7783,8 +7749,6 @@ Team fielding stats, type gameLog.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -7835,8 +7799,6 @@ Team hitting stats, type gameLog.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
@@ -7905,8 +7867,6 @@ Team pitching stats, type gameLog.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -8002,8 +7962,6 @@ Team catching stats, type lastXGames.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
 | `stat_home_runs` | int32 | yes | `stat.homeRuns` | HR: counting statistic (hitting, pitching, catching); lookup parameter `hr`. (src: mlb_baseball_stats) |
 | `stat_strike_outs` | int32 | yes | `stat.strikeOuts` | TODO |
@@ -8056,8 +8014,6 @@ Team fielding stats, type lastXGames.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_assists` | int32 | yes | `stat.assists` | Assist: counting statistic (fielding, catching); lookup parameter `a`. (src: mlb_baseball_stats) |
@@ -8098,8 +8054,6 @@ Team hitting stats, type lastXGames.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
 | `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
@@ -8158,8 +8112,6 @@ Team pitching stats, type lastXGames.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
@@ -8245,8 +8197,6 @@ Team catching stats, type seasonAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
@@ -8303,8 +8253,6 @@ Team fielding stats, type seasonAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -8353,8 +8301,6 @@ Team hitting stats, type seasonAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
@@ -8411,8 +8357,6 @@ Team pitching stats, type seasonAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_winning_percentage` | string | yes | `stat.winningPercentage` | TODO |
 | `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` | TODO |
@@ -8490,8 +8434,6 @@ Team catching stats, type season.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
@@ -8548,8 +8490,6 @@ Team fielding stats, type season.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -8598,8 +8538,6 @@ Team hitting stats, type season.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
@@ -8659,8 +8597,6 @@ Team pitching stats, type season.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -8746,8 +8682,6 @@ Team fielding stats, type vsOpponents.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_assists` | int32 | yes | `stat.assists` | Assist: counting statistic (fielding, catching); lookup parameter `a`. (src: mlb_baseball_stats) |
@@ -8791,8 +8725,6 @@ Team hitting stats, type vsOpponents.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
@@ -8857,8 +8789,6 @@ Team pitching stats, type vsOpponents.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -8952,8 +8882,6 @@ Team catching stats, type yearByYearAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
@@ -9007,8 +8935,6 @@ Team fielding stats, type yearByYearAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -9048,8 +8974,6 @@ Team hitting stats, type yearByYearAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_plate_appearances` | int32 | yes | `stat.plateAppearances` | TODO |
 | `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
@@ -9105,8 +9029,6 @@ Team pitching stats, type yearByYearAdvanced.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_winning_percentage` | string | yes | `stat.winningPercentage` | TODO |
 | `stat_runs_scored_per9` | string | yes | `stat.runsScoredPer9` | TODO |
@@ -9183,8 +9105,6 @@ Team catching stats, type yearByYear.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
@@ -9238,8 +9158,6 @@ Team fielding stats, type yearByYear.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -9279,8 +9197,6 @@ Team hitting stats, type yearByYear.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
@@ -9339,8 +9255,6 @@ Team pitching stats, type yearByYear.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -9425,8 +9339,6 @@ Team catching stats, type yearByYearPlayoffs.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_earned_runs` | int32 | yes | `stat.earnedRuns` | TODO |
@@ -9480,8 +9392,6 @@ Team fielding stats, type yearByYearPlayoffs.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -9521,8 +9431,6 @@ Team hitting stats, type yearByYearPlayoffs.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_runs` | int32 | yes | `stat.runs` | runs: counting statistic (hitting, pitching, catching); lookup parameter `r`. (src: mlb_baseball_stats) |
@@ -9553,6 +9461,13 @@ Team hitting stats, type yearByYearPlayoffs.
 | `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
 | `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
 | `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_stats_year_by_year_playoffs_hitting -->
@@ -9574,8 +9489,6 @@ Team pitching stats, type yearByYearPlayoffs.
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -9615,6 +9528,30 @@ Team pitching stats, type yearByYearPlayoffs.
 | `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
 | `stat_sac_bunts` | int32 | yes | `stat.sacBunts` | TODO |
+| `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
+| `stat_air_outs` | int32 | yes | `stat.airOuts` | Airouts: counting statistic (pitching); lookup parameter `ao`. (src: mlb_baseball_stats) |
+| `stat_doubles` | int32 | yes | `stat.doubles` | 2B: counting statistic (hitting, pitching); lookup parameter `d`. (src: mlb_baseball_stats) |
+| `stat_triples` | int32 | yes | `stat.triples` | 3B: counting statistic (hitting, pitching); lookup parameter `t`. (src: mlb_baseball_stats) |
+| `stat_intentional_walks` | int32 | yes | `stat.intentionalWalks` | IBB: counting statistic (hitting, pitching, catching); lookup parameter `ibb`. (src: mlb_baseball_stats) |
+| `stat_slg` | string | yes | `stat.slg` | sluggingPercentage: rate or derived statistic (hitting, pitching, catching); lookup parameter `slg`. (src: mlb_baseball_stats) |
+| `stat_ops` | string | yes | `stat.ops` | onBasePlusSlugging: rate or derived statistic (hitting, pitching); lookup parameter `ops`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing` | int32 | yes | `stat.caughtStealing` | CS: counting statistic (hitting, pitching, fielding, catching); lookup parameter `cs`. (src: mlb_baseball_stats) |
+| `stat_stolen_bases` | int32 | yes | `stat.stolenBases` | SB: counting statistic (hitting, pitching, fielding, catching); lookup parameter `sb`. (src: mlb_baseball_stats) |
+| `stat_stolen_base_percentage` | string | yes | `stat.stolenBasePercentage` | Stolen Base Percentage: rate or derived statistic (hitting, pitching, fielding, catching); lookup parameter `sbpct`. (src: mlb_baseball_stats) |
+| `stat_caught_stealing_percentage` | string | yes | `stat.caughtStealingPercentage` | TODO |
+| `stat_ground_into_double_play` | int32 | yes | `stat.groundIntoDoublePlay` | TODO |
+| `stat_number_of_pitches` | int32 | yes | `stat.numberOfPitches` | Pitches: counting statistic (hitting, pitching); lookup parameter `np`. (src: mlb_baseball_stats) |
+| `stat_save_opportunities` | int32 | yes | `stat.saveOpportunities` | saveOpportunities: counting statistic (pitching); lookup parameter `svo`. (src: mlb_baseball_stats) |
+| `stat_holds` | int32 | yes | `stat.holds` | Hold: counting statistic (pitching); lookup parameter `hld`. (src: mlb_baseball_stats) |
+| `stat_blown_saves` | int32 | yes | `stat.blownSaves` | blownSaves: counting statistic (pitching); lookup parameter `bs`. (src: mlb_baseball_stats) |
+| `stat_strikes` | int32 | yes | `stat.strikes` | TODO |
+| `stat_strike_percentage` | string | yes | `stat.strikePercentage` | TODO |
+| `stat_pickoffs` | int32 | yes | `stat.pickoffs` | PO: counting statistic (hitting, pitching, catching); lookup parameter `po`. (src: mlb_baseball_stats) |
+| `stat_total_bases` | int32 | yes | `stat.totalBases` | TB: counting statistic (hitting, pitching, catching); lookup parameter `tb`. (src: mlb_baseball_stats) |
+| `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
+| `stat_pitches_per_inning` | string | yes | `stat.pitchesPerInning` | pitchesPerInning: rate or derived statistic (pitching); lookup parameter `p_ip`. (src: mlb_baseball_stats) |
+| `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
+| `stat_sac_flies` | int32 | yes | `stat.sacFlies` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_stats_year_by_year_playoffs_pitching -->
@@ -18481,8 +18418,6 @@ League-wide game stats, type outsAboveAverage (player pool ALL).
 | `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_attempts` | int32 | yes | `stat.attempts` | TODO |
 | `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` | TODO |
@@ -18536,8 +18471,6 @@ League-wide streak stats, type outsAboveAverage (player pool ALL).
 | `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_attempts` | int32 | yes | `stat.attempts` | TODO |
 | `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` | TODO |
@@ -18591,8 +18524,6 @@ League-wide team stats, type outsAboveAverage (player pool ALL).
 | `stats_type_display_name` | string | yes | `stats.type.displayName` | Stat type of the response (a value of /v1/statTypes). (src: mlb_stat_types) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_attempts` | int32 | yes | `stat.attempts` | TODO |
 | `stat_total_outs_above_average` | int32 | yes | `stat.totalOutsAboveAverage` | TODO |
@@ -18647,8 +18578,6 @@ League-wide game stats, type seasonAdvanced (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -18691,8 +18620,6 @@ League-wide game stats, type season (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -21562,8 +21489,6 @@ League-wide hitting stats, type careerStatSplits, parameters {'season': '{season
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_ground_outs` | int32 | yes | `stat.groundOuts` | Groundouts: counting statistic (hitting, pitching); lookup parameter `go`. (src: mlb_baseball_stats) |
@@ -21599,12 +21524,17 @@ League-wide hitting stats, type careerStatSplits, parameters {'season': '{season
 | `stat_ground_outs_to_airouts` | string | yes | `stat.groundOutsToAirouts` | TODO |
 | `stat_catchers_interference` | int32 | yes | `stat.catchersInterference` | Catcher's Interference: counting statistic (fielding, catching); lookup parameter `ci`. (src: mlb_baseball_stats) |
 | `stat_at_bats_per_home_run` | string | yes | `stat.atBatsPerHomeRun` | atBatsPerHomeRun: rate or derived statistic (hitting). (src: mlb_baseball_stats) |
+| `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
+| `team_name` | string | yes | `team.name` | Name of the team. (authored) |
+| `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_id` | int32 | yes | `player.id` | MLBAM identifier of the player. (authored) |
 | `player_full_name` | string | yes | `player.fullName` | Full name of the player. (authored) |
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
-| `num_teams` | int32 | yes | `numTeams` | TODO |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
+| `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
+| `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
 | `split_code` | string | yes | `split.code` | Code of the split. (authored) |
 | `split_description` | string | yes | `split.description` | TODO |
@@ -21613,11 +21543,7 @@ League-wide hitting stats, type careerStatSplits, parameters {'season': '{season
 | `position_name` | string | yes | `position.name` | Name of the position. (authored) |
 | `position_type` | string | yes | `position.type` | TODO |
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
-| `team_id` | int32 | yes | `team.id` | MLBAM identifier of the team. (authored) |
-| `team_name` | string | yes | `team.name` | Name of the team. (authored) |
-| `team_link` | string | yes | `team.link` | Relative MLB Stats API path of the team resource (prefix https://statsapi.mlb.com). (authored) |
-| `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
-| `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
+| `num_teams` | int32 | yes | `numTeams` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.stats_career_stat_splits_hitting -->
@@ -21639,8 +21565,6 @@ League-wide pitching stats, type careerStatSplits, parameters {'season': '{seaso
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
 | `stat_games_started` | int32 | yes | `stat.gamesStarted` | gamesStarted: counting statistic (pitching, fielding, game); lookup parameter `gs`. (src: mlb_baseball_stats) |
@@ -21713,6 +21637,7 @@ League-wide pitching stats, type careerStatSplits, parameters {'season': '{seaso
 | `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
 | `player_first_name` | string | yes | `player.firstName` | Name of the player first. (authored) |
 | `player_last_name` | string | yes | `player.lastName` | Name of the player last. (authored) |
+| `player_name_slug` | string | yes | `player.nameSlug` | TODO |
 | `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
 | `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
 | `rank` | int32 | yes | — | TODO |
@@ -21745,8 +21670,6 @@ League-wide hitting stats, type projected_Zips2YR, parameters {} (player pool AL
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -21831,8 +21754,6 @@ League-wide pitching stats, type projected_Zips2YR, parameters {} (player pool A
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -21916,8 +21837,6 @@ League-wide hitting stats, type projected_Zips3YR, parameters {} (player pool AL
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -22002,8 +21921,6 @@ League-wide pitching stats, type projected_Zips3YR, parameters {} (player pool A
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -22087,8 +22004,6 @@ League-wide hitting stats, type projected_Zips, parameters {} (player pool ALL).
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |
@@ -22173,8 +22088,6 @@ League-wide pitching stats, type projected_Zips, parameters {} (player pool ALL)
 | `stats_group_display_name` | string | yes | `stats.group.displayName` | Stat group of the response (a value of /v1/statGroups). (src: mlb_stat_groups) |
 | `stats_total_splits` | int32 | yes | `stats.totalSplits` | TODO |
 | `stats_exemptions` | string | yes | `stats.exemptions` | TODO |
-| `stats_splits_tied_with_offset` | string | yes | `stats.splitsTiedWithOffset` | TODO |
-| `stats_splits_tied_with_limit` | string | yes | `stats.splitsTiedWithLimit` | TODO |
 | `stats_player_pool` | string | yes | `stats.playerPool` | TODO |
 | `season` | string | yes | — | TODO |
 | `stat_games_played` | int32 | yes | `stat.gamesPlayed` | gamesPlayed: counting statistic (hitting, pitching, fielding, catching, game); lookup parameter `g`. (src: mlb_baseball_stats) |

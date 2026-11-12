@@ -38,7 +38,8 @@
       "fullName": "Lou Camilli",
       "link": "/api/v1/people/111907",
       "firstName": "Lou",
-      "lastName": "Camilli"
+      "lastName": "Camilli",
+      "nameSlug": "lou-camilli-111907"
      },
      "league": {
       "id": 103,
@@ -85,7 +86,8 @@
       "fullName": "Harry Camnitz",
       "link": "/api/v1/people/111909",
       "firstName": "Harry",
-      "lastName": "Camnitz"
+      "lastName": "Camnitz",
+      "nameSlug": "harry-camnitz-111909"
      },
      "league": {
       "id": 104,
@@ -133,7 +135,8 @@
       "fullName": "Mike Cameron",
       "link": "/api/v1/people/111904",
       "firstName": "Mike",
-      "lastName": "Cameron"
+      "lastName": "Cameron",
+      "nameSlug": "mike-cameron-111904"
      },
      "league": {
       "id": 103,

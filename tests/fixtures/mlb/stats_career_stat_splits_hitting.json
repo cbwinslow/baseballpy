@@ -8,135 +8,9 @@
    "group": {
     "displayName": "hitting"
    },
-   "totalSplits": 800,
+   "totalSplits": 250,
    "exemptions": [],
    "splits": [
-    {
-     "stat": {
-      "gamesPlayed": 2,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 6,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "player": {
-      "id": 110015,
-      "fullName": "Paul Abbott",
-      "link": "/api/v1/people/110015",
-      "firstName": "Paul",
-      "lastName": "Abbott"
-     },
-     "numTeams": 2,
-     "rank": 1,
-     "split": {
-      "code": "dfr",
-      "description": "On Fridays",
-      "sortOrder": 55
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 2,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 113,
-      "name": "Cincinnati Reds",
-      "link": "/api/v1/teams/113"
-     },
-     "player": {
-      "id": 110027,
-      "fullName": "George Abrams",
-      "link": "/api/v1/people/110027",
-      "firstName": "George",
-      "lastName": "Abrams"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "4",
-      "description": "April",
-      "sortOrder": 22
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
     {
      "stat": {
       "gamesPlayed": 3,
@@ -184,7 +58,8 @@
       "fullName": "George Abrams",
       "link": "/api/v1/people/110027",
       "firstName": "George",
-      "lastName": "Abrams"
+      "lastName": "Abrams",
+      "nameSlug": "george-abrams-110027"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -204,58 +79,56 @@
       "type": "Pitcher",
       "abbreviation": "P"
      }
-    }
-   ],
-   "splitsTiedWithOffset": [],
-   "splitsTiedWithLimit": [
+    },
     {
      "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 1,
+      "gamesPlayed": 3,
+      "groundOuts": 0,
       "airOuts": 0,
-      "runs": 1,
+      "runs": 0,
       "doubles": 1,
       "triples": 0,
       "homeRuns": 0,
       "strikeOuts": 0,
-      "baseOnBalls": 0,
+      "baseOnBalls": 1,
       "intentionalWalks": 0,
-      "hits": 2,
+      "hits": 1,
       "hitByPitch": 0,
       "avg": "1.000",
-      "atBats": 2,
+      "atBats": 1,
       "obp": "1.000",
-      "slg": "1.500",
-      "ops": "2.500",
+      "slg": "2.000",
+      "ops": "3.000",
       "caughtStealing": 0,
       "stolenBases": 0,
       "stolenBasePercentage": ".---",
       "caughtStealingPercentage": ".---",
       "groundIntoDoublePlay": 0,
       "groundIntoTriplePlay": 0,
-      "numberOfPitches": 11,
-      "plateAppearances": 3,
-      "totalBases": 3,
-      "rbi": 0,
+      "numberOfPitches": 5,
+      "plateAppearances": 2,
+      "totalBases": 2,
+      "rbi": 1,
       "leftOnBase": 0,
-      "sacBunts": 1,
+      "sacBunts": 0,
       "sacFlies": 0,
       "babip": "1.000",
-      "groundOutsToAirouts": "1.00",
+      "groundOutsToAirouts": "-.--",
       "catchersInterference": 0,
       "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 121,
-      "name": "New York Mets",
-      "link": "/api/v1/teams/121"
+      "id": 145,
+      "name": "Chicago White Sox",
+      "link": "/api/v1/teams/145"
      },
      "player": {
-      "id": 446454,
-      "fullName": "Brian Bannister",
-      "link": "/api/v1/people/446454",
-      "firstName": "Brian",
-      "lastName": "Bannister"
+      "id": 110035,
+      "fullName": "Fritz Ackley",
+      "link": "/api/v1/people/110035",
+      "firstName": "Florian",
+      "lastName": "Ackley",
+      "nameSlug": "florian-ackley-110035"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -265,9 +138,9 @@
      },
      "rank": 1,
      "split": {
-      "code": "dtu",
-      "description": "On Tuesdays",
-      "sortOrder": 52
+      "code": "preas",
+      "description": "Pre All-Star",
+      "sortOrder": 44
      },
      "position": {
       "code": "1",
@@ -279,6 +152,206 @@
     {
      "stat": {
       "gamesPlayed": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 5,
+      "plateAppearances": 2,
+      "totalBases": 2,
+      "rbi": 1,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 145,
+      "name": "Chicago White Sox",
+      "link": "/api/v1/teams/145"
+     },
+     "player": {
+      "id": 110035,
+      "fullName": "Fritz Ackley",
+      "link": "/api/v1/people/110035",
+      "firstName": "Florian",
+      "lastName": "Ackley",
+      "nameSlug": "florian-ackley-110035"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    }
+   ],
+   "splitsTiedWithOffset": [],
+   "splitsTiedWithLimit": [
+    {
+     "stat": {
+      "gamesPlayed": 4,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 1,
+      "intentionalWalks": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 6,
+      "plateAppearances": 3,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 140,
+      "name": "Texas Rangers",
+      "link": "/api/v1/teams/140"
+     },
+     "player": {
+      "id": 112781,
+      "fullName": "Pete Craig",
+      "link": "/api/v1/people/112781",
+      "firstName": "Peter",
+      "lastName": "Craig",
+      "nameSlug": "peter-craig-112781"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 37,
+      "groundOuts": 2,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 7,
+      "plateAppearances": 3,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 2,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "2.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "player": {
+      "id": 150034,
+      "fullName": "Doug Creek",
+      "link": "/api/v1/people/150034",
+      "firstName": "Paul",
+      "lastName": "Creek",
+      "nameSlug": "paul-creek-150034"
+     },
+     "numTeams": 3,
+     "rank": 1,
+     "split": {
+      "code": "posas",
+      "description": "Post All-Star",
+      "sortOrder": 45
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
       "groundOuts": 0,
       "airOuts": 0,
       "runs": 0,
@@ -304,185 +377,6 @@
       "numberOfPitches": 0,
       "plateAppearances": 1,
       "totalBases": 1,
-      "rbi": 1,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 134,
-      "name": "Pittsburgh Pirates",
-      "link": "/api/v1/teams/134"
-     },
-     "player": {
-      "id": 110547,
-      "fullName": "Dave Barbee",
-      "link": "/api/v1/people/110547",
-      "firstName": "David",
-      "lastName": "Barbee"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "4",
-      "description": "April",
-      "sortOrder": 22
-     },
-     "position": {
-      "code": "7",
-      "name": "Outfielder",
-      "type": "Outfielder",
-      "abbreviation": "LF"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "baseOnBalls": 0,
-      "hits": 2,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 2,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "stolenBases": 0,
-      "plateAppearances": 2,
-      "totalBases": 2,
-      "rbi": 0,
-      "sacBunts": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 1492,
-      "name": "Birmingham Black Barons",
-      "link": "/api/v1/teams/1492"
-     },
-     "player": {
-      "id": 820595,
-      "fullName": "Sam Barber",
-      "link": "/api/v1/people/820595",
-      "firstName": "Samuel",
-      "lastName": "Barber"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "vt",
-      "description": "vs. Team",
-      "sortOrder": 63
-     },
-     "position": {
-      "code": "X",
-      "name": "Unknown",
-      "type": "Unknown",
-      "abbreviation": "X"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 34,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 2,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "player": {
-      "id": 453268,
-      "fullName": "Daniel Bard",
-      "link": "/api/v1/people/453268",
-      "firstName": "Daniel",
-      "lastName": "Bard"
-     },
-     "numTeams": 2,
-     "rank": 1,
-     "split": {
-      "code": "d",
-      "description": "Day Games",
-      "sortOrder": 3
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 5,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 2,
-      "plateAppearances": 1,
-      "totalBases": 1,
       "rbi": 0,
       "leftOnBase": 0,
       "sacBunts": 0,
@@ -493,84 +387,17 @@
       "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 115,
-      "name": "Colorado Rockies",
-      "link": "/api/v1/teams/115"
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
      },
      "player": {
-      "id": 453268,
-      "fullName": "Daniel Bard",
-      "link": "/api/v1/people/453268",
-      "firstName": "Daniel",
-      "lastName": "Bard"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "t",
-      "description": "On Turf",
-      "sortOrder": 6
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 29,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 2,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 115,
-      "name": "Colorado Rockies",
-      "link": "/api/v1/teams/115"
-     },
-     "player": {
-      "id": 453268,
-      "fullName": "Daniel Bard",
-      "link": "/api/v1/people/453268",
-      "firstName": "Daniel",
-      "lastName": "Bard"
+      "id": 112840,
+      "fullName": "Claude Crocker",
+      "link": "/api/v1/people/112840",
+      "firstName": "Claude",
+      "lastName": "Crocker",
+      "nameSlug": "claude-crocker-112840"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -593,1204 +420,13 @@
     },
     {
      "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 1,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 142,
-      "name": "Minnesota Twins",
-      "link": "/api/v1/teams/142"
-     },
-     "player": {
-      "id": 110573,
-      "fullName": "Bruce Barmes",
-      "link": "/api/v1/people/110573",
-      "firstName": "Bruce",
-      "lastName": "Barmes"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dsa",
-      "description": "On Saturdays",
-      "sortOrder": 56
-     },
-     "position": {
-      "code": "9",
-      "name": "Outfielder",
-      "type": "Outfielder",
-      "abbreviation": "RF"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 1,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 2,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 2,
-      "obp": "1.000",
-      "slg": "1.500",
-      "ops": "2.500",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 2,
-      "totalBases": 3,
-      "rbi": 1,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 147,
-      "name": "New York Yankees",
-      "link": "/api/v1/teams/147"
-     },
-     "player": {
-      "id": 110580,
-      "fullName": "Frank Barnes",
-      "link": "/api/v1/people/110580",
-      "firstName": "Frank",
-      "lastName": "Barnes"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dsa",
-      "description": "On Saturdays",
-      "sortOrder": 56
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 5,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 3,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 146,
-      "name": "Miami Marlins",
-      "link": "/api/v1/teams/146"
-     },
-     "player": {
-      "id": 458524,
-      "fullName": "Daniel Barone",
-      "link": "/api/v1/people/458524",
-      "firstName": "Daniel",
-      "lastName": "Barone"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "d",
-      "description": "Day Games",
-      "sortOrder": 3
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 2,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 1,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "3.000",
-      "ops": "4.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 3,
-      "rbi": 2,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 133,
-      "name": "Athletics",
-      "link": "/api/v1/teams/133"
-     },
-     "player": {
-      "id": 110641,
-      "fullName": "John Barthold",
-      "link": "/api/v1/people/110641",
-      "firstName": "John",
-      "lastName": "Barthold"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "6",
-      "description": "June",
-      "sortOrder": 24
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 0,
-      "triples": 1,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "3.000",
-      "ops": "4.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 3,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 133,
-      "name": "Athletics",
-      "link": "/api/v1/teams/133"
-     },
-     "player": {
-      "id": 110645,
-      "fullName": "Bill Bartley",
-      "link": "/api/v1/people/110645",
-      "firstName": "William",
-      "lastName": "Bartley"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "5",
-      "description": "May",
-      "sortOrder": 23
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 7,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 4,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 112,
-      "name": "Chicago Cubs",
-      "link": "/api/v1/teams/112"
-     },
-     "player": {
-      "id": 407802,
-      "fullName": "Cliff Bartosh",
-      "link": "/api/v1/people/407802",
-      "firstName": "Clifford",
-      "lastName": "Bartosh"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "d",
-      "description": "Day Games",
-      "sortOrder": 3
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 7,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 4,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 112,
-      "name": "Chicago Cubs",
-      "link": "/api/v1/teams/112"
-     },
-     "player": {
-      "id": 407802,
-      "fullName": "Cliff Bartosh",
-      "link": "/api/v1/people/407802",
-      "firstName": "Clifford",
-      "lastName": "Bartosh"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "4",
-      "description": "April",
-      "sortOrder": 22
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 20,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 4,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "player": {
-      "id": 407802,
-      "fullName": "Cliff Bartosh",
-      "link": "/api/v1/people/407802",
-      "firstName": "Clifford",
-      "lastName": "Bartosh"
-     },
-     "numTeams": 2,
-     "rank": 1,
-     "split": {
-      "code": "preas",
-      "description": "Pre All-Star",
-      "sortOrder": 44
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 20,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 4,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "player": {
-      "id": 407802,
-      "fullName": "Cliff Bartosh",
-      "link": "/api/v1/people/407802",
-      "firstName": "Clifford",
-      "lastName": "Bartosh"
-     },
-     "numTeams": 2,
-     "rank": 1,
-     "split": {
-      "code": "vt",
-      "description": "vs. Team",
-      "sortOrder": 63
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 143,
-      "name": "Philadelphia Phillies",
-      "link": "/api/v1/teams/143"
-     },
-     "player": {
-      "id": 110655,
-      "fullName": "Walt Bashore",
-      "link": "/api/v1/people/110655",
-      "firstName": "Walter",
-      "lastName": "Bashore"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dsa",
-      "description": "On Saturdays",
-      "sortOrder": 56
-     },
-     "position": {
-      "code": "8",
-      "name": "Outfielder",
-      "type": "Outfielder",
-      "abbreviation": "CF"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
-     },
-     "player": {
-      "id": 110663,
-      "fullName": "Doc Bass",
-      "link": "/api/v1/people/110663",
-      "firstName": "William",
-      "lastName": "Bass"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "7",
-      "description": "July",
-      "sortOrder": 25
-     },
-     "position": {
-      "code": "X",
-      "name": "Unknown",
-      "type": "Unknown",
-      "abbreviation": "X"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 2,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "stolenBases": 1,
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
-     },
-     "player": {
-      "id": 110663,
-      "fullName": "Doc Bass",
-      "link": "/api/v1/people/110663",
-      "firstName": "William",
-      "lastName": "Bass"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "vt",
-      "description": "vs. Team",
-      "sortOrder": 63
-     },
-     "position": {
-      "code": "X",
-      "name": "Unknown",
-      "type": "Unknown",
-      "abbreviation": "X"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 4,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 1,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 111,
-      "name": "Boston Red Sox",
-      "link": "/api/v1/teams/111"
-     },
-     "player": {
-      "id": 488686,
-      "fullName": "Aaron Bates",
-      "link": "/api/v1/people/488686",
-      "firstName": "Aaron",
-      "lastName": "Bates"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dsa",
-      "description": "On Saturdays",
-      "sortOrder": 56
-     },
-     "position": {
-      "code": "3",
-      "name": "First Base",
-      "type": "Infielder",
-      "abbreviation": "1B"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 2,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 1,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 116,
-      "name": "Detroit Tigers",
-      "link": "/api/v1/teams/116"
-     },
-     "player": {
-      "id": 110706,
-      "fullName": "Harry Baumgartner",
-      "link": "/api/v1/people/110706",
-      "firstName": "Harry",
-      "lastName": "Baumgartner"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dtu",
-      "description": "On Tuesdays",
-      "sortOrder": 52
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 14,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 2,
-      "plateAppearances": 2,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 1,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "player": {
-      "id": 110711,
-      "fullName": "Ed Bauta",
-      "link": "/api/v1/people/110711",
-      "firstName": "Eduardo",
-      "lastName": "Bauta"
-     },
-     "numTeams": 2,
-     "rank": 1,
-     "split": {
-      "code": "dsa",
-      "description": "On Saturdays",
-      "sortOrder": 56
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 2,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 2,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 116,
-      "name": "Detroit Tigers",
-      "link": "/api/v1/teams/116"
-     },
-     "player": {
-      "id": 110766,
-      "fullName": "Henry Beckendorf",
-      "link": "/api/v1/people/110766",
-      "firstName": "Henry",
-      "lastName": "Beckendorf"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "6",
-      "description": "June",
-      "sortOrder": 24
-     },
-     "position": {
-      "code": "2",
-      "name": "Catcher",
-      "type": "Catcher",
-      "abbreviation": "C"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 1,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "2.000",
-      "ops": "3.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 2,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 137,
-      "name": "San Francisco Giants",
-      "link": "/api/v1/teams/137"
-     },
-     "player": {
-      "id": 110791,
-      "fullName": "Roy Beecher",
-      "link": "/api/v1/people/110791",
-      "firstName": "Leroy",
-      "lastName": "Beecher"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "5",
-      "description": "May",
-      "sortOrder": 23
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 4,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 2,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 2,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 2,
-      "plateAppearances": 2,
-      "totalBases": 2,
-      "rbi": 1,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
-     },
-     "player": {
-      "id": 110802,
-      "fullName": "Rick Behenna",
-      "link": "/api/v1/people/110802",
-      "firstName": "Richard",
-      "lastName": "Behenna"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "4",
-      "description": "April",
-      "sortOrder": 22
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
       "gamesPlayed": 3,
       "groundOuts": 0,
       "airOuts": 0,
-      "runs": 1,
+      "runs": 0,
       "doubles": 0,
       "triples": 0,
-      "homeRuns": 1,
+      "homeRuns": 0,
       "strikeOuts": 0,
       "baseOnBalls": 0,
       "intentionalWalks": 0,
@@ -1799,37 +435,35 @@
       "avg": "1.000",
       "atBats": 1,
       "obp": "1.000",
-      "slg": "4.000",
-      "ops": "5.000",
-      "caughtStealing": 0,
+      "slg": "1.000",
+      "ops": "2.000",
       "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
       "groundIntoDoublePlay": 0,
       "groundIntoTriplePlay": 0,
-      "numberOfPitches": 1,
+      "numberOfPitches": 0,
       "plateAppearances": 1,
-      "totalBases": 4,
-      "rbi": 1,
+      "totalBases": 1,
+      "rbi": 0,
       "leftOnBase": 0,
       "sacBunts": 0,
       "sacFlies": 0,
-      "babip": ".---",
+      "babip": "1.000",
       "groundOutsToAirouts": "-.--",
       "catchersInterference": 0,
-      "atBatsPerHomeRun": "1.00"
+      "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
      },
      "player": {
-      "id": 110802,
-      "fullName": "Rick Behenna",
-      "link": "/api/v1/people/110802",
-      "firstName": "Richard",
-      "lastName": "Behenna"
+      "id": 112840,
+      "fullName": "Claude Crocker",
+      "link": "/api/v1/people/112840",
+      "firstName": "Claude",
+      "lastName": "Crocker",
+      "nameSlug": "claude-crocker-112840"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -1839,9 +473,9 @@
      },
      "rank": 1,
      "split": {
-      "code": "dwe",
-      "description": "On Wednesdays",
-      "sortOrder": 53
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
      },
      "position": {
       "code": "1",
@@ -1852,8 +486,8 @@
     },
     {
      "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
+      "gamesPlayed": 49,
+      "groundOuts": 1,
       "airOuts": 0,
       "runs": 0,
       "doubles": 0,
@@ -1876,98 +510,31 @@
       "groundIntoDoublePlay": 0,
       "groundIntoTriplePlay": 0,
       "numberOfPitches": 5,
-      "plateAppearances": 1,
+      "plateAppearances": 3,
       "totalBases": 1,
       "rbi": 0,
       "leftOnBase": 0,
-      "sacBunts": 0,
+      "sacBunts": 2,
       "sacFlies": 0,
       "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 115,
-      "name": "Colorado Rockies",
-      "link": "/api/v1/teams/115"
-     },
-     "player": {
-      "id": 431143,
-      "fullName": "Edwin Bellorin",
-      "link": "/api/v1/people/431143",
-      "firstName": "Edwin",
-      "lastName": "Bellorin"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dwe",
-      "description": "On Wednesdays",
-      "sortOrder": 53
-     },
-     "position": {
-      "code": "2",
-      "name": "Catcher",
-      "type": "Catcher",
-      "abbreviation": "C"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 23,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 1,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
+      "groundOutsToAirouts": "1.00",
       "catchersInterference": 0,
       "atBatsPerHomeRun": "-.--"
      },
      "player": {
-      "id": 407779,
-      "fullName": "Francis Beltran",
-      "link": "/api/v1/people/407779",
-      "firstName": "Francis",
-      "lastName": "Beltran"
+      "id": 131701,
+      "fullName": "Rick Croushore",
+      "link": "/api/v1/people/131701",
+      "firstName": "Richard",
+      "lastName": "Croushore",
+      "nameSlug": "richard-croushore-131701"
      },
      "numTeams": 2,
      "rank": 1,
      "split": {
-      "code": "d",
-      "description": "Day Games",
-      "sortOrder": 3
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
      },
      "position": {
       "code": "1",
@@ -2013,19 +580,89 @@
       "catchersInterference": 0,
       "atBatsPerHomeRun": "-.--"
      },
-     "player": {
-      "id": 110844,
-      "fullName": "Rigo Beltran",
-      "link": "/api/v1/people/110844",
-      "firstName": "Rigoberto",
-      "lastName": "Beltran"
+     "team": {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
      },
-     "numTeams": 3,
+     "player": {
+      "id": 220094,
+      "fullName": "Joe Davenport",
+      "link": "/api/v1/people/220094",
+      "firstName": "Joseph",
+      "lastName": "Davenport",
+      "nameSlug": "joseph-davenport-220094"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
      "rank": 1,
      "split": {
-      "code": "dfr",
-      "description": "On Fridays",
-      "sortOrder": 55
+      "code": "preas",
+      "description": "Pre All-Star",
+      "sortOrder": 44
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 8,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 4,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "player": {
+      "id": 220094,
+      "fullName": "Joe Davenport",
+      "link": "/api/v1/people/220094",
+      "firstName": "Joseph",
+      "lastName": "Davenport",
+      "nameSlug": "joseph-davenport-220094"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
      },
      "position": {
       "code": "1",
@@ -2037,36 +674,52 @@
     {
      "stat": {
       "gamesPlayed": 1,
-      "runs": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
       "doubles": 0,
-      "triples": 1,
+      "triples": 0,
       "homeRuns": 0,
+      "strikeOuts": 0,
       "baseOnBalls": 0,
+      "intentionalWalks": 0,
       "hits": 1,
       "hitByPitch": 0,
       "avg": "1.000",
       "atBats": 1,
       "obp": "1.000",
-      "slg": "3.000",
-      "ops": "4.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
       "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2,
       "plateAppearances": 1,
-      "totalBases": 3,
-      "rbi": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
       "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
       "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 1492,
-      "name": "Birmingham Black Barons",
-      "link": "/api/v1/teams/1492"
+      "id": 146,
+      "name": "Miami Marlins",
+      "link": "/api/v1/teams/146"
      },
      "player": {
-      "id": 820528,
-      "fullName": "Don Bennett",
-      "link": "/api/v1/people/820528",
-      "firstName": "Don",
-      "lastName": "Bennett"
+      "id": 452656,
+      "fullName": "David Davidson",
+      "link": "/api/v1/people/452656",
+      "firstName": "David",
+      "lastName": "Davidson",
+      "nameSlug": "david-davidson-452656"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -2076,15 +729,74 @@
      },
      "rank": 1,
      "split": {
+      "code": "preas",
+      "description": "Pre All-Star",
+      "sortOrder": 44
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 3,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "player": {
+      "id": 452656,
+      "fullName": "David Davidson",
+      "link": "/api/v1/people/452656",
+      "firstName": "David",
+      "lastName": "Davidson",
+      "nameSlug": "david-davidson-452656"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "split": {
       "code": "vt",
       "description": "vs. Team",
       "sortOrder": 63
      },
      "position": {
-      "code": "X",
-      "name": "Unknown",
-      "type": "Unknown",
-      "abbreviation": "X"
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
      }
     },
     {
@@ -2112,7 +824,332 @@
       "caughtStealingPercentage": ".---",
       "groundIntoDoublePlay": 0,
       "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "player": {
+      "id": 452656,
+      "fullName": "David Davidson",
+      "link": "/api/v1/people/452656",
+      "firstName": "David",
+      "lastName": "Davidson",
+      "nameSlug": "david-davidson-452656"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 5,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "player": {
+      "id": 465679,
+      "fullName": "Samuel Deduno",
+      "link": "/api/v1/people/465679",
+      "firstName": "Samuel",
+      "lastName": "Deduno",
+      "nameSlug": "samuel-deduno-465679"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "split": {
+      "code": "posas",
+      "description": "Post All-Star",
+      "sortOrder": 45
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 1,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
       "numberOfPitches": 0,
+      "plateAppearances": 2,
+      "totalBases": 4,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 111,
+      "name": "Boston Red Sox",
+      "link": "/api/v1/teams/111"
+     },
+     "player": {
+      "id": 113310,
+      "fullName": "Hal Deviney",
+      "link": "/api/v1/people/113310",
+      "firstName": "Harold",
+      "lastName": "Deviney",
+      "nameSlug": "harold-deviney-113310"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 1,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 0,
+      "plateAppearances": 2,
+      "totalBases": 4,
+      "rbi": 1,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 111,
+      "name": "Boston Red Sox",
+      "link": "/api/v1/teams/111"
+     },
+     "player": {
+      "id": 113310,
+      "fullName": "Hal Deviney",
+      "link": "/api/v1/people/113310",
+      "firstName": "Harold",
+      "lastName": "Deviney",
+      "nameSlug": "harold-deviney-113310"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 4,
+      "groundOuts": 1,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 4,
+      "plateAppearances": 2,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 1,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "1.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 141,
+      "name": "Toronto Blue Jays",
+      "link": "/api/v1/teams/141"
+     },
+     "player": {
+      "id": 113327,
+      "fullName": "Carlos Diaz",
+      "link": "/api/v1/people/113327",
+      "firstName": "Carlos",
+      "lastName": "Diaz",
+      "nameSlug": "carlos-diaz-113327"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "2",
+      "name": "Catcher",
+      "type": "Catcher",
+      "abbreviation": "C"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 52,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2,
       "plateAppearances": 1,
       "totalBases": 1,
       "rbi": 0,
@@ -2125,16 +1162,17 @@
       "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 110,
-      "name": "Baltimore Orioles",
-      "link": "/api/v1/teams/110"
+      "id": 158,
+      "name": "Milwaukee Brewers",
+      "link": "/api/v1/teams/158"
      },
      "player": {
-      "id": 119402,
-      "fullName": "Bugs Bennett",
-      "link": "/api/v1/people/119402",
-      "firstName": "Joseph",
-      "lastName": "Bennett"
+      "id": 457422,
+      "fullName": "Tim Dillard",
+      "link": "/api/v1/people/457422",
+      "firstName": "Timothy",
+      "lastName": "Dillard",
+      "nameSlug": "timothy-dillard-457422"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -2144,9 +1182,9 @@
      },
      "rank": 1,
      "split": {
-      "code": "dtu",
-      "description": "On Tuesdays",
-      "sortOrder": 52
+      "code": "preas",
+      "description": "Pre All-Star",
+      "sortOrder": 44
      },
      "position": {
       "code": "1",
@@ -2157,7 +1195,464 @@
     },
     {
      "stat": {
-      "gamesPlayed": 7,
+      "gamesPlayed": 1,
+      "runs": 1,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 1513,
+      "name": "Homestead Grays",
+      "link": "/api/v1/teams/1513"
+     },
+     "player": {
+      "id": 819725,
+      "fullName": "Dotson",
+      "link": "/api/v1/people/819725",
+      "lastName": "Dotson",
+      "nameSlug": "dotson-819725"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 26,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 4,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 1,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "player": {
+      "id": 543118,
+      "fullName": "Oliver Drake",
+      "link": "/api/v1/people/543118",
+      "firstName": "Oliver",
+      "lastName": "Drake",
+      "nameSlug": "oliver-drake-543118"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "split": {
+      "code": "posas",
+      "description": "Post All-Star",
+      "sortOrder": 45
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 12,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "player": {
+      "id": 113648,
+      "fullName": "Mike Dupree",
+      "link": "/api/v1/people/113648",
+      "firstName": "Michael",
+      "lastName": "Dupree",
+      "nameSlug": "michael-dupree-113648"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "preas",
+      "description": "Pre All-Star",
+      "sortOrder": 44
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 12,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "player": {
+      "id": 113648,
+      "fullName": "Mike Dupree",
+      "link": "/api/v1/people/113648",
+      "firstName": "Michael",
+      "lastName": "Dupree",
+      "nameSlug": "michael-dupree-113648"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 4,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 135,
+      "name": "San Diego Padres",
+      "link": "/api/v1/teams/135"
+     },
+     "player": {
+      "id": 113648,
+      "fullName": "Mike Dupree",
+      "link": "/api/v1/people/113648",
+      "firstName": "Michael",
+      "lastName": "Dupree",
+      "nameSlug": "michael-dupree-113648"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 10,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 145,
+      "name": "Chicago White Sox",
+      "link": "/api/v1/teams/145"
+     },
+     "player": {
+      "id": 113731,
+      "fullName": "Don Eddy",
+      "link": "/api/v1/people/113731",
+      "firstName": "Donald",
+      "lastName": "Eddy",
+      "nameSlug": "donald-eddy-113731"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "posas",
+      "description": "Post All-Star",
+      "sortOrder": 45
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 29,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 145,
+      "name": "Chicago White Sox",
+      "link": "/api/v1/teams/145"
+     },
+     "player": {
+      "id": 113731,
+      "fullName": "Don Eddy",
+      "link": "/api/v1/people/113731",
+      "firstName": "Donald",
+      "lastName": "Eddy",
+      "nameSlug": "donald-eddy-113731"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 5,
       "groundOuts": 0,
       "airOuts": 0,
       "runs": 0,
@@ -2192,19 +1687,99 @@
       "catchersInterference": 0,
       "atBatsPerHomeRun": "-.--"
      },
-     "player": {
-      "id": 430566,
-      "fullName": "Chad Bentz",
-      "link": "/api/v1/people/430566",
-      "firstName": "Chad",
-      "lastName": "Bentz"
+     "team": {
+      "id": 146,
+      "name": "Miami Marlins",
+      "link": "/api/v1/teams/146"
      },
-     "numTeams": 2,
+     "player": {
+      "id": 643297,
+      "fullName": "Cody Ege",
+      "link": "/api/v1/people/643297",
+      "firstName": "Cody",
+      "lastName": "Ege",
+      "nameSlug": "cody-ege-643297"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
      "rank": 1,
      "split": {
-      "code": "dfr",
-      "description": "On Fridays",
-      "sortOrder": 55
+      "code": "preas",
+      "description": "Pre All-Star",
+      "sortOrder": 44
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 5,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 7,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 146,
+      "name": "Miami Marlins",
+      "link": "/api/v1/teams/146"
+     },
+     "player": {
+      "id": 643297,
+      "fullName": "Cody Ege",
+      "link": "/api/v1/people/643297",
+      "firstName": "Cody",
+      "lastName": "Ege",
+      "nameSlug": "cody-ege-643297"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
      },
      "position": {
       "code": "1",
@@ -2218,15 +1793,732 @@
       "gamesPlayed": 3,
       "groundOuts": 0,
       "airOuts": 0,
-      "runs": 1,
+      "runs": 0,
       "doubles": 0,
       "triples": 0,
       "homeRuns": 0,
       "strikeOuts": 0,
-      "baseOnBalls": 1,
+      "baseOnBalls": 0,
       "intentionalWalks": 0,
       "hits": 1,
       "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 1,
+      "stolenBasePercentage": "1.000",
+      "caughtStealingPercentage": ".000",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 4,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 147,
+      "name": "New York Yankees",
+      "link": "/api/v1/teams/147"
+     },
+     "player": {
+      "id": 668752,
+      "fullName": "Duke Ellis",
+      "link": "/api/v1/people/668752",
+      "firstName": "Robert",
+      "lastName": "Ellis",
+      "nameSlug": "robert-ellis-668752"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "posas",
+      "description": "Post All-Star",
+      "sortOrder": 45
+     },
+     "position": {
+      "code": "8",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "CF"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 1,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".000",
+      "caughtStealingPercentage": "1.000",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 0,
+      "plateAppearances": 2,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 143,
+      "name": "Philadelphia Phillies",
+      "link": "/api/v1/teams/143"
+     },
+     "player": {
+      "id": 113838,
+      "fullName": "Spoke Emery",
+      "link": "/api/v1/people/113838",
+      "firstName": "Herrick",
+      "lastName": "Emery",
+      "nameSlug": "herrick-emery-113838"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "7",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 15,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 144,
+      "name": "Atlanta Braves",
+      "link": "/api/v1/teams/144"
+     },
+     "player": {
+      "id": 113916,
+      "fullName": "George Estock",
+      "link": "/api/v1/people/113916",
+      "firstName": "George",
+      "lastName": "Estock",
+      "nameSlug": "george-estock-113916"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 0,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 112,
+      "name": "Chicago Cubs",
+      "link": "/api/v1/teams/112"
+     },
+     "player": {
+      "id": 113926,
+      "fullName": "Uel Eubanks",
+      "link": "/api/v1/people/113926",
+      "firstName": "Uel",
+      "lastName": "Eubanks",
+      "nameSlug": "uel-eubanks-113926"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 6151,
+      "name": "Little Rock Grays",
+      "link": "/api/v1/teams/6151"
+     },
+     "player": {
+      "id": 819590,
+      "fullName": "Faison",
+      "link": "/api/v1/people/819590",
+      "lastName": "Faison",
+      "nameSlug": "faison-819590"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 240,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "player": {
+      "id": 544727,
+      "fullName": "Jeurys Familia",
+      "link": "/api/v1/people/544727",
+      "firstName": "Jeurys",
+      "lastName": "Familia",
+      "nameSlug": "jeurys-familia-544727"
+     },
+     "numTeams": 2,
+     "rank": 1,
+     "split": {
+      "code": "preas",
+      "description": "Pre All-Star",
+      "sortOrder": 44
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 9,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 2,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 2,
+      "obp": "1.000",
+      "slg": "1.500",
+      "ops": "2.500",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 2,
+      "totalBases": 3,
+      "rbi": 2,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 138,
+      "name": "St. Louis Cardinals",
+      "link": "/api/v1/teams/138"
+     },
+     "player": {
+      "id": 114001,
+      "fullName": "Harry Fanok",
+      "link": "/api/v1/people/114001",
+      "firstName": "Harry",
+      "lastName": "Fanok",
+      "nameSlug": "harry-fanok-114001"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 114,
+      "name": "Cleveland Guardians",
+      "link": "/api/v1/teams/114"
+     },
+     "player": {
+      "id": 114217,
+      "fullName": "Ray Flanigan",
+      "link": "/api/v1/people/114217",
+      "firstName": "Raymond",
+      "lastName": "Flanigan",
+      "nameSlug": "raymond-flanigan-114217"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 3,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 158,
+      "name": "Milwaukee Brewers",
+      "link": "/api/v1/teams/158"
+     },
+     "player": {
+      "id": 425651,
+      "fullName": "Matt Ford",
+      "link": "/api/v1/people/425651",
+      "firstName": "Matthew",
+      "lastName": "Ford",
+      "nameSlug": "matthew-ford-425651"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "posas",
+      "description": "Post All-Star",
+      "sortOrder": 45
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 6,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 113,
+      "name": "Cincinnati Reds",
+      "link": "/api/v1/teams/113"
+     },
+     "player": {
+      "id": 114320,
+      "fullName": "Tim Fortugno",
+      "link": "/api/v1/people/114320",
+      "firstName": "Timothy",
+      "lastName": "Fortugno",
+      "nameSlug": "timothy-fortugno-114320"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "posas",
+      "description": "Post All-Star",
+      "sortOrder": 45
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 2,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 1,
+      "homeRuns": 0,
+      "baseOnBalls": 0,
+      "hits": 3,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 3,
+      "obp": "1.000",
+      "slg": "1.667",
+      "ops": "2.667",
+      "stolenBases": 1,
+      "plateAppearances": 3,
+      "totalBases": 5,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 1495,
+      "name": "Chicago American Giants",
+      "link": "/api/v1/teams/1495"
+     },
+     "player": {
+      "id": 819470,
+      "fullName": "Fresnell",
+      "link": "/api/v1/people/819470",
+      "lastName": "Fresnell",
+      "nameSlug": "fresnell-819470"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 1,
       "avg": "1.000",
       "atBats": 1,
       "obp": "1.000",
@@ -2251,16 +2543,17 @@
       "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 137,
-      "name": "San Francisco Giants",
-      "link": "/api/v1/teams/137"
+      "id": 114,
+      "name": "Cleveland Guardians",
+      "link": "/api/v1/teams/114"
      },
      "player": {
-      "id": 110915,
-      "fullName": "Curt Bernard",
-      "link": "/api/v1/people/110915",
-      "firstName": "Curtis",
-      "lastName": "Bernard"
+      "id": 114462,
+      "fullName": "Johnson Fry",
+      "link": "/api/v1/people/114462",
+      "firstName": "Johnson",
+      "lastName": "Fry",
+      "nameSlug": "johnson-fry-114462"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -2270,9 +2563,275 @@
      },
      "rank": 1,
      "split": {
-      "code": "4",
-      "description": "April",
-      "sortOrder": 22
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 17,
+      "groundOuts": 2,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 3,
+      "plateAppearances": 3,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 2,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "2.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 120,
+      "name": "Washington Nationals",
+      "link": "/api/v1/teams/120"
+     },
+     "player": {
+      "id": 114466,
+      "fullName": "Woodie Fryman",
+      "link": "/api/v1/people/114466",
+      "firstName": "Woodrow",
+      "lastName": "Fryman",
+      "nameSlug": "woodrow-fryman-114466"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "h2",
+      "description": "Second Half",
+      "sortOrder": 43
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 85,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 1,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "2.000",
+      "ops": "3.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 6,
+      "plateAppearances": 1,
+      "totalBases": 2,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "player": {
+      "id": 445246,
+      "fullName": "Jeff Fulchino",
+      "link": "/api/v1/people/445246",
+      "firstName": "Jeffrey",
+      "lastName": "Fulchino",
+      "nameSlug": "jeffrey-fulchino-445246"
+     },
+     "numTeams": 3,
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 114,
+      "name": "Cleveland Guardians",
+      "link": "/api/v1/teams/114"
+     },
+     "player": {
+      "id": 114538,
+      "fullName": "Jackie Gallagher",
+      "link": "/api/v1/people/114538",
+      "firstName": "John",
+      "lastName": "Gallagher",
+      "nameSlug": "john-gallagher-114538"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "9",
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "RF"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 3,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 1,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 110,
+      "name": "Baltimore Orioles",
+      "link": "/api/v1/teams/110"
+     },
+     "player": {
+      "id": 408202,
+      "fullName": "Luis C. Garcia",
+      "link": "/api/v1/people/408202",
+      "firstName": "Luis",
+      "lastName": "Garcia",
+      "nameSlug": "luis-garcia-408202"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
      },
      "position": {
       "code": "9",
@@ -2306,142 +2865,6 @@
       "caughtStealingPercentage": ".---",
       "groundIntoDoublePlay": 0,
       "groundIntoTriplePlay": 0,
-      "numberOfPitches": 1,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 121,
-      "name": "New York Mets",
-      "link": "/api/v1/teams/121"
-     },
-     "player": {
-      "id": 110916,
-      "fullName": "Dwight Bernard",
-      "link": "/api/v1/people/110916",
-      "firstName": "Dwight",
-      "lastName": "Bernard"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dtu",
-      "description": "On Tuesdays",
-      "sortOrder": 52
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 10,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 3,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
-     },
-     "player": {
-      "id": 333293,
-      "fullName": "Adam Bernero",
-      "link": "/api/v1/people/333293",
-      "firstName": "Adam",
-      "lastName": "Bernero"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "5",
-      "description": "May",
-      "sortOrder": 23
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
       "numberOfPitches": 2,
       "plateAppearances": 1,
       "totalBases": 1,
@@ -2455,288 +2878,17 @@
       "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 142,
-      "name": "Minnesota Twins",
-      "link": "/api/v1/teams/142"
+      "id": 134,
+      "name": "Pittsburgh Pirates",
+      "link": "/api/v1/teams/134"
      },
      "player": {
-      "id": 621244,
-      "fullName": "José Berríos",
-      "link": "/api/v1/people/621244",
-      "firstName": "José",
-      "lastName": "Berríos"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "9",
-      "description": "September",
-      "sortOrder": 27
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 7,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 2,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 119,
-      "name": "Los Angeles Dodgers",
-      "link": "/api/v1/teams/119"
-     },
-     "player": {
-      "id": 641360,
-      "fullName": "Phil Bickford",
-      "link": "/api/v1/people/641360",
-      "firstName": "Phillip",
-      "lastName": "Bickford"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dfr",
-      "description": "On Fridays",
-      "sortOrder": 55
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 26,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 1,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "2.000",
-      "ops": "3.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 3,
-      "plateAppearances": 1,
-      "totalBases": 2,
-      "rbi": 1,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
-     },
-     "player": {
-      "id": 592145,
-      "fullName": "Jesse Biddle",
-      "link": "/api/v1/people/592145",
-      "firstName": "Jesse",
-      "lastName": "Biddle"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "d",
-      "description": "Day Games",
-      "sortOrder": 3
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 19,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 1,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "2.000",
-      "ops": "3.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 3,
-      "plateAppearances": 1,
-      "totalBases": 2,
-      "rbi": 1,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
-     },
-     "player": {
-      "id": 592145,
-      "fullName": "Jesse Biddle",
-      "link": "/api/v1/people/592145",
-      "firstName": "Jesse",
-      "lastName": "Biddle"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "4",
-      "description": "April",
-      "sortOrder": 22
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 47,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 1,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "2.000",
-      "ops": "3.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 3,
-      "plateAppearances": 1,
-      "totalBases": 2,
-      "rbi": 1,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
-     },
-     "player": {
-      "id": 592145,
-      "fullName": "Jesse Biddle",
-      "link": "/api/v1/people/592145",
-      "firstName": "Jesse",
-      "lastName": "Biddle"
+      "id": 114590,
+      "fullName": "Miguel Garcia",
+      "link": "/api/v1/people/114590",
+      "firstName": "Miguel",
+      "lastName": "Garcia",
+      "nameSlug": "miguel-garcia-114590"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -2759,211 +2911,7 @@
     },
     {
      "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 1,
-      "doubles": 1,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "2.000",
-      "ops": "3.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 1,
-      "plateAppearances": 1,
-      "totalBases": 2,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 109,
-      "name": "Arizona Diamondbacks",
-      "link": "/api/v1/teams/109"
-     },
-     "player": {
-      "id": 150149,
-      "fullName": "Nick Bierbrodt",
-      "link": "/api/v1/people/150149",
-      "firstName": "Nicholas",
-      "lastName": "Bierbrodt"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dtu",
-      "description": "On Tuesdays",
-      "sortOrder": 52
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 2,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 2,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 2,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 2,
-      "totalBases": 2,
-      "rbi": 2,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 114,
-      "name": "Cleveland Guardians",
-      "link": "/api/v1/teams/114"
-     },
-     "player": {
-      "id": 111002,
-      "fullName": "Steve Biras",
-      "link": "/api/v1/people/111002",
-      "firstName": "Stephen",
-      "lastName": "Biras"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "9",
-      "description": "September",
-      "sortOrder": 27
-     },
-     "position": {
-      "code": "4",
-      "name": "Second Base",
-      "type": "Infielder",
-      "abbreviation": "2B"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 2,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 2,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 2,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 2,
-      "totalBases": 2,
-      "rbi": 2,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 114,
-      "name": "Cleveland Guardians",
-      "link": "/api/v1/teams/114"
-     },
-     "player": {
-      "id": 111002,
-      "fullName": "Steve Biras",
-      "link": "/api/v1/people/111002",
-      "firstName": "Stephen",
-      "lastName": "Biras"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "posas",
-      "description": "Post All-Star",
-      "sortOrder": 45
-     },
-     "position": {
-      "code": "4",
-      "name": "Second Base",
-      "type": "Infielder",
-      "abbreviation": "2B"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
+      "gamesPlayed": 13,
       "groundOuts": 0,
       "airOuts": 0,
       "runs": 0,
@@ -2986,75 +2934,7 @@
       "caughtStealingPercentage": ".---",
       "groundIntoDoublePlay": 0,
       "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 1,
-      "totalBases": 1,
-      "rbi": 2,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 114,
-      "name": "Cleveland Guardians",
-      "link": "/api/v1/teams/114"
-     },
-     "player": {
-      "id": 111002,
-      "fullName": "Steve Biras",
-      "link": "/api/v1/people/111002",
-      "firstName": "Stephen",
-      "lastName": "Biras"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dtu",
-      "description": "On Tuesdays",
-      "sortOrder": 52
-     },
-     "position": {
-      "code": "4",
-      "name": "Second Base",
-      "type": "Infielder",
-      "abbreviation": "2B"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
+      "numberOfPitches": 2,
       "plateAppearances": 1,
       "totalBases": 1,
       "rbi": 0,
@@ -3067,84 +2947,17 @@
       "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 114,
-      "name": "Cleveland Guardians",
-      "link": "/api/v1/teams/114"
+      "id": 134,
+      "name": "Pittsburgh Pirates",
+      "link": "/api/v1/teams/134"
      },
      "player": {
-      "id": 111002,
-      "fullName": "Steve Biras",
-      "link": "/api/v1/people/111002",
-      "firstName": "Stephen",
-      "lastName": "Biras"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dfr",
-      "description": "On Fridays",
-      "sortOrder": 55
-     },
-     "position": {
-      "code": "4",
-      "name": "Second Base",
-      "type": "Infielder",
-      "abbreviation": "2B"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 2,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 2,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 2,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 0,
-      "plateAppearances": 2,
-      "totalBases": 2,
-      "rbi": 2,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 114,
-      "name": "Cleveland Guardians",
-      "link": "/api/v1/teams/114"
-     },
-     "player": {
-      "id": 111002,
-      "fullName": "Steve Biras",
-      "link": "/api/v1/people/111002",
-      "firstName": "Stephen",
-      "lastName": "Biras"
+      "id": 114590,
+      "fullName": "Miguel Garcia",
+      "link": "/api/v1/people/114590",
+      "firstName": "Miguel",
+      "lastName": "Garcia",
+      "nameSlug": "miguel-garcia-114590"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -3159,10 +2972,148 @@
       "sortOrder": 63
      },
      "position": {
-      "code": "4",
-      "name": "Second Base",
-      "type": "Infielder",
-      "abbreviation": "2B"
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 4,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 142,
+      "name": "Minnesota Twins",
+      "link": "/api/v1/teams/142"
+     },
+     "player": {
+      "id": 114593,
+      "fullName": "Ramon Garcia",
+      "link": "/api/v1/people/114593",
+      "firstName": "Ramon",
+      "lastName": "Garcia",
+      "nameSlug": "ramon-garcia-114593"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "preas",
+      "description": "Pre All-Star",
+      "sortOrder": 44
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 4,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 0,
+      "plateAppearances": 1,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 0,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "-.--",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 142,
+      "name": "Minnesota Twins",
+      "link": "/api/v1/teams/142"
+     },
+     "player": {
+      "id": 114593,
+      "fullName": "Ramon Garcia",
+      "link": "/api/v1/people/114593",
+      "firstName": "Ramon",
+      "lastName": "Garcia",
+      "nameSlug": "ramon-garcia-114593"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
      }
     },
     {
@@ -3203,16 +3154,17 @@
       "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 145,
-      "name": "Chicago White Sox",
-      "link": "/api/v1/teams/145"
+      "id": 142,
+      "name": "Minnesota Twins",
+      "link": "/api/v1/teams/142"
      },
      "player": {
-      "id": 111036,
-      "fullName": "Bill Black",
-      "link": "/api/v1/people/111036",
-      "firstName": "John",
-      "lastName": "Black"
+      "id": 114593,
+      "fullName": "Ramon Garcia",
+      "link": "/api/v1/people/114593",
+      "firstName": "Ramon",
+      "lastName": "Garcia",
+      "nameSlug": "ramon-garcia-114593"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -3222,15 +3174,68 @@
      },
      "rank": 1,
      "split": {
-      "code": "dsa",
-      "description": "On Saturdays",
-      "sortOrder": 56
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
      },
      "position": {
-      "code": "4",
-      "name": "Second Base",
-      "type": "Infielder",
-      "abbreviation": "2B"
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 1,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "baseOnBalls": 1,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "stolenBases": 0,
+      "plateAppearances": 2,
+      "totalBases": 1,
+      "rbi": 0,
+      "sacBunts": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 1495,
+      "name": "Chicago American Giants",
+      "link": "/api/v1/teams/1495"
+     },
+     "player": {
+      "id": 819431,
+      "fullName": "Gardner",
+      "link": "/api/v1/people/819431",
+      "lastName": "Gardner",
+      "nameSlug": "gardner-819431"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "vt",
+      "description": "vs. Team",
+      "sortOrder": 63
+     },
+     "position": {
+      "code": "X",
+      "name": "Unknown",
+      "type": "Unknown",
+      "abbreviation": "X"
      }
     },
     {
@@ -3238,7 +3243,7 @@
       "gamesPlayed": 1,
       "groundOuts": 0,
       "airOuts": 0,
-      "runs": 0,
+      "runs": 1,
       "doubles": 0,
       "triples": 0,
       "homeRuns": 0,
@@ -3258,10 +3263,10 @@
       "caughtStealingPercentage": ".---",
       "groundIntoDoublePlay": 0,
       "groundIntoTriplePlay": 0,
-      "numberOfPitches": 6,
+      "numberOfPitches": 14,
       "plateAppearances": 2,
       "totalBases": 1,
-      "rbi": 0,
+      "rbi": 2,
       "leftOnBase": 0,
       "sacBunts": 0,
       "sacFlies": 0,
@@ -3271,16 +3276,17 @@
       "atBatsPerHomeRun": "-.--"
      },
      "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
+      "id": 115,
+      "name": "Colorado Rockies",
+      "link": "/api/v1/teams/115"
      },
      "player": {
-      "id": 594760,
-      "fullName": "Aaron Blair",
-      "link": "/api/v1/people/594760",
-      "firstName": "Aaron",
-      "lastName": "Blair"
+      "id": 451198,
+      "fullName": "Cole Garner",
+      "link": "/api/v1/people/451198",
+      "firstName": "Robert",
+      "lastName": "Garner",
+      "nameSlug": "robert-garner-451198"
      },
      "league": {
       "link": "/api/v1/league/null"
@@ -3290,89 +3296,21 @@
      },
      "rank": 1,
      "split": {
+      "code": "posas",
+      "description": "Post All-Star",
+      "sortOrder": 45
+     },
+     "position": {
       "code": "7",
-      "description": "July",
-      "sortOrder": 25
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
+      "name": "Outfielder",
+      "type": "Outfielder",
+      "abbreviation": "LF"
      }
     },
     {
      "stat": {
       "gamesPlayed": 1,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 0,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 1,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "1.000",
-      "ops": "2.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 6,
-      "plateAppearances": 2,
-      "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 144,
-      "name": "Atlanta Braves",
-      "link": "/api/v1/teams/144"
-     },
-     "player": {
-      "id": 594760,
-      "fullName": "Aaron Blair",
-      "link": "/api/v1/people/594760",
-      "firstName": "Aaron",
-      "lastName": "Blair"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "dwe",
-      "description": "On Wednesdays",
-      "sortOrder": 53
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 8,
-      "groundOuts": 0,
+      "groundOuts": 2,
       "airOuts": 0,
       "runs": 0,
       "doubles": 0,
@@ -3394,79 +3332,149 @@
       "caughtStealingPercentage": ".---",
       "groundIntoDoublePlay": 0,
       "groundIntoTriplePlay": 0,
-      "numberOfPitches": 1,
-      "plateAppearances": 1,
+      "numberOfPitches": 9,
+      "plateAppearances": 3,
       "totalBases": 1,
-      "rbi": 0,
-      "leftOnBase": 0,
-      "sacBunts": 0,
-      "sacFlies": 0,
-      "babip": "1.000",
-      "groundOutsToAirouts": "-.--",
-      "catchersInterference": 0,
-      "atBatsPerHomeRun": "-.--"
-     },
-     "team": {
-      "id": 138,
-      "name": "St. Louis Cardinals",
-      "link": "/api/v1/teams/138"
-     },
-     "player": {
-      "id": 111092,
-      "fullName": "Gary Blaylock",
-      "link": "/api/v1/people/111092",
-      "firstName": "Gary",
-      "lastName": "Blaylock"
-     },
-     "league": {
-      "link": "/api/v1/league/null"
-     },
-     "sport": {
-      "link": "/api/v1/sports/null"
-     },
-     "rank": 1,
-     "split": {
-      "code": "7",
-      "description": "July",
-      "sortOrder": 25
-     },
-     "position": {
-      "code": "1",
-      "name": "Pitcher",
-      "type": "Pitcher",
-      "abbreviation": "P"
-     }
-    },
-    {
-     "stat": {
-      "gamesPlayed": 11,
-      "groundOuts": 0,
-      "airOuts": 0,
-      "runs": 0,
-      "doubles": 1,
-      "triples": 0,
-      "homeRuns": 0,
-      "strikeOuts": 0,
-      "baseOnBalls": 0,
-      "intentionalWalks": 0,
-      "hits": 1,
-      "hitByPitch": 0,
-      "avg": "1.000",
-      "atBats": 1,
-      "obp": "1.000",
-      "slg": "2.000",
-      "ops": "3.000",
-      "caughtStealing": 0,
-      "stolenBases": 0,
-      "stolenBasePercentage": ".---",
-      "caughtStealingPercentage": ".---",
-      "groundIntoDoublePlay": 0,
-      "groundIntoTriplePlay": 0,
-      "numberOfPitches": 1,
-      "plateAppearances": 1,
-      "totalBases": 2,
       "rbi": 1,
       "leftOnBase": 0,
+      "sacBunts": 2,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "2.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "link": "/api/v1/teams/118"
+     },
+     "player": {
+      "id": 150203,
+      "fullName": "Chris George",
+      "link": "/api/v1/people/150203",
+      "firstName": "Christopher",
+      "lastName": "George",
+      "nameSlug": "christopher-george-150203"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 4,
+      "groundOuts": 3,
+      "airOuts": 0,
+      "runs": 1,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 0,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 5,
+      "plateAppearances": 4,
+      "totalBases": 1,
+      "rbi": 0,
+      "leftOnBase": 0,
+      "sacBunts": 3,
+      "sacFlies": 0,
+      "babip": "1.000",
+      "groundOutsToAirouts": "3.00",
+      "catchersInterference": 0,
+      "atBatsPerHomeRun": "-.--"
+     },
+     "team": {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "link": "/api/v1/teams/119"
+     },
+     "player": {
+      "id": 114738,
+      "fullName": "Bob Giallombardo",
+      "link": "/api/v1/people/114738",
+      "firstName": "Robert",
+      "lastName": "Giallombardo",
+      "nameSlug": "robert-giallombardo-114738"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
+     "rank": 1,
+     "split": {
+      "code": "tal",
+      "description": "In games following a loss",
+      "sortOrder": 105
+     },
+     "position": {
+      "code": "1",
+      "name": "Pitcher",
+      "type": "Pitcher",
+      "abbreviation": "P"
+     }
+    },
+    {
+     "stat": {
+      "gamesPlayed": 22,
+      "groundOuts": 0,
+      "airOuts": 0,
+      "runs": 0,
+      "doubles": 0,
+      "triples": 0,
+      "homeRuns": 0,
+      "strikeOuts": 0,
+      "baseOnBalls": 0,
+      "intentionalWalks": 0,
+      "hits": 1,
+      "hitByPitch": 1,
+      "avg": "1.000",
+      "atBats": 1,
+      "obp": "1.000",
+      "slg": "1.000",
+      "ops": "2.000",
+      "caughtStealing": 0,
+      "stolenBases": 0,
+      "stolenBasePercentage": ".---",
+      "caughtStealingPercentage": ".---",
+      "groundIntoDoublePlay": 0,
+      "groundIntoTriplePlay": 0,
+      "numberOfPitches": 2,
+      "plateAppearances": 2,
+      "totalBases": 1,
+      "rbi": 2,
+      "leftOnBase": 0,
       "sacBunts": 0,
       "sacFlies": 0,
       "babip": "1.000",
@@ -3474,19 +3482,30 @@
       "catchersInterference": 0,
       "atBatsPerHomeRun": "-.--"
      },
-     "player": {
-      "id": 518468,
-      "fullName": "Michael Blazek",
-      "link": "/api/v1/people/518468",
-      "firstName": "Michael",
-      "lastName": "Blazek"
+     "team": {
+      "id": 134,
+      "name": "Pittsburgh Pirates",
+      "link": "/api/v1/teams/134"
      },
-     "numTeams": 2,
+     "player": {
+      "id": 114761,
+      "fullName": "Brett Gideon",
+      "link": "/api/v1/people/114761",
+      "firstName": "Byron",
+      "lastName": "Gideon",
+      "nameSlug": "byron-gideon-114761"
+     },
+     "league": {
+      "link": "/api/v1/league/null"
+     },
+     "sport": {
+      "link": "/api/v1/sports/null"
+     },
      "rank": 1,
      "split": {
-      "code": "dfr",
-      "description": "On Fridays",
-      "sortOrder": 55
+      "code": "posas",
+      "description": "Post All-Star",
+      "sortOrder": 45
      },
      "position": {
       "code": "1",

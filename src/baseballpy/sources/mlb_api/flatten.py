@@ -17,6 +17,12 @@ Scalar = str | int | float | bool | None
 
 _ID_KEY = re.compile(r"(ID)?[0-9]+")
 
+#: Page-boundary fields of the league-wide ``/v1/stats`` answers: the splits that tie at the page's offset or
+#: limit, copied whole into the wrapper of every page. Every one of those splits is also a row of some page
+#: (checked on projected hitting 2024: 50 of 50 per page), so carrying the list onto each row of the page only
+#: multiplied it (775 MB for one season); the raw page keeps the field.
+PAGE_BOUNDARY_FIELDS = frozenset({"splitsTiedWithOffset", "splitsTiedWithLimit"})
+
 
 def _is_id_map(value: dict[str, Any]) -> bool:
     """``{"ID660271": {...}, ...}`` style maps: their keys are data, not column names."""
@@ -88,6 +94,8 @@ def _walk(
                 nxt = rest[0] if rest and rest[0] != "*" else None
                 extra: dict[str, Scalar] = {}
                 _flatten(element, "", extra, nxt)
+                for boundary in PAGE_BOUNDARY_FIELDS:
+                    extra.pop(boundary, None)
                 ctx = {f"{label}.{k}" if label else k: v for k, v in extra.items()}
                 yield from _walk(element, rest, {**carry, **ctx}, label)
             else:

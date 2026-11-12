@@ -45,7 +45,8 @@
       "fullName": "Roy Moore",
       "link": "/api/v1/people/829467",
       "firstName": "Roy",
-      "lastName": "Moore"
+      "lastName": "Moore",
+      "nameSlug": "roy-moore-829467"
      },
      "league": {
       "id": 430,
@@ -114,7 +115,8 @@
       "fullName": "Mike Magnante",
       "link": "/api/v1/people/118141",
       "firstName": "Mike",
-      "lastName": "Magnante"
+      "lastName": "Magnante",
+      "nameSlug": "mike-magnante-118141"
      },
      "league": {
       "id": 104,
@@ -174,7 +176,8 @@
       "fullName": "George Abrams",
       "link": "/api/v1/people/110027",
       "firstName": "George",
-      "lastName": "Abrams"
+      "lastName": "Abrams",
+      "nameSlug": "george-abrams-110027"
      },
      "league": {
       "id": 104,

@@ -57,7 +57,8 @@
       "fullName": "Travis Hughes",
       "link": "/api/v1/people/407889",
       "firstName": "Travis",
-      "lastName": "Hughes"
+      "lastName": "Hughes",
+      "nameSlug": "travis-hughes-407889"
      },
      "league": {
       "id": 104,
@@ -124,7 +125,8 @@
       "fullName": "Keith Hessler",
       "link": "/api/v1/people/594857",
       "firstName": "Keith",
-      "lastName": "Hessler"
+      "lastName": "Hessler",
+      "nameSlug": "keith-hessler-594857"
      },
      "league": {
       "id": 104,
@@ -191,7 +193,8 @@
       "fullName": "Jeff Kubenka",
       "link": "/api/v1/people/136606",
       "firstName": "Jeff",
-      "lastName": "Kubenka"
+      "lastName": "Kubenka",
+      "nameSlug": "jeff-kubenka-136606"
      },
      "league": {
       "id": 104,

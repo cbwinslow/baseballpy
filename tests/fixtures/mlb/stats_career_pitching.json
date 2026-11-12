@@ -85,7 +85,8 @@
       "fullName": "Jake Lamb",
       "link": "/api/v1/people/571875",
       "firstName": "Jake",
-      "lastName": "Lamb"
+      "lastName": "Lamb",
+      "nameSlug": "jake-lamb-571875"
      },
      "league": {
       "id": 103,
@@ -180,7 +181,8 @@
       "fullName": "Roger Slagle",
       "link": "/api/v1/people/122309",
       "firstName": "Roger",
-      "lastName": "Slagle"
+      "lastName": "Slagle",
+      "nameSlug": "roger-slagle-122309"
      },
      "league": {
       "id": 103,
@@ -275,7 +277,8 @@
       "fullName": "Josh Phegley",
       "link": "/api/v1/people/572033",
       "firstName": "Josh",
-      "lastName": "Phegley"
+      "lastName": "Phegley",
+      "nameSlug": "josh-phegley-572033"
      },
      "league": {
       "id": 103,

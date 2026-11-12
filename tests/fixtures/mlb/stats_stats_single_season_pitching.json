@@ -61,7 +61,8 @@
       "fullName": "Lum Davenport",
       "link": "/api/v1/people/113082",
       "firstName": "Lum",
-      "lastName": "Davenport"
+      "lastName": "Davenport",
+      "nameSlug": "lum-davenport-113082"
      },
      "league": {
       "id": 103,
@@ -158,7 +159,8 @@
       "fullName": "Chili Davis",
       "link": "/api/v1/people/113099",
       "firstName": "Chili",
-      "lastName": "Davis"
+      "lastName": "Davis",
+      "nameSlug": "chili-davis-113099"
      },
      "league": {
       "id": 103,
@@ -229,7 +231,8 @@
       "fullName": "Bob Chipman",
       "link": "/api/v1/people/112248",
       "firstName": "Bob",
-      "lastName": "Chipman"
+      "lastName": "Chipman",
+      "nameSlug": "bob-chipman-112248"
      },
      "league": {
       "id": 104,

@@ -46,7 +46,8 @@
       "fullName": "Jackie Collum",
       "link": "/api/v1/people/112523",
       "firstName": "Jackie",
-      "lastName": "Collum"
+      "lastName": "Collum",
+      "nameSlug": "jackie-collum-112523"
      },
      "league": {
       "id": 104,
@@ -102,7 +103,8 @@
       "fullName": "Ralph Branca",
       "link": "/api/v1/people/111378",
       "firstName": "Ralph",
-      "lastName": "Branca"
+      "lastName": "Branca",
+      "nameSlug": "ralph-branca-111378"
      },
      "league": {
       "id": 104,
@@ -193,7 +195,8 @@
       "fullName": "Doug Dascenzo",
       "link": "/api/v1/people/113062",
       "firstName": "Doug",
-      "lastName": "Dascenzo"
+      "lastName": "Dascenzo",
+      "nameSlug": "doug-dascenzo-113062"
      },
      "league": {
       "id": 104,

@@ -37,7 +37,8 @@
       "fullName": "Hugh Duffy",
       "link": "/api/v1/people/113598",
       "firstName": "Hugh",
-      "lastName": "Duffy"
+      "lastName": "Duffy",
+      "nameSlug": "hugh-duffy-113598"
      },
      "league": {
       "id": 104,
@@ -80,7 +81,8 @@
       "fullName": "Tip O'Neill",
       "link": "/api/v1/people/120022",
       "firstName": "Tip",
-      "lastName": "O'Neill"
+      "lastName": "O'Neill",
+      "nameSlug": "tip-o-neill-120022"
      },
      "league": {
       "id": 100,
@@ -124,7 +126,8 @@
       "fullName": "Mule Suttles",
       "link": "/api/v1/people/817055",
       "firstName": "Mule",
-      "lastName": "Suttles"
+      "lastName": "Suttles",
+      "nameSlug": "mule-suttles-817055"
      },
      "league": {
       "id": 430,

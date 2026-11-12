@@ -62,7 +62,8 @@
       "fullName": "Mack Burk",
       "link": "/api/v1/people/111712",
       "firstName": "Mack",
-      "lastName": "Burk"
+      "lastName": "Burk",
+      "nameSlug": "mack-burk-111712"
      },
      "league": {
       "id": 104,
@@ -134,7 +135,8 @@
       "fullName": "Dave Hostetler",
       "link": "/api/v1/people/116171",
       "firstName": "Dave",
-      "lastName": "Hostetler"
+      "lastName": "Hostetler",
+      "nameSlug": "dave-hostetler-116171"
      },
      "league": {
       "id": 104,
@@ -206,7 +208,8 @@
       "fullName": "Audry Pérez",
       "link": "/api/v1/people/542233",
       "firstName": "Audry",
-      "lastName": "Pérez"
+      "lastName": "Pérez",
+      "nameSlug": "audry-perez-542233"
      },
      "league": {
       "id": 104,

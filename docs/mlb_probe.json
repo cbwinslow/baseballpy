@@ -8,7 +8,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 66,
+   "columns": 64,
    "key_unique_per_request": true
   },
   "stats_projected_pitching": {
@@ -18,7 +18,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 150,
-   "columns": 65,
+   "columns": 63,
    "key_unique_per_request": true
   },
   "stats_season_hitting": {
@@ -28,7 +28,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 64,
+   "columns": 62,
    "key_unique_per_request": true
   },
   "stats_season_pitching": {
@@ -38,7 +38,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 92,
+   "columns": 90,
    "key_unique_per_request": true
   },
   "stats_season_fielding": {
@@ -48,7 +48,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 54,
+   "columns": 52,
    "key_unique_per_request": true
   },
   "stats_season_catching": {
@@ -58,7 +58,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 70,
+   "columns": 68,
    "key_unique_per_request": true
   },
   "stats_season_game": {
@@ -68,71 +68,87 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 28,
+   "columns": 26,
    "key_unique_per_request": true
   },
   "stats_career_hitting": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 60,
+   "sample_rows": 300,
+   "columns": 59,
    "key_unique_per_request": true
   },
   "stats_career_pitching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 88,
+   "sample_rows": 300,
+   "columns": 87,
    "key_unique_per_request": true
   },
   "stats_career_fielding": {
    "status": "ok",
-   "requests_ok": 40,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 4000,
-   "columns": 54,
+   "sample_rows": 400,
+   "columns": 53,
    "key_unique_per_request": true
   },
   "stats_career_catching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 65,
+   "sample_rows": 200,
+   "columns": 64,
    "key_unique_per_request": true
   },
   "stats_career_advanced_hitting": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 57,
+   "sample_rows": 300,
+   "columns": 56,
    "key_unique_per_request": true
   },
   "stats_career_advanced_pitching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 82,
+   "sample_rows": 400,
+   "columns": 81,
    "key_unique_per_request": true
   },
   "stats_career_advanced_fielding": {
    "status": "ok",
-   "requests_ok": 40,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 4000,
-   "columns": 54,
+   "sample_rows": 400,
+   "columns": 53,
    "key_unique_per_request": true
   },
   "stats_career_advanced_catching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 65,
+   "sample_rows": 200,
+   "columns": 64,
    "key_unique_per_request": true
   },
   "stats_season_advanced_hitting": {
@@ -142,7 +158,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 61,
+   "columns": 59,
    "key_unique_per_request": true
   },
   "stats_season_advanced_pitching": {
@@ -152,7 +168,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 86,
+   "columns": 84,
    "key_unique_per_request": true
   },
   "stats_season_advanced_fielding": {
@@ -162,7 +178,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 54,
+   "columns": 52,
    "key_unique_per_request": true
   },
   "stats_season_advanced_catching": {
@@ -172,7 +188,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 70,
+   "columns": 68,
    "key_unique_per_request": true
   },
   "stats_season_advanced_game": {
@@ -182,7 +198,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 28,
+   "columns": 26,
    "key_unique_per_request": true
   },
   "stats_outs_above_average_hitting": {
@@ -192,7 +208,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "stats_outs_above_average_pitching": {
@@ -202,7 +218,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "stats_outs_above_average_fielding": {
@@ -212,7 +228,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "stats_outs_above_average_catching": {
@@ -222,7 +238,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "stats_outs_above_average_running": {
@@ -232,7 +248,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "stats_outs_above_average_game": {
@@ -242,7 +258,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "stats_outs_above_average_team": {
@@ -252,7 +268,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "stats_outs_above_average_streak": {
@@ -262,7 +278,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "stats_expected_statistics_hitting": {
@@ -272,7 +288,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 400,
-   "columns": 29,
+   "columns": 27,
    "key_unique_per_request": true
   },
   "stats_expected_statistics_pitching": {
@@ -282,7 +298,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 400,
-   "columns": 25,
+   "columns": 23,
    "key_unique_per_request": true
   },
   "stats_sabermetrics_hitting": {
@@ -292,7 +308,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 46,
+   "columns": 44,
    "key_unique_per_request": true
   },
   "stats_sabermetrics_pitching": {
@@ -302,7 +318,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 43,
+   "columns": 41,
    "key_unique_per_request": true
   },
   "stats_sabermetrics_fielding": {
@@ -312,7 +328,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 35,
+   "columns": 33,
    "key_unique_per_request": true
   },
   "stats_last_x_games_hitting": {
@@ -322,7 +338,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 200,
-   "columns": 65,
+   "columns": 63,
    "key_unique_per_request": true
   },
   "stats_last_x_games_pitching": {
@@ -332,7 +348,7 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 92,
+   "columns": 90,
    "key_unique_per_request": true
   },
   "stats_last_x_games_fielding": {
@@ -342,71 +358,87 @@
    "requests_ok": 2,
    "requests_failed": 0,
    "sample_rows": 187,
-   "columns": 57,
+   "columns": 55,
    "key_unique_per_request": true
   },
   "stats_stats_single_season_hitting": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 62,
+   "sample_rows": 400,
+   "columns": 61,
    "key_unique_per_request": true
   },
   "stats_stats_single_season_pitching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 90,
+   "sample_rows": 400,
+   "columns": 89,
    "key_unique_per_request": true
   },
   "stats_stats_single_season_fielding": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 44,
+   "sample_rows": 400,
+   "columns": 51,
    "key_unique_per_request": true
   },
   "stats_stats_single_season_catching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 66,
+   "sample_rows": 300,
+   "columns": 65,
    "key_unique_per_request": true
   },
   "stats_stats_single_season_advanced_hitting": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 59,
+   "sample_rows": 400,
+   "columns": 58,
    "key_unique_per_request": true
   },
   "stats_stats_single_season_advanced_pitching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 84,
+   "sample_rows": 400,
+   "columns": 83,
    "key_unique_per_request": true
   },
   "stats_stats_single_season_advanced_fielding": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 44,
+   "sample_rows": 400,
+   "columns": 51,
    "key_unique_per_request": true
   },
   "stats_stats_single_season_advanced_catching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 66,
+   "sample_rows": 300,
+   "columns": 65,
    "key_unique_per_request": true
   },
   "people_stats_career_stat_splits_hitting": {
@@ -421,10 +453,12 @@
   },
   "stats_career_stat_splits_hitting": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 61,
+   "sample_rows": 150,
+   "columns": 60,
    "key_unique_per_request": true
   },
   "people_stats_career_stat_splits_pitching": {
@@ -439,10 +473,12 @@
   },
   "stats_career_stat_splits_pitching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 2,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 90,
+   "sample_rows": 200,
+   "columns": 89,
    "key_unique_per_request": true
   },
   "people_stats_career_stat_splits_fielding": {
@@ -880,7 +916,7 @@
    "requests_ok": 1,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 70,
+   "columns": 68,
    "key_unique_per_request": true
   },
   "people_stats_projected_zips_pitching": {
@@ -900,7 +936,7 @@
    "requests_ok": 1,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 69,
+   "columns": 67,
    "key_unique_per_request": true
   },
   "people_stats_projected_zips2_yr_hitting": {
@@ -920,7 +956,7 @@
    "requests_ok": 1,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 70,
+   "columns": 68,
    "key_unique_per_request": true
   },
   "people_stats_projected_zips2_yr_pitching": {
@@ -940,7 +976,7 @@
    "requests_ok": 1,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 69,
+   "columns": 67,
    "key_unique_per_request": true
   },
   "people_stats_projected_zips3_yr_hitting": {
@@ -960,7 +996,7 @@
    "requests_ok": 1,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 70,
+   "columns": 68,
    "key_unique_per_request": true
   },
   "people_stats_projected_zips3_yr_pitching": {
@@ -980,7 +1016,7 @@
    "requests_ok": 1,
    "requests_failed": 0,
    "sample_rows": 100,
-   "columns": 69,
+   "columns": 67,
    "key_unique_per_request": true
   },
   "people_stats_projected_hitting": {
@@ -2125,98 +2161,122 @@
   },
   "team_stats_year_by_year_hitting": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 1068,
-   "columns": 44,
+   "columns": 42,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_pitching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 1068,
-   "columns": 70,
+   "columns": 68,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_fielding": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 1048,
-   "columns": 25,
+   "columns": 23,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_catching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 1048,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_advanced_hitting": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 1068,
-   "columns": 41,
+   "columns": 39,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_advanced_pitching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 1068,
-   "columns": 62,
+   "columns": 60,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_advanced_fielding": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 1048,
-   "columns": 25,
+   "columns": 23,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_advanced_catching": {
    "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 1048,
-   "columns": 39,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_playoffs_hitting": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 37,
+   "sample_rows": 1068,
+   "columns": 42,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_playoffs_pitching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 46,
+   "sample_rows": 1068,
+   "columns": 68,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_playoffs_fielding": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 25,
+   "sample_rows": 1048,
+   "columns": 23,
    "key_unique_per_request": true
   },
   "team_stats_year_by_year_playoffs_catching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 39,
+   "sample_rows": 1048,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "team_stats_season_hitting": {
@@ -2226,7 +2286,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 620,
-   "columns": 45,
+   "columns": 43,
    "key_unique_per_request": true
   },
   "team_stats_season_pitching": {
@@ -2236,7 +2296,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 620,
-   "columns": 71,
+   "columns": 69,
    "key_unique_per_request": true
   },
   "team_stats_season_fielding": {
@@ -2246,7 +2306,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 612,
-   "columns": 34,
+   "columns": 32,
    "key_unique_per_request": true
   },
   "team_stats_season_catching": {
@@ -2256,103 +2316,127 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 612,
-   "columns": 42,
+   "columns": 40,
    "key_unique_per_request": true
   },
   "team_stats_career_hitting": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 60,
-   "columns": 43,
+   "sample_rows": 734,
+   "columns": 41,
    "key_unique_per_request": true
   },
   "team_stats_career_pitching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 60,
-   "columns": 69,
+   "sample_rows": 734,
+   "columns": 67,
    "key_unique_per_request": true
   },
   "team_stats_career_fielding": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 60,
-   "columns": 24,
+   "sample_rows": 730,
+   "columns": 22,
    "key_unique_per_request": true
   },
   "team_stats_career_catching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 60,
-   "columns": 39,
+   "sample_rows": 730,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "team_stats_career_regular_season_hitting": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 37,
+   "sample_rows": 1068,
+   "columns": 42,
    "key_unique_per_request": true
   },
   "team_stats_career_regular_season_pitching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 46,
+   "sample_rows": 1068,
+   "columns": 68,
    "key_unique_per_request": true
   },
   "team_stats_career_regular_season_fielding": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 25,
+   "sample_rows": 1048,
+   "columns": 23,
    "key_unique_per_request": true
   },
   "team_stats_career_regular_season_catching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 39,
+   "sample_rows": 1048,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "team_stats_career_advanced_hitting": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 60,
-   "columns": 40,
+   "sample_rows": 734,
+   "columns": 38,
    "key_unique_per_request": true
   },
   "team_stats_career_advanced_pitching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 60,
-   "columns": 61,
+   "sample_rows": 734,
+   "columns": 59,
    "key_unique_per_request": true
   },
   "team_stats_career_advanced_fielding": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 60,
-   "columns": 24,
+   "sample_rows": 730,
+   "columns": 22,
    "key_unique_per_request": true
   },
   "team_stats_career_advanced_catching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 60,
-   "columns": 39,
+   "sample_rows": 730,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "team_stats_season_advanced_hitting": {
@@ -2362,7 +2446,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 620,
-   "columns": 42,
+   "columns": 40,
    "key_unique_per_request": true
   },
   "team_stats_season_advanced_pitching": {
@@ -2372,7 +2456,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 620,
-   "columns": 63,
+   "columns": 61,
    "key_unique_per_request": true
   },
   "team_stats_season_advanced_fielding": {
@@ -2382,7 +2466,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 612,
-   "columns": 34,
+   "columns": 32,
    "key_unique_per_request": true
   },
   "team_stats_season_advanced_catching": {
@@ -2392,39 +2476,47 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 612,
-   "columns": 42,
+   "columns": 40,
    "key_unique_per_request": true
   },
   "team_stats_career_playoffs_hitting": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 37,
+   "sample_rows": 1068,
+   "columns": 42,
    "key_unique_per_request": true
   },
   "team_stats_career_playoffs_pitching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 46,
+   "sample_rows": 1068,
+   "columns": 68,
    "key_unique_per_request": true
   },
   "team_stats_career_playoffs_fielding": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 25,
+   "sample_rows": 1048,
+   "columns": 23,
    "key_unique_per_request": true
   },
   "team_stats_career_playoffs_catching": {
    "status": "ok",
-   "requests_ok": 2,
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 40,
    "requests_failed": 0,
-   "sample_rows": 100,
-   "columns": 39,
+   "sample_rows": 1048,
+   "columns": 37,
    "key_unique_per_request": true
   },
   "team_stats_game_log_hitting": {
@@ -2434,7 +2526,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 966,
-   "columns": 54,
+   "columns": 52,
    "key_unique_per_request": true
   },
   "team_stats_game_log_pitching": {
@@ -2444,7 +2536,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 916,
-   "columns": 81,
+   "columns": 79,
    "key_unique_per_request": true
   },
   "team_stats_game_log_fielding": {
@@ -2454,7 +2546,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 916,
-   "columns": 36,
+   "columns": 34,
    "key_unique_per_request": true
   },
   "team_stats_game_log_catching": {
@@ -2464,7 +2556,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 916,
-   "columns": 48,
+   "columns": 46,
    "key_unique_per_request": true
   },
   "team_stats_expected_statistics_hitting": {
@@ -2478,7 +2570,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 622,
-   "columns": 44,
+   "columns": 42,
    "key_unique_per_request": true
   },
   "team_stats_last_x_games_pitching": {
@@ -2488,7 +2580,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 614,
-   "columns": 71,
+   "columns": 69,
    "key_unique_per_request": true
   },
   "team_stats_last_x_games_fielding": {
@@ -2498,7 +2590,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 614,
-   "columns": 26,
+   "columns": 24,
    "key_unique_per_request": true
   },
   "team_stats_last_x_games_catching": {
@@ -2508,7 +2600,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 614,
-   "columns": 38,
+   "columns": 36,
    "key_unique_per_request": true
   },
   "team_stats_by_date_range_hitting": {
@@ -2518,7 +2610,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 622,
-   "columns": 44,
+   "columns": 42,
    "key_unique_per_request": true
   },
   "team_stats_by_date_range_pitching": {
@@ -2528,7 +2620,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 614,
-   "columns": 71,
+   "columns": 69,
    "key_unique_per_request": true
   },
   "team_stats_by_date_range_fielding": {
@@ -2538,7 +2630,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 614,
-   "columns": 26,
+   "columns": 24,
    "key_unique_per_request": true
   },
   "team_stats_by_date_range_catching": {
@@ -2548,7 +2640,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 614,
-   "columns": 38,
+   "columns": 36,
    "key_unique_per_request": true
   },
   "team_stats_at_game_start_hitting": {
@@ -2558,7 +2650,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 966,
-   "columns": 54,
+   "columns": 52,
    "key_unique_per_request": true
   },
   "team_stats_at_game_start_pitching": {
@@ -2568,7 +2660,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 916,
-   "columns": 81,
+   "columns": 79,
    "key_unique_per_request": true
   },
   "team_stats_at_game_start_fielding": {
@@ -2578,7 +2670,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 916,
-   "columns": 36,
+   "columns": 34,
    "key_unique_per_request": true
   },
   "team_stats_at_game_start_catching": {
@@ -2588,7 +2680,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 916,
-   "columns": 48,
+   "columns": 46,
    "key_unique_per_request": true
   },
   "team_stats_vs_opponents_hitting": {
@@ -2598,7 +2690,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 620,
-   "columns": 50,
+   "columns": 48,
    "key_unique_per_request": true
   },
   "team_stats_vs_opponents_pitching": {
@@ -2608,7 +2700,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 620,
-   "columns": 79,
+   "columns": 77,
    "key_unique_per_request": true
   },
   "team_stats_vs_opponents_fielding": {
@@ -2618,7 +2710,7 @@
    "requests_ok": 40,
    "requests_failed": 0,
    "sample_rows": 612,
-   "columns": 29,
+   "columns": 27,
    "key_unique_per_request": true
   },
   "ref_game_types": {

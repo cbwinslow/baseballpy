@@ -31,7 +31,8 @@
       "fullName": "Josh Gibson",
       "link": "/api/v1/people/492568",
       "firstName": "Josh",
-      "lastName": "Gibson"
+      "lastName": "Gibson",
+      "nameSlug": "josh-gibson-492568"
      },
      "sport": {
       "id": 1,
@@ -70,7 +71,8 @@
       "fullName": "Ty Cobb",
       "link": "/api/v1/people/112431",
       "firstName": "Ty",
-      "lastName": "Cobb"
+      "lastName": "Cobb",
+      "nameSlug": "ty-cobb-112431"
      },
      "league": {
       "id": 103,
@@ -111,7 +113,8 @@
       "fullName": "Oscar Charleston",
       "link": "/api/v1/people/492560",
       "firstName": "Oscar",
-      "lastName": "Charleston"
+      "lastName": "Charleston",
+      "nameSlug": "oscar-charleston-492560"
      },
      "sport": {
       "id": 1,

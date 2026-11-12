@@ -40,7 +40,8 @@
       "fullName": "Eric Anthony",
       "link": "/api/v1/people/110285",
       "firstName": "Eric",
-      "lastName": "Anthony"
+      "lastName": "Anthony",
+      "nameSlug": "eric-anthony-110285"
      },
      "league": {
       "id": 104,
@@ -90,7 +91,8 @@
       "fullName": "Eric Anthony",
       "link": "/api/v1/people/110285",
       "firstName": "Eric",
-      "lastName": "Anthony"
+      "lastName": "Anthony",
+      "nameSlug": "eric-anthony-110285"
      },
      "league": {
       "id": 104,
@@ -140,7 +142,8 @@
       "fullName": "Eric Anthony",
       "link": "/api/v1/people/110285",
       "firstName": "Eric",
-      "lastName": "Anthony"
+      "lastName": "Anthony",
+      "nameSlug": "eric-anthony-110285"
      },
      "league": {
       "id": 104,
