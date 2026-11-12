@@ -230,8 +230,96 @@ def convert_raw_cmd(source: str, seasons: tuple[int, ...], apply: bool, remove_o
         raise click.ClickException(f"{problems} season(s) were not converted")
 
 
+@click.command("rebuild-segments")
+@click.argument("source")
+@click.option(
+    "--season",
+    "seasons",
+    type=int,
+    multiple=True,
+    help="Season (repeatable; default: every season held).",
+)
+@click.option(
+    "--apply", is_flag=True, help="Write the segments (the default is a dry run that only reports)."
+)
+@click.option(
+    "--force",
+    is_flag=True,
+    help="Rebuild every segment, also those that already have processed files (a schema change).",
+)
+@click.option(
+    "--remove-legacy",
+    is_flag=True,
+    help="After the rebuilt row counts matched the old files, delete the hidden old files. Needs --apply.",
+)
+def rebuild_segments_cmd(
+    source: str, seasons: tuple[int, ...], apply: bool, force: bool, remove_legacy: bool
+) -> None:
+    """Rebuild a source's processed files from its raw segments (no download), season by season.
+
+    Run it when no ingest is running. The old part files are hidden in _legacy/ first and put back if
+    anything fails; they are deleted only with --apply --remove-legacy and only when every rebuilt dataset has
+    the same row count as the old files.
+    """
+    if remove_legacy and not apply:
+        raise click.UsageError("--remove-legacy needs --apply")
+    from baseballpy.core.segrebuild import rebuild_season
+    from baseballpy.core.segrebuild import remove_legacy as delete_legacy
+    from baseballpy.core.units import normalizer_for, segment_datasets
+
+    config = LakeConfig()
+    register_all_adapters()
+    try:
+        normalize = normalizer_for(source)
+    except KeyError as exc:
+        raise click.ClickException(str(exc)) from None
+    unit_of = unit_resolver(source)
+    chosen = list(seasons) or _raw_seasons(config, source)
+    if not chosen:
+        raise click.ClickException(f"no raw season folders of {source} under {config.raw_root}")
+    table = Table(
+        "Season", "Segments", "Units", "Old rows", "New rows", "Same", "Hidden", "Removed"
+    )
+    problems = 0
+    for season in chosen:
+        report = rebuild_season(
+            config,
+            source,
+            season,
+            normalize,
+            unit_of,
+            apply=apply,
+            force=force,
+            datasets=segment_datasets(source),
+        )
+        removed = 0
+        if apply and remove_legacy and report.segments:
+            try:
+                removed = delete_legacy(config, source, season, report)
+            except ValueError as exc:
+                problems += 1
+                console.print(f"[red]{season}: {exc}[/red]")
+        table.add_row(
+            str(season),
+            str(len(report.segments)),
+            f"{report.units:,}",
+            f"{sum(report.old_rows.values()):,}",
+            f"{sum(report.new_rows.values()):,}",
+            "yes" if report.matches and report.new_rows else ("-" if not apply else "NO"),
+            f"{report.moved:,}",
+            f"{removed:,}",
+        )
+        if apply and report.segments and not report.matches:
+            problems += 1
+    console.print(table)
+    console.print(f"{'writing' if apply else 'dry run'}: {len(chosen)} season(s) of {source}")
+    if problems:
+        raise click.ClickException(f"{problems} season(s) did not match their old row counts")
+
+
 def register_compact_command(group: click.Group) -> None:
     """Attach ``compact`` to the main group."""
     group.add_command(compact_cmd)
     group.add_command(compress_raw_cmd)
     group.add_command(convert_raw_cmd)
+    group.add_command(rebuild_segments_cmd)

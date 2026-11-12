@@ -426,7 +426,7 @@ class ResponseLog:
 
     def stage_raw_refresh(
         self, old: Mapping[str, Any], units: Mapping[str, Sequence[Response]]
-    ) -> tuple[Path, dict[str, Any]]:
+    ) -> tuple[Path | None, dict[str, Any]]:
         """Write the raw file of a refreshed segment as an open file and return it with its new line.
 
         Raw is never overwritten (design 5b): the new file holds every old row and, beside it, each new
@@ -434,12 +434,12 @@ class ResponseLog:
         renamed it, it comes out the same.
         """
         name = str(old["raw"])
-        old_table = pq.read_table(self.season_dir / name).cast(RAW_SCHEMA)
+        keys = pq.read_table(self.season_dir / name, columns=["url", "sha256", "fetched_at"])
         have = set(
             zip(
-                old_table.column("url").to_pylist(),
-                old_table.column("sha256").to_pylist(),
-                old_table.column("fetched_at").to_pylist(),
+                keys.column("url").to_pylist(),
+                keys.column("sha256").to_pylist(),
+                keys.column("fetched_at").to_pylist(),
                 strict=True,
             )
         )
@@ -449,13 +449,16 @@ class ResponseLog:
             for response in responses
             if (response.url, response.sha256, response.fetched_at) not in have
         ]
+        line = dict(old)
+        line["refresh"] = int(old.get("refresh", 0)) + 1
+        line["refreshed_at"] = datetime.now(UTC).isoformat()
+        if not fresh:  # a rebuild from the same answers: the raw file is not written a second time
+            return None, line
+        old_table = pq.read_table(self.season_dir / name).cast(RAW_SCHEMA)
         table = pa.concat_tables([old_table, self._table_of(fresh)])
         part = self.season_dir / OPEN_DIRNAME / f"{name}.part"
         rows = RawSegmentSink().write_part(table, part)
-        line = dict(old)
         line["files"] = {name: {"sha256": file_sha256(part), "rows": rows}}
-        line["refresh"] = int(old.get("refresh", 0)) + 1
-        line["refreshed_at"] = datetime.now(UTC).isoformat()
         return part, line
 
     def record_refresh(self, line: dict[str, Any]) -> None:

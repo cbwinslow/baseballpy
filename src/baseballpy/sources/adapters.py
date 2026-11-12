@@ -1,6 +1,6 @@
 """Registration of built-in source ingest adapters."""
 
-from baseballpy.core.units import register_unit_resolver
+from baseballpy.core.units import register_normalizer, register_unit_resolver
 from baseballpy.ingest.adapters import IngestAdapter, register_adapter
 
 
@@ -69,9 +69,16 @@ def register_all_adapters() -> None:
     register_adapter("polymarket", _polymarket_factory)
     register_adapter("bref", _bref_factory)
     register_adapter("fangraphs", _fangraphs_factory)
-    from baseballpy.sources.mlb_api.game_segments import game_unit
+    from baseballpy.sources.mlb_api.game_segments import (
+        game_dataset_names,
+        game_normalizer,
+        game_unit,
+    )
 
     register_unit_resolver("mlb_api", game_unit)  # raw answers are grouped by game
+    register_normalizer(
+        "mlb_api", game_normalizer, game_dataset_names
+    )  # and cut into datasets by this function
 
 
 __all__ = ["register_all_adapters"]

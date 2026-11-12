@@ -277,3 +277,22 @@ other URL is its own unit), registered in `register_all_adapters`; `convert_raw_
 the new bodies by unit, closes a segment only between units and names units in the commit line; the `convert-raw`
 command passes the source's resolver. Tests: `tests/test_raw_convert.py` (two new, failing first). Next: tasks 6.1
 and 6.2 (the rebuild).
+
+
+### 7.w Rebuild from raw, first real season (tasks 6.1 to 6.3, MLB 2008, 2026-11-11)
+
+`baseballpy/core/segrebuild.py::rebuild_season` and the command `baseballpy rebuild-segments SOURCE [--season Y]
+[--apply] [--force] [--remove-legacy]` (default: a dry run). `tests/test_segment_rebuild.py` (9 tests, failing first):
+a season is rebuilt from raw with the same rows; a schema change is applied by `--force`; old files are hidden in
+`_legacy/` before any segment file appears and only for the datasets the normalizer writes; a failure before any commit
+puts them back; a URL with two stored versions is rebuilt from the newest for every dataset; `_legacy/` is deleted only
+when the rebuilt row counts equal the old ones. A refresh that adds no new answer no longer rewrites the raw segment.
+
+**Real run, MLB 2008:** `convert-raw mlb_api --season 2008 --apply` wrote 28 raw segments, 204 MB, from 49,500 old raw
+files that were 15.8 GB (all 21,842 distinct answers kept; every old raw file is still in place). `rebuild-segments`
+then produced the processed segments from them with no request: **1,864,223 old rows = 1,864,223 rebuilt rows, equal in
+each of the 13 game datasets**; the 57 hidden old files were then deleted (derived data). Findings fixed on the way: the
+first run stopped on a non-game URL (awards) in a raw segment (a non-game unit now yields no game rows), and it had
+hidden the old files of datasets the segments do not write (the hiding is now limited to the datasets the source says it
+writes); after a partial run the old files stay hidden and a rerun resumes. Time: about 12 minutes for the rebuild plus
+about 3 minutes for the conversion; disk 12 GB free before, 12 GB after (old raw not yet removed).

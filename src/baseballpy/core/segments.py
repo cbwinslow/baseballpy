@@ -361,7 +361,8 @@ class SegmentWriter:
             if info.get("file") and datasets.get(dataset, {}).get("file") is None:
                 files.final_path(dataset).unlink(missing_ok=True)  # the refresh has no row for it
                 datasets.setdefault(dataset, {"file": None, "rows": 0})
-        _replace(raw_part, self.log.season_dir / str(line["raw"]))
+        if raw_part is not None:
+            _replace(raw_part, self.log.season_dir / str(line["raw"]))
         line["datasets"] = datasets
         line["refresh_id"] = refresh_id
         _append_commit_line(self.log.commit_path, line)

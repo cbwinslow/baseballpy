@@ -110,6 +110,11 @@ def game_unit(url: str) -> str:
     return url
 
 
+def game_dataset_names() -> frozenset[str]:
+    """The datasets cut from game answers: the only ones the segment writer (and a rebuild) owns."""
+    return frozenset(endpoint.name for group in game_url_groups() for endpoint in group.endpoints)
+
+
 def decode_body(body: bytes) -> Any:
     """Decode one response body (the only place a body is decoded); ``BadBodyError`` if it cannot be."""
     if not body.strip():
@@ -128,6 +133,10 @@ def game_normalizer(
     groups = game_url_groups()
 
     def normalize(unit_id: str, responses: Sequence[Response]) -> dict[str, DatasetRows]:
+        if (
+            not unit_id.isdigit()
+        ):  # a URL outside any game (awards, people, ...): no game dataset is cut from it
+            return {}
         pk = int(unit_id)
         by_url = {group.url(pk): group for group in groups}
         rows: dict[str, DatasetRows] = {}
