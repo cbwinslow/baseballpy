@@ -181,6 +181,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 112: Every Route Of A Provider's Live Menu Is Registered Or Explained; MLB Processed Files Are Rebuilt From Raw Segments
 - ADR 113: Types Are Proved Against The Provider's Text; Decimals Are 64-Bit; Identifiers Are Text
 - ADR 114: Concurrency Is Decided From Live, Measured Memory, Not A Fixed Number
+- ADR 115: Provider Duplicates Are Kept And Reported; Spaces Round A Cell Are Trimmed; Empty Text Is NULL
 
 ## Documentation pages (`docs/`)
 

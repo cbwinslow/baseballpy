@@ -262,7 +262,37 @@ def test_ingest_all_walks_each_season(tmp_path: Path) -> None:
 
 
 @respx.mock
-def test_pitch_chunks_written_under_another_schema_are_refetched(tmp_path: Path) -> None:
+def test_pitch_chunks_written_under_another_schema_are_rebuilt_from_the_stored_raw(
+    tmp_path: Path,
+) -> None:
+    """A type change must not mean a new download: the raw bytes are immutable and the processed files are derived."""
+    lake = LakeConfig(home=tmp_path, today=date(2026, 1, 1))
+    extractor = StatcastExtractor(cache_config=lake, chunk_days=5)
+    respx.get(MLB_SEASONS_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "seasons": [{"springStartDate": "2024-06-01", "postSeasonEndDate": "2024-06-12"}]
+            },
+        )
+    )
+    route = respx.get(SAVANT_BASE_URL).mock(side_effect=_by_window)
+    first = extractor.ingest_season(2024)
+    assert route.call_count == 3
+    manifest = lake.dataset_manifest("statcast", "pitches")
+    for key, entry in list(manifest.chunks().items()):
+        manifest.put_entry(key, {**entry, "schema_sha256": "0" * 64})  # an older release wrote it
+    again = extractor.ingest_season(2024)
+    assert route.call_count == 3, "the stored raw bytes are parsed again: no request"
+    assert again.rows == first.rows
+    for entry in manifest.chunks().values():
+        assert entry["schema_sha256"] != "0" * 64, (
+            "every chunk is recorded under the current schema again"
+        )
+
+
+@respx.mock
+def test_a_stale_chunk_without_its_raw_file_is_fetched_again(tmp_path: Path) -> None:
     lake = LakeConfig(home=tmp_path, today=date(2026, 1, 1))
     extractor = StatcastExtractor(cache_config=lake, chunk_days=5)
     respx.get(MLB_SEASONS_URL).mock(
@@ -275,12 +305,13 @@ def test_pitch_chunks_written_under_another_schema_are_refetched(tmp_path: Path)
     )
     route = respx.get(SAVANT_BASE_URL).mock(side_effect=_by_window)
     extractor.ingest_season(2024)
-    assert route.call_count == 3
     manifest = lake.dataset_manifest("statcast", "pitches")
     for key, entry in list(manifest.chunks().items()):
-        manifest.put_entry(key, {**entry, "schema_sha256": "0" * 64})  # an older release wrote it
-    again = extractor.ingest_season(2024)
-    assert again.cached_chunks == 0 and route.call_count == 6, "stale chunks are fetched again"
+        manifest.put_entry(key, {**entry, "schema_sha256": "0" * 64})
+    for raw_file in lake.raw_dir("statcast", "pitches", 2024).glob("*.csv*"):
+        raw_file.unlink()
+    extractor.ingest_season(2024)
+    assert route.call_count == 6, "without raw bytes the only way back to the data is the provider"
 
 
 @respx.mock

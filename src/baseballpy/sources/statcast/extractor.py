@@ -269,6 +269,35 @@ class StatcastExtractor:
         fresh = self.cache_config.is_fresh(entry, "statcast", season=start_dt.year, refresh=refresh)
         return fresh, rows
 
+    def _rebuild_from_raw(
+        self, chunk_id: str, start_dt: date, end_dt: date, minors: bool
+    ) -> pa.Table | None:
+        """The chunk parsed again from its stored raw bytes, or ``None`` when that is not possible.
+
+        A stale stored schema (a type change, a parser fix) must not mean a new download: raw is immutable and the
+        processed files are derived from it. It is possible when the chunk was recorded before, its raw file is
+        there and passes its checksum, and the window is neither being revalidated nor past its freshness time.
+        """
+        manifest = self.manifest_minors if minors else self.manifest
+        entry = manifest.get_chunk(manifest_key(chunk_id, start_dt.year))
+        if entry is None:
+            return None
+        if end_dt >= self._today() - timedelta(days=REVALIDATE_TRAILING_DAYS) and (
+            start_dt.year >= self._today().year
+        ):
+            return None
+        if not self.cache_config.is_fresh(entry, "statcast", season=start_dt.year, refresh=False):
+            return None  # the freshness policy (TTL) wants a new download, not a re-parse
+        dataset = "pitches_minors" if minors else "pitches"
+        for suffix in ("csv",):
+            name = f"{chunk_id}.{suffix}"
+            if self.raw.exists("statcast", dataset, name, start_dt.year) and self.raw.verify(
+                "statcast", dataset, name, start_dt.year
+            ):
+                content = self.raw.get("statcast", dataset, name, start_dt.year)
+                return self.normalizer.normalize(content)
+        return None
+
     async def _fetch_window(self, start_dt: date, end_dt: date, query: StatcastQuery) -> pa.Table:
         """Fetch a window; bisect when Savant's 25,000-row cap is reached (never truncates)."""
         params: dict[str, Any] = {
@@ -327,13 +356,19 @@ class StatcastExtractor:
                     stored if stored.schema.equals(spec.schema) else stored.cast(spec.schema)
                 ), True
 
-        table = await self._fetch_window(start_dt, end_dt, query)
+        table: pa.Table | None = None
+        rebuilt = False
+        if persisted and not refresh:
+            table = self._rebuild_from_raw(chunk_id, start_dt, end_dt, query.minors)
+            rebuilt = table is not None
+        if table is None:
+            table = await self._fetch_window(start_dt, end_dt, query)
 
         if persisted:
             # zero-row chunks are written too, so an empty day is never re-fetched and every
             # season keeps a stable schema for the views
             self.store.put(spec, table, chunk_id=chunk_id, season=start_dt.year)
-        return table, False
+        return table, rebuilt
 
     async def extract_async(
         self,

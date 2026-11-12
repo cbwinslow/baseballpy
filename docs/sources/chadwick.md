@@ -15,6 +15,9 @@
 - **Freshness / revalidation:** with a pinned SHA the cache is current iff it was fetched at exactly that SHA (reproducible, no API call). With a floating ref the cache is revalidated against the upstream SHA every 24 hours; a failed SHA lookup is logged and the cache is served.
 - **Storage:** raw files at `raw/chadwick/register/` (shards), `raw/chadwick/register_names|register_links|register_countries/`; typed Parquet at `processed/chadwick/<dataset>/part-data.parquet`.
 
+## How the data is verified (2026-11-12)
+`baseballpy verify-roundtrip chadwick --full` reads every raw file and compares every cell both ways: all 4 datasets clean after `key_npb` became text (526,894 register rows).
+
 ## Datasets
 | Dataset | View | Upstream file(s) | Key |
 | --- | --- | --- | --- |

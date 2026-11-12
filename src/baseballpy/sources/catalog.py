@@ -107,7 +107,7 @@ def _mlb_revision(endpoint: MlbEndpoint) -> int:
 #: parser-output revisions of Retrosheet datasets (see ``DatasetSpec.revision``):
 #: 1 = missing event text fields are NULL, no longer empty strings (task 3.2 export check); rosters 1 = a missing
 #: position is NULL (round-trip check, 2026-11-12)
-RETROSHEET_REVISIONS = {"events": 1, "events_postseason": 1, "events_deduced": 1, "rosters": 1}
+RETROSHEET_REVISIONS = {"events": 1, "events_postseason": 1, "events_deduced": 1, "rosters": 2}
 
 #: dataset keys registered by the last full pass (empty before the first one)
 _REGISTERED_KEYS: frozenset[str] = frozenset()

@@ -221,3 +221,110 @@ def test_repeating_keys_are_compared_as_multisets_and_overlapping_windows_are_no
     )
     bad = roundtrip_dataset(config, spec)
     assert [x.column for x in bad.losses if x.kind == "changed_cell"] == ["speed"]
+
+
+def test_a_true_false_column_is_compared_too(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """usedh and htbf were skipped without a word; a flipped boolean must show."""
+    spec = _spec(monkeypatch, [("id", "int32"), ("dh", "bool")])
+    config = LakeConfig(home=tmp_path)
+    RawStore(config).put(SOURCE, spec.name, "a.csv", b"id,dh\n1,true\n2,false\n3,\n")
+    flipped = pa.table({"id": pa.array([1, 2, 3], pa.int32()), "dh": [False, False, None]})
+    ProcessedStore(config).put(
+        spec, flipped.append_column("_extras", pa.array([None] * 3, pa.string()))
+    )
+    check = roundtrip_dataset(config, spec)
+    loss = next(x for x in check.losses if x.column == "dh")
+    assert loss.kind == "changed_cell" and loss.count == 1 and "true" in loss.example
+
+
+def test_a_column_of_a_type_that_is_not_compared_is_listed_not_hidden(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    spec = _spec(monkeypatch, [("id", "int32"), ("stamp", "timestamp")])
+    config = LakeConfig(home=tmp_path)
+    RawStore(config).put(SOURCE, spec.name, "a.csv", b"id,stamp\n1,2024-03-01T01:02:03\n")
+    table = pa.table(
+        {"id": pa.array([1], pa.int32()), "stamp": pa.array([1709254923], pa.timestamp("s"))}
+    )
+    ProcessedStore(config).put(spec, table.append_column("_extras", pa.array([None], pa.string())))
+    check = roundtrip_dataset(config, spec)
+    assert any("stamp" in note and "not compared" in note for note in check.notes), check.notes
+
+
+def test_extras_must_hold_the_unread_column_by_name(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    spec = _spec(monkeypatch, [("id", "int32")])
+    config = LakeConfig(home=tmp_path)
+    RawStore(config).put(SOURCE, spec.name, "a.csv", b"id,extra\n1,x\n")
+    wrong = pa.table({"id": pa.array([1], pa.int32()), "_extras": ['{"other": "x"}']})
+    ProcessedStore(config).put(spec, wrong)
+    bad = roundtrip_dataset(config, spec)
+    assert [x.column for x in bad.losses if x.kind == "unmapped_raw_column"] == ["extra"]
+    right = pa.table({"id": pa.array([1], pa.int32()), "_extras": ['{"extra": "x"}']})
+    ProcessedStore(config).put(spec, right)
+    assert roundtrip_dataset(config, spec).status == "ok"
+
+
+def test_full_mode_reads_every_file_and_reports_rows_the_raw_text_does_not_have(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Sampling hides extra or doubled rows: in full mode the processed rows must all come from the raw files."""
+    spec = _spec(monkeypatch, [("id", "int32"), ("note", "string")])
+    config = LakeConfig(home=tmp_path)
+    raw = RawStore(config)
+    raw.put(SOURCE, spec.name, "a.csv", b"id,note\n1,a\n2,b\n")
+    raw.put(SOURCE, spec.name, "b.csv", b"id,note\n3,c\n")
+    extra = pa.table(
+        {
+            "id": pa.array([1, 2, 3, 4], pa.int32()),
+            "note": ["a", "b", "c", "invented"],
+            "_extras": [None] * 4,
+        }
+    )
+    ProcessedStore(config).put(spec, extra)
+    sampled = roundtrip_dataset(config, spec, sample_files=1)
+    assert sampled.status == "ok", "one sampled file cannot show an extra row"
+    full = roundtrip_dataset(config, spec, full=True)
+    kinds = {(x.kind, x.column): x.count for x in full.losses}
+    assert kinds == {("row_extra", ""): 1}, kinds
+    assert full.compared == 3 and len(full.files) == 2
+
+
+def test_cells_that_are_in_the_quarantine_are_a_known_verdict_not_a_loss(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    spec = _spec(monkeypatch, [("id", "int32"), ("n", "int16")])
+    config = LakeConfig(home=tmp_path)
+    RawStore(config).put(SOURCE, spec.name, "a.csv", b"id,n\n1,5\n2,unknown\n")
+    table = pa.table(
+        {
+            "id": pa.array([1, 2], pa.int32()),
+            "n": pa.array([5, None], pa.int16()),
+            "_extras": [None, None],
+        }
+    )
+    ProcessedStore(config).put(spec, table)
+    unexplained = roundtrip_dataset(config, spec)
+    assert unexplained.status == "loss", (
+        "a cell turned NULL with nothing in the quarantine is a loss"
+    )
+    day = config.quarantine_root / SOURCE / "2026-11-12"
+    day.mkdir(parents=True)
+    (day / f"{spec.name}-abc.jsonl").write_text('{"value": "unknown"}\n', encoding="utf-8")
+    known = roundtrip_dataset(config, spec)
+    assert known.status == "ok" and known.quarantined == 1
+    assert any("quarantined" in note for note in known.notes), known.notes
+
+
+def test_spaces_round_a_raw_cell_are_a_note_not_a_loss(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The parsers trim cells (' Paul' is stored as 'Paul'): the check counts them in a note, not as a changed cell."""
+    spec = _spec(monkeypatch, GOOD_COLUMNS)
+    raw = RAW.replace(b",a,x", b", a ,x")  # note of row 1 has spaces round it in the raw text
+    check = roundtrip_dataset(_lake(tmp_path, spec, raw, _good_table(spec)), spec)
+    assert check.status == "ok", check
+    assert any("spaces round the text" in n for n in check.notes)

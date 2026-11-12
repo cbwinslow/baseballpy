@@ -864,6 +864,8 @@ Options:
   -d, --datasets TEXT    Dataset name(s) to check (repeatable; default: all).
   --files INTEGER RANGE  Raw files compared per dataset, spread over its seasons.  [default: 3;
                          x>=1]
+  --full                 Read every raw file (not a sample) and also check the other way: processed
+                         rows no raw row explains.
   --json                 Print the verdicts as JSON.
   --help                 Show this message and exit.
 ```

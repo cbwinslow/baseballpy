@@ -118,12 +118,12 @@ Every raw Statcast file (pitch search windows, leaderboards, game feeds) MUST re
 - Verified by `tests/test_statcast_coverage.py::test_every_raw_file_records_an_upstream_fingerprint`, `tests/test_statcast_coverage.py::test_get_leaderboard_persists_strict_season_partition` and `tests/test_statcast_pitches.py::test_ingest_season_is_resumable_and_checks_pitch_keys`.
 
 ### Requirement: Stored Chunks Follow the Schema
-A stored pitch window or leaderboard chunk MUST NOT be served when its recorded schema digest differs from the dataset's current schema (ADR 49) or, for a dataset with a parser revision, carries none (ADR 51); it is fetched and stored again without `--refresh`.
+A stored pitch window or leaderboard chunk MUST NOT be served when its recorded schema digest differs from the dataset's current schema (ADR 49) or, for a dataset with a parser revision, carries none (ADR 51); it is parsed again from its stored raw file when that is held, still valid and within its freshness time (ADR 112), and fetched and stored again otherwise, without `--refresh`.
 
-#### Scenario: A schema change refetches
+#### Scenario: A schema change rebuilds
 - **WHEN** a stored chunk's schema digest differs from the dataset's
-- **THEN** the next ingest fetches the window or leaderboard again
-- Verified by `tests/test_statcast_pitches.py::test_pitch_chunks_written_under_another_schema_are_refetched` and `tests/test_statcast_coverage.py::test_a_leaderboard_written_under_another_schema_is_fetched_again`.
+- **THEN** the next ingest parses the pitch window again from its raw file (no download), and fetches a leaderboard again
+- Verified by `tests/test_statcast_pitches.py::test_pitch_chunks_written_under_another_schema_are_rebuilt_from_the_stored_raw` and `tests/test_statcast_coverage.py::test_a_leaderboard_written_under_another_schema_is_fetched_again`.
 
 ### Requirement: Provider Documentation Is Kept
 `ingest statcast` MUST keep Savant's data dictionary page (`csv-docs`) under `raw/statcast/documents/` with its sha256 and an upstream fingerprint, download it once, and never let a failed download block the data.

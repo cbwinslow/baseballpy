@@ -97,9 +97,18 @@ def verify_sample_cmd(
     show_default=True,
     help="Raw files compared per dataset, spread over its seasons.",
 )
+@click.option(
+    "--full",
+    is_flag=True,
+    help="Read every raw file (not a sample) and also check the other way: processed rows no raw row explains.",
+)
 @click.option("--json", "as_json", is_flag=True, help="Print the verdicts as JSON.")
 def verify_roundtrip_cmd(
-    sources: tuple[str, ...], datasets: tuple[str, ...], sample_files: int, as_json: bool
+    sources: tuple[str, ...],
+    datasets: tuple[str, ...],
+    sample_files: int,
+    full: bool,
+    as_json: bool,
 ) -> None:
     """Check that no value of the provider's text was lost or changed in our processed tables.
 
@@ -118,7 +127,7 @@ def verify_roundtrip_cmd(
     ]
     if not specs:
         raise click.ClickException("no registered dataset matches the sources and datasets given")
-    checks = roundtrip_lake(LakeConfig(), specs, sample_files=sample_files)
+    checks = roundtrip_lake(LakeConfig(), specs, sample_files=sample_files, full=full)
     if as_json:
         click.echo(
             json.dumps(

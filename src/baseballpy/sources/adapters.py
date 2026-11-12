@@ -76,6 +76,11 @@ def register_all_adapters() -> None:
     from baseballpy.sources.retrosheet.roundtrip import raw_reader as retrosheet_raw_reader
 
     register_raw_reader("retrosheet", retrosheet_raw_reader)  # zips, headerless logs and rosters
+    from baseballpy.core.roundtrip import register_count_check
+    from baseballpy.sources.retrosheet.linecounts import RULES, counter
+
+    for dataset in RULES:  # event files are not CSV: their rows are counted against the raw lines
+        register_count_check("retrosheet", dataset, counter(dataset))
     from baseballpy.sources.mlb_api.game_segments import (
         game_dataset_names,
         game_normalizer,

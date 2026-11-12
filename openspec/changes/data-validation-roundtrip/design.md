@@ -38,3 +38,12 @@ keys and overlapping windows), `tests/test_schema_rules.py`, `tests/test_infer_t
 Savant CSV documentation: units for some fields, no types or precision; `plate_x` redefined in 2026; `vy0` listed
 twice. Chadwick register README: ids described as the person's identifier on a site, no type or format. Retrosheet
 event file specification: info field names, values and sentinels (documented in `docs/sources/retrosheet.md`).
+
+## 6. Gaps found by the Opus 5.5 review, and what was done (2026-11-12)
+- The check crashed with MemoryError on `player_batting_logs` (Python lists): now compared in Arrow, 4.3 GB peak, all 21,999 files and 5,771,788 rows; a MemoryError is a skipped verdict.
+- Only 3 files were sampled and only one direction was checked: `--full` reads every file and reports `row_extra` (a processed row no raw row explains). Lahman and Chadwick `--full`: 31 of 31 clean, 1,262,295 raw rows.
+- True/false columns were skipped silently: now compared; types still not compared (timestamps) are listed in the notes.
+- `_extras` only had to be non-empty: it must now hold the column by name.
+- Quarantined cells counted as a loss: now a known verdict when the quarantine holds at least as many rows.
+- Event-derived tables had no check: rows are counted against raw lines for all 156 seasons (events 15,844,833; postseason 416,864; deduced 278,885; substitutions 1,737,383), all exact.
+- Open: compare event values with the original Chadwick C tools on one season; cross-check `boxscores_*` with `playerlogs.zip`; the game-log date parser drops a bad date without quarantining it (to verify).

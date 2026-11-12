@@ -35,6 +35,7 @@ from baseballpy.core.schema_tools import EXTRAS, FORMAT_KEY, UPSTREAM_KEY, read_
 CHANGED_CELL = "changed_cell"
 LOST_TO_NULL = "lost_to_null"
 ROW_MISSING = "row_missing"
+ROW_EXTRA = "row_extra"
 UNMAPPED_RAW_COLUMN = "unmapped_raw_column"
 _LEADING_ZERO = re.compile(r"^[+-]?0\d")
 _SKIP = (EXTRAS, LINEAGE_COLUMN)
@@ -98,6 +99,14 @@ def _add(losses: _Losses, kind: str, column: str, count: int, example: str) -> N
 #: or every raw file of one season
 RawReader = Callable[[LakeConfig, DatasetSpec, int, int | None, bool], Iterable[RawSample]]
 _READERS: dict[str, RawReader] = {}
+#: ``(source, dataset)`` -> ``counter(config, season)``: rows the season must hold, counted from raw files that are not CSV
+CountCheck = Callable[[LakeConfig, int], int]
+_COUNTS: dict[tuple[str, str], CountCheck] = {}
+
+
+def register_count_check(source: str, dataset: str, counter: CountCheck) -> None:
+    """Register how many rows a season of ``dataset`` must have, for raw files the cell check cannot read."""
+    _COUNTS[(source, dataset)] = counter
 
 
 def register_raw_reader(source: str, reader: RawReader) -> None:
@@ -339,10 +348,39 @@ def _date_mismatch(raw: Column, out: Column, both: Column, fmt: str) -> Column:
     return pc.and_(both, differ)
 
 
+_TRUE = ["true", "t", "1", "y", "yes"]
+_FALSE = ["false", "f", "0", "n", "no"]
+
+
+def _bool_text(raw: Column) -> Column:
+    """Raw text as the words ``true`` / ``false`` (anything else stays as written, so it shows as a difference)."""
+    low = pc.utf8_lower(pc.utf8_trim_whitespace(raw))
+    return pc.if_else(
+        pc.is_in(low, value_set=pa.array(_TRUE)),
+        "true",
+        pc.if_else(pc.is_in(low, value_set=pa.array(_FALSE)), "false", low),
+    )
+
+
+def _bool_mismatch(raw: Column, out: Column, both: Column) -> Column:
+    differ = pc.fill_null(pc.not_equal(_bool_text(raw), pc.cast(out, pa.string())), False)
+    return pc.and_(both, differ)
+
+
 def _compare_aligned(
-    spec: DatasetSpec, raw: pa.Table, out: pa.Table, columns: dict[str, str], losses: _Losses
+    spec: DatasetSpec,
+    raw: pa.Table,
+    out: pa.Table,
+    columns: dict[str, str],
+    losses: _Losses,
+    not_compared: set[str],
+    notes: list[str],
 ) -> None:
-    """Compare every mapped column of two tables with the same length and row order."""
+    """Compare every mapped column of two tables with the same length and row order.
+
+    Text is compared after trimming the spaces round the raw cell (the parsers trim them: ``' Paul'`` is stored as
+    ``'Paul'``); how many cells that touched is a note, not a loss.
+    """
     for field_ in spec.schema:
         if field_.name in _SKIP or field_.name not in columns:
             continue
@@ -358,9 +396,15 @@ def _compare_aligned(
             out_col = pc.cast(out_col, pa.string())
             type_ = pa.string()
         if pa.types.is_string(type_) or pa.types.is_large_string(type_):
-            bad = pc.and_(
-                both, pc.fill_null(pc.not_equal(raw_col, pc.cast(out_col, pa.string())), False)
-            )
+            out_text = pc.cast(out_col, pa.string())
+            bad = pc.and_(both, pc.fill_null(pc.not_equal(raw_col, out_text), False))
+            trimmed_raw = pc.utf8_trim_whitespace(raw_col)
+            spaces_only = pc.and_(bad, pc.fill_null(pc.equal(trimmed_raw, out_text), False))
+            if _sum(spaces_only):
+                notes.append(
+                    f"{field_.name}: {_sum(spaces_only):,} cell(s) had spaces round the text, stored trimmed"
+                )
+                bad = pc.and_(bad, pc.invert(spaces_only))
         elif pa.types.is_integer(type_):
             bad = _int_mismatch(raw_col, out_col, both)
         elif pa.types.is_floating(type_):
@@ -368,7 +412,10 @@ def _compare_aligned(
         elif pa.types.is_date32(type_):
             fmt = _date_format(field_, raw_col)
             bad = _date_mismatch(raw_col, out_col, both, fmt)
+        elif pa.types.is_boolean(type_):
+            bad = _bool_mismatch(raw_col, out_col, both)
         else:
+            not_compared.add(f"{field_.name} ({type_})")
             continue
         for kind, mask in ((LOST_TO_NULL, lost), (CHANGED_CELL, pc.or_(bad, invented))):
             n = _sum(mask)
@@ -386,13 +433,15 @@ def _canonical_pair(field_: pa.Field, raw: Column, out: Column) -> tuple[Column,
     if pa.types.is_dictionary(type_):
         return raw, pc.cast(out, pa.string())
     if pa.types.is_string(type_) or pa.types.is_large_string(type_):
-        return raw, pc.cast(out, pa.string())
+        return pc.utf8_trim_whitespace(raw), pc.cast(out, pa.string())  # parsers trim cells
     if pa.types.is_integer(type_):
         return pc.utf8_trim_whitespace(raw), pc.cast(out, pa.string())
     if pa.types.is_floating(type_):
         return _parse_float(raw), pc.cast(out, pa.float64())
     if pa.types.is_date32(type_):
         return pc.utf8_trim_whitespace(raw), pc.strftime(out, format=_date_format(field_, raw))
+    if pa.types.is_boolean(type_):
+        return _bool_text(raw), pc.cast(out, pa.string())
     return None
 
 
@@ -419,7 +468,12 @@ def _multiset_difference(raw: Column, out: Column) -> tuple[int, str, str]:
 
 
 def _compare_multisets(
-    spec: DatasetSpec, raws: list[pa.Table], out: pa.Table, losses: _Losses, notes: list[str]
+    spec: DatasetSpec,
+    raws: list[pa.Table],
+    out: pa.Table,
+    losses: _Losses,
+    notes: list[str],
+    not_compared: set[str],
 ) -> int:
     """For keys that repeat: per column, the values of all raw rows against all processed rows, as multisets.
 
@@ -462,11 +516,20 @@ def _compare_multisets(
                     "keys checked, values not compared"
                 )
             return seen
+    if out.num_rows > raw.num_rows:  # the other direction: processed rows that no raw row explains
+        _add(
+            losses,
+            ROW_EXTRA,
+            "",
+            out.num_rows - raw.num_rows,
+            f"{out.num_rows} processed rows, {raw.num_rows} raw",
+        )
     for field_ in spec.schema:
         if field_.name in _SKIP or field_.name not in columns:
             continue
         pair = _canonical_pair(field_, raw.column(columns[field_.name]), out.column(field_.name))
         if pair is None:
+            not_compared.add(f"{field_.name} ({field_.type})")
             continue
         raw_values, out_values = pair
         raw_nulls = int(pc.sum(pc.cast(pc.is_null(raw_values), pa.int64())).as_py() or 0)
@@ -496,7 +559,8 @@ def _check_unmapped(raw: pa.Table, out: pa.Table, columns: dict[str, str], losse
         filled = pc.and_(pc.is_valid(raw.column(name)), pc.not_equal(raw.column(name), ""))
         n = _sum(filled)
         if has_extras and n:
-            n = _sum(pc.and_(filled, pc.is_null(out.column(EXTRAS))))
+            named = pc.fill_null(pc.match_substring(out.column(EXTRAS), f'"{name}"'), False)
+            n = _sum(pc.and_(filled, pc.invert(named)))
         if n:  # an all-empty column holds nothing to lose
             _add(losses, UNMAPPED_RAW_COLUMN, name, n, "no schema column and no _extras value")
 
@@ -506,9 +570,13 @@ def _unique(out_key: Column, rows: int) -> bool:
 
 
 def roundtrip_dataset(
-    config: LakeConfig, spec: DatasetSpec, *, sample_files: int = 3
+    config: LakeConfig, spec: DatasetSpec, *, sample_files: int = 3, full: bool = False
 ) -> DatasetCheck:
-    """Compare sampled raw files of ``spec`` with its processed rows (see the module docstring)."""
+    """Compare raw files of ``spec`` with its processed rows (see the module docstring).
+
+    By default ``sample_files`` raw files spread over the seasons are compared; with ``full`` every raw file is read
+    and the check also goes the other way: a processed row that no raw row explains is ``row_extra``.
+    """
     check = DatasetCheck(spec.source, spec.name)
     reader = _READERS.get(spec.source)
 
@@ -517,7 +585,9 @@ def roundtrip_dataset(
             return list(reader(config, spec, sample_files, season, every))
         return csv_samples(config, spec, sample_files, season, every)
 
-    samples = read(None)
+    samples = read(None, full)
+    if not samples and (spec.source, spec.name) in _COUNTS:
+        return _count_check(config, spec, check)
     if not samples:
         folder = config.raw_dir(spec.source, spec.name)
         has_raw = folder.is_dir() and any(folder.rglob("*"))
@@ -530,6 +600,7 @@ def roundtrip_dataset(
         return check
     check.quarantined = _quarantine_rows(config, spec)
     losses: _Losses = {}
+    not_compared: set[str] = set()
     for season in dict.fromkeys(s.season for s in samples):
         held = _processed_table(config, spec, season)
         if held is None:
@@ -540,13 +611,16 @@ def roundtrip_dataset(
         mine = [s for s in samples if s.season == season]
         probe = _key_text(mine[0].table, processed, spec, _columns(spec, mine[0].table))
         if probe is not None and not _unique(probe[1], processed.num_rows):
-            everything = read(season, True)  # the key repeats: compare every raw row as multisets
+            everything = (
+                mine if full else read(season, True)
+            )  # the key repeats: every raw row, as multisets
             check.files += [s.label for s in everything]
             check.raw_rows += _compare_multisets(
-                spec, [s.table for s in everything], processed, losses, check.notes
+                spec, [s.table for s in everything], processed, losses, check.notes, not_compared
             )
             check.compared += processed.num_rows
             continue
+        raw_keys: list[Column] = []
         for sample in mine:
             raw = sample.table
             columns = _columns(spec, raw)
@@ -555,6 +629,8 @@ def roundtrip_dataset(
             keyed = _key_text(raw, processed, spec, columns)
             if keyed is not None:
                 raw_key, out_key = keyed
+                if full:
+                    raw_keys.append(raw_key)
                 index = pc.index_in(raw_key, value_set=out_key)
                 missing = _sum(pc.is_null(index))
                 if missing:
@@ -577,23 +653,103 @@ def roundtrip_dataset(
                 )
                 return check
             check.compared += raw_used.num_rows
-            _compare_aligned(spec, raw_used, out_used, columns, losses)
+            _compare_aligned(spec, raw_used, out_used, columns, losses, not_compared, check.notes)
             _check_unmapped(raw_used, out_used, columns, losses)
+        if full and raw_keys:  # the other direction: every processed row must come from a raw row
+            keyed = _key_text(mine[0].table, processed, spec, _columns(spec, mine[0].table))
+            if keyed is not None:
+                every_raw = pa.chunked_array([c for k in raw_keys for c in _chunks(k)])
+                orphans = pc.is_null(pc.index_in(keyed[1], value_set=every_raw))
+                extra = _sum(orphans)
+                if extra:
+                    example = pc.filter(keyed[1], orphans).slice(0, 1).to_pylist()
+                    _add(
+                        losses,
+                        ROW_EXTRA,
+                        "",
+                        extra,
+                        f"key {example[0]!r} is in the processed data only",
+                    )
+    if not_compared:
+        check.notes.append("columns not compared (type): " + ", ".join(sorted(not_compared)))
     check.losses = [
         Loss(kind, column, v.count, v.example) for (kind, column), v in sorted(losses.items())
     ]
+    _explain_with_quarantine(check)
     check.status = "loss" if check.losses else "ok"
     return check
 
 
+def _count_check(config: LakeConfig, spec: DatasetSpec, check: DatasetCheck) -> DatasetCheck:
+    """Row counts only: each processed season against the count of its raw lines."""
+    counter = _COUNTS[(spec.source, spec.name)]
+    base = config.processed_dir(spec.source, spec.name)
+    seasons = (
+        sorted(int(p.name[7:]) for p in base.glob("season=*") if p.name[7:].isdigit())
+        if base.is_dir()
+        else []
+    )
+    for season in seasons:
+        have = sum(
+            pq.ParquetFile(f).metadata.num_rows
+            for f in config.processed_dir(spec.source, spec.name, season).glob("*.parquet")
+            if not f.name.startswith("_")
+        )
+        want = counter(config, season)
+        check.raw_rows += want
+        check.compared += min(have, want)
+        check.files.append(f"season={season}")
+        if want > have:
+            check.losses.append(
+                Loss(
+                    ROW_MISSING,
+                    "",
+                    want - have,
+                    f"season {season}: {want:,} raw lines, {have:,} rows",
+                )
+            )
+        elif have > want:
+            check.losses.append(
+                Loss(
+                    ROW_EXTRA,
+                    "",
+                    have - want,
+                    f"season {season}: {want:,} raw lines, {have:,} rows",
+                )
+            )
+    check.notes.append(
+        "counts only: the raw event files are not CSV, so rows are counted, cells are not compared"
+    )
+    check.quarantined = _quarantine_rows(config, spec)
+    check.status = "loss" if check.losses else "ok"
+    return check
+
+
+def _chunks(column: Column) -> list[pa.Array]:
+    return list(column.chunks) if isinstance(column, pa.ChunkedArray) else [column]
+
+
+def _explain_with_quarantine(check: DatasetCheck) -> None:
+    """Cells turned NULL are a known verdict, not a loss, when the quarantine holds at least as many rows."""
+    nulls = [x for x in check.losses if x.kind == LOST_TO_NULL]
+    total = sum(x.count for x in nulls)
+    if nulls and total <= check.quarantined:
+        check.losses = [x for x in check.losses if x.kind != LOST_TO_NULL]
+        check.notes.append(
+            f"{total:,} cell(s) are NULL because they were quarantined "
+            f"({check.quarantined:,} quarantine row(s)): "
+            + ", ".join(sorted({x.column for x in nulls}))
+        )
+
+
 def roundtrip_lake(
-    config: LakeConfig, specs: Iterable[DatasetSpec], *, sample_files: int = 3
+    config: LakeConfig, specs: Iterable[DatasetSpec], *, sample_files: int = 3, full: bool = False
 ) -> list[DatasetCheck]:
     """:func:`roundtrip_dataset` for every spec (a dataset that cannot be read is a ``skipped`` verdict)."""
     out: list[DatasetCheck] = []
     for spec in specs:
         try:
-            out.append(roundtrip_dataset(config, spec, sample_files=sample_files))
+            out.append(roundtrip_dataset(config, spec, sample_files=sample_files, full=full))
         except (OSError, ValueError, MemoryError, pa.ArrowException) as exc:
             reason = f"could not be compared: {type(exc).__name__}: {exc}"
             out.append(DatasetCheck(spec.source, spec.name, "skipped", reason))
@@ -603,12 +759,14 @@ def roundtrip_lake(
 __all__ = [
     "CHANGED_CELL",
     "LOST_TO_NULL",
+    "ROW_EXTRA",
     "ROW_MISSING",
     "UNMAPPED_RAW_COLUMN",
     "DatasetCheck",
     "Loss",
     "RawSample",
     "csv_samples",
+    "register_count_check",
     "register_raw_reader",
     "roundtrip_dataset",
     "roundtrip_lake",

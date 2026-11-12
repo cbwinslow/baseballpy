@@ -98,16 +98,18 @@ def test_roster_rows_short_quarantined_and_extra_fields_kept(
     row_7 = "seven01,Seven,Player,R,R,BOS,OF"
     # 8 fields (position given + 1 extra field -> field_8)
     row_8 = "eight01,Eight,Player,S,R,BOS,1B,some_note"
+    # empty first name, bats and throws (an old player with no data): NULL, never an empty string
+    row_9 = "blank01,Blank,,,,BOS,P"
 
     ros_path = tmp_path / "BOS2024.ROS"
-    ros_path.write_text(f"{row_5}\n{row_6}\n{row_7}\n{row_8}\n", encoding="utf-8")
+    ros_path.write_text(f"{row_5}\n{row_6}\n{row_7}\n{row_8}\n{row_9}\n", encoding="utf-8")
 
     try:
         parser = RetrosheetRosterParser()
         table = parser.parse_files([ros_path], year=2024)
 
         assert isinstance(table, pa.Table)
-        assert len(table) == 3
+        assert len(table) == 4
 
         # 6-field row: position is NULL, _extras is None
         assert table["player_id"][0].as_py() == "six01"
@@ -127,6 +129,12 @@ def test_roster_rows_short_quarantined_and_extra_fields_kept(
         extras_raw = table["_extras"][2].as_py()
         assert extras_raw is not None
         assert json.loads(extras_raw) == {"field_8": "some_note"}
+
+        # empty fields are NULL
+        assert table["player_id"][3].as_py() == "blank01"
+        assert table["first_name"][3].as_py() is None
+        assert table["bats"][3].as_py() is None
+        assert table["throws"][3].as_py() is None
 
         # Quarantine inspection: 5-field row is quarantined
         q_files = list((lake.quarantine_root / "retrosheet").rglob("*.jsonl"))
@@ -163,3 +171,30 @@ def test_all_star_roster_lines_are_told_apart_by_the_roster_they_came_from(tmp_p
     assert keys == ("year", "roster", "player_id")
     rows = list(zip(*[table[k].to_pylist() for k in keys], strict=True))
     assert sorted(rows) == [(2015, "ALS", "altuj001"), (2015, "HOU", "altuj001")]
+
+
+def test_a_bad_game_log_date_is_quarantined_not_dropped_or_a_crash(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A non-empty date that is not a date became NULL silently, and 20240230 crashed the parse (Opus review, 2026-11-12)."""
+    lake = LakeConfig(home=tmp_path / "lake")
+    monkeypatch.setenv("BASEBALLPY_HOME", str(lake.home))
+    get_quarantine.reset()
+    tail = (
+        ',0,Thu,LAN,NL,1,SDN,NL,1,5,2,54,D,,,,SEO01,15952,185,"000101003","000000020",'
+        + ",".join(["0"] * 40)
+    )
+    rows = [f"20240328{tail}", f"20240230{tail}", f"2024-03-28{tail}"]
+    path = tmp_path / "gl2024.txt"
+    path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+    try:
+        table = RetrosheetGameLogParser().parse_file(path)
+        assert table["date"].to_pylist()[0].isoformat() == "2024-03-28"
+        assert table["date"].to_pylist()[1:] == [None, None], "an invalid date is NULL..."
+        files = list((lake.quarantine_root / "retrosheet").rglob("*.jsonl"))
+        text = "".join(f.read_text(encoding="utf-8") for f in files)
+        assert "20240230" in text and "2024-03-28" in text, (
+            "...and both bad values are in the quarantine"
+        )
+    finally:
+        get_quarantine.reset()

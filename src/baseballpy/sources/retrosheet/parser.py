@@ -5,7 +5,6 @@ import io
 import json
 import logging
 import re
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -387,10 +386,9 @@ class RetrosheetGameLogParser:
                 target_type = field.type
 
                 if target_type == pa.date32():
-                    if val and len(val) == 8 and val.isdigit():
-                        rec[name] = datetime.strptime(val, "%Y%m%d").date()
-                    else:
-                        rec[name] = None
+                    rec[name] = _safe_date(
+                        val, "%Y%m%d"
+                    )  # a bad date is NULL and quarantined, never a crash
                 elif pa.types.is_integer(target_type):
                     rec[name] = _safe_int(val)
                 elif target_type == pa.bool_():
@@ -455,12 +453,12 @@ class RetrosheetRosterParser:
 
                 records.append(
                     {
-                        "player_id": parts[0],
-                        "last_name": parts[1],
-                        "first_name": parts[2],
-                        "bats": parts[3],
-                        "throws": parts[4],
-                        "team": parts[5],
+                        "player_id": parts[0] or None,
+                        "last_name": parts[1] or None,
+                        "first_name": parts[2] or None,  # an empty field is NULL, never ''
+                        "bats": parts[3] or None,
+                        "throws": parts[4] or None,
+                        "team": parts[5] or None,
                         "position": parts[6] or None if len(parts) > 6 else None,
                         "year": year,
                         "roster": roster,

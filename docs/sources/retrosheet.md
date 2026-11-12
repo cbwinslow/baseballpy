@@ -82,7 +82,7 @@ Derived with `chadwickpy.tools.daily.daily_lines` (154 columns) — dataset `dai
 Derived with `chadwickpy.tools.sub.sub_lines` (26 columns) — dataset `substitutions`.
 
 ### 6. Rosters, schedules, umpires, discrepancies
-- `rosters`: `.ROS` files are header-less (`player_id,last,first,bats,throws,team,position`). The `roster` column holds the file's team code (`HOU`, or `ALS`/`NLS` for the all-star rosters, which repeat each player's club line), so the key is `(year, roster, player_id)`.
+- `rosters`: `.ROS` files are header-less (`player_id,last,first,bats,throws,team,position`). The `roster` column holds the file's team code (`HOU`, or `ALS`/`NLS` for the all-star rosters, which repeat each player's club line), so the key is `(year, roster, player_id)`. An empty field is NULL (not `''`) and spaces round a name are trimmed (`Van Jura, Paul` in 1943 is stored as `Paul`); the round-trip check reports the trim as a note. Result of the full check (2026-11-12): 138,160 rows, all equal.
 - `schedule`: header-based; a few old files (1904, 1921, 1933) ship **without a header row** and get the documented default header; 2022 has two doubleheader games numbered `0` (the key includes the per-team game number); only the schedule exists for 2026.
 - `umpires`: `UMPIRES<year>.txt` (`ID,last,first`), one file per season, so `umpire_id` repeats across seasons.
 - `discrepancies`: the AL/NL/federal discrepancy lists. About 5,300 rows in the 1900–1949 files have 14 instead of 15 fields and are padded with NULLs (logged); an unnamed 13th column is exposed as `flag`.
@@ -102,6 +102,12 @@ The GitHub mirror does not carry everything Retrosheet publishes. Eighteen more 
 - `negro_players`, `negro_games`, `negro_team_stats`, `negro_batting`, `negro_pitching`, `negro_fielding`, `negro_plays` (`negroleagues.zip`): the Negro Leagues, 8,215 games (1903 to 1962) with play-by-play (168,152 plays). Our event tables hold none of these games and the box-score tables only 4,647 of them, so these are the full record. Line scores stay text (`x` = inning not played).
 - `manager_logs` (`mgrlogs.zip`): 506,098 team game lines; `umpire_logs` (`umplogs.zip`): 771,683 rows, with an `umpire_id` column taken from the file name.
 A zip already in `raw/retrosheet/site_files/` is never requested again; a missing one is fetched politely: robots.txt obeyed, one request every four seconds, the run stops at the first 403, 429 or 503. A few rows are exact duplicates upstream (2 in transactions, 7 in batting logs, 3 in umpire logs) and are kept. The event CSV bundles (`csvdownloads.zip`, `basiccsvs.zip`: parsed play-by-play that repeats the event files we already parse) and the 184 official-totals ledgers (hundreds of MB each, format not yet opened) are downloadable raw files only, not tables. Attribution: "The information used here was obtained free of charge from and is copyrighted by Retrosheet."
+
+## How the data is verified (2026-11-12)
+`baseballpy verify-roundtrip retrosheet [--full]` checks every dataset it can read; the result is part of the lake contract in the tests.
+- **CSV-like files** (reference tables, schedules, umpires, headerless game logs and rosters, and the 18 tables from retrosheet.org's zips): every cell of the raw text is compared with the stored value, in both directions with `--full`. Result: clean, including all 21,999 player batting files (5,771,788 rows); the only differences are the 3 `umpire_logs.temp` cells that are quarantined on purpose (reported as a known verdict, not a loss).
+- **Event files** (not CSV): rows are counted against the raw lines, season by season, for all 156 seasons. `events` = `play` lines whose event is not `NP`, `events_postseason` and `events_deduced` the same for their files, `substitutions` = `sub` lines. Result: exact equal, 15,844,833 events, 416,864 postseason events, 278,885 deduced events and 1,737,383 substitutions.
+- **Not yet independently checked:** the values inside event rows (Chadwick's own parsing is trusted; a comparison with the original C `cwevent`/`cwbox` on one season is the open follow-up), `daily_splits` and the `boxscores_*` and `box_*` tables (derived, with no raw form to count).
 
 ## Freshness
 Retrosheet data is immutable at a pinned commit, and what is stored is judged by git fingerprints (ADR 43, ADR 48):

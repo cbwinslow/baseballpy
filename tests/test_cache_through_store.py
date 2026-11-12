@@ -55,7 +55,9 @@ def test_a_compacted_statcast_season_is_served_from_the_lake(tmp_path: Path) -> 
 
 
 @respx.mock
-def test_a_lost_compacted_file_makes_the_windows_download_again(tmp_path: Path) -> None:
+def test_a_lost_compacted_file_makes_the_windows_parse_again_from_their_raw_files(
+    tmp_path: Path,
+) -> None:
     catalog.register_all()
     lake, extractor, route = _mount_season(tmp_path)
     first = extractor.ingest_season(2024)
@@ -64,7 +66,8 @@ def test_a_lost_compacted_file_makes_the_windows_download_again(tmp_path: Path) 
     for compacted in folder.glob("compact-*.parquet"):
         compacted.unlink()
     again = extractor.ingest_season(2024)
-    assert again.cached_chunks == 0 and route.call_count == 6
+    # the raw files are still held, so the windows are parsed again and nothing is downloaded (ADR 112)
+    assert route.call_count == 3
     assert again.rows == first.rows
     assert len(list(folder.glob("part-*.parquet"))) == 3
 

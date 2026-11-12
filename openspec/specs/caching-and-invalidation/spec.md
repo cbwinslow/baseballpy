@@ -253,8 +253,8 @@ file is missing or no longer lists it MUST count as not stored and be downloaded
 #### Scenario: A compacted Statcast season is not downloaded again
 - **WHEN** a Statcast season is ingested, compacted, and ingested again
 - **THEN** every window is served from the lake with no request and the same rows; with the compacted file
-  removed the windows are downloaded again and give the same rows
-- Verified by `tests/test_cache_through_store.py::test_a_compacted_statcast_season_is_served_from_the_lake` and `tests/test_cache_through_store.py::test_a_lost_compacted_file_makes_the_windows_download_again`.
+  removed the windows are parsed again from their raw files (no request while those are held; downloaded again only when they are not) and give the same rows
+- Verified by `tests/test_cache_through_store.py::test_a_compacted_statcast_season_is_served_from_the_lake` and `tests/test_cache_through_store.py::test_a_lost_compacted_file_makes_the_windows_parse_again_from_their_raw_files`.
 
 #### Scenario: A chunk its compacted file lacks is not cached
 - **WHEN** the records call a chunk compacted but the compacted file no longer lists it

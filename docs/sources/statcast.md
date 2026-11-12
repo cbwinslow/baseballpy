@@ -14,7 +14,12 @@ is from that probe, not from memory.
 - **Typing:** every dataset has a strict PyArrow schema generated from the live headers; columns that appear
   later land in a trailing `_extras` JSON column (and log `schema_drift` once); uncastable cells are quarantined.
 
+## How the data is verified (2026-11-12)
+`baseballpy verify-roundtrip statcast [--full]` compares sampled raw files with the stored cells (a leaderboard kept as a page is decoded first); 48 of 50 datasets were clean and the two losses (32-bit floats in the pitch tables) are fixed. Windows that overlap or several fetched versions of a pitch are checked by key coverage, because Savant revises data.
+
 ---
+
+**Result of the full check (2026-11-12):** `pitches` 15,007,133 rows and `pitches_minors` 4,536,245 rows equal the raw text after the 64-bit rebuild (the minor-league files also hold 91,845 rows that are other fetched versions of the same pitches, checked by key). **Known provider quirk:** in 2026 Savant returns every `hit_into_play` pitch twice, byte-identical (35,430 of 909,080 rows; no earlier season does). The lake keeps them, as the raw files have them; use `SELECT DISTINCT` (or the key `game_pk, at_bat_number, pitch_number`) when one row per pitch is needed. The ingest logs a duplicate-key warning for it.
 
 ## 1. Pitch-level search (`/statcast_search/csv`) - dataset `pitches`
 

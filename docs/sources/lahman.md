@@ -14,6 +14,9 @@
 
 ---
 
+## How the data is verified (2026-11-12)
+`baseballpy verify-roundtrip lahman --full` reads every raw file and compares every cell both ways: all 27 datasets clean.
+
 ## How to Manually Import from the Official SABR Box Page
 
 If you prefer to download the official distribution directly from SABR:
