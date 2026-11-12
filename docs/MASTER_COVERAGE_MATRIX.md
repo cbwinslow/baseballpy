@@ -154,7 +154,7 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `game_changes` | `mlb_game_changes` | `none` | 70 | `game_pk` | Games changed since a timestamp (incremental sync log; append-only). |
 | `game_feed_linescore_innings` | `mlb_game_feed_linescore_innings` | `season` | 12 | `game_pk`, `num` | Inning-by-inning linescore from the live feed. |
 | `game_feed_officials` | `mlb_game_feed_officials` | `season` | 7 | `game_pk`, `official_type` | Umpires of a final game from the live feed. |
-| `game_feed_play_events` | `mlb_game_feed_play_events` | `season` | 168 | `game_pk`, `all_plays_about_at_bat_index`, `index` | Every pitch/action event of a final game (pitchData, hitData, details, count) with its plate appearance's context. |
+| `game_feed_play_events` | `mlb_game_feed_play_events` | `season` | 167 | `game_pk`, `all_plays_about_at_bat_index`, `index` | Every pitch/action event of a final game (pitchData, hitData, details, count) with its plate appearance's context. |
 | `game_feed_plays` | `mlb_game_feed_plays` | `season` | 69 | `game_pk`, `about_at_bat_index` | Every plate appearance of a final game from the live feed (result, about, count, matchup). |
 | `game_linescore` | `mlb_game_linescore` | `season` | 12 | `game_pk`, `num` | Inning-by-inning linescore of a game. |
 | `game_play_by_play` | `mlb_game_play_by_play` | `season` | 69 | `game_pk`, `at_bat_index` | Every play of a game (matchup, result, count, runners as JSON). |
@@ -363,52 +363,52 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `standings_spring_training` | `mlb_standings_spring_training` | `season` | 77 | `team_id`, `records_standings_type` | Standings, type springTraining. |
 | `standings_wild_card` | `mlb_standings_wild_card` | `season` | 54 | `team_id`, `records_standings_type` | Standings, type wildCard. |
 | `standings_wild_card_with_leaders` | `mlb_standings_wild_card_with_leaders` | `season` | 58 | `team_id`, `records_standings_type` | Standings, type wildCardWithLeaders. |
-| `stats_career_advanced_catching` | `mlb_stats_career_advanced_catching` | `season` | 66 | `player_id` | League-wide catching stats, type careerAdvanced (player pool ALL). |
-| `stats_career_advanced_fielding` | `mlb_stats_career_advanced_fielding` | `season` | 55 | `player_id`, `team_id`, `sport_id`, `position_abbreviation` | League-wide fielding stats, type careerAdvanced (player pool ALL). |
-| `stats_career_advanced_hitting` | `mlb_stats_career_advanced_hitting` | `season` | 58 | `player_id` | League-wide hitting stats, type careerAdvanced (player pool ALL). |
-| `stats_career_advanced_pitching` | `mlb_stats_career_advanced_pitching` | `season` | 83 | `player_id` | League-wide pitching stats, type careerAdvanced (player pool ALL). |
-| `stats_career_catching` | `mlb_stats_career_catching` | `season` | 66 | `player_id` | League-wide catching stats, type career (player pool ALL). |
-| `stats_career_fielding` | `mlb_stats_career_fielding` | `season` | 55 | `player_id`, `team_id`, `sport_id`, `position_abbreviation` | League-wide fielding stats, type career (player pool ALL). |
-| `stats_career_hitting` | `mlb_stats_career_hitting` | `season` | 61 | `player_id` | League-wide hitting stats, type career (player pool ALL). |
-| `stats_career_pitching` | `mlb_stats_career_pitching` | `season` | 89 | `player_id` | League-wide pitching stats, type career (player pool ALL). |
+| `stats_career_advanced_catching` | `mlb_stats_career_advanced_catching` | `season` | 65 | `player_id` | League-wide catching stats, type careerAdvanced (player pool ALL). |
+| `stats_career_advanced_fielding` | `mlb_stats_career_advanced_fielding` | `season` | 54 | `player_id`, `team_id`, `sport_id`, `position_abbreviation` | League-wide fielding stats, type careerAdvanced (player pool ALL). |
+| `stats_career_advanced_hitting` | `mlb_stats_career_advanced_hitting` | `season` | 57 | `player_id` | League-wide hitting stats, type careerAdvanced (player pool ALL). |
+| `stats_career_advanced_pitching` | `mlb_stats_career_advanced_pitching` | `season` | 82 | `player_id` | League-wide pitching stats, type careerAdvanced (player pool ALL). |
+| `stats_career_catching` | `mlb_stats_career_catching` | `season` | 65 | `player_id` | League-wide catching stats, type career (player pool ALL). |
+| `stats_career_fielding` | `mlb_stats_career_fielding` | `season` | 54 | `player_id`, `team_id`, `sport_id`, `position_abbreviation` | League-wide fielding stats, type career (player pool ALL). |
+| `stats_career_hitting` | `mlb_stats_career_hitting` | `season` | 60 | `player_id` | League-wide hitting stats, type career (player pool ALL). |
+| `stats_career_pitching` | `mlb_stats_career_pitching` | `season` | 88 | `player_id` | League-wide pitching stats, type career (player pool ALL). |
 | `stats_career_stat_splits_fielding` | `mlb_stats_career_stat_splits_fielding` | `season` | 19 | `player_id`, `split_code` | League-wide fielding stats, type careerStatSplits, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
-| `stats_career_stat_splits_hitting` | `mlb_stats_career_stat_splits_hitting` | `season` | 62 | `player_id`, `split_code` | League-wide hitting stats, type careerStatSplits, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
-| `stats_career_stat_splits_pitching` | `mlb_stats_career_stat_splits_pitching` | `season` | 91 | `player_id`, `split_code` | League-wide pitching stats, type careerStatSplits, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
-| `stats_expected_statistics_hitting` | `mlb_stats_expected_statistics_hitting` | `season` | 29 | `player_id` | League-wide hitting stats, type expectedStatistics (player pool ALL). |
-| `stats_expected_statistics_pitching` | `mlb_stats_expected_statistics_pitching` | `season` | 25 | `player_id`, `sport_id` | League-wide pitching stats, type expectedStatistics (player pool ALL). |
-| `stats_last_x_games_fielding` | `mlb_stats_last_x_games_fielding` | `season` | 57 | `player_id` | League-wide fielding stats, type lastXGames (player pool ALL). |
-| `stats_last_x_games_hitting` | `mlb_stats_last_x_games_hitting` | `season` | 65 | `player_id` | League-wide hitting stats, type lastXGames (player pool ALL). |
-| `stats_last_x_games_pitching` | `mlb_stats_last_x_games_pitching` | `season` | 92 | `player_id` | League-wide pitching stats, type lastXGames (player pool ALL). |
+| `stats_career_stat_splits_hitting` | `mlb_stats_career_stat_splits_hitting` | `season` | 61 | `player_id`, `split_code` | League-wide hitting stats, type careerStatSplits, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
+| `stats_career_stat_splits_pitching` | `mlb_stats_career_stat_splits_pitching` | `season` | 90 | `player_id`, `split_code` | League-wide pitching stats, type careerStatSplits, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
+| `stats_expected_statistics_hitting` | `mlb_stats_expected_statistics_hitting` | `season` | 28 | `player_id` | League-wide hitting stats, type expectedStatistics (player pool ALL). |
+| `stats_expected_statistics_pitching` | `mlb_stats_expected_statistics_pitching` | `season` | 24 | `player_id`, `sport_id` | League-wide pitching stats, type expectedStatistics (player pool ALL). |
+| `stats_last_x_games_fielding` | `mlb_stats_last_x_games_fielding` | `season` | 56 | `player_id` | League-wide fielding stats, type lastXGames (player pool ALL). |
+| `stats_last_x_games_hitting` | `mlb_stats_last_x_games_hitting` | `season` | 64 | `player_id` | League-wide hitting stats, type lastXGames (player pool ALL). |
+| `stats_last_x_games_pitching` | `mlb_stats_last_x_games_pitching` | `season` | 91 | `player_id` | League-wide pitching stats, type lastXGames (player pool ALL). |
 | `stats_leaders` | `mlb_stats_leaders` | `season` | 27 | `sport_id`, `league_leaders_season`, `league_leaders_game_type_id`, `league_leaders_leader_category`, `league_leaders_stat_group`, `rank`, `person_id` | League leaders for every category of a season-sport (ties repeat a rank; the person completes the key, a few provider rows are repeated). |
-| `stats_outs_above_average_catching` | `mlb_stats_outs_above_average_catching` | `season` | 39 | `player_id` | League-wide catching stats, type outsAboveAverage (player pool ALL). |
-| `stats_outs_above_average_fielding` | `mlb_stats_outs_above_average_fielding` | `season` | 39 | `player_id` | League-wide fielding stats, type outsAboveAverage (player pool ALL). |
-| `stats_outs_above_average_game` | `mlb_stats_outs_above_average_game` | `season` | 39 | `player_id` | League-wide game stats, type outsAboveAverage (player pool ALL). |
-| `stats_outs_above_average_hitting` | `mlb_stats_outs_above_average_hitting` | `season` | 39 | `player_id` | League-wide hitting stats, type outsAboveAverage (player pool ALL). |
-| `stats_outs_above_average_pitching` | `mlb_stats_outs_above_average_pitching` | `season` | 39 | `player_id` | League-wide pitching stats, type outsAboveAverage (player pool ALL). |
-| `stats_outs_above_average_running` | `mlb_stats_outs_above_average_running` | `season` | 39 | `player_id` | League-wide running stats, type outsAboveAverage (player pool ALL). |
-| `stats_outs_above_average_streak` | `mlb_stats_outs_above_average_streak` | `season` | 39 | `player_id` | League-wide streak stats, type outsAboveAverage (player pool ALL). |
-| `stats_outs_above_average_team` | `mlb_stats_outs_above_average_team` | `season` | 39 | `player_id` | League-wide team stats, type outsAboveAverage (player pool ALL). |
-| `stats_projected_hitting` | `mlb_stats_projected_hitting` | `season` | 66 | `player_id` | League-wide hitting stats, type projected (player pool ALL). |
-| `stats_projected_pitching` | `mlb_stats_projected_pitching` | `season` | 65 | `player_id` | League-wide pitching stats, type projected (player pool ALL). |
-| `stats_projected_zips2_yr_hitting` | `mlb_stats_projected_zips2_yr_hitting` | `season` | 70 | `player_id` | League-wide hitting stats, type projected_Zips2YR, parameters {} (player pool ALL). |
-| `stats_projected_zips2_yr_pitching` | `mlb_stats_projected_zips2_yr_pitching` | `season` | 69 | `player_id` | League-wide pitching stats, type projected_Zips2YR, parameters {} (player pool ALL). |
-| `stats_projected_zips3_yr_hitting` | `mlb_stats_projected_zips3_yr_hitting` | `season` | 70 | `player_id` | League-wide hitting stats, type projected_Zips3YR, parameters {} (player pool ALL). |
-| `stats_projected_zips3_yr_pitching` | `mlb_stats_projected_zips3_yr_pitching` | `season` | 69 | `player_id` | League-wide pitching stats, type projected_Zips3YR, parameters {} (player pool ALL). |
-| `stats_projected_zips_hitting` | `mlb_stats_projected_zips_hitting` | `season` | 70 | `player_id` | League-wide hitting stats, type projected_Zips, parameters {} (player pool ALL). |
-| `stats_projected_zips_pitching` | `mlb_stats_projected_zips_pitching` | `season` | 69 | `player_id` | League-wide pitching stats, type projected_Zips, parameters {} (player pool ALL). |
-| `stats_sabermetrics_fielding` | `mlb_stats_sabermetrics_fielding` | `season` | 35 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type sabermetrics (player pool ALL). |
-| `stats_sabermetrics_hitting` | `mlb_stats_sabermetrics_hitting` | `season` | 46 | `player_id` | League-wide hitting stats, type sabermetrics (player pool ALL). |
-| `stats_sabermetrics_pitching` | `mlb_stats_sabermetrics_pitching` | `season` | 43 | `player_id` | League-wide pitching stats, type sabermetrics (player pool ALL). |
-| `stats_season_advanced_catching` | `mlb_stats_season_advanced_catching` | `season` | 70 | `player_id` | League-wide catching stats, type seasonAdvanced (player pool ALL). |
-| `stats_season_advanced_fielding` | `mlb_stats_season_advanced_fielding` | `season` | 54 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type seasonAdvanced (player pool ALL). |
-| `stats_season_advanced_game` | `mlb_stats_season_advanced_game` | `season` | 28 | `player_id` | League-wide game stats, type seasonAdvanced (player pool ALL). |
-| `stats_season_advanced_hitting` | `mlb_stats_season_advanced_hitting` | `season` | 61 | `player_id` | League-wide hitting stats, type seasonAdvanced (player pool ALL). |
-| `stats_season_advanced_pitching` | `mlb_stats_season_advanced_pitching` | `season` | 86 | `player_id` | League-wide pitching stats, type seasonAdvanced (player pool ALL). |
-| `stats_season_catching` | `mlb_stats_season_catching` | `season` | 70 | `player_id` | League-wide catching stats, type season (player pool ALL). |
-| `stats_season_fielding` | `mlb_stats_season_fielding` | `season` | 54 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type season (player pool ALL). |
-| `stats_season_game` | `mlb_stats_season_game` | `season` | 28 | `player_id` | League-wide game stats, type season (player pool ALL). |
-| `stats_season_hitting` | `mlb_stats_season_hitting` | `season` | 64 | `player_id` | League-wide hitting stats, type season (player pool ALL). |
-| `stats_season_pitching` | `mlb_stats_season_pitching` | `season` | 92 | `player_id` | League-wide pitching stats, type season (player pool ALL). |
+| `stats_outs_above_average_catching` | `mlb_stats_outs_above_average_catching` | `season` | 38 | `player_id` | League-wide catching stats, type outsAboveAverage (player pool ALL). |
+| `stats_outs_above_average_fielding` | `mlb_stats_outs_above_average_fielding` | `season` | 38 | `player_id` | League-wide fielding stats, type outsAboveAverage (player pool ALL). |
+| `stats_outs_above_average_game` | `mlb_stats_outs_above_average_game` | `season` | 38 | `player_id` | League-wide game stats, type outsAboveAverage (player pool ALL). |
+| `stats_outs_above_average_hitting` | `mlb_stats_outs_above_average_hitting` | `season` | 38 | `player_id` | League-wide hitting stats, type outsAboveAverage (player pool ALL). |
+| `stats_outs_above_average_pitching` | `mlb_stats_outs_above_average_pitching` | `season` | 38 | `player_id` | League-wide pitching stats, type outsAboveAverage (player pool ALL). |
+| `stats_outs_above_average_running` | `mlb_stats_outs_above_average_running` | `season` | 38 | `player_id` | League-wide running stats, type outsAboveAverage (player pool ALL). |
+| `stats_outs_above_average_streak` | `mlb_stats_outs_above_average_streak` | `season` | 38 | `player_id` | League-wide streak stats, type outsAboveAverage (player pool ALL). |
+| `stats_outs_above_average_team` | `mlb_stats_outs_above_average_team` | `season` | 38 | `player_id` | League-wide team stats, type outsAboveAverage (player pool ALL). |
+| `stats_projected_hitting` | `mlb_stats_projected_hitting` | `season` | 65 | `player_id` | League-wide hitting stats, type projected (player pool ALL). |
+| `stats_projected_pitching` | `mlb_stats_projected_pitching` | `season` | 64 | `player_id` | League-wide pitching stats, type projected (player pool ALL). |
+| `stats_projected_zips2_yr_hitting` | `mlb_stats_projected_zips2_yr_hitting` | `season` | 69 | `player_id` | League-wide hitting stats, type projected_Zips2YR, parameters {} (player pool ALL). |
+| `stats_projected_zips2_yr_pitching` | `mlb_stats_projected_zips2_yr_pitching` | `season` | 68 | `player_id` | League-wide pitching stats, type projected_Zips2YR, parameters {} (player pool ALL). |
+| `stats_projected_zips3_yr_hitting` | `mlb_stats_projected_zips3_yr_hitting` | `season` | 69 | `player_id` | League-wide hitting stats, type projected_Zips3YR, parameters {} (player pool ALL). |
+| `stats_projected_zips3_yr_pitching` | `mlb_stats_projected_zips3_yr_pitching` | `season` | 68 | `player_id` | League-wide pitching stats, type projected_Zips3YR, parameters {} (player pool ALL). |
+| `stats_projected_zips_hitting` | `mlb_stats_projected_zips_hitting` | `season` | 69 | `player_id` | League-wide hitting stats, type projected_Zips, parameters {} (player pool ALL). |
+| `stats_projected_zips_pitching` | `mlb_stats_projected_zips_pitching` | `season` | 68 | `player_id` | League-wide pitching stats, type projected_Zips, parameters {} (player pool ALL). |
+| `stats_sabermetrics_fielding` | `mlb_stats_sabermetrics_fielding` | `season` | 34 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type sabermetrics (player pool ALL). |
+| `stats_sabermetrics_hitting` | `mlb_stats_sabermetrics_hitting` | `season` | 45 | `player_id` | League-wide hitting stats, type sabermetrics (player pool ALL). |
+| `stats_sabermetrics_pitching` | `mlb_stats_sabermetrics_pitching` | `season` | 42 | `player_id` | League-wide pitching stats, type sabermetrics (player pool ALL). |
+| `stats_season_advanced_catching` | `mlb_stats_season_advanced_catching` | `season` | 69 | `player_id` | League-wide catching stats, type seasonAdvanced (player pool ALL). |
+| `stats_season_advanced_fielding` | `mlb_stats_season_advanced_fielding` | `season` | 53 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type seasonAdvanced (player pool ALL). |
+| `stats_season_advanced_game` | `mlb_stats_season_advanced_game` | `season` | 27 | `player_id` | League-wide game stats, type seasonAdvanced (player pool ALL). |
+| `stats_season_advanced_hitting` | `mlb_stats_season_advanced_hitting` | `season` | 60 | `player_id` | League-wide hitting stats, type seasonAdvanced (player pool ALL). |
+| `stats_season_advanced_pitching` | `mlb_stats_season_advanced_pitching` | `season` | 85 | `player_id` | League-wide pitching stats, type seasonAdvanced (player pool ALL). |
+| `stats_season_catching` | `mlb_stats_season_catching` | `season` | 69 | `player_id` | League-wide catching stats, type season (player pool ALL). |
+| `stats_season_fielding` | `mlb_stats_season_fielding` | `season` | 53 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type season (player pool ALL). |
+| `stats_season_game` | `mlb_stats_season_game` | `season` | 27 | `player_id` | League-wide game stats, type season (player pool ALL). |
+| `stats_season_hitting` | `mlb_stats_season_hitting` | `season` | 63 | `player_id` | League-wide hitting stats, type season (player pool ALL). |
+| `stats_season_pitching` | `mlb_stats_season_pitching` | `season` | 91 | `player_id` | League-wide pitching stats, type season (player pool ALL). |
 | `stats_stat_splits_advanced_catching` | `mlb_stats_stat_splits_advanced_catching` | `season` | 31 | `season` | League-wide catching stats, type statSplitsAdvanced, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
 | `stats_stat_splits_advanced_fielding` | `mlb_stats_stat_splits_advanced_fielding` | `season` | 28 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `split_code` | League-wide fielding stats, type statSplitsAdvanced, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
 | `stats_stat_splits_advanced_hitting` | `mlb_stats_stat_splits_advanced_hitting` | `season` | 50 | `season` | League-wide hitting stats, type statSplitsAdvanced, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
@@ -419,14 +419,14 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `stats_stat_splits_hitting` | `mlb_stats_stat_splits_hitting` | `season` | 65 | `season` | League-wide hitting stats, type statSplits, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
 | `stats_stat_splits_pitching` | `mlb_stats_stat_splits_pitching` | `season` | 94 | `season` | League-wide pitching stats, type statSplits, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
 | `stats_stat_splits_running` | `mlb_stats_stat_splits_running` | `season` | 31 | `season` | League-wide running stats, type statSplits, parameters {'season': '{season}', 'sitCodes': '{sit_codes}'} (player pool ALL). |
-| `stats_stats_single_season_advanced_catching` | `mlb_stats_stats_single_season_advanced_catching` | `season` | 67 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide catching stats, type statsSingleSeasonAdvanced (player pool ALL). |
-| `stats_stats_single_season_advanced_fielding` | `mlb_stats_stats_single_season_advanced_fielding` | `season` | 45 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type statsSingleSeasonAdvanced (player pool ALL). |
-| `stats_stats_single_season_advanced_hitting` | `mlb_stats_stats_single_season_advanced_hitting` | `season` | 60 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide hitting stats, type statsSingleSeasonAdvanced (player pool ALL). |
-| `stats_stats_single_season_advanced_pitching` | `mlb_stats_stats_single_season_advanced_pitching` | `season` | 85 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide pitching stats, type statsSingleSeasonAdvanced (player pool ALL). |
-| `stats_stats_single_season_catching` | `mlb_stats_stats_single_season_catching` | `season` | 67 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide catching stats, type statsSingleSeason (player pool ALL). |
-| `stats_stats_single_season_fielding` | `mlb_stats_stats_single_season_fielding` | `season` | 45 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type statsSingleSeason (player pool ALL). |
-| `stats_stats_single_season_hitting` | `mlb_stats_stats_single_season_hitting` | `season` | 63 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide hitting stats, type statsSingleSeason (player pool ALL). |
-| `stats_stats_single_season_pitching` | `mlb_stats_stats_single_season_pitching` | `season` | 91 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide pitching stats, type statsSingleSeason (player pool ALL). |
+| `stats_stats_single_season_advanced_catching` | `mlb_stats_stats_single_season_advanced_catching` | `season` | 66 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide catching stats, type statsSingleSeasonAdvanced (player pool ALL). |
+| `stats_stats_single_season_advanced_fielding` | `mlb_stats_stats_single_season_advanced_fielding` | `season` | 52 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type statsSingleSeasonAdvanced (player pool ALL). |
+| `stats_stats_single_season_advanced_hitting` | `mlb_stats_stats_single_season_advanced_hitting` | `season` | 59 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide hitting stats, type statsSingleSeasonAdvanced (player pool ALL). |
+| `stats_stats_single_season_advanced_pitching` | `mlb_stats_stats_single_season_advanced_pitching` | `season` | 84 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide pitching stats, type statsSingleSeasonAdvanced (player pool ALL). |
+| `stats_stats_single_season_catching` | `mlb_stats_stats_single_season_catching` | `season` | 66 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide catching stats, type statsSingleSeason (player pool ALL). |
+| `stats_stats_single_season_fielding` | `mlb_stats_stats_single_season_fielding` | `season` | 52 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type statsSingleSeason (player pool ALL). |
+| `stats_stats_single_season_hitting` | `mlb_stats_stats_single_season_hitting` | `season` | 62 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide hitting stats, type statsSingleSeason (player pool ALL). |
+| `stats_stats_single_season_pitching` | `mlb_stats_stats_single_season_pitching` | `season` | 90 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide pitching stats, type statsSingleSeason (player pool ALL). |
 | `team_affiliates` | `mlb_team_affiliates` | `season` | 37 | `id`, `parent_org_id` | Minor-league affiliates of every MLB club. |
 | `team_alumni` | `mlb_team_alumni` | `season` | 54 | `team_id`, `id` | Club alumni (hitting) of a season. |
 | `team_coaches` | `mlb_team_coaches` | `season` | 10 | `team_id`, `person_id`, `job` | Coaching staff of a club-season. A coach who changed jersey number appears twice (an empty jersey number is NULL, so it cannot be a key part): the key is not unique. |
@@ -441,61 +441,61 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `team_roster_full_season` | `mlb_team_roster_full_season` | `season` | 13 | `team_id`, `person_id`, `position_code` | Team roster, type fullSeason. |
 | `team_roster_gameday` | `mlb_team_roster_gameday` | `season` | 14 | `team_id`, `person_id`, `position_code` | Team roster, type gameday. |
 | `team_roster_non_roster_invitees` | `mlb_team_roster_non_roster_invitees` | `season` | 13 | `team_id`, `person_id`, `position_code` | Team roster, type nonRosterInvitees. |
-| `team_stats_at_game_start_catching` | `mlb_team_stats_at_game_start_catching` | `season` | 49 | `team_id`, `season`, `date`, `opponent_id`, `game_game_pk` | Team catching stats, type atGameStart. |
-| `team_stats_at_game_start_fielding` | `mlb_team_stats_at_game_start_fielding` | `season` | 37 | `team_id`, `season`, `date`, `game_game_pk` | Team fielding stats, type atGameStart. |
-| `team_stats_at_game_start_hitting` | `mlb_team_stats_at_game_start_hitting` | `season` | 55 | `team_id`, `season`, `date`, `game_game_pk` | Team hitting stats, type atGameStart. |
-| `team_stats_at_game_start_pitching` | `mlb_team_stats_at_game_start_pitching` | `season` | 82 | `team_id`, `season`, `date`, `game_game_pk` | Team pitching stats, type atGameStart. |
-| `team_stats_by_date_range_catching` | `mlb_team_stats_by_date_range_catching` | `season` | 39 | `team_id` | Team catching stats, type byDateRange. |
-| `team_stats_by_date_range_fielding` | `mlb_team_stats_by_date_range_fielding` | `season` | 27 | `team_id` | Team fielding stats, type byDateRange. |
-| `team_stats_by_date_range_hitting` | `mlb_team_stats_by_date_range_hitting` | `season` | 45 | `team_id` | Team hitting stats, type byDateRange. |
-| `team_stats_by_date_range_pitching` | `mlb_team_stats_by_date_range_pitching` | `season` | 72 | `team_id` | Team pitching stats, type byDateRange. |
-| `team_stats_career_advanced_catching` | `mlb_team_stats_career_advanced_catching` | `season` | 40 | `team_id` | Team catching stats, type careerAdvanced. |
-| `team_stats_career_advanced_fielding` | `mlb_team_stats_career_advanced_fielding` | `season` | 25 | `team_id` | Team fielding stats, type careerAdvanced. |
-| `team_stats_career_advanced_hitting` | `mlb_team_stats_career_advanced_hitting` | `season` | 41 | `team_id` | Team hitting stats, type careerAdvanced. |
-| `team_stats_career_advanced_pitching` | `mlb_team_stats_career_advanced_pitching` | `season` | 62 | `team_id` | Team pitching stats, type careerAdvanced. |
-| `team_stats_career_catching` | `mlb_team_stats_career_catching` | `season` | 40 | `team_id` | Team catching stats, type career. |
-| `team_stats_career_fielding` | `mlb_team_stats_career_fielding` | `season` | 25 | `team_id` | Team fielding stats, type career. |
-| `team_stats_career_hitting` | `mlb_team_stats_career_hitting` | `season` | 44 | `team_id` | Team hitting stats, type career. |
-| `team_stats_career_pitching` | `mlb_team_stats_career_pitching` | `season` | 70 | `team_id` | Team pitching stats, type career. |
-| `team_stats_career_playoffs_catching` | `mlb_team_stats_career_playoffs_catching` | `season` | 40 | `team_id`, `season` | Team catching stats, type careerPlayoffs. |
-| `team_stats_career_playoffs_fielding` | `mlb_team_stats_career_playoffs_fielding` | `season` | 26 | `team_id`, `season` | Team fielding stats, type careerPlayoffs. |
-| `team_stats_career_playoffs_hitting` | `mlb_team_stats_career_playoffs_hitting` | `season` | 38 | `team_id`, `season` | Team hitting stats, type careerPlayoffs. |
-| `team_stats_career_playoffs_pitching` | `mlb_team_stats_career_playoffs_pitching` | `season` | 47 | `team_id`, `season` | Team pitching stats, type careerPlayoffs. |
-| `team_stats_career_regular_season_catching` | `mlb_team_stats_career_regular_season_catching` | `season` | 40 | `team_id`, `season` | Team catching stats, type careerRegularSeason. |
-| `team_stats_career_regular_season_fielding` | `mlb_team_stats_career_regular_season_fielding` | `season` | 26 | `team_id`, `season` | Team fielding stats, type careerRegularSeason. |
-| `team_stats_career_regular_season_hitting` | `mlb_team_stats_career_regular_season_hitting` | `season` | 38 | `team_id`, `season` | Team hitting stats, type careerRegularSeason. |
-| `team_stats_career_regular_season_pitching` | `mlb_team_stats_career_regular_season_pitching` | `season` | 47 | `team_id`, `season` | Team pitching stats, type careerRegularSeason. |
-| `team_stats_game_log_catching` | `mlb_team_stats_game_log_catching` | `season` | 49 | `team_id`, `season`, `date`, `opponent_id`, `game_game_pk` | Team catching stats, type gameLog. |
-| `team_stats_game_log_fielding` | `mlb_team_stats_game_log_fielding` | `season` | 37 | `team_id`, `season`, `date`, `game_game_pk` | Team fielding stats, type gameLog. |
-| `team_stats_game_log_hitting` | `mlb_team_stats_game_log_hitting` | `season` | 55 | `team_id`, `season`, `date`, `game_game_pk` | Team hitting stats, type gameLog. |
-| `team_stats_game_log_pitching` | `mlb_team_stats_game_log_pitching` | `season` | 82 | `team_id`, `season`, `date`, `game_game_pk` | Team pitching stats, type gameLog. |
-| `team_stats_last_x_games_catching` | `mlb_team_stats_last_x_games_catching` | `season` | 39 | `team_id` | Team catching stats, type lastXGames. |
-| `team_stats_last_x_games_fielding` | `mlb_team_stats_last_x_games_fielding` | `season` | 27 | `team_id` | Team fielding stats, type lastXGames. |
-| `team_stats_last_x_games_hitting` | `mlb_team_stats_last_x_games_hitting` | `season` | 45 | `team_id` | Team hitting stats, type lastXGames. |
-| `team_stats_last_x_games_pitching` | `mlb_team_stats_last_x_games_pitching` | `season` | 72 | `team_id` | Team pitching stats, type lastXGames. |
-| `team_stats_season_advanced_catching` | `mlb_team_stats_season_advanced_catching` | `season` | 43 | `team_id` | Team catching stats, type seasonAdvanced. |
-| `team_stats_season_advanced_fielding` | `mlb_team_stats_season_advanced_fielding` | `season` | 35 | `team_id` | Team fielding stats, type seasonAdvanced. |
-| `team_stats_season_advanced_hitting` | `mlb_team_stats_season_advanced_hitting` | `season` | 43 | `team_id` | Team hitting stats, type seasonAdvanced. |
-| `team_stats_season_advanced_pitching` | `mlb_team_stats_season_advanced_pitching` | `season` | 64 | `team_id` | Team pitching stats, type seasonAdvanced. |
-| `team_stats_season_catching` | `mlb_team_stats_season_catching` | `season` | 43 | `team_id` | Team catching stats, type season. |
-| `team_stats_season_fielding` | `mlb_team_stats_season_fielding` | `season` | 35 | `team_id` | Team fielding stats, type season. |
-| `team_stats_season_hitting` | `mlb_team_stats_season_hitting` | `season` | 46 | `team_id` | Team hitting stats, type season. |
-| `team_stats_season_pitching` | `mlb_team_stats_season_pitching` | `season` | 72 | `team_id` | Team pitching stats, type season. |
-| `team_stats_vs_opponents_fielding` | `mlb_team_stats_vs_opponents_fielding` | `season` | 30 | `team_id` | Team fielding stats, type vsOpponents. |
-| `team_stats_vs_opponents_hitting` | `mlb_team_stats_vs_opponents_hitting` | `season` | 51 | `team_id` | Team hitting stats, type vsOpponents. |
-| `team_stats_vs_opponents_pitching` | `mlb_team_stats_vs_opponents_pitching` | `season` | 80 | `team_id` | Team pitching stats, type vsOpponents. |
-| `team_stats_year_by_year_advanced_catching` | `mlb_team_stats_year_by_year_advanced_catching` | `season` | 40 | `team_id`, `season` | Team catching stats, type yearByYearAdvanced. |
-| `team_stats_year_by_year_advanced_fielding` | `mlb_team_stats_year_by_year_advanced_fielding` | `season` | 26 | `team_id`, `season` | Team fielding stats, type yearByYearAdvanced. |
-| `team_stats_year_by_year_advanced_hitting` | `mlb_team_stats_year_by_year_advanced_hitting` | `season` | 42 | `team_id`, `season` | Team hitting stats, type yearByYearAdvanced. |
-| `team_stats_year_by_year_advanced_pitching` | `mlb_team_stats_year_by_year_advanced_pitching` | `season` | 63 | `team_id`, `season` | Team pitching stats, type yearByYearAdvanced. |
-| `team_stats_year_by_year_catching` | `mlb_team_stats_year_by_year_catching` | `season` | 40 | `team_id`, `season` | Team catching stats, type yearByYear. |
-| `team_stats_year_by_year_fielding` | `mlb_team_stats_year_by_year_fielding` | `season` | 26 | `team_id`, `season` | Team fielding stats, type yearByYear. |
-| `team_stats_year_by_year_hitting` | `mlb_team_stats_year_by_year_hitting` | `season` | 45 | `team_id`, `season` | Team hitting stats, type yearByYear. |
-| `team_stats_year_by_year_pitching` | `mlb_team_stats_year_by_year_pitching` | `season` | 71 | `team_id`, `season` | Team pitching stats, type yearByYear. |
-| `team_stats_year_by_year_playoffs_catching` | `mlb_team_stats_year_by_year_playoffs_catching` | `season` | 40 | `team_id`, `season` | Team catching stats, type yearByYearPlayoffs. |
-| `team_stats_year_by_year_playoffs_fielding` | `mlb_team_stats_year_by_year_playoffs_fielding` | `season` | 26 | `team_id`, `season` | Team fielding stats, type yearByYearPlayoffs. |
-| `team_stats_year_by_year_playoffs_hitting` | `mlb_team_stats_year_by_year_playoffs_hitting` | `season` | 38 | `team_id`, `season` | Team hitting stats, type yearByYearPlayoffs. |
-| `team_stats_year_by_year_playoffs_pitching` | `mlb_team_stats_year_by_year_playoffs_pitching` | `season` | 47 | `team_id`, `season` | Team pitching stats, type yearByYearPlayoffs. |
+| `team_stats_at_game_start_catching` | `mlb_team_stats_at_game_start_catching` | `season` | 47 | `team_id`, `season`, `date`, `opponent_id`, `game_game_pk` | Team catching stats, type atGameStart. |
+| `team_stats_at_game_start_fielding` | `mlb_team_stats_at_game_start_fielding` | `season` | 35 | `team_id`, `season`, `date`, `game_game_pk` | Team fielding stats, type atGameStart. |
+| `team_stats_at_game_start_hitting` | `mlb_team_stats_at_game_start_hitting` | `season` | 53 | `team_id`, `season`, `date`, `game_game_pk` | Team hitting stats, type atGameStart. |
+| `team_stats_at_game_start_pitching` | `mlb_team_stats_at_game_start_pitching` | `season` | 80 | `team_id`, `season`, `date`, `game_game_pk` | Team pitching stats, type atGameStart. |
+| `team_stats_by_date_range_catching` | `mlb_team_stats_by_date_range_catching` | `season` | 37 | `team_id` | Team catching stats, type byDateRange. |
+| `team_stats_by_date_range_fielding` | `mlb_team_stats_by_date_range_fielding` | `season` | 25 | `team_id` | Team fielding stats, type byDateRange. |
+| `team_stats_by_date_range_hitting` | `mlb_team_stats_by_date_range_hitting` | `season` | 43 | `team_id` | Team hitting stats, type byDateRange. |
+| `team_stats_by_date_range_pitching` | `mlb_team_stats_by_date_range_pitching` | `season` | 70 | `team_id` | Team pitching stats, type byDateRange. |
+| `team_stats_career_advanced_catching` | `mlb_team_stats_career_advanced_catching` | `season` | 38 | `team_id` | Team catching stats, type careerAdvanced. |
+| `team_stats_career_advanced_fielding` | `mlb_team_stats_career_advanced_fielding` | `season` | 23 | `team_id` | Team fielding stats, type careerAdvanced. |
+| `team_stats_career_advanced_hitting` | `mlb_team_stats_career_advanced_hitting` | `season` | 39 | `team_id` | Team hitting stats, type careerAdvanced. |
+| `team_stats_career_advanced_pitching` | `mlb_team_stats_career_advanced_pitching` | `season` | 60 | `team_id` | Team pitching stats, type careerAdvanced. |
+| `team_stats_career_catching` | `mlb_team_stats_career_catching` | `season` | 38 | `team_id` | Team catching stats, type career. |
+| `team_stats_career_fielding` | `mlb_team_stats_career_fielding` | `season` | 23 | `team_id` | Team fielding stats, type career. |
+| `team_stats_career_hitting` | `mlb_team_stats_career_hitting` | `season` | 42 | `team_id` | Team hitting stats, type career. |
+| `team_stats_career_pitching` | `mlb_team_stats_career_pitching` | `season` | 68 | `team_id` | Team pitching stats, type career. |
+| `team_stats_career_playoffs_catching` | `mlb_team_stats_career_playoffs_catching` | `season` | 38 | `team_id`, `season` | Team catching stats, type careerPlayoffs. |
+| `team_stats_career_playoffs_fielding` | `mlb_team_stats_career_playoffs_fielding` | `season` | 24 | `team_id`, `season` | Team fielding stats, type careerPlayoffs. |
+| `team_stats_career_playoffs_hitting` | `mlb_team_stats_career_playoffs_hitting` | `season` | 43 | `team_id`, `season` | Team hitting stats, type careerPlayoffs. |
+| `team_stats_career_playoffs_pitching` | `mlb_team_stats_career_playoffs_pitching` | `season` | 69 | `team_id`, `season` | Team pitching stats, type careerPlayoffs. |
+| `team_stats_career_regular_season_catching` | `mlb_team_stats_career_regular_season_catching` | `season` | 38 | `team_id`, `season` | Team catching stats, type careerRegularSeason. |
+| `team_stats_career_regular_season_fielding` | `mlb_team_stats_career_regular_season_fielding` | `season` | 24 | `team_id`, `season` | Team fielding stats, type careerRegularSeason. |
+| `team_stats_career_regular_season_hitting` | `mlb_team_stats_career_regular_season_hitting` | `season` | 43 | `team_id`, `season` | Team hitting stats, type careerRegularSeason. |
+| `team_stats_career_regular_season_pitching` | `mlb_team_stats_career_regular_season_pitching` | `season` | 69 | `team_id`, `season` | Team pitching stats, type careerRegularSeason. |
+| `team_stats_game_log_catching` | `mlb_team_stats_game_log_catching` | `season` | 47 | `team_id`, `season`, `date`, `opponent_id`, `game_game_pk` | Team catching stats, type gameLog. |
+| `team_stats_game_log_fielding` | `mlb_team_stats_game_log_fielding` | `season` | 35 | `team_id`, `season`, `date`, `game_game_pk` | Team fielding stats, type gameLog. |
+| `team_stats_game_log_hitting` | `mlb_team_stats_game_log_hitting` | `season` | 53 | `team_id`, `season`, `date`, `game_game_pk` | Team hitting stats, type gameLog. |
+| `team_stats_game_log_pitching` | `mlb_team_stats_game_log_pitching` | `season` | 80 | `team_id`, `season`, `date`, `game_game_pk` | Team pitching stats, type gameLog. |
+| `team_stats_last_x_games_catching` | `mlb_team_stats_last_x_games_catching` | `season` | 37 | `team_id` | Team catching stats, type lastXGames. |
+| `team_stats_last_x_games_fielding` | `mlb_team_stats_last_x_games_fielding` | `season` | 25 | `team_id` | Team fielding stats, type lastXGames. |
+| `team_stats_last_x_games_hitting` | `mlb_team_stats_last_x_games_hitting` | `season` | 43 | `team_id` | Team hitting stats, type lastXGames. |
+| `team_stats_last_x_games_pitching` | `mlb_team_stats_last_x_games_pitching` | `season` | 70 | `team_id` | Team pitching stats, type lastXGames. |
+| `team_stats_season_advanced_catching` | `mlb_team_stats_season_advanced_catching` | `season` | 41 | `team_id` | Team catching stats, type seasonAdvanced. |
+| `team_stats_season_advanced_fielding` | `mlb_team_stats_season_advanced_fielding` | `season` | 33 | `team_id` | Team fielding stats, type seasonAdvanced. |
+| `team_stats_season_advanced_hitting` | `mlb_team_stats_season_advanced_hitting` | `season` | 41 | `team_id` | Team hitting stats, type seasonAdvanced. |
+| `team_stats_season_advanced_pitching` | `mlb_team_stats_season_advanced_pitching` | `season` | 62 | `team_id` | Team pitching stats, type seasonAdvanced. |
+| `team_stats_season_catching` | `mlb_team_stats_season_catching` | `season` | 41 | `team_id` | Team catching stats, type season. |
+| `team_stats_season_fielding` | `mlb_team_stats_season_fielding` | `season` | 33 | `team_id` | Team fielding stats, type season. |
+| `team_stats_season_hitting` | `mlb_team_stats_season_hitting` | `season` | 44 | `team_id` | Team hitting stats, type season. |
+| `team_stats_season_pitching` | `mlb_team_stats_season_pitching` | `season` | 70 | `team_id` | Team pitching stats, type season. |
+| `team_stats_vs_opponents_fielding` | `mlb_team_stats_vs_opponents_fielding` | `season` | 28 | `team_id` | Team fielding stats, type vsOpponents. |
+| `team_stats_vs_opponents_hitting` | `mlb_team_stats_vs_opponents_hitting` | `season` | 49 | `team_id` | Team hitting stats, type vsOpponents. |
+| `team_stats_vs_opponents_pitching` | `mlb_team_stats_vs_opponents_pitching` | `season` | 78 | `team_id` | Team pitching stats, type vsOpponents. |
+| `team_stats_year_by_year_advanced_catching` | `mlb_team_stats_year_by_year_advanced_catching` | `season` | 38 | `team_id`, `season` | Team catching stats, type yearByYearAdvanced. |
+| `team_stats_year_by_year_advanced_fielding` | `mlb_team_stats_year_by_year_advanced_fielding` | `season` | 24 | `team_id`, `season` | Team fielding stats, type yearByYearAdvanced. |
+| `team_stats_year_by_year_advanced_hitting` | `mlb_team_stats_year_by_year_advanced_hitting` | `season` | 40 | `team_id`, `season` | Team hitting stats, type yearByYearAdvanced. |
+| `team_stats_year_by_year_advanced_pitching` | `mlb_team_stats_year_by_year_advanced_pitching` | `season` | 61 | `team_id`, `season` | Team pitching stats, type yearByYearAdvanced. |
+| `team_stats_year_by_year_catching` | `mlb_team_stats_year_by_year_catching` | `season` | 38 | `team_id`, `season` | Team catching stats, type yearByYear. |
+| `team_stats_year_by_year_fielding` | `mlb_team_stats_year_by_year_fielding` | `season` | 24 | `team_id`, `season` | Team fielding stats, type yearByYear. |
+| `team_stats_year_by_year_hitting` | `mlb_team_stats_year_by_year_hitting` | `season` | 43 | `team_id`, `season` | Team hitting stats, type yearByYear. |
+| `team_stats_year_by_year_pitching` | `mlb_team_stats_year_by_year_pitching` | `season` | 69 | `team_id`, `season` | Team pitching stats, type yearByYear. |
+| `team_stats_year_by_year_playoffs_catching` | `mlb_team_stats_year_by_year_playoffs_catching` | `season` | 38 | `team_id`, `season` | Team catching stats, type yearByYearPlayoffs. |
+| `team_stats_year_by_year_playoffs_fielding` | `mlb_team_stats_year_by_year_playoffs_fielding` | `season` | 24 | `team_id`, `season` | Team fielding stats, type yearByYearPlayoffs. |
+| `team_stats_year_by_year_playoffs_hitting` | `mlb_team_stats_year_by_year_playoffs_hitting` | `season` | 43 | `team_id`, `season` | Team hitting stats, type yearByYearPlayoffs. |
+| `team_stats_year_by_year_playoffs_pitching` | `mlb_team_stats_year_by_year_playoffs_pitching` | `season` | 69 | `team_id`, `season` | Team pitching stats, type yearByYearPlayoffs. |
 | `teams` | `mlb_teams` | `none` | 10 | `team_id` | MLB franchises. |
 | `teams_season` | `mlb_teams_season` | `season` | 40 | `id` | Teams of a season (sport 1 = MLB). |
 | `transactions` | `mlb_transactions` | `season` | 9 | `transaction_id` | Roster transactions. |

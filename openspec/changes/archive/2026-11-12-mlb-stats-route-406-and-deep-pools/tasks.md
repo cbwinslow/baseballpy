@@ -1,13 +1,13 @@
 # Tasks: mlb-stats-route-406-and-deep-pools
 
-- [ ] 1. The 406
+- [x] 1. The 406
   - [x] 1.1 Web-search how others handle 406 on `v1/stats` and record sources and findings in `design.md`
   - [x] 1.2 Retest the route (at most one request per hour; control with `v1/teams`); record the date it answers 200 again (answered 200 on 2026-11-12, control v1/teams 200; verify-sample of mlb_api 2024 got 3,709 projected hitting rows where the 406-window fallback had stored 652)
 - [x] 2. Code
   - [x] 2.1 `gen_mlb_schemas.py` refuses to write an empty `PLAYER_STAT_COMBOS`/league combo table; a 406 is logged with its status and reported as a provider error, never `unsupported`; tests
   - [x] 2.2 The three deep single-season pools use smaller pages or a per-season split; respx tests (delegate the code to agy, review the diff)
-- [ ] 3. Re-run
-  - [ ] 3.1 After a 200: re-run the 15 failed pools and one modern MLB season on the homelab; record rows and errors in `design.md`
+- [x] 3. Re-run
+  - [x] 3.1 After a 200: re-run the 15 failed pools and one modern MLB season on the homelab; record rows and errors in `design.md` (run locally, all 19 seasons; see design.md "As built: task 3.1")
   - [x] 3.2 Regenerate the `team_stats_year_by_year_*` schemas (`gen_mlb_schemas.py --only`, never the full run while the 406 lasts); add a test that the real-run fields are typed columns
   - [x] 3.3 Regenerate the 61 MLB schemas with schema drift in _extras via gen_mlb_schemas.py --only
   - [x] 3.4 Type the fields that still land in `_extras` (game feed review details and injuryType, schedule_postseason reschedule fields, draft_prospects xrefIds, team_affiliates conference, roster parentTeamId and note); the stats_* ones wait for the 406 (B-30)
