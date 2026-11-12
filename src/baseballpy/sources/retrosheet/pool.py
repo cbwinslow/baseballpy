@@ -9,6 +9,7 @@ keeps at most twice the worker count of files in flight.
 import atexit
 import concurrent.futures
 import multiprocessing
+import os
 import threading
 from collections import deque
 from collections.abc import Iterator, Sequence
@@ -17,6 +18,7 @@ from pathlib import Path
 
 import pyarrow as pa
 
+from baseballpy.core.memguard import MemoryGovernor, watch_parent
 from baseballpy.sources.retrosheet.parser import (
     RetrosheetBoxScoreParser,
     RetrosheetDailySplitsParser,
@@ -43,6 +45,24 @@ WINDOW_PER_WORKER = 2
 
 _pools: dict[int, concurrent.futures.ProcessPoolExecutor] = {}
 _pools_lock = threading.Lock()
+#: requested worker count -> the size decided from the memory left when the pool was first needed
+_sizes: dict[int, int] = {}
+
+
+def pool_size(requested: int, governor: MemoryGovernor | None = None) -> int:
+    """Worker processes for a pool that was asked to have ``requested``: bounded by the CPUs and the memory left.
+
+    Decided once per run (a pool is persistent); the memory guard, not a fixed number, says how many fit.
+    """
+    with _pools_lock:
+        if requested not in _sizes:
+            _sizes[requested] = (governor or MemoryGovernor()).workers_for(requested)
+        return _sizes[requested]
+
+
+def _worker_init(parent_pid: int) -> None:
+    """Run in each worker: leave when the parent process dies (an orphaned worker holds its memory for ever)."""
+    threading.Thread(target=watch_parent, args=(parent_pid,), daemon=True).start()
 
 
 def parse_one(kind: str, path: str, year: int | None) -> pa.Table | tuple[pa.Table, pa.Table]:
@@ -66,14 +86,18 @@ def parse_one(kind: str, path: str, year: int | None) -> pa.Table | tuple[pa.Tab
 
 
 def shared_pool(workers: int) -> concurrent.futures.ProcessPoolExecutor:
-    """The persistent process pool of ``workers`` processes (started on first use)."""
+    """The persistent process pool asked for with ``workers`` (started on first use, sized by the memory left)."""
+    size = pool_size(workers)  # before the lock: pool_size takes it too
     with _pools_lock:
         pool = _pools.get(workers)
         if pool is None:
             # spawn on every OS: fork (the Linux default before Python 3.14) copies a process that has
             # HTTP and DuckDB threads running, which can deadlock in the child (ADR 89)
             pool = concurrent.futures.ProcessPoolExecutor(
-                max_workers=workers, mp_context=multiprocessing.get_context("spawn")
+                max_workers=size,
+                mp_context=multiprocessing.get_context("spawn"),
+                initializer=_worker_init,
+                initargs=(os.getpid(),),
             )
             _pools[workers] = pool
         return pool

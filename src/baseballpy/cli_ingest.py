@@ -19,6 +19,7 @@ from rich.table import Table
 from baseballpy.core.concurrency import resolve_concurrency
 from baseballpy.core.config import LakeConfig, get_config
 from baseballpy.core.datasets import DATASETS, DatasetSpec
+from baseballpy.core.memguard import MemoryGovernor, system_memory
 from baseballpy.ingest.adapters import ADAPTERS, IngestAdapter, get_adapters
 from baseballpy.ingest.estimate import Estimate, estimate
 from baseballpy.ingest.runner import plan_jobs, run_jobs
@@ -571,6 +572,8 @@ def _announce_run(job_count: int, workers: int) -> None:
         f"{f' (except {overrides})' if overrides else ''}, paced by each host's rate "
         f"limit (BASEBALLPY_RATE_MAX_CONCURRENCY).[/dim]"
     )
+    # the worker count is only an upper bound: jobs start while the measured memory allows them
+    console.print(f"[dim]{MemoryGovernor().status()}[/dim]")
 
 
 def _sync_views(*, as_json: bool) -> None:
@@ -727,6 +730,8 @@ def doctor_cmd(
             cleaned_count += 1
 
     free_bytes, total_bytes = _disk_usage(config.home)
+    governor = MemoryGovernor()
+    memory = system_memory()
     env_vars = {k: v for k, v in sorted(os.environ.items()) if k.startswith("BASEBALLPY_")}
     dataset_count = len(DATASETS)
     adapter_count = len(ADAPTERS)
@@ -750,6 +755,11 @@ def doctor_cmd(
                 "baseballpy": _pkg_version("baseballpy"),
                 "pyarrow": _pkg_version("pyarrow"),
                 "duckdb": _pkg_version("duckdb"),
+            },
+            "memory": {
+                "total_bytes": memory.total,
+                "usable_bytes": memory.available,
+                "reserve_bytes": governor.reserve_bytes(),
             },
             "env": env_vars,
             "registered_datasets": dataset_count,
@@ -776,6 +786,7 @@ def doctor_cmd(
         free_gb = free_bytes / (1024**3)
         total_gb = total_bytes / (1024**3)
         table.add_row("Disk free", f"{free_gb:.1f} GB of {total_gb:.1f} GB")
+        table.add_row("Memory", governor.status())
 
         table.add_row("Python", sys.version.split()[0])
         table.add_row("pyarrow", _pkg_version("pyarrow"))

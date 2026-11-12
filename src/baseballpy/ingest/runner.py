@@ -7,6 +7,7 @@ from collections.abc import Callable, Mapping, Sequence
 
 from baseballpy.core.audit import AuditLogger, default_audit_logger
 from baseballpy.core.concurrency import resolve_concurrency
+from baseballpy.core.memguard import MemoryGovernor
 from baseballpy.ingest.adapters import IngestAdapter
 from baseballpy.ingest.types import Job, JobResult, JobStatus, RunReport, Selection
 
@@ -37,6 +38,7 @@ def run_jobs(
     concurrency: int | str | None = None,
     continue_on_error: bool = True,
     audit: AuditLogger | None = None,
+    governor: MemoryGovernor | None = None,
 ) -> RunReport:
     """Execute jobs with bounded concurrency, structured audit logging, and error handling.
 
@@ -48,6 +50,8 @@ def run_jobs(
         continue_on_error: If True, failures are recorded and execution continues;
             if False, exceptions are re-raised immediately.
         audit: Optional audit logger; defaults to :data:`default_audit_logger`.
+        governor: Decides from live, measured memory whether one more job may start (default: a new
+            :class:`MemoryGovernor`); ``concurrency`` is only the upper bound.
 
     Returns:
         :class:`RunReport` containing all job results in input order.
@@ -78,7 +82,15 @@ def run_jobs(
             for idx in _order(jobs, deps):
                 results[idx] = _run_single(jobs[idx], _blocker(jobs, deps[idx], results))
         else:
-            _run_pool(jobs, _run_single, workers, results, deps)
+            _run_pool(
+                jobs,
+                _run_single,
+                workers,
+                results,
+                deps,
+                governor or MemoryGovernor(),
+                audit_logger,
+            )
     except KeyboardInterrupt:
         interrupted = True
     if interrupted:
@@ -173,12 +185,25 @@ def _blocker(
     return None
 
 
+def _log_hold(
+    governor: MemoryGovernor, running: int, waiting: int, audit_logger: AuditLogger | None
+) -> None:
+    """Say, in the log and the audit record, that jobs are held back for memory and why."""
+    text = f"{waiting} job(s) wait while {running} run: {governor.status()}"
+    logger.warning("memory: %s", text)
+    if audit_logger is not None:
+        with audit_logger.track(operation="memory_hold", source="ingest", endpoint=text) as tracker:
+            tracker.set_records(waiting)
+
+
 def _run_pool(
     jobs: Sequence[Job],
     run_single: Callable[[Job, str | None], JobResult],
     concurrency: int,
     results: list[JobResult | None],
     deps: Sequence[Sequence[int]],
+    governor: MemoryGovernor | None = None,
+    audit_logger: AuditLogger | None = None,
 ) -> None:
     """Run ``jobs`` on a thread pool, filling ``results`` by input index as they finish.
 
@@ -193,11 +218,22 @@ def _run_pool(
     waiting = {i: set(d) for i, d in enumerate(deps)}
     running: dict[concurrent.futures.Future[JobResult], int] = {}
 
+    held_logged = False
+
     def submit_ready() -> None:
+        nonlocal held_logged
         for idx in sorted(i for i, needs in waiting.items() if not needs):
+            if governor is not None and running and not governor.may_start(len(running)):
+                if not held_logged:  # one line when a hold begins, not one per poll
+                    held_logged = True
+                    _log_hold(governor, len(running), len(waiting), audit_logger)
+                return
+            held_logged = False
             del waiting[idx]
             blocked = _blocker(jobs, deps[idx], results)
             running[executor.submit(run_single, jobs[idx], blocked)] = idx
+            if governor is not None:
+                governor.note_started()
 
     submit_ready()
     try:
@@ -205,6 +241,8 @@ def _run_pool(
             done, _ = concurrent.futures.wait(
                 running, timeout=POLL_SECONDS, return_when=concurrent.futures.FIRST_COMPLETED
             )
+            if governor is not None:
+                governor.observe(len(running))
             for fut in done:
                 idx = running.pop(fut)
                 results[idx] = fut.result()

@@ -11,6 +11,7 @@ import respx
 
 from baseballpy.core.config import LakeConfig, RateLimitConfig
 from baseballpy.core.http import HttpClient, HttpStatusError
+from baseballpy.core.memguard import MemoryGovernor
 from baseballpy.ingest.runner import run_jobs
 from baseballpy.ingest.types import Job, JobResult, JobStatus, Selection, make_job, with_needs
 from baseballpy.sources.mlb_api.adapter import MlbApiAdapter
@@ -310,7 +311,8 @@ def test_independent_jobs_do_run_in_parallel() -> None:
             return JobResult(job=job, status=JobStatus.COMPLETED, rows=1)
 
     jobs = [make_job("t", f"j{i}") for i in range(6)]
-    run_jobs(jobs, {"t": Probe()}, concurrency=3)  # type: ignore[dict-item]
+    # this test is about independent jobs, not memory: a governor that cannot read memory holds nothing back
+    run_jobs(jobs, {"t": Probe()}, concurrency=3, governor=MemoryGovernor(private=lambda: 0))  # type: ignore[dict-item]
     assert peak == 3
 
 
