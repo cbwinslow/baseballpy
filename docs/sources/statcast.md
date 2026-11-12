@@ -110,6 +110,21 @@ download; its rows are the `var data = [...]` array embedded in the page (`lb_pa
 `ingest_all()`, `custom_leaderboard(year, selections=[...])` (ad hoc: `/leaderboard/custom`, types inferred, never persisted).
 The `StatcastLeaderboard` enum has one member per supported slug (a test compares it with the registry).
 
+## Savant revises past seasons (found by `verify-sample`, 2026-11-11)
+
+Statcast is a live upstream: Baseball Savant corrects and reclassifies past pitches. A fresh download of the 2024
+regular season into a scratch home matched the lake in the numbers and keys of every chunk, but in about 65 of the
+5-day windows a few dozen pitches carry another `pitch_type` and `pitch_name` than the copy downloaded earlier (for
+example 24 pitches in the window 2024-07-19 to 2024-07-23 changed from `SL`/Slider to `ST`/Sweeper). The code did
+not change; the provider did. What this means for users:
+
+- A closed season is treated as final, so it is not downloaded again by itself (the freshness policy). To pick up
+  Savant's revisions, run `baseballpy ingest statcast -s <year> -d pitches --refresh`.
+- Two users who downloaded the same season at different times can hold different `pitch_type` values for a small
+  share of pitches. The raw files keep exactly what each download received (`raw/statcast/pitches/season=YYYY/`,
+  sha256 in the manifest), so the difference is traceable.
+- `baseballpy verify-sample statcast -s <year> -d pitches` shows which windows differ and in which column.
+
 ## Storage Layout (lake v2)
 - Raw: `raw/statcast/pitches/season=YYYY/<start>_<end>.csv`; `raw/statcast/leaderboard_<slug>/season=YYYY/<slug>_<year>.csv` (`.html` for `park_factors`); `raw/statcast/game_feed/season=YYYY/<pk>.json`. Each raw file records its sha256 and source URL in the dataset manifest.
 - Typed: `processed/statcast/pitches/season=YYYY/part-<start>_<end>.parquet` (view `statcast_pitches`) and `processed/statcast/leaderboard_<slug>/season=YYYY/part-<slug>_<year>.parquet` (view `statcast_leaderboard_<slug>`). Leaderboards never share a directory with pitches.

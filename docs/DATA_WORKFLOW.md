@@ -77,6 +77,14 @@ one dataset can never run together: a second one is skipped ("skipped, busy") an
 non-zero. Other datasets are not blocked and `--dry-run` needs no lock. Run it when no ingest is
 running; to check the result run `baseballpy catalog layout`.
 
+## Does a fresh download match what I hold? (`verify-sample`)
+
+`baseballpy verify-sample <source> -s 2024 -d teams_season` downloads that small sample into a scratch folder (your lake
+is not touched) and compares it with the lake: every processed chunk by its rows (sorted by the registered keys) and every
+raw file by sha256. It exits 1 when something differs; a chunk your lake never fetched is reported but is not a
+difference. A provider can change its answer over time (broadcast listings, live feeds), so a difference tells you what
+changed and where; it is not always a bug.
+
 ## How "is my copy still current?" is decided
 
 One function, `baseballpy.core.upstream.is_current`, makes the decision. In order:

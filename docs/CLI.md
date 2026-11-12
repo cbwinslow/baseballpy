@@ -39,6 +39,7 @@ Commands:
   status          Show what the lake holds per source, what is running and what needs attention.
   stream          Stream live pitch and play events for a game in real time or replay mode.
   update          Bring the lake up to date: this season of Statcast and the MLB API, and the...
+  verify-sample   Download a small sample into a scratch home and compare it with the lake.
 ```
 
 ## `baseballpy agent`
@@ -820,4 +821,25 @@ Options:
   --stage TEXT                    Run only this stage of the plan (its name or 1-based number);
                                   repeatable.
   --help                          Show this message and exit.
+```
+
+## `baseballpy verify-sample`
+
+```text
+Usage: baseballpy verify-sample [OPTIONS] SOURCE
+
+  Download a small sample into a scratch home and compare it with the lake.
+
+  The real lake is not touched. Every completed processed chunk of the sample is compared with the
+  same chunk of the lake (rows sorted by the registered keys) and every raw file by sha256. Exit
+  code 1 when any chunk or raw file differs; a chunk the lake never fetched is reported but is not a
+  difference. A provider answer can change over time, so a difference is information to explain or
+  fix.
+
+Options:
+  -s, --seasons TEXT     Season expression of the sample (for example 2024).
+  -d, --datasets TEXT    Dataset(s) of the sample (repeatable).
+  --limit INTEGER RANGE  Bound the per-game or per-person fan-out.  [x>=1]
+  --keep                 Keep the scratch home (its path is printed).
+  --help                 Show this message and exit.
 ```

@@ -118,3 +118,4 @@ Open improvements that do not block v1: group names in `--dry-run` (B-439), Retr
 store (B-424), the contract for deferred sources (B-433), prebuilt snapshots (B-432), column descriptions for
 Statcast and Retrosheet.
 - 2026-11-11: `final-product-definition` (B-442 to B-444, ADR 107): the constitution defines the final product per source; Road to v1 written; a test keeps the table in step with the registry.
+- 2026-11-11: `sample-compare` (B-446 to B-448, ADR 108): `baseballpy verify-sample` downloads a sample into a scratch home and compares it with the lake; Lahman, Chadwick and MLB team data match exactly, a 3-game MLB sample matches in 40 of 41 chunks (differences are provider changes).

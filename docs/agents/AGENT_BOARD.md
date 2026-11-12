@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-11 23:54 UTC [blain]:**
+  - **Tasks:** `B-446`.
+  - **Summary:** sample-compare: verify-sample downloads a sample into a scratch home and compares with the lake; real runs recorded
+
 - **2026-11-11 23:26 UTC [blain]:**
   - **Tasks:** `B-442`.
   - **Summary:** final-product-definition: The Final Product in the constitution, Road to v1, ADR 107, guard test

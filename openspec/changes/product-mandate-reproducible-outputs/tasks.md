@@ -11,7 +11,7 @@ Order: 1.1 -> 1.2 -> 1.3. Tasks 2.x are follow-ups; each opens its own change wh
   Done when 1.1 passes, `docs generate --check` and `openspec validate --specs` pass.
 - [x] 1.3 Gates, archive and commit: pytest, ruff check, ruff format --check, mypy --strict.
   Done when the output is pasted in `design.md` and the change is archived.
-- [ ] 2.1 Rebuild check: run a source's workflow for a small window into a scratch `BASEBALLPY_HOME` and
+- [x] 2.1 Rebuild check: run a source's workflow for a small window into a scratch `BASEBALLPY_HOME` and
   compare with the lake (row counts, schema digest, per-chunk content hash); report differences.
   Done when a change `rebuild-check` exists with its design and tests.
 - [x] 2.2 Ingest re-fetches a chunk the records call done whose compacted file lacks it (test, then fix if
