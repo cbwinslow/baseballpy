@@ -191,3 +191,31 @@ def test_a_declared_numeric_column_stays_a_number_when_one_cell_is_not(tmp_path:
     assert site.SITE_DATASETS["umpire_logs"].numeric == ("temp",)
     assert site.SITE_DATASETS["player_fielding_logs"].numeric == ("d_pos",)
     assert len(site.SITE_DATASETS["manager_logs"].text) == 28, "line scores stay text"
+
+
+def test_parallel_parsing_gives_the_same_rows_in_the_same_order(tmp_path: Path) -> None:
+    """Parsing members on worker threads must not change the rows or their order."""
+    config = _store(tmp_path)
+    one = site.read_site_datasets(config, ("umpire_logs", "player_batting_logs"))
+    threaded = LakeConfig(home=tmp_path, parse_workers=4)
+    many = site.read_site_datasets(threaded, ("umpire_logs", "player_batting_logs"))
+    assert one["umpire_logs"].equals(many["umpire_logs"])
+    assert one["player_batting_logs"].equals(many["player_batting_logs"])
+
+
+def test_the_negro_leagues_bundle_is_seven_opt_in_tables() -> None:
+    """Its games are in neither our events (0 of 8,215) nor fully in the box scores: it must be tables."""
+    catalog.register_all()
+    names = (
+        "negro_players",
+        "negro_games",
+        "negro_team_stats",
+        "negro_batting",
+        "negro_pitching",
+        "negro_fielding",
+        "negro_plays",
+    )
+    for name in names:
+        spec = get_dataset("retrosheet", name)
+        assert spec.ingest == "opt_in" and spec.keys and "_extras" in spec.schema.names, name
+    assert [f.name for f in site.files_for(names)] == ["negroleagues.zip"]

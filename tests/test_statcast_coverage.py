@@ -199,7 +199,7 @@ def test_legacy_type_kwarg_selects_the_variant(tmp_path: Path) -> None:
 def test_unsupported_leaderboard_raises_clearly(tmp_path: Path) -> None:
     extractor = StatcastLeaderboardExtractor(cache_config=LakeConfig(home=tmp_path))
     with pytest.raises(NotImplementedError, match="404"):
-        extractor.get_leaderboard("catcher_throwing", year=2024)
+        extractor.get_leaderboard("bat_speed", year=2024)
 
 
 @respx.mock
@@ -235,7 +235,7 @@ def test_ingest_leaderboard_walks_from_min_year_and_resumes(tmp_path: Path) -> N
     # 2023 and 2024 are complete seasons: a second run only revalidates the current one
     second = extractor.ingest_leaderboard("bat_tracking")
     assert second.seasons[2023] is None and second.seasons[2024] is None
-    assert extractor.ingest_leaderboard("catcher_throwing").unsupported is not None
+    assert extractor.ingest_leaderboard("bat_speed").unsupported is not None
 
 
 @respx.mock

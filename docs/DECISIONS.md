@@ -1049,3 +1049,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Context:** the end of every ingest rebuilt the lake inventory by opening 176,897 Parquet footers: about 35 minutes.
 - **Decision:** cache row counts by path, size and modification time in `cache/footer_rows.json`; open a footer only for new or changed files, 16 at a time.
 - **Consequences:** the refresh takes 256 seconds the first time and about 2 minutes after; the remaining cost is the number of small files, which the segment rebuild removes.
+
+## ADR 112: Every Route Of A Provider's Live Menu Is Registered Or Explained; MLB Processed Files Are Rebuilt From Raw Segments
+- **Status:** Accepted (owner goals, 2026-11-11: "we cant leave any data behind", "the more data the better", delete and rebuild if massaging old data is too much trouble).
+- **Context:** the first Savant probe guessed route names and recorded four live routes as 404; the live menu also had eight more leaderboards; the Negro Leagues bundle was raw only; the MLB lake still held 177,000 small old files and 15.8 GB of raw per season.
+- **Decision:** a route that the provider's live menu links and that answers data is a registered dataset (generated schema, fixture, docs) or is listed unsupported with the request tried and the answer; `rebuild-segments` rebuilds a season's processed files from its raw segments with no download, hides old files in `_legacy/` first, and deletes them only after the rebuilt row counts equal the old ones.
+- **Consequences:** Statcast has 48 leaderboards plus pitches; Retrosheet has 18 more opt-in tables; MLB 2008 is on the final layout (1,864,223 rows equal); the other MLB seasons follow the same two commands, one season at a time.
+- **Alternatives rejected:** keeping the 2026-10-27 probe as final (it was wrong); rebuilding by downloading again (hours of requests; the raw answers are already held).

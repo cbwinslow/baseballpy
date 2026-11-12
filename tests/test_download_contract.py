@@ -249,10 +249,16 @@ def test_every_statcast_leaderboard_download_has_the_lake_shape(tmp_path: Path) 
     """All supported Savant leaderboards for one season, from their recorded pages."""
     lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
     extractor = StatcastLeaderboardExtractor(cache_config=lake)
+    pages: dict[str, bytes] = {}
     for definition in SUPPORTED:
-        respx.get(f"{SAVANT_BASE}/{definition.route}").mock(
-            return_value=httpx.Response(200, content=_savant_fixture(definition.slug))
+        # variants that share a route and embed their rows in the page (hot stove: batter and pitcher)
+        # are served one page that carries every variable
+        body = _savant_fixture(definition.slug)
+        pages[definition.route] = (
+            pages.get(definition.route, b"") + body if definition.fmt == "html_json" else body
         )
+    for route, content in pages.items():
+        respx.get(f"{SAVANT_BASE}/{route}").mock(return_value=httpx.Response(200, content=content))
     reports = extractor.ingest_all(years=[2024])
     assert reports
     views = assert_lake_contract(lake, ["statcast"])

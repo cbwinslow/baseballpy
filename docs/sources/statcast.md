@@ -96,15 +96,29 @@ download; its rows are the `var data = [...]` array embedded in the page (`lb_pa
 | `leaderboard_active_spin` | `/leaderboard/active-spin` | - | `year` | `None` | 2020 | player-season | `entity_id, pitch_hand` |
 | `leaderboard_catch_probability` | `/leaderboard/catch_probability` | - | `year` | `0` | 2016 | player-season | `player_id` |
 | `leaderboard_park_factors` | `/leaderboard/statcast-park-factors` | `type=year`, `stat=index_wOBA`, `condition=All`, `rolling=3`, `parks=mlb` | `year` | `None` | 2008 | venue-season | `venue_id, key_year` |
+| `leaderboard_swing_timing_miss_distance_batter` | `/leaderboard/bat-tracking/swing-timing-miss-distance` | `type=batter` | `season_array` | `None` | None | player-season | `id, year` |
+| `leaderboard_swing_timing_miss_distance_pitcher` | `/leaderboard/bat-tracking/swing-timing-miss-distance` | `type=pitcher` | `season_array` | `None` | None | player-season | `id, year` |
+| `leaderboard_year_to_year_batter` | `/leaderboard/statcast-year-to-year` | - | `year` | `None` | None | player | `entity_id` |
+| `leaderboard_year_to_year_pitcher` | `/leaderboard/statcast-year-to-year` | `group=Pitcher` | `year` | `None` | None | player | `entity_id` |
+| `leaderboard_pitcher_arm_angles` | `/leaderboard/pitcher-arm-angles` | - | `season` | `None` | None | player-season | `pitcher` |
+| `leaderboard_pitcher_running_game` | `/leaderboard/pitcher-running-game` | - | `season_snake` | `None` | None | player-season | `player_id, key_target_base` |
+| `leaderboard_first_base_receiving` | `/leaderboard/first-base-scoops-receiving` | - | `season_array` | `None` | None | player-season | `id, year` |
+| `leaderboard_outfield_directional_oaa` | `/leaderboard/outfield_directional_outs_above_average` | - | `year` | `None` | None | player-season | `player_id` |
+| `leaderboard_catcher_stance` | `/leaderboard/catcher-stance` | - | `season_range` | `None` | None | player-season | `id, year` |
+| `leaderboard_catcher_throwing` | `/leaderboard/catcher-throwing` | - | `season_snake` | `None` | None | player-season | `player_id` |
+| `leaderboard_hot_stove_batter` | `/leaderboard/hot-stove` | - | `none` | `None` | None | player-season | `player_id, year` |
+| `leaderboard_hot_stove_pitcher` | `/leaderboard/hot-stove` | - | `none` | `None` | None | player-season | `player_id, year` |
 
 ### Routes probed and not ingested
 
+The first probe (2026-10-27) guessed route names and wrongly reported four routes as 404. Checked again on 2026-11-11 against the live Savant menu: `outfield_directional_outs_above_average`, `catcher-throwing` and `statcast-year-to-year` answer CSV (they are now the datasets `leaderboard_outfield_directional_oaa`, `leaderboard_catcher_throwing`, `leaderboard_year_to_year_batter` and `_pitcher`), and eight more menu routes were missing and were added (`swing_timing_miss_distance_batter` and `_pitcher`, `pitcher_arm_angles`, `pitcher_running_game`, `first_base_receiving`, `catcher_stance`, `hot_stove_batter` and `_pitcher`).
+
 | Route | Reason (probed 2026-10-27) |
 |---|---|
-| `/leaderboard/directional_outs_above_average` (`directional_outs_above_average`) | route answers 404 (probed 2026-10-27); directions are columns of outs_above_average |
-| `/leaderboard/catcher_throwing` (`catcher_throwing`) | route answers 404; pop time/arm strength are in `poptime` |
-| `/leaderboard/year-to-year` (`year_to_year`) | route answers 404 (comparison tool, derivable from other leaderboards) |
 | `/leaderboard/bat-speed` (`bat_speed`) | route answers 404; bat speed is a column of bat_tracking |
+| `/statcast-search-world-baseball-classic/csv` (World Baseball Classic pitch search) | probed 2026-11-11: the route answers 200 with the same rows as `/statcast_search/csv` for every filter tried (`hfGT=F\|D\|L\|W\|`, `hfSea=2023\|`, date windows): MLB spring-training and postseason pitches, no WBC game. The page's script offers the rounds `F` Pool Play, `D` Quarterfinals, `L` Semifinals, `W` Championship and says WBC pitch data begin with the 2023 tournament, but the request that selects the WBC population was not found. Open item. |
+| `/leaderboard/top-performers` | probed 2026-11-11: answers 200 HTML with no embedded array of rows (the data is drawn by the page); not yet parsed. Open item. |
+| `/leaderboard/weighted-score` (Enhanced Game Scores) | probed 2026-11-11: answers 200 HTML whose only embedded array is a player picker list (`playerList`), not the scores. Open item. |
 
 **API:** `get_leaderboard(slug_or_legacy_name, year, type=...)`, `StatcastLeaderboardExtractor.ingest_leaderboard(slug)`,
 `ingest_all()`, `custom_leaderboard(year, selections=[...])` (ad hoc: `/leaderboard/custom`, types inferred, never persisted).
@@ -1705,3 +1719,971 @@ Fielder catch probability by star bucket (2016 onwards). The `type` parameter em
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_catch_probability -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_catcher_stance -->
+### Dataset: leaderboard_catcher_stance
+
+Catcher stance (knee and hand positions) per catcher-season.
+
+- **View:** `statcast_leaderboard_catcher_stance`
+- **Processed path:** `processed/statcast/leaderboard_catcher_stance/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `id`, `year`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `pitches` | int32 | yes | — | TODO |
+| `knee_down_pct` | double | yes | — | TODO |
+| `l_down_r_up_pct` | double | yes | — | TODO |
+| `r_down_l_up_pct` | double | yes | — | TODO |
+| `both_down_pct` | double | yes | — | TODO |
+| `both_up_pct` | double | yes | — | TODO |
+| `extended_leg_pct` | double | yes | — | TODO |
+| `inside_down_pct` | double | yes | — | TODO |
+| `outside_down_pct` | double | yes | — | TODO |
+| `one_knee_framing_rv` | double | yes | — | TODO |
+| `other_framing_rv` | double | yes | — | TODO |
+| `one_knee_calledstr_pct` | double | yes | — | TODO |
+| `other_calledstr_pct` | double | yes | — | TODO |
+| `one_knee_blocking_rv` | double | yes | — | TODO |
+| `other_blocking_rv` | double | yes | — | TODO |
+| `one_knee_pbwp100` | double | yes | — | TODO |
+| `other_pbwp100` | double | yes | — | TODO |
+| `one_knee_throwing_rv` | double | yes | — | TODO |
+| `other_throwing_rv` | double | yes | — | TODO |
+| `one_knee_csaa100` | double | yes | — | TODO |
+| `other_csaa100` | double | yes | — | TODO |
+| `catching_rv` | double | yes | — | TODO |
+| `one_knee_pitching_rv` | double | yes | — | TODO |
+| `other_pitching_rv` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_catcher_stance -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_catcher_throwing -->
+### Dataset: leaderboard_catcher_throwing
+
+Catcher throwing (stolen-base runs, caught stealing) per catcher.
+
+- **View:** `statcast_leaderboard_catcher_throwing`
+- **Processed path:** `processed/statcast/leaderboard_catcher_throwing/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `player_id` | int32 | yes | — | TODO |
+| `player_name` | string | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `start_year` | int16 | yes | — | TODO |
+| `end_year` | int16 | yes | — | TODO |
+| `sb_attempts` | int16 | yes | — | TODO |
+| `catcher_stealing_runs` | double | yes | — | TODO |
+| `caught_stealing_above_average` | double | yes | — | TODO |
+| `n_cs` | int16 | yes | — | TODO |
+| `rate_cs` | double | yes | — | TODO |
+| `est_cs_pct` | double | yes | — | TODO |
+| `cs_aa_per_throw` | double | yes | — | TODO |
+| `seasonal_runner_speed` | double | yes | — | TODO |
+| `runner_distance_from_second` | double | yes | — | TODO |
+| `pop_time` | double | yes | — | TODO |
+| `exchange_time` | double | yes | — | TODO |
+| `arm_strength` | double | yes | — | On an individual play, Arm Strength is defined as the maximum velocity of any throw made by a fielder -- with the max velocity always being at the release point, due to physics. (src: mlb_glossary_arm_strength) |
+| `n_xcs_with_flight_over_xcs` | double | yes | — | TODO |
+| `n_xcs_with_exchange_over_xcs` | double | yes | — | TODO |
+| `n_xcs_with_accuracy_over_xcs` | double | yes | — | TODO |
+| `n_xcs_with_ground_other_over_xcs` | double | yes | — | TODO |
+| `n_xcs_with_onfly_other_over_xcs` | double | yes | — | TODO |
+| `n_xcs_with_untracked_other_over_xcs` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_catcher_throwing -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_first_base_receiving -->
+### Dataset: leaderboard_first_base_receiving
+
+First base scoops and receiving (outs above average on throws) per first baseman-season.
+
+- **View:** `statcast_leaderboard_first_base_receiving`
+- **Processed path:** `processed/statcast/leaderboard_first_base_receiving/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `id`, `year`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `fielder_3_hand` | string | yes | — | TODO |
+| `height_in_inches` | int16 | yes | — | TODO |
+| `n_outs` | int16 | yes | — | TODO |
+| `n_plays` | int16 | yes | — | TODO |
+| `total_oaa` | double | yes | — | TODO |
+| `oaa_on_target` | double | yes | — | TODO |
+| `oaa_bounce` | double | yes | — | TODO |
+| `oaa_scoop` | double | yes | — | TODO |
+| `oaa_low` | double | yes | — | TODO |
+| `oaa_high` | double | yes | — | TODO |
+| `oaa_wide` | double | yes | — | TODO |
+| `n_on_target` | int16 | yes | — | TODO |
+| `n_bounce` | int16 | yes | — | TODO |
+| `n_scoop` | int16 | yes | — | TODO |
+| `n_low` | int16 | yes | — | TODO |
+| `n_high` | int16 | yes | — | TODO |
+| `n_wide` | int16 | yes | — | TODO |
+| `outs_on_target` | int16 | yes | — | TODO |
+| `outs_bounce` | int16 | yes | — | TODO |
+| `outs_scoop` | int16 | yes | — | TODO |
+| `outs_low` | int16 | yes | — | TODO |
+| `outs_high` | int16 | yes | — | TODO |
+| `outs_wide` | int16 | yes | — | TODO |
+| `avg_expected_rate_out` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_first_base_receiving -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_hot_stove_batter -->
+### Dataset: leaderboard_hot_stove_batter
+
+Hot Stove leaderboard: batters of the season with Statcast batting metrics.
+
+- **View:** `statcast_leaderboard_hot_stove_batter`
+- **Processed path:** `processed/statcast/leaderboard_hot_stove_batter/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `player_id`, `year`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `player_name` | string | yes | — | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `yearhidden` | int16 | yes | — | TODO |
+| `player_age` | int16 | yes | — | TODO |
+| `ab` | int16 | yes | — | TODO |
+| `pa` | int16 | yes | — | TODO |
+| `hit` | int16 | yes | — | TODO |
+| `single` | int16 | yes | — | TODO |
+| `double` | int16 | yes | — | TODO |
+| `triple` | int16 | yes | — | TODO |
+| `home_run` | int16 | yes | — | TODO |
+| `strikeout` | int16 | yes | — | TODO |
+| `walk` | int16 | yes | — | TODO |
+| `k_percent` | double | yes | — | TODO |
+| `bb_percent` | double | yes | — | TODO |
+| `batting_avg` | double | yes | — | TODO |
+| `slg_percent` | double | yes | — | TODO |
+| `on_base_percent` | double | yes | — | TODO |
+| `on_base_plus_slg` | double | yes | — | TODO |
+| `isolated_power` | double | yes | — | TODO |
+| `babip` | double | yes | — | TODO |
+| `xba` | double | yes | — | Expected Batting Average (xBA) is a Statcast metric that measures the likelihood that a batted ball will become a hit. (src: mlb_glossary_expected_batting_average) |
+| `xslg` | double | yes | — | Expected Slugging Percentage (xSLG) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_slugging_percentage) |
+| `woba` | double | yes | — | TODO |
+| `xwoba` | double | yes | — | Expected Weighted On-base Average (xwOBA) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_woba) |
+| `xera` | string | yes | — | Expected ERA, or xERA, is a simple 1:1 translation of Expected Weighted On-Base Average (xwOBA), converted to the ERA scale. xwOBA takes into account the amount of contact (strikeouts, walks, hit by pitch) and the quality of that contact (exit velocity and launch angle), in an attempt to credit the pitcher or hitter for the moment of contact, not for what might happen to that contact thanks to other factors like ballpark, weather, or defense. (src: mlb_glossary_expected_era) |
+| `xobp` | double | yes | — | TODO |
+| `xiso` | double | yes | — | TODO |
+| `wobacon` | double | yes | — | TODO |
+| `xwobacon` | double | yes | — | TODO |
+| `bacon` | double | yes | — | TODO |
+| `xbacon` | double | yes | — | TODO |
+| `xbadiff` | double | yes | — | TODO |
+| `xslgdiff` | double | yes | — | TODO |
+| `wobadiff` | double | yes | — | TODO |
+| `exit_velocity_avg` | double | yes | — | TODO |
+| `launch_angle_avg` | double | yes | — | TODO |
+| `sweet_spot_percent` | double | yes | — | TODO |
+| `barrel` | int16 | yes | — | TODO |
+| `barrel_batted_rate` | double | yes | — | TODO |
+| `solidcontact_percent` | double | yes | — | TODO |
+| `flareburner_percent` | double | yes | — | TODO |
+| `poorlyunder_percent` | double | yes | — | TODO |
+| `poorlytopped_percent` | double | yes | — | TODO |
+| `poorlyweak_percent` | double | yes | — | TODO |
+| `hard_hit_percent` | double | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
+| `avg_best_speed` | double | yes | — | TODO |
+| `avg_hyper_speed` | double | yes | — | TODO |
+| `z_swing_percent` | double | yes | — | TODO |
+| `z_swing_miss_percent` | double | yes | — | TODO |
+| `oz_swing_percent` | double | yes | — | TODO |
+| `oz_swing_miss_percent` | double | yes | — | TODO |
+| `oz_contact_percent` | double | yes | — | TODO |
+| `out_zone_swing_miss` | int16 | yes | — | TODO |
+| `out_zone_swing` | int16 | yes | — | TODO |
+| `out_zone_percent` | double | yes | — | TODO |
+| `out_zone` | int16 | yes | — | TODO |
+| `meatball_swing_percent` | double | yes | — | TODO |
+| `meatball_percent` | double | yes | — | TODO |
+| `pitch_count_offspeed` | int16 | yes | — | TODO |
+| `pitch_count_fastball` | int16 | yes | — | TODO |
+| `pitch_count_breaking` | int16 | yes | — | TODO |
+| `pitch_count` | int16 | yes | — | TODO |
+| `iz_contact_percent` | double | yes | — | TODO |
+| `in_zone_swing_miss` | int16 | yes | — | TODO |
+| `in_zone_swing` | int16 | yes | — | TODO |
+| `in_zone_percent` | double | yes | — | TODO |
+| `in_zone` | int16 | yes | — | TODO |
+| `edge_percent` | double | yes | — | TODO |
+| `edge` | int16 | yes | — | TODO |
+| `whiff_percent` | double | yes | — | TODO |
+| `swing_percent` | double | yes | — | TODO |
+| `pull_percent` | double | yes | — | TODO |
+| `straightaway_percent` | double | yes | — | TODO |
+| `opposite_percent` | double | yes | — | TODO |
+| `batted_ball` | int16 | yes | — | TODO |
+| `f_strike_percent` | double | yes | — | TODO |
+| `groundballs_percent` | double | yes | — | TODO |
+| `groundballs` | int16 | yes | — | TODO |
+| `flyballs_percent` | double | yes | — | TODO |
+| `flyballs` | int16 | yes | — | TODO |
+| `linedrives_percent` | double | yes | — | TODO |
+| `linedrives` | int16 | yes | — | TODO |
+| `popups_percent` | double | yes | — | TODO |
+| `popups` | int16 | yes | — | TODO |
+| `avg_swing_length` | double | yes | — | TODO |
+| `avg_swing_speed` | double | yes | — | TODO |
+| `blasts_contact` | double | yes | — | TODO |
+| `blasts_swing` | double | yes | — | TODO |
+| `squared_up_contact` | double | yes | — | TODO |
+| `squared_up_swing` | double | yes | — | TODO |
+| `swords` | int16 | yes | — | TODO |
+| `fast_swing_rate` | double | yes | — | TODO |
+| `attack_angle` | double | yes | — | Attack angle measures the vertical direction that the sweet spot of the bat is traveling at the moment it hits the baseball. (src: mlb_glossary_attack_angle) |
+| `attack_direction` | double | yes | — | Attack direction measures the horizontal direction that the sweet spot of the bat is moving at the point of contact with the baseball (or the point the bat and ball cross paths on a swing-and-miss). (src: mlb_glossary_attack_direction) |
+| `ideal_angle_rate` | double | yes | — | TODO |
+| `vertical_swing_path` | double | yes | — | TODO |
+| `swing_take_run_value` | int16 | yes | — | TODO |
+| `runner_run_value` | int16 | yes | — | TODO |
+| `fielding_run_value` | int16 | yes | — | TODO |
+| `pitch_run_value_fastball` | double | yes | — | TODO |
+| `pitch_run_value_breaking` | double | yes | — | TODO |
+| `pitch_run_value_offspeed` | double | yes | — | TODO |
+| `b_total_pa` | int16 | yes | — | TODO |
+| `b_rbi` | int16 | yes | — | TODO |
+| `b_lob` | int16 | yes | — | TODO |
+| `b_total_bases` | int16 | yes | — | TODO |
+| `r_total_caught_stealing` | int16 | yes | — | TODO |
+| `r_total_stolen_base` | int16 | yes | — | TODO |
+| `b_ab_scoring` | int16 | yes | — | TODO |
+| `b_ball` | int16 | yes | — | TODO |
+| `b_called_strike` | int16 | yes | — | TODO |
+| `b_catcher_interf` | int16 | yes | — | TODO |
+| `b_foul` | int16 | yes | — | TODO |
+| `b_foul_tip` | int16 | yes | — | TODO |
+| `b_game` | int16 | yes | — | TODO |
+| `b_gnd_into_dp` | int16 | yes | — | TODO |
+| `b_gnd_into_tp` | int16 | yes | — | TODO |
+| `b_gnd_rule_double` | int16 | yes | — | TODO |
+| `b_hit_by_pitch` | int16 | yes | — | TODO |
+| `b_hit_ground` | int16 | yes | — | TODO |
+| `b_hit_fly` | int16 | yes | — | TODO |
+| `b_hit_into_play` | int16 | yes | — | TODO |
+| `b_hit_line_drive` | int16 | yes | — | TODO |
+| `b_hit_popup` | int16 | yes | — | TODO |
+| `b_out_fly` | int16 | yes | — | TODO |
+| `b_out_ground` | int16 | yes | — | TODO |
+| `b_out_line_drive` | int16 | yes | — | TODO |
+| `b_out_popup` | int16 | yes | — | TODO |
+| `b_intent_ball` | int16 | yes | — | TODO |
+| `b_intent_walk` | int16 | yes | — | TODO |
+| `b_interference` | int16 | yes | — | TODO |
+| `b_pinch_hit` | int16 | yes | — | TODO |
+| `b_pinch_run` | int16 | yes | — | TODO |
+| `b_pitchout` | int16 | yes | — | TODO |
+| `b_played_dh` | int16 | yes | — | TODO |
+| `b_sac_bunt` | int16 | yes | — | TODO |
+| `b_sac_fly` | int16 | yes | — | TODO |
+| `b_swinging_strike` | int16 | yes | — | TODO |
+| `r_caught_stealing_2b` | int16 | yes | — | TODO |
+| `r_caught_stealing_3b` | int16 | yes | — | TODO |
+| `r_caught_stealing_home` | int16 | yes | — | TODO |
+| `r_defensive_indiff` | int16 | yes | — | TODO |
+| `r_interference` | int16 | yes | — | TODO |
+| `r_pickoff_1b` | int16 | yes | — | TODO |
+| `r_pickoff_2b` | int16 | yes | — | TODO |
+| `r_pickoff_3b` | int16 | yes | — | TODO |
+| `r_run` | int16 | yes | — | TODO |
+| `r_stolen_base_2b` | int16 | yes | — | TODO |
+| `r_stolen_base_3b` | int16 | yes | — | TODO |
+| `r_stolen_base_home` | int16 | yes | — | TODO |
+| `b_total_ball` | int16 | yes | — | TODO |
+| `b_total_sacrifices` | int16 | yes | — | TODO |
+| `b_total_strike` | int16 | yes | — | TODO |
+| `b_total_swinging_strike` | int16 | yes | — | TODO |
+| `b_total_pitches` | int16 | yes | — | TODO |
+| `r_stolen_base_pct` | string | yes | — | TODO |
+| `r_total_pickoff` | int16 | yes | — | TODO |
+| `b_reached_on_error` | int16 | yes | — | TODO |
+| `b_walkoff` | int16 | yes | — | TODO |
+| `b_reached_on_int` | int16 | yes | — | TODO |
+| `pop_2b_sba_count` | int16 | yes | — | TODO |
+| `pop_2b_sba` | double | yes | — | TODO |
+| `pop_2b_sb` | double | yes | — | TODO |
+| `pop_2b_cs` | double | yes | — | TODO |
+| `pop_3b_sba_count` | int16 | yes | — | TODO |
+| `pop_3b_sba` | double | yes | — | TODO |
+| `pop_3b_sb` | double | yes | — | TODO |
+| `pop_3b_cs` | double | yes | — | TODO |
+| `exchange_2b_3b_sba` | double | yes | — | TODO |
+| `maxeff_arm_2b_3b_sba` | double | yes | — | TODO |
+| `n_outs_above_average` | int16 | yes | — | TODO |
+| `n_fieldout_5stars` | int16 | yes | — | TODO |
+| `n_opp_5stars` | int16 | yes | — | TODO |
+| `n_5star_percent` | double | yes | — | TODO |
+| `n_fieldout_4stars` | int16 | yes | — | TODO |
+| `n_opp_4stars` | int16 | yes | — | TODO |
+| `n_4star_percent` | double | yes | — | TODO |
+| `n_fieldout_3stars` | int16 | yes | — | TODO |
+| `n_opp_3stars` | int16 | yes | — | TODO |
+| `n_3star_percent` | double | yes | — | TODO |
+| `n_opp_2stars` | int16 | yes | — | TODO |
+| `n_2star_percent` | double | yes | — | TODO |
+| `n_fieldout_2stars` | int16 | yes | — | TODO |
+| `n_1star_percent` | double | yes | — | TODO |
+| `n_fieldout_1stars` | int16 | yes | — | TODO |
+| `n_opp_1stars` | int16 | yes | — | TODO |
+| `rel_league_reaction_distance` | double | yes | — | TODO |
+| `rel_league_burst_distance` | double | yes | — | TODO |
+| `rel_league_routing_distance` | double | yes | — | TODO |
+| `rel_league_bootup_distance` | double | yes | — | TODO |
+| `f_bootup_distance` | double | yes | — | TODO |
+| `n_bolts` | int16 | yes | — | TODO |
+| `hp_to_1b` | double | yes | — | TODO |
+| `sprint_speed` | double | yes | — | Introduced during the 2017 season, Sprint Speed is a Statcast metric that aims to more precisely quantify speed by measuring how many feet per second a player runs in his fastest one-second window. (src: mlb_glossary_sprint_speed) |
+| `p_formatted_ip` | int16 | yes | — | TODO |
+| `p_game` | int16 | yes | — | TODO |
+| `stats_api` | string | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `original_team_id` | int16 | yes | — | TODO |
+| `new_team_id` | int32 | yes | — | TODO |
+| `diff_team` | string | yes | — | TODO |
+| `original_team_abbrev` | string | yes | — | TODO |
+| `position` | string | yes | — | TODO |
+| `bat_side` | string | yes | — | TODO |
+| `pitch_hand` | string | yes | — | TODO |
+| `current_age` | int16 | yes | — | TODO |
+| `notes` | string | yes | — | TODO |
+| `transaction_type` | string | yes | — | TODO |
+| `home_runs_per_nine` | string | yes | — | TODO |
+| `home_run_percent` | double | yes | — | TODO |
+| `new_team_abbrev` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_hot_stove_batter -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_hot_stove_pitcher -->
+### Dataset: leaderboard_hot_stove_pitcher
+
+Hot Stove leaderboard: pitchers of the season with Statcast pitching metrics.
+
+- **View:** `statcast_leaderboard_hot_stove_pitcher`
+- **Processed path:** `processed/statcast/leaderboard_hot_stove_pitcher/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `player_id`, `year`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `player_name` | string | yes | — | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `yearhidden` | int16 | yes | — | TODO |
+| `player_age` | int16 | yes | — | TODO |
+| `ab` | int16 | yes | — | TODO |
+| `pa` | int16 | yes | — | TODO |
+| `hit` | int16 | yes | — | TODO |
+| `single` | int16 | yes | — | TODO |
+| `double` | int16 | yes | — | TODO |
+| `triple` | int16 | yes | — | TODO |
+| `home_run` | int16 | yes | — | TODO |
+| `strikeout` | int16 | yes | — | TODO |
+| `walk` | int16 | yes | — | TODO |
+| `k_percent` | double | yes | — | TODO |
+| `bb_percent` | double | yes | — | TODO |
+| `batting_avg` | double | yes | — | TODO |
+| `slg_percent` | double | yes | — | TODO |
+| `on_base_percent` | double | yes | — | TODO |
+| `on_base_plus_slg` | double | yes | — | TODO |
+| `isolated_power` | double | yes | — | TODO |
+| `babip` | double | yes | — | TODO |
+| `xba` | double | yes | — | Expected Batting Average (xBA) is a Statcast metric that measures the likelihood that a batted ball will become a hit. (src: mlb_glossary_expected_batting_average) |
+| `xslg` | double | yes | — | Expected Slugging Percentage (xSLG) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_slugging_percentage) |
+| `woba` | double | yes | — | TODO |
+| `xwoba` | double | yes | — | Expected Weighted On-base Average (xwOBA) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_woba) |
+| `xera` | double | yes | — | Expected ERA, or xERA, is a simple 1:1 translation of Expected Weighted On-Base Average (xwOBA), converted to the ERA scale. xwOBA takes into account the amount of contact (strikeouts, walks, hit by pitch) and the quality of that contact (exit velocity and launch angle), in an attempt to credit the pitcher or hitter for the moment of contact, not for what might happen to that contact thanks to other factors like ballpark, weather, or defense. (src: mlb_glossary_expected_era) |
+| `xobp` | double | yes | — | TODO |
+| `xiso` | double | yes | — | TODO |
+| `wobacon` | double | yes | — | TODO |
+| `xwobacon` | double | yes | — | TODO |
+| `bacon` | double | yes | — | TODO |
+| `xbacon` | double | yes | — | TODO |
+| `xbadiff` | double | yes | — | TODO |
+| `xslgdiff` | double | yes | — | TODO |
+| `wobadiff` | double | yes | — | TODO |
+| `exit_velocity_avg` | double | yes | — | TODO |
+| `launch_angle_avg` | double | yes | — | TODO |
+| `sweet_spot_percent` | double | yes | — | TODO |
+| `barrel` | int16 | yes | — | TODO |
+| `barrel_batted_rate` | double | yes | — | TODO |
+| `solidcontact_percent` | double | yes | — | TODO |
+| `flareburner_percent` | double | yes | — | TODO |
+| `poorlyunder_percent` | double | yes | — | TODO |
+| `poorlytopped_percent` | double | yes | — | TODO |
+| `poorlyweak_percent` | double | yes | — | TODO |
+| `hard_hit_percent` | double | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
+| `avg_best_speed` | double | yes | — | TODO |
+| `avg_hyper_speed` | double | yes | — | TODO |
+| `z_swing_percent` | double | yes | — | TODO |
+| `z_swing_miss_percent` | double | yes | — | TODO |
+| `oz_swing_percent` | double | yes | — | TODO |
+| `oz_swing_miss_percent` | double | yes | — | TODO |
+| `oz_contact_percent` | double | yes | — | TODO |
+| `out_zone_swing_miss` | int16 | yes | — | TODO |
+| `out_zone_swing` | int16 | yes | — | TODO |
+| `out_zone_percent` | double | yes | — | TODO |
+| `out_zone` | int16 | yes | — | TODO |
+| `meatball_swing_percent` | double | yes | — | TODO |
+| `meatball_percent` | double | yes | — | TODO |
+| `pitch_count_offspeed` | int16 | yes | — | TODO |
+| `pitch_count_fastball` | int16 | yes | — | TODO |
+| `pitch_count_breaking` | int16 | yes | — | TODO |
+| `pitch_count` | int16 | yes | — | TODO |
+| `iz_contact_percent` | double | yes | — | TODO |
+| `in_zone_swing_miss` | int16 | yes | — | TODO |
+| `in_zone_swing` | int16 | yes | — | TODO |
+| `in_zone_percent` | double | yes | — | TODO |
+| `in_zone` | int16 | yes | — | TODO |
+| `edge_percent` | double | yes | — | TODO |
+| `edge` | int16 | yes | — | TODO |
+| `whiff_percent` | double | yes | — | TODO |
+| `swing_percent` | double | yes | — | TODO |
+| `pull_percent` | double | yes | — | TODO |
+| `straightaway_percent` | double | yes | — | TODO |
+| `opposite_percent` | double | yes | — | TODO |
+| `batted_ball` | int16 | yes | — | TODO |
+| `f_strike_percent` | double | yes | — | TODO |
+| `groundballs_percent` | double | yes | — | TODO |
+| `groundballs` | int16 | yes | — | TODO |
+| `flyballs_percent` | double | yes | — | TODO |
+| `flyballs` | int16 | yes | — | TODO |
+| `linedrives_percent` | double | yes | — | TODO |
+| `linedrives` | int16 | yes | — | TODO |
+| `popups_percent` | double | yes | — | TODO |
+| `popups` | int16 | yes | — | TODO |
+| `avg_swing_length` | double | yes | — | TODO |
+| `avg_swing_speed` | double | yes | — | TODO |
+| `blasts_contact` | double | yes | — | TODO |
+| `blasts_swing` | double | yes | — | TODO |
+| `squared_up_contact` | double | yes | — | TODO |
+| `squared_up_swing` | double | yes | — | TODO |
+| `swords` | int16 | yes | — | TODO |
+| `fast_swing_rate` | double | yes | — | TODO |
+| `attack_angle` | double | yes | — | Attack angle measures the vertical direction that the sweet spot of the bat is traveling at the moment it hits the baseball. (src: mlb_glossary_attack_angle) |
+| `attack_direction` | double | yes | — | Attack direction measures the horizontal direction that the sweet spot of the bat is moving at the point of contact with the baseball (or the point the bat and ball cross paths on a swing-and-miss). (src: mlb_glossary_attack_direction) |
+| `ideal_angle_rate` | double | yes | — | TODO |
+| `vertical_swing_path` | double | yes | — | TODO |
+| `swing_take_run_value` | int16 | yes | — | TODO |
+| `runner_run_value` | string | yes | — | TODO |
+| `fielding_run_value` | string | yes | — | TODO |
+| `pitch_run_value_fastball` | double | yes | — | TODO |
+| `pitch_run_value_breaking` | double | yes | — | TODO |
+| `pitch_run_value_offspeed` | double | yes | — | TODO |
+| `p_game` | int16 | yes | — | TODO |
+| `p_total_pa` | int16 | yes | — | TODO |
+| `p_ab` | int16 | yes | — | TODO |
+| `p_total_hits` | int16 | yes | — | TODO |
+| `p_single` | int16 | yes | — | TODO |
+| `p_double` | int16 | yes | — | TODO |
+| `p_triple` | int16 | yes | — | TODO |
+| `p_home_run` | int16 | yes | — | TODO |
+| `p_strikeout` | int16 | yes | — | TODO |
+| `p_walk` | int16 | yes | — | TODO |
+| `p_earned_run` | int16 | yes | — | TODO |
+| `p_run` | int16 | yes | — | TODO |
+| `p_save` | int16 | yes | — | TODO |
+| `p_blown_save` | int16 | yes | — | TODO |
+| `p_out` | int16 | yes | — | TODO |
+| `p_win` | int16 | yes | — | TODO |
+| `p_loss` | int16 | yes | — | TODO |
+| `p_wild_pitch` | int16 | yes | — | TODO |
+| `p_balk` | int16 | yes | — | TODO |
+| `p_shutout` | int16 | yes | — | TODO |
+| `p_opp_batting_avg` | string | yes | — | TODO |
+| `p_opp_on_base_avg` | string | yes | — | TODO |
+| `p_total_stolen_base` | int16 | yes | — | TODO |
+| `p_pickoff_attempt_1b` | int16 | yes | — | TODO |
+| `p_pickoff_attempt_2b` | int16 | yes | — | TODO |
+| `p_pickoff_attempt_3b` | int16 | yes | — | TODO |
+| `p_pickoff_1b` | int16 | yes | — | TODO |
+| `p_pickoff_2b` | int16 | yes | — | TODO |
+| `p_pickoff_3b` | int16 | yes | — | TODO |
+| `p_lob` | int16 | yes | — | TODO |
+| `p_rbi` | int16 | yes | — | TODO |
+| `p_stolen_base_2b` | int16 | yes | — | TODO |
+| `p_stolen_base_3b` | int16 | yes | — | TODO |
+| `p_stolen_base_home` | int16 | yes | — | TODO |
+| `p_quality_start` | int16 | yes | — | TODO |
+| `p_walkoff` | int16 | yes | — | TODO |
+| `p_run_support` | int16 | yes | — | TODO |
+| `p_ab_scoring` | int16 | yes | — | TODO |
+| `p_automatic_ball` | int16 | yes | — | TODO |
+| `p_ball` | int16 | yes | — | TODO |
+| `p_called_strike` | int16 | yes | — | TODO |
+| `p_catcher_interf` | int16 | yes | — | TODO |
+| `p_caught_stealing_2b` | int16 | yes | — | TODO |
+| `p_caught_stealing_3b` | int16 | yes | — | TODO |
+| `p_caught_stealing_home` | int16 | yes | — | TODO |
+| `p_complete_game` | int16 | yes | — | TODO |
+| `p_defensive_indiff` | int16 | yes | — | TODO |
+| `p_foul` | int16 | yes | — | TODO |
+| `p_foul_tip` | int16 | yes | — | TODO |
+| `p_game_finished` | int16 | yes | — | TODO |
+| `p_game_in_relief` | int16 | yes | — | TODO |
+| `p_gnd_into_dp` | int16 | yes | — | TODO |
+| `p_gnd_into_tp` | int16 | yes | — | TODO |
+| `p_gnd_rule_double` | int16 | yes | — | TODO |
+| `p_hit_by_pitch` | int16 | yes | — | TODO |
+| `p_hit_fly` | int16 | yes | — | TODO |
+| `p_hit_ground` | int16 | yes | — | TODO |
+| `p_hit_line_drive` | int16 | yes | — | TODO |
+| `p_hit_into_play` | int16 | yes | — | TODO |
+| `p_hit_scoring` | int16 | yes | — | TODO |
+| `p_hold` | int16 | yes | — | TODO |
+| `p_intent_ball` | int16 | yes | — | TODO |
+| `p_intent_walk` | int16 | yes | — | TODO |
+| `p_missed_bunt` | int16 | yes | — | TODO |
+| `p_out_fly` | int16 | yes | — | TODO |
+| `p_out_ground` | int16 | yes | — | TODO |
+| `p_out_line_drive` | int16 | yes | — | TODO |
+| `p_passed_ball` | int16 | yes | — | TODO |
+| `p_pickoff_error_1b` | int16 | yes | — | TODO |
+| `p_pickoff_error_2b` | int16 | yes | — | TODO |
+| `p_pickoff_error_3b` | int16 | yes | — | TODO |
+| `p_pitchout` | int16 | yes | — | TODO |
+| `p_relief_no_out` | int16 | yes | — | TODO |
+| `p_sac_bunt` | int16 | yes | — | TODO |
+| `p_sac_fly` | int16 | yes | — | TODO |
+| `p_starting_p` | int16 | yes | — | TODO |
+| `p_swinging_strike` | int16 | yes | — | TODO |
+| `p_unearned_run` | int16 | yes | — | TODO |
+| `p_total_ball` | int16 | yes | — | TODO |
+| `p_total_bases` | int16 | yes | — | TODO |
+| `p_total_caught_stealing` | int16 | yes | — | TODO |
+| `p_total_pickoff` | int16 | yes | — | TODO |
+| `p_total_pickoff_attempt` | int16 | yes | — | TODO |
+| `p_total_pickoff_error` | int16 | yes | — | TODO |
+| `p_total_pitches` | int16 | yes | — | TODO |
+| `p_total_sacrifices` | int16 | yes | — | TODO |
+| `p_total_strike` | int16 | yes | — | TODO |
+| `p_total_swinging_strike` | int16 | yes | — | TODO |
+| `p_inh_runner` | int16 | yes | — | TODO |
+| `p_inh_runner_scored` | int16 | yes | — | TODO |
+| `p_beq_runner` | int16 | yes | — | TODO |
+| `p_beq_runner_scored` | int16 | yes | — | TODO |
+| `p_reached_on_error` | int16 | yes | — | TODO |
+| `p_formatted_ip` | double | yes | — | TODO |
+| `p_era` | double | yes | — | TODO |
+| `pitch_hand` | string | yes | — | TODO |
+| `n` | int16 | yes | — | TODO |
+| `n_ff_formatted` | double | yes | — | TODO |
+| `ff_avg_speed` | double | yes | — | TODO |
+| `ff_avg_spin` | int16 | yes | — | TODO |
+| `ff_avg_break_x` | double | yes | — | TODO |
+| `ff_avg_break_z` | double | yes | — | TODO |
+| `ff_avg_break_z_induced` | double | yes | — | TODO |
+| `ff_avg_break` | double | yes | — | TODO |
+| `ff_range_speed` | double | yes | — | TODO |
+| `n_sl_formatted` | double | yes | — | TODO |
+| `sl_avg_speed` | double | yes | — | TODO |
+| `sl_avg_spin` | int16 | yes | — | TODO |
+| `sl_avg_break_x` | double | yes | — | TODO |
+| `sl_avg_break_z` | double | yes | — | TODO |
+| `sl_avg_break_z_induced` | double | yes | — | TODO |
+| `sl_avg_break` | double | yes | — | TODO |
+| `sl_range_speed` | double | yes | — | TODO |
+| `n_ch_formatted` | double | yes | — | TODO |
+| `ch_avg_speed` | double | yes | — | TODO |
+| `ch_avg_spin` | int16 | yes | — | TODO |
+| `ch_avg_break_x` | double | yes | — | TODO |
+| `ch_avg_break_z` | double | yes | — | TODO |
+| `ch_avg_break_z_induced` | double | yes | — | TODO |
+| `ch_avg_break` | double | yes | — | TODO |
+| `ch_range_speed` | double | yes | — | TODO |
+| `n_cu_formatted` | double | yes | — | TODO |
+| `cu_avg_speed` | double | yes | — | TODO |
+| `cu_avg_spin` | int16 | yes | — | TODO |
+| `cu_avg_break_x` | double | yes | — | TODO |
+| `cu_avg_break_z` | double | yes | — | TODO |
+| `cu_avg_break_z_induced` | double | yes | — | TODO |
+| `cu_avg_break` | double | yes | — | TODO |
+| `cu_range_speed` | double | yes | — | TODO |
+| `n_si_formatted` | double | yes | — | TODO |
+| `si_avg_speed` | double | yes | — | TODO |
+| `si_avg_spin` | int16 | yes | — | TODO |
+| `si_avg_break_x` | double | yes | — | TODO |
+| `si_avg_break_z` | double | yes | — | TODO |
+| `si_avg_break_z_induced` | double | yes | — | TODO |
+| `si_avg_break` | double | yes | — | TODO |
+| `si_range_speed` | double | yes | — | TODO |
+| `n_fc_formatted` | double | yes | — | TODO |
+| `fc_avg_speed` | double | yes | — | TODO |
+| `fc_avg_spin` | int16 | yes | — | TODO |
+| `fc_avg_break_x` | double | yes | — | TODO |
+| `fc_avg_break_z` | double | yes | — | TODO |
+| `fc_avg_break_z_induced` | double | yes | — | TODO |
+| `fc_avg_break` | double | yes | — | TODO |
+| `fc_range_speed` | double | yes | — | TODO |
+| `n_fs_formatted` | double | yes | — | TODO |
+| `fs_avg_speed` | double | yes | — | TODO |
+| `fs_avg_spin` | int16 | yes | — | TODO |
+| `fs_avg_break_x` | double | yes | — | TODO |
+| `fs_avg_break_z` | double | yes | — | TODO |
+| `fs_avg_break_z_induced` | double | yes | — | TODO |
+| `fs_avg_break` | double | yes | — | TODO |
+| `fs_range_speed` | double | yes | — | TODO |
+| `n_kn_formatted` | string | yes | — | TODO |
+| `kn_avg_speed` | string | yes | — | TODO |
+| `kn_avg_spin` | string | yes | — | TODO |
+| `kn_avg_break_x` | string | yes | — | TODO |
+| `kn_avg_break_z` | string | yes | — | TODO |
+| `kn_avg_break_z_induced` | string | yes | — | TODO |
+| `kn_avg_break` | string | yes | — | TODO |
+| `kn_range_speed` | string | yes | — | TODO |
+| `n_st_formatted` | double | yes | — | TODO |
+| `st_avg_speed` | double | yes | — | TODO |
+| `st_avg_spin` | int16 | yes | — | TODO |
+| `st_avg_break_x` | double | yes | — | TODO |
+| `st_avg_break_z` | double | yes | — | TODO |
+| `st_avg_break_z_induced` | double | yes | — | TODO |
+| `st_avg_break` | double | yes | — | TODO |
+| `st_range_speed` | double | yes | — | TODO |
+| `n_sv_formatted` | double | yes | — | TODO |
+| `sv_avg_speed` | double | yes | — | TODO |
+| `sv_avg_spin` | int16 | yes | — | TODO |
+| `sv_avg_break_x` | double | yes | — | TODO |
+| `sv_avg_break_z` | double | yes | — | TODO |
+| `sv_avg_break_z_induced` | double | yes | — | TODO |
+| `sv_avg_break` | double | yes | — | TODO |
+| `sv_range_speed` | double | yes | — | TODO |
+| `n_fo_formatted` | string | yes | — | TODO |
+| `fo_avg_speed` | string | yes | — | TODO |
+| `fo_avg_spin` | string | yes | — | TODO |
+| `fo_avg_break_x` | string | yes | — | TODO |
+| `fo_avg_break_z` | string | yes | — | TODO |
+| `fo_avg_break_z_induced` | string | yes | — | TODO |
+| `fo_avg_break` | string | yes | — | TODO |
+| `fo_range_speed` | string | yes | — | TODO |
+| `n_sc_formatted` | string | yes | — | TODO |
+| `sc_avg_speed` | string | yes | — | TODO |
+| `sc_avg_spin` | string | yes | — | TODO |
+| `sc_avg_break_x` | string | yes | — | TODO |
+| `sc_avg_break_z` | string | yes | — | TODO |
+| `sc_avg_break_z_induced` | string | yes | — | TODO |
+| `sc_avg_break` | string | yes | — | TODO |
+| `sc_range_speed` | string | yes | — | TODO |
+| `n_fastball_formatted` | double | yes | — | TODO |
+| `fastball_avg_speed` | double | yes | — | TODO |
+| `fastball_avg_spin` | int16 | yes | — | TODO |
+| `fastball_avg_break_x` | double | yes | — | TODO |
+| `fastball_avg_break_z` | double | yes | — | TODO |
+| `fastball_avg_break_z_induced` | double | yes | — | TODO |
+| `fastball_avg_break` | double | yes | — | TODO |
+| `fastball_range_speed` | double | yes | — | TODO |
+| `n_breaking_formatted` | double | yes | — | TODO |
+| `breaking_avg_speed` | double | yes | — | TODO |
+| `breaking_avg_spin` | int16 | yes | — | TODO |
+| `breaking_avg_break_x` | double | yes | — | TODO |
+| `breaking_avg_break_z` | double | yes | — | TODO |
+| `breaking_avg_break_z_induced` | double | yes | — | TODO |
+| `breaking_avg_break` | double | yes | — | TODO |
+| `breaking_range_speed` | double | yes | — | TODO |
+| `n_offspeed_formatted` | double | yes | — | TODO |
+| `offspeed_avg_speed` | double | yes | — | TODO |
+| `offspeed_avg_spin` | int16 | yes | — | TODO |
+| `offspeed_avg_break_x` | double | yes | — | TODO |
+| `offspeed_avg_break_z` | double | yes | — | TODO |
+| `offspeed_avg_break_z_induced` | double | yes | — | TODO |
+| `offspeed_avg_break` | double | yes | — | TODO |
+| `offspeed_range_speed` | double | yes | — | TODO |
+| `arm_angle` | double | yes | — | TODO |
+| `stats_api` | string | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `original_team_id` | int16 | yes | — | TODO |
+| `new_team_id` | int32 | yes | — | TODO |
+| `diff_team` | string | yes | — | TODO |
+| `original_team_abbrev` | string | yes | — | TODO |
+| `position` | string | yes | — | TODO |
+| `bat_side` | string | yes | — | TODO |
+| `current_age` | int16 | yes | — | TODO |
+| `transaction_type` | string | yes | — | TODO |
+| `home_runs_per_nine` | double | yes | — | TODO |
+| `home_run_percent` | double | yes | — | TODO |
+| `notes` | string | yes | — | TODO |
+| `new_team_abbrev` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_hot_stove_pitcher -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_outfield_directional_oaa -->
+### Dataset: leaderboard_outfield_directional_oaa
+
+Outfield outs above average by direction of the batted ball per outfielder-season.
+
+- **View:** `statcast_leaderboard_outfield_directional_oaa`
+- **Processed path:** `processed/statcast/leaderboard_outfield_directional_oaa/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `player_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
+| `player_id` | int32 | yes | — | TODO |
+| `attempts` | int16 | yes | — | TODO |
+| `n_outs_above_average` | int16 | yes | — | TODO |
+| `n_oaa_slice_back_left` | int16 | yes | — | TODO |
+| `n_oaa_slice_back` | int16 | yes | — | TODO |
+| `n_oaa_slice_back_right` | int16 | yes | — | TODO |
+| `n_oaa_slice_back_all` | int16 | yes | — | TODO |
+| `n_oaa_slice_in_left` | int16 | yes | — | TODO |
+| `n_oaa_slice_in` | int16 | yes | — | TODO |
+| `n_oaa_slice_in_right` | int16 | yes | — | TODO |
+| `n_oaa_slice_in_all` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_outfield_directional_oaa -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_pitcher_arm_angles -->
+### Dataset: leaderboard_pitcher_arm_angles
+
+Arm angle and release point per pitcher-season.
+
+- **View:** `statcast_leaderboard_pitcher_arm_angles`
+- **Processed path:** `processed/statcast/leaderboard_pitcher_arm_angles/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `pitcher`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `pitcher` | int32 | yes | — | TODO |
+| `pitcher_name` | string | yes | — | TODO |
+| `pitch_hand` | string | yes | — | TODO |
+| `n_pitches` | int16 | yes | — | TODO |
+| `team_id` | int16 | yes | — | TODO |
+| `ball_angle` | double | yes | — | TODO |
+| `relative_release_ball_x` | double | yes | — | TODO |
+| `release_ball_z` | double | yes | — | TODO |
+| `relative_shoulder_x` | double | yes | — | TODO |
+| `shoulder_z` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_pitcher_arm_angles -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_pitcher_running_game -->
+### Dataset: leaderboard_pitcher_running_game
+
+Running game against each pitcher by target base (runs prevented, stolen-base attempts).
+
+- **View:** `statcast_leaderboard_pitcher_running_game`
+- **Processed path:** `processed/statcast/leaderboard_pitcher_running_game/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `player_id`, `key_target_base`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `player_id` | int32 | yes | — | TODO |
+| `player_name` | string | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `start_year` | int16 | yes | — | TODO |
+| `end_year` | int16 | yes | — | TODO |
+| `key_target_base` | string | yes | — | TODO |
+| `runs_prevented_on_running_attr` | double | yes | — | TODO |
+| `n_pitcher_cs_aa` | double | yes | — | TODO |
+| `n_init` | int16 | yes | — | TODO |
+| `rate_sbx` | double | yes | — | TODO |
+| `n_sb` | int16 | yes | — | TODO |
+| `n_cs` | int16 | yes | — | TODO |
+| `n_pk` | int16 | yes | — | TODO |
+| `n_bk` | int16 | yes | — | TODO |
+| `n_fb` | int16 | yes | — | TODO |
+| `n_plus` | int16 | yes | — | TODO |
+| `n_minus` | int16 | yes | — | TODO |
+| `net_attr_plus` | double | yes | — | TODO |
+| `net_attr_minus` | double | yes | — | TODO |
+| `r_primary_lead` | double | yes | — | TODO |
+| `r_secondary_lead` | double | yes | — | TODO |
+| `r_sec_minus_prim_lead` | double | yes | — | TODO |
+| `r_primary_lead_sbx` | double | yes | — | TODO |
+| `r_secondary_lead_sbx` | double | yes | — | TODO |
+| `r_sec_minus_prim_lead_sbx` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_pitcher_running_game -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_swing_timing_miss_distance_batter -->
+### Dataset: leaderboard_swing_timing_miss_distance_batter
+
+Swing timing and miss distance per batter-season (bat tracking).
+
+- **View:** `statcast_leaderboard_swing_timing_miss_distance_batter`
+- **Processed path:** `processed/statcast/leaderboard_swing_timing_miss_distance_batter/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `id`, `year`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `bat_side_formatted` | string | yes | — | TODO |
+| `miss_distance` | double | yes | — | TODO |
+| `flawed_percent` | double | yes | — | TODO |
+| `perfect_percent` | double | yes | — | TODO |
+| `tied_up_percent` | double | yes | — | TODO |
+| `avg_x_tied_up` | double | yes | — | TODO |
+| `centered_percent` | double | yes | — | TODO |
+| `flailed_percent` | double | yes | — | TODO |
+| `avg_x_flail` | double | yes | — | TODO |
+| `early_percent` | double | yes | — | TODO |
+| `avg_y_early` | double | yes | — | TODO |
+| `on_time_percent` | double | yes | — | TODO |
+| `late_percent` | double | yes | — | TODO |
+| `avg_y_late` | double | yes | — | TODO |
+| `n_swings` | int16 | yes | — | TODO |
+| `whiff_rate` | double | yes | — | TODO |
+| `competitive_percent` | double | yes | — | TODO |
+| `over_percent` | double | yes | — | TODO |
+| `avg_z_over` | double | yes | — | TODO |
+| `lined_up_percent` | double | yes | — | TODO |
+| `under_percent` | double | yes | — | TODO |
+| `avg_z_under` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_swing_timing_miss_distance_batter -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_swing_timing_miss_distance_pitcher -->
+### Dataset: leaderboard_swing_timing_miss_distance_pitcher
+
+Swing timing and miss distance against each pitcher-season (bat tracking).
+
+- **View:** `statcast_leaderboard_swing_timing_miss_distance_pitcher`
+- **Processed path:** `processed/statcast/leaderboard_swing_timing_miss_distance_pitcher/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `id`, `year`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `year` | int16 | yes | — | TODO |
+| `team_name` | string | yes | — | TODO |
+| `bat_side_formatted` | string | yes | — | TODO |
+| `miss_distance` | double | yes | — | TODO |
+| `flawed_percent` | double | yes | — | TODO |
+| `perfect_percent` | double | yes | — | TODO |
+| `tied_up_percent` | double | yes | — | TODO |
+| `avg_x_tied_up` | double | yes | — | TODO |
+| `centered_percent` | double | yes | — | TODO |
+| `flailed_percent` | double | yes | — | TODO |
+| `avg_x_flail` | double | yes | — | TODO |
+| `early_percent` | double | yes | — | TODO |
+| `avg_y_early` | double | yes | — | TODO |
+| `on_time_percent` | double | yes | — | TODO |
+| `late_percent` | double | yes | — | TODO |
+| `avg_y_late` | double | yes | — | TODO |
+| `n_swings` | int16 | yes | — | TODO |
+| `whiff_rate` | double | yes | — | TODO |
+| `competitive_percent` | double | yes | — | TODO |
+| `over_percent` | double | yes | — | TODO |
+| `avg_z_over` | double | yes | — | TODO |
+| `lined_up_percent` | double | yes | — | TODO |
+| `under_percent` | double | yes | — | TODO |
+| `avg_z_under` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_swing_timing_miss_distance_pitcher -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_year_to_year_batter -->
+### Dataset: leaderboard_year_to_year_batter
+
+Year-to-year changes of Statcast batting metrics per batter (one column per year and delta).
+
+- **View:** `statcast_leaderboard_year_to_year_batter`
+- **Processed path:** `processed/statcast/leaderboard_year_to_year_batter/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `entity_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `name` | string | yes | — | TODO |
+| `entity_id` | int32 | yes | — | TODO |
+| `2015` | double | yes | — | TODO |
+| `2016` | double | yes | — | TODO |
+| `delta_2015_2016` | double | yes | — | TODO |
+| `2017` | double | yes | — | TODO |
+| `delta_2016_2017` | double | yes | — | TODO |
+| `2018` | double | yes | — | TODO |
+| `delta_2017_2018` | double | yes | — | TODO |
+| `2019` | double | yes | — | TODO |
+| `delta_2018_2019` | double | yes | — | TODO |
+| `2020` | double | yes | — | TODO |
+| `delta_2019_2020` | double | yes | — | TODO |
+| `2021` | double | yes | — | TODO |
+| `delta_2020_2021` | double | yes | — | TODO |
+| `2022` | double | yes | — | TODO |
+| `delta_2021_2022` | double | yes | — | TODO |
+| `2023` | double | yes | — | TODO |
+| `delta_2022_2023` | double | yes | — | TODO |
+| `2024` | double | yes | — | TODO |
+| `delta_2023_2024` | double | yes | — | TODO |
+| `2025` | double | yes | — | TODO |
+| `delta_2024_2025` | double | yes | — | TODO |
+| `2026` | double | yes | — | TODO |
+| `delta_2025_2026` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_year_to_year_batter -->
+
+<!-- BEGIN GENERATED:statcast.leaderboard_year_to_year_pitcher -->
+### Dataset: leaderboard_year_to_year_pitcher
+
+Year-to-year changes of Statcast pitching metrics per pitcher (one column per year and delta).
+
+- **View:** `statcast_leaderboard_year_to_year_pitcher`
+- **Processed path:** `processed/statcast/leaderboard_year_to_year_pitcher/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `entity_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `name` | string | yes | — | TODO |
+| `entity_id` | int32 | yes | — | TODO |
+| `2015` | double | yes | — | TODO |
+| `2016` | double | yes | — | TODO |
+| `delta_2015_2016` | double | yes | — | TODO |
+| `2017` | double | yes | — | TODO |
+| `delta_2016_2017` | double | yes | — | TODO |
+| `2018` | double | yes | — | TODO |
+| `delta_2017_2018` | double | yes | — | TODO |
+| `2019` | double | yes | — | TODO |
+| `delta_2018_2019` | double | yes | — | TODO |
+| `2020` | double | yes | — | TODO |
+| `delta_2019_2020` | double | yes | — | TODO |
+| `2021` | double | yes | — | TODO |
+| `delta_2020_2021` | double | yes | — | TODO |
+| `2022` | double | yes | — | TODO |
+| `delta_2021_2022` | double | yes | — | TODO |
+| `2023` | double | yes | — | TODO |
+| `delta_2022_2023` | double | yes | — | TODO |
+| `2024` | double | yes | — | TODO |
+| `delta_2023_2024` | double | yes | — | TODO |
+| `2025` | double | yes | — | TODO |
+| `delta_2024_2025` | double | yes | — | TODO |
+| `2026` | double | yes | — | TODO |
+| `delta_2025_2026` | double | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:statcast.leaderboard_year_to_year_pitcher -->

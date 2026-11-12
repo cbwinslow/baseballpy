@@ -613,8 +613,6 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-372 | response-log-segments 5.2: converter command with `--dry-run` | DONE | after B-371; dry-run test passes |
 | B-373 | response-log-segments 5.3: real conversion: read back every row, then remove the old copies of the season | DONE | after B-372; tests/test_raw_convert.py passes |
 | B-374 | `response-log-segments 5.4`: dry run, then the real conversion of the lake, season by season | LONG | after B-373; disk before and after in design.md; `cache check` clean |
-| B-375 | `response-log-segments 6.1`: tests first: tests/test_segment_rebuild.py | READY | after B-373; the tests exist and fail for the right reason |
-| B-376 | `response-log-segments 6.2`: generic rebuild of a season from raw (also the schema-change path) | READY | after B-375; its tests pass |
 | B-377 | `response-log-segments 6.3`: per season: old files to `_legacy/`, segments in, counts and keys compared | LONG | after B-376; table in design.md |
 | B-378 | `response-log-segments 6.4`: delete a season's `_legacy/` only after its comparison passed | READY | after B-377; freed disk recorded |
 | B-379 | `response-log-segments 7.1`: tests first: no part files on the per-game path; the queue does not compact segment sources | READY | after B-378; the tests exist and fail for the right reason |

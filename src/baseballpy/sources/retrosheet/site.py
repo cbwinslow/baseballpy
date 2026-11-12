@@ -19,6 +19,7 @@ import shutil
 import urllib.robotparser
 import zipfile
 from collections.abc import Iterator, Sequence
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from pathlib import PurePosixPath
 
@@ -282,6 +283,53 @@ SITE_DATASETS: dict[str, SiteDataset] = {
         id_column="umpire_id",
         numeric=("temp",),  # upstream: "unknown" in 3 rows
     ),
+    "negro_players": SiteDataset(
+        "negroleagues.zip",
+        "allplayers.csv",
+        "Negro Leagues players with games by position per team (negroleagues.zip allplayers.csv).",
+        renames=(("last", "last_name"), ("first", "first_name")),
+        key=("id", "team"),
+    ),
+    "negro_games": SiteDataset(
+        "negroleagues.zip",
+        "gameinfo.csv",
+        "Negro Leagues game information, one row per game (negroleagues.zip gameinfo.csv).",
+        key=("gid",),
+        dates=("date",),
+    ),
+    "negro_team_stats": SiteDataset(
+        "negroleagues.zip",
+        "teamstats.csv",
+        "Negro Leagues team game lines with line scores (negroleagues.zip teamstats.csv).",
+        key=("gid", "team", "stattype"),
+        text=tuple(
+            f"inn{i}" for i in range(1, 29)
+        ),  # line scores: x = inning not played, ? unknown
+    ),
+    "negro_batting": SiteDataset(
+        "negroleagues.zip",
+        "batting.csv",
+        "Negro Leagues batting lines per player game (negroleagues.zip batting.csv).",
+        key=("id", "gid", "team", "stattype", "b_lp", "b_seq"),
+    ),
+    "negro_pitching": SiteDataset(
+        "negroleagues.zip",
+        "pitching.csv",
+        "Negro Leagues pitching lines per player game (negroleagues.zip pitching.csv).",
+        key=("id", "gid", "team", "stattype", "p_seq"),
+    ),
+    "negro_fielding": SiteDataset(
+        "negroleagues.zip",
+        "fielding.csv",
+        "Negro Leagues fielding lines per player game (negroleagues.zip fielding.csv).",
+        key=("id", "gid", "team", "stattype", "d_seq", "d_pos"),
+    ),
+    "negro_plays": SiteDataset(
+        "negroleagues.zip",
+        "plays.csv",
+        "Negro Leagues play-by-play, one row per play (negroleagues.zip plays.csv).",
+        key=("gid", "pn"),
+    ),
 }
 
 _FILES_BY_NAME = {f.name: f for f in SITE_FILES}
@@ -325,18 +373,33 @@ def site_batches(
     path = raw.path_for("retrosheet", RAW_DATASET, spec.zip_name)
     with zipfile.ZipFile(path) as archive:
         members = _member_names(archive, spec, name)
-        for start in range(0, len(members), batch_members):
-            parts: list[pa.Table] = []
-            for member in members[start : start + batch_members]:
-                table = read_csv_strings(archive.read(member), header=header)
-                if spec.id_column:
-                    stem = PurePosixPath(member).name.removesuffix(spec.suffix)
-                    table = table.append_column(
-                        spec.id_column, pa.array([stem] * table.num_rows, pa.string())
-                    )
-                parts.append(table)
-            joined = pa.concat_tables(parts, promote_options="default")
-            yield map_to_schema(joined, schema, source="retrosheet", dataset=name)
+        workers = max(1, config.parse_workers)
+        pool = ThreadPoolExecutor(max_workers=workers) if workers > 1 else None
+
+        def parse(member: str, data: bytes) -> pa.Table:
+            table = read_csv_strings(data, header=header)
+            if spec.id_column:
+                stem = PurePosixPath(member).name.removesuffix(spec.suffix)
+                table = table.append_column(
+                    spec.id_column, pa.array([stem] * table.num_rows, pa.string())
+                )
+            return table
+
+        try:
+            for start in range(0, len(members), batch_members):
+                chosen = members[start : start + batch_members]
+                # the zip is read one member at a time (one file handle); the parsing, which releases the
+                # GIL inside Arrow, runs on the worker threads
+                blobs = [(member, archive.read(member)) for member in chosen]
+                if pool is None:
+                    parts = [parse(m, b) for m, b in blobs]
+                else:
+                    parts = list(pool.map(lambda mb: parse(*mb), blobs))
+                joined = pa.concat_tables(parts, promote_options="default")
+                yield map_to_schema(joined, schema, source="retrosheet", dataset=name)
+        finally:
+            if pool is not None:
+                pool.shutdown()
 
 
 def read_site_datasets(config: LakeConfig, datasets: Sequence[str]) -> "dict[str, pa.Table]":
@@ -421,6 +484,7 @@ def fetch_site_files(
                 result = client.download_sync(
                     item.url, staging, max_bytes=max_bytes, allow=(200, 404, *_STOP_STATUSES)
                 )
+                tracker.mark_download_complete()  # the rest is checking the answer and moving the file
                 if result.status in _STOP_STATUSES:
                     raise HttpStatusError(item.url, result.status)
                 if result.status == 404:

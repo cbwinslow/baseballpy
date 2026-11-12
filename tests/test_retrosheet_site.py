@@ -130,6 +130,8 @@ def test_every_download_is_audit_logged_and_timed(tmp_path: Path, monkeypatch) -
     assert (
         events[0].endpoint == f"{BASE}/downloads/a.zip" and events[0].duration_seconds is not None
     )
+    assert events[0].download_seconds is not None, "the download time is logged apart from the rest"
+    assert events[0].processing_seconds is not None
 
 
 @respx.mock

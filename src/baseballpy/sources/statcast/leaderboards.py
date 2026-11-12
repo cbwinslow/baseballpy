@@ -223,6 +223,7 @@ class StatcastLeaderboardExtractor:
             destination=str(cache_path),
         ) as tracker:
             payload = self._fetch(defn, year, min_value)
+            tracker.mark_download_complete()  # the rest of the operation is parsing and writing
             table = self.normalizer.normalize(payload, defn.slug)
             if persisted and self.cache_config.enabled:
                 suffix = "html" if defn.fmt == "html_json" else "csv"

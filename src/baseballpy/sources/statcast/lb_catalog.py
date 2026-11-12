@@ -24,7 +24,7 @@ class LeaderboardDef:
     params: Mapping[str, str | int] = field(default_factory=dict)
     #: how the season is sent: ``year`` (``year=``), ``year_span`` (``year=`` plus ``startYear``/
     #: ``endYear``), ``season_range`` (``seasonStart``/``seasonEnd``), ``season_snake`` (``season_start``/
-    #: ``season_end``), ``season`` or ``none`` (route ignores the season: one flat snapshot)
+    #: ``season_end``), ``season_array`` (``season[]=``), ``season`` or ``none`` (route ignores the season: one flat snapshot)
     year_style: str = "year"
     #: minimum-qualifier request parameter (``None`` if the route has none)
     min_param: str | None = None
@@ -60,6 +60,15 @@ _YEAR_STYLES = {
     "abs_challenges": "none",
     "fielding_run_value": "season_range",
     "rolling": "none",
+    "swing_timing_miss_distance_batter": "season_array",
+    "swing_timing_miss_distance_pitcher": "season_array",
+    "pitcher_arm_angles": "season",
+    "pitcher_running_game": "season_snake",
+    "first_base_receiving": "season_array",
+    "catcher_stance": "season_range",
+    "catcher_throwing": "season_snake",
+    "hot_stove_batter": "none",
+    "hot_stove_pitcher": "none",
 }
 
 
@@ -399,35 +408,96 @@ LEADERBOARDS: tuple[LeaderboardDef, ...] = (
         },
         fmt="html_json",
     ),
-    LeaderboardDef(
-        "directional_outs_above_average",
-        "directional_outs_above_average",
-        "Directional OAA.",
+    _lb(
+        "swing_timing_miss_distance_batter",
+        "bat-tracking/swing-timing-miss-distance",
+        "Swing timing and miss distance per batter-season (bat tracking).",
         "player-season",
-        (),
-        unsupported="route answers 404 (probed 2026-10-27); directions are columns of outs_above_average",
-        verified_on="2026-10-27",
-        tried=("GET /leaderboard/directional_outs_above_average?year=2024&csv=true -> HTTP 404",),
+        ("id", "year"),
+        params={"type": "batter"},
     ),
-    LeaderboardDef(
-        "catcher_throwing",
-        "catcher_throwing",
-        "Catcher throwing.",
+    _lb(
+        "swing_timing_miss_distance_pitcher",
+        "bat-tracking/swing-timing-miss-distance",
+        "Swing timing and miss distance against each pitcher-season (bat tracking).",
         "player-season",
-        (),
-        unsupported="route answers 404; pop time/arm strength are in `poptime`",
-        verified_on="2026-10-27",
-        tried=("GET /leaderboard/catcher_throwing?year=2024&min=q&csv=true -> HTTP 404",),
+        ("id", "year"),
+        params={"type": "pitcher"},
     ),
-    LeaderboardDef(
-        "year_to_year",
-        "year-to-year",
-        "Year-to-year comparison.",
+    _lb(
+        "year_to_year_batter",
+        "statcast-year-to-year",
+        "Year-to-year changes of Statcast batting metrics per batter (one column per year and delta).",
+        "player",
+        ("entity_id",),
+    ),
+    _lb(
+        "year_to_year_pitcher",
+        "statcast-year-to-year",
+        "Year-to-year changes of Statcast pitching metrics per pitcher (one column per year and delta).",
+        "player",
+        ("entity_id",),
+        params={"group": "Pitcher"},
+    ),
+    _lb(
+        "pitcher_arm_angles",
+        "pitcher-arm-angles",
+        "Arm angle and release point per pitcher-season.",
         "player-season",
-        (),
-        unsupported="route answers 404 (comparison tool, derivable from other leaderboards)",
-        verified_on="2026-10-27",
-        tried=("GET /leaderboard/year-to-year?year=2024&csv=true -> HTTP 404",),
+        ("pitcher",),
+    ),
+    _lb(
+        "pitcher_running_game",
+        "pitcher-running-game",
+        "Running game against each pitcher by target base (runs prevented, stolen-base attempts).",
+        "player-season",
+        ("player_id", "key_target_base"),
+    ),
+    _lb(
+        "first_base_receiving",
+        "first-base-scoops-receiving",
+        "First base scoops and receiving (outs above average on throws) per first baseman-season.",
+        "player-season",
+        ("id", "year"),
+    ),
+    _lb(
+        "outfield_directional_oaa",
+        "outfield_directional_outs_above_average",
+        "Outfield outs above average by direction of the batted ball per outfielder-season.",
+        "player-season",
+        ("player_id",),
+    ),
+    _lb(
+        "catcher_stance",
+        "catcher-stance",
+        "Catcher stance (knee and hand positions) per catcher-season.",
+        "player-season",
+        ("id", "year"),
+    ),
+    _lb(
+        "catcher_throwing",
+        "catcher-throwing",
+        "Catcher throwing (stolen-base runs, caught stealing) per catcher.",
+        "player-season",
+        ("player_id",),
+    ),
+    _lb(
+        "hot_stove_batter",
+        "hot-stove",
+        "Hot Stove leaderboard: batters of the season with Statcast batting metrics.",
+        "player-season",
+        ("player_id", "year"),
+        fmt="html_json",
+        html_var="HOT_STOVE_BATTER_DATA",
+    ),
+    _lb(
+        "hot_stove_pitcher",
+        "hot-stove",
+        "Hot Stove leaderboard: pitchers of the season with Statcast pitching metrics.",
+        "player-season",
+        ("player_id", "year"),
+        fmt="html_json",
+        html_var="HOT_STOVE_PITCHER_DATA",
     ),
     LeaderboardDef(
         "bat_speed",
@@ -491,6 +561,8 @@ def request_params(
         params["seasonEnd"] = year
     if style == "season":
         params["season"] = year
+    if style == "season_array":
+        params["season[]"] = year
     if style == "season_snake":
         params["season_start"] = year
         params["season_end"] = year

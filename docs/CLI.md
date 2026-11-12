@@ -16,30 +16,31 @@ Options:
   --help      Show this message and exit.
 
 Commands:
-  agent           Coordinate parallel AI agent sessions with checkout locks and status board.
-  audit           Inspect and analyze pipeline execution logs, benchmarks, and audit telemetry.
-  backfill        Run a plan of ingest stages (sources, seasons, datasets) into the lake.
-  cache           Inspect the raw download cache.
-  catalog         Inspect and audit what the registry covers.
-  compact         Merge each dataset's small chunk files into big ones (run when no ingest is...
-  compress-raw    Gzip raw text files (json, csv) of the configured sources (run when no ingest...
-  convert-raw     Store a source's raw answers once, in raw segments (ADR 95), instead of once...
-  db              Manage the DuckDB catalog (views over processed/ Parquet).
-  docs            Generate the per-dataset column dictionaries in docs/sources/*.md.
-  doctor          Diagnose data lake layout, disk usage, package versions, and orphan files.
-  export          Export cached datasets: SPECS are `source` or `source:dataset[,dataset]`.
-  ingest          Execute ingestion jobs across registered adapters with planning and concurrency.
-  migrate-layout  Migrate a v1 data lake (cache/<source>/...) to layout v2 (raw/ + processed/).
-  probe           Check every provider route in seconds (run it before a long ingest).
-  quarantine      Inspect and display dead-letter quarantine files and unparseable records.
-  refs            Show or update the pinned upstream commit SHAs (reproducible GitHub sources).
-  run             Work through a plan and keep it going: retry what fails, repeat it on a timer.
-  speed           Measure the download speed from the audit log and name what limits it.
-  statcast        Download one date range of Statcast pitches into a single file (not the lake).
-  status          Show what the lake holds per source, what is running and what needs attention.
-  stream          Stream live pitch and play events for a game in real time or replay mode.
-  update          Bring the lake up to date: this season of Statcast and the MLB API, and the...
-  verify-sample   Download a small sample into a scratch home and compare it with the lake.
+  agent             Coordinate parallel AI agent sessions with checkout locks and status board.
+  audit             Inspect and analyze pipeline execution logs, benchmarks, and audit telemetry.
+  backfill          Run a plan of ingest stages (sources, seasons, datasets) into the lake.
+  cache             Inspect the raw download cache.
+  catalog           Inspect and audit what the registry covers.
+  compact           Merge each dataset's small chunk files into big ones (run when no ingest is...
+  compress-raw      Gzip raw text files (json, csv) of the configured sources (run when no...
+  convert-raw       Store a source's raw answers once, in raw segments (ADR 95), instead of...
+  db                Manage the DuckDB catalog (views over processed/ Parquet).
+  docs              Generate the per-dataset column dictionaries in docs/sources/*.md.
+  doctor            Diagnose data lake layout, disk usage, package versions, and orphan files.
+  export            Export cached datasets: SPECS are `source` or `source:dataset[,dataset]`.
+  ingest            Execute ingestion jobs across registered adapters with planning and...
+  migrate-layout    Migrate a v1 data lake (cache/<source>/...) to layout v2 (raw/ + processed/).
+  probe             Check every provider route in seconds (run it before a long ingest).
+  quarantine        Inspect and display dead-letter quarantine files and unparseable records.
+  rebuild-segments  Rebuild a source's processed files from its raw segments (no download),...
+  refs              Show or update the pinned upstream commit SHAs (reproducible GitHub sources).
+  run               Work through a plan and keep it going: retry what fails, repeat it on a timer.
+  speed             Measure the download speed from the audit log and name what limits it.
+  statcast          Download one date range of Statcast pitches into a single file (not the lake).
+  status            Show what the lake holds per source, what is running and what needs attention.
+  stream            Stream live pitch and play events for a game in real time or replay mode.
+  update            Bring the lake up to date: this season of Statcast and the MLB API, and the...
+  verify-sample     Download a small sample into a scratch home and compare it with the lake.
 ```
 
 ## `baseballpy agent`
@@ -657,6 +658,27 @@ Options:
   -n, --limit INTEGER RANGE  Maximum records to display.  [default: 5; x>=1]
   --json                     Output raw full JSON lines.
   --help                     Show this message and exit.
+```
+
+## `baseballpy rebuild-segments`
+
+```text
+Usage: baseballpy rebuild-segments [OPTIONS] SOURCE
+
+  Rebuild a source's processed files from its raw segments (no download), season by season.
+
+  Run it when no ingest is running. The old part files are hidden in _legacy/ first and put back if
+  anything fails; they are deleted only with --apply --remove-legacy and only when every rebuilt
+  dataset has the same row count as the old files.
+
+Options:
+  --season INTEGER  Season (repeatable; default: every season held).
+  --apply           Write the segments (the default is a dry run that only reports).
+  --force           Rebuild every segment, also those that already have processed files (a schema
+                    change).
+  --remove-legacy   After the rebuilt row counts matched the old files, delete the hidden old files.
+                    Needs --apply.
+  --help            Show this message and exit.
 ```
 
 ## `baseballpy refs`

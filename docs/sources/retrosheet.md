@@ -92,12 +92,13 @@ Every CSV in the tree's `reference/` directory is ingested by header name: `ball
 - Column order never matters: columns are matched by upstream header name, unknown columns land in `_extras` (JSON) with a one-time `schema_drift` warning.
 
 ### 8. Files from retrosheet.org (opt-in, the `site` unit)
-The GitHub mirror does not carry everything Retrosheet publishes. Eleven more datasets are parsed from zips on retrosheet.org itself; they are **opt-in**, so a default `baseballpy ingest retrosheet` never contacts that site. Ingest them with `baseballpy ingest retrosheet -d site` (all) or `-d transactions -d umpire_logs` (some); read them with `baseballpy.read("retrosheet.transactions")` or SQL on the view `retrosheet_transactions`.
+The GitHub mirror does not carry everything Retrosheet publishes. Eighteen more datasets are parsed from zips on retrosheet.org itself; they are **opt-in**, so a default `baseballpy ingest retrosheet` never contacts that site. Ingest them with `baseballpy ingest retrosheet -d site` (all) or `-d transactions -d umpire_logs` (some); read them with `baseballpy.read("retrosheet.transactions")` or SQL on the view `retrosheet_transactions`.
 - `transactions` (`tranDB.zip`): trades, draft, free agency, injured list and more, 101,594 rows. Dates stay text because some are partial (`19520000`: month and day unknown); `transaction_id` is shared by the players of a trade.
 - `managers0`, `umpires0`, `coaches0`, `ballparks0`, `teams0` (`biodata.zip`): biography tables with first and last game dates.
 - `player_batting_logs`, `player_fielding_logs`, `player_pitching_logs` (`playerlogs.zip`, one CSV per player): every player game line, 5.8 million, 5.3 million and 1.3 million rows.
+- `negro_players`, `negro_games`, `negro_team_stats`, `negro_batting`, `negro_pitching`, `negro_fielding`, `negro_plays` (`negroleagues.zip`): the Negro Leagues, 8,215 games (1903 to 1962) with play-by-play (168,152 plays). Our event tables hold none of these games and the box-score tables only 4,647 of them, so these are the full record. Line scores stay text (`x` = inning not played).
 - `manager_logs` (`mgrlogs.zip`): 506,098 team game lines; `umpire_logs` (`umplogs.zip`): 771,683 rows, with an `umpire_id` column taken from the file name.
-A zip already in `raw/retrosheet/site_files/` is never requested again; a missing one is fetched politely: robots.txt obeyed, one request every four seconds, the run stops at the first 403, 429 or 503. A few rows are exact duplicates upstream (2 in transactions, 7 in batting logs, 3 in umpire logs) and are kept. The event CSV bundles, the Negro Leagues bundle and the 184 official-totals ledgers are downloadable raw files only, not tables yet. Attribution: "The information used here was obtained free of charge from and is copyrighted by Retrosheet."
+A zip already in `raw/retrosheet/site_files/` is never requested again; a missing one is fetched politely: robots.txt obeyed, one request every four seconds, the run stops at the first 403, 429 or 503. A few rows are exact duplicates upstream (2 in transactions, 7 in batting logs, 3 in umpire logs) and are kept. The event CSV bundles (`csvdownloads.zip`, `basiccsvs.zip`: parsed play-by-play that repeats the event files we already parse) and the 184 official-totals ledgers (hundreds of MB each, format not yet opened) are downloadable raw files only, not tables. Attribution: "The information used here was obtained free of charge from and is copyrighted by Retrosheet."
 
 ## Freshness
 Retrosheet data is immutable at a pinned commit, and what is stored is judged by git fingerprints (ADR 43, ADR 48):
@@ -2414,3 +2415,580 @@ Umpires with first and last game dates (biodata.zip umpires0.csv).
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:retrosheet.umpires0 -->
+
+<!-- BEGIN GENERATED:retrosheet.negro_batting -->
+### Dataset: negro_batting
+
+Negro Leagues batting lines per player game (negroleagues.zip batting.csv).
+
+- **View:** `retrosheet_negro_batting`
+- **Processed path:** `processed/retrosheet/negro_batting/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`, `gid`, `team`, `stattype`, `b_lp`, `b_seq`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `id` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `b_lp` | int16 | yes | — | TODO |
+| `b_seq` | int16 | yes | — | TODO |
+| `stattype` | string | yes | — | TODO |
+| `b_pa` | int16 | yes | — | TODO |
+| `b_ab` | int16 | yes | — | TODO |
+| `b_r` | int16 | yes | — | TODO |
+| `b_h` | int16 | yes | — | TODO |
+| `b_d` | int16 | yes | — | TODO |
+| `b_t` | int16 | yes | — | TODO |
+| `b_hr` | int16 | yes | — | TODO |
+| `b_rbi` | int16 | yes | — | TODO |
+| `b_sh` | int16 | yes | — | TODO |
+| `b_sf` | int16 | yes | — | TODO |
+| `b_hbp` | int16 | yes | — | TODO |
+| `b_w` | int16 | yes | — | TODO |
+| `b_iw` | int16 | yes | — | TODO |
+| `b_k` | int16 | yes | — | TODO |
+| `b_sb` | int16 | yes | — | TODO |
+| `b_cs` | int16 | yes | — | TODO |
+| `b_gdp` | int16 | yes | — | TODO |
+| `b_xi` | int16 | yes | — | TODO |
+| `b_roe` | int16 | yes | — | TODO |
+| `dh` | int16 | yes | — | TODO |
+| `ph` | int16 | yes | — | TODO |
+| `pr` | int16 | yes | — | TODO |
+| `date` | int32 | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `vishome` | string | yes | — | TODO |
+| `opp` | string | yes | — | TODO |
+| `win` | int16 | yes | — | TODO |
+| `loss` | int16 | yes | — | TODO |
+| `tie` | int16 | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.negro_batting -->
+
+<!-- BEGIN GENERATED:retrosheet.negro_fielding -->
+### Dataset: negro_fielding
+
+Negro Leagues fielding lines per player game (negroleagues.zip fielding.csv).
+
+- **View:** `retrosheet_negro_fielding`
+- **Processed path:** `processed/retrosheet/negro_fielding/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`, `gid`, `team`, `stattype`, `d_seq`, `d_pos`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `id` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `d_seq` | int16 | yes | — | TODO |
+| `d_pos` | string | yes | — | TODO |
+| `stattype` | string | yes | — | TODO |
+| `d_ifouts` | int16 | yes | — | TODO |
+| `d_po` | int16 | yes | — | TODO |
+| `d_a` | int16 | yes | — | TODO |
+| `d_e` | int16 | yes | — | TODO |
+| `d_dp` | int16 | yes | — | TODO |
+| `d_tp` | int16 | yes | — | TODO |
+| `d_pb` | int16 | yes | — | TODO |
+| `d_wp` | int16 | yes | — | TODO |
+| `d_sb` | int16 | yes | — | TODO |
+| `d_cs` | int16 | yes | — | TODO |
+| `d_gs` | int16 | yes | — | TODO |
+| `date` | int32 | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `vishome` | string | yes | — | TODO |
+| `opp` | string | yes | — | TODO |
+| `win` | int16 | yes | — | TODO |
+| `loss` | int16 | yes | — | TODO |
+| `tie` | int16 | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.negro_fielding -->
+
+<!-- BEGIN GENERATED:retrosheet.negro_games -->
+### Dataset: negro_games
+
+Negro Leagues game information, one row per game (negroleagues.zip gameinfo.csv).
+
+- **View:** `retrosheet_negro_games`
+- **Processed path:** `processed/retrosheet/negro_games/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `gid`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `visteam` | string | yes | — | TODO |
+| `hometeam` | string | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `date` | date32[day] (`%Y%m%d`) | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `starttime` | string | yes | — | TODO |
+| `daynight` | string | yes | — | TODO |
+| `innings` | int16 | yes | — | TODO |
+| `tiebreaker` | string | yes | — | TODO |
+| `usedh` | string | yes | — | TODO |
+| `htbf` | string | yes | — | TODO |
+| `timeofgame` | int16 | yes | — | TODO |
+| `attendance` | string | yes | — | TODO |
+| `fieldcond` | string | yes | — | TODO |
+| `precip` | string | yes | — | TODO |
+| `sky` | string | yes | — | TODO |
+| `temp` | string | yes | — | TODO |
+| `winddir` | string | yes | — | TODO |
+| `windspeed` | int16 | yes | — | TODO |
+| `oscorer` | string | yes | — | TODO |
+| `forfeit` | string | yes | — | TODO |
+| `suspend` | int32 | yes | — | TODO |
+| `umphome` | string | yes | — | TODO |
+| `ump1b` | string | yes | — | TODO |
+| `ump2b` | string | yes | — | TODO |
+| `ump3b` | string | yes | — | TODO |
+| `umplf` | string | yes | — | TODO |
+| `umprf` | string | yes | — | TODO |
+| `wp` | string | yes | — | TODO |
+| `lp` | string | yes | — | TODO |
+| `save` | string | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `vruns` | int16 | yes | — | TODO |
+| `hruns` | int16 | yes | — | TODO |
+| `wteam` | string | yes | — | TODO |
+| `lteam` | string | yes | — | TODO |
+| `line` | string | yes | — | TODO |
+| `batteries` | string | yes | — | TODO |
+| `lineups` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `season` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.negro_games -->
+
+<!-- BEGIN GENERATED:retrosheet.negro_pitching -->
+### Dataset: negro_pitching
+
+Negro Leagues pitching lines per player game (negroleagues.zip pitching.csv).
+
+- **View:** `retrosheet_negro_pitching`
+- **Processed path:** `processed/retrosheet/negro_pitching/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`, `gid`, `team`, `stattype`, `p_seq`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `id` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `p_seq` | int16 | yes | — | TODO |
+| `stattype` | string | yes | — | TODO |
+| `p_ipouts` | int16 | yes | — | TODO |
+| `p_noout` | int16 | yes | — | TODO |
+| `p_bfp` | int16 | yes | — | TODO |
+| `p_h` | int16 | yes | — | TODO |
+| `p_d` | int16 | yes | — | TODO |
+| `p_t` | int16 | yes | — | TODO |
+| `p_hr` | int16 | yes | — | TODO |
+| `p_r` | int16 | yes | — | TODO |
+| `p_er` | int16 | yes | — | TODO |
+| `p_w` | int16 | yes | — | TODO |
+| `p_iw` | int16 | yes | — | TODO |
+| `p_k` | int16 | yes | — | TODO |
+| `p_hbp` | int16 | yes | — | TODO |
+| `p_wp` | int16 | yes | — | TODO |
+| `p_bk` | int16 | yes | — | TODO |
+| `p_sh` | int16 | yes | — | TODO |
+| `p_sf` | int16 | yes | — | TODO |
+| `p_sb` | int16 | yes | — | TODO |
+| `p_cs` | int16 | yes | — | TODO |
+| `p_pb` | int16 | yes | — | TODO |
+| `wp` | int16 | yes | — | TODO |
+| `lp` | int16 | yes | — | TODO |
+| `save` | int16 | yes | — | TODO |
+| `p_gs` | int16 | yes | — | TODO |
+| `p_gf` | int16 | yes | — | TODO |
+| `p_cg` | int16 | yes | — | TODO |
+| `date` | int32 | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `vishome` | string | yes | — | TODO |
+| `opp` | string | yes | — | TODO |
+| `win` | int16 | yes | — | TODO |
+| `loss` | int16 | yes | — | TODO |
+| `tie` | int16 | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.negro_pitching -->
+
+<!-- BEGIN GENERATED:retrosheet.negro_players -->
+### Dataset: negro_players
+
+Negro Leagues players with games by position per team (negroleagues.zip allplayers.csv).
+
+- **View:** `retrosheet_negro_players`
+- **Processed path:** `processed/retrosheet/negro_players/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`, `team`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | string | yes | — | TODO |
+| `last_name` | string | yes | `last` | TODO |
+| `first_name` | string | yes | `first` | TODO |
+| `bat` | string | yes | — | TODO |
+| `throw` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `g` | int16 | yes | — | TODO |
+| `g_p` | int16 | yes | — | TODO |
+| `g_sp` | int16 | yes | — | TODO |
+| `g_rp` | int16 | yes | — | TODO |
+| `g_c` | int16 | yes | — | TODO |
+| `g_1b` | int16 | yes | — | TODO |
+| `g_2b` | int16 | yes | — | TODO |
+| `g_3b` | int16 | yes | — | TODO |
+| `g_ss` | int16 | yes | — | TODO |
+| `g_lf` | int16 | yes | — | TODO |
+| `g_cf` | int16 | yes | — | TODO |
+| `g_rf` | int16 | yes | — | TODO |
+| `g_of` | int16 | yes | — | TODO |
+| `g_dh` | int16 | yes | — | TODO |
+| `g_ph` | int16 | yes | — | TODO |
+| `g_pr` | int16 | yes | — | TODO |
+| `first_g` | int32 | yes | — | TODO |
+| `last_g` | int32 | yes | — | TODO |
+| `season` | int16 | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.negro_players -->
+
+<!-- BEGIN GENERATED:retrosheet.negro_plays -->
+### Dataset: negro_plays
+
+Negro Leagues play-by-play, one row per play (negroleagues.zip plays.csv).
+
+- **View:** `retrosheet_negro_plays`
+- **Processed path:** `processed/retrosheet/negro_plays/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `gid`, `pn`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `event` | string | yes | — | TODO |
+| `inning` | int16 | yes | — | TODO |
+| `top_bot` | int16 | yes | — | TODO |
+| `vis_home` | int16 | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `batteam` | string | yes | — | TODO |
+| `pitteam` | string | yes | — | TODO |
+| `score_v` | int16 | yes | — | TODO |
+| `score_h` | int16 | yes | — | TODO |
+| `batter` | string | yes | — | TODO |
+| `pitcher` | string | yes | — | TODO |
+| `lp` | int16 | yes | — | TODO |
+| `bat_f` | int16 | yes | — | TODO |
+| `bathand` | string | yes | — | TODO |
+| `pithand` | string | yes | — | TODO |
+| `balls` | string | yes | — | TODO |
+| `strikes` | string | yes | — | TODO |
+| `count` | string | yes | — | TODO |
+| `pitches` | string | yes | — | TODO |
+| `nump` | int16 | yes | — | TODO |
+| `pa` | int16 | yes | — | TODO |
+| `ab` | int16 | yes | — | TODO |
+| `single` | int16 | yes | — | TODO |
+| `double` | int16 | yes | — | TODO |
+| `triple` | int16 | yes | — | TODO |
+| `hr` | int16 | yes | — | TODO |
+| `sh` | int16 | yes | — | TODO |
+| `sf` | int16 | yes | — | TODO |
+| `hbp` | int16 | yes | — | TODO |
+| `walk` | int16 | yes | — | TODO |
+| `k` | int16 | yes | — | TODO |
+| `xi` | int16 | yes | — | TODO |
+| `roe` | int16 | yes | — | TODO |
+| `fc` | int16 | yes | — | TODO |
+| `othout` | int16 | yes | — | TODO |
+| `noout` | int16 | yes | — | TODO |
+| `oth` | int16 | yes | — | TODO |
+| `bip` | int16 | yes | — | TODO |
+| `bunt` | int16 | yes | — | TODO |
+| `ground` | int16 | yes | — | TODO |
+| `fly` | int16 | yes | — | TODO |
+| `line` | int16 | yes | — | TODO |
+| `iw` | int16 | yes | — | TODO |
+| `gdp` | int16 | yes | — | TODO |
+| `othdp` | int16 | yes | — | TODO |
+| `tp` | int16 | yes | — | TODO |
+| `fle` | int16 | yes | — | TODO |
+| `wp` | int16 | yes | — | TODO |
+| `pb` | int16 | yes | — | TODO |
+| `bk` | int16 | yes | — | TODO |
+| `oa` | int16 | yes | — | TODO |
+| `di` | int16 | yes | — | TODO |
+| `sb2` | int16 | yes | — | TODO |
+| `sb3` | int16 | yes | — | TODO |
+| `sbh` | int16 | yes | — | TODO |
+| `cs2` | int16 | yes | — | TODO |
+| `cs3` | int16 | yes | — | TODO |
+| `csh` | int16 | yes | — | TODO |
+| `pko1` | int16 | yes | — | TODO |
+| `pko2` | int16 | yes | — | TODO |
+| `pko3` | int16 | yes | — | TODO |
+| `k_safe` | int16 | yes | — | TODO |
+| `e1` | int16 | yes | — | TODO |
+| `e2` | int16 | yes | — | TODO |
+| `e3` | int16 | yes | — | TODO |
+| `e4` | int16 | yes | — | TODO |
+| `e5` | int16 | yes | — | TODO |
+| `e6` | int16 | yes | — | TODO |
+| `e7` | int16 | yes | — | TODO |
+| `e8` | int16 | yes | — | TODO |
+| `e9` | int16 | yes | — | TODO |
+| `outs_pre` | int16 | yes | — | TODO |
+| `outs_post` | int16 | yes | — | TODO |
+| `br1_pre` | string | yes | — | TODO |
+| `br2_pre` | string | yes | — | TODO |
+| `br3_pre` | string | yes | — | TODO |
+| `br1_post` | string | yes | — | TODO |
+| `br2_post` | string | yes | — | TODO |
+| `br3_post` | string | yes | — | TODO |
+| `lob_id1` | string | yes | — | TODO |
+| `lob_id2` | string | yes | — | TODO |
+| `lob_id3` | string | yes | — | TODO |
+| `pr1_pre` | string | yes | — | TODO |
+| `pr2_pre` | string | yes | — | TODO |
+| `pr3_pre` | string | yes | — | TODO |
+| `pr1_post` | string | yes | — | TODO |
+| `pr2_post` | string | yes | — | TODO |
+| `pr3_post` | string | yes | — | TODO |
+| `run_b` | string | yes | — | TODO |
+| `run1` | string | yes | — | TODO |
+| `run2` | string | yes | — | TODO |
+| `run3` | string | yes | — | TODO |
+| `prun_b` | string | yes | — | TODO |
+| `prun1` | string | yes | — | TODO |
+| `prun2` | string | yes | — | TODO |
+| `prun3` | string | yes | — | TODO |
+| `ur_b` | int16 | yes | — | TODO |
+| `ur1` | int16 | yes | — | TODO |
+| `ur2` | int16 | yes | — | TODO |
+| `ur3` | int16 | yes | — | TODO |
+| `rbi_b` | int16 | yes | — | TODO |
+| `rbi1` | int16 | yes | — | TODO |
+| `rbi2` | int16 | yes | — | TODO |
+| `rbi3` | int16 | yes | — | TODO |
+| `runs` | int16 | yes | — | TODO |
+| `rbi` | int16 | yes | — | TODO |
+| `er` | int16 | yes | — | TODO |
+| `tur` | int16 | yes | — | TODO |
+| `l1` | string | yes | — | TODO |
+| `l2` | string | yes | — | TODO |
+| `l3` | string | yes | — | TODO |
+| `l4` | string | yes | — | TODO |
+| `l5` | string | yes | — | TODO |
+| `l6` | string | yes | — | TODO |
+| `l7` | string | yes | — | TODO |
+| `l8` | string | yes | — | TODO |
+| `l9` | string | yes | — | TODO |
+| `lf1` | int16 | yes | — | TODO |
+| `lf2` | int16 | yes | — | TODO |
+| `lf3` | int16 | yes | — | TODO |
+| `lf4` | int16 | yes | — | TODO |
+| `lf5` | int16 | yes | — | TODO |
+| `lf6` | int16 | yes | — | TODO |
+| `lf7` | int16 | yes | — | TODO |
+| `lf8` | int16 | yes | — | TODO |
+| `lf9` | int16 | yes | — | TODO |
+| `f2` | string | yes | — | TODO |
+| `f3` | string | yes | — | TODO |
+| `f4` | string | yes | — | TODO |
+| `f5` | string | yes | — | TODO |
+| `f6` | string | yes | — | TODO |
+| `f7` | string | yes | — | TODO |
+| `f8` | string | yes | — | TODO |
+| `f9` | string | yes | — | TODO |
+| `po0` | int16 | yes | — | TODO |
+| `po1` | int16 | yes | — | TODO |
+| `po2` | int16 | yes | — | TODO |
+| `po3` | int16 | yes | — | TODO |
+| `po4` | int16 | yes | — | TODO |
+| `po5` | int16 | yes | — | TODO |
+| `po6` | int16 | yes | — | TODO |
+| `po7` | int16 | yes | — | TODO |
+| `po8` | int16 | yes | — | TODO |
+| `po9` | int16 | yes | — | TODO |
+| `a1` | int16 | yes | — | TODO |
+| `a2` | int16 | yes | — | TODO |
+| `a3` | int16 | yes | — | TODO |
+| `a4` | int16 | yes | — | TODO |
+| `a5` | int16 | yes | — | TODO |
+| `a6` | int16 | yes | — | TODO |
+| `a7` | int16 | yes | — | TODO |
+| `a8` | int16 | yes | — | TODO |
+| `a9` | int16 | yes | — | TODO |
+| `fseq` | int32 | yes | — | TODO |
+| `batout1` | int16 | yes | — | TODO |
+| `batout2` | int16 | yes | — | TODO |
+| `batout3` | int16 | yes | — | TODO |
+| `brout_b` | int16 | yes | — | TODO |
+| `brout1` | int16 | yes | — | TODO |
+| `brout2` | int16 | yes | — | TODO |
+| `brout3` | int16 | yes | — | TODO |
+| `firstf` | int16 | yes | — | TODO |
+| `loc` | string | yes | — | TODO |
+| `hittype` | string | yes | — | TODO |
+| `dpopp` | int16 | yes | — | TODO |
+| `pivot` | int16 | yes | — | TODO |
+| `pn` | int16 | yes | — | TODO |
+| `umphome` | string | yes | — | TODO |
+| `ump1b` | string | yes | — | TODO |
+| `ump2b` | string | yes | — | TODO |
+| `ump3b` | string | yes | — | TODO |
+| `umplf` | string | yes | — | TODO |
+| `umprf` | string | yes | — | TODO |
+| `date` | int32 | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.negro_plays -->
+
+<!-- BEGIN GENERATED:retrosheet.negro_team_stats -->
+### Dataset: negro_team_stats
+
+Negro Leagues team game lines with line scores (negroleagues.zip teamstats.csv).
+
+- **View:** `retrosheet_negro_team_stats`
+- **Processed path:** `processed/retrosheet/negro_team_stats/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `gid`, `team`, `stattype`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `gid` | string | yes | — | TODO |
+| `team` | string | yes | — | TODO |
+| `inn1` | string | yes | — | TODO |
+| `inn2` | string | yes | — | TODO |
+| `inn3` | string | yes | — | TODO |
+| `inn4` | string | yes | — | TODO |
+| `inn5` | string | yes | — | TODO |
+| `inn6` | string | yes | — | TODO |
+| `inn7` | string | yes | — | TODO |
+| `inn8` | string | yes | — | TODO |
+| `inn9` | string | yes | — | TODO |
+| `inn10` | string | yes | — | TODO |
+| `inn11` | string | yes | — | TODO |
+| `inn12` | string | yes | — | TODO |
+| `inn13` | string | yes | — | TODO |
+| `inn14` | string | yes | — | TODO |
+| `inn15` | string | yes | — | TODO |
+| `inn16` | string | yes | — | TODO |
+| `inn17` | string | yes | — | TODO |
+| `inn18` | string | yes | — | TODO |
+| `inn19` | string | yes | — | TODO |
+| `inn20` | string | yes | — | TODO |
+| `inn21` | string | yes | — | TODO |
+| `inn22` | string | yes | — | TODO |
+| `inn23` | string | yes | — | TODO |
+| `inn24` | string | yes | — | TODO |
+| `inn25` | string | yes | — | TODO |
+| `inn26` | string | yes | — | TODO |
+| `inn27` | string | yes | — | TODO |
+| `inn28` | string | yes | — | TODO |
+| `lob` | int16 | yes | — | TODO |
+| `mgr` | string | yes | — | TODO |
+| `stattype` | string | yes | — | TODO |
+| `b_pa` | int16 | yes | — | TODO |
+| `b_ab` | int16 | yes | — | TODO |
+| `b_r` | int16 | yes | — | TODO |
+| `b_h` | int16 | yes | — | TODO |
+| `b_d` | int16 | yes | — | TODO |
+| `b_t` | int16 | yes | — | TODO |
+| `b_hr` | int16 | yes | — | TODO |
+| `b_rbi` | int16 | yes | — | TODO |
+| `b_sh` | int16 | yes | — | TODO |
+| `b_sf` | int16 | yes | — | TODO |
+| `b_hbp` | int16 | yes | — | TODO |
+| `b_w` | string | yes | — | TODO |
+| `b_iw` | int16 | yes | — | TODO |
+| `b_k` | string | yes | — | TODO |
+| `b_sb` | int16 | yes | — | TODO |
+| `b_cs` | int16 | yes | — | TODO |
+| `b_gdp` | int16 | yes | — | TODO |
+| `b_xi` | int16 | yes | — | TODO |
+| `b_roe` | int16 | yes | — | TODO |
+| `p_ipouts` | int16 | yes | — | TODO |
+| `p_noout` | int16 | yes | — | TODO |
+| `p_bfp` | int16 | yes | — | TODO |
+| `p_h` | int16 | yes | — | TODO |
+| `p_d` | int16 | yes | — | TODO |
+| `p_t` | int16 | yes | — | TODO |
+| `p_hr` | int16 | yes | — | TODO |
+| `p_r` | int16 | yes | — | TODO |
+| `p_er` | int16 | yes | — | TODO |
+| `p_w` | string | yes | — | TODO |
+| `p_iw` | int16 | yes | — | TODO |
+| `p_k` | string | yes | — | TODO |
+| `p_hbp` | int16 | yes | — | TODO |
+| `p_wp` | int16 | yes | — | TODO |
+| `p_bk` | int16 | yes | — | TODO |
+| `p_sh` | int16 | yes | — | TODO |
+| `p_sf` | int16 | yes | — | TODO |
+| `p_sb` | int16 | yes | — | TODO |
+| `p_cs` | int16 | yes | — | TODO |
+| `p_pb` | int16 | yes | — | TODO |
+| `d_po` | int16 | yes | — | TODO |
+| `d_a` | int16 | yes | — | TODO |
+| `d_e` | int16 | yes | — | TODO |
+| `d_dp` | int16 | yes | — | TODO |
+| `d_tp` | int16 | yes | — | TODO |
+| `d_pb` | int16 | yes | — | TODO |
+| `d_wp` | int16 | yes | — | TODO |
+| `d_sb` | int16 | yes | — | TODO |
+| `d_cs` | int16 | yes | — | TODO |
+| `start_l1` | string | yes | — | TODO |
+| `start_l2` | string | yes | — | TODO |
+| `start_l3` | string | yes | — | TODO |
+| `start_l4` | string | yes | — | TODO |
+| `start_l5` | string | yes | — | TODO |
+| `start_l6` | string | yes | — | TODO |
+| `start_l7` | string | yes | — | TODO |
+| `start_l8` | string | yes | — | TODO |
+| `start_l9` | string | yes | — | TODO |
+| `start_f1` | string | yes | — | TODO |
+| `start_f2` | string | yes | — | TODO |
+| `start_f3` | string | yes | — | TODO |
+| `start_f4` | string | yes | — | TODO |
+| `start_f5` | string | yes | — | TODO |
+| `start_f6` | string | yes | — | TODO |
+| `start_f7` | string | yes | — | TODO |
+| `start_f8` | string | yes | — | TODO |
+| `start_f9` | string | yes | — | TODO |
+| `start_f10` | string | yes | — | TODO |
+| `date` | int32 | yes | — | TODO |
+| `number` | int16 | yes | — | TODO |
+| `site` | string | yes | — | TODO |
+| `vishome` | string | yes | — | TODO |
+| `opp` | string | yes | — | TODO |
+| `win` | int16 | yes | — | TODO |
+| `loss` | int16 | yes | — | TODO |
+| `tie` | int16 | yes | — | TODO |
+| `gametype` | string | yes | — | TODO |
+| `box` | string | yes | — | TODO |
+| `pbp` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:retrosheet.negro_team_stats -->

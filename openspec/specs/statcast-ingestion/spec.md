@@ -174,3 +174,13 @@ from those seasons and never forced to text by empty early ones.
 - **WHEN** the generator lists its probe seasons and infers the type of a column that one season sends completely empty
 - **THEN** the seasons run from the first Statcast season to the current year with no fixed list, and the empty season gives no type while filled seasons give `float64`, `int16` or `string` as their values say
 - Verified by `tests/test_typing_audit.py::test_the_savant_generator_probes_every_season_not_a_fixed_list` and `tests/test_typing_audit.py::test_a_season_where_a_column_is_empty_gives_no_type_evidence`.
+
+### Requirement: Every Route Of The Live Savant Menu Is Registered Or Explained
+Every leaderboard route that the live Baseball Savant menu links and that answers data MUST be a registered
+leaderboard variant with a strict generated schema, a fixture and a documented row; a route that cannot be ingested
+MUST stay listed as unsupported with the request tried and the answer.
+
+#### Scenario: Registry, schemas, fixtures, enum and doc agree
+- **WHEN** the leaderboard registry, the generated schemas, the fixtures, the enum and the Statcast doc are compared
+- **THEN** every supported variant has all five, every unsupported one has its reason in the doc, and keys are columns of the schema
+- Verified by `tests/test_statcast_coverage.py::test_registry_schema_dataset_fixture_and_enum_agree` and `tests/test_statcast_coverage.py::test_statcast_doc_lists_every_variant_and_unsupported_route`.

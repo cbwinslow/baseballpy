@@ -27,8 +27,8 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `portability` | 3 | 3 | 7 |
 | `real-time-streaming` | 7 | 12 | 12 |
-| `retrosheet-ingestion` | 24 | 33 | 40 |
-| `statcast-ingestion` | 16 | 19 | 26 |
+| `retrosheet-ingestion` | 25 | 34 | 43 |
+| `statcast-ingestion` | 17 | 20 | 28 |
 
 ## Source review scorecard (where each source stands)
 
@@ -41,13 +41,13 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 12 |
-| `retrosheet` | 36 | archived | yes | yes | yes | 1023/1609 (63%) | 24 |
-| `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 16 |
+| `retrosheet` | 43 | archived | yes | yes | yes | 1030/2081 (49%) | 25 |
+| `statcast` | 50 | archived | yes | yes | yes | 321/1765 (18%) | 17 |
 | `mlb_api` | 365 | archived | yes | yes | yes | 9486/16957 (55%) | 28 |
 
 ## Active changes (`openspec/changes/`)
 
-95 changes are archived under `openspec/changes/archive/`.
+96 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -62,7 +62,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `mlb-stats-route-406-and-deep-pools` | 7 | 4 | 1.2, 3.1 |
 | `product-mandate-reproducible-outputs` | 7 | 1 | 2.5 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
-| `response-log-segments` | 22 | 18 | 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
+| `response-log-segments` | 24 | 16 | 5.4, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
 
 ## Decisions (`docs/DECISIONS.md`)
@@ -177,6 +177,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 109: A Text Column Must Not Hold Only Numbers Or Dates Without A Recorded Reason
 - ADR 110: Retrosheet's Own Files Are Opt-In Datasets In The Same Source; Odd Cells Are Quarantined, Not Dropped
 - ADR 111: The View Refresh Caches Parquet Footer Row Counts
+- ADR 112: Every Route Of A Provider's Live Menu Is Registered Or Explained; MLB Processed Files Are Rebuilt From Raw Segments
 
 ## Documentation pages (`docs/`)
 

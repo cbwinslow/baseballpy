@@ -22,9 +22,10 @@ from baseballpy.sources import catalog
 KNOWN_TEXT: dict[tuple[str, str], str] = {
     **{
         (
-            "retrosheet.manager_logs",
+            f"retrosheet.{dataset}",
             f"inn{i}",
         ): "line score: x means the inning was not played, ? unknown"
+        for dataset in ("manager_logs", "negro_team_stats")
         for i in range(1, 29)
     },
     (

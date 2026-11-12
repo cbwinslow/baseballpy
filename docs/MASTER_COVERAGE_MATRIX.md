@@ -4,10 +4,10 @@ This document provides an exhaustive catalog of all baseball datasets across the
 ecosystem, comparing `baseballpy` against `pybaseball`, `baseballr`, `MLB-StatsAPI`, and the
 official MLB OpenAPI specification.
 
-- **Total Registered Datasets in baseballpy:** 491
+- **Total Registered Datasets in baseballpy:** 510
 - **MLB Stats API:** 365 datasets across 65 API routes
-- **Statcast (Baseball Savant):** 38 datasets (MLB pitches, Minor League pitches, 36 leaderboards)
-- **Retrosheet:** 36 datasets (PBP events, game logs, boxscores, rosters)
+- **Statcast (Baseball Savant):** 50 datasets (MLB pitches, Minor League pitches, 36 leaderboards)
+- **Retrosheet:** 43 datasets (PBP events, game logs, boxscores, rosters)
 - **Lahman Database:** 27 datasets (complete historical database 1871–present)
 - **Chadwick Bureau:** 4 datasets (universal player ID crosswalk)
 - **Kalshi:** 5 datasets (MLB prediction-market catalog)
@@ -78,7 +78,7 @@ or train any derived sabermetric metric without web scraping dependencies.
 
 ## 3. Exhaustive Catalog of All Registered Datasets in `baseballpy`
 
-### STATCAST (38 datasets)
+### STATCAST (50 datasets)
 
 | Dataset Name | View Name | Partition | Columns | Primary Keys | Description |
 | :--- | :--- | :--- | :---: | :--- | :--- |
@@ -93,6 +93,8 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `leaderboard_catch_probability` | `statcast_leaderboard_catch_probability` | `season` | 19 | `player_id` | Fielder catch probability by star bucket (2016 onwards). The `type` parameter empties this route (and produced anonymous rows in an earlier probe), so it is not sent. |
 | `leaderboard_catcher_blocking` | `statcast_leaderboard_catcher_blocking` | `season` | 18 | `player_id`, `start_year` | Catcher blocking runs and blocks above average per catcher-span. |
 | `leaderboard_catcher_framing` | `statcast_leaderboard_catcher_framing` | `season` | 22 | `id` | Catcher framing runs by zone per catcher-season. |
+| `leaderboard_catcher_stance` | `statcast_leaderboard_catcher_stance` | `season` | 28 | `id`, `year` | Catcher stance (knee and hand positions) per catcher-season. |
+| `leaderboard_catcher_throwing` | `statcast_leaderboard_catcher_throwing` | `season` | 24 | `player_id` | Catcher throwing (stolen-base runs, caught stealing) per catcher. |
 | `leaderboard_exit_velocity_batter` | `statcast_leaderboard_exit_velocity_batter` | `season` | 19 | `player_id` | Exit velocity, launch angle and barrels per batter-season (batted-ball events). |
 | `leaderboard_exit_velocity_batter_team` | `statcast_leaderboard_exit_velocity_batter_team` | `season` | 19 | `team_id` | Exit velocity and barrels per batting team-season. |
 | `leaderboard_exit_velocity_pitcher` | `statcast_leaderboard_exit_velocity_pitcher` | `season` | 19 | `player_id` | Exit velocity, launch angle and barrels allowed per pitcher-season. |
@@ -100,7 +102,11 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `leaderboard_expected_statistics_batter` | `statcast_leaderboard_expected_statistics_batter` | `season` | 15 | `player_id`, `year` | Expected stats (xBA, xSLG, xwOBA) per batter-season. |
 | `leaderboard_expected_statistics_pitcher` | `statcast_leaderboard_expected_statistics_pitcher` | `season` | 18 | `player_id`, `year` | Expected stats (xBA, xSLG, xwOBA, xERA) per pitcher-season. |
 | `leaderboard_fielding_run_value` | `statcast_leaderboard_fielding_run_value` | `season` | 28 | `id`, `team_id` | Fielding run value by fielder (embedded JSON rows of the page, no qualifier). |
+| `leaderboard_first_base_receiving` | `statcast_leaderboard_first_base_receiving` | `season` | 29 | `id`, `year` | First base scoops and receiving (outs above average on throws) per first baseman-season. |
 | `leaderboard_home_runs` | `statcast_leaderboard_home_runs` | `season` | 14 | `player_id`, `year`, `type` | Home run tracking (no-doubters, expected home runs) per player-season. |
+| `leaderboard_hot_stove_batter` | `statcast_leaderboard_hot_stove_batter` | `none` | 214 | `player_id`, `year` | Hot Stove leaderboard: batters of the season with Statcast batting metrics. |
+| `leaderboard_hot_stove_pitcher` | `statcast_leaderboard_hot_stove_pitcher` | `none` | 337 | `player_id`, `year` | Hot Stove leaderboard: pitchers of the season with Statcast pitching metrics. |
+| `leaderboard_outfield_directional_oaa` | `statcast_leaderboard_outfield_directional_oaa` | `season` | 13 | `player_id` | Outfield outs above average by direction of the batted ball per outfielder-season. |
 | `leaderboard_outfield_jump` | `statcast_leaderboard_outfield_jump` | `season` | 13 | `resp_fielder_id`, `year` | Outfielder jump (reaction, burst and routing distance) per fielder-season. |
 | `leaderboard_outs_above_average` | `statcast_leaderboard_outs_above_average` | `season` | 17 | `player_id`, `year`, `primary_pos_formatted` | Outs Above Average (OAA) and fielding runs prevented per fielder-position-season. |
 | `leaderboard_park_factors` | `statcast_leaderboard_park_factors` | `season` | 31 | `venue_id`, `key_year` | Statcast park factor indices per venue and 3-year span (embedded JSON on the page). |
@@ -111,6 +117,8 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `leaderboard_pitch_clock` | `statcast_leaderboard_pitch_clock` | `season` | 11 | `entity_id`, `year` | Pitch-timer violations by kind per player-season (2023+). |
 | `leaderboard_pitch_movement` | `statcast_leaderboard_pitch_movement` | `season` | 25 | `pitcher_id`, `pitch_type`, `pitch_hand` | Pitch movement (induced vertical and horizontal break) per pitcher and pitch type. |
 | `leaderboard_pitch_tempo` | `statcast_leaderboard_pitch_tempo` | `season` | 14 | `entity_id` | Time between pitches (median seconds by situation) per pitcher-season. |
+| `leaderboard_pitcher_arm_angles` | `statcast_leaderboard_pitcher_arm_angles` | `season` | 11 | `pitcher` | Arm angle and release point per pitcher-season. |
+| `leaderboard_pitcher_running_game` | `statcast_leaderboard_pitcher_running_game` | `season` | 26 | `player_id`, `key_target_base` | Running game against each pitcher by target base (runs prevented, stolen-base attempts). |
 | `leaderboard_poptime` | `statcast_leaderboard_poptime` | `season` | 15 | `entity_id` | Catcher pop time and arm strength on steal attempts per catcher-season. |
 | `leaderboard_rolling` | `statcast_leaderboard_rolling` | `none` | 26 | `player_id`, `cat`, `cat_bin` | Rolling last-N-batted-ball xwOBA windows (50/100/250) per batter and pitcher: a snapshot of the current season (the page ignores the season parameter). |
 | `leaderboard_running_splits` | `statcast_leaderboard_running_splits` | `season` | 27 | `player_id`, `team_id`, `position_name`, `bat_side` | 90-foot running splits (time since contact at each 5-foot mark) per player-season. |
@@ -118,6 +126,10 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `leaderboard_sprint_speed` | `statcast_leaderboard_sprint_speed` | `season` | 11 | `player_id` | Sprint speed (ft/s on competitive runs) per player-season. |
 | `leaderboard_swing_path_attack_angle` | `statcast_leaderboard_swing_path_attack_angle` | `season` | 14 | `id`, `side` | Swing path: attack angle, attack direction and swing tilt per batter-season (2023+). |
 | `leaderboard_swing_take` | `statcast_leaderboard_swing_take` | `season` | 12 | `player_id`, `year` | Swing/take run value by zone region per batter-season. |
+| `leaderboard_swing_timing_miss_distance_batter` | `statcast_leaderboard_swing_timing_miss_distance_batter` | `season` | 27 | `id`, `year` | Swing timing and miss distance per batter-season (bat tracking). |
+| `leaderboard_swing_timing_miss_distance_pitcher` | `statcast_leaderboard_swing_timing_miss_distance_pitcher` | `season` | 27 | `id`, `year` | Swing timing and miss distance against each pitcher-season (bat tracking). |
+| `leaderboard_year_to_year_batter` | `statcast_leaderboard_year_to_year_batter` | `season` | 26 | `entity_id` | Year-to-year changes of Statcast batting metrics per batter (one column per year and delta). |
+| `leaderboard_year_to_year_pitcher` | `statcast_leaderboard_year_to_year_pitcher` | `season` | 26 | `entity_id` | Year-to-year changes of Statcast pitching metrics per pitcher (one column per year and delta). |
 | `pitches` | `statcast_pitches` | `season` | 120 | `game_pk`, `at_bat_number`, `pitch_number` | Pitch-level Statcast search results. |
 | `pitches_minors` | `statcast_pitches_minors` | `season` | 120 | `game_pk`, `at_bat_number`, `pitch_number` | Minor-league pitch-level Statcast search results (minors=true, 2021 onwards). |
 
@@ -532,7 +544,7 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `register_links` | `chadwick_register_links` | `none` | 4 | `key_person`, `source`, `value` | External player identifiers by source (data/links.csv). |
 | `register_names` | `chadwick_register_names` | `none` | 17 | `key_person`, `altname_type`, `altname_lang`, `altname_last`, `altname_first`, `altname_given`, `altname_nick`, `altname_matrilineal`, `altname_date_start`, `altname_date_end` | Alternate names, spellings and nicknames (data/names.csv). |
 
-### RETROSHEET (36 datasets)
+### RETROSHEET (43 datasets)
 
 | Dataset Name | View Name | Partition | Columns | Primary Keys | Description |
 | :--- | :--- | :--- | :---: | :--- | :--- |
@@ -553,6 +565,13 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `gamelogs_postseason` | `retrosheet_gamelogs_postseason` | `none` | 162 | `date`, `game_num`, `home_team` | Postseason and all-star game logs. |
 | `manager_logs` | `retrosheet_manager_logs` | `none` | 113 | `mgr`, `gid`, `team`, `stattype` | Team lines of every game a manager managed (mgrlogs.zip: <id>_mlog.csv). |
 | `managers0` | `retrosheet_managers0` | `none` | 6 | `manager_id` | Managers with first and last game dates (biodata.zip managers0.csv). |
+| `negro_batting` | `retrosheet_negro_batting` | `none` | 40 | `id`, `gid`, `team`, `stattype`, `b_lp`, `b_seq` | Negro Leagues batting lines per player game (negroleagues.zip batting.csv). |
+| `negro_fielding` | `retrosheet_negro_fielding` | `none` | 29 | `id`, `gid`, `team`, `stattype`, `d_seq`, `d_pos` | Negro Leagues fielding lines per player game (negroleagues.zip fielding.csv). |
+| `negro_games` | `retrosheet_negro_games` | `none` | 44 | `gid` | Negro Leagues game information, one row per game (negroleagues.zip gameinfo.csv). |
+| `negro_pitching` | `retrosheet_negro_pitching` | `none` | 43 | `id`, `gid`, `team`, `stattype`, `p_seq` | Negro Leagues pitching lines per player game (negroleagues.zip pitching.csv). |
+| `negro_players` | `retrosheet_negro_players` | `none` | 26 | `id`, `team` | Negro Leagues players with games by position per team (negroleagues.zip allplayers.csv). |
+| `negro_plays` | `retrosheet_negro_plays` | `none` | 178 | `gid`, `pn` | Negro Leagues play-by-play, one row per play (negroleagues.zip plays.csv). |
+| `negro_team_stats` | `retrosheet_negro_team_stats` | `none` | 112 | `gid`, `team`, `stattype` | Negro Leagues team game lines with line scores (negroleagues.zip teamstats.csv). |
 | `player_batting_logs` | `retrosheet_player_batting_logs` | `none` | 41 | `id`, `gid`, `team`, `stattype`, `b_lp`, `b_seq` | Batting lines of every player game (playerlogs.zip, one file per player: <id>_b.csv). |
 | `player_fielding_logs` | `retrosheet_player_fielding_logs` | `none` | 30 | `id`, `gid`, `team`, `stattype`, `d_seq`, `d_pos` | Fielding lines of every player game (playerlogs.zip: <id>_f.csv). |
 | `player_pitching_logs` | `retrosheet_player_pitching_logs` | `none` | 44 | `id`, `gid`, `stattype`, `p_seq` | Pitching lines of every player game (playerlogs.zip: <id>_p.csv). |
