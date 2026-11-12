@@ -682,9 +682,7 @@ def roundtrip_dataset(
                         extra,
                         f"key {example[0]!r} is in the processed data only",
                     )
-    if by_position and any(x.count * 100 > check.compared for x in losses.values()):
-        # rows were matched by position because no key could be used; many differences mean the processed rows
-        # are in another order than the raw file, so the comparison proves nothing
+    if by_position and _out_of_order(losses, check.compared):
         check.status = "skipped"
         check.reason = (
             "no usable key column and the processed rows are not in the raw file's order: "
@@ -744,6 +742,11 @@ def _count_check(config: LakeConfig, spec: DatasetSpec, check: DatasetCheck) -> 
     check.quarantined = _quarantine_rows(config, spec)
     check.status = "loss" if check.losses else "ok"
     return check
+
+
+def _out_of_order(losses: _Losses, compared: int) -> bool:
+    """Rows were matched by position (no usable key); many differences mean another row order, so nothing is proved."""
+    return any(x.count * 100 > compared for x in losses.values())
 
 
 def _chunks(column: Column) -> list[pa.Array]:
