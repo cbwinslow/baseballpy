@@ -9,6 +9,7 @@ from datetime import date
 from pathlib import Path
 
 import httpx
+import pytest
 import respx
 from conftest import RetroRepo
 from lake_contract import assert_lake_contract, processed_files
@@ -285,3 +286,57 @@ def test_a_fresh_mlb_game_download_as_segments_has_the_lake_shape(tmp_path: Path
     again = ingest_game_segments(extractor, 2024, list(PKS))
     assert again.stored == 0 and again.already == len(PKS)
     assert {key: route.call_count for key, route in routes.items()} == calls
+
+
+@respx.mock
+def test_a_fresh_retrosheet_site_download_has_the_lake_shape(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The opt-in retrosheet.org tables (zips fetched politely, then parsed) leave the same lake shape."""
+    from test_retrosheet_site import ROBOTS, _fast_client
+    from test_retrosheet_site_datasets import (
+        BALLPARKS,
+        COACHES,
+        MANAGERS,
+        NAMES,
+        TEAMS,
+        TRAN,
+        UMPIRES,
+        _zip,
+    )
+
+    from baseballpy.sources.retrosheet import api as retro_api
+    from baseballpy.sources.retrosheet.site import files_for
+
+    monkeypatch.setattr(retro_api, "site_client", lambda lock_dir=None: _fast_client())
+    members = {
+        "tranDB.zip": {"tran.txt": TRAN, "readme.txt": "x"},
+        "biodata.zip": {
+            "managers0.csv": MANAGERS,
+            "umpires0.csv": UMPIRES,
+            "coaches0.csv": COACHES,
+            "ballparks0.csv": BALLPARKS,
+            "teams0.csv": TEAMS,
+        },
+    }
+    respx.get("https://www.retrosheet.org/robots.txt").mock(
+        return_value=httpx.Response(200, text=ROBOTS)
+    )
+    routes = [
+        respx.get(f"https://www.retrosheet.org/{f.path}").mock(
+            return_value=httpx.Response(200, content=_zip(members[f.name]))
+        )
+        for f in files_for(NAMES)
+    ]
+    lake = LakeConfig(home=tmp_path / "lake")
+    source = RetrosheetSource(cache_config=lake)
+    written = source.ingest_site(NAMES)
+    assert all(rows for rows in written.values()), written
+    views = assert_lake_contract(lake, ["retrosheet"])
+    assert len(views) >= len(NAMES)
+
+    calls = [r.call_count for r in routes]
+    assert all(rows is None for rows in source.ingest_site(NAMES).values()), (
+        "current: nothing redone"
+    )
+    assert [r.call_count for r in routes] == calls, "a second run downloads nothing"

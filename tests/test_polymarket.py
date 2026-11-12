@@ -376,3 +376,12 @@ def test_split_event_keeps_the_event_free_of_its_markets() -> None:
         event(1, "2026-01-05T10:00:00Z", [market(11, "2026-01-05T10:00:00Z")])
     )
     assert "markets" not in plain and markets[0]["eventId"] == "1"
+
+
+def test_a_fresh_polymarket_download_has_the_lake_shape(tmp_path: Path) -> None:
+    """The shared lake contract (layout, raw integrity, typed views) holds after a download."""
+    from lake_contract import assert_lake_contract
+
+    config, _ = _run_catalog(tmp_path)
+    views = assert_lake_contract(config, ["polymarket"])
+    assert views.get("polymarket_markets") == 3

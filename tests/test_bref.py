@@ -152,3 +152,14 @@ def test_adapter_plans_one_job_and_runs_it() -> None:
     with pytest.raises(ValueError, match="unknown dataset"):
         adapter.plan(Selection(datasets=("nope",)))
     assert adapter.all_seasons() == []
+
+
+def test_a_fresh_bref_download_has_the_lake_shape(tmp_path: Path) -> None:
+    """The shared lake contract (layout, raw integrity, typed views) holds after a download."""
+    from lake_contract import assert_lake_contract
+
+    config = LakeConfig(home=tmp_path)
+    fake = FakeHttp(batting_csv(ROWS))
+    ingest(["war_batting"], config=config, extractor=BrefExtractor(config, fake))  # type: ignore[arg-type]
+    views = assert_lake_contract(config, ["bref"])
+    assert views.get("bref_war_batting") == 3

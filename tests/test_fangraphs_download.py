@@ -266,3 +266,13 @@ def test_the_option_switch_reaches_the_planner_and_a_bad_one_is_refused() -> Non
     bad = runner.invoke(main, ["ingest", "fangraphs", "-o", "download", "--dry-run"])
     assert bad.exit_code != 0 and "KEY=VALUE" in bad.output
     assert Selection(options=(("a", "On"),)).flag("a") and not Selection().flag("a")
+
+
+def test_a_fresh_fangraphs_download_has_the_lake_shape(tmp_path: Path) -> None:
+    """The shared lake contract (layout, raw integrity, typed views) holds after a download."""
+    from lake_contract import assert_lake_contract
+
+    config, client = web(tmp_path, FakeHttp())
+    download_season("batting", 2024, config=config, web=client, normalizer=FangraphsNormalizer())
+    views = assert_lake_contract(config, ["fangraphs"])
+    assert views.get("fangraphs_batting") == 1

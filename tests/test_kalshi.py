@@ -352,3 +352,12 @@ def test_the_header_hook_signs_every_attempt_and_other_hosts_stay_unsigned() -> 
     ], "a retry is signed again, not replayed"
     assert "KALSHI-ACCESS-TIMESTAMP" not in plain.calls[0].request.headers
     assert [m for m, _ in seen] == ["GET", "GET"]
+
+
+def test_a_fresh_kalshi_download_has_the_lake_shape(tmp_path: Path) -> None:
+    """The shared lake contract (layout, raw integrity, typed views) holds after a download."""
+    from lake_contract import assert_lake_contract
+
+    _ingest(tmp_path)
+    views = assert_lake_contract(LakeConfig(base_dir=tmp_path), ["kalshi"])
+    assert views.get("kalshi_markets") == 4
