@@ -98,16 +98,30 @@ def _read_chunk_locked(path: Path, key: str) -> pa.Table:
         return file.read_row_groups(groups).slice(lead, count)
 
 
+#: Columns a source has retired on purpose (each one needs an ADR): old chunks that still hold them lose them
+#: when they are rewritten, every other column missing from the schema is still an error.
+RETIRED_COLUMNS: set[str] = set()
+
+
+def retire_columns(*names: str) -> None:
+    """Declare columns that may be dropped when an old chunk is aligned to the current schema."""
+    RETIRED_COLUMNS.update(names)
+
+
 def align_to_schema(table: pa.Table, schema: pa.Schema) -> pa.Table:
     """``table`` with exactly the columns of ``schema``: older rows get empty new columns.
 
     A schema that gained columns since a chunk was written (typed ``name_slug`` columns, ADR 86)
     leaves old chunks short of them; their rows are kept and the new cells are empty. A column the
-    schema does not have would be dropped silently, so it is an error instead.
+    schema does not have would be dropped silently, so it is an error instead (unless the source retired it).
     """
     if table.schema.equals(schema):
         return table
-    extra = [name for name in table.column_names if name not in schema.names]
+    extra = [
+        name
+        for name in table.column_names
+        if name not in schema.names and name not in RETIRED_COLUMNS
+    ]
     if extra:
         raise ValueError(f"columns {extra} are not in the registered schema; refusing to drop them")
     columns = [

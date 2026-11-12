@@ -21,6 +21,7 @@ import pyarrow as pa
 from baseballpy.core.atomic import cleanup_stale_parts_once
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.coalesce import Coalescer
+from baseballpy.core.compacted import retire_columns
 from baseballpy.core.config import STATSAPI_HOST, LakeConfig, RateLimitConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.http import HttpClient, HttpResult, HttpStatusError, get_http_client
@@ -39,7 +40,7 @@ from baseballpy.sources.mlb_api.endpoints import (
     prerequisites,
     requests_for,
 )
-from baseballpy.sources.mlb_api.flatten import Scalar, iter_records
+from baseballpy.sources.mlb_api.flatten import RETIRED_PAGE_BOUNDARY_COLUMNS, Scalar, iter_records
 from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
 
 logger = logging.getLogger(__name__)
@@ -47,6 +48,8 @@ logger = logging.getLogger(__name__)
 R = TypeVar("R")
 
 _TEXT_TYPES = (pa.date32(), pa.timestamp("us", tz="UTC"))
+
+retire_columns(*RETIRED_PAGE_BOUNDARY_COLUMNS)  # ADR 116
 
 
 def _total_splits(payload: Any) -> int | None:

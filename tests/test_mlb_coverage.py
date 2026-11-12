@@ -899,3 +899,25 @@ def test_unpopulated_default_endpoints_carry_coverage_notes() -> None:
         mode, note = ep.ingest_mode
         assert mode == "default"
         assert needle in note
+
+
+def test_an_old_chunk_with_the_retired_page_boundary_columns_is_aligned_and_other_extras_still_refuse() -> (
+    None
+):
+    """ADR 116: the two retired columns are dropped on rewrite; any other column the schema lacks is an error."""
+    import pyarrow as pa
+
+    from baseballpy.core.compacted import align_to_schema
+    from baseballpy.sources.mlb_api import generic  # noqa: F401  (registers the retired columns)
+
+    schema = pa.schema([("player_id", pa.int64())])
+    old = pa.table(
+        {
+            "player_id": [1],
+            "stats_splits_tied_with_offset": ["[]"],
+            "stats_splits_tied_with_limit": ["[]"],
+        }
+    )
+    assert align_to_schema(old, schema).column_names == ["player_id"]
+    with pytest.raises(ValueError, match="refusing to drop"):
+        align_to_schema(pa.table({"player_id": [1], "surprise": ["x"]}), schema)

@@ -23,6 +23,9 @@ _ID_KEY = re.compile(r"(ID)?[0-9]+")
 #: multiplied it (775 MB for one season); the raw page keeps the field.
 PAGE_BOUNDARY_FIELDS = frozenset({"splitsTiedWithOffset", "splitsTiedWithLimit"})
 
+#: the columns older chunks hold for those fields (ADR 116): the store may drop them when it rewrites a chunk
+RETIRED_PAGE_BOUNDARY_COLUMNS = ("stats_splits_tied_with_offset", "stats_splits_tied_with_limit")
+
 
 def _is_id_map(value: dict[str, Any]) -> bool:
     """``{"ID660271": {...}, ...}`` style maps: their keys are data, not column names."""
