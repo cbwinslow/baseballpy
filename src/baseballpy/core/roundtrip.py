@@ -682,6 +682,13 @@ def roundtrip_dataset(
                         extra,
                         f"key {example[0]!r} is in the processed data only",
                     )
+    return _finish(check, losses, not_compared, by_position)
+
+
+def _finish(
+    check: DatasetCheck, losses: _Losses, not_compared: set[str], by_position: bool
+) -> DatasetCheck:
+    """The verdict of a dataset from the losses found."""
     if by_position and _out_of_order(losses, check.compared):
         check.status = "skipped"
         check.reason = (
