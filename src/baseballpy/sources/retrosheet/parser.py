@@ -11,7 +11,7 @@ from typing import Any
 
 import pyarrow as pa
 
-from baseballpy.core.coerce import NULL_TOKENS, CoercionError, to_bool, to_int
+from baseballpy.core.coerce import NULL_TOKENS, CoercionError, to_bool, to_date, to_int
 from baseballpy.core.quarantine import Quarantine, collect_bad_values, record_bad_value, safe_array
 from baseballpy.core.schema_tools import EXTRAS, normalize_csv
 from baseballpy.sources.retrosheet import _chadwick_adapter as cw
@@ -40,6 +40,15 @@ def _safe_int(val: Any) -> int | None:
         return to_int(val, nulls=NULL_TOKENS)
     except CoercionError as exc:
         record_bad_value("int", val, exc)
+        return None
+
+
+def _safe_date(val: Any, fmt: str) -> Any:
+    """Coerce to a date; unparseable values become NULL *and* are quarantined by the parser."""
+    try:
+        return to_date(val, fmt, nulls=NULL_TOKENS)
+    except CoercionError as exc:
+        record_bad_value("date", val, exc)
         return None
 
 
@@ -284,6 +293,8 @@ class RetrosheetDailySplitsParser:
 
                     if pa.types.is_integer(target_type):
                         rec[name] = _safe_int(val)
+                    elif pa.types.is_date(target_type):
+                        rec[name] = _safe_date(val, "%Y%m%d")
                     else:
                         rec[name] = val if val else None
                 records.append(rec)

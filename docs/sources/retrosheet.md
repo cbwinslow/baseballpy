@@ -212,9 +212,9 @@ Daily player appearance lines.
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `GAME_ID` | string | yes | — | Game ID (src: chadwick_cwdaily) |
-| `GAME_DT` | string | yes | — | Game date (src: chadwick_cwdaily) |
+| `GAME_DT` | date32[day] | yes | — | Game date (src: chadwick_cwdaily) |
 | `GAME_CT` | int16 | yes | — | Game number (src: chadwick_cwdaily) |
-| `APPEAR_DT` | string | yes | — | Player appearance date (src: chadwick_cwdaily) |
+| `APPEAR_DT` | date32[day] | yes | — | Player appearance date (src: chadwick_cwdaily) |
 | `TEAM_ID` | string | yes | — | Team ID (src: chadwick_cwdaily) |
 | `PLAYER_ID` | string | yes | — | Player ID (src: chadwick_cwdaily) |
 | `SLOT_CT` | int16 | yes | — | Batting-order slot (src: chadwick_cwdaily) |
@@ -1723,7 +1723,7 @@ Games of the box-score accounts (id, version, info lines).
 | `sky` | string | yes | — | TODO |
 | `timeofgame` | int16 | yes | — | TODO |
 | `innings` | int16 | yes | — | TODO |
-| `tiebreaker` | string | yes | — | TODO |
+| `tiebreaker` | int16 | yes | — | TODO |
 | `gametype` | string | yes | — | TODO |
 | `wp` | string | yes | — | TODO |
 | `lp` | string | yes | — | TODO |

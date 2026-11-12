@@ -6,7 +6,7 @@ Usage::
                                                [--probe-out docs/savant_probe.json]
 
 For each supported variant in :mod:`baseballpy.sources.statcast.lb_catalog` the script requests a
-set of seasons through the shared ``HttpClient``, finds the first season with data (``min_year``),
+every season from the first Statcast season to the current one through the shared ``HttpClient``, finds the first season with data (``min_year``),
 widens column types across every non-empty season (int < float < string; never ``int8``), verifies
 the documented key is unique within each season, and chooses the widest ``min`` qualifier.
 """
@@ -32,8 +32,15 @@ from baseballpy.sources.statcast.lb_catalog import (
     request_params,
 )
 from baseballpy.sources.statcast.lb_parse import html_json_to_csv
+from baseballpy.sources.statcast.seasons import FIRST_SEASON
 
-SAMPLE_YEARS = (2008, 2012, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025)
+
+def probe_years(today: date) -> tuple[int, ...]:
+    """Every season from the first Statcast season to ``today``'s: a column that is empty in a few seasons
+    must still be typed from the seasons that fill it (a fixed list of seasons left 21 columns as text)."""
+    return tuple(range(FIRST_SEASON, today.year + 1))
+
+
 MIN_CANDIDATES = ("0", "1", "q")
 _RANK = {"int16": 0, "int32": 1, "int64": 2, "float64": 3, "string": 4}
 
@@ -63,6 +70,12 @@ def fetch(http: HttpClient, defn: LeaderboardDef, year: int, min_value: str | No
 def row_count(csv_bytes: bytes) -> int:
     """Data rows in a CSV payload."""
     return read_csv_strings(csv_bytes).num_rows
+
+
+def observed_type(values: list[Any]) -> str | None:
+    """Type seen in one season's values, or ``None`` when every value is empty (no evidence)."""
+    filled = [v for v in values if v is not None and str(v).strip() != ""]
+    return infer_type_name(filled) if filled else None
 
 
 def widen(a: str, b: str) -> str:
@@ -104,7 +117,7 @@ def profile(http: HttpClient, defn: LeaderboardDef, years: tuple[int, ...]) -> d
         per_year[year] = table.num_rows
         snaked = [snake(h) for h in table.column_names]
         for raw, name in zip(table.column_names, snaked, strict=True):
-            col_type = infer_type_name(table.column(raw).to_pylist()) if table.num_rows else None
+            col_type = observed_type(table.column(raw).to_pylist())
             if name not in columns:
                 order.append(name)
                 upstream[name] = raw
@@ -163,7 +176,7 @@ def main() -> int:
     parser.add_argument("--check", action="store_true", help="probe only, write nothing")
     args = parser.parse_args()
     http = HttpClient(RateLimitConfig())
-    years = tuple(y for y in SAMPLE_YEARS if y <= date.today().year)
+    years = probe_years(date.today())
     results = []
     for defn in SUPPORTED:
         if args.only and defn.slug not in args.only:

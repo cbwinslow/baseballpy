@@ -135,6 +135,16 @@ def test_season_without_box_files_stores_empty_tables(
     assert tables["box_batting_lines"].schema.names[0] == "game_id"
 
 
+def test_the_tiebreaker_is_a_number_not_text() -> None:
+    """info,tiebreaker,2 is the base the extra-innings runner starts on: an integer column."""
+    text = "id,AAA202004010\nversion,3\ninfo,tiebreaker,2\ninfo,date,2020/04/01\n"
+    games = parse_box_text(text).games
+    assert games.schema.field("tiebreaker").type == pa.int16()
+    assert games.column("tiebreaker")[0].as_py() == 2
+    unknown = parse_box_text("id,AAA202004020\nversion,3\ninfo,date,2020/04/02\n").games
+    assert unknown.column("tiebreaker")[0].as_py() is None
+
+
 def test_repeated_info_keys_are_kept() -> None:
     text = (
         "id,BOS195004010\n"

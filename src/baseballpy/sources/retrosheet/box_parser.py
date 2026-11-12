@@ -60,7 +60,7 @@ INFO_COLUMNS: tuple[tuple[str, str], ...] = (
     ("sky", "string"),
     ("timeofgame", "int16"),
     ("innings", "int16"),
-    ("tiebreaker", "string"),
+    ("tiebreaker", "int16"),
     ("gametype", "string"),
     ("wp", "string"),
     ("lp", "string"),

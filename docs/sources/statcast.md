@@ -634,7 +634,7 @@ Catcher framing runs by zone per catcher-season.
 | `id` | int32 | yes | — | TODO |
 | `name` | string | yes | — | TODO |
 | `pitches` | int16 | yes | — | TODO |
-| `rv_tot` | string | yes | — | TODO |
+| `rv_tot` | double | yes | — | TODO |
 | `pct_tot` | double | yes | — | TODO |
 | `rv_11` | int16 | yes | — | TODO |
 | `pct_11` | double | yes | — | TODO |
@@ -970,12 +970,12 @@ Statcast park factor indices per venue and 3-year span (embedded JSON on the pag
 | `name_display_club` | string | yes | — | TODO |
 | `n_pa` | int32 | yes | — | TODO |
 | `index_runs` | int16 | yes | — | TODO |
-| `index_hardhit` | string | yes | — | TODO |
+| `index_hardhit` | int16 | yes | — | TODO |
 | `index_woba` | int16 | yes | — | TODO |
 | `index_wobatto` | int16 | yes | — | TODO |
 | `index_wobacon` | int16 | yes | — | TODO |
-| `index_xwobacon` | string | yes | — | TODO |
-| `index_xbacon` | string | yes | — | TODO |
+| `index_xwobacon` | int16 | yes | — | TODO |
+| `index_xbacon` | int16 | yes | — | TODO |
 | `index_obp` | int16 | yes | — | TODO |
 | `index_so` | int16 | yes | — | TODO |
 | `index_bb` | int16 | yes | — | TODO |
@@ -1019,12 +1019,12 @@ Statcast percentile inputs per batter-season.
 | `bb_percent` | int16 | yes | — | TODO |
 | `whiff_percent` | int16 | yes | — | TODO |
 | `chase_percent` | int16 | yes | — | TODO |
-| `arm_strength` | string | yes | — | On an individual play, Arm Strength is defined as the maximum velocity of any throw made by a fielder -- with the max velocity always being at the release point, due to physics. (src: mlb_glossary_arm_strength) |
+| `arm_strength` | int16 | yes | — | On an individual play, Arm Strength is defined as the maximum velocity of any throw made by a fielder -- with the max velocity always being at the release point, due to physics. (src: mlb_glossary_arm_strength) |
 | `sprint_speed` | int16 | yes | — | Introduced during the 2017 season, Sprint Speed is a Statcast metric that aims to more precisely quantify speed by measuring how many feet per second a player runs in his fastest one-second window. (src: mlb_glossary_sprint_speed) |
-| `oaa` | string | yes | — | Outs Above Average (OAA) is a range-based metric of skill that shows how many outs a player has saved. (src: mlb_glossary_outs_above_average) |
-| `bat_speed` | string | yes | — | TODO |
-| `squared_up_rate` | string | yes | — | A swing’s squared-up rate tells us how much of the highest possible exit velocity available (based on the physics related to the swing speed and pitch speed) a batter was able to obtain – it is, at its simplest, how much exit velocity did you get as a share of how much exit velocity was possible based on your swing speed and the speed of the pitch. (src: mlb_glossary_squared_up) |
-| `swing_length` | string | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
+| `oaa` | int16 | yes | — | Outs Above Average (OAA) is a range-based metric of skill that shows how many outs a player has saved. (src: mlb_glossary_outs_above_average) |
+| `bat_speed` | int16 | yes | — | TODO |
+| `squared_up_rate` | int16 | yes | — | A swing’s squared-up rate tells us how much of the highest possible exit velocity available (based on the physics related to the swing speed and pitch speed) a batter was able to obtain – it is, at its simplest, how much exit velocity did you get as a share of how much exit velocity was possible based on your swing speed and the speed of the pitch. (src: mlb_glossary_squared_up) |
+| `swing_length` | int16 | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_percentile_rankings_batter -->
@@ -1125,8 +1125,8 @@ Average velocity per pitch type per pitcher-season (switch pitchers have one row
 | `cu_avg_speed` | double | yes | — | TODO |
 | `fs_avg_speed` | double | yes | — | TODO |
 | `kn_avg_speed` | double | yes | — | TODO |
-| `st_avg_speed` | string | yes | — | TODO |
-| `sv_avg_speed` | string | yes | — | TODO |
+| `st_avg_speed` | double | yes | — | TODO |
+| `sv_avg_speed` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_pitch_arsenals -->
@@ -1437,17 +1437,17 @@ Fielding run value by fielder (embedded JSON rows of the page, no qualifier).
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `total_runs` | string | yes | — | TODO |
-| `inf_of_runs` | string | yes | — | TODO |
-| `range_runs` | string | yes | — | TODO |
-| `arm_runs` | string | yes | — | TODO |
-| `dp_runs` | string | yes | — | TODO |
-| `fielding_runs_prevented_on_rec1b` | string | yes | — | TODO |
-| `catching_runs` | string | yes | — | TODO |
-| `framing_runs` | string | yes | — | TODO |
-| `throwing_runs` | string | yes | — | TODO |
-| `blocking_runs` | string | yes | — | TODO |
-| `abs_runs` | string | yes | — | TODO |
+| `total_runs` | double | yes | — | TODO |
+| `inf_of_runs` | double | yes | — | TODO |
+| `range_runs` | double | yes | — | TODO |
+| `arm_runs` | double | yes | — | TODO |
+| `dp_runs` | double | yes | — | TODO |
+| `fielding_runs_prevented_on_rec1b` | double | yes | — | TODO |
+| `catching_runs` | double | yes | — | TODO |
+| `framing_runs` | double | yes | — | TODO |
+| `throwing_runs` | double | yes | — | TODO |
+| `blocking_runs` | double | yes | — | TODO |
+| `abs_runs` | double | yes | — | TODO |
 | `outs_total` | int16 | yes | — | TODO |
 | `tot_pa` | double | yes | — | TODO |
 | `max_pos` | int16 | yes | — | TODO |

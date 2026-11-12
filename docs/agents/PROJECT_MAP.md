@@ -27,8 +27,8 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `portability` | 3 | 3 | 7 |
 | `real-time-streaming` | 7 | 12 | 12 |
-| `retrosheet-ingestion` | 20 | 25 | 26 |
-| `statcast-ingestion` | 15 | 18 | 24 |
+| `retrosheet-ingestion` | 21 | 27 | 29 |
+| `statcast-ingestion` | 16 | 19 | 26 |
 
 ## Source review scorecard (where each source stands)
 
@@ -41,13 +41,13 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 12 |
-| `retrosheet` | 25 | archived | yes | yes | yes | 1012/1282 (78%) | 20 |
-| `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 15 |
+| `retrosheet` | 25 | archived | yes | yes | yes | 1012/1282 (78%) | 21 |
+| `statcast` | 38 | archived | yes | yes | yes | 293/977 (29%) | 16 |
 | `mlb_api` | 365 | archived | yes | yes | yes | 9486/16957 (55%) | 28 |
 
 ## Active changes (`openspec/changes/`)
 
-90 changes are archived under `openspec/changes/archive/`.
+91 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -64,6 +64,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `response-log-segments` | 22 | 18 | 5.4, 6.1, 6.2, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
+| `retrosheet-site-files` | 0 | 4 | 1.1, 1.2, 1.3, 1.4 |
 
 ## Decisions (`docs/DECISIONS.md`)
 
@@ -174,6 +175,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 106: A Dry Run Says What A Command Would Download, From Measured Sizes
 - ADR 107: Rebuild Processed Data From Raw Into The Final Layout; Keep All Raw
 - ADR 108: Old Data May Be Backed Up Compressed And Downloaded Again; A Sample Proves Sameness
+- ADR 109: A Text Column Must Not Hold Only Numbers Or Dates Without A Recorded Reason
 
 ## Documentation pages (`docs/`)
 

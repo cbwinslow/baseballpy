@@ -1,5 +1,6 @@
 """Tests for Retrosheet extraction, chadwickpy parsing, and atomic two-tier caching."""
 
+from datetime import date
 from pathlib import Path
 
 import httpx
@@ -108,6 +109,11 @@ def test_parse_daily_splits(tmp_path: Path) -> None:
     assert "GAME_ID" in table.column_names
     assert "B_H" in table.column_names
     assert "P_H" in table.column_names
+    # dates are dates (Chadwick writes them as YYYYMMDD text): typed, never untyped text
+    assert table.schema.field("GAME_DT").type == pa.date32()
+    assert table.schema.field("APPEAR_DT").type == pa.date32()
+    assert set(table.column("GAME_DT").to_pylist()) == {date(2024, 4, 1)}
+    assert set(table.column("APPEAR_DT").to_pylist()) == {date(2024, 4, 1)}
 
 
 def test_parse_substitutions(tmp_path: Path) -> None:
