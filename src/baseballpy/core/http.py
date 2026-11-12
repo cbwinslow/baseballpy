@@ -7,6 +7,7 @@ executes on one private event loop owned by the client.
 
 import asyncio
 import concurrent.futures
+import hashlib
 import os
 import threading
 import time
@@ -111,6 +112,21 @@ class HttpResult:
         return msgspec.json.decode(self.content)
 
 
+@dataclass(frozen=True)
+class DownloadResult:
+    """Outcome of a streamed download: the file (or none), its size and sha256, and what the server said."""
+
+    url: str
+    status: int
+    path: Path | None
+    size: int
+    sha256: str
+    etag: str | None
+    content_length: int | None
+    elapsed_seconds: float
+    too_large: bool = False
+
+
 def _parse_retry_after(value: str | None) -> float | None:
     if not value:
         return None
@@ -157,6 +173,11 @@ class HttpClient:
         self._semaphores: dict[str, asyncio.Semaphore] = {}
         self._start_lock = threading.Lock()
         self._header_hooks: dict[str, Callable[[str, str], Mapping[str, str]]] = {}
+
+    @property
+    def user_agent(self) -> str:
+        """The User-Agent this client sends."""
+        return self._user_agent
 
     def set_header_hook(self, host: str, hook: Callable[[str, str], Mapping[str, str]]) -> None:
         """Add headers made per attempt for one host: ``hook(method, url)`` (request signing).
@@ -347,6 +368,112 @@ class HttpClient:
         """
         return await self._submit(self._get_on_loop(url, params, headers, etag, allow, timeout))
 
+    async def _download_on_loop(
+        self,
+        url: str,
+        dest: Path,
+        max_bytes: int | None,
+        allow: tuple[int, ...],
+        timeout: float | None,
+    ) -> DownloadResult:
+        client = self._ensure_client()
+        host = urlparse(url).hostname or ""
+        if self._lock_dir is not None and not self.rate.allow_parallel_processes:
+            claim_host(self._lock_dir, host)
+        part = dest.with_name(dest.name + ".part")
+        digest = hashlib.sha256()
+        size = 0
+        async with self._semaphore_for(host), self._limiter_for(host):
+            started = time.perf_counter()
+            sent_at = datetime.now(UTC)
+            hook = self._header_hooks.get(host)
+            headers = {} if hook is None else dict(hook("GET", url))
+            try:
+                async with client.stream(
+                    "GET",
+                    url,
+                    headers=headers,
+                    timeout=httpx.USE_CLIENT_DEFAULT if timeout is None else timeout,
+                ) as resp:
+                    status = resp.status_code
+                    etag = resp.headers.get("ETag")
+                    raw_length = resp.headers.get("Content-Length")
+                    length = int(raw_length) if raw_length and raw_length.isdigit() else None
+                    if status not in allow:
+                        _audit_attempt(
+                            url, sent_at, time.perf_counter() - started, status, "FAILURE", None
+                        )
+                        raise HttpStatusError(url, status)
+                    if status != 200:
+                        _audit_attempt(
+                            url, sent_at, time.perf_counter() - started, status, "SUCCESS", None
+                        )
+                        return DownloadResult(
+                            url, status, None, 0, "", etag, length, time.perf_counter() - started
+                        )
+                    if max_bytes is not None and length is not None and length > max_bytes:
+                        _audit_attempt(
+                            url, sent_at, time.perf_counter() - started, status, "SUCCESS", None
+                        )
+                        return DownloadResult(
+                            url,
+                            status,
+                            None,
+                            0,
+                            "",
+                            etag,
+                            length,
+                            time.perf_counter() - started,
+                            True,
+                        )
+                    dest.parent.mkdir(parents=True, exist_ok=True)
+                    too_large = False
+                    with part.open("wb") as handle:
+                        async for chunk in resp.aiter_bytes(1024 * 1024):
+                            size += len(chunk)
+                            if max_bytes is not None and size > max_bytes:
+                                too_large = True
+                                break
+                            handle.write(chunk)
+                            digest.update(chunk)
+            except httpx.TransportError as exc:
+                part.unlink(missing_ok=True)
+                _audit_attempt(
+                    url, sent_at, time.perf_counter() - started, None, "RETRY", type(exc).__name__
+                )
+                raise
+            except BaseException:
+                part.unlink(missing_ok=True)
+                raise
+            elapsed = time.perf_counter() - started
+        if too_large:
+            part.unlink(missing_ok=True)
+            _audit_attempt(url, sent_at, elapsed, 200, "SUCCESS", None)
+            return DownloadResult(url, 200, None, 0, "", etag, length, elapsed, True)
+        os.replace(part, dest)
+        _audit_attempt(url, sent_at, elapsed, 200, "SUCCESS", None)
+        return DownloadResult(url, 200, dest, size, digest.hexdigest(), etag, length, elapsed)
+
+    def download_sync(
+        self,
+        url: str,
+        dest: Path,
+        *,
+        max_bytes: int | None = None,
+        allow: tuple[int, ...] = (200,),
+        timeout: float | None = None,
+    ) -> DownloadResult:
+        """Stream ``url`` to ``dest`` (see :class:`DownloadResult`); no retries, a refusal is the caller's decision.
+
+        Uses the same per-host rate limit, in-flight limit, host claim and audit log as ``get``. The body is written
+        to ``<dest>.part`` and renamed when complete; a ``Content-Length`` (or a body) above ``max_bytes`` is not read.
+        """
+        loop = self._ensure_loop()
+        future = asyncio.run_coroutine_threadsafe(
+            self._download_on_loop(url, dest, max_bytes, allow, timeout), loop
+        )
+        return future.result()
+
     def get_sync(
         self,
         url: str,
@@ -373,6 +500,7 @@ __all__ = [
     "HttpClient",
     "HttpResult",
     "HttpStatusError",
+    "DownloadResult",
     "RetryableStatus",
     "TransportError",
     "get_http_client",

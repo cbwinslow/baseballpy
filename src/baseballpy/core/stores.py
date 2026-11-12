@@ -2,6 +2,7 @@
 
 import hashlib
 import logging
+import os
 import threading
 from collections.abc import Callable, Iterable, Mapping
 from pathlib import Path
@@ -256,6 +257,42 @@ class RawStore:
             },
         )
         return path
+
+    def adopt(
+        self,
+        source: str,
+        dataset: str,
+        name: str,
+        path: Path,
+        *,
+        sha256: str,
+        size: int,
+        source_ref: str | None = None,
+        etag: str = "",
+        season: int | None = None,
+    ) -> Path:
+        """Move a file that is already on disk into the raw folder and record its sha256 and size.
+
+        The counterpart of ``put`` for large downloads that were streamed to disk (``HttpClient.download_sync``):
+        the bytes are never held in memory and are stored as they came (no compression).
+        """
+        ensure_version_file(self.config)
+        directory = self.config.raw_dir(source, dataset, season, create=True)
+        target = directory / _safe_chunk_id(name)
+        os.replace(path, target)
+        self.config.dataset_manifest(source, dataset, "raw", season).set_completed(
+            name,
+            records_count=0,
+            etag=etag,
+            metadata={
+                "bytes": size,
+                "sha256": sha256,
+                "season": season,
+                "source_ref": source_ref,
+                **({"upstream": Fingerprint(ETAG, etag).to_dict()} if etag else {}),
+            },
+        )
+        return target
 
     def stored_path(
         self, source: str, dataset: str, name: str, season: int | None = None
