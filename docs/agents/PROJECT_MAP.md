@@ -8,7 +8,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | Spec | Requirements | Scenarios | Tests cited |
 |---|---|---|---|
 | `agent-runbooks` | 7 | 10 | 17 |
-| `audit-and-benchmarking` | 6 | 7 | 11 |
+| `audit-and-benchmarking` | 7 | 11 | 29 |
 | `bref-ingestion` | 3 | 3 | 10 |
 | `caching-and-invalidation` | 21 | 35 | 50 |
 | `catalog-audit` | 4 | 4 | 4 |
@@ -47,13 +47,12 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 
 ## Active changes (`openspec/changes/`)
 
-97 changes are archived under `openspec/changes/archive/`.
+98 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
 | `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
-| `data-validation-roundtrip` | 5 | 2 | 1.5, 1.7 |
 | `download-throughput` | 8 | 1 | 2.4 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `finish-mlb-history` | 9 | 6 | 2.1, 2.2, 2.3, 2.4, 3.2, 4.1 |

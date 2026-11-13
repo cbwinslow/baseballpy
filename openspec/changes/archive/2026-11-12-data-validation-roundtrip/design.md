@@ -61,3 +61,21 @@ event file specification: info field names, values and sentinels (documented in 
 ## As built: count rules for trades, candlesticks, outcomes and prices (2026-11-12)
 
 `core/rawpages.py` gained `page_lines` (log line plus body), `distinct_tuples` and `tuples_counter`; `sources/page_counts.py` holds the page shape of each source (Kalshi candlesticks come as one market's series or as a batch of markets; a Polymarket price page knows its token only from the request; outcomes are the entries of each market's outcome list inside the events pages). `baseballpy verify-roundtrip kalshi polymarket -d trades -d candlesticks -d prices -d outcomes --full --json` on the real lake, 933 s: all four `ok`, raw and stored rows equal (trades 110,994,885; candlesticks 14,903,320; outcomes 467,846; prices 16,043,908). Kalshi `series` stays uncounted on purpose (4,156 listed, 189 kept).
+
+## As built: verify-sample per source (2026-11-12)
+
+Small fresh downloads in a scratch home, compared with the lake (`baseballpy verify-sample SOURCE ... --all`):
+
+| Source | Sample | Result |
+|---|---|---|
+| lahman | all 27 datasets | all identical |
+| chadwick | all 4 datasets | all identical |
+| retrosheet | season 2023 | all 29 chunks and 47 raw files identical |
+| bref | `war_batting`, `war_pitching` | 312 chunks, 2 raw files: matches the lake |
+| mlb_api | season 2024, `--limit 3` | 11,698 of 12,275 chunks identical (all game data); the rest is live data (alumni, rosters, ages) and the minor-league stat pools that wait for `/v1/stats` (B-35) |
+| statcast | `leaderboards`, 2024 | 20 of 48 chunks identical; the others differ because Savant revised a few values since the lake fetched them (checked: of 651 batters, `est_ba` changed for one player, 0.269 to 0.268, and `est_slg` for two by 0.001; the same player set, columns and every other value equal) |
+| kalshi | `events` | 173 of 178 chunks identical; the five others are live market data |
+| polymarket | `events` | 20 of 25 chunks identical; the others are live event data |
+| fangraphs | n/a | an inbox source (the owner places the CSV files): there is nothing to download, so no sample |
+
+The Statcast pitch table was not sampled again (a full season is large); it was proved equal to the raw text by the full round-trip (15,007,133 and 4,536,245 rows, ADR 115). The revision of provider numbers over time is the open Statcast revision policy question.
