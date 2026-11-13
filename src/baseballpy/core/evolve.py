@@ -27,6 +27,7 @@ from baseballpy.core.atomic import atomic_write_parquet
 from baseballpy.core.compacted import (
     CHUNK_MAP_KEY,
     INTO,
+    RETIRED_COLUMNS,
     align_to_schema,
     chunk_map,
     write_compacted,
@@ -152,7 +153,11 @@ def _rewrite(path: Path, spec: DatasetSpec, quarantine: Quarantine, counts: dict
     )
     if done.num_rows != table.num_rows:
         raise ValueError(f"{path.name}: {done.num_rows} rows after migration, had {table.num_rows}")
-    for name in old_cols:  # nothing already typed may change
+    for (
+        name
+    ) in old_cols:  # nothing already typed may change (a retired column is dropped on purpose)
+        if name in RETIRED_COLUMNS:
+            continue
         if not _same(table[name], done[name]):
             raise ValueError(f"{path.name}: column {name} changed during migration")
     if spans is None:

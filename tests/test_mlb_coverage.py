@@ -921,3 +921,36 @@ def test_an_old_chunk_with_the_retired_page_boundary_columns_is_aligned_and_othe
     assert align_to_schema(old, schema).column_names == ["player_id"]
     with pytest.raises(ValueError, match="refusing to drop"):
         align_to_schema(pa.table({"player_id": [1], "surprise": ["x"]}), schema)
+
+
+def test_migrating_an_old_file_drops_the_retired_columns_and_keeps_every_row(
+    tmp_path: Path,
+) -> None:
+    """ADR 116: the migration's "nothing typed may change" check lets the retired columns go."""
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    from baseballpy.core.evolve import _rewrite
+    from baseballpy.core.quarantine import Quarantine
+    from baseballpy.sources.mlb_api import generic  # noqa: F401  (registers the retired columns)
+
+    class _Spec:
+        schema = pa.schema([("player_id", pa.int64()), ("_extras", pa.string())])
+        source = "mlb_api"
+        name = "stats_projected_hitting"
+
+    path = tmp_path / "part-sport1.parquet"
+    pq.write_table(
+        pa.table(
+            {
+                "player_id": [1, 2],
+                "_extras": [None, None],
+                "stats_splits_tied_with_offset": ["[]", None],
+                "stats_splits_tied_with_limit": [None, "[]"],
+            }
+        ),
+        path,
+    )
+    rows = _rewrite(path, _Spec(), Quarantine(), {})  # type: ignore[arg-type]
+    assert rows == 2
+    assert pq.read_table(path).column_names == ["player_id", "_extras"]
