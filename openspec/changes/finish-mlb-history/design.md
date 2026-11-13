@@ -44,3 +44,22 @@ No other finished major-league game is missing a row in any per-game dataset, 20
 ## Rare fields typed (task 3.2, ADR 118)
 
 Roster `parentTeamId` and `note`, draft `xrefIds`, postseason reschedule fields, affiliate and boxscore `conference` now have typed columns (generator samples: 2026 rosters, postseasons 2009 and 2022, the 2019 draft, affiliates 2012, games 257753 and 427504). `compact` moved the old `_extras` values into the columns for the small datasets (roster 12,732 `parent_team_id` and 8 `note`, 208 affiliate conferences, 1 draft `xrefIds`, 16 reschedule rows). The per-game boxscore segments need a forced rebuild for the new columns. Still in `_extras`: `resumeDate` family (2 rows) and the stat-pool fields (`nameSlug`, `gameType`, `numLeagues`), which wait for the stats route (B-35).
+
+## Size and rebuild time per season (task 2.1, partly)
+
+Processed `mlb_api` size per season on 2026-11-13 (compacted, zstd), and the time of the forced segment rebuild from raw. The unattended download plan (`run plans/mlb-games-history.toml`) has not been re-run end to end; the games were downloaded in earlier runs and checked against the raw bytes (task 2.2).
+
+| Season | Processed MB | Rebuild s | | Season | Processed MB | Rebuild s |
+|---|---|---|---|---|---|---|
+| 2008 | 606 | 660 | | 2018 | 1,088 | 763 |
+| 2009 | 638 | 674 | | 2019 | 1,064 | 751 |
+| 2010 | 688 | 693 | | 2020 | 458 | 344 |
+| 2011 | 690 | 685 | | 2021 | 1,123 | 718 |
+| 2012 | 688 | 696 | | 2022 | 1,072 | 705 |
+| 2013 | 698 | 687 | | 2023 | 1,181 | 791 |
+| 2014 | 676 | 685 | | 2024 | 1,149 | 750 |
+| 2015 | 748 | 671 | | 2025 | 3,185 | 2,653 |
+| 2016 | 779 | 712 | | 2026 | 3,539 | 3,120 |
+| 2017 | 1,096 | 776 | | total | 21,165 | |
+
+2025 and 2026 are larger because they include the minor-league games (sports 11 to 17 plus the others the fan-out asks for).
