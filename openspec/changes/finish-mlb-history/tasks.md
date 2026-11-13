@@ -4,7 +4,7 @@
 - [x] 1.2 `baseballpy run --compact`: compaction after each finished stage, test
 - [x] 1.3 `plans/mlb-games-history.toml`: 16 stages, newest first, dry run checked
 - [ ] 2.1 run the plan with `baseballpy run plans/mlb-games-history.toml --every 24h` and record the time and compacted size per season in design.md
-- [ ] 2.2 verify coverage: for every season 2008 to 2026, every finished major-league game has rows in every per-game dataset (cancelled games excepted) and record the table in design.md
+- [x] 2.2 verify coverage: for every season 2008 to 2026, every finished major-league game has rows in every per-game dataset (cancelled games excepted) and record the table in design.md
 - [ ] 2.3 final `baseballpy compact` and `baseballpy catalog layout` with no MIXED_SCHEMA; `read("award_recipients")` returns slugs for all rows (closes B-306)
 - [ ] 2.4 `baseballpy catalog audit` against the providers (needs no download running) with no MISSING, REVIVED or ERROR finding
 - [x] 3.1 the five default datasets still missing (`standings_first_half`, `standings_second_half`, `stats_season_advanced_catching`, `stats_season_advanced_fielding`, `stats_season_advanced_game`): fixed, or marked with a note and probe evidence

@@ -19,3 +19,13 @@ C: is 238 GB with 21 GB free. The lake is 72.9 GB: processed 38.8 GB (mlb_api 31
 ## Compaction in the queue (found by the first unattended run)
 `compact --source mlb_api` also rewrote every old file (the ADR 87 migration) and spent 25+ minutes CPU bound before the next download could start. The queue now passes `--no-migrate`; the migration is task 2.3, run on its own when the downloads are done.
 
+
+## As built: task 2.2, per-game coverage 2008-2026 (2026-11-12)
+
+For every season, the finished major-league games of `schedule_hydrated` (`sport_id` 1, status Final) were checked for rows in each per-game dataset (13 datasets, from the processed files after the segment rebuild).
+
+- Complete for every dataset except the cases below. `game_boxscore_pitching_notes` is empty for about two thirds of the games each season on purpose: the provider lists pitching notes only for games that have any (for example 2024: 2,112 of 2,940 games have none).
+- Ten finished games lack core rows, and the provider itself holds nothing for them (checked 2026-11-12 against `v1/game/{pk}/linescore`, `playByPlay` and `boxscore`):
+  - exhibition games `277489` (2010-03-03), `305461` (2011-02-25), `305471` (2011-02-27), `308207` (2011-03-04), `310735` (2011-03-30), `335533` (2012-04-03): no innings and no plays (two boxscore answers are HTTP 500);
+  - summer-camp games `632099` and `632172` (2020-07-20) and regular-season games `745873` (2024-08-10) and `746402` (2024-05-03): the provider's linescore has no innings, while their play by play (64 to 77 plays) is stored.
+No other finished major-league game is missing a row in any per-game dataset, 2008 to 2026.
