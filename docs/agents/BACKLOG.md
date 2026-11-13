@@ -540,7 +540,7 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-323 | `finish-mlb-history 2.1`: run the history plan unattended and record time and size per season | LONG | design.md has the table |
 | B-324 | finish-mlb-history 2.2: verify per-game coverage for 2008 to 2026 | DONE | table in design.md |
 | B-325 | finish-mlb-history 2.3: final compact, layout clean, read award_recipients (closes B-306) | DONE | catalog layout has no MIXED_SCHEMA |
-| B-326 | `finish-mlb-history 2.4`: catalog audit against the providers | OPEN | no MISSING, REVIVED or ERROR |
+| B-326 | finish-mlb-history 2.4: catalog audit against the providers | DONE | no MISSING, REVIVED or ERROR |
 | B-327 | finish-mlb-history 3.1: five default datasets still missing | DONE | fixed or noted with evidence |
 | B-328 | `finish-mlb-history 3.2`: type the rare fields still in _extras | OPEN | no schema_drift for them |
 | B-329 | finish-mlb-history 3.3: open batched-chunk-writes (speed) | DONE | change openspec/changes/batched-chunk-writes/ opened with proposal, design, tasks, and spec delta |

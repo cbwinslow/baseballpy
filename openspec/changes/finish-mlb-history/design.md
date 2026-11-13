@@ -33,3 +33,10 @@ No other finished major-league game is missing a row in any per-game dataset, 20
 ## Forced segment rebuild (task 2.3)
 
 `rebuild-segments mlb_api --season Y --apply --force --remove-legacy` ran for 2008 to 2026. Every season reported "Same: yes" (rebuilt rows equal the old rows). `catalog layout` now shows no MIXED_SCHEMA. `read("award_recipients")` has 43,481 rows and no empty `request_award_id` (646 distinct slugs). Remaining layout findings are not schema problems: TINY_FILES and SMALL_ROW_GROUPS (mlb_api, fangraphs, retrosheet), 3 ORPHAN_COMPACT in season 2023 and 2 EMPTY_FILES in statcast.
+
+## Layout fixes and provider audit (tasks 2.3 and 2.4)
+
+- `baseballpy compact` on FanGraphs and Statcast: 766 FanGraphs chunk files became 11; 2 zero-row Statcast leaderboard files were removed. Layout no longer lists them.
+- Three chunks of season 2023 (`team_roster_all_time` team 404, `team_roster_coach` team 479, `award_recipients` ALREL) were recorded as compacted but their rows were not in the compact file, although the raw files hold them (1,178, 4 and 1 award records). They were lost in a compaction on 8 Nov that overlapped a download; the compact-one-writer change closed that hole. Repaired by `ingest mlb_api -s 2023 -d ... --refresh` and compacting again: team 404 has 1,178 rows, team 479 has 4. No ORPHAN_COMPACT is left.
+- `baseballpy catalog audit` (mlb_api and statcast) printed `[]`: no MISSING, REVIVED or ERROR finding.
+- Layout findings left are advice only: TINY_FILES for mlb_api (13 datasets whose season folder holds more than 10 segment files by design) and SMALL_ROW_GROUPS (mlb_api, retrosheet).

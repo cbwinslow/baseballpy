@@ -6,7 +6,7 @@
 - [ ] 2.1 run the plan with `baseballpy run plans/mlb-games-history.toml --every 24h` and record the time and compacted size per season in design.md
 - [x] 2.2 verify coverage: for every season 2008 to 2026, every finished major-league game has rows in every per-game dataset (cancelled games excepted) and record the table in design.md
 - [x] 2.3 final `baseballpy compact` and `baseballpy catalog layout` with no MIXED_SCHEMA; `read("award_recipients")` returns slugs for all rows (closes B-306)
-- [ ] 2.4 `baseballpy catalog audit` against the providers (needs no download running) with no MISSING, REVIVED or ERROR finding
+- [x] 2.4 `baseballpy catalog audit` against the providers (needs no download running) with no MISSING, REVIVED or ERROR finding
 - [x] 3.1 the five default datasets still missing (`standings_first_half`, `standings_second_half`, `stats_season_advanced_catching`, `stats_season_advanced_fielding`, `stats_season_advanced_game`): fixed, or marked with a note and probe evidence
 - [ ] 3.2 type the rare fields still in `_extras` (reschedule fields, draft `xrefIds`, affiliate conference, roster `parentTeamId` and `note`) by sampling rows that carry them
 - [x] 3.3 open the change `batched-chunk-writes`: fewer files and manifest writes per game (the profile in this change's design)
