@@ -76,6 +76,39 @@ def test_promote_emptied_extras_become_null(spec: DatasetSpec) -> None:
     assert new[SLUG].to_pylist() == ["a"] and new[EXTRAS].to_pylist() == [None]
 
 
+def test_promote_keeps_a_null_extras_cell_null_when_another_row_had_the_value(
+    spec: DatasetSpec,
+) -> None:
+    table = _full(spec, 2, slug=False, season=2008)
+    table = table.set_column(
+        table.schema.get_field_index(EXTRAS),
+        EXTRAS,
+        pa.array([json.dumps({KEY: "a"}), None], pa.string()),
+    )
+    new = promote_extras(_old(table), spec.schema, source="mlb_api", dataset=spec.name)
+    assert new[SLUG].to_pylist() == ["a", None]
+    assert new[EXTRAS].to_pylist() == [None, None], "a row with no extras gets no key list"
+
+
+def test_migration_turns_null_only_extras_into_null_in_a_current_file(
+    spec: DatasetSpec, tmp_path: Path
+) -> None:
+    cfg = LakeConfig(home=tmp_path)
+    store = ProcessedStore(cfg)
+    table = _full(spec, 3, slug=True, season=2025)
+    table = table.set_column(
+        table.schema.get_field_index(EXTRAS),
+        EXTRAS,
+        pa.array(['{"a":null,"b":null}', '{"a":null,"b":2}', None], pa.string()),
+    )
+    store.put(spec, table, chunk_id="c", season=2025)
+    report = migrate_dataset(spec, cfg)
+    assert report.files_rewritten == 1 and not report.failed
+    again = pq.read_table(store.part_path(spec, "c", 2025))
+    assert again[EXTRAS].to_pylist() == [None, '{"a":null,"b":2}', None]
+    assert migrate_dataset(spec, cfg).files_rewritten == 0, "a clean file is not rewritten again"
+
+
 @pytest.fixture
 def lake(tmp_path: Path, spec: DatasetSpec) -> LakeConfig:
     """Season 2008 written before the slug column existed (old file, old fingerprint), 2025 after."""

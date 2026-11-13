@@ -705,14 +705,14 @@ Draft prospects of a year.
 | `is_drafted` | bool | yes | `isDrafted` | TODO |
 | `is_pass` | bool | yes | `isPass` | TODO |
 | `year` | string | yes | — | TODO |
-| `person_primary_number` | string | yes | `person.primaryNumber` | TODO |
 | `person_name_title` | string | yes | `person.nameTitle` | TODO |
 | `person_name_suffix` | string | yes | `person.nameSuffix` | TODO |
+| `is_withdrawn` | bool | yes | `isWithdrawn` | TODO |
+| `person_primary_number` | string | yes | `person.primaryNumber` | TODO |
+| `person_mlb_debut_date` | date32[day] | yes | `person.mlbDebutDate` | TODO |
 | `rank` | int32 | yes | — | TODO |
 | `scouting_report` | string | yes | `scoutingReport` | TODO |
 | `blurb` | string | yes | — | TODO |
-| `is_withdrawn` | bool | yes | `isWithdrawn` | TODO |
-| `person_mlb_debut_date` | date32[day] | yes | `person.mlbDebutDate` | TODO |
 | `person_pronunciation` | string | yes | `person.pronunciation` | TODO |
 | `person_name_matrilineal` | string | yes | `person.nameMatrilineal` | TODO |
 | `person_nick_name` | string | yes | `person.nickName` | Name of the person nick. (authored) |
@@ -721,6 +721,7 @@ Draft prospects of a year.
 | `person_death_city` | string | yes | `person.deathCity` | TODO |
 | `person_death_state_province` | string | yes | `person.deathStateProvince` | TODO |
 | `person_death_country` | string | yes | `person.deathCountry` | TODO |
+| `person_xref_ids` | string | yes | `person.xrefIds` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.draft_prospects -->
@@ -2133,6 +2134,11 @@ Postseason games of a season.
 | `record_source` | string | yes | `recordSource` | TODO |
 | `if_necessary` | string | yes | `ifNecessary` | TODO |
 | `if_necessary_description` | string | yes | `ifNecessaryDescription` | TODO |
+| `reschedule_date` | timestamp[us, tz=UTC] | yes | `rescheduleDate` | TODO |
+| `reschedule_game_date` | date32[day] | yes | `rescheduleGameDate` | TODO |
+| `status_reason` | string | yes | `status.reason` | TODO |
+| `rescheduled_from` | timestamp[us, tz=UTC] | yes | `rescheduledFrom` | TODO |
+| `rescheduled_from_date` | date32[day] | yes | `rescheduledFromDate` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.schedule_postseason -->
@@ -5866,6 +5872,9 @@ Minor-league affiliates of every MLB club.
 | `spring_venue_id` | int32 | yes | `springVenue.id` | MLBAM identifier of the spring venue. (authored) |
 | `spring_venue_link` | string | yes | `springVenue.link` | Relative MLB Stats API path of the spring venue resource (prefix https://statsapi.mlb.com). (authored) |
 | `placeholder` | bool | yes | — | TODO |
+| `conference_id` | int32 | yes | `conference.id` | TODO |
+| `conference_name` | string | yes | `conference.name` | TODO |
+| `conference_link` | string | yes | `conference.link` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_affiliates -->
@@ -6055,6 +6064,8 @@ Team roster, type 40Man.
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
 | `status_code` | string | yes | `status.code` | Code of the status. (authored) |
 | `status_description` | string | yes | `status.description` | TODO |
+| `parent_team_id` | int32 | yes | `parentTeamId` | MLBAM identifier of the parent team. (authored) |
+| `note` | string | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_roster_40_man -->
@@ -6083,6 +6094,7 @@ Team roster, type active.
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
 | `status_code` | string | yes | `status.code` | Code of the status. (authored) |
 | `status_description` | string | yes | `status.description` | TODO |
+| `parent_team_id` | int32 | yes | `parentTeamId` | MLBAM identifier of the parent team. (authored) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_roster_active -->
@@ -6139,6 +6151,8 @@ Team roster, type fullRoster.
 | `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
 | `status_code` | string | yes | `status.code` | Code of the status. (authored) |
 | `status_description` | string | yes | `status.description` | TODO |
+| `parent_team_id` | int32 | yes | `parentTeamId` | MLBAM identifier of the parent team. (authored) |
+| `note` | string | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.team_roster_full_roster -->
@@ -16085,6 +16099,9 @@ Every player line of a game boxscore (person, position, batting/pitching/fieldin
 | `stats_batting_note` | string | yes | `stats.batting.note` | TODO |
 | `teams_team_parent_org_name` | string | yes | `teams.team.parentOrgName` | TODO |
 | `teams_team_parent_org_id` | int32 | yes | `teams.team.parentOrgId` | TODO |
+| `teams_team_conference_id` | int32 | yes | `teams.team.conference.id` | TODO |
+| `teams_team_conference_name` | string | yes | `teams.team.conference.name` | TODO |
+| `teams_team_conference_link` | string | yes | `teams.team.conference.link` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.game_boxscore_players -->
@@ -16403,6 +16420,12 @@ Team totals of a game boxscore (team, teamStats, batters/pitchers/bench/bullpen 
 | `teams_team_parent_org_id` | int32 | yes | `teams.team.parentOrgId` | TODO |
 | `team_parent_org_name` | string | yes | `team.parentOrgName` | Name of the team parent org. (authored) |
 | `team_parent_org_id` | int32 | yes | `team.parentOrgId` | MLBAM identifier of the team parent org. (authored) |
+| `teams_team_conference_id` | int32 | yes | `teams.team.conference.id` | TODO |
+| `teams_team_conference_name` | string | yes | `teams.team.conference.name` | TODO |
+| `teams_team_conference_link` | string | yes | `teams.team.conference.link` | TODO |
+| `team_conference_id` | int32 | yes | `team.conference.id` | TODO |
+| `team_conference_name` | string | yes | `team.conference.name` | TODO |
+| `team_conference_link` | string | yes | `team.conference.link` | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.game_boxscore_teams -->

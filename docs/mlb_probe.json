@@ -1,5 +1,5 @@
 {
- "probed_on": "2026-11-12",
+ "probed_on": "2026-11-13",
  "endpoints": {
   "stats_projected_hitting": {
    "status": "ok",
@@ -3027,10 +3027,10 @@
    "status": "ok",
    "route": "direct",
    "fallback_pages": 0,
-   "requests_ok": 2,
+   "requests_ok": 3,
    "requests_failed": 0,
-   "sample_rows": 1371,
-   "columns": 36,
+   "sample_rows": 1395,
+   "columns": 39,
    "key_unique_per_request": true
   },
   "team_history": {
@@ -3077,20 +3077,20 @@
    "status": "ok",
    "route": "direct",
    "fallback_pages": 0,
-   "requests_ok": 30,
+   "requests_ok": 33,
    "requests_failed": 0,
-   "sample_rows": 1649,
-   "columns": 12,
+   "sample_rows": 1753,
+   "columns": 13,
    "key_unique_per_request": true
   },
   "team_roster_40_man": {
    "status": "ok",
    "route": "direct",
    "fallback_pages": 0,
-   "requests_ok": 30,
+   "requests_ok": 33,
    "requests_failed": 0,
-   "sample_rows": 1649,
-   "columns": 12,
+   "sample_rows": 1757,
+   "columns": 14,
    "key_unique_per_request": true
   },
   "team_roster_full_season": {
@@ -3107,10 +3107,10 @@
    "status": "ok",
    "route": "direct",
    "fallback_pages": 0,
-   "requests_ok": 30,
+   "requests_ok": 33,
    "requests_failed": 0,
-   "sample_rows": 1649,
-   "columns": 12,
+   "sample_rows": 2462,
+   "columns": 14,
    "key_unique_per_request": true
   },
   "team_roster_non_roster_invitees": {
@@ -3287,21 +3287,21 @@
    "status": "ok",
    "route": "direct",
    "fallback_pages": 0,
-   "requests_ok": 2,
+   "requests_ok": 3,
    "requests_failed": 0,
-   "sample_rows": 3951,
-   "columns": 105,
+   "sample_rows": 9303,
+   "columns": 106,
    "key_unique_per_request": false
   },
   "schedule_postseason": {
    "status": "ok",
    "route": "direct",
    "fallback_pages": 0,
-   "requests_ok": 2,
+   "requests_ok": 4,
    "requests_failed": 0,
-   "sample_rows": 79,
-   "columns": 65,
-   "key_unique_per_request": true
+   "sample_rows": 155,
+   "columns": 70,
+   "key_unique_per_request": false
   },
   "schedule_postseason_series": {
    "status": "ok",
@@ -3507,20 +3507,20 @@
    "status": "ok",
    "route": "direct",
    "fallback_pages": 0,
-   "requests_ok": 32,
+   "requests_ok": 34,
    "requests_failed": 0,
-   "sample_rows": 1821,
-   "columns": 610,
+   "sample_rows": 2002,
+   "columns": 613,
    "key_unique_per_request": true
   },
   "game_boxscore_teams": {
    "status": "ok",
    "route": "direct",
    "fallback_pages": 0,
-   "requests_ok": 32,
+   "requests_ok": 34,
    "requests_failed": 0,
-   "sample_rows": 64,
-   "columns": 302,
+   "sample_rows": 68,
+   "columns": 308,
    "key_unique_per_request": true
   },
   "game_boxscore_officials": {

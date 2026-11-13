@@ -43,7 +43,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
 | `statcast` | 50 | archived | yes | yes | yes | 321/1765 (18%) | 17 |
-| `mlb_api` | 365 | archived | yes | yes | yes | 9565/16903 (56%) | 28 |
+| `mlb_api` | 365 | archived | yes | yes | yes | 9568/16926 (56%) | 28 |
 
 ## Active changes (`openspec/changes/`)
 
@@ -55,7 +55,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
 | `download-throughput` | 8 | 1 | 2.4 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 12 | 3 | 2.1, 3.2, 4.1 |
+| `finish-mlb-history` | 13 | 2 | 2.1, 4.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 5 | 1 | 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
@@ -183,6 +183,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 115: Provider Duplicates Are Kept And Reported; Spaces Round A Cell Are Trimmed; Empty Text Is NULL
 - ADR 116: League-Wide Stats Page-Boundary Lists Stay In The Raw Page, Not On Every Row
 - ADR 117: Chunks Filled By The Hydrate Fallback Are Provisional
+- ADR 118: Rare Fields Are Sampled On Purpose; A Migration Never Writes Null-Only `_extras`
 
 ## Documentation pages (`docs/`)
 

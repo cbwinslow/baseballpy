@@ -125,7 +125,7 @@ def _without_keys(extras: pa.ChunkedArray, keys: list[str]) -> pa.Array:
     try:
         con.register("t", pa.table({"e": extras}))
         result = con.sql(
-            "SELECT CASE WHEN json_merge_patch(e, ?)::VARCHAR = '{}' THEN NULL "
+            "SELECT CASE WHEN e IS NULL OR json_merge_patch(e, ?)::VARCHAR = '{}' THEN NULL "
             "ELSE json_merge_patch(e, ?)::VARCHAR END FROM t",
             params=[patch, patch],
         ).to_arrow_table()
@@ -136,6 +136,45 @@ def _without_keys(extras: pa.ChunkedArray, keys: list[str]) -> pa.Array:
 
 def _differs(path: Path, schema: pa.Schema) -> bool:
     return not pq.read_schema(path).equals(schema, check_metadata=False)
+
+
+#: a JSON object whose members are all null (merging an object with itself drops null members)
+_COUNT_NULL_ONLY = (
+    "SELECT count(*) FROM read_parquet(?) WHERE _extras IS NOT NULL "
+    "AND json_merge_patch(_extras, _extras)::VARCHAR = '{}'"
+)
+_CLEAR_NULL_ONLY = (
+    "SELECT CASE WHEN _extras IS NOT NULL AND json_merge_patch(_extras, _extras)::VARCHAR = '{}' "
+    "THEN NULL ELSE _extras END FROM t"
+)
+
+
+def _has_null_only_extras(path: Path) -> bool:
+    """True when a row of the file holds an ``_extras`` object with nothing but null members."""
+    if EXTRAS not in pq.read_schema(path).names:
+        return False
+    con = duckdb.connect()
+    try:
+        row = con.execute(_COUNT_NULL_ONLY, [str(path)]).fetchone()
+    finally:
+        con.close()
+    return bool(row and row[0])
+
+
+def _clear_null_only_extras(table: pa.Table) -> pa.Table:
+    """``table`` with every null-only ``_extras`` object turned into NULL (an older migration wrote them)."""
+    if EXTRAS not in table.column_names:
+        return table
+    con = duckdb.connect()
+    try:
+        con.register("t", pa.table({"_extras": table[EXTRAS]}))
+        result = con.sql(_CLEAR_NULL_ONLY).to_arrow_table()
+    finally:
+        con.close()
+    column = result.column(0).combine_chunks().cast(pa.string())
+    return table.set_column(
+        table.schema.get_field_index(EXTRAS), table.schema.field(EXTRAS), column
+    )
 
 
 def _rewrite(path: Path, spec: DatasetSpec, quarantine: Quarantine, counts: dict[str, int]) -> int:
@@ -151,6 +190,7 @@ def _rewrite(path: Path, spec: DatasetSpec, quarantine: Quarantine, counts: dict
         quarantine=quarantine,
         counts=counts,
     )
+    done = _clear_null_only_extras(done)
     if done.num_rows != table.num_rows:
         raise ValueError(f"{path.name}: {done.num_rows} rows after migration, had {table.num_rows}")
     for (
@@ -207,7 +247,7 @@ def migrate_dataset(
         if path.name.startswith("seg-"):
             continue  # a segment file is rebuilt from raw, never rewritten: its commit line names its sha256
         report.files_checked += 1
-        if not _differs(path, spec.schema):
+        if not _differs(path, spec.schema) and not _has_null_only_extras(path):
             continue
         old_print = spec_fingerprint(replace(spec, schema=pq.read_schema(path)))
         report.files_rewritten += 1

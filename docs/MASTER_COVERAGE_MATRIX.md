@@ -143,13 +143,13 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `divisions_season` | `mlb_divisions_season` | `season` | 16 | `id` | Divisions of a season. |
 | `draft` | `mlb_draft` | `season` | 9 | `year`, `pick_overall` | First-year player draft picks. |
 | `draft_picks` | `mlb_draft_picks` | `season` | 85 | `pick_number`, `pick_round` | Every pick of a draft year with the person, school, scouting and signing fields. |
-| `draft_prospects` | `mlb_draft_prospects` | `season` | 106 | `person_id`, `year` | Draft prospects of a year. |
+| `draft_prospects` | `mlb_draft_prospects` | `season` | 107 | `person_id`, `year` | Draft prospects of a year. |
 | `free_agents` | `mlb_free_agents` | `season` | 19 | `player_id` | Free agents of a season. |
 | `game_boxscore_info` | `mlb_game_boxscore_info` | `season` | 4 | `game_pk`, `label` | Game info label/value lines (weather, attendance, venue, first pitch, ...). |
 | `game_boxscore_officials` | `mlb_game_boxscore_officials` | `season` | 7 | `game_pk`, `official_type` | Umpires of a game from the boxscore. |
 | `game_boxscore_pitching_notes` | `mlb_game_boxscore_pitching_notes` | `season` | 3 | `game_pk`, `value` | Pitching notes of a game (one text line each). |
-| `game_boxscore_players` | `mlb_game_boxscore_players` | `season` | 611 | `game_pk`, `teams_key`, `person_id` | Every player line of a game boxscore (person, position, batting/pitching/fielding stats, season stats, game status) with its team context. |
-| `game_boxscore_teams` | `mlb_game_boxscore_teams` | `season` | 303 | `game_pk`, `teams_key` | Team totals of a game boxscore (team, teamStats, batters/pitchers/bench/bullpen id lists and info as JSON). |
+| `game_boxscore_players` | `mlb_game_boxscore_players` | `season` | 614 | `game_pk`, `teams_key`, `person_id` | Every player line of a game boxscore (person, position, batting/pitching/fielding stats, season stats, game status) with its team context. |
+| `game_boxscore_teams` | `mlb_game_boxscore_teams` | `season` | 309 | `game_pk`, `teams_key` | Team totals of a game boxscore (team, teamStats, batters/pitchers/bench/bullpen id lists and info as JSON). |
 | `game_boxscore_top_performers` | `mlb_game_boxscore_top_performers` | `season` | 235 | `game_pk`, `type`, `player_person_id` | Top performers of a game from the boxscore. |
 | `game_changes` | `mlb_game_changes` | `none` | 70 | `game_pk` | Games changed since a timestamp (incremental sync log; append-only). |
 | `game_feed_linescore_innings` | `mlb_game_feed_linescore_innings` | `season` | 12 | `game_pk`, `num` | Inning-by-inning linescore from the live feed. |
@@ -347,7 +347,7 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `rosters` | `mlb_rosters` | `none` | 7 | `team_id`, `player_id` | Active team rosters. |
 | `schedule` | `mlb_schedule` | `season` | 16 | `game_pk` | Game schedule. |
 | `schedule_hydrated` | `mlb_schedule_hydrated` | `season` | 293 | `game_pk`, `dates_date`, `sport_id` | Season schedule with team, linescore, decisions, probable pitchers, officials, weather, venue, broadcasts, series and flags hydrated. |
-| `schedule_postseason` | `mlb_schedule_postseason` | `season` | 66 | `game_pk` | Postseason games of a season. |
+| `schedule_postseason` | `mlb_schedule_postseason` | `season` | 71 | `game_pk` | Postseason games of a season. |
 | `schedule_postseason_series` | `mlb_schedule_postseason_series` | `season` | 10 | `series_id` | Postseason series of a season. |
 | `seasons_all` | `mlb_seasons_all` | `none` | 22 | `season_id` | Every season of a sport (calendar dates). |
 | `standings` | `mlb_standings` | `season` | 13 | `season`, `team_id` | League and division standings. |
@@ -427,17 +427,17 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `stats_stats_single_season_fielding` | `mlb_stats_stats_single_season_fielding` | `season` | 52 | `player_id`, `team_id`, `sport_id`, `league_id`, `season`, `position_abbreviation` | League-wide fielding stats, type statsSingleSeason (player pool ALL). |
 | `stats_stats_single_season_hitting` | `mlb_stats_stats_single_season_hitting` | `season` | 62 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide hitting stats, type statsSingleSeason (player pool ALL). |
 | `stats_stats_single_season_pitching` | `mlb_stats_stats_single_season_pitching` | `season` | 90 | `player_id`, `team_id`, `sport_id`, `league_id`, `season` | League-wide pitching stats, type statsSingleSeason (player pool ALL). |
-| `team_affiliates` | `mlb_team_affiliates` | `season` | 37 | `id`, `parent_org_id` | Minor-league affiliates of every MLB club. |
+| `team_affiliates` | `mlb_team_affiliates` | `season` | 40 | `id`, `parent_org_id` | Minor-league affiliates of every MLB club. |
 | `team_alumni` | `mlb_team_alumni` | `season` | 54 | `team_id`, `id` | Club alumni (hitting) of a season. |
 | `team_coaches` | `mlb_team_coaches` | `season` | 10 | `team_id`, `person_id`, `job` | Coaching staff of a club-season. A coach who changed jersey number appears twice (an empty jersey number is NULL, so it cannot be a key part): the key is not unique. |
 | `team_history` | `mlb_team_history` | `none` | 27 | `id`, `season` | Franchise history (names/locations by season). |
 | `team_personnel` | `mlb_team_personnel` | `season` | 10 | `team_id`, `person_id`, `job` | Non-playing personnel of a club-season. The provider repeats a row for one person: the key is not unique. |
-| `team_roster_40_man` | `mlb_team_roster_40_man` | `season` | 13 | `team_id`, `person_id`, `position_code` | Team roster, type 40Man. |
-| `team_roster_active` | `mlb_team_roster_active` | `season` | 13 | `team_id`, `person_id`, `position_code` | Team roster, type active. |
+| `team_roster_40_man` | `mlb_team_roster_40_man` | `season` | 15 | `team_id`, `person_id`, `position_code` | Team roster, type 40Man. |
+| `team_roster_active` | `mlb_team_roster_active` | `season` | 14 | `team_id`, `person_id`, `position_code` | Team roster, type active. |
 | `team_roster_all_time` | `mlb_team_roster_all_time` | `season` | 15 | `team_id`, `person_id`, `position_code` | Team roster, type allTime. |
 | `team_roster_coach` | `mlb_team_roster_coach` | `season` | 10 | `team_id`, `person_id`, `job` | Team roster, type coach. |
 | `team_roster_depth_chart` | `mlb_team_roster_depth_chart` | `season` | 13 | `team_id`, `person_id`, `position_code` | Team roster, type depthChart. |
-| `team_roster_full_roster` | `mlb_team_roster_full_roster` | `season` | 13 | `team_id`, `person_id`, `position_code` | Team roster, type fullRoster. |
+| `team_roster_full_roster` | `mlb_team_roster_full_roster` | `season` | 15 | `team_id`, `person_id`, `position_code` | Team roster, type fullRoster. |
 | `team_roster_full_season` | `mlb_team_roster_full_season` | `season` | 13 | `team_id`, `person_id`, `position_code` | Team roster, type fullSeason. |
 | `team_roster_gameday` | `mlb_team_roster_gameday` | `season` | 14 | `team_id`, `person_id`, `position_code` | Team roster, type gameday. |
 | `team_roster_non_roster_invitees` | `mlb_team_roster_non_roster_invitees` | `season` | 13 | `team_id`, `person_id`, `position_code` | Team roster, type nonRosterInvitees. |

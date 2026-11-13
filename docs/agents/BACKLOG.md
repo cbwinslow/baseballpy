@@ -542,7 +542,7 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-325 | finish-mlb-history 2.3: final compact, layout clean, read award_recipients (closes B-306) | DONE | catalog layout has no MIXED_SCHEMA |
 | B-326 | finish-mlb-history 2.4: catalog audit against the providers | DONE | no MISSING, REVIVED or ERROR |
 | B-327 | finish-mlb-history 3.1: five default datasets still missing | DONE | fixed or noted with evidence |
-| B-328 | `finish-mlb-history 3.2`: type the rare fields still in _extras | OPEN | no schema_drift for them |
+| B-328 | finish-mlb-history 3.2: type the rare fields still in _extras | DONE | no schema_drift for them |
 | B-329 | finish-mlb-history 3.3: open batched-chunk-writes (speed) | DONE | change openspec/changes/batched-chunk-writes/ opened with proposal, design, tasks, and spec delta |
 | B-330 | finish-mlb-history 3.4: live end-to-end test of the streamer | DONE | a real game streamed and a stored game replayed |
 | B-331 | `finish-mlb-history 4.1`: v1 release steps of RELEASING.md | OWNER | TestPyPI install works; the owner tags |

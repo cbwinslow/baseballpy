@@ -101,13 +101,28 @@ EXTRA_SEASONS = {
     "team_alumni": (1990, 1965),
     # `notes` appears on some older awards (found by the same 1990 run)
     "award_recipients": (1990, 1969, 2025),
+    # rare fields found in the lake's `_extras` (B-328): `parentTeamId` and `note` only exist in 2026
+    # rosters, the reschedule fields in a few postseasons, `xrefIds` in the 2019 draft
+    "team_roster_active": (2026,),
+    "team_roster_40_man": (2026,),
+    "team_roster_full_roster": (2026,),
+    "schedule_postseason": (2022, 2009),
+    "draft_prospects": (2019,),
+    # minor-league conferences only exist in 2008 to 2020 affiliates
+    "team_affiliates": (2012,),
+}
+#: extra teams for the extra seasons above (118 has the roster `note`)
+EXTRA_SEASON_TEAMS = {
+    "team_roster_active": (118,),
+    "team_roster_40_man": (118,),
+    "team_roster_full_roster": (118,),
 }
 SAMPLE_TEAMS = (147, 119)
 #: placeholder teams ("AL Champion", id 21) carry fields real teams lack (`placeholder`), found by a 2025 run
 PLACEHOLDER_TEAMS = {"team_affiliates": (21,)}
 # 745000, 775296: fixed 2024 games; the rest carry fields most games lack (challenge details with a
 # player, additional reviews, an injury type), found by their `schema_drift` in the lake (B-309)
-SAMPLE_GAMES = (745000, 775296, 777922, 778103, 781610, 787940, 776443, 777295)
+SAMPLE_GAMES = (745000, 775296, 777922, 778103, 781610, 787940, 776443, 777295, 257753, 427504)
 SAMPLE_PEOPLE = tuple(
     (pid, "")
     for pid in (
@@ -733,7 +748,15 @@ def main() -> int:
         started = time.perf_counter()
         use = sample_contexts(ep, ctxs, all_sports)
         for year in EXTRA_SEASONS.get(ep.name, ()):
-            use = [*use, Context(season=year, sport_ids=(1,), team_ids=SAMPLE_TEAMS, **EXTRA_CTX)]
+            use = [
+                *use,
+                Context(
+                    season=year,
+                    sport_ids=(1,),
+                    team_ids=(*SAMPLE_TEAMS, *EXTRA_SEASON_TEAMS.get(ep.name, ())),
+                    **EXTRA_CTX,
+                ),
+            ]
         result = profile(http, ep, use, requests_for)
         records = result["records"]
         status = "ok" if records else "empty"
