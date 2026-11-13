@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 15 | 21 | 61 |
+| `lake-access` | 16 | 22 | 62 |
 | `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -184,6 +184,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 116: League-Wide Stats Page-Boundary Lists Stay In The Raw Page, Not On Every Row
 - ADR 117: Chunks Filled By The Hydrate Fallback Are Provisional
 - ADR 118: Rare Fields Are Sampled On Purpose; A Migration Never Writes Null-Only `_extras`
+- ADR 119: A Key-Unique View Over Pitches (The Dataset Keeps The Provider's Repeats)
 
 ## Documentation pages (`docs/`)
 
