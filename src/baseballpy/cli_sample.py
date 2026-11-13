@@ -32,8 +32,16 @@ console = Console()
     help="Bound the per-game or per-person fan-out.",
 )
 @click.option("--keep", is_flag=True, help="Keep the scratch home (its path is printed).")
+@click.option(
+    "--all", "show_all", is_flag=True, help="Print every difference (default: the first 30)."
+)
 def verify_sample_cmd(
-    source: str, seasons: str | None, datasets: tuple[str, ...], limit: int | None, keep: bool
+    source: str,
+    seasons: str | None,
+    datasets: tuple[str, ...],
+    limit: int | None,
+    keep: bool,
+    show_all: bool,
 ) -> None:
     """Download a small sample into a scratch home and compare it with the lake.
 
@@ -68,14 +76,17 @@ def verify_sample_cmd(
         str(report.raw_identical),
     )
     console.print(table)
-    for difference in report.differences[:30]:
+    shown = report.differences if show_all else report.differences[:30]
+    for difference in shown:
         colour = "yellow" if difference.kind == sample_module.MISSING_IN_LAKE else "red"
         console.print(
             f"[{colour}]{difference.kind}[/{colour}] {difference.source}.{difference.dataset} "
             f"{difference.item}: {difference.detail}"
         )
-    if len(report.differences) > 30:
-        console.print(f"... and {len(report.differences) - 30} more")
+    if len(report.differences) > len(shown):
+        console.print(
+            f"... and {len(report.differences) - len(shown)} more (use --all for every one)"
+        )
     if report.failed:
         raise click.ClickException("the sample differs from the lake (see above)")
     if report.missing_in_lake:

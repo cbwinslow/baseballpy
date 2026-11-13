@@ -213,9 +213,9 @@ typed Parquet part per request.
 
 ### League-wide player pools and the hydrate fallback (ADR 53, ADR 55)
 
-`/v1/stats` with `playerPool=ALL` answered **HTTP 406** from 2026-10-29 to the start of 2026-11-12, when it
-answered 200 again (path-level; see
-`openspec/changes/archive/2026-11-12-mlb-stats-route-406-and-deep-pools/design.md`). The direct route is used
+`/v1/stats` with `playerPool=ALL` answered **HTTP 406** from 2026-10-29 and again after 19:45 local time on
+2026-11-12; it answered 200 between about 16:00 and 19:15 that day, so it is intermittent (path-level; see
+`openspec/changes/mlb-stats-route-406-and-deep-pools/design.md`). The direct route is used
 first; when a pool's stat type has a per-person equivalent and the route is refused again, the extractor builds the same pool from
 `GET /v1/people?personIds=<ids>&hydrate=stats(...)`:
 
@@ -280,9 +280,9 @@ Three statuses occur:
   and `standings_postseason`.
 
 `/v1/stats` (the league-wide player pools) is not itself listed as a status: the route answered HTTP 406
-from 2026-10-29 until 2026-11-12 (B-30/B-32, evidence in
-`openspec/changes/archive/2026-11-12-mlb-stats-route-406-and-deep-pools/design.md`) and was then refetched
-for every season (B-35, ADR 116). If it is refused again, pools with a per-person equivalent are
+from 2026-10-29 and, after a window of 200s on 2026-11-12, again from 19:45 (B-30/B-32, evidence in
+`openspec/changes/mlb-stats-route-406-and-deep-pools/design.md`); sport 1 of every season was refetched in the
+window, the minor sports wait for the next one (B-35, ADR 116). While it is refused, pools with a per-person equivalent are
 fetched through `/v1/people?hydrate=stats(...)` instead (ADR 53, ADR 55).
 
 ## Telemetry

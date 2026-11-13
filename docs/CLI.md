@@ -888,5 +888,6 @@ Options:
   -d, --datasets TEXT    Dataset(s) of the sample (repeatable).
   --limit INTEGER RANGE  Bound the per-game or per-person fan-out.  [x>=1]
   --keep                 Keep the scratch home (its path is printed).
+  --all                  Print every difference (default: the first 30).
   --help                 Show this message and exit.
 ```
