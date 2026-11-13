@@ -642,6 +642,54 @@ def test_a_refused_league_wide_pool_is_fetched_through_people_hydrate(
 
 
 @respx.mock
+def test_a_pool_the_fallback_filled_is_fetched_again_when_the_route_may_answer(
+    tmp_path: Path,
+) -> None:
+    """The fallback stores fewer rows than `/v1/stats`: its chunk is provisional, never final (B-35)."""
+    ep = BY_NAME["stats_stat_splits_hitting"]
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    ctx = Context(season=2024, sport_ids=(1,), sit_codes=("vr",))
+    full = _fixture("stats_stat_splits_hitting")
+    one = full["stats"][0]["splits"][:1]
+    page = {**full, "stats": [{**full["stats"][0], "totalSplits": 1, "splits": one}]}
+    player_id = int(one[0]["player"]["id"])
+    stats = respx.get(f"{MLB_BASE_URL}/v1/stats").mock(return_value=httpx.Response(406))
+    respx.get(f"{MLB_BASE_URL}/v1/sports/1/players").mock(
+        return_value=httpx.Response(200, json={"people": [{"id": player_id}]})
+    )
+    respx.get(f"{MLB_BASE_URL}/v1/people").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "people": [{"id": player_id, "stats": [{"splits": page["stats"][0]["splits"][:1]}]}]
+            },
+        )
+    )
+    extractor.ingest(ep, ctx)
+    manifest = lake.dataset_manifest("mlb_api", ep.name)
+    assert any((e or {}).get("via") == "hydrate" for e in manifest.chunks().values()), (
+        "the chunk says the fallback filled it"
+    )
+    assert stats.call_count == 1
+    # the route is still known to be refused: the provisional chunk is served, nothing is asked
+    extractor.ingest(ep, ctx)
+    assert stats.call_count == 1
+    # an hour later the route answers again: the provisional chunk is fetched again, on the direct route
+    assert extractor._stats_refused_at is not None
+    extractor._stats_refused_at -= generic.STATS_RETEST_SECONDS + 1
+    stats.mock(return_value=httpx.Response(200, json=page))
+    extractor.ingest(ep, ctx)
+    assert stats.call_count == 2
+    assert all((e or {}).get("via") == "direct" for e in manifest.chunks().values()), (
+        "the direct answer replaced the provisional one"
+    )
+    # and the direct chunk is final: another run asks nothing
+    extractor.ingest(ep, ctx)
+    assert stats.call_count == 2
+
+
+@respx.mock
 def test_a_season_less_pool_lists_players_for_the_request_season(tmp_path: Path) -> None:
     from baseballpy.sources.mlb_api.endpoints import Request
 

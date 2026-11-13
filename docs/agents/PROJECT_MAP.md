@@ -183,6 +183,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 114: Concurrency Is Decided From Live, Measured Memory, Not A Fixed Number
 - ADR 115: Provider Duplicates Are Kept And Reported; Spaces Round A Cell Are Trimmed; Empty Text Is NULL
 - ADR 116: League-Wide Stats Page-Boundary Lists Stay In The Raw Page, Not On Every Row
+- ADR 117: Chunks Filled By The Hydrate Fallback Are Provisional
 
 ## Documentation pages (`docs/`)
 

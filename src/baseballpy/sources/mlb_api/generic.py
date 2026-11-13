@@ -84,6 +84,11 @@ _POOL_ONLY_PARAMS = frozenset({"sportIds", "playerPool", "limit", "offset", "sta
 #: raw page names of the fallback carry this marker (the payload is people, not splits)
 HYDRATE_MARKER = ".hydrate."
 
+#: manifest key that says which route filled a league-wide pool chunk, and its two values
+VIA_KEY = "via"
+VIA_HYDRATE = "hydrate"
+VIA_DIRECT = "direct"
+
 #: hydrate-expression parameters that take a list. Inside ``stats(...)`` the provider silently keeps
 #: only the **first** value of a comma list (``sitCodes=vr,vl`` answers one split, ``[vr,vl]`` two),
 #: so every multi-value parameter is bracket-encoded (ADR 55); the person route keeps commas.
@@ -324,6 +329,27 @@ class MlbEndpointExtractor:
             and self.cache_config.is_fresh(
                 entry, endpoint.freshness, season=request.season, refresh=refresh
             )
+            and not self._filled_by_fallback(endpoint, request, entry)
+        )
+
+    def _filled_by_fallback(
+        self, endpoint: MlbEndpoint, request: Request, entry: Mapping[str, Any] | None
+    ) -> bool:
+        """A league-wide pool chunk the hydrate fallback filled, while ``/v1/stats`` is not known to be refused.
+
+        The fallback answers with fewer rows than the direct route (projected hitting 2024: 652 against
+        3,709), so its chunks are provisional: they are fetched again as soon as the route may answer. A
+        chunk written before ``via`` was recorded is recognised by its raw file names.
+        """
+        if not (endpoint.paginated and endpoint.path == "v1/stats") or self._stats_route_refused():
+            return False
+        via = (entry or {}).get(VIA_KEY)
+        if via is not None:
+            return bool(via == VIA_HYDRATE)
+        fallback = f"{request.ident}{HYDRATE_MARKER}p0.json"
+        direct = f"{request.ident}.p0.json"
+        return self.raw.exists("mlb_api", endpoint.name, fallback, request.season) and not (
+            self.raw.exists("mlb_api", endpoint.name, direct, request.season)
         )
 
     def _pool_player_ids(self, sport_id: str, season: Any) -> list[int]:
@@ -639,7 +665,18 @@ class MlbEndpointExtractor:
                         etag=result.etag or "",
                         upstream=response_fingerprint(result.content, result.etag, url),
                     )
-                self.store.put(spec, table, chunk_id=request.ident, season=request.season)
+                via = (
+                    {
+                        VIA_KEY: VIA_HYDRATE
+                        if any(HYDRATE_MARKER in name for name, _ in pages)
+                        else VIA_DIRECT
+                    }
+                    if endpoint.paginated and endpoint.path == "v1/stats"
+                    else None
+                )
+                self.store.put(
+                    spec, table, chunk_id=request.ident, season=request.season, metadata=via
+                )
             tracker.set_cache_hit(False)
             tracker.set_records(len(table))
             return table
