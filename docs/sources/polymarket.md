@@ -31,7 +31,7 @@
 - A key the probe has not seen goes to `_extras` with a one-time `schema_drift` warning; rerun the generator to type it.
 
 ## How the data is verified (2026-11-12)
-`baseballpy verify-roundtrip polymarket` counts the distinct ids in the raw JSON pages and compares them with the stored rows: `events` 11,653 and `markets` 233,923 (nested in the event pages) are exact. `outcomes` and `prices` are not counted yet.
+`baseballpy verify-roundtrip polymarket` counts the distinct ids in the raw JSON pages and compares them with the stored rows: `events` 11,653 and `markets` 233,923 (nested in the event pages) are exact. `outcomes` (467,846: every entry of each market's outcome list) and `prices` (16,043,908 distinct token and time pairs) are exact too.
 
 ## Dataset reference (generated)
 

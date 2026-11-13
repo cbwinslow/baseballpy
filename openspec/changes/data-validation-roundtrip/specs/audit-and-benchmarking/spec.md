@@ -25,4 +25,4 @@ written with a leading zero or a plus sign MUST be typed as text.
 #### Scenario: JSON page sources are checked by counting the distinct ids in the raw pages
 - **WHEN** the check runs on a Kalshi or Polymarket dataset whose raw files are gzipped JSON pages
 - **THEN** the distinct record ids in the raw pages are the rows the table must hold; a missing row is `row_missing`, an invented one `row_extra`, and the verdict says that rows were counted, not cells compared
-- Verified by `tests/test_kalshi.py::test_the_round_trip_check_counts_kalshi_pages_and_finds_a_lost_row`.
+- Verified by `tests/test_kalshi.py::test_the_round_trip_check_counts_kalshi_pages_and_finds_a_lost_row`, `tests/test_page_counts.py::test_kalshi_candlesticks_count_both_page_shapes_and_a_repeated_candle_once`, `tests/test_page_counts.py::test_polymarket_prices_are_keyed_by_the_request_token_and_the_time` and `tests/test_page_counts.py::test_polymarket_outcomes_come_from_the_outcome_list_of_each_market`.

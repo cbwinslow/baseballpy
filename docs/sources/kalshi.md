@@ -41,7 +41,7 @@ No column descriptions have been written for this source yet.
 <!-- END GENERATED:kalshi.description_sources -->
 
 ## How the data is verified (2026-11-12)
-`baseballpy verify-roundtrip kalshi` counts the distinct ids in the raw JSON pages and compares them with the stored rows: `events` 55,197 and `markets` 900,555 are exact. `series` (the raw pages list every series, the table keeps the MLB ones), `trades` and `candlesticks` are not counted yet.
+`baseballpy verify-roundtrip kalshi` counts the distinct ids in the raw JSON pages and compares them with the stored rows: `events` 55,197 and `markets` 900,555 are exact. `trades` (110,994,885 distinct trade ids) and `candlesticks` (14,903,320 distinct ticker and end-of-period pairs, read from both the single-market and the batch pages) are exact too. `series` is not counted on purpose: the raw pages list every series (4,156), the table keeps the 189 MLB ones.
 
 ## Dataset reference (generated)
 

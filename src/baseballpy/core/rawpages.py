@@ -8,26 +8,67 @@ two pages, or live and archived, is stored once).
 
 import gzip
 import json
-from collections.abc import Callable, Iterator, Sequence
+from collections.abc import Callable, Hashable, Iterable, Iterator, Sequence
 from pathlib import Path
 
 from baseballpy.core.config import LakeConfig
 
 
-def page_bodies(folder: Path) -> Iterator[dict[str, object]]:
-    """The decoded body of every page in every ``*.jsonl.gz`` file of ``folder``."""
+def page_lines(folder: Path) -> Iterator[tuple[dict[str, object], dict[str, object]]]:
+    """``(log line, decoded body)`` of every page in every ``*.jsonl.gz`` file of ``folder``.
+
+    The log line carries the request (``route``, ``ticker``, ``page``) next to the body, so a count rule can
+    read a key that only the request knows (the token a price history belongs to).
+    """
     if not folder.is_dir():
         return
     for path in sorted(folder.glob("*.jsonl.gz")):
         with gzip.open(path, "rt", encoding="utf-8") as handle:
-            for line in handle:
-                if not line.strip():
+            for text in handle:
+                if not text.strip():
                     continue
-                body = json.loads(line).get("body")
+                line = json.loads(text)
+                body = line.get("body")
                 if isinstance(body, str):
                     decoded = json.loads(body)
                     if isinstance(decoded, dict):
-                        yield decoded
+                        yield line, decoded
+
+
+def page_bodies(folder: Path) -> Iterator[dict[str, object]]:
+    """The decoded body of every page in every ``*.jsonl.gz`` file of ``folder``."""
+    for _, body in page_lines(folder):
+        yield body
+
+
+def distinct_tuples(
+    config: LakeConfig,
+    dataset_folder: tuple[str, str],
+    keys_of: Callable[[dict[str, object], dict[str, object]], Iterable[Hashable]],
+) -> int:
+    """Distinct keys that ``keys_of(log line, body)`` finds in all the pages of one raw folder.
+
+    ``keys_of`` knows the shape of a source's pages (several routes can share a folder); a key seen on two
+    pages counts once, like the row the table keeps.
+    """
+    source, dataset = dataset_folder
+    seen: set[Hashable] = set()
+    for line, body in page_lines(config.raw_dir(source, dataset)):
+        seen.update(keys_of(line, body))
+    return len(seen)
+
+
+def tuples_counter(
+    source: str,
+    folder: str,
+    keys_of: Callable[[dict[str, object], dict[str, object]], Iterable[Hashable]],
+) -> Callable[[LakeConfig, int], int]:
+    """:func:`distinct_tuples` of one raw folder, in the shape the round-trip check registers."""
+
+    def count(config: LakeConfig, _season: int) -> int:
+        return distinct_tuples(config, (source, folder), keys_of)
+
+    return count
 
 
 def distinct_keys(
@@ -69,4 +110,11 @@ def pages_counter(
     return count
 
 
-__all__ = ["distinct_keys", "page_bodies", "pages_counter"]
+__all__ = [
+    "distinct_keys",
+    "distinct_tuples",
+    "page_bodies",
+    "page_lines",
+    "pages_counter",
+    "tuples_counter",
+]

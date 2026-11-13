@@ -81,10 +81,12 @@ def register_all_adapters() -> None:
 
     for dataset in RULES:  # event files are not CSV: their rows are counted against the raw lines
         register_count_check("retrosheet", dataset, counter(dataset))
-    from baseballpy.core.rawpages import pages_counter
+    from baseballpy.core.rawpages import pages_counter, tuples_counter
+    from baseballpy.sources import page_counts
 
     # Kalshi and Polymarket keep JSON pages: the distinct ids in the raw pages are the rows the tables must hold
-    # (kalshi series is left out on purpose: the raw pages list every series, the table keeps the MLB ones)
+    # (kalshi series is left out on purpose: the raw pages list every series, the table keeps the MLB ones;
+    # trades, candlesticks, prices and outcomes were measured equal to the stored rows on 2026-11-12)
     register_count_check(
         "kalshi", "events", pages_counter("kalshi", "events", "events", "event_ticker")
     )
@@ -96,6 +98,24 @@ def register_all_adapters() -> None:
     )
     register_count_check(
         "polymarket", "markets", pages_counter("polymarket", "events", "events", "id", ("markets",))
+    )
+    register_count_check(
+        "kalshi", "trades", pages_counter("kalshi", "trades", "trades", "trade_id")
+    )
+    register_count_check(
+        "kalshi",
+        "candlesticks",
+        tuples_counter("kalshi", "candlesticks", page_counts.kalshi_candlestick_keys),
+    )
+    register_count_check(
+        "polymarket",
+        "prices",
+        tuples_counter("polymarket", "prices", page_counts.polymarket_price_keys),
+    )
+    register_count_check(
+        "polymarket",
+        "outcomes",
+        tuples_counter("polymarket", "events", page_counts.polymarket_outcome_keys),
     )
     from baseballpy.sources.mlb_api.game_segments import (
         game_dataset_names,
