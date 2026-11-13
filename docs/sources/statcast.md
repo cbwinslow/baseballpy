@@ -19,7 +19,7 @@ is from that probe, not from memory.
 
 ---
 
-**Result of the full check (2026-11-12):** `pitches` 15,007,133 rows and `pitches_minors` 4,536,245 rows equal the raw text after the 64-bit rebuild (the minor-league files also hold 91,845 rows that are other fetched versions of the same pitches, checked by key). **Known provider quirk:** in 2026 Savant returns every `hit_into_play` pitch twice, byte-identical (35,430 of 909,080 rows; no earlier season does). The lake keeps them, as the raw files have them; use `SELECT DISTINCT` (or the key `game_pk, at_bat_number, pitch_number`) when one row per pitch is needed. The ingest logs a duplicate-key warning for it.
+**Result of the full check (2026-11-12):** `pitches` 15,007,133 rows and `pitches_minors` 4,536,245 rows equal the raw text after the 64-bit rebuild (the minor-league files also hold 91,845 rows that are other fetched versions of the same pitches, checked by key). **Known provider quirk:** in 2026 Savant returns every `hit_into_play` pitch twice, byte-identical (35,430 of 909,080 rows; no earlier season does). The lake keeps them, as the raw files have them; query the view `v_pitches_unique` (one row per `game_pk, at_bat_number, pitch_number`, ADR 119) when one row per pitch is needed. The ingest logs a duplicate-key warning for it.
 
 ## 1. Pitch-level search (`/statcast_search/csv`) - dataset `pitches`
 

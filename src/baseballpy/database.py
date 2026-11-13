@@ -35,6 +35,9 @@ CROSSWALK_VIEW = "v_player_crosswalk"
 GAME_CROSSWALK_VIEW = "v_game_crosswalk"
 TEAM_CROSSWALK_VIEW = "v_team_crosswalk"
 VENUE_CROSSWALK_VIEW = "v_venue_crosswalk"
+#: dataset view -> view with one row per dataset key (ADR 119). Savant sends every 2026 ``hit_into_play``
+#: pitch twice, byte-identical; the dataset keeps the rows as sent, this view drops the repeats.
+UNIQUE_KEY_VIEWS = {"statcast_pitches": "v_pitches_unique"}
 SEASON_CATALOG_VIEW = "v_season_catalog"
 CROSSWALK_COLUMNS = (
     "key_person",
@@ -361,6 +364,7 @@ class BaseballDatabase:
             TEAM_CROSSWALK_VIEW,
             VENUE_CROSSWALK_VIEW,
             SEASON_CATALOG_VIEW,
+            *UNIQUE_KEY_VIEWS.values(),
         }
         for (name,) in con.execute(
             "SELECT table_name FROM information_schema.tables WHERE table_type = 'VIEW'"
@@ -505,6 +509,21 @@ class BaseballDatabase:
                         "FROM mlb_venues_hydrated"
                     )
                     views_registered += 1
+                for base, unique in UNIQUE_KEY_VIEWS.items():
+                    spec = specs.get(base)
+                    if base in existing and spec is not None and spec.keys:
+                        have = {
+                            row[0]
+                            for row in con.execute(f"DESCRIBE {quote_ident(base)}").fetchall()
+                        }
+                        if not set(spec.keys) <= have:
+                            continue  # files written with fewer columns than the key (a partial table)
+                        con.execute(
+                            f"CREATE OR REPLACE VIEW {quote_ident(unique)} AS "  # noqa: S608 - identifiers are quoted with quote_ident
+                            f"SELECT * FROM {quote_ident(base)} QUALIFY row_number() OVER "
+                            f"(PARTITION BY {', '.join(quote_ident(k) for k in spec.keys)}) = 1"
+                        )
+                        views_registered += 1
                 self._create_season_catalog(con)
                 views_registered += 1
                 self._drop_stale_views(con)

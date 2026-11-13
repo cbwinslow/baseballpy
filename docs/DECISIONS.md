@@ -1099,3 +1099,10 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** `scripts/gen_mlb_schemas.py` gets `EXTRA_SEASONS`, `EXTRA_SEASON_TEAMS` and more `SAMPLE_GAMES` for the endpoints that hold such rows, so the schemas type them. `promote_extras` keeps NULL cells NULL; `migrate_dataset` also rewrites a current-schema file whose `_extras` has null-only objects and turns them into NULL.
 - **Consequences:** `compact` heals lakes written by the old migration. Tests: `tests/test_schema_evolution.py` (two new tests). Fields still in `_extras` because the pool route answers 406: `player.nameSlug`, `gameType`, `numLeagues` in the stat pools (B-35).
 - **Alternatives rejected:** hand-editing the data files (not reproducible for other users); deleting and downloading again (hours of requests for a few thousand cells).
+
+## ADR 119: A Key-Unique View Over Pitches (The Dataset Keeps The Provider's Repeats)
+- **Status:** Accepted on the recommendation made to the owner (2026-11-13; the owner has not objected). Easy to undo: it is a view.
+- **Context:** ADR 115 kept Savant's byte-identical repeats of every 2026 `hit_into_play` pitch (35,430 of 909,080 rows) and left the question of a deduplicated view open.
+- **Decision:** `database.UNIQUE_KEY_VIEWS` maps a dataset view to a key-unique view; `sync_views` builds `v_pitches_unique` with `QUALIFY row_number() OVER (PARTITION BY <dataset keys>) = 1`. The processed files and `statcast_pitches` are unchanged.
+- **Consequences:** on the real lake 2026 has 909,080 rows in `statcast_pitches` and 873,650 in `v_pitches_unique` (the difference is 35,430). The minor-league pitches are not covered: their repeated keys are different fetched versions, not copies. Test: `tests/test_database.py::test_unique_pitch_view_drops_the_repeats_the_dataset_keeps`.
+- **Alternatives rejected:** dropping repeats in the parser (hides a provider fault and breaks the row-for-row proof).

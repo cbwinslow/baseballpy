@@ -95,6 +95,14 @@ total size of the visible Parquet files and `last_written_at` the newest modific
   the view name to query, and an older query that selects only the first five columns still works
 - Verified by `tests/test_database.py::test_season_catalog_is_the_lake_inventory`.
 
+### Requirement: A Key-Unique View Serves Pitches Without Provider Repeats
+`baseballpy db sync` MUST build the view `v_pitches_unique` over `statcast_pitches` with one row per dataset key (`game_pk`, `at_bat_number`, `pitch_number`), while `statcast_pitches` itself MUST keep every row the provider sent (ADR 115, ADR 119). The view MUST be kept by the stale-view cleanup and skipped when the table lacks a key column.
+
+#### Scenario: A person wants one row per pitch
+- **WHEN** a season holds a pitch twice and the database is synced
+- **THEN** `statcast_pitches` returns both rows and `v_pitches_unique` returns one
+- Verified by `tests/test_database.py::test_unique_pitch_view_drops_the_repeats_the_dataset_keeps`.
+
 ### Requirement: One Compaction Per Dataset At A Time
 `compact_dataset` (and so `baseballpy compact` and the download queue's stage compaction) MUST take an
 operating-system lock named for the dataset (`compact-<source>-<dataset>` in the lake's locks folder)

@@ -365,3 +365,28 @@ def test_the_inventory_reads_a_file_footer_only_when_the_file_is_new_or_changed(
     assert len(reads) == 1 and "2023" in reads[0], (
         f"only the changed file is read: {reads} ({changed})"
     )
+
+
+def test_unique_pitch_view_drops_the_repeats_the_dataset_keeps(tmp_path: Path) -> None:
+    catalog.register_all()
+    lake = LakeConfig(home=tmp_path)
+    store = ProcessedStore(lake)
+    store.put(
+        get_dataset("statcast", "pitches"),
+        pa.table(
+            {
+                "game_pk": [1, 1, 1, 2],
+                "at_bat_number": [1, 1, 2, 1],
+                "pitch_number": [1, 1, 1, 1],
+                "pitch_type": ["FF", "FF", "SL", "CH"],
+                "game_year": [2026, 2026, 2026, 2026],
+            }
+        ),
+        chunk_id="dup",
+        season=2026,
+    )
+    con = BaseballDatabase(db_path=":memory:", cache_config=lake).connect()
+    kept = con.execute("SELECT count(*) FROM statcast_pitches WHERE season = 2026").fetchone()
+    unique = con.execute("SELECT count(*) FROM v_pitches_unique WHERE season = 2026").fetchone()
+    assert kept == (4,), "the dataset keeps every row the provider sent"
+    assert unique == (3,), "one row per (game_pk, at_bat_number, pitch_number)"
