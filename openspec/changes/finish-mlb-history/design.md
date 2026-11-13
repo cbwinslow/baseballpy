@@ -29,3 +29,7 @@ For every season, the finished major-league games of `schedule_hydrated` (`sport
   - exhibition games `277489` (2010-03-03), `305461` (2011-02-25), `305471` (2011-02-27), `308207` (2011-03-04), `310735` (2011-03-30), `335533` (2012-04-03): no innings and no plays (two boxscore answers are HTTP 500);
   - summer-camp games `632099` and `632172` (2020-07-20) and regular-season games `745873` (2024-08-10) and `746402` (2024-05-03): the provider's linescore has no innings, while their play by play (64 to 77 plays) is stored.
 No other finished major-league game is missing a row in any per-game dataset, 2008 to 2026.
+
+## Forced segment rebuild (task 2.3)
+
+`rebuild-segments mlb_api --season Y --apply --force --remove-legacy` ran for 2008 to 2026. Every season reported "Same: yes" (rebuilt rows equal the old rows). `catalog layout` now shows no MIXED_SCHEMA. `read("award_recipients")` has 43,481 rows and no empty `request_award_id` (646 distinct slugs). Remaining layout findings are not schema problems: TINY_FILES and SMALL_ROW_GROUPS (mlb_api, fangraphs, retrosheet), 3 ORPHAN_COMPACT in season 2023 and 2 EMPTY_FILES in statcast.

@@ -514,7 +514,7 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-303 | mlb-stats-route-406-and-deep-pools 3.3: regenerate the 61 MLB schemas with schema drift in _extras via gen_mlb_schemas.py --only | DONE (142 endpoints gained typed name_slug and similar columns; 25 league-wide stats_* kept unchanged because the 406 cut their sampling) | 61 drifted datasets have typed columns for nameSlug and stats; _extras is empty in fresh samples |
 | B-304 | lake-access: compacted files are written by column name so a schema that gained columns does not break rewrites, ADR 86 | DONE | tests/test_compacted_schema.py (3); 2025 major-league games ran 150 s past the old failure point |
 | B-305 | lake-schema-evolution 1.1 to 1.4: reads and views survive files written under an older schema; `compact` rewrites mixed-schema files and moves `_extras` values into their typed columns; `db sync` warns; ADR 87 | DONE | tests/test_schema_evolution.py (10), tests/test_access.py; gates green except failures from other agents' unfinished atomic.py work |
-| B-306 | `lake-schema-evolution 1.5`: run `baseballpy compact` on the real lake when no ingest is running | OPEN | `catalog layout` has no MIXED_SCHEMA; `read("award_recipients")` returns slugs for all rows |
+| B-306 | lake-schema-evolution 1.5: run `baseballpy compact` on the real lake when no ingest is running | DONE | `catalog layout` has no MIXED_SCHEMA; `read("award_recipients")` returns slugs for all rows |
 | B-307 | `lake-schema-evolution 1.6`: gates, merge the spec delta, archive the change | OPEN (after B-306) | change archived, `openspec validate --specs` green |
 | B-308 | mlb-game-memory: review and finish the B-301 fix: narrow exceptions, no silent fallback, spec delta, ADR 88, memory measurement | DONE | tests/test_atomic.py (8); 50,000-entry manifest saves in 0.08 s with about 15 MB extra memory |
 | B-309 | mlb-stats-route-406-and-deep-pools 3.4: type the fields still landing in `_extras` for the game feed, schedule_postseason, draft_prospects, team_affiliates and rosters (sampled from games that carry them) | DONE (review details and injuryType typed; rare fields without a sampled carrier and the 406 stats_* stay in `_extras`, listed in design.md) | `schema_drift` keys seen in the logs have typed columns, except the stats_* datasets blocked by the 406 (B-30) |
@@ -538,8 +538,8 @@ the finished one). B-190 is the schema-drift regeneration the live split run fou
 | B-321 | finish-mlb-history 1.2: queue compaction after each stage | DONE | tests/test_queue.py |
 | B-322 | finish-mlb-history 1.3: plans/mlb-games-history.toml | DONE | dry run lists 16 stages |
 | B-323 | `finish-mlb-history 2.1`: run the history plan unattended and record time and size per season | LONG | design.md has the table |
-| B-324 | `finish-mlb-history 2.2`: verify per-game coverage for 2008 to 2026 | OPEN | table in design.md |
-| B-325 | `finish-mlb-history 2.3`: final compact, layout clean, read award_recipients (closes B-306) | OPEN | catalog layout has no MIXED_SCHEMA |
+| B-324 | finish-mlb-history 2.2: verify per-game coverage for 2008 to 2026 | DONE | table in design.md |
+| B-325 | finish-mlb-history 2.3: final compact, layout clean, read award_recipients (closes B-306) | DONE | catalog layout has no MIXED_SCHEMA |
 | B-326 | `finish-mlb-history 2.4`: catalog audit against the providers | OPEN | no MISSING, REVIVED or ERROR |
 | B-327 | finish-mlb-history 3.1: five default datasets still missing | DONE | fixed or noted with evidence |
 | B-328 | `finish-mlb-history 3.2`: type the rare fields still in _extras | OPEN | no schema_drift for them |
