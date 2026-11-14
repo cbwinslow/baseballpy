@@ -53,6 +53,8 @@ def crosswalk_lake(tmp_path: Path) -> LakeConfig:
                 "season": [2024, 2024],
                 "game_number": [1, 1],
                 "game_type": ["R", "R"],
+                "sport_id": [1, 1],
+                "status_detailed_state": ["Final", "Final"],
                 "teams_home_team_id": [147, 111],
                 "teams_home_team_team_code": ["nya", "bos"],
                 "teams_home_team_name": ["New York Yankees", "Boston Red Sox"],
