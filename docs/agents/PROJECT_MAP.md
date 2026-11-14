@@ -21,7 +21,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 16 | 22 | 62 |
+| `lake-access` | 17 | 23 | 63 |
 | `mlb-api-ingestion` | 28 | 41 | 46 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
@@ -186,6 +186,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 118: Rare Fields Are Sampled On Purpose; A Migration Never Writes Null-Only `_extras`
 - ADR 119: A Key-Unique View Over Pitches (The Dataset Keeps The Provider's Repeats)
 - ADR 120: The Hydrate Fallback's Player List Is Complete Where It Can Be Checked; No Wider List Is Built
+- ADR 121: The Game Crosswalk Keeps The Played Row Of Each Game And Matches Only Played MLB Games
 
 ## Documentation pages (`docs/`)
 

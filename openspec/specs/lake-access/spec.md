@@ -183,3 +183,15 @@ without the cache.
 - **WHEN** the inventory rows are built twice and then one file is rewritten
 - **THEN** the second build opens no footer and returns the same rows, and the third reads only the rewritten file and counts its new rows
 - Verified by `tests/test_database.py::test_the_inventory_reads_a_file_footer_only_when_the_file_is_new_or_changed`.
+
+### Requirement: The Game Crosswalk Has One Row Per MLB Game And Maps Each Retrosheet Game Once
+`v_game_crosswalk` MUST hold exactly one row per `game_pk`: when the schedule lists a game under more than one
+date (a postponed game is listed on the date it was postponed from and the date it was played), the row of the
+date it was played is kept, and a postponed, cancelled or still scheduled row is kept only when no other row exists.
+A `retro_game_id` MUST be matched only for games of sport 1 that were played, and no `game_pk` and no
+`retro_game_id` may appear on more than one row.
+
+#### Scenario: A postponed and replayed game, a doubleheader and a non-MLB game
+- **WHEN** the schedule lists game 1 as Postponed on one date and Final on a later date, games 2 and 3 as the two games of a doubleheader, and game 4 of another sport with the same home team code
+- **THEN** the crosswalk has four rows, game 1 finds the Retrosheet game of the date it was played, games 2 and 3 find game 1 and game 2 of the doubleheader, and game 4 has no `retro_game_id`
+- Verified by `tests/test_database.py::test_game_crosswalk_has_one_row_per_game_and_maps_each_retrosheet_game_once`.

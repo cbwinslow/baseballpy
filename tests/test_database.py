@@ -1,6 +1,7 @@
 """Unit tests for the registry-driven DuckDB catalog over the processed/ tier."""
 
 import shutil
+from datetime import date
 from pathlib import Path
 
 import duckdb
@@ -390,3 +391,67 @@ def test_unique_pitch_view_drops_the_repeats_the_dataset_keeps(tmp_path: Path) -
     unique = con.execute("SELECT count(*) FROM v_pitches_unique WHERE season = 2026").fetchone()
     assert kept == (4,), "the dataset keeps every row the provider sent"
     assert unique == (3,), "one row per (game_pk, at_bat_number, pitch_number)"
+
+
+def test_game_crosswalk_has_one_row_per_game_and_maps_each_retrosheet_game_once(
+    tmp_path: Path,
+) -> None:
+    """A postponed game is listed twice under one game_pk; only the played row may reach Retrosheet."""
+    catalog.register_all()
+    lake = LakeConfig(home=tmp_path)
+    store = ProcessedStore(lake)
+    day, later = date(2008, 4, 10), date(2008, 4, 11)
+    rows = [
+        # (game_pk, date, game_number, state, sport, home code)
+        (1, day, 1, "Postponed", 1, "tex"),  # postponed, then played on the later date
+        (1, later, 1, "Final", 1, "tex"),
+        (2, day, 1, "Final", 1, "tex"),  # the real game 1 of the doubleheader on `day`
+        (3, day, 2, "Final", 1, "tex"),
+        (4, day, 1, "Final", 11, "tex"),  # another sport with a colliding team code
+    ]
+    store.put(
+        get_dataset("mlb_api", "schedule_hydrated"),
+        pa.table(
+            {
+                "game_pk": [r[0] for r in rows],
+                "official_date": [r[1] for r in rows],
+                "season": [2008] * len(rows),
+                "game_number": [r[2] for r in rows],
+                "game_type": ["R"] * len(rows),
+                "status_detailed_state": [r[3] for r in rows],
+                "sport_id": [r[4] for r in rows],
+                "teams_home_team_team_code": [r[5] for r in rows],
+                "teams_home_team_id": [140] * len(rows),
+                "teams_home_team_name": ["Texas Rangers"] * len(rows),
+                "teams_away_team_id": [110] * len(rows),
+                "teams_away_team_team_code": ["bal"] * len(rows),
+                "teams_away_team_name": ["Baltimore Orioles"] * len(rows),
+                "venue_id": [5325] * len(rows),
+                "venue_name": ["Rangers Ballpark"] * len(rows),
+            }
+        ),
+        chunk_id="a",
+        season=2008,
+    )
+    store.put(
+        get_dataset("retrosheet", "box_games"),
+        pa.table(
+            {
+                "game_id": ["TEX200804101", "TEX200804102", "TEX200804111"],
+                "date": [day, day, later],
+                "hometeam": ["TEX", "TEX", "TEX"],
+            }
+        ),
+        chunk_id="a",
+        season=2008,
+    )
+    con = BaseballDatabase(db_path=":memory:", cache_config=lake).connect()
+    got = dict(
+        con.execute(
+            "SELECT game_pk, retro_game_id FROM v_game_crosswalk ORDER BY game_pk"
+        ).fetchall()
+    )
+    assert sorted(got) == [1, 2, 3, 4], "one row per game_pk"
+    assert got[1] == "TEX200804111", "the played row, not the postponed date, finds the game"
+    assert got[2] == "TEX200804101" and got[3] == "TEX200804102"
+    assert got[4] is None, "only MLB games (sport 1) are matched to Retrosheet"

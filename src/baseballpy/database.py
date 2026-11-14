@@ -38,6 +38,13 @@ VENUE_CROSSWALK_VIEW = "v_venue_crosswalk"
 #: dataset view -> view with one row per dataset key (ADR 119). Savant sends every 2026 ``hit_into_play``
 #: pitch twice, byte-identical; the dataset keeps the rows as sent, this view drops the repeats.
 UNIQUE_KEY_VIEWS = {"statcast_pitches": "v_pitches_unique"}
+#: the schedule lists a postponed or rescheduled game once per date it was on the calendar (same game_pk);
+#: the crosswalk keeps the row of the date it was played (a postponed or cancelled row only when nothing else exists)
+_ONE_ROW_PER_GAME = (
+    "(SELECT * FROM mlb_schedule_hydrated QUALIFY row_number() OVER ("
+    "PARTITION BY game_pk ORDER BY status_detailed_state IN ('Postponed', 'Cancelled', 'Scheduled'), "
+    "official_date DESC) = 1)"
+)
 SEASON_CATALOG_VIEW = "v_season_catalog"
 CROSSWALK_COLUMNS = (
     "key_person",
@@ -444,9 +451,11 @@ class BaseballDatabase:
                             "    s.teams_away_team_name AS away_team_name, "
                             "    s.venue_id, "
                             "    s.venue_name "
-                            "FROM mlb_schedule_hydrated s "
+                            f"FROM {_ONE_ROW_PER_GAME} s "  # noqa: S608 - constant text
                             "LEFT JOIN retrosheet_box_games r "
                             "  ON s.official_date = r.date "
+                            "  AND s.sport_id = 1 "
+                            "  AND s.status_detailed_state NOT IN ('Postponed', 'Cancelled', 'Scheduled') "
                             "  AND upper(s.teams_home_team_team_code) = r.hometeam "
                             "  AND s.game_number = (CASE WHEN right(r.game_id, 1) = '0' THEN 1 ELSE cast(right(r.game_id, 1) as INT) END)"
                         )
@@ -468,7 +477,7 @@ class BaseballDatabase:
                             "    s.teams_away_team_name AS away_team_name, "
                             "    s.venue_id, "
                             "    s.venue_name "
-                            "FROM mlb_schedule_hydrated s"
+                            f"FROM {_ONE_ROW_PER_GAME} s"  # noqa: S608 - constant text
                         )
                     views_registered += 1
 
