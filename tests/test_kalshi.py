@@ -184,7 +184,7 @@ def test_extractor_follows_the_cursor_and_keeps_every_raw_page_in_one_gzip(
     assert [
         p.name
         for p in (tmp_path / "raw" / "kalshi" / "events").iterdir()
-        if p.name != "_manifest.json"
+        if not p.name.startswith("_manifest.json")
     ] == ["events-KXMLBGAME.jsonl.gz"], "no file per page"
 
 

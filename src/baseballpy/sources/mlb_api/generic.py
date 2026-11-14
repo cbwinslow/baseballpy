@@ -88,6 +88,11 @@ HYDRATE_MARKER = ".hydrate."
 VIA_KEY = "via"
 VIA_HYDRATE = "hydrate"
 VIA_DIRECT = "direct"
+#: manifest key of a hydrate chunk: which version of the hydrate parser built it. Chunks written before
+#: ADR 128 (the stats block was dropped) carry none, so they are re-parsed from their stored raw pages
+#: (ADR 130). Direct chunks never carry it and are never touched by that rule.
+PARSE_REV_KEY = "parse_rev"
+HYDRATE_PARSE_REV = "2"
 
 #: hydrate-expression parameters that take a list. Inside ``stats(...)`` the provider silently keeps
 #: only the **first** value of a comma list (``sitCodes=vr,vl`` answers one split, ``[vr,vl]`` two),
@@ -162,6 +167,11 @@ def stats_payload(payload: Any) -> dict[str, Any]:
                 if key != "splits":
                     block_fields.setdefault(key, value)
     return {"stats": [{**block_fields, "splits": splits, "totalSplits": len(splits)}]}
+
+
+def _hydrate_meta() -> dict[str, str]:
+    """Manifest metadata of a chunk the hydrate route filled, with the parser version that built it."""
+    return {VIA_KEY: VIA_HYDRATE, PARSE_REV_KEY: HYDRATE_PARSE_REV}
 
 
 class IncompletePagesError(RuntimeError):
@@ -362,6 +372,98 @@ class MlbEndpointExtractor:
         return self.raw.exists("mlb_api", endpoint.name, fallback, request.season) and not (
             self.raw.exists("mlb_api", endpoint.name, direct, request.season)
         )
+
+    def _is_hydrate_chunk(
+        self, endpoint: MlbEndpoint, request: Request, entry: Mapping[str, Any] | None
+    ) -> bool:
+        """Whether the hydrate route filled this league-wide pool chunk (``via``, or its raw file names)."""
+        if not (endpoint.paginated and endpoint.path == "v1/stats") or entry is None:
+            return False
+        via = entry.get(VIA_KEY)
+        if via is not None:
+            return bool(via == VIA_HYDRATE)
+        fallback = f"{request.ident}{HYDRATE_MARKER}p0.json"
+        direct = f"{request.ident}.p0.json"
+        return self.raw.exists("mlb_api", endpoint.name, fallback, request.season) and not (
+            self.raw.exists("mlb_api", endpoint.name, direct, request.season)
+        )
+
+    def _rebuild_stale_hydrate(self, endpoint: MlbEndpoint, request: Request) -> pa.Table | None:
+        """A stale hydrate pool chunk parsed again from its stored raw pages, or ``None`` (ADR 130).
+
+        Stale means the chunk was built by an older hydrate parser (no ``parse_rev`` of today, or a schema digest that is not today's). The
+        raw pages are immutable, so the repair needs no download; a refetch would be wrong while
+        ``/v1/stats`` is refused (it would swap complete direct chunks for the smaller fallback data).
+        Direct chunks are never touched. Nothing is changed unless every raw page passes its checksum
+        and the rebuilt rows match the stored row count.
+        """
+        if not self.cache_config.enabled:
+            return None
+        spec = self.spec(endpoint)
+        entry = self.cache_config.dataset_manifest("mlb_api", endpoint.name).get_chunk(
+            manifest_key(request.ident, request.season)
+        )
+        if (
+            entry is None
+            or (entry.get(PARSE_REV_KEY) == HYDRATE_PARSE_REV and schema_matches(spec, entry))
+            or not self._is_hydrate_chunk(endpoint, request, entry)
+            or not self.store.has_part(spec, request.ident, request.season)
+            or not self.cache_config.is_fresh(
+                entry, endpoint.freshness, season=request.season, refresh=False
+            )
+        ):
+            return None
+        names: list[str] = []
+        while self.raw.exists(
+            "mlb_api",
+            endpoint.name,
+            name := f"{request.ident}{HYDRATE_MARKER}p{len(names)}.json",
+            request.season,
+        ):
+            names.append(name)
+        if not names:
+            return None
+        bad = [n for n in names if not self.raw.verify("mlb_api", endpoint.name, n, request.season)]
+        if bad:
+            logger.warning(
+                "%s: %s kept as it is; raw page(s) %s fail their checksum, so they are not trusted "
+                "for a re-parse",
+                endpoint.name,
+                request.ident,
+                ", ".join(bad),
+            )
+            return None
+        tables = [
+            self.normalizer.normalize(
+                endpoint,
+                stats_payload(
+                    json.loads(self.raw.get("mlb_api", endpoint.name, n, request.season))
+                ),
+                extra=request.extra,
+            )
+            for n in names
+        ]
+        table = pa.concat_tables(tables) if len(tables) > 1 else tables[0]
+        stored_rows = int(entry.get("records_count", 0) or 0)
+        if table.num_rows != stored_rows:
+            logger.warning(
+                "%s: %s kept as it is; the raw pages give %d rows but %d are stored",
+                endpoint.name,
+                request.ident,
+                table.num_rows,
+                stored_rows,
+            )
+            return None
+        self.store.put(
+            spec, table, chunk_id=request.ident, season=request.season, metadata=_hydrate_meta()
+        )
+        logger.info(
+            "%s: %s re-parsed from %d stored raw page(s), no download",
+            endpoint.name,
+            request.ident,
+            len(names),
+        )
+        return table
 
     def _pool_player_ids(self, sport_id: str, season: Any) -> list[int]:
         """Every player id of a sport-season (``/v1/sports/{id}/players``), for the hydrate fallback."""
@@ -624,6 +726,8 @@ class MlbEndpointExtractor:
         spec = self.spec(endpoint)
         url = f"{MLB_BASE_URL}/{request.path}"
         part = self.store.part_path(spec, request.ident, request.season)
+        if not refresh and (rebuilt := self._rebuild_stale_hydrate(endpoint, request)) is not None:
+            return rebuilt
         if self._is_cached(endpoint, request, refresh):
             with default_audit_logger.track(
                 operation=f"mlb_{endpoint.name}",
@@ -655,7 +759,7 @@ class MlbEndpointExtractor:
                         empty,
                         chunk_id=request.ident,
                         season=request.season,
-                        metadata={"empty": True, **({VIA_KEY: VIA_HYDRATE} if fallback else {})},
+                        metadata={"empty": True, **(_hydrate_meta() if fallback else {})},
                     )
                 tracker.set_cache_hit(False)
                 tracker.set_records(0)
@@ -698,11 +802,11 @@ class MlbEndpointExtractor:
                         upstream=response_fingerprint(result.content, result.etag, url),
                     )
                 via = (
-                    {
-                        VIA_KEY: VIA_HYDRATE
+                    (
+                        _hydrate_meta()
                         if any(HYDRATE_MARKER in name for name, _ in pages)
-                        else VIA_DIRECT
-                    }
+                        else {VIA_KEY: VIA_DIRECT}
+                    )
                     if endpoint.paginated and endpoint.path == "v1/stats"
                     else None
                 )

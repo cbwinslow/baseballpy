@@ -10,7 +10,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `agent-runbooks` | 7 | 10 | 17 |
 | `audit-and-benchmarking` | 9 | 13 | 37 |
 | `bref-ingestion` | 3 | 3 | 10 |
-| `caching-and-invalidation` | 23 | 37 | 55 |
+| `caching-and-invalidation` | 24 | 40 | 58 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 25 | 39 | 66 |
@@ -22,7 +22,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
 | `lake-access` | 17 | 23 | 63 |
-| `mlb-api-ingestion` | 28 | 41 | 46 |
+| `mlb-api-ingestion` | 29 | 43 | 50 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `portability` | 3 | 3 | 7 |
@@ -43,7 +43,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 389/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
 | `statcast` | 50 | archived | yes | yes | yes | 402/1765 (22%) | 18 |
-| `mlb_api` | 365 | archived | yes | yes | yes | 9568/16926 (56%) | 28 |
+| `mlb_api` | 365 | archived | yes | yes | yes | 9568/16926 (56%) | 29 |
 
 ## Active changes (`openspec/changes/`)
 
@@ -195,6 +195,8 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 127: Review Round 5: The Per-Season Lock Needed Four Follow-Ups
 - ADR 128: A Typed Column That Exists But Is Empty Is Filled From `_extras`; The Hydrate Route Keeps The Stats Block
 - ADR 129: A Cell-By-Cell Round-Trip Check For The MLB JSON Data
+- ADR 130: A Stale Hydrate Pool Chunk Is Parsed Again From Its Stored Raw Pages
+- ADR 131: The Manifest Lock Is An Operating-System Lock, Not A Lock File That Is Broken When Old
 
 ## Documentation pages (`docs/`)
 

@@ -347,3 +347,16 @@ The per-game datasets (`ingest mlb_api -d games`) MUST be fetched for the final 
 - **WHEN** a games job is planned with no option, with `sports=all`, and with `sports=1, 11`, and a schedule holds final games of levels 1, 11 and 12
 - **THEN** the jobs carry `sports=1`, `all` and `1,11`, the source receives `(1,)`, `None` and `(1, 11)`, only games of those levels are selected, and `sports=minors` is refused
 - Verified by `tests/test_mlb_game_levels.py::test_parse_game_sports`, `tests/test_mlb_game_levels.py::test_the_plan_defaults_to_the_major_leagues_and_takes_the_option`, `tests/test_mlb_game_levels.py::test_the_job_hands_the_levels_to_the_source` and `tests/test_mlb_game_levels.py::test_final_game_pks_keeps_only_the_wanted_levels`.
+
+### Requirement: A Stale Hydrate Pool Chunk Is Parsed Again From Its Stored Raw Pages
+A league-wide pool chunk (`v1/stats`) that the hydrate route filled and whose parser version (`parse_rev` in the chunk manifest) or schema digest is not the current one MUST be rebuilt from its stored raw hydrate pages with the current normalizer, without any HTTP request, when every raw page passes its sha256 and the rebuilt row count equals the stored count. A raw page that fails its checksum MUST NOT be trusted: the chunk is left as it is and a warning is logged. A chunk filled by the direct route MUST never be rebuilt or refetched by this rule, and the raw pages MUST stay unchanged.
+
+#### Scenario: A stale hydrate chunk is repaired offline and a direct chunk is left alone
+- **WHEN** a pool has a hydrate chunk written before the stats block was kept (block columns NULL, raw page holds the block) and a direct chunk, and the extractor runs twice with no network available
+- **THEN** the first run fills the block columns of the hydrate chunk and records `parse_rev`, the raw bytes and sha256 and the direct chunk are unchanged, and the second run changes nothing
+- Verified by `tests/test_mlb_hydrate_reparse.py::test_a_stale_hydrate_chunk_is_rebuilt_from_raw_without_a_request`, `tests/test_mlb_hydrate_reparse.py::test_a_direct_chunk_is_never_rebuilt` and `tests/test_mlb_hydrate_reparse.py::test_a_second_run_changes_nothing`.
+
+#### Scenario: A raw page that fails its checksum is not trusted
+- **WHEN** one raw hydrate page of a stale chunk no longer matches its manifest sha256
+- **THEN** the chunk is left as it is, no `parse_rev` is recorded and a warning names the page
+- Verified by `tests/test_mlb_hydrate_reparse.py::test_a_raw_page_that_fails_its_checksum_is_not_trusted`.

@@ -123,6 +123,24 @@ Manifests MUST be safe under concurrent writers and MUST NOT silently discard co
 - **THEN** it is preserved as `_manifest.json.corrupt-<ts>` and an error is logged.
 - Verified by `tests/test_hardening.py::test_corrupt_manifest_is_preserved_and_logged`.
 
+### Requirement: Manifest Lock Is An Operating-System Lock
+A manifest save MUST hold an operating-system file lock (`<manifest>.lock`) that waits for its turn, is freed by the operating system when its holder ends and is never broken because of its age.
+
+#### Scenario: A holder is killed
+- **GIVEN** a process killed while it holds the manifest lock
+- **THEN** the next process takes the lock at once, without waiting for any stale limit.
+- Verified by `tests/test_manifest_oslock.py::test_a_process_killed_holding_the_lock_does_not_block_the_next`.
+
+#### Scenario: A slow save keeps its lock
+- **GIVEN** a process that holds the lock for longer than the old 60-second stale limit
+- **THEN** a second process waits and enters only after the release, and times out with "could not acquire manifest lock" if it waits too long.
+- Verified by `tests/test_manifest_oslock.py::test_a_lock_held_longer_than_the_old_stale_limit_is_not_broken`.
+
+#### Scenario: Threads and processes save together
+- **GIVEN** four threads and two processes saving different chunk keys of one manifest
+- **THEN** every key is present afterwards.
+- Verified by `tests/test_manifest_oslock.py::test_threads_and_processes_saving_different_chunks_lose_no_entry`.
+
 ### Requirement: Manifests Are Read And Written As Compact UTF-8 JSON
 A `ManifestTracker` MUST decode its manifest from the file's bytes and write it as compact UTF-8 JSON in one atomic write using only the standard library (a native JSON encoder crashed the process, ADR 88 as amended), with extra memory for a save staying under three times the file size. A manifest that is not valid JSON, not valid UTF-8 or not an object with a `chunks` mapping MUST be preserved as `*.corrupt-<timestamp>` and treated as absent.
 

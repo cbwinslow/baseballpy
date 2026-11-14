@@ -223,7 +223,7 @@ def test_events_follow_the_keyset_cursor_and_every_raw_page_is_kept_in_one_gzip(
     lines = gzip.decompress(store.get("polymarket", "events", "events-all.jsonl.gz")).splitlines()
     assert len(lines) == 3, "the sports list and both event pages are kept"
     folder = tmp_path / "raw" / "polymarket" / "events"
-    assert [p.name for p in folder.iterdir() if p.name != "_manifest.json"] == [
+    assert [p.name for p in folder.iterdir() if not p.name.startswith("_manifest.json")] == [
         "events-all.jsonl.gz"
     ], "no file per request"
 

@@ -100,7 +100,9 @@ def test_fingerprints_one_entry_per_file_and_documents_are_kept(tmp_path: Path) 
 
     # README, licence and the data dictionary are kept with hashes
     documents = cfg.raw_dir("lahman", DOCUMENT_DATASET)
-    assert sorted(p.name for p in documents.iterdir() if p.name != "_manifest.json") == [
+    assert sorted(
+        p.name for p in documents.iterdir() if not p.name.startswith("_manifest.json")
+    ) == [
         "LICENSE",
         "README.md",
         "readme2025.txt",

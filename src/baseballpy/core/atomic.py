@@ -16,10 +16,11 @@ from typing import Any, cast
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from baseballpy.core.hostlock import release_file_lock, wait_file_lock
+
 logger = logging.getLogger(__name__)
 
 LOCK_TIMEOUT_SECONDS = 30.0
-LOCK_STALE_SECONDS = 60.0
 
 
 def _part_path_for(path: Path) -> Path:
@@ -133,41 +134,30 @@ def atomic_write_parquet(
 
 
 class _FileLock:
-    """Advisory cross-process lock implemented with an exclusive lock file."""
+    """Cross-process lock of a manifest: an operating-system file lock that waits its turn.
+
+    The OS frees the lock when its holder ends, however it ends, so there is no stale lock to break
+    (the old lock file was broken after 60 s, which let two processes save at once, ADR 131). The
+    lock file ``<manifest>.lock`` stays on disk after a save; a lock file left by the old scheme is
+    just a file the OS lock can be taken on.
+    """
 
     def __init__(self, path: Path, timeout: float = LOCK_TIMEOUT_SECONDS) -> None:
         self.path = path
         self.timeout = timeout
+        self._fd: int | None = None
 
     def __enter__(self) -> "_FileLock":
-        deadline = time.monotonic() + self.timeout
-        while True:
-            try:
-                fd = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-            except (FileExistsError, PermissionError):
-                # PermissionError: Windows reports a lock file pending deletion this way.
-                self._break_if_stale()
-                if time.monotonic() >= deadline:
-                    raise TimeoutError(f"could not acquire manifest lock {self.path}") from None
-                time.sleep(0.02)
-                continue
-            with os.fdopen(fd, "w") as handle:
-                handle.write(str(os.getpid()))
-            return self
-
-    def _break_if_stale(self) -> None:
         try:
-            age = time.time() - self.path.stat().st_mtime
-        except OSError:
-            return
-        if age > LOCK_STALE_SECONDS:
-            logger.warning("breaking stale manifest lock %s (age %.0fs)", self.path, age)
-            with suppress(OSError):
-                self.path.unlink()
+            self._fd = wait_file_lock(self.path, self.timeout)
+        except TimeoutError:
+            raise TimeoutError(f"could not acquire manifest lock {self.path}") from None
+        return self
 
     def __exit__(self, *exc: object) -> None:
-        with suppress(OSError):
-            self.path.unlink()
+        fd, self._fd = self._fd, None
+        if fd is not None:
+            release_file_lock(fd)
 
 
 def _empty_manifest() -> dict[str, Any]:

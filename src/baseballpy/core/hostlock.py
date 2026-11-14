@@ -11,6 +11,7 @@ import os
 import re
 import sys
 import threading
+import time
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -63,6 +64,40 @@ def _unlock(fd: int) -> None:
             fcntl.flock(fd, fcntl.LOCK_UN)
     except OSError:
         pass  # the descriptor is closed next, which releases the lock in any case
+
+
+def wait_file_lock(path: Path, timeout: float) -> int:
+    """Take the exclusive OS lock of ``path`` (made if missing), WAITING up to ``timeout`` seconds.
+
+    Unlike the claims above, which refuse at once, this is for short critical sections that many
+    threads and processes queue for (a manifest save). Every call opens its own descriptor, so threads
+    of one process exclude each other too. Returns the descriptor for :func:`release_file_lock`;
+    raises ``TimeoutError`` when the lock stays taken. The operating system frees the lock when its
+    holder ends, however it ends, so there is no stale lock and nothing to break; the file stays.
+    """
+    deadline = time.monotonic() + timeout
+    while True:
+        fd = os.open(path, os.O_CREAT | os.O_RDWR)
+        try:
+            if os.fstat(fd).st_size == 0:
+                os.write(fd, b"\0")  # Windows locks a byte range, so the file needs a byte to lock
+            if _try_lock(fd):
+                return fd
+        except PermissionError:
+            pass  # Windows: the holder has the byte locked while we tried to write it: still busy
+        except BaseException:
+            os.close(fd)
+            raise
+        os.close(fd)
+        if time.monotonic() >= deadline:
+            raise TimeoutError(f"could not acquire file lock {path}")
+        time.sleep(0.01)
+
+
+def release_file_lock(fd: int) -> None:
+    """Give back a lock taken by :func:`wait_file_lock` and close its descriptor."""
+    _unlock(fd)
+    os.close(fd)
 
 
 def claim_named(directory: Path, name: str, busy_message: str) -> bool:
@@ -209,5 +244,7 @@ __all__ = [
     "claim_host",
     "claim_named",
     "release_all",
+    "release_file_lock",
     "release_named",
+    "wait_file_lock",
 ]
