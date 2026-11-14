@@ -8,6 +8,7 @@ no network is needed; the datasets come from the registry, so no dataset is name
 """
 
 import json
+import logging
 from collections.abc import Iterable, Mapping
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -15,7 +16,10 @@ from pathlib import Path
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DATASETS, DatasetSpec
 from baseballpy.core.listing import dataset_files
+from baseballpy.ingest.adapters import ADAPTERS, GroupedAdapter, get_adapters
 from baseballpy.ingest.types import Selection
+
+logger = logging.getLogger(__name__)
 
 PACKAGED_SIZES = Path(__file__).resolve().parent.parent / "core" / "typical_sizes.json"
 
@@ -74,8 +78,52 @@ def _datasets_of(selection: Selection) -> tuple[list[DatasetSpec], list[str]]:
     if not selection.datasets:
         return [s for s in specs if s.ingest == "default"], []
     by_name = {s.name: s for s in specs}
-    chosen = [by_name[n] for n in selection.datasets if n in by_name]
-    return chosen, [n for n in selection.datasets if n not in by_name]
+    chosen: list[DatasetSpec] = []
+    seen: set[str] = set()
+
+    def _add(spec: DatasetSpec) -> None:
+        if spec.key not in seen:
+            seen.add(spec.key)
+            chosen.append(spec)
+
+    remaining: list[str] = []
+    for n in selection.datasets:
+        if n in by_name:
+            _add(by_name[n])
+        else:
+            remaining.append(n)
+
+    if not remaining:
+        return chosen, []
+
+    adapter_groups: list[Mapping[str, tuple[str, ...]]] = []
+    for src in selection.sources:
+        if src not in ADAPTERS:
+            continue
+        try:
+            adapter = get_adapters([src])[src]
+        except (KeyError, ValueError, OSError, RuntimeError) as exc:
+            # a pre-flight estimate must not stop because one adapter cannot be built; say so
+            logger.warning(
+                "estimate: adapter %s not built (%s); its groups are not resolved", src, exc
+            )
+            continue
+        if isinstance(adapter, GroupedAdapter):
+            adapter_groups.append(adapter.dataset_groups())
+
+    unresolved: list[str] = []
+    for name in remaining:
+        matched = False
+        for groups in adapter_groups:
+            if name in groups:
+                matched = True
+                for ds_name in groups[name]:
+                    if ds_name in by_name:
+                        _add(by_name[ds_name])
+        if not matched:
+            unresolved.append(name)
+
+    return chosen, unresolved
 
 
 def estimate(

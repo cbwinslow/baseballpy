@@ -1,6 +1,6 @@
 """MLB Stats API ingest adapter."""
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from typing import Any
 
 from baseballpy.ingest.results import counts_to_result
@@ -126,6 +126,34 @@ class MlbApiAdapter:
     def all_seasons(self) -> Sequence[int]:
         """MLB Stats API seasons from 1876 to the newest one that has started (ADR 66)."""
         return range(FIRST_SEASON, self._calendar().latest_started_season() + 1)
+
+    def dataset_groups(self) -> Mapping[str, tuple[str, ...]]:
+        """Group name -> names of the registered datasets that group fetches."""
+        from baseballpy.sources.mlb_api.endpoints import SUPPORTED
+
+        games = tuple(e.name for e in SUPPORTED if e.scope == "game")
+        people_stats = tuple(e.name for e in SUPPORTED if e.scope == "person_season")
+        history = tuple(e.name for e in SUPPORTED if e.heavy)
+        season = tuple(
+            e.name
+            for e in SUPPORTED
+            if e.partitioned and e.scope != "game" and e.scope != "person_season" and not e.heavy
+        )
+        reference = tuple(
+            e.name
+            for e in SUPPORTED
+            if not e.partitioned
+            and not e.heavy
+            and e.scope != "game"
+            and e.scope != "person_season"
+        )
+        return {
+            "reference": reference,
+            "season": season,
+            "games": games,
+            "history": history,
+            "people_stats": people_stats,
+        }
 
     def plan(self, selection: Selection) -> list[Job]:
         """Generate planned jobs matching the given selection."""

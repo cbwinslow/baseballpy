@@ -1,6 +1,6 @@
 """Adapter Protocol and registry for data ingestion sources."""
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from typing import Protocol, runtime_checkable
 
 from baseballpy.ingest.types import Job, JobResult, Selection
@@ -22,6 +22,15 @@ class IngestAdapter(Protocol):
 
     def run(self, job: Job, *, refresh: bool = False) -> JobResult:
         """Execute a single job and return its outcome."""
+        ...
+
+
+@runtime_checkable
+class GroupedAdapter(Protocol):
+    """Protocol satisfied by adapters that organize datasets into named groups."""
+
+    def dataset_groups(self) -> Mapping[str, tuple[str, ...]]:
+        """Group name -> names of the registered datasets that group fetches."""
         ...
 
 
@@ -55,6 +64,7 @@ def get_adapters(sources: Sequence[str] = ()) -> dict[str, IngestAdapter]:
 
 __all__ = [
     "ADAPTERS",
+    "GroupedAdapter",
     "IngestAdapter",
     "get_adapters",
     "register_adapter",

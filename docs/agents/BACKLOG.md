@@ -675,7 +675,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-436 | dry-run-estimate 1.2: scripts/measure_dataset_sizes.py and the first measurement from the real lake | DONE | after B-435; typical_sizes.json lists the datasets the lake holds |
 | B-437 | dry-run-estimate 1.3: ingest/estimate.py and the dry-run footer | DONE | after B-436; the new tests pass |
 | B-438 | dry-run-estimate 1.4: spec, ADR 106, docs, gates, archive | DONE | after B-437; evidence in design.md |
-| B-439 | dry-run estimate: resolve group names (games, leaderboards, people_stats) to the datasets they fetch, from a registry field, so the biggest downloads are estimated | READY | `ingest mlb_api -s 2024 -d games --dry-run` shows datasets and an estimate |
+| B-439 | dry-run estimate: resolve group names (games, leaderboards, people_stats) to the datasets they fetch, from a registry field, so the biggest downloads are estimated | DONE (ADR 133) | `ingest mlb_api -s 2024 -d games --dry-run` shows datasets and an estimate |
 | B-464 | data-validation-roundtrip 1.5: float64 for Statcast pitches/pitches_minors and four MLB columns; rebuild stored chunks | DONE (2026-11-12) | round-trip clean; sizes recorded |
 | B-466 | data-validation-roundtrip 1.7: verify-sample per source, gates, spec merge, ADR, archive | DONE (2026-11-12) | each source compared with a fresh sample |
 | B-440 | quickstart-start-here 1.1: test first for the Start-here section of the quickstart | DONE | the test fails for the missing section |

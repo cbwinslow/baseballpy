@@ -13,7 +13,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `caching-and-invalidation` | 24 | 40 | 58 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
-| `cli-and-ingest` | 25 | 39 | 66 |
+| `cli-and-ingest` | 26 | 40 | 69 |
 | `concurrency-and-rate-limiting` | 7 | 13 | 15 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
@@ -196,6 +196,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 130: A Stale Hydrate Pool Chunk Is Parsed Again From Its Stored Raw Pages
 - ADR 131: The Manifest Lock Is An Operating-System Lock, Not A Lock File That Is Broken When Old
 - ADR 132: The MLB Lookup Lists Are Table Rows; A Dict Of Lists Is Keyed By List Name And Position
+- ADR 133: Dataset Groups Come From The Adapter, Not From The Estimate
 
 ## Documentation pages (`docs/`)
 

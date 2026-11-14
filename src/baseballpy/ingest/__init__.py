@@ -2,6 +2,7 @@
 
 from baseballpy.ingest.adapters import (
     ADAPTERS,
+    GroupedAdapter,
     IngestAdapter,
     get_adapters,
     register_adapter,
@@ -19,6 +20,7 @@ from baseballpy.ingest.types import (
 
 __all__ = [
     "ADAPTERS",
+    "GroupedAdapter",
     "IngestAdapter",
     "Job",
     "JobResult",

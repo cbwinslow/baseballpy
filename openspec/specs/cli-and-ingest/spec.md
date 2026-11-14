@@ -299,3 +299,11 @@ and a process-pool worker MUST exit when its parent process is gone; the worker 
 - **WHEN** the parent of a pool worker is gone
 - **THEN** the worker exits instead of holding its memory
 - Verified by `tests/test_memguard.py::test_a_worker_exits_when_its_parent_is_gone`.
+
+### Requirement: The Dry-Run Estimate Resolves Dataset Groups
+A group name that an adapter accepts in `--datasets` (for MLB: `games`, `season`, `reference`, `history`, `people_stats`) MUST be resolved to the registered datasets it fetches, through the optional `GroupedAdapter` protocol (`dataset_groups()`), so the estimate counts them. A name that is neither a dataset nor a group of the selected sources stays unresolved and is listed. An adapter that cannot be built MUST NOT stop the estimate: a warning names it and its groups stay unresolved.
+
+#### Scenario: A group is estimated
+- **WHEN** `ingest mlb_api -s 2024 -d games --dry-run` is planned
+- **THEN** the estimate counts the game-scoped datasets and lists no unresolved name
+- Verified by `tests/test_estimate_groups.py::test_real_mlb_adapter_dataset_groups`, `tests/test_estimate_groups.py::test_fake_grouped_adapter_resolves_group_and_leaves_unknown_unresolved` and `tests/test_estimate_groups.py::test_adapter_raising_on_construction_does_not_crash_estimate`.
