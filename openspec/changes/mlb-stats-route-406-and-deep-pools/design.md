@@ -120,3 +120,22 @@ Two problems surfaced and were fixed with tests: (1) the live route puts `splits
 ## Evidence: fresh MLB 2024 sample against the lake (2026-11-12, night)
 
 `baseballpy verify-sample mlb_api -s 2024 --limit 3 --all` after the schema regeneration and `compact --source mlb_api` (564 old-schema files rewritten): 12,275 processed chunks compared, 11,698 identical (95.3%), none missing in the lake. All game datasets (boxscore, linescore, play by play, win probability, feed) are identical. The 577 chunks that differ are of two kinds: (a) data the provider changes over time and that the lake fetched earlier (`team_alumni` 244, `team_roster_gameday` 51, `team_roster_all_time` 42, `schedule_hydrated` 14, `players_season` 11, one each for standings, venues, draft, personnel, ...: ages, shirt numbers, rosters), expected to differ; (b) 186 league-wide stat-pool chunks of the minor sports that still hold fallback data (B-35: the direct route answered 406 again at 19:45 local time). `verify-sample` earlier showed the same pools 652 vs 3,709 rows (projected hitting), which is why they are refetched when the route answers 200.
+
+## Evidence: is the hydrate fallback complete for the minor sports? (2026-11-13)
+
+Question: does the player list of the fallback (`/v1/sports/{id}/players`) miss players the direct route would return? Oracle: Statcast minor-league pitches (`statcast_pitches_minors`, all levels it tracks) joined to the schedule for the level, regular season only. Every distinct batter and pitcher Statcast saw at a level was looked up in the lake's `stats_season_hitting` / `stats_season_pitching` of that level.
+
+| Season | Level (sport id) | Hitters seen / in pool | Pitchers seen / in pool |
+| --- | --- | --- | --- |
+| 2023 | 11 (Triple-A) | 907 / 907 | 1,242 / 1,242 |
+| 2023 | 14 | 339 / 339 | 456 / 456 |
+| 2024 | 11 | 865 / 865 | not run |
+| 2024 | 14 | 367 / 367 | not run |
+| 2025 | 11 | 895 / 895 | 1,264 / 1,264 |
+| 2025 | 14 | 355 / 355 | 492 / 492 |
+
+Sport 1, 2024: 651 batters with a plate appearance in the stored boxscores, all 651 in the pool. Nobody was missing in any row.
+
+False alarm worth recording: a first comparison that ignored the level reported 319 Triple-A batters missing. They were Single-A players (all 319 sit in the sport 14 player list). The "652 against 3,709" gap seen on 2026-11-12 was the projected pools of sport 1, which the direct route now holds (3,709 rows); it was not a player-list defect. Season rosters (`fullSeason` and `allTime`) would not have helped either: they covered 0 and 62 of those 319.
+
+What this does not show: levels Statcast does not track (rookie leagues, Dominican Summer League), the pools other than season stats, and any field the direct route carries that the people route does not (`nameSlug`, `gameType`, `numLeagues`). The fallback chunks therefore stay provisional (ADR 117) and are re-fetched when the route answers 200.

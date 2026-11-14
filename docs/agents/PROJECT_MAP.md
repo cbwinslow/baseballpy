@@ -185,6 +185,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 117: Chunks Filled By The Hydrate Fallback Are Provisional
 - ADR 118: Rare Fields Are Sampled On Purpose; A Migration Never Writes Null-Only `_extras`
 - ADR 119: A Key-Unique View Over Pitches (The Dataset Keeps The Provider's Repeats)
+- ADR 120: The Hydrate Fallback's Player List Is Complete Where It Can Be Checked; No Wider List Is Built
 
 ## Documentation pages (`docs/`)
 
