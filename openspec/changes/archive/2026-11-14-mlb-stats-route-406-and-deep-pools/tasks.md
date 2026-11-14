@@ -6,8 +6,8 @@
 - [x] 2. Code
   - [x] 2.1 `gen_mlb_schemas.py` refuses to write an empty `PLAYER_STAT_COMBOS`/league combo table; a 406 is logged with its status and reported as a provider error, never `unsupported`; tests
   - [x] 2.2 The three deep single-season pools use smaller pages or a per-season split; respx tests (delegate the code to agy, review the diff)
-- [ ] 3. Re-run
-  - [ ] 3.1 After a 200: re-run the 15 failed pools and one modern MLB season on the homelab; record rows and errors in `design.md` (sport 1 of every season was refetched on the direct route on 2026-11-12; the minor sports (11 and up) still hold the fallback data until a full `ingest mlb_api -s Y --refresh` runs while the route answers 200)
+- [x] 3. Re-run
+  - [x] 3.1 CLOSED 2026-11-14 by the owner (a probe once an hour from 10:05 to 13:50 on 2026-11-14 answered 406 every time, 28 probes; the owner expects no change): the hydrate fallback is the permanent path for the minor-league pools, and the code heals itself if the route ever answers 200 (provisional chunks are fetched again, ADR 117). Original wording: After a 200: re-run the 15 failed pools and one modern MLB season on the homelab; record rows and errors in `design.md` (sport 1 of every season was refetched on the direct route on 2026-11-12; the minor sports (11 and up) still hold the fallback data until a full `ingest mlb_api -s Y --refresh` runs while the route answers 200)
   - [x] 3.2 Regenerate the `team_stats_year_by_year_*` schemas (`gen_mlb_schemas.py --only`, never the full run while the 406 lasts); add a test that the real-run fields are typed columns
   - [x] 3.3 Regenerate the 61 MLB schemas with schema drift in _extras via gen_mlb_schemas.py --only
   - [x] 3.4 Type the fields that still land in `_extras` (game feed review details and injuryType, schedule_postseason reschedule fields, draft_prospects xrefIds, team_affiliates conference, roster parentTeamId and note); the stats_* ones wait for the 406 (B-30)

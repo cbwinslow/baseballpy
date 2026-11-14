@@ -22,7 +22,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
 | `lake-access` | 17 | 23 | 63 |
-| `mlb-api-ingestion` | 30 | 44 | 54 |
+| `mlb-api-ingestion` | 32 | 46 | 58 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `portability` | 3 | 3 | 7 |
@@ -43,11 +43,11 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 389/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
 | `statcast` | 50 | archived | yes | yes | yes | 402/1765 (22%) | 18 |
-| `mlb_api` | 403 | archived | yes | yes | yes | 9643/17368 (55%) | 30 |
+| `mlb_api` | 403 | archived | yes | yes | yes | 9643/17368 (55%) | 32 |
 
 ## Active changes (`openspec/changes/`)
 
-98 changes are archived under `openspec/changes/archive/`.
+99 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
@@ -59,7 +59,6 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 5 | 1 | 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
-| `mlb-stats-route-406-and-deep-pools` | 9 | 2 | 3.1 |
 | `product-mandate-reproducible-outputs` | 7 | 1 | 2.5 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `response-log-segments` | 24 | 16 | 5.4, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
