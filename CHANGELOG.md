@@ -5,6 +5,7 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 ## Unreleased
 
 ### Added
+- `v_pitches_unique`: a view with one row per Statcast pitch key; the dataset keeps the provider's repeated 2026 rows (ADR 115, 119).
 - `baseballpy run PLAN [--every 6h]`: a Python supervisor that keeps a plan running (child process per stage, retries with backoff, resumes after a restart, no OS scheduler; ADR 90), `baseballpy backfill --stage`, and the queue on the `status` screen.
 - Cross-platform behavior (ADR 89): LF line endings for every written text file and in every checkout (`.gitattributes`), `spawn` worker processes, UTF-8 console output, and `tests/test_portability.py` enforcing it.
 - The default User-Agent is the one pybaseball sends (`python-requests/2.32.3`), overridable with `BASEBALLPY_USER_AGENT` or `HttpClient(user_agent=...)` (ADR 40).
@@ -23,3 +24,12 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 - MLB fan-out requests tolerate the provider's 404 for sports and teams without data.
 - Lint policy now includes bandit (`S`) and complexity ceilings (`PLR0912`, `PLR0915`).
 - License is GPL-3.0-or-later (ADR 26).
+
+### Fixed
+- `v_game_crosswalk` keeps one row per `game_pk` (the played row of a postponed or rescheduled game) and matches only played MLB games to Retrosheet, so each game and each Retrosheet game appears once (ADR 121).
+- The source archive no longer carries local scratch folders and reference dumps (12.1 MB to 2.8 MB).
+- A schema migration no longer writes empty `_extras` objects (ADR 118).
+
+### Known behaviour
+- MLB `/v1/stats` league-wide pools answer HTTP 406 most of the time; the library fills them through `/v1/people?hydrate=stats` and re-fetches them when the route answers again (ADR 53, 117, 120).
+- Statcast relabels old pitches after the fact (for example Slider to Sweeper); a closed season is downloaded again only with `--refresh` (docs/sources/statcast.md).
