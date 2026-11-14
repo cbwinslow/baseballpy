@@ -1,0 +1,83 @@
+[
+ {
+  "violation_type_desc": "Defensive Shift Violation",
+  "violationTypeDesc": "Defensive Shift Violation",
+  "violationTypeCode": "defensive_shift",
+  "eventType": "Pitch Event",
+  "eventTypeCode": "VS",
+  "parentId": null,
+  "violatorCode": null
+ },
+ {
+  "violation_type_desc": "Lateral Positioning Violation",
+  "violationTypeDesc": "Lateral Positioning Violation",
+  "violationTypeCode": "lateral_positioning_violation",
+  "eventType": "Pitch Event",
+  "eventTypeCode": "VS",
+  "parentId": 1,
+  "violatorCode": null
+ },
+ {
+  "violation_type_desc": "Depth Violation",
+  "violationTypeDesc": "Depth Violation",
+  "violationTypeCode": "infielder_depth_violation",
+  "eventType": "Pitch Event",
+  "eventTypeCode": "VS",
+  "parentId": 1,
+  "violatorCode": null
+ },
+ {
+  "violation_type_desc": "Switching Sides Violation",
+  "violationTypeDesc": "Switching Sides Violation",
+  "violationTypeCode": "switching_sides_violation",
+  "eventType": "Pitch Event",
+  "eventTypeCode": "VS",
+  "parentId": 1,
+  "violatorCode": null
+ },
+ {
+  "violation_type_desc": "Pitcher Disengagement Violation",
+  "violationTypeDesc": "Pitcher Disengagement Violation",
+  "violationTypeCode": "pitcher_disengagement",
+  "eventType": "Play Event",
+  "eventTypeCode": "forced_balk",
+  "parentId": null,
+  "violatorCode": "P"
+ },
+ {
+  "violation_type_desc": "Pitcher Pitch Timer Violation",
+  "violationTypeDesc": "Pitcher Pitch Timer Violation",
+  "violationTypeCode": "pitcher_pitch_timer",
+  "eventType": "Pitch Event",
+  "eventTypeCode": "VP",
+  "parentId": null,
+  "violatorCode": "P"
+ },
+ {
+  "violation_type_desc": "Batter Pitch Timer Violation",
+  "violationTypeDesc": "Batter Pitch Timer Violation",
+  "violationTypeCode": "batter_pitch_timer",
+  "eventType": "Pitch Event",
+  "eventTypeCode": "AC",
+  "parentId": null,
+  "violatorCode": "B"
+ },
+ {
+  "violation_type_desc": "Batter Timeout Violation",
+  "violationTypeDesc": "Batter Timeout Violation",
+  "violationTypeCode": "batter_timeout",
+  "eventType": "Pitch Event",
+  "eventTypeCode": "AB",
+  "parentId": null,
+  "violatorCode": "B"
+ },
+ {
+  "violation_type_desc": "Catcher Pitch Timer Violation",
+  "violationTypeDesc": "Catcher Pitch Timer Violation",
+  "violationTypeCode": "catcher_pitch_timer",
+  "eventType": "Pitch Event",
+  "eventTypeCode": "VC",
+  "parentId": null,
+  "violatorCode": "C"
+ }
+]

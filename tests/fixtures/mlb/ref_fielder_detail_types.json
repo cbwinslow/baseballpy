@@ -1,0 +1,122 @@
+[
+ {
+  "statName": "f_assist",
+  "code": "A",
+  "names": [
+   "assist"
+  ],
+  "chance": true,
+  "error": false
+ },
+ {
+  "statName": "f_assist_of",
+  "code": "FOF",
+  "names": [
+   "outfieldAssist"
+  ],
+  "chance": false,
+  "error": false
+ },
+ {
+  "statName": "f_fielded_ball",
+  "code": null,
+  "names": null,
+  "chance": false,
+  "error": false
+ },
+ {
+  "statName": "f_deflection",
+  "code": null,
+  "names": null,
+  "chance": false,
+  "error": false
+ },
+ {
+  "statName": "f_putout",
+  "code": "PO",
+  "names": [
+   "putout"
+  ],
+  "chance": true,
+  "error": false
+ },
+ {
+  "statName": "f_touch",
+  "code": null,
+  "names": null,
+  "chance": false,
+  "error": false
+ },
+ {
+  "statName": "f_error",
+  "code": "E",
+  "names": [
+   "error"
+  ],
+  "chance": true,
+  "error": true
+ },
+ {
+  "statName": "f_fielding_error",
+  "code": null,
+  "names": null,
+  "chance": true,
+  "error": true
+ },
+ {
+  "statName": "f_foul_error",
+  "code": null,
+  "names": null,
+  "chance": true,
+  "error": true
+ },
+ {
+  "statName": "f_error_dropped_ball",
+  "code": null,
+  "names": null,
+  "chance": true,
+  "error": true
+ },
+ {
+  "statName": "f_interference",
+  "code": null,
+  "names": null,
+  "chance": true,
+  "error": true
+ },
+ {
+  "statName": "f_throwing_error",
+  "code": null,
+  "names": null,
+  "chance": true,
+  "error": true
+ },
+ {
+  "statName": "c_catcher_interf",
+  "code": null,
+  "names": null,
+  "chance": false,
+  "error": true
+ },
+ {
+  "statName": "t_double_play",
+  "code": null,
+  "names": null,
+  "chance": false,
+  "error": false
+ },
+ {
+  "statName": "t_triple_play",
+  "code": null,
+  "names": null,
+  "chance": false,
+  "error": false
+ },
+ {
+  "statName": "f_defensive_shift_violation_error",
+  "code": null,
+  "names": null,
+  "chance": false,
+  "error": true
+ }
+]

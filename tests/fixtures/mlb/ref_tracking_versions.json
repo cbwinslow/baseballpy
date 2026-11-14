@@ -1,0 +1,448 @@
+[
+ {
+  "id": 100,
+  "description": "Pitch F/x",
+  "pitchVendor": {
+   "id": 1,
+   "description": "Sportvision",
+   "version": "1"
+  }
+ },
+ {
+  "id": 102,
+  "description": "Statcast 2015 (ball + player)",
+  "pitchVendor": {
+   "id": 1,
+   "description": "Sportvision",
+   "version": "1"
+  },
+  "hitVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.0"
+  },
+  "playerVendor": {
+   "id": 4,
+   "description": "ChyronHego",
+   "version": "1"
+  }
+ },
+ {
+  "id": 101,
+  "description": "Statcast 2015 (ball only)",
+  "pitchVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.0"
+  },
+  "hitVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.0"
+  }
+ },
+ {
+  "id": 106,
+  "description": "Statcast 2017 (ball only)",
+  "pitchVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.0"
+  },
+  "hitVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.0"
+  }
+ },
+ {
+  "id": 108,
+  "description": "Statcast 2017 (ball + player)",
+  "pitchVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.0"
+  },
+  "hitVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.0"
+  },
+  "playerVendor": {
+   "id": 4,
+   "description": "ChyronHego",
+   "version": "1"
+  }
+ },
+ {
+  "id": 110,
+  "description": "Statcast 2018 (ball + player)",
+  "pitchVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.5"
+  },
+  "hitVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.5"
+  },
+  "playerVendor": {
+   "id": 4,
+   "description": "ChyronHego",
+   "version": "1"
+  }
+ },
+ {
+  "id": 109,
+  "description": "Statcast 2018 (ball only)",
+  "pitchVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.5"
+  },
+  "hitVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "2.5"
+  }
+ },
+ {
+  "id": 104,
+  "description": "Statcast 2020 (12-camera 30hz)",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera 30hz"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera 30hz"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera 30hz"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera 30hz"
+  }
+ },
+ {
+  "id": 103,
+  "description": "Statcast 2020 (8-camera 30hz)",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera 30hz"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera 30hz"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera 30hz"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera 30hz"
+  }
+ },
+ {
+  "id": 111,
+  "description": "Trackman 3.0",
+  "pitchVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "3.0"
+  },
+  "hitVendor": {
+   "id": 2,
+   "description": "Trackman",
+   "version": "3.0"
+  }
+ },
+ {
+  "id": 112,
+  "description": "Hawk-Eye HFR (12-camera [5-camera 300hz + 7-camera 30hz])",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera [5-camera 300hz + 7-camera 30hz]"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera [5-camera 300hz + 7-camera 30hz]"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera [5-camera 300hz + 7-camera 30hz]"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera [5-camera 300hz + 7-camera 30hz]"
+  },
+  "batVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera [5-camera 300hz + 7-camera 30hz]"
+  },
+  "biomechanicsVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "12-camera [5-camera 300hz + 7-camera 30hz]"
+  }
+ },
+ {
+  "id": 113,
+  "description": "Statcast 2023 (4-camera 30hz)",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "4-camera 30hz"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "4-camera 30hz"
+  }
+ },
+ {
+  "id": 114,
+  "description": "Hawk-Eye HFR (8-camera [4-camera 300hz + 4-camera 30hz])",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera [4-camera 300hz + 4-camera 30hz]"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera [4-camera 300hz + 4-camera 30hz]"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera [4-camera 300hz + 4-camera 30hz]"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera [4-camera 300hz + 4-camera 30hz]"
+  },
+  "batVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera [4-camera 300hz + 4-camera 30hz]"
+  },
+  "biomechanicsVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "8-camera [4-camera 300hz + 4-camera 30hz]"
+  }
+ },
+ {
+  "id": 115,
+  "description": "Tracking Version 103 + Hawk-Eye V1 300hz (4-camera)",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "batVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye V1 300hz (4-camera)"
+  },
+  "biomechanicsVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye V1 300hz (4-camera)"
+  }
+ },
+ {
+  "id": 116,
+  "description": "Tracking Version 103 + Hawk-Eye V1 5-camera 300 hz (5-camera)",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "batVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye V1 5-camera 300hz (5-camera)"
+  },
+  "biomechanicsVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye V1 5-camera 300hz (5-camera)"
+  }
+ },
+ {
+  "id": 117,
+  "description": "Hawk-Eye V2 (16-camera [8-camera 300hz + 8-camera 30hz])",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "16-camera [8-camera 300hz + 8-camera 30hz]"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "16-camera [8-camera 300hz + 8-camera 30hz]"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "16-camera [8-camera 300hz + 8-camera 30hz]"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "16-camera [8-camera 300hz + 8-camera 30hz]"
+  },
+  "batVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "16-camera [8-camera 300hz + 8-camera 30hz]"
+  },
+  "biomechanicsVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "16-camera [8-camera 300hz + 8-camera 30hz]"
+  }
+ },
+ {
+  "id": 118,
+  "description": "Tracking Version 103 + Hawk-Eye V2 300hz (8-camera)",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 103"
+  },
+  "batVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye V2 300hz (8-camera)"
+  },
+  "biomechanicsVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye V2 300hz (8-camera)"
+  }
+ },
+ {
+  "id": 119,
+  "description": "Hawk-Eye PitchTRAX+SkeleTRACK V2 30hz (14-camera)",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye PitchTRAX V2"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye PitchTRAX V2"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye SkeleTRACK V2"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Hawk-Eye SkeleTRACK V2"
+  }
+ },
+ {
+  "id": 120,
+  "description": "KinaTrax Diamond (30-camera [Tracking Version 119 + 16-camera 600hz])",
+  "pitchVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 119"
+  },
+  "hitVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 119"
+  },
+  "playerVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 119"
+  },
+  "skeletalVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "Tracking Version 119"
+  },
+  "batVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "KinaTrax (16-camera 600hz)"
+  },
+  "biomechanicsVendor": {
+   "id": 3,
+   "description": "Hawk-Eye",
+   "version": "KinaTrax (16-camera 600hz)"
+  }
+ }
+]

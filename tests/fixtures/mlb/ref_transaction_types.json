@@ -1,0 +1,166 @@
+[
+ {
+  "code": "SC",
+  "description": "Status Change"
+ },
+ {
+  "code": "ASG",
+  "description": "Assigned"
+ },
+ {
+  "code": "DES",
+  "description": "Designated for Assignment"
+ },
+ {
+  "code": "OPT",
+  "description": "Optioned"
+ },
+ {
+  "code": "OUT",
+  "description": "Outrighted"
+ },
+ {
+  "code": "TR",
+  "description": "Trade"
+ },
+ {
+  "code": "DFA",
+  "description": "Declared Free Agency"
+ },
+ {
+  "code": "REL",
+  "description": "Released"
+ },
+ {
+  "code": "URL",
+  "description": "Unconditional Release"
+ },
+ {
+  "code": "WA",
+  "description": "Waived"
+ },
+ {
+  "code": "RET",
+  "description": "Retired"
+ },
+ {
+  "code": "SU",
+  "description": "Suspension"
+ },
+ {
+  "code": "DEI",
+  "description": "Declared Ineligible"
+ },
+ {
+  "code": "RES",
+  "description": "Reserved"
+ },
+ {
+  "code": "DEC",
+  "description": "Deceased"
+ },
+ {
+  "code": "NUM",
+  "description": "Number Change"
+ },
+ {
+  "code": "CLW",
+  "description": "Claimed Off Waivers"
+ },
+ {
+  "code": "PUR",
+  "description": "Purchase"
+ },
+ {
+  "code": "SGN",
+  "description": "Signed"
+ },
+ {
+  "code": "SFA",
+  "description": "Signed as Free Agent"
+ },
+ {
+  "code": "DR",
+  "description": "Drafted"
+ },
+ {
+  "code": "SE",
+  "description": "Selected"
+ },
+ {
+  "code": "CU",
+  "description": "Recalled"
+ },
+ {
+  "code": "RE",
+  "description": "Reinstated"
+ },
+ {
+  "code": "IFA",
+  "description": "Signed AS Free Agent"
+ },
+ {
+  "code": "NC",
+  "description": "New Contract"
+ },
+ {
+  "code": "CP",
+  "description": "Contract Purchased"
+ },
+ {
+  "code": "CV",
+  "description": "Contract Void"
+ },
+ {
+  "code": "ARB",
+  "description": "Offered arbitration"
+ },
+ {
+  "code": "NOA",
+  "description": "Not offered Arbitration"
+ },
+ {
+  "code": "REF",
+  "description": "Refused Arbitration"
+ },
+ {
+  "code": "NTC",
+  "description": "Not Tendered Contract"
+ },
+ {
+  "code": "LON",
+  "description": "Loan"
+ },
+ {
+  "code": "RTN",
+  "description": "Returned"
+ },
+ {
+  "code": "AWD",
+  "description": "Awarded"
+ },
+ {
+  "code": "TRN",
+  "description": "Transferred"
+ },
+ {
+  "code": "OBT",
+  "description": "Obtained"
+ },
+ {
+  "code": "JUM",
+  "description": "Jumped"
+ },
+ {
+  "code": "R5",
+  "description": "Rule 5 Selection"
+ },
+ {
+  "code": "R5M",
+  "description": "Rule 5 Draft Minors"
+ },
+ {
+  "code": "ACQ",
+  "description": "Acquired"
+ }
+]

@@ -1,0 +1,12 @@
+[
+ {
+  "milestoneTypeId": 1101,
+  "milestoneTypeCode": "C",
+  "milestoneTypeText": "Cumulative "
+ },
+ {
+  "milestoneTypeId": 1102,
+  "milestoneTypeCode": "T",
+  "milestoneTypeText": "Top n"
+ }
+]

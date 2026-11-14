@@ -1,0 +1,22 @@
+[
+ {
+  "id": 0,
+  "name": "Unknown"
+ },
+ {
+  "id": 1,
+  "name": "MLB"
+ },
+ {
+  "id": 2,
+  "name": "MLB Club"
+ },
+ {
+  "id": 3,
+  "name": "Hybrid"
+ },
+ {
+  "id": 4,
+  "name": "None"
+ }
+]

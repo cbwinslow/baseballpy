@@ -1,0 +1,1002 @@
+[
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 1,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2023-09-20_AB_Ibrox_I1",
+  "trackingVersionSoftwareNote": "Fix for HFR dropouts related to large exposure changes. Fix for PTP changes above that cause sync issues leading to delayed ABS. Improvements to BMCC processing loads to prevent issues related to lagging"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 2,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2023-09-20_AB_Ibrox_I1",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 3,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2023-09-20_AB_Ibrox_I1",
+  "trackingVersionSoftwareNote": "Improvements to BMCC processing loads to prevent issues related to lagging (dropped targets, freezing tags, etc)"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 4,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.31.0",
+  "trackingVersionSoftwareNote": "AMQ/ZMQ changes to prevent crashes in BMCC caused by reading in Game State info. Addition of “release_timestamp” to the “pitch_release” packet to begin reporting accurate release time"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 5,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2023-08-02_SV_Ibrox_H_RC1",
+  "trackingVersionSoftwareNote": "Fix for some bat mosaics having black frames"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 6,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2023-08-25_AB_Ibrox_H_RC2",
+  "trackingVersionSoftwareNote": "Fix for lagging issues causing dropped player targets"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 7,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2023-08-02_SV_Ibrox_H_RC1",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 8,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.30.1",
+  "trackingVersionSoftwareNote": "AMQ/ZMQ changes to prevent crashes in BMCC caused by reading in Game State info"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 9,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.30.0",
+  "trackingVersionSoftwareNote": "Some changes to how BDS sends AMQ events over ZMQ to BMCC"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 10,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2023-07-19_JG_Ibrox_FeatureRelease",
+  "trackingVersionSoftwareNote": "Feature release to prevent HFR camera dropout and reconnection during large changes in exposure values"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 11,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2023-07-10_AB_Ibrox_G_RC2",
+  "trackingVersionSoftwareNote": "Implementation of a second bat task in the PP Queue. You will now see a “bat” and “bat2\" in the queue for every play. This is so both the old and new bat tracking are delivered. New bat tracking will be delivered live via BDS, and the old bat tracking via the post game output"
+ },
+ {
+  "trackingSoftwareComponentId": 5,
+  "trackingSoftwareComponentText": "BaseballMultiCameraControl",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraControl software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 12,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraControl_2023-07-10_AB_Ibrox_G_RC2",
+  "trackingVersionSoftwareNote": "Addition of a “Restart Birger” button on the camera UI. This simplifies operations in the case the birger stops working and you would like to restart it"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 13,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2023-07-05-FM_Ibrox_G_RC1",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 14,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2023-07-12-AB_Ibrox_G_RC4",
+  "trackingVersionSoftwareNote": "New bat changes as demonstrated during the Ground Truth Test. These include 1) changing the curve fitting model around impact,; 2) enabling the software to classify a swing as either a Hit or a Miss and apply either a two-curve or one-curve approach; 3) an updated bat keypoints model. Changes to allow Post Process to do both the new method and old method of bat tracking. Fix bug where some Post Process Release tasks calculated the wrong release point"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 15,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.28.0",
+  "trackingVersionSoftwareNote": "Deliver new packets called pitch_spin and pitch_release. These will be delivered alongside the current pitch_refined packet"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 16,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2023-06-07_JG_Ibrox_B_TEST_BMCCFreezeFix",
+  "trackingVersionSoftwareNote": "Added safety checks and additional logging to catch future freezes in BMCC"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 17,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2023-04-04_AB_Ibrox_B5",
+  "trackingVersionSoftwareNote": "Fix for not sending spin data when spin “fails” due to high confidence value"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 18,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.24.0",
+  "trackingVersionSoftwareNote": "Fix for sending null values when reprocessing already delivered spin/extension values"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 19,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2023-03-27_AB_Ibrox_B1",
+  "trackingVersionSoftwareNote": "Allow spin to be prioritized over other tasks"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 20,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2023-03-27_AB_Ibrox_B1",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 21,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2023-03-28_AB_Ibrox_B3",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 22,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.22.0",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 23,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.17.0",
+  "trackingVersionSoftwareNote": "Added approach angle for bat and ball to the bat data packets for High Frame Rate systems"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 24,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.16.0",
+  "trackingVersionSoftwareNote": "New feature for BDS to send a request on launch to receive game state info from BOSS. Bug fix for the UI not accurately reflecting game state status"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 25,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-08-16_JS_FlushingMeadows_E_RC2",
+  "trackingVersionSoftwareNote": "Improvements to autoclassification. Possible fix for BMCC crashes. Fix for some \"BALL_WAS_FIELDED_BY_XX\" events not being created"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 26,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2022_08_03_FS_FlushingMeadows_E_RC1",
+  "trackingVersionSoftwareNote": "Bug fix for prioritized area. Improvements to hit trajectory after deflections. Fix for some “BALL_WAS_FIELDED_BY_XX” events not being created"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 27,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-07-20_JS_FlushingMeadows_TEST_ColourCorrection",
+  "trackingVersionSoftwareNote": "Added Color Correction features to improve image quality due to environmental impacts"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 28,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2022-07-06_MN_FlushingMeadows_D_RC1",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 29,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2022-07-06_MN_FlushingMeadows_D_RC1",
+  "trackingVersionSoftwareNote": "Compatible version with new BMCC. Fix for Bat tasks that were failing (High Frame Rate systems)"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 30,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-07-06_MN_FlushingMeadows_D_RC1",
+  "trackingVersionSoftwareNote": "Improved Object Detection (i.e finding players in the image). Better padding around all players to make them more fully in the object detection box. Improvements to catcher / umpire finding with them stood so close together (further changes to their skeletal tracking to come). \"Are you sure\" prompt when closing software to try and prevent accidental shutting down of software. Fix for crashes in BMCC. Added camera-view background to hit calibration images"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 31,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2022-05-18_FS_V2_MLB_FlushingMeadows1",
+  "trackingVersionSoftwareNote": "Bug fix for prioritizing the pitch area that causes empty Pitch Mosaics"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 32,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-05-26_V1_JS_MLB_FLUSHINGMEADOWS",
+  "trackingVersionSoftwareNote": "Potential fix for BMCC Crashes being seen."
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 33,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-05-16_V1_RM",
+  "trackingVersionSoftwareNote": "Further fix for BMCC crashes"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 34,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-05-06_V2_RM_MLB_FLUSHINGMEADOWS",
+  "trackingVersionSoftwareNote": "Potential BMCC crash fix"
+ },
+ {
+  "trackingSoftwareComponentId": 5,
+  "trackingSoftwareComponentText": "BaseballMultiCameraControl",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraControl software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 35,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraControl_2022-05-06_V2_RM_MLB_FLUSHINGMEADOWS",
+  "trackingVersionSoftwareNote": "Potential BMCC crash fix"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 36,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2022-05-06_V1_RM_MLB_FLUSHINGMEADOWS",
+  "trackingVersionSoftwareNote": "Reduce file size of skeletal mosaic images when transferring between Post Process and Control (for use in HFR system)"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 37,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDatServer-2.11.0",
+  "trackingVersionSoftwareNote": "Handle having a dedicated hitter in game state"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 38,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-04-20_V1_JS_FlushingMeadows_MLB",
+  "trackingVersionSoftwareNote": "Speed up for Player Classification slowing down BMCC /n Fix for BMCC crash /n Support for sending Post Process tasks to different instances of Post Process (for use in HFR system)"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 39,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2022-04-20_V1_JS_FlushingMeadows_MLB",
+  "trackingVersionSoftwareNote": "Support for receiving only certain types of Post Process tasks (for use in HFR system). Fix for small balls being seen in the top row of spin mosaic. Fix for PP crash"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 40,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2022-04-20",
+  "trackingVersionSoftwareNote": "Prioritise ball tracking for pitches over noise seen in other parts of the field (try and stop excess noise in the outfield or birds stopping pitches being detected)"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 41,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-03-03_V1_FM_BBD-1003_FLUSHINGMEADOWS",
+  "trackingVersionSoftwareNote": "Fixes for the high GPU usage in the HFR cameras, this was was causing HFR cameras not to contribute to live Player Tracking at the last event. Having these cameras contribute should help player classification. Player Classification improvements (i.e Auto-tagging). Fixes based of problem cases seen from the last event"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 42,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2022-03-03_V2_DW_BBD-344_FLUSHINGMEADOWS",
+  "trackingVersionSoftwareNote": "Change to fix high GPU usage which was causing instability"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 43,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.7.0",
+  "trackingVersionSoftwareNote": "Addition of the Publish_Timestamp field in all packets"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 44,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2022-02-10_V1_FS_BBD_FUSHINGMEADOWS",
+  "trackingVersionSoftwareNote": "Further fixes for throws from the outfield being classified as pitches. Fixes for some duplicate play events (fix for reports last year of duplicate play events when catcher threw ball back to the catcher)"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 45,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-02-08_V2_JS_BBD_FLUSHINGMEADOWS",
+  "trackingVersionSoftwareNote": "Addition of Bat tracking Post Process tasks. Addition of Bat and Skeletal mosaic images. Latest skeletal tracking models. Fixes for duplicate Track IDs in Low A SE Parks. Player Classification changes. Fix for Last Hit Images looking distorted on the Research Tool"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 46,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2022-02-08_V2_JS_BBD_FLUSHINGMEADOWS",
+  "trackingVersionSoftwareNote": "Latest skeletal tracking models"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 47,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2022-11-01_V1_CS",
+  "trackingVersionSoftwareNote": "Throw speed calculation changes. Player tracking improvements for catcher/umpire"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 48,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.4.0",
+  "trackingVersionSoftwareNote": "Bug fix for positional data in refined feed not always at 0.033"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 49,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.2.0",
+  "trackingVersionSoftwareNote": "Addition of seam orientation into pitch_refined packet. Change in throw_data speed value calculations "
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 50,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2021-09-22_V1_CS_MLBD21",
+  "trackingVersionSoftwareNote": "Addition of seam orientation into pitch_refined packet"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 51,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-09-13_V1_DW_TEST_MLBD21",
+  "trackingVersionSoftwareNote": "Improvements to tagging of the catcher and home plate umpire"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 52,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-08-25_V1_DW_TEST_MLBD21",
+  "trackingVersionSoftwareNote": "Autotagging improvement for home plate area. Fix for BMCC crash"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 53,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2021-08-21",
+  "trackingVersionSoftwareNote": "Reducing the min/max X value for pitch detection from -/+ 4.0m to +/-2.5m. Increasing the max Z value for pitch detection from 2.5m to 3.0m"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 54,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-07-09_V1_DW_MLBD21",
+  "trackingVersionSoftwareNote": "Fix for teleporting players over home plate. Fix for 30Hz positional player and ball problems"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 55,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2021-07-09_V1_DW_TEST_MLBD21",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 56,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2021-07-09_V1_DW_TEST_MLBD21",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 57,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2021-06-03",
+  "trackingVersionSoftwareNote": "Change pitch classification criteria: min speed 30mph, max difference in Y from straight pitch = 10 degrees"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 58,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2021-05-12_V1_AD_MLBD21",
+  "trackingVersionSoftwareNote": "New \"median enhanced\" image setting to aid spin. Useful when the ball is half in sun, half in shadow. Operator still needs to choose best image setting for the conditions. New \"tick\" and \"cross\" graphics on mosaic showing whether patches in rows 3 and 4 agree with each other or not. Total shown at the bottom of the mosaic. Further .csv changes. Times added to csv, and the output is for 4th row of mosaic rather than 3rd row"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 59,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_MLBD21_2021-03-26_V1_DW_TEST",
+  "trackingVersionSoftwareNote": "Always set team for players when the player is missing in the gamestate (this helps with classification of the batter for the times when we have seen them missing from the gamestate)"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 60,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_BD21_2021-03-24_V1_DW_TEST",
+  "trackingVersionSoftwareNote": "Fix bug where low quality classifications were being made. Option to update runners on end of play event. Add option to delay updating batters and runners until the game state has been updated and either next_batter and/or end_of_play events have been received"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 61,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_BD21_2021-03-23_V1_DW_TEST",
+  "trackingVersionSoftwareNote": "Add option to update runners on next batter event (this fixes some cases where we were receiving updated batter information before the play had finished)."
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 62,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_BD21_2021-03-22_V1_CS_TEST",
+  "trackingVersionSoftwareNote": "Spin-related improvements"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 63,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_BD21_2021-03-22_V2_DW_TEST",
+  "trackingVersionSoftwareNote": "Maintain history of player jersey numbers. Improvements for player tracking when fielders are shifted. Ensure that classification corrections labeled as unknown un-assign a player. Clear teams when innings change."
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 64,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_BD21_2021-03-19_V2_DW_Body29_TEST",
+  "trackingVersionSoftwareNote": "Improvements to improve player flicker in the outfield. Fix issue where classifications that arrived on the same frame for the same person. Improvements for tracks when the players are moving slowly. New Pose Model"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 65,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-03-18_V1_DW_TEST",
+  "trackingVersionSoftwareNote": "Further fix for classification corrections causing duplicate players. More improvements to yesterdays change involving more checks for other good track. Added UI element for displaying MLB corrections in BMCC"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 66,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-03-17_V1_DW_TEST",
+  "trackingVersionSoftwareNote": "Improvements to track classification - more checks for other possible good classifications, rather than going with first classification to pass threshold"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 67,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-03-16_V2_DW_TEST",
+  "trackingVersionSoftwareNote": "Improvements to classification when players first walk onto the field. Fix a bug found where some MLB corrections were being ignored"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 68,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-03-11_V2_DW_TEST",
+  "trackingVersionSoftwareNote": "Improvement to outfield player tracking. Improved robustness of game state injector - it was possible to miss messages from MLB if they came through in quick succession (less than a single frame interval). Made both tracking feeds share a single player tracker processor. This is to ensure consistency of track ids across the delayed and live feeds. Fixed missing ball positions in the delayed feed (to work with BDS 2.0.5). Prevent manual classification from causing duplicate players"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 69,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.0.5",
+  "trackingVersionSoftwareNote": "Send ball position on both live and refined"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 70,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-03-08_V2_DW_TEST",
+  "trackingVersionSoftwareNote": "Attempted fix for crash seen in testing. Allow people (in particular umpires) to be assigned no team number"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 71,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2021-03-08_V1_CS",
+  "trackingVersionSoftwareNote": "Fix for crash seen during testing"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 72,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-03-01_V1_DW_ModularPlayerTracker_TEST",
+  "trackingVersionSoftwareNote": "Changes to player classification"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 73,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2021-03-02_V1_CS",
+  "trackingVersionSoftwareNote": "The MLB calculated spin values shown on the UI. The upper and lower limit Post Process will then work within shown on the UI"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 74,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-02-23_V1_DW",
+  "trackingVersionSoftwareNote": "Outputting new format (rather than the legacy format) now respects \"Remove player roles from output\""
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 75,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2021-02-05_V1_JS",
+  "trackingVersionSoftwareNote": "Fixes for delayed COM and skeletal not reaching the Data Server. Fixes for duplicate timestamps in data"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 76,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-2.0.4",
+  "trackingVersionSoftwareNote": "Fix for ball positions missing from player packets"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 77,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2021-02-01_V1_CS",
+  "trackingVersionSoftwareNote": "An extra test on XZ to prevent the Result Unavailable\". Broken Birger adaptor preventing image control has now been fixed"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 78,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2020-12-17_V1_JS",
+  "trackingVersionSoftwareNote": "Implementing IK."
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 79,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2020-09-17-V1_JS_MLB",
+  "trackingVersionSoftwareNote": "Latency improvements. Improvements for player \"flicker\", and centre of mass \"jumping\". Output a \"last hit image\" - an image from each camera showing the hit tracking quality."
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 80,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2020-09-14_V1_FS_MLB",
+  "trackingVersionSoftwareNote": "Improvements to some foul ball problem cases. A \"BTC\" icon for the taskbar so its not just a white box"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 81,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2020-09-11_V1_WB_MLB",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 82,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-1.0.52",
+  "trackingVersionSoftwareNote": "Fix for Pickoff play event assigned to the previous playID. Fix for Pitcher first movement play event assigned to previous playId. Fix for missing hit_refined packets. MLB Tag corrections are now consumed from AMQ /n Tag corrections will be saved to file for further development"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 83,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2020-09-11_V1_RB_MLB",
+  "trackingVersionSoftwareNote": "Latency improvements. Improvements for player \"flicker\", and centre of mass \"jumping\". Output a \"last hit image\" - an image from each camera showing the hit tracking quality"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 84,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2020-09-11_V1_FS_MLB",
+  "trackingVersionSoftwareNote": "Improvements to some foul ball problem cases"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 85,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-1.0.52",
+  "trackingVersionSoftwareNote": "Fix for Pickoff play event assigned to the previous playID. Fix for Pitcher first movement play event assigned to previous playid. MLB Tag corrections are now consumed from AMQ"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 86,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-1.0.50",
+  "trackingVersionSoftwareNote": "Change to allow resent data to all have new play IDs. Fix to Pickoff assigned to previous play ID"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 87,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2020-08-07_V1_JS",
+  "trackingVersionSoftwareNote": "Interpolation change to send data at correct time"
+ },
+ {
+  "trackingSoftwareComponentId": 5,
+  "trackingSoftwareComponentText": "BaseballMultiCameraControl",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraControl software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 88,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraControl_2020-08-07_V1_JS",
+  "trackingVersionSoftwareNote": "Added \"persistent track IDs\""
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 89,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2020-08-06_V1_MN",
+  "trackingVersionSoftwareNote": "Fixes for some ground ball cases"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 90,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2020-07-27_V1_JS",
+  "trackingVersionSoftwareNote": "Improvements to prevent the slow processing seen sometimes after coming out of warm-ups"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 91,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2020-07-25_V1_FS",
+  "trackingVersionSoftwareNote": "better filter on the position of the players at the time of classification"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 92,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2020-07-15_V1_FS",
+  "trackingVersionSoftwareNote": "Display Warning in status box if the BallTrackControl mode is not \"Game\" (related to having the separate Batting Practice mode)"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 93,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2020-07-15_V1_FS",
+  "trackingVersionSoftwareNote": "Ability to switch between modes is now on the UI"
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 94,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2020-07-14_V3_AD",
+  "trackingVersionSoftwareNote": "Speed ups in processing the tasks"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 95,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-1.0.48",
+  "trackingVersionSoftwareNote": "Fixes to data storage to allow for resends"
+ },
+ {
+  "trackingSoftwareComponentId": 1,
+  "trackingSoftwareComponentText": "MLBBaseballDataServer",
+  "trackingSoftwareComponentDesc": "MLBBaseballDataServer software",
+  "trackingSoftwareComponentCode": "MLBBaseballDataServer",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 96,
+  "trackingSoftwareComponentVersionText": "MLBBaseballDataServer-1.0.47",
+  "trackingVersionSoftwareNote": "Fixed issue whereby the pitch spin vector was being converted into feet"
+ },
+ {
+  "trackingSoftwareComponentId": 4,
+  "trackingSoftwareComponentText": "BaseballMultiCameraAnalysis",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraAnalysis software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraAnalysis",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 97,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraAnalysis_2020-06-04_V1_JS",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 5,
+  "trackingSoftwareComponentText": "BaseballMultiCameraControl",
+  "trackingSoftwareComponentDesc": "BaseballMultiCameraControl software",
+  "trackingSoftwareComponentCode": "BaseballMultiCameraControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 98,
+  "trackingSoftwareComponentVersionText": "BaseballMultiCameraControl_2020-06-04_V1_JS",
+  "trackingVersionSoftwareNote": "No changes to output data"
+ },
+ {
+  "trackingSoftwareComponentId": 3,
+  "trackingSoftwareComponentText": "BaseballBallTrackControl",
+  "trackingSoftwareComponentDesc": "BaseballBallTrackControl software",
+  "trackingSoftwareComponentCode": "BaseballBallTrackControl",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 99,
+  "trackingSoftwareComponentVersionText": "BaseballBallTrackControl_2020-06-09_F1",
+  "trackingVersionSoftwareNote": "Has the ability to be used for Batting Practice, once specific settings are turned on. Off by default."
+ },
+ {
+  "trackingSoftwareComponentId": 2,
+  "trackingSoftwareComponentText": "BaseballPostProcess",
+  "trackingSoftwareComponentDesc": "BaseballPostProcess software",
+  "trackingSoftwareComponentCode": "BaseballPostProcess",
+  "trackingVendorId": 3,
+  "trackingVersionSoftwareNoteId": 100,
+  "trackingSoftwareComponentVersionText": "BaseballPostProcess_2020-06-05_V1_AD",
+  "trackingVersionSoftwareNote": "Pitch and Hit spin vector"
+ }
+]

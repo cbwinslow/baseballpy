@@ -1,0 +1,14 @@
+[
+ {
+  "freeGameTypeCode": "FREE_GAME_OF_THE_DAY",
+  "freeGameTypeText": "Free Game of the Day",
+  "freeGameTypeDesc": "Free Game of the Day",
+  "freeGameTypeId": 1
+ },
+ {
+  "freeGameTypeCode": "FREE_GAME_EXTRA_INNINGS",
+  "freeGameTypeText": "Free Game Extra Innings",
+  "freeGameTypeDesc": "Free Game Extra Innings",
+  "freeGameTypeId": 2
+ }
+]

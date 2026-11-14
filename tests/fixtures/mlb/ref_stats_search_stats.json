@@ -1,0 +1,2490 @@
+[
+ {
+  "description": "At Bats",
+  "abbreviation": "AB",
+  "sortStat": "atBats",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Hits",
+  "abbreviation": "H",
+  "sortStat": "hits",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Total Bases",
+  "abbreviation": "TB",
+  "sortStat": "totalBases",
+  "statFields": {
+   "standard": true,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Plate Appearances",
+  "abbreviation": "PA",
+  "sortStat": "plateAppearances",
+  "statFields": {
+   "standard": true,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Runs Batted In",
+  "abbreviation": "RBI",
+  "sortStat": "rbi",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Doubles",
+  "abbreviation": "2B",
+  "sortStat": "doubles",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Triples",
+  "abbreviation": "3B",
+  "sortStat": "triples",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Home Runs",
+  "abbreviation": "HR",
+  "sortStat": "homeRuns",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Strikeouts",
+  "abbreviation": "SO",
+  "sortStat": "strikeOuts",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Walks",
+  "abbreviation": "BB",
+  "sortStat": "baseOnBalls",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Intentional Walks",
+  "abbreviation": "IBB",
+  "sortStat": "intentionalWalks",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Hit By Pitch",
+  "abbreviation": "HBP",
+  "sortStat": "hitByPitch",
+  "statFields": {
+   "standard": true,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Sacrifice Bunts",
+  "abbreviation": "SAC",
+  "sortStat": "sacBunts",
+  "statFields": {
+   "standard": true,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Sacrifice Flies",
+  "abbreviation": "SF",
+  "sortStat": "sacFlies",
+  "statFields": {
+   "standard": true,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Left On Base",
+  "abbreviation": "LOB",
+  "sortStat": "leftOnBase",
+  "statFields": {
+   "standard": true,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Ground Outs",
+  "abbreviation": "GO",
+  "sortStat": "groundOuts",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Games Played",
+  "abbreviation": "G",
+  "sortStat": "gamesPlayed",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Ground Into Double Plays",
+  "abbreviation": "GIDP",
+  "sortStat": "groundIntoDoublePlay",
+  "statFields": {
+   "standard": true,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Ground Into Triple Plays",
+  "abbreviation": "GITP",
+  "sortStat": "groundIntoTriplePlay",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Air Outs",
+  "abbreviation": "AO",
+  "sortStat": "airOuts",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Number Of Pitches",
+  "abbreviation": "NP",
+  "sortStat": "numberOfPitches",
+  "statFields": {
+   "standard": true,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": false,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Runs",
+  "abbreviation": "R",
+  "sortStat": "runs",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": false,
+   "atBat": false,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Caught Stealing",
+  "abbreviation": "CS",
+  "sortStat": "caughtStealing",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": false,
+   "atBat": false,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Stolen Bases",
+  "abbreviation": "SB",
+  "sortStat": "stolenBases",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": false,
+   "atBat": false,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Catcher's Interference",
+  "abbreviation": "CI",
+  "sortStat": "catchersInterference",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Batting Average",
+  "abbreviation": "AVG",
+  "sortStat": "avg",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Expected Batting Average",
+  "abbreviation": "xAVG",
+  "sortStat": "xavg",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": false,
+   "expected": true
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Expected Slugging Percentage",
+  "abbreviation": "xSLG",
+  "sortStat": "xslg",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": false,
+   "expected": true
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Expected wOBA",
+  "abbreviation": "xwOBA",
+  "sortStat": "xwoba",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": false,
+   "expected": true
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Expected wOBACON",
+  "abbreviation": "xwOBACON",
+  "sortStat": "xwobaCon",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": false,
+   "expected": true
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Stolen Base Percentage",
+  "abbreviation": "SB%",
+  "sortStat": "stolenBasePercentage",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": false,
+   "atBat": false,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Slugging Percentage",
+  "abbreviation": "SLG",
+  "sortStat": "slg",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "On Base Percentage",
+  "abbreviation": "OBP",
+  "sortStat": "obp",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "On Base Plus Slugging Percentage",
+  "abbreviation": "OPS",
+  "sortStat": "ops",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Ground Outs to Air Outs",
+  "abbreviation": "GO/AO",
+  "sortStat": "groundOutsToAirouts",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "At Bats Per Home Run",
+  "abbreviation": "AB/HR",
+  "sortStat": "atBatsPerHomeRun",
+  "statFields": {
+   "standard": true,
+   "advanced": false,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "asc",
+  "decimals": 3
+ },
+ {
+  "description": "Batting Average on Balls In Play",
+  "abbreviation": "BABIP",
+  "sortStat": "babip",
+  "statFields": {
+   "standard": true,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Extra Base Hits",
+  "abbreviation": "XBH",
+  "sortStat": "extraBaseHits",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Ground Into Double Play Opportunities",
+  "abbreviation": "GIDP OPP",
+  "sortStat": "gidpOpp",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Reached On Error",
+  "abbreviation": "ROE",
+  "sortStat": "reachedOnError",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Walkoffs",
+  "abbreviation": "WO",
+  "sortStat": "walkOffs",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": true,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Walks Per Plate Appearance",
+  "abbreviation": "BB/PA",
+  "sortStat": "walksPerPlateAppearance",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Home Runs Per Plate Appearance",
+  "abbreviation": "HR/PA",
+  "sortStat": "homeRunsPerPlateAppearance",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Strikeouts Per Plate Appearance",
+  "abbreviation": "K/PA",
+  "sortStat": "strikeoutsPerPlateAppearance",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Walks Per Strikeout",
+  "abbreviation": "BB/K",
+  "sortStat": "walksPerStrikeout",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Isolated Power",
+  "abbreviation": "ISO",
+  "sortStat": "iso",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Pitches Per Plate Appearance",
+  "abbreviation": "P/PA",
+  "sortStat": "pitchesPerPlateAppearance",
+  "statFields": {
+   "standard": false,
+   "advanced": true,
+   "tracking": false,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "decimals": 3
+ },
+ {
+  "description": "Exit Velocity",
+  "abbreviation": "EV",
+  "sortStat": "exitVelocity",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "MPH",
+  "decimals": 1
+ },
+ {
+  "description": "Launch Angle",
+  "abbreviation": "LA",
+  "sortStat": "launchAngle",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "DEG",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run Distance",
+  "abbreviation": "HR-DST",
+  "sortStat": "homeRunDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "FT",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run X Ballparks",
+  "abbreviation": "HR-XBP",
+  "sortStat": "homeRunXBallparks",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run Venue Ids",
+  "abbreviation": "HR-VI",
+  "sortStat": "homeRunVenueIds",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Distance",
+  "abbreviation": "DST",
+  "sortStat": "hitDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "FT",
+  "decimals": 0
+ },
+ {
+  "description": "Hang Time",
+  "abbreviation": "HANG",
+  "sortStat": "hangTime",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "SEC",
+  "decimals": 2
+ },
+ {
+  "description": "Max Height",
+  "abbreviation": "HT",
+  "sortStat": "maxHeight",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "FT",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Probability",
+  "abbreviation": "HIT%",
+  "sortStat": "hitProbability",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "Percentage",
+  "decimals": 0
+ },
+ {
+  "description": "Catch Probability",
+  "abbreviation": "CATCH%",
+  "sortStat": "catchProbability",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "Percentage",
+  "decimals": 0
+ },
+ {
+  "description": "Attack Angle",
+  "abbreviation": "AA",
+  "sortStat": "attackAngle",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "DEG",
+  "decimals": 2
+ },
+ {
+  "description": "Bat Speed",
+  "abbreviation": "BSp",
+  "sortStat": "batSpeed",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": true,
+  "sortOrder": "desc",
+  "units": "MPH",
+  "decimals": 1
+ },
+ {
+  "description": "Exit Velocity (avg)",
+  "abbreviation": "EV (avg)",
+  "sortStat": "exitVelocity",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "MPH",
+  "aggregation": "avg",
+  "decimals": 1
+ },
+ {
+  "description": "Launch Angle (avg)",
+  "abbreviation": "LA (avg)",
+  "sortStat": "launchAngle",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "DEG",
+  "aggregation": "avg",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run Distance (avg)",
+  "abbreviation": "HR-DST (avg)",
+  "sortStat": "homeRunDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "avg",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run X Ballparks (avg)",
+  "abbreviation": "HR-XBP (avg)",
+  "sortStat": "homeRunXBallparks",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "aggregation": "avg",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Distance (avg)",
+  "abbreviation": "DST (avg)",
+  "sortStat": "hitDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "avg",
+  "decimals": 0
+ },
+ {
+  "description": "Hang Time (avg)",
+  "abbreviation": "HANG (avg)",
+  "sortStat": "hangTime",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "SEC",
+  "aggregation": "avg",
+  "decimals": 2
+ },
+ {
+  "description": "Max Height (avg)",
+  "abbreviation": "HT (avg)",
+  "sortStat": "maxHeight",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "avg",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Probability (avg)",
+  "abbreviation": "HIT% (avg)",
+  "sortStat": "hitProbability",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "Percentage",
+  "aggregation": "avg",
+  "decimals": 0
+ },
+ {
+  "description": "Catch Probability (avg)",
+  "abbreviation": "CATCH% (avg)",
+  "sortStat": "catchProbability",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "Percentage",
+  "aggregation": "avg",
+  "decimals": 0
+ },
+ {
+  "description": "Attack Angle (avg)",
+  "abbreviation": "AA (avg)",
+  "sortStat": "attackAngle",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "DEG",
+  "aggregation": "avg",
+  "decimals": 2
+ },
+ {
+  "description": "Bat Speed (avg)",
+  "abbreviation": "BSp (avg)",
+  "sortStat": "batSpeed",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "MPH",
+  "aggregation": "avg",
+  "decimals": 1
+ },
+ {
+  "description": "Exit Velocity (min)",
+  "abbreviation": "EV (min)",
+  "sortStat": "exitVelocity",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "MPH",
+  "aggregation": "min",
+  "decimals": 1
+ },
+ {
+  "description": "Launch Angle (min)",
+  "abbreviation": "LA (min)",
+  "sortStat": "launchAngle",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "DEG",
+  "aggregation": "min",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run Distance (min)",
+  "abbreviation": "HR-DST (min)",
+  "sortStat": "homeRunDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "min",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run X Ballparks (min)",
+  "abbreviation": "HR-XBP (min)",
+  "sortStat": "homeRunXBallparks",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "aggregation": "min",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Distance (min)",
+  "abbreviation": "DST (min)",
+  "sortStat": "hitDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "min",
+  "decimals": 0
+ },
+ {
+  "description": "Hang Time (min)",
+  "abbreviation": "HANG (min)",
+  "sortStat": "hangTime",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "SEC",
+  "aggregation": "min",
+  "decimals": 0
+ },
+ {
+  "description": "Max Height (min)",
+  "abbreviation": "HT (min)",
+  "sortStat": "maxHeight",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "min",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Probability (min)",
+  "abbreviation": "HIT% (min)",
+  "sortStat": "hitProbability",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "Percentage",
+  "aggregation": "min",
+  "decimals": 0
+ },
+ {
+  "description": "Catch Probability (min)",
+  "abbreviation": "CATCH% (min)",
+  "sortStat": "catchProbability",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "Percentage",
+  "aggregation": "min",
+  "decimals": 0
+ },
+ {
+  "description": "Attack Angle (min)",
+  "abbreviation": "AA (min)",
+  "sortStat": "attackAngle",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "DEG",
+  "aggregation": "min",
+  "decimals": 2
+ },
+ {
+  "description": "Bat Speed (min)",
+  "abbreviation": "BSp (min)",
+  "sortStat": "batSpeed",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "MPH",
+  "aggregation": "min",
+  "decimals": 1
+ },
+ {
+  "description": "Exit Velocity (max)",
+  "abbreviation": "EV (max)",
+  "sortStat": "exitVelocity",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "MPH",
+  "aggregation": "max",
+  "decimals": 1
+ },
+ {
+  "description": "Launch Angle (max)",
+  "abbreviation": "LA (max)",
+  "sortStat": "launchAngle",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "DEG",
+  "aggregation": "max",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run Distance (max)",
+  "abbreviation": "HR-DST (max)",
+  "sortStat": "homeRunDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "max",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run X Ballparks (max)",
+  "abbreviation": "HR-XBP (max)",
+  "sortStat": "homeRunXBallparks",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "aggregation": "max",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Distance (max)",
+  "abbreviation": "DST (max)",
+  "sortStat": "hitDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "max",
+  "decimals": 0
+ },
+ {
+  "description": "Hang Time (max)",
+  "abbreviation": "HANG (max)",
+  "sortStat": "hangTime",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "SEC",
+  "aggregation": "max",
+  "decimals": 2
+ },
+ {
+  "description": "Max Height (max)",
+  "abbreviation": "HT (max)",
+  "sortStat": "maxHeight",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "max",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Probability (max)",
+  "abbreviation": "HIT% (max)",
+  "sortStat": "hitProbability",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "Percentage",
+  "aggregation": "max",
+  "decimals": 0
+ },
+ {
+  "description": "Catch Probability (max)",
+  "abbreviation": "CATCH% (max)",
+  "sortStat": "catchProbability",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "Percentage",
+  "aggregation": "max",
+  "decimals": 0
+ },
+ {
+  "description": "Attack Angle (max)",
+  "abbreviation": "AA (max)",
+  "sortStat": "attackAngle",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "DEG",
+  "aggregation": "max",
+  "decimals": 2
+ },
+ {
+  "description": "Bat Speed (max)",
+  "abbreviation": "BSp (max)",
+  "sortStat": "batSpeed",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "MPH",
+  "aggregation": "max",
+  "decimals": 1
+ },
+ {
+  "description": "Exit Velocity (count)",
+  "abbreviation": "EV (count)",
+  "sortStat": "exitVelocity",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "MPH",
+  "aggregation": "num",
+  "decimals": 0
+ },
+ {
+  "description": "Launch Angle (count)",
+  "abbreviation": "LA (count)",
+  "sortStat": "launchAngle",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "DEG",
+  "aggregation": "num",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run Distance (count)",
+  "abbreviation": "HR-DST (count)",
+  "sortStat": "homeRunDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "num",
+  "decimals": 0
+ },
+ {
+  "description": "Home Run X Ballparks (count)",
+  "abbreviation": "HR-XBP (count)",
+  "sortStat": "homeRunXBallparks",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "aggregation": "num",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Distance (count)",
+  "abbreviation": "DST (count)",
+  "sortStat": "hitDistance",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "num",
+  "decimals": 0
+ },
+ {
+  "description": "Hang Time (count)",
+  "abbreviation": "HANG (count)",
+  "sortStat": "hangTime",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "SEC",
+  "aggregation": "num",
+  "decimals": 0
+ },
+ {
+  "description": "Max Height (count)",
+  "abbreviation": "HT (count)",
+  "sortStat": "maxHeight",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "FT",
+  "aggregation": "num",
+  "decimals": 0
+ },
+ {
+  "description": "Hit Probability (count)",
+  "abbreviation": "HIT% (count)",
+  "sortStat": "hitProbability",
+  "statFields": {
+   "standard": false,
+   "advanced": false,
+   "tracking": true,
+   "expected": false
+  },
+  "statGroup": "hitting",
+  "filterLevels": {
+   "pitch": true,
+   "atBat": true,
+   "inning": true,
+   "game": true,
+   "season": true,
+   "career": true
+  },
+  "isCounting": false,
+  "isInstanceStat": false,
+  "sortOrder": "desc",
+  "units": "Percentage",
+  "aggregation": "num",
+  "decimals": 0
+ }
+]

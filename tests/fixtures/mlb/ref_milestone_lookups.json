@@ -1,0 +1,469 @@
+{
+ "achievementStatuses": [
+  {
+   "achievementTypeId": 1401,
+   "achievementTypeCode": "A",
+   "achievementTypeDesc": "Achieved the milestone",
+   "achievementTypeText": "Achieved"
+  },
+  {
+   "achievementTypeId": 1402,
+   "achievementTypeCode": "T",
+   "achievementTypeDesc": "Tied the milestone",
+   "achievementTypeText": "Tied"
+  },
+  {
+   "achievementTypeId": 1403,
+   "achievementTypeCode": "P",
+   "achievementTypeDesc": "Pending milestone",
+   "achievementTypeText": "Pending"
+  }
+ ],
+ "milestoneTypes": [
+  {
+   "milestoneTypeId": 1101,
+   "milestoneTypeCode": "C",
+   "milestoneTypeText": "Cumulative "
+  },
+  {
+   "milestoneTypeId": 1102,
+   "milestoneTypeCode": "T",
+   "milestoneTypeText": "Top n"
+  }
+ ],
+ "milestoneStatistics": [
+  {
+   "statisticId": 1018,
+   "statisticText": "Cycle",
+   "statisticDesc": "Batter hits for cycle",
+   "category": "BATTER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true
+  },
+  {
+   "statisticId": 1002,
+   "statisticText": "p_game",
+   "statisticDesc": "Games Pitched",
+   "category": "PITCHER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "gamesPlayed",
+   "statEnum": {
+    "name": "gamesPlayed",
+    "lookupParam": "g",
+    "isCounting": true,
+    "statGroups": [
+     {
+      "displayName": "hitting"
+     },
+     {
+      "displayName": "pitching"
+     },
+     {
+      "displayName": "fielding"
+     },
+     {
+      "displayName": "catching"
+     },
+     {
+      "displayName": "game"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1003,
+   "statisticText": "b_triple",
+   "statisticDesc": "Triples",
+   "category": "BATTER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "triples",
+   "statEnum": {
+    "name": "triples",
+    "lookupParam": "t",
+    "isCounting": true,
+    "label": "3B",
+    "statGroups": [
+     {
+      "displayName": "hitting"
+     },
+     {
+      "displayName": "pitching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1015,
+   "statisticText": "p_out",
+   "statisticDesc": "Innings Pitched",
+   "category": "PITCHER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "outs"
+  },
+  {
+   "statisticId": 1014,
+   "statisticText": "p_save",
+   "statisticDesc": "Saves",
+   "category": "PITCHER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "saves",
+   "statEnum": {
+    "name": "saves",
+    "lookupParam": "sv",
+    "isCounting": true,
+    "statGroups": [
+     {
+      "displayName": "pitching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1010,
+   "statisticText": "p_game_in_relief",
+   "statisticDesc": "Games in Relief",
+   "category": "PITCHER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "gamesInRelief"
+  },
+  {
+   "statisticId": 1005,
+   "statisticText": "b_rbi",
+   "statisticDesc": "RBIs",
+   "category": "BATTER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "rbi"
+  },
+  {
+   "statisticId": 1001,
+   "statisticText": "p_starting_p",
+   "statisticDesc": "Games Started",
+   "category": "PITCHER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "gamesStarted",
+   "statEnum": {
+    "name": "gamesStarted",
+    "lookupParam": "gs",
+    "isCounting": true,
+    "statGroups": [
+     {
+      "displayName": "pitching"
+     },
+     {
+      "displayName": "fielding"
+     },
+     {
+      "displayName": "game"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1006,
+   "statisticText": "b_double",
+   "statisticDesc": "Doubles",
+   "category": "BATTER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "doubles",
+   "statEnum": {
+    "name": "doubles",
+    "lookupParam": "d",
+    "isCounting": true,
+    "label": "2B",
+    "statGroups": [
+     {
+      "displayName": "hitting"
+     },
+     {
+      "displayName": "pitching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1016,
+   "statisticText": "b_walk",
+   "statisticDesc": "Walks",
+   "category": "BATTER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "baseOnBalls"
+  },
+  {
+   "statisticId": 1013,
+   "statisticText": "p_shutout",
+   "statisticDesc": "Shutouts",
+   "category": "PITCHER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "shutouts",
+   "statEnum": {
+    "name": "shutouts",
+    "lookupParam": "sho",
+    "isCounting": true,
+    "statGroups": [
+     {
+      "displayName": "pitching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1012,
+   "statisticText": "r_run",
+   "statisticDesc": "Runs",
+   "category": "RUNNER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "runs",
+   "statEnum": {
+    "name": "runs",
+    "lookupParam": "r",
+    "isCounting": true,
+    "statGroups": [
+     {
+      "displayName": "hitting"
+     },
+     {
+      "displayName": "pitching"
+     },
+     {
+      "displayName": "catching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1004,
+   "statisticText": "p_strikeout",
+   "statisticDesc": "Strikeouts",
+   "category": "PITCHER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "strikeOuts",
+   "statEnum": {
+    "name": "strikeouts",
+    "lookupParam": "so",
+    "isCounting": true,
+    "statGroups": [
+     {
+      "displayName": "hitting"
+     },
+     {
+      "displayName": "pitching"
+     },
+     {
+      "displayName": "catching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1011,
+   "statisticText": "p_win",
+   "statisticDesc": "Wins",
+   "category": "PITCHER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "wins",
+   "statEnum": {
+    "name": "wins",
+    "lookupParam": "w",
+    "isCounting": true,
+    "statGroups": [
+     {
+      "displayName": "pitching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1008,
+   "statisticText": "r_total_stolen_base",
+   "statisticDesc": "Stolen Bases",
+   "category": "RUNNER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "stolenBases",
+   "statEnum": {
+    "name": "stolenBases",
+    "lookupParam": "sb",
+    "isCounting": true,
+    "label": "SB",
+    "statGroups": [
+     {
+      "displayName": "hitting"
+     },
+     {
+      "displayName": "pitching"
+     },
+     {
+      "displayName": "fielding"
+     },
+     {
+      "displayName": "catching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1007,
+   "statisticText": "b_total_hits",
+   "statisticDesc": "Hits",
+   "category": "BATTER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "hits",
+   "statEnum": {
+    "name": "hits",
+    "lookupParam": "h",
+    "isCounting": true,
+    "statGroups": [
+     {
+      "displayName": "hitting"
+     },
+     {
+      "displayName": "pitching"
+     },
+     {
+      "displayName": "catching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1009,
+   "statisticText": "b_home_run",
+   "statisticDesc": "Home Runs",
+   "category": "BATTER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "homeRuns",
+   "statEnum": {
+    "name": "homeRuns",
+    "lookupParam": "hr",
+    "isCounting": true,
+    "label": "HR",
+    "statGroups": [
+     {
+      "displayName": "hitting"
+     },
+     {
+      "displayName": "pitching"
+     },
+     {
+      "displayName": "catching"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  },
+  {
+   "statisticId": 1022,
+   "statisticText": "b_plate_appearance",
+   "statisticDesc": "Plate Appearances",
+   "category": "BATTER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true
+  },
+  {
+   "statisticId": 1017,
+   "statisticText": "b_game",
+   "statisticDesc": "Games",
+   "category": "BATTER",
+   "isStatcastStatus": false,
+   "isStandardStatus": true,
+   "statAbbr": "gamesPlayed",
+   "statEnum": {
+    "name": "gamesPlayed",
+    "lookupParam": "g",
+    "isCounting": true,
+    "statGroups": [
+     {
+      "displayName": "hitting"
+     },
+     {
+      "displayName": "pitching"
+     },
+     {
+      "displayName": "fielding"
+     },
+     {
+      "displayName": "catching"
+     },
+     {
+      "displayName": "game"
+     }
+    ],
+    "orgTypes": [],
+    "highLowTypes": [],
+    "streakLevels": []
+   }
+  }
+ ],
+ "milestoneDurations": [
+  {
+   "milestoneDurationId": 1301,
+   "milestoneDurationCode": "C",
+   "milestoneDurationText": "Career"
+  },
+  {
+   "milestoneDurationId": 1302,
+   "milestoneDurationCode": "S",
+   "milestoneDurationText": "Season"
+  },
+  {
+   "milestoneDurationId": 1303,
+   "milestoneDurationCode": "M",
+   "milestoneDurationText": "Month"
+  },
+  {
+   "milestoneDurationId": 1304,
+   "milestoneDurationCode": "G",
+   "milestoneDurationText": "Game"
+  }
+ ]
+}

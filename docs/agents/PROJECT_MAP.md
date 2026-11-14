@@ -22,7 +22,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
 | `lake-access` | 17 | 23 | 63 |
-| `mlb-api-ingestion` | 29 | 43 | 50 |
+| `mlb-api-ingestion` | 30 | 44 | 54 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `portability` | 3 | 3 | 7 |
@@ -43,7 +43,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 389/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
 | `statcast` | 50 | archived | yes | yes | yes | 402/1765 (22%) | 18 |
-| `mlb_api` | 365 | archived | yes | yes | yes | 9568/16926 (56%) | 29 |
+| `mlb_api` | 403 | archived | yes | yes | yes | 9643/17368 (55%) | 30 |
 
 ## Active changes (`openspec/changes/`)
 
@@ -55,7 +55,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
 | `download-throughput` | 8 | 1 | 2.4 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 14 | 4 | 2.1, 4.1, 5.1, 6.1 |
+| `finish-mlb-history` | 15 | 3 | 2.1, 4.1, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 5 | 1 | 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
@@ -197,6 +197,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 129: A Cell-By-Cell Round-Trip Check For The MLB JSON Data
 - ADR 130: A Stale Hydrate Pool Chunk Is Parsed Again From Its Stored Raw Pages
 - ADR 131: The Manifest Lock Is An Operating-System Lock, Not A Lock File That Is Broken When Old
+- ADR 132: The MLB Lookup Lists Are Table Rows; A Dict Of Lists Is Keyed By List Name And Position
 
 ## Documentation pages (`docs/`)
 

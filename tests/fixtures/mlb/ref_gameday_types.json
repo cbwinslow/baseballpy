@@ -1,0 +1,34 @@
+[
+ {
+  "code": "P",
+  "description": "Premium Gameday - 3D Pitch tracking and Premium product experience"
+ },
+ {
+  "code": "E",
+  "description": "Enhanced Gameday - 3D Pitch tracking"
+ },
+ {
+  "code": "Y",
+  "description": "Regular Gameday - Pitch by Pitch"
+ },
+ {
+  "code": "D",
+  "description": "No Gameday - Pitch by Pitch"
+ },
+ {
+  "code": "N",
+  "description": "No Gameday - Play by Play level data only"
+ },
+ {
+  "code": "L",
+  "description": "No Gameday - Linescore level data"
+ },
+ {
+  "code": "B",
+  "description": "No Gameday - PG / Box Score level data only"
+ },
+ {
+  "code": "S",
+  "description": "No Gameday - Score / Game Result level data only"
+ }
+]

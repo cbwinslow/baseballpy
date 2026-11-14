@@ -1,0 +1,902 @@
+[
+ {
+  "code": "gamePks",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "playIds",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "seasons",
+  "filterLevel": "season",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "teamIds",
+  "filterLevel": "career",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "playerIds",
+  "filterLevel": "career",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "playerPool",
+  "filterLevel": "season",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "playerPoolPlayers",
+  "filterLevel": "season",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "playerActiveStatus",
+  "filterLevel": "career",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "pitcherIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "batterIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "catcherIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "firstBasemanIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "secondBasemanIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "thirdBasemanIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "shortstopIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "leftFielderIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "centerFielderIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "rightFielderIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "runnerFirstIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "runnerSecondIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "runnerThirdIds",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "venueIds",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "gameTypes",
+  "filterLevel": "season",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "pitchTypes",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "pitchCodes",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "eventTypes",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "runningEvents",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "caughtStealingBase",
+  "filterLevel": "pitch",
+  "hitting": false,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "stolenBaseBase",
+  "filterLevel": "pitch",
+  "hitting": false,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "date",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "startDate",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "endDate",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "minValue",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "maxValue",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "minPitchSpeed",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxPitchSpeed",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minSpinRate",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxSpinRate",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minExtension",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxExtension",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minExitVelocityAgainst",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxExitVelocityAgainst",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minLaunchAngleAgainst",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxLaunchAngleAgainst",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minExitVelocity",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxExitVelocity",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minLaunchAngle",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxLaunchAngle",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minHomeRunDistance",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxHomeRunDistance",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minHomeRunXBallparks",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxHomeRunXBallparks",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minDistance",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxDistance",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minHangTime",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxHangTime",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minMaxHeight",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxMaxHeight",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minHitProbability",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxHitProbability",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minCatchProbability",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxCatchProbability",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minAttackAngle",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxAttackAngle",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minBatSpeed",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxBatSpeed",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minPitcherArmAngle",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxPitcherArmAngle",
+  "filterLevel": "pitch",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minBatterDepthInBox",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxBatterDepthInBox",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minBatterDistanceOffPlate",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxBatterDistanceOffPlate",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minBatterDistanceBetweenFeet",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxBatterDistanceBetweenFeet",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "minBatterStanceAngle",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "maxBatterStanceAngle",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "barrel",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "limit",
+  "filterLevel": "none",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "offset",
+  "filterLevel": "none",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "groupBy",
+  "filterLevel": "none",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "compareOver",
+  "filterLevel": "none",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "percentile",
+  "filterLevel": "none",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "minOccurrences",
+  "filterLevel": "none",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "minInnings",
+  "filterLevel": "none",
+  "hitting": false,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": false
+ },
+ {
+  "code": "minPlateAppearances",
+  "filterLevel": "none",
+  "hitting": true,
+  "pitching": false,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ },
+ {
+  "code": "rankValue",
+  "filterLevel": "none",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "hitTrajectory",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "showTotals",
+  "filterLevel": "none",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "months",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "dayOfWeek",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "isDay",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "isNight",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "isHome",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "isAway",
+  "filterLevel": "game",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "innings",
+  "filterLevel": "inning",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "inningsAfter",
+  "filterLevel": "inning",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "positions",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "primaryPositions",
+  "filterLevel": "career",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "runnerPositions",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": true,
+  "catching": true,
+  "running": true
+ },
+ {
+  "code": "battingOrder",
+  "filterLevel": "atBat",
+  "hitting": true,
+  "pitching": true,
+  "fielding": false,
+  "catching": false,
+  "running": false
+ }
+]

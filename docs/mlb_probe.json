@@ -1,5 +1,5 @@
 {
- "probed_on": "2026-11-13",
+ "probed_on": "2026-11-14",
  "endpoints": {
   "stats_projected_hitting": {
    "status": "ok",
@@ -3608,6 +3608,390 @@
   "ref_sky_conditions": {
    "status": "unsupported",
    "reason": "route answers 404 (probed 2026-10-27)"
+  },
+  "ref_achievement_statuses": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 3,
+   "columns": 4,
+   "key_unique_per_request": true
+  },
+  "ref_coaching_video_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 23,
+   "columns": 1,
+   "key_unique_per_request": true
+  },
+  "ref_event_status": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 8,
+   "columns": 5,
+   "key_unique_per_request": true
+  },
+  "ref_fielder_detail_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 16,
+   "columns": 5,
+   "key_unique_per_request": true
+  },
+  "ref_free_game_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 2,
+   "columns": 4,
+   "key_unique_per_request": true
+  },
+  "ref_gameday_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 8,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_group_by_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 60,
+   "columns": 3,
+   "key_unique_per_request": true
+  },
+  "ref_high_low_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 43,
+   "columns": 8,
+   "key_unique_per_request": true
+  },
+  "ref_media_state": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 3,
+   "columns": 3,
+   "key_unique_per_request": true
+  },
+  "ref_milestone_durations": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 4,
+   "columns": 3,
+   "key_unique_per_request": true
+  },
+  "ref_milestone_statistics": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 19,
+   "columns": 15,
+   "key_unique_per_request": true
+  },
+  "ref_milestone_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 2,
+   "columns": 3,
+   "key_unique_per_request": true
+  },
+  "ref_milestone_lookups": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 28,
+   "columns": 27,
+   "key_unique_per_request": true
+  },
+  "ref_mound_visit_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 4,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_performer_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 1,
+   "key_unique_per_request": true
+  },
+  "ref_pitch_codes": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 39,
+   "columns": 12,
+   "key_unique_per_request": true
+  },
+  "ref_player_status_codes": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 36,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_roof_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_rule_settings": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 39,
+   "columns": 6,
+   "key_unique_per_request": true
+  },
+  "ref_runner_detail_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 31,
+   "columns": 1,
+   "key_unique_per_request": true
+  },
+  "ref_sort_modifiers": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 11,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_stat_fields": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 8,
+   "columns": 1,
+   "key_unique_per_request": true
+  },
+  "ref_statcast_position_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 22,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_streaks_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 49,
+   "columns": 11,
+   "key_unique_per_request": true
+  },
+  "ref_tracking_software_versions": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 147,
+   "columns": 8,
+   "key_unique_per_request": true
+  },
+  "ref_tracking_system_owners": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 5,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_tracking_vendors": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 4,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_tracking_versions": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 19,
+   "columns": 20,
+   "key_unique_per_request": true
+  },
+  "ref_transaction_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 41,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_violation_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 9,
+   "columns": 7,
+   "key_unique_per_request": true
+  },
+  "ref_video_resolution_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 6,
+   "columns": 3,
+   "key_unique_per_request": true
+  },
+  "ref_weather_trajectory_confidences": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 132,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_sky": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 10,
+   "columns": 2,
+   "key_unique_per_request": true
+  },
+  "ref_stats_search_params": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 158,
+   "columns": 7,
+   "key_unique_per_request": true
+  },
+  "ref_stats_search_group_by_types": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 58,
+   "columns": 3,
+   "key_unique_per_request": true
+  },
+  "ref_stats_search_stats": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 692,
+   "columns": 20,
+   "key_unique_per_request": true
+  },
+  "ref_stats_search_config": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 1092,
+   "columns": 37,
+   "key_unique_per_request": true
+  },
+  "ref_lookup_values_all": {
+   "status": "ok",
+   "route": "direct",
+   "fallback_pages": 0,
+   "requests_ok": 1,
+   "requests_failed": 0,
+   "sample_rows": 2298,
+   "columns": 164,
+   "key_unique_per_request": true
+  },
+  "ref_game_pace": {
+   "status": "unsupported",
+   "reason": "route answers 200 with empty teams, leagues and sports lists without parameters"
   }
  }
 }

@@ -1,0 +1,292 @@
+[
+ {
+  "name": "player",
+  "validCompareOver": true,
+  "binapiName": "player"
+ },
+ {
+  "name": "pitcher",
+  "validCompareOver": false,
+  "binapiName": "pitcher"
+ },
+ {
+  "name": "batter",
+  "validCompareOver": false,
+  "binapiName": "batter"
+ },
+ {
+  "name": "venue",
+  "validCompareOver": true,
+  "binapiName": "venue"
+ },
+ {
+  "name": "team",
+  "validCompareOver": true,
+  "binapiName": "team"
+ },
+ {
+  "name": "battingTeam",
+  "validCompareOver": false,
+  "binapiName": "battingTeam"
+ },
+ {
+  "name": "fieldingTeam",
+  "validCompareOver": false,
+  "binapiName": "fieldingTeam"
+ },
+ {
+  "name": "sport",
+  "validCompareOver": true,
+  "binapiName": "sport"
+ },
+ {
+  "name": "battingSport",
+  "validCompareOver": false,
+  "binapiName": "battingSport"
+ },
+ {
+  "name": "fieldingSport",
+  "validCompareOver": false,
+  "binapiName": "fieldingSport"
+ },
+ {
+  "name": "league",
+  "validCompareOver": true,
+  "binapiName": "league"
+ },
+ {
+  "name": "battingLeague",
+  "validCompareOver": false,
+  "binapiName": "battingLeague"
+ },
+ {
+  "name": "fieldingLeague",
+  "validCompareOver": false,
+  "binapiName": "fieldingLeague"
+ },
+ {
+  "name": "division",
+  "validCompareOver": true,
+  "binapiName": "division"
+ },
+ {
+  "name": "battingDivision",
+  "validCompareOver": false,
+  "binapiName": "battingDivision"
+ },
+ {
+  "name": "fieldingDivision",
+  "validCompareOver": false,
+  "binapiName": "fieldingDivision"
+ },
+ {
+  "name": "season",
+  "validCompareOver": true,
+  "binapiName": "season"
+ },
+ {
+  "name": "position",
+  "validCompareOver": true,
+  "binapiName": "position"
+ },
+ {
+  "name": "game",
+  "validCompareOver": false,
+  "binapiName": "game"
+ },
+ {
+  "name": "pitchType",
+  "validCompareOver": false,
+  "binapiName": "pitchType"
+ },
+ {
+  "name": "eventType",
+  "validCompareOver": false,
+  "binapiName": "eventType"
+ },
+ {
+  "name": "pitchCode",
+  "validCompareOver": false,
+  "binapiName": "pitchCode"
+ },
+ {
+  "name": "battingOrder",
+  "validCompareOver": false,
+  "binapiName": "battingOrder"
+ },
+ {
+  "name": "pitchHand",
+  "validCompareOver": false,
+  "binapiName": "pitchHand"
+ },
+ {
+  "name": "batSide",
+  "validCompareOver": false,
+  "binapiName": "batSide"
+ },
+ {
+  "name": "month",
+  "validCompareOver": false,
+  "binapiName": "month"
+ },
+ {
+  "name": "dayOfWeek",
+  "validCompareOver": false,
+  "binapiName": "dayOfWeek"
+ },
+ {
+  "name": "dayNight",
+  "validCompareOver": false,
+  "binapiName": "dayNight"
+ },
+ {
+  "name": "gameType",
+  "validCompareOver": false,
+  "binapiName": "gameType"
+ },
+ {
+  "name": "homeAway",
+  "validCompareOver": false,
+  "binapiName": "homeAway"
+ },
+ {
+  "name": "baseState",
+  "validCompareOver": false,
+  "binapiName": "baseState"
+ },
+ {
+  "name": "runnersInScoringPosition",
+  "validCompareOver": false,
+  "binapiName": "runnersInScoringPosition"
+ },
+ {
+  "name": "inning",
+  "validCompareOver": false,
+  "binapiName": "inning"
+ },
+ {
+  "name": "countBalls",
+  "validCompareOver": false,
+  "binapiName": "countBalls"
+ },
+ {
+  "name": "countStrikes",
+  "validCompareOver": false,
+  "binapiName": "countStrikes"
+ },
+ {
+  "name": "countOuts",
+  "validCompareOver": false,
+  "binapiName": "countOuts"
+ },
+ {
+  "name": "hitTrajectory",
+  "validCompareOver": false,
+  "binapiName": "hitTrajectory"
+ },
+ {
+  "name": "pitchNumber",
+  "validCompareOver": false,
+  "binapiName": "pitchNumber"
+ },
+ {
+  "name": "atBatNumber",
+  "validCompareOver": false,
+  "binapiName": "atBatNumber"
+ },
+ {
+  "name": "runnerOnFirst",
+  "validCompareOver": false,
+  "binapiName": "runnerOnFirst"
+ },
+ {
+  "name": "runnerOnSecond",
+  "validCompareOver": false,
+  "binapiName": "runnerOnSecond"
+ },
+ {
+  "name": "runnerOnThird",
+  "validCompareOver": false,
+  "binapiName": "runnerOnThird"
+ },
+ {
+  "name": "catcher",
+  "validCompareOver": false,
+  "binapiName": "catcher"
+ },
+ {
+  "name": "firstBaseman",
+  "validCompareOver": false,
+  "binapiName": "firstBaseman"
+ },
+ {
+  "name": "secondBaseman",
+  "validCompareOver": false,
+  "binapiName": "secondBaseman"
+ },
+ {
+  "name": "shortstop",
+  "validCompareOver": false,
+  "binapiName": "shortstop"
+ },
+ {
+  "name": "thirdBaseman",
+  "validCompareOver": false,
+  "binapiName": "thirdBaseman"
+ },
+ {
+  "name": "leftFielder",
+  "validCompareOver": false,
+  "binapiName": "leftFielder"
+ },
+ {
+  "name": "centerFielder",
+  "validCompareOver": false,
+  "binapiName": "centerFielder"
+ },
+ {
+  "name": "rightFielder",
+  "validCompareOver": false,
+  "binapiName": "rightFielder"
+ },
+ {
+  "name": "designatedHitter",
+  "validCompareOver": false,
+  "binapiName": "designatedHitter"
+ },
+ {
+  "name": "defensiveAlignment",
+  "validCompareOver": false,
+  "binapiName": "defensiveAlignment"
+ },
+ {
+  "name": "opponentTeam",
+  "validCompareOver": false,
+  "binapiName": "opponentTeam"
+ },
+ {
+  "name": "hitDirection",
+  "validCompareOver": false,
+  "binapiName": "hitDirection"
+ },
+ {
+  "name": "pitchZone",
+  "validCompareOver": true,
+  "binapiName": "pitchZone"
+ },
+ {
+  "name": "date",
+  "validCompareOver": false,
+  "binapiName": "date"
+ },
+ {
+  "name": "challengingTeam",
+  "validCompareOver": false,
+  "binapiName": "challengingTeam"
+ },
+ {
+  "name": "challengingPlayer",
+  "binapiName": "challengePlayer",
+  "validCompareOver": false
+ }
+]

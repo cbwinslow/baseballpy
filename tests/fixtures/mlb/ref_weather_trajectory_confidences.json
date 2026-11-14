@@ -1,0 +1,402 @@
+[
+ {
+  "value": "LOW_B",
+  "description": "Drag or lift coefficient for the ball on calculated trajectory falls outside an accepted range"
+ },
+ {
+  "value": "LOW_C",
+  "description": "Play happened outside the boundaries of WAM's CFD model"
+ },
+ {
+  "value": "LOW_E",
+  "description": "Play event not received from Statcast system"
+ },
+ {
+  "value": "LOW_M",
+  "description": "Ballpark wind sensors are online, but other data like temperature are not, so the missing data is from elsewhere, such as the nearest airport"
+ },
+ {
+  "value": "LOW_N",
+  "description": "Sensors are not online and using weather data from the nearest airport"
+ },
+ {
+  "value": "LOW_R",
+  "description": "Cameras lost sight of the ball mid-flight"
+ },
+ {
+  "value": "LOW_S",
+  "description": "Statcast trajectory, such as placing the ball on the wrong side of the fence on a home run, or the wrong side of the foul line, from the actual play result"
+ },
+ {
+  "value": "LOW_F",
+  "description": "Uncertainty about a home run calculation, when a ball clears the fence but is not a home run because it's caught or deflected by a fielder"
+ },
+ {
+  "value": "LOW_Z",
+  "description": "Uncertainty about a home run calculation, because of ambiguity in the calculation about whether a ball fully clears the fence or not."
+ },
+ {
+  "value": "LOW_T",
+  "description": "Calculated projected landing point is farther from the Statcast projected landing point than an accepted range"
+ },
+ {
+  "value": "HIGH",
+  "description": "High confidence in the data"
+ },
+ {
+  "value": "LOW_BM",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport."
+ },
+ {
+  "value": "LOW_BN",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors are unavailable; airport wind is used instead."
+ },
+ {
+  "value": "LOW_MR",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_V",
+  "description": "Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BC",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Conditions or trajectory fall outside the CFD model's supported limits."
+ },
+ {
+  "value": "LOW_NR",
+  "description": "Ballpark wind sensors are unavailable; airport wind is used instead. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_CN",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Ballpark wind sensors are unavailable; airport wind is used instead."
+ },
+ {
+  "value": "LOW_MT",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_BR",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_NT",
+  "description": "Ballpark wind sensors are unavailable; airport wind is used instead. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_MV",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_RT",
+  "description": "Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_BT",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_NV",
+  "description": "Ballpark wind sensors are unavailable; airport wind is used instead. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_CM",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport."
+ },
+ {
+  "value": "LOW_RS",
+  "description": "Cameras lost sight of the ball for part of its flight. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_TV",
+  "description": "WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BCN",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Conditions or trajectory fall outside the CFD model's supported limits. Ballpark wind sensors are unavailable; airport wind is used instead."
+ },
+ {
+  "value": "LOW_BMR",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_RV",
+  "description": "Cameras lost sight of the ball for part of its flight. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_EN",
+  "description": "Statcast's final play result is still pending. Ballpark wind sensors are unavailable; airport wind is used instead."
+ },
+ {
+  "value": "LOW_MS",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_CR",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_BTV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_MRT",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_MTV",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BNR",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors are unavailable; airport wind is used instead. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_BMT",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_CT",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_BCM",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Conditions or trajectory fall outside the CFD model's supported limits. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport."
+ },
+ {
+  "value": "LOW_MRS",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_NRT",
+  "description": "Ballpark wind sensors are unavailable; airport wind is used instead. Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_MRV",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_FM",
+  "description": "Home-run uncertainty because a fielder caught or deflected a ball that cleared the fence. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport."
+ },
+ {
+  "value": "LOW_BNT",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors are unavailable; airport wind is used instead. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_CV",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_NS",
+  "description": "Ballpark wind sensors are unavailable; airport wind is used instead. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_NTV",
+  "description": "Ballpark wind sensors are unavailable; airport wind is used instead. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BNV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors are unavailable; airport wind is used instead. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BMV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_NRV",
+  "description": "Ballpark wind sensors are unavailable; airport wind is used instead. Cameras lost sight of the ball for part of its flight. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BMTV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BRT",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_CNR",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Ballpark wind sensors are unavailable; airport wind is used instead. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_FR",
+  "description": "Home-run uncertainty because a fielder caught or deflected a ball that cleared the fence. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_NRS",
+  "description": "Ballpark wind sensors are unavailable; airport wind is used instead. Cameras lost sight of the ball for part of its flight. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_BE",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Statcast's final play result is still pending."
+ },
+ {
+  "value": "LOW_BNTV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors are unavailable; airport wind is used instead. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BS",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_FN",
+  "description": "Home-run uncertainty because a fielder caught or deflected a ball that cleared the fence. Ballpark wind sensors are unavailable; airport wind is used instead."
+ },
+ {
+  "value": "LOW_CNT",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Ballpark wind sensors are unavailable; airport wind is used instead. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_BEN",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Statcast's final play result is still pending. Ballpark wind sensors are unavailable; airport wind is used instead."
+ },
+ {
+  "value": "LOW_ST",
+  "description": "Statcast's trajectory appears inconsistent with the actual play result. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_EM",
+  "description": "Statcast's final play result is still pending. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport."
+ },
+ {
+  "value": "LOW_BCR",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Conditions or trajectory fall outside the CFD model's supported limits. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_BRS",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Cameras lost sight of the ball for part of its flight. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_BRV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Cameras lost sight of the ball for part of its flight. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_RST",
+  "description": "Cameras lost sight of the ball for part of its flight. Statcast's trajectory appears inconsistent with the actual play result. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_BMS",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_MZ",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Uncertainty about whether the ball fully cleared the fence."
+ },
+ {
+  "value": "LOW_NZ",
+  "description": "Ballpark wind sensors are unavailable; airport wind is used instead. Uncertainty about whether the ball fully cleared the fence."
+ },
+ {
+  "value": "LOW_BCT",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Conditions or trajectory fall outside the CFD model's supported limits. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_CMT",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_BNRT",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors are unavailable; airport wind is used instead. Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_CRV",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Cameras lost sight of the ball for part of its flight. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_CS",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_BRTV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BMRT",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_BRST",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Cameras lost sight of the ball for part of its flight. Statcast's trajectory appears inconsistent with the actual play result. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_CF",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Home-run uncertainty because a fielder caught or deflected a ball that cleared the fence."
+ },
+ {
+  "value": "LOW_CMR",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_FMR",
+  "description": "Home-run uncertainty because a fielder caught or deflected a ball that cleared the fence. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_RTV",
+  "description": "Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_RZ",
+  "description": "Cameras lost sight of the ball for part of its flight. Uncertainty about whether the ball fully cleared the fence."
+ },
+ {
+  "value": "LOW_SV",
+  "description": "Statcast's trajectory appears inconsistent with the actual play result. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BCV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Conditions or trajectory fall outside the CFD model's supported limits. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BMRS",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_BNRS",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors are unavailable; airport wind is used instead. Cameras lost sight of the ball for part of its flight. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_BNS",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Ballpark wind sensors are unavailable; airport wind is used instead. Statcast's trajectory appears inconsistent with the actual play result."
+ },
+ {
+  "value": "LOW_BST",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Statcast's trajectory appears inconsistent with the actual play result. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_CRT",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection."
+ },
+ {
+  "value": "LOW_CTV",
+  "description": "Conditions or trajectory fall outside the CFD model's supported limits. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_FMV",
+  "description": "Home-run uncertainty because a fielder caught or deflected a ball that cleared the fence. Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_FV",
+  "description": "Home-run uncertainty because a fielder caught or deflected a ball that cleared the fence. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_MRSV",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight. Statcast's trajectory appears inconsistent with the actual play result. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_MRTV",
+  "description": "Ballpark wind sensors work, but other weather inputs come from elsewhere, such as an airport. Cameras lost sight of the ball for part of its flight. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ },
+ {
+  "value": "LOW_BCNR",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Conditions or trajectory fall outside the CFD model's supported limits. Ballpark wind sensors are unavailable; airport wind is used instead. Cameras lost sight of the ball for part of its flight."
+ },
+ {
+  "value": "LOW_BCTV",
+  "description": "Calculated drag or lift coefficient is outside accepted bounds. Conditions or trajectory fall outside the CFD model's supported limits. WAM's projected landing point differs too much from Statcast's projection. Missing spin rate or axis was estimated using a regression model."
+ }
+]

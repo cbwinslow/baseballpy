@@ -1,0 +1,18 @@
+[
+ {
+  "code": "C",
+  "description": "Coach"
+ },
+ {
+  "code": "P",
+  "description": "Player"
+ },
+ {
+  "code": "M",
+  "description": "Manager"
+ },
+ {
+  "code": "G",
+  "description": "Generic"
+ }
+]

@@ -1,0 +1,32 @@
+[
+ {
+  "code": "4",
+  "resolutionShort": "4K",
+  "resolutionFull": "4K Resolution"
+ },
+ {
+  "code": "H",
+  "resolutionShort": "HD",
+  "resolutionFull": "High Resolution"
+ },
+ {
+  "code": "S",
+  "resolutionShort": "SD",
+  "resolutionFull": "Standard Resolution"
+ },
+ {
+  "code": "HD",
+  "resolutionShort": "HD",
+  "resolutionFull": "High Definition (720p)"
+ },
+ {
+  "code": "FHD",
+  "resolutionShort": "FHD",
+  "resolutionFull": "Full High Definition (1080p)"
+ },
+ {
+  "code": "UHD",
+  "resolutionShort": "UHD",
+  "resolutionFull": "Ultra High Definition (2160p)"
+ }
+]

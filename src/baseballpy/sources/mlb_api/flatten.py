@@ -57,7 +57,7 @@ def flatten_record(obj: dict[str, Any]) -> dict[str, Scalar]:
 
 
 def iter_records(payload: Any, path: tuple[str, ...]) -> Iterator[dict[str, Scalar]]:
-    """Yield flattened records found at ``path`` (``"*"`` fans out over list elements, ``"@"`` over dict values with the key carried as ``<label>.key``).
+    """Yield flattened records found at ``path`` (``"*"`` fans out over list elements, ``"@"`` over dict values with the key carried as ``<label>.key``; a dict value that is a list is walked element by element with its position carried as ``<label>.index``).
 
     A path that does not exist in the payload yields nothing; a payload whose shape contradicts the
     path (a scalar where a list/dict was expected) raises ``ValueError`` so a changed API fails
@@ -82,6 +82,13 @@ def _walk(
             raise ValueError(f"expected an object at {label or 'root'}, got {type(node).__name__}")
         for key, element in node.items():
             ctx: dict[str, Scalar] = {f"{label}.key" if label else "key": key}
+            if isinstance(element, list) and not rest:
+                # a dict of lists (``{"stats": [...], "aggregations": [...]}``): the elements of
+                # different lists share no column, so the position in the list completes the key
+                index_name = f"{label}.index" if label else "index"
+                for position, item in enumerate(element):
+                    yield from _emit(item, {**carry, **ctx, index_name: position})
+                continue
             if isinstance(element, dict):
                 nxt = rest[0] if rest and rest[0] not in ("*", "@") else None
                 grp: dict[str, Scalar] = {}
@@ -117,7 +124,9 @@ def _emit(item: Any, carry: dict[str, Scalar]) -> Iterator[dict[str, Scalar]]:
     if isinstance(item, dict):
         yield {**carry, **flatten_record(item)}
     elif item is not None:
-        yield {**carry, "value": item}
+        # a list element that is itself a list (or a dict-free container) is kept as JSON text, not as
+        # a Python repr, so nothing is lost and the text can be parsed again
+        yield {**carry, "value": json.dumps(item) if isinstance(item, list) else item}
 
 
 def trim_payload(payload: Any, path: tuple[str, ...], keep: int) -> Any:

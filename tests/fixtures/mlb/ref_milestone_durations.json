@@ -1,0 +1,22 @@
+[
+ {
+  "milestoneDurationId": 1301,
+  "milestoneDurationCode": "C",
+  "milestoneDurationText": "Career"
+ },
+ {
+  "milestoneDurationId": 1302,
+  "milestoneDurationCode": "S",
+  "milestoneDurationText": "Season"
+ },
+ {
+  "milestoneDurationId": 1303,
+  "milestoneDurationCode": "M",
+  "milestoneDurationText": "Month"
+ },
+ {
+  "milestoneDurationId": 1304,
+  "milestoneDurationCode": "G",
+  "milestoneDurationText": "Game"
+ }
+]

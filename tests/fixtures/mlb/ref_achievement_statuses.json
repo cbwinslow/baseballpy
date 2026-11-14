@@ -1,0 +1,20 @@
+[
+ {
+  "achievementTypeId": 1401,
+  "achievementTypeCode": "A",
+  "achievementTypeDesc": "Achieved the milestone",
+  "achievementTypeText": "Achieved"
+ },
+ {
+  "achievementTypeId": 1402,
+  "achievementTypeCode": "T",
+  "achievementTypeDesc": "Tied the milestone",
+  "achievementTypeText": "Tied"
+ },
+ {
+  "achievementTypeId": 1403,
+  "achievementTypeCode": "P",
+  "achievementTypeDesc": "Pending milestone",
+  "achievementTypeText": "Pending"
+ }
+]

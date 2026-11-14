@@ -1,0 +1,58 @@
+[
+ {
+  "code": "1",
+  "detailedState": "Scheduled",
+  "dbCode": "S",
+  "abstractGameState": "Preview",
+  "startTimeTBD": false
+ },
+ {
+  "code": "8",
+  "detailedState": "Scheduled (Time TBD)",
+  "dbCode": "S1",
+  "abstractGameState": "Preview",
+  "startTimeTBD": false
+ },
+ {
+  "code": "2",
+  "detailedState": "Pre-Game",
+  "dbCode": "P",
+  "abstractGameState": "Preview",
+  "startTimeTBD": false
+ },
+ {
+  "code": "11",
+  "detailedState": "Delayed",
+  "dbCode": "D",
+  "abstractGameState": "Delayed",
+  "startTimeTBD": false
+ },
+ {
+  "code": "10",
+  "detailedState": "Cancelled",
+  "dbCode": "C",
+  "abstractGameState": "Cancelled",
+  "startTimeTBD": false
+ },
+ {
+  "code": "3",
+  "detailedState": "In Progress",
+  "dbCode": "I",
+  "abstractGameState": "Live",
+  "startTimeTBD": false
+ },
+ {
+  "code": "7",
+  "detailedState": "Final",
+  "dbCode": "F",
+  "abstractGameState": "Final",
+  "startTimeTBD": false
+ },
+ {
+  "code": "110",
+  "detailedState": "Unknown",
+  "dbCode": "X",
+  "abstractGameState": "Unknown",
+  "startTimeTBD": false
+ }
+]

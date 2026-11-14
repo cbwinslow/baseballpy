@@ -1,0 +1,374 @@
+[
+ {
+  "settingId": 1,
+  "settingName": "strikeZoneTopFactor",
+  "settingDisplayName": "Strike Zone Top",
+  "settingDescription": "Top of strike zone as a percentage of player height",
+  "valueType": "percentage"
+ },
+ {
+  "settingId": 2,
+  "settingName": "strikeZoneBottomFactor",
+  "settingDisplayName": "Strike Zone Bottom",
+  "settingDescription": "Bottom of strike zone as a percentage of player height",
+  "valueType": "percentage"
+ },
+ {
+  "settingId": 3,
+  "settingName": "strikeZoneWidth",
+  "settingDisplayName": "Strike Zone Width",
+  "settingDescription": "Width of strike zone in inches",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 35,
+  "settingName": "strikeZoneTopOffset",
+  "settingDisplayName": "Strike Zone Top Offset",
+  "settingDescription": "Offset value, in inches, used in calculating top of zone metric",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 36,
+  "settingName": "strikeZoneBottomOffset",
+  "settingDisplayName": "Strike Zone Bottom Offset",
+  "settingDescription": "Offset value, in inches, used in calculating bottom of zone metric",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 37,
+  "settingName": "strikeZoneMeasurementSystem",
+  "settingDisplayName": "Strike Zone Measurement System",
+  "settingDescription": "Measurement system used for calculating strike zone top and bottom values",
+  "settingOptions": [
+   {
+    "settingValueId": 7,
+    "displayName": "Manual Rolling Average",
+    "description": "Manual Rolling Average",
+    "value": 1.0,
+    "sortOrder": 7
+   },
+   {
+    "settingValueId": 8,
+    "displayName": "Pose Zone",
+    "description": "Pose Zone based on player stance",
+    "value": 2.0,
+    "sortOrder": 7
+   },
+   {
+    "settingValueId": 13,
+    "displayName": "Pose Zone - BIP",
+    "description": "Pose zone based on player stance on balls in play",
+    "value": 3.0,
+    "sortOrder": 7
+   },
+   {
+    "settingValueId": 14,
+    "displayName": "Measured heights",
+    "description": "Zone based on MLB measured heights",
+    "value": 4.0,
+    "sortOrder": 7
+   }
+  ],
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 4,
+  "settingName": "strikeZoneDepth",
+  "settingDisplayName": "Strike Zone Depth",
+  "settingDescription": "Depth of strike zone in inches from apex of plate",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 16,
+  "settingName": "strikeZoneFlat",
+  "settingDisplayName": "Strike Zone Flat",
+  "settingDescription": "Use a flat (no depth) strike zone. ",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 38,
+  "settingName": "tiebreakerScenario",
+  "settingDisplayName": "Tiebreaker Scenario",
+  "settingDescription": "Determines how the winner of a game is decided if it’s tied at the end of the last scheduled inning.",
+  "settingOptions": [
+   {
+    "settingValueId": 4,
+    "displayName": "Extra Innings",
+    "description": "A tied game will continue with extra innings until one team wins.",
+    "value": "extraInnings",
+    "sortOrder": 4
+   },
+   {
+    "settingValueId": 5,
+    "displayName": "Extra Innings w/ Runner on Second Base",
+    "description": "A tied game will continue with extra innings until one team wins. All half innings after the last scheduled inning will start with a runner on second base.",
+    "value": "extraInningsRunnerOnSecond",
+    "sortOrder": 5
+   },
+   {
+    "settingValueId": 6,
+    "displayName": "Home Run Derby",
+    "description": "A tied game will be decided by a home run derby",
+    "value": "homeRunDerby",
+    "sortOrder": 6
+   },
+   {
+    "settingValueId": 9,
+    "displayName": "Sudden Death Extra Innings",
+    "description": "During the plate meeting prior to each game, the home team manager will determine if they want to play offense or defense in the event of a tie game after regulation (7 or 9 innings). For the team on offense, the player on the lineup card immediately preceding the batter due up will be placed on first base. The defensive team will have three outs to prevent the offense from scoring. If the team on offense scores, they will win the game. If the defensive team retires the side without allowing a run, they will win the game. If the player starting the inning on first base scores, it will count in the statistics as a run for the player and an RBI for the batter who drove him in (if applicable), but will not count towards the pitcher's earned-run average. The sudden death rule guarantees that no game will be played beyond 9.5 innings or beyond 7.5 innings for a doubleheader game.",
+    "value": "suddenDeathExtraInnings",
+    "sortOrder": 8
+   }
+  ],
+  "valueType": "text"
+ },
+ {
+  "settingId": 10,
+  "settingName": "moundDistance",
+  "settingDisplayName": "Mound Distance",
+  "settingDescription": "Distance from home plate to pitcher's plate",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 42,
+  "settingName": "secondBaseDistanceFromHome",
+  "settingDisplayName": "Second Base Distance From Home",
+  "settingDescription": "Second base position from home plate (measured in inches, from back tip of home plate to middle of second base)",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 19,
+  "settingName": "replayChallenges9thInning",
+  "settingDisplayName": "Replay Challenges Added in 9th Inning",
+  "settingDescription": "Number of additional replay challenges granted in the 9th inning if all remaining challenges have been used",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 20,
+  "settingName": "absChallenges9thInning",
+  "settingDisplayName": "ABS Challenges Added in 9th Inning",
+  "settingDescription": "Number of additional ABS challenges granted in the 9th inning if all remaining challenges have been used",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 5,
+  "settingName": "designatedHitter",
+  "settingDisplayName": "Designated Hitter",
+  "settingDescription": "Boolean value indicating if the designated hitter rule is allowed",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 7,
+  "settingName": "extraInningsRunnerOnSecond",
+  "settingDisplayName": "Extra Innings Runner on Second",
+  "settingDescription": "Boolean value indicating if extra innings begin with a runner on second base",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 8,
+  "settingName": "replayChallenges",
+  "settingDisplayName": "Replay Challenges",
+  "settingDescription": "Number of replay challenges granted to each team",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 9,
+  "settingName": "absChallenges",
+  "settingDisplayName": "ABS Challenges",
+  "settingDescription": "Number of ABS challenges granted to each team",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 21,
+  "settingName": "baseSize",
+  "settingDisplayName": "Base Size",
+  "settingDescription": "Size of bases (in inches squared)",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 22,
+  "settingName": "defensiveShiftBanned",
+  "settingDisplayName": "Defensive Shift Banned",
+  "settingDescription": "Defensive shifts are banned",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 43,
+  "settingName": "acsType",
+  "settingDisplayName": "ACS Type",
+  "settingDescription": "Type of ACS (No ACS, Challenge ACS)",
+  "settingOptions": [
+   {
+    "settingValueId": 15,
+    "displayName": "No ACS",
+    "description": "Game without ACS system",
+    "value": "noACS",
+    "sortOrder": 9
+   },
+   {
+    "settingValueId": 16,
+    "displayName": "Challenge ACS",
+    "description": "Game with challenge ACS system",
+    "value": "challengeACS",
+    "sortOrder": 9
+   }
+  ],
+  "valueType": "text"
+ },
+ {
+  "settingId": 44,
+  "settingName": "acsAngle",
+  "settingDisplayName": "ACS Angle",
+  "settingDescription": "The cutoff angle for a checked swing, relative to the plane from home plate to the pitchers mound, in degrees",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 45,
+  "settingName": "acsChallenges",
+  "settingDisplayName": "ACS Challenges",
+  "settingDescription": "Number of ACS challenges granted to each team",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 46,
+  "settingName": "absAcsSeparate",
+  "settingDisplayName": "ABS / ACS Separate",
+  "settingDescription": "Determines whether ABS challenges and ACS challenges are tracked separately for a given game. ",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 47,
+  "settingName": "absChallengesPerExtraInning",
+  "settingDisplayName": "ABS Challenges Per Extra Inning",
+  "settingDescription": "The number of ABS challenges allowed per extra inning",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 23,
+  "settingName": "pitchTimer",
+  "settingDisplayName": "Pitch Timer",
+  "settingDescription": "Pitch timers are used to regulate time between pitches",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 24,
+  "settingName": "pitchTimerBasesEmpty",
+  "settingDisplayName": "Pitch Timer with Bases Empty",
+  "settingDescription": "Number of seconds between pitches that the pitcher has to begin his motion when no runners are on base",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 25,
+  "settingName": "pitchTimerRunnersOn",
+  "settingDisplayName": "Pitch Timer with Runners On Base",
+  "settingDescription": "Number of seconds between pitches that the pitcher has to begin his motion when there is a runner on base",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 26,
+  "settingName": "pitchTimerBatter",
+  "settingDisplayName": "Pitch Timer for Batter",
+  "settingDescription": "Number of seconds left on the pitch timer when the batter must be in the box and alert to the pitcher",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 27,
+  "settingName": "pitcherDisengagementRule",
+  "settingDisplayName": "Pitcher Disengagement Rule",
+  "settingDescription": "Pitchers are allowed a maximum number of disengagements (stepping off the rubber) between runner movements",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 28,
+  "settingName": "pitcherDisengagementLimit",
+  "settingDisplayName": "Pitcher Disengagement Limit",
+  "settingDescription": "Number of disengagements allowed before possible violations",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 29,
+  "settingName": "batterDisengagementRule",
+  "settingDisplayName": "Batter Disengagement Rule",
+  "settingDescription": "Batters are allowed a maximum number of disengagements (batter timeouts) per at bat",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 30,
+  "settingName": "batterDisengagementLimit",
+  "settingDisplayName": "Batter Disengagement Limit",
+  "settingDescription": "Number of disengagements allowed per at bat",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 31,
+  "settingName": "moundVisitRule",
+  "settingDisplayName": "Mound Visit Rule",
+  "settingDescription": "Mound visits are limited",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 34,
+  "settingName": "moundVisitLimitPerExtraInning",
+  "settingDisplayName": "Mound Visit Limit per Extra Inning",
+  "settingDescription": "Number of mound visits allowed for each team per inning starting in the 10th.",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 32,
+  "settingName": "moundVisitLimit",
+  "settingDisplayName": "Mound Visit Limit",
+  "settingDescription": "Number of mound visits allowed for each team in the first 9 innings.",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 33,
+  "settingName": "moundVisitsAdded9thInning",
+  "settingDisplayName": "Mound Visits Added in 9th Inning",
+  "settingDescription": "Number of additional mound visits given to a team in the 9th inning if they have 0 remaining. ",
+  "valueType": "numeric"
+ },
+ {
+  "settingId": 49,
+  "settingName": "tiebreakerWinnerExtraRun",
+  "settingDisplayName": "Tiebreaker - Add Extra Run to Winner",
+  "settingDescription": "Determines if there is an extra run added to the winner in a tiebreaker scenario.",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 48,
+  "settingName": "wbcwActive",
+  "settingDisplayName": "WBCW Active",
+  "settingDescription": "WBCW is active for a given game",
+  "valueType": "boolean"
+ },
+ {
+  "settingId": 11,
+  "settingName": "absType",
+  "settingDisplayName": "ABS Type",
+  "settingDescription": "Type of ABS (none, full, challenge)",
+  "settingOptions": [
+   {
+    "settingValueId": 3,
+    "displayName": "No ABS",
+    "description": "Game with no ABS",
+    "value": "noABS",
+    "sortOrder": 1
+   },
+   {
+    "settingValueId": 1,
+    "displayName": "Full ABS",
+    "description": "Game with full ABS system",
+    "value": "fullABS",
+    "sortOrder": 2
+   },
+   {
+    "settingValueId": 2,
+    "displayName": "Challenge ABS",
+    "description": "Game with challenge ABS system",
+    "value": "challengeABS",
+    "sortOrder": 3
+   }
+  ],
+  "valueType": "text"
+ }
+]

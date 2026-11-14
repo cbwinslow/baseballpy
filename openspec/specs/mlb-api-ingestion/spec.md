@@ -360,3 +360,11 @@ A league-wide pool chunk (`v1/stats`) that the hydrate route filled and whose pa
 - **WHEN** one raw hydrate page of a stale chunk no longer matches its manifest sha256
 - **THEN** the chunk is left as it is, no `parse_rev` is recorded and a warning names the page
 - Verified by `tests/test_mlb_hydrate_reparse.py::test_a_raw_page_that_fails_its_checksum_is_not_trusted`.
+
+### Requirement: The MLB Lookup Lists Are Registered Rows, Not Code
+Every lookup or reference list under `https://statsapi.mlb.com/api/v1/<route>` that answers HTTP 200 without parameters MUST be one row of the `_REFERENCE` table in `endpoints.py` (dataset `ref_<snake_route>`), typed by the generator from the live answer, with a key the generator verified as unique. A payload that is an object whose values are lists MUST be one dataset read with the record path `("@",)`, each row carrying the list name as `key` and the position in that list as `index`. A route that answers 200 but holds no records without parameters MUST stay registered as `unsupported` with the HTTP status and date.
+
+#### Scenario: Every lookup route is a typed dataset and a dict of lists keeps every element
+- **WHEN** the registry is read and an object of lists is flattened
+- **THEN** all 38 routes of ADR 132 are supported flat datasets with a schema and fixture, `gamePace` is unsupported with its evidence, and each element of each list is one row keyed by `(key, index)`
+- Verified by `tests/test_mlb_lookup_catalogs.py::test_every_lookup_route_is_a_registered_typed_dataset_with_its_own_path`, `tests/test_mlb_lookup_catalogs.py::test_game_pace_is_kept_as_unsupported_with_its_probe_evidence`, `tests/test_mlb_lookup_catalogs.py::test_a_dict_of_lists_keeps_every_element_and_its_position` and `tests/test_mlb_lookup_catalogs.py::test_dict_of_lists_datasets_are_keyed_by_list_name_and_position`.

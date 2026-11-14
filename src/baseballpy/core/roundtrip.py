@@ -301,8 +301,9 @@ def _key_text(
             pa.types.is_string(type_) or pa.types.is_integer(type_) or pa.types.is_dictionary(type_)
         ):
             return None
+        # both sides trimmed alike: a provider key with spaces after it (kept by the loader) must match
         raw_parts.append(pc.utf8_trim_whitespace(raw.column(columns[key])))
-        out_parts.append(_text(processed.column(key)))
+        out_parts.append(pc.utf8_trim_whitespace(_text(processed.column(key))))
     if not raw_parts:
         return None
     raw_key, out_key = raw_parts[0], out_parts[0]

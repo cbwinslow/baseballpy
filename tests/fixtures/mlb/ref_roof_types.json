@@ -1,0 +1,26 @@
+[
+ {
+  "value": "roofOpen",
+  "description": "Roof open with no panels"
+ },
+ {
+  "value": "roofClosedNoPanel",
+  "description": "Roof closed with no panels"
+ },
+ {
+  "value": "roofClosedPanelOpen",
+  "description": "Roof closed with open panels"
+ },
+ {
+  "value": "roofClosedPanelClosed",
+  "description": "Roof closed with closed panels"
+ },
+ {
+  "value": "noRoof",
+  "description": "No roof and no panels"
+ },
+ {
+  "value": "unknown",
+  "description": "Roof status is not clear"
+ }
+]

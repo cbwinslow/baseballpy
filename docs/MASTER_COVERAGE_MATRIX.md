@@ -4,8 +4,8 @@ This document provides an exhaustive catalog of all baseball datasets across the
 ecosystem, comparing `baseballpy` against `pybaseball`, `baseballr`, `MLB-StatsAPI`, and the
 official MLB OpenAPI specification.
 
-- **Total Registered Datasets in baseballpy:** 510
-- **MLB Stats API:** 365 datasets across 65 API routes
+- **Total Registered Datasets in baseballpy:** 548
+- **MLB Stats API:** 403 datasets across 65 API routes
 - **Statcast (Baseball Savant):** 50 datasets (MLB pitches, Minor League pitches, 36 leaderboards)
 - **Retrosheet:** 43 datasets (PBP events, game logs, boxscores, rosters)
 - **Lahman Database:** 27 datasets (complete historical database 1871–present)
@@ -133,7 +133,7 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `pitches` | `statcast_pitches` | `season` | 120 | `game_pk`, `at_bat_number`, `pitch_number` | Pitch-level Statcast search results. |
 | `pitches_minors` | `statcast_pitches_minors` | `season` | 120 | `game_pk`, `at_bat_number`, `pitch_number` | Minor-league pitch-level Statcast search results (minors=true, 2021 onwards). |
 
-### MLB_API (365 datasets)
+### MLB_API (403 datasets)
 
 | Dataset Name | View Name | Partition | Columns | Primary Keys | Description |
 | :--- | :--- | :--- | :---: | :--- | :--- |
@@ -317,32 +317,70 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `people_stats_year_by_year_playoffs_hitting` | `mlb_people_stats_year_by_year_playoffs_hitting` | `season` | 55 | `person_id`, `player_id`, `sport_id`, `league_id`, `game_type`, `stat_age`, `stat_games_played` | Per-player hitting stats, type yearByYearPlayoffs (one request per person). |
 | `people_stats_year_by_year_playoffs_pitching` | `mlb_people_stats_year_by_year_playoffs_pitching` | `season` | 84 | `person_id`, `player_id`, `sport_id`, `league_id`, `game_type`, `stat_at_bats` | Per-player pitching stats, type yearByYearPlayoffs (one request per person). |
 | `players_season` | `mlb_players_season` | `season` | 56 | `id`, `sport_id` | Every player of a sport-season with biographical fields. |
+| `ref_achievement_statuses` | `mlb_ref_achievement_statuses` | `none` | 5 | `achievement_type_id` | Milestone achievement statuses. |
 | `ref_awards` | `mlb_ref_awards` | `none` | 11 | `id` | Award catalog. |
 | `ref_baseball_stats` | `mlb_ref_baseball_stats` | `none` | 9 | `name`, `stat_groups` | Statistic definitions (name, group, lookup param). |
+| `ref_coaching_video_types` | `mlb_ref_coaching_video_types` | `none` | 2 | `value` | Coaching video types (a list of names). |
 | `ref_conferences` | `mlb_ref_conferences` | `none` | 11 | `id` | All conferences. |
 | `ref_divisions` | `mlb_ref_divisions` | `none` | 15 | `id` | All divisions. |
+| `ref_event_status` | `mlb_ref_event_status` | `none` | 6 | `code` | Event status codes. |
 | `ref_event_types` | `mlb_ref_event_types` | `none` | 6 | `code` | Play event types. |
+| `ref_fielder_detail_types` | `mlb_ref_fielder_detail_types` | `none` | 6 | `stat_name` | Fielder detail (chance, error) types by stat name. |
+| `ref_free_game_types` | `mlb_ref_free_game_types` | `none` | 5 | `free_game_type_code` | Free game types. |
 | `ref_game_status` | `mlb_ref_game_status` | `none` | 7 | `status_code` | Game status codes. |
 | `ref_game_types` | `mlb_ref_game_types` | `none` | 3 | `id` | Game type codes (R, P, S, ...). |
+| `ref_gameday_types` | `mlb_ref_gameday_types` | `none` | 3 | `code` | Gameday types. |
+| `ref_group_by_types` | `mlb_ref_group_by_types` | `none` | 4 | `name` | Group-by types usable in stat queries. |
+| `ref_high_low_types` | `mlb_ref_high_low_types` | `none` | 9 | `name` | High/low (streak) stat types. |
 | `ref_hit_trajectories` | `mlb_ref_hit_trajectories` | `none` | 3 | `code` | Batted-ball trajectories. |
 | `ref_job_types` | `mlb_ref_job_types` | `none` | 4 | `code` | Job (role) types. |
 | `ref_languages` | `mlb_ref_languages` | `none` | 5 | `language_code` | Languages. |
 | `ref_league` | `mlb_ref_league` | `none` | 41 | `id` | All leagues. |
 | `ref_league_leader_types` | `mlb_ref_league_leader_types` | `none` | 2 | `display_name` | League leader categories. |
 | `ref_logical_events` | `mlb_ref_logical_events` | `none` | 2 | `code` | Logical event types. |
+| `ref_lookup_values_all` | `mlb_ref_lookup_values_all` | `none` | 165 | `key`, `index` | Every lookup list in one answer (key = list name, index = position). |
+| `ref_media_state` | `mlb_ref_media_state` | `none` | 4 | `media_state_id` | Media states. |
 | `ref_metrics` | `mlb_ref_metrics` | `none` | 5 | `metric_id` | Tracking metrics. |
+| `ref_milestone_durations` | `mlb_ref_milestone_durations` | `none` | 4 | `milestone_duration_id` | Milestone durations. |
+| `ref_milestone_lookups` | `mlb_ref_milestone_lookups` | `none` | 28 | `key`, `index` | All milestone lookup lists in one answer (key = list name, index = position). |
+| `ref_milestone_statistics` | `mlb_ref_milestone_statistics` | `none` | 16 | `statistic_id` | Milestone statistics. |
+| `ref_milestone_types` | `mlb_ref_milestone_types` | `none` | 4 | `milestone_type_id` | Milestone types. |
+| `ref_mound_visit_types` | `mlb_ref_mound_visit_types` | `none` | 3 | `code` | Mound visit types. |
+| `ref_performer_types` | `mlb_ref_performer_types` | `none` | 2 | `name` | Performer types. |
+| `ref_pitch_codes` | `mlb_ref_pitch_codes` | `none` | 13 | `code` | Pitch result codes with swing/strike/ball flags. |
 | `ref_pitch_types` | `mlb_ref_pitch_types` | `none` | 3 | `code` | Pitch type codes. |
 | `ref_platforms` | `mlb_ref_platforms` | `none` | 3 | `platform_code` | Platforms. |
+| `ref_player_status_codes` | `mlb_ref_player_status_codes` | `none` | 3 | `code` | Player status codes. |
 | `ref_positions` | `mlb_ref_positions` | `none` | 12 | `abbrev` | Fielding/lineup positions. |
 | `ref_review_reasons` | `mlb_ref_review_reasons` | `none` | 3 | `code` | Replay review reasons. |
+| `ref_roof_types` | `mlb_ref_roof_types` | `none` | 3 | `value` | Roof types. |
 | `ref_roster_types` | `mlb_ref_roster_types` | `none` | 4 | `parameter` | Roster types (active, 40Man, fullSeason, ...). |
+| `ref_rule_settings` | `mlb_ref_rule_settings` | `none` | 7 | `setting_id` | Rule settings. |
+| `ref_runner_detail_types` | `mlb_ref_runner_detail_types` | `none` | 2 | `stat_name` | Runner detail types (stat names). |
 | `ref_schedule_event_types` | `mlb_ref_schedule_event_types` | `none` | 3 | `code` | Schedule event types. |
 | `ref_schedule_types` | `mlb_ref_schedule_types` | `none` | 3 | `id` | Schedule types. |
 | `ref_situation_codes` | `mlb_ref_situation_codes` | `none` | 9 | `code` | Situation (split) codes. |
+| `ref_sky` | `mlb_ref_sky` | `none` | 3 | `code` | Sky condition codes. |
+| `ref_sort_modifiers` | `mlb_ref_sort_modifiers` | `none` | 3 | `code` | Sort modifiers. |
 | `ref_sports` | `mlb_ref_sports` | `none` | 8 | `id` | Sports / levels (MLB, AAA, ...). |
 | `ref_standings_types` | `mlb_ref_standings_types` | `none` | 3 | `name` | Standings types (regularSeason, wildCard, ...). |
+| `ref_stat_fields` | `mlb_ref_stat_fields` | `none` | 2 | `name` | Stat field names. |
 | `ref_stat_groups` | `mlb_ref_stat_groups` | `none` | 2 | `display_name` | Stat groups (hitting, pitching, fielding, ...). |
 | `ref_stat_types` | `mlb_ref_stat_types` | `none` | 2 | `display_name` | Stat type names usable in /v1/stats (season, career, gameLog, ...). |
+| `ref_statcast_position_types` | `mlb_ref_statcast_position_types` | `none` | 3 | `position_id` | Statcast position types. |
+| `ref_stats_search_config` | `mlb_ref_stats_search_config` | `none` | 38 | `key`, `index` | Stat search configuration lists in one answer (key = list name, index = position). |
+| `ref_stats_search_group_by_types` | `mlb_ref_stats_search_group_by_types` | `none` | 4 | `name` | Stat search group-by types. |
+| `ref_stats_search_params` | `mlb_ref_stats_search_params` | `none` | 8 | `code` | Stat search parameters. |
+| `ref_stats_search_stats` | `mlb_ref_stats_search_stats` | `none` | 21 | `description`, `stat_group`, `sort_stat` | Stat search stat catalog (description, group, sort stat, flags). |
+| `ref_streaks_types` | `mlb_ref_streaks_types` | `none` | 12 | `key`, `index` | Streak lookup lists in one answer (key = list name, index = position). |
+| `ref_tracking_software_versions` | `mlb_ref_tracking_software_versions` | `none` | 9 | `tracking_software_component_id`, `tracking_software_component_version_text` | Tracking software component versions. |
+| `ref_tracking_system_owners` | `mlb_ref_tracking_system_owners` | `none` | 3 | `id` | Tracking system owners. |
+| `ref_tracking_vendors` | `mlb_ref_tracking_vendors` | `none` | 3 | `id` | Tracking vendors. |
+| `ref_tracking_versions` | `mlb_ref_tracking_versions` | `none` | 21 | `id` | Tracking system versions. |
+| `ref_transaction_types` | `mlb_ref_transaction_types` | `none` | 3 | `code` | Transaction types. |
+| `ref_video_resolution_types` | `mlb_ref_video_resolution_types` | `none` | 4 | `code` | Video resolution types. |
+| `ref_violation_types` | `mlb_ref_violation_types` | `none` | 8 | `violation_type_code` | Violation types. |
+| `ref_weather_trajectory_confidences` | `mlb_ref_weather_trajectory_confidences` | `none` | 3 | `value` | Weather trajectory confidence values. |
 | `ref_wind_direction` | `mlb_ref_wind_direction` | `none` | 3 | `code` | Wind direction codes. |
 | `rosters` | `mlb_rosters` | `none` | 7 | `team_id`, `player_id` | Active team rosters. |
 | `schedule` | `mlb_schedule` | `season` | 16 | `game_pk` | Game schedule. |

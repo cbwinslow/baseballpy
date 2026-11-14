@@ -1,0 +1,46 @@
+[
+ {
+  "code": "avg",
+  "description": "averageValue"
+ },
+ {
+  "code": "max",
+  "description": "maxValue"
+ },
+ {
+  "code": "min",
+  "description": "minValue"
+ },
+ {
+  "code": "num",
+  "description": "numOccurrences"
+ },
+ {
+  "code": "count",
+  "description": "countValue"
+ },
+ {
+  "code": "sum",
+  "description": "sumValue"
+ },
+ {
+  "code": "p50",
+  "description": "percentile50Value"
+ },
+ {
+  "code": "p75",
+  "description": "percentile75Value"
+ },
+ {
+  "code": "p90",
+  "description": "percentile90Value"
+ },
+ {
+  "code": "comp",
+  "description": "competitive"
+ },
+ {
+  "code": "num_comp",
+  "description": "numCompetitiveOccurrences"
+ }
+]

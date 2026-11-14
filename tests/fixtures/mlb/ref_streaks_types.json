@@ -1,0 +1,927 @@
+{
+ "streakLevel": [
+  "SEASON",
+  "GAME"
+ ],
+ "streakSpan": [
+  "CAREER",
+  "SEASON"
+ ],
+ "streakOrg": [
+  "PLAYER",
+  "TEAM"
+ ],
+ "streakStat": [
+  {
+   "name": "at_bats",
+   "lookupParam": "atBats",
+   "isCounting": true,
+   "label": "At Bats",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "balls",
+   "lookupParam": "strikes",
+   "isCounting": true,
+   "label": "Balls",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": []
+  },
+  {
+   "name": "balks",
+   "lookupParam": "balks",
+   "isCounting": true,
+   "label": "Balks",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "blown_saves",
+   "lookupParam": "blownSaves",
+   "isCounting": true,
+   "label": "Blown Saves",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "caught_stealing",
+   "lookupParam": "caughtStealing",
+   "isCounting": true,
+   "label": "Caught Stealing",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "fielding"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "complete_games",
+   "lookupParam": "completeGames",
+   "isCounting": true,
+   "label": "Complete Games",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "doubles",
+   "lookupParam": "doubles",
+   "isCounting": true,
+   "label": "Doubles",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "earned_run",
+   "lookupParam": "earnedRuns",
+   "isCounting": true,
+   "label": "Earned Run",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "errors",
+   "lookupParam": "errors",
+   "isCounting": true,
+   "label": "Errors",
+   "statGroups": [
+    {
+     "displayName": "fielding"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "extra_base_hits",
+   "lookupParam": "extraBaseHits",
+   "isCounting": true,
+   "label": "Extra Base Hits",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "games_played",
+   "lookupParam": "gamesPitched",
+   "isCounting": true,
+   "label": "Games Played",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    },
+    {
+     "displayName": "fielding"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "SEASON"
+   ]
+  },
+  {
+   "name": "games_started",
+   "lookupParam": "gamesStarted",
+   "isCounting": true,
+   "label": "Games Started",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    },
+    {
+     "displayName": "fielding"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "SEASON"
+   ]
+  },
+  {
+   "name": "ground_into_double_play",
+   "lookupParam": "groundIntoDoublePlay",
+   "isCounting": true,
+   "label": "Ground Into Double Play",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    },
+    {
+     "displayName": "fielding"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "hit_by_pitch",
+   "lookupParam": "hitByPitch",
+   "isCounting": true,
+   "label": "Hit By Pitch",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "hits",
+   "lookupParam": "hits",
+   "isCounting": true,
+   "label": "Hits",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "holds",
+   "lookupParam": "holds",
+   "isCounting": true,
+   "label": "Holds",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "SEASON"
+   ]
+  },
+  {
+   "name": "home_runs",
+   "lookupParam": "homeRuns",
+   "isCounting": true,
+   "label": "Home Runs",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "intentional_walks",
+   "lookupParam": "intentionalWalks",
+   "isCounting": true,
+   "label": "Intentional Walks",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "left_on_base",
+   "lookupParam": "leftOnBase",
+   "isCounting": true,
+   "label": "Left On Base",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "losses",
+   "lookupParam": "losses",
+   "isCounting": true,
+   "label": "Losses",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "on_base",
+   "lookupParam": "obp",
+   "isCounting": true,
+   "label": "On Base",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "passed_balls",
+   "lookupParam": "passedBall",
+   "isCounting": true,
+   "label": "Passed Balls",
+   "statGroups": [
+    {
+     "displayName": "fielding"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "pitches",
+   "lookupParam": "pitchesThrown",
+   "isCounting": true,
+   "label": "Pitches",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "plate_appearances",
+   "lookupParam": "plateAppearances",
+   "isCounting": true,
+   "label": "Plate Appearances",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "quality_starts",
+   "lookupParam": "qualityStarts",
+   "isCounting": true,
+   "label": "Quality Starts",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "runs",
+   "lookupParam": "runs",
+   "isCounting": true,
+   "label": "Runs",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "runs_batted_in",
+   "lookupParam": "rbi",
+   "isCounting": true,
+   "label": "Runs Batted In",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "saves",
+   "lookupParam": "saves",
+   "isCounting": true,
+   "label": "Saves",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "shutouts",
+   "lookupParam": "shutouts",
+   "isCounting": true,
+   "label": "Shutouts",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "stolen_bases",
+   "lookupParam": "stolenBases",
+   "isCounting": true,
+   "label": "Stolen Bases",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    },
+    {
+     "displayName": "fielding"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "strikes",
+   "lookupParam": "strikes",
+   "isCounting": true,
+   "label": "Strikes",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": []
+  },
+  {
+   "name": "strikeouts",
+   "lookupParam": "strikeouts",
+   "isCounting": true,
+   "label": "Strikeouts",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "total_bases",
+   "lookupParam": "totalBases",
+   "isCounting": true,
+   "label": "Total Bases",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "triples",
+   "lookupParam": "triples",
+   "isCounting": true,
+   "label": "Triples",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "walks",
+   "lookupParam": "baseOnBalls",
+   "isCounting": true,
+   "label": "Walks",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "walkoffs",
+   "lookupParam": "walkoffs",
+   "isCounting": true,
+   "label": "Walkoffs",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    }
+   ],
+   "orgTypes": [
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "wins",
+   "lookupParam": "wins",
+   "isCounting": true,
+   "label": "Wins",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "batting_average",
+   "lookupParam": "avg",
+   "isCounting": false,
+   "label": "Batting Average",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "SEASON"
+   ]
+  },
+  {
+   "name": "earned_run_average",
+   "lookupParam": "era",
+   "isCounting": false,
+   "label": "Earned Run Average",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "SEASON"
+   ]
+  },
+  {
+   "name": "fielding_percentage",
+   "lookupParam": "fielding",
+   "isCounting": false,
+   "label": "Fielding Percentage",
+   "statGroups": [
+    {
+     "displayName": "fielding"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "SEASON"
+   ]
+  },
+  {
+   "name": "on_base_percentage",
+   "lookupParam": "obr",
+   "isCounting": false,
+   "label": "On Base Percentage",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "GAME",
+    "SEASON"
+   ]
+  },
+  {
+   "name": "slugging_percentage",
+   "lookupParam": "slg",
+   "isCounting": false,
+   "label": "Slugging Percentage",
+   "statGroups": [
+    {
+     "displayName": "hitting"
+    },
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "SEASON"
+   ]
+  },
+  {
+   "name": "walks_hits_per_inning_pitched",
+   "lookupParam": "whip",
+   "isCounting": false,
+   "label": "Walks Hits Per Inning Pitched",
+   "statGroups": [
+    {
+     "displayName": "pitching"
+    }
+   ],
+   "orgTypes": [
+    "PLAYER",
+    "TEAM"
+   ],
+   "highLowTypes": [],
+   "streakLevels": [
+    "SEASON"
+   ]
+  }
+ ]
+}

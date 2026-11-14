@@ -22779,3 +22779,1015 @@ League-wide running stats, type statSplits, parameters {'season': '{season}', 's
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.stats_stat_splits_running -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_achievement_statuses -->
+### Dataset: ref_achievement_statuses
+
+Milestone achievement statuses.
+
+- **View:** `mlb_ref_achievement_statuses`
+- **Processed path:** `processed/mlb_api/ref_achievement_statuses/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `achievement_type_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `achievement_type_id` | int32 | yes | `achievementTypeId` | TODO |
+| `achievement_type_code` | string | yes | `achievementTypeCode` | TODO |
+| `achievement_type_desc` | string | yes | `achievementTypeDesc` | TODO |
+| `achievement_type_text` | string | yes | `achievementTypeText` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_achievement_statuses -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_coaching_video_types -->
+### Dataset: ref_coaching_video_types
+
+Coaching video types (a list of names).
+
+- **View:** `mlb_ref_coaching_video_types`
+- **Processed path:** `processed/mlb_api/ref_coaching_video_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `value`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `value` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_coaching_video_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_event_status -->
+### Dataset: ref_event_status
+
+Event status codes.
+
+- **View:** `mlb_ref_event_status`
+- **Processed path:** `processed/mlb_api/ref_event_status/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `detailed_state` | string | yes | `detailedState` | TODO |
+| `db_code` | string | yes | `dbCode` | TODO |
+| `abstract_game_state` | string | yes | `abstractGameState` | TODO |
+| `start_time_tbd` | bool | yes | `startTimeTBD` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_event_status -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_fielder_detail_types -->
+### Dataset: ref_fielder_detail_types
+
+Fielder detail (chance, error) types by stat name.
+
+- **View:** `mlb_ref_fielder_detail_types`
+- **Processed path:** `processed/mlb_api/ref_fielder_detail_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `stat_name`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `stat_name` | string | yes | `statName` | Name of the stat. (authored) |
+| `code` | string | yes | — | TODO |
+| `names` | string | yes | — | TODO |
+| `chance` | bool | yes | — | TODO |
+| `error` | bool | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_fielder_detail_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_free_game_types -->
+### Dataset: ref_free_game_types
+
+Free game types.
+
+- **View:** `mlb_ref_free_game_types`
+- **Processed path:** `processed/mlb_api/ref_free_game_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `free_game_type_code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `free_game_type_code` | string | yes | `freeGameTypeCode` | TODO |
+| `free_game_type_text` | string | yes | `freeGameTypeText` | TODO |
+| `free_game_type_desc` | string | yes | `freeGameTypeDesc` | TODO |
+| `free_game_type_id` | int32 | yes | `freeGameTypeId` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_free_game_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_gameday_types -->
+### Dataset: ref_gameday_types
+
+Gameday types.
+
+- **View:** `mlb_ref_gameday_types`
+- **Processed path:** `processed/mlb_api/ref_gameday_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_gameday_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_group_by_types -->
+### Dataset: ref_group_by_types
+
+Group-by types usable in stat queries.
+
+- **View:** `mlb_ref_group_by_types`
+- **Processed path:** `processed/mlb_api/ref_group_by_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `name`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `name` | string | yes | — | TODO |
+| `valid_compare_over` | bool | yes | `validCompareOver` | TODO |
+| `binapi_name` | string | yes | `binapiName` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_group_by_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_high_low_types -->
+### Dataset: ref_high_low_types
+
+High/low (streak) stat types.
+
+- **View:** `mlb_ref_high_low_types`
+- **Processed path:** `processed/mlb_api/ref_high_low_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `name`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `name` | string | yes | — | TODO |
+| `lookup_param` | string | yes | `lookupParam` | TODO |
+| `is_counting` | bool | yes | `isCounting` | TODO |
+| `label` | string | yes | — | TODO |
+| `stat_groups` | string | yes | `statGroups` | TODO |
+| `org_types` | string | yes | `orgTypes` | TODO |
+| `high_low_types` | string | yes | `highLowTypes` | TODO |
+| `streak_levels` | string | yes | `streakLevels` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_high_low_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_lookup_values_all -->
+### Dataset: ref_lookup_values_all
+
+Every lookup list in one answer (key = list name, index = position).
+
+- **View:** `mlb_ref_lookup_values_all`
+- **Processed path:** `processed/mlb_api/ref_lookup_values_all/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `key`, `index`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `key` | string | yes | — | TODO |
+| `index` | int32 | yes | — | TODO |
+| `code` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `id` | string | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `link` | string | yes | — | TODO |
+| `active` | bool | yes | — | TODO |
+| `season` | string | yes | — | TODO |
+| `milestone_type_id` | int32 | yes | `milestoneTypeId` | TODO |
+| `milestone_type_code` | string | yes | `milestoneTypeCode` | TODO |
+| `milestone_type_text` | string | yes | `milestoneTypeText` | TODO |
+| `owner` | string | yes | — | TODO |
+| `pitch_vendor_id` | int32 | yes | `pitchVendor.id` | TODO |
+| `pitch_vendor_description` | string | yes | `pitchVendor.description` | TODO |
+| `pitch_vendor_version` | string | yes | `pitchVendor.version` | TODO |
+| `pitch_vendor_owner` | string | yes | `pitchVendor.owner` | TODO |
+| `hit_vendor_id` | int32 | yes | `hitVendor.id` | TODO |
+| `hit_vendor_description` | string | yes | `hitVendor.description` | TODO |
+| `hit_vendor_version` | string | yes | `hitVendor.version` | TODO |
+| `hit_vendor_owner` | string | yes | `hitVendor.owner` | TODO |
+| `player_vendor_id` | int32 | yes | `playerVendor.id` | TODO |
+| `player_vendor_description` | string | yes | `playerVendor.description` | TODO |
+| `player_vendor_version` | string | yes | `playerVendor.version` | TODO |
+| `player_vendor_owner` | string | yes | `playerVendor.owner` | TODO |
+| `skeletal_vendor_id` | int32 | yes | `skeletalVendor.id` | TODO |
+| `skeletal_vendor_description` | string | yes | `skeletalVendor.description` | TODO |
+| `skeletal_vendor_version` | string | yes | `skeletalVendor.version` | TODO |
+| `skeletal_vendor_owner` | string | yes | `skeletalVendor.owner` | TODO |
+| `bat_vendor_id` | int32 | yes | `batVendor.id` | TODO |
+| `bat_vendor_description` | string | yes | `batVendor.description` | TODO |
+| `bat_vendor_version` | string | yes | `batVendor.version` | TODO |
+| `bat_vendor_owner` | string | yes | `batVendor.owner` | TODO |
+| `biomechanics_vendor_id` | int32 | yes | `biomechanicsVendor.id` | TODO |
+| `biomechanics_vendor_description` | string | yes | `biomechanicsVendor.description` | TODO |
+| `biomechanics_vendor_version` | string | yes | `biomechanicsVendor.version` | TODO |
+| `biomechanics_vendor_owner` | string | yes | `biomechanicsVendor.owner` | TODO |
+| `display_name` | string | yes | `displayName` | Name of the display. (authored) |
+| `achievement_type_id` | int32 | yes | `achievementTypeId` | TODO |
+| `achievement_type_code` | string | yes | `achievementTypeCode` | TODO |
+| `achievement_type_desc` | string | yes | `achievementTypeDesc` | TODO |
+| `achievement_type_text` | string | yes | `achievementTypeText` | TODO |
+| `language_id` | int32 | yes | `languageId` | MLBAM identifier of the language. (authored) |
+| `language_code` | string | yes | `languageCode` | Code of the language. (authored) |
+| `locale` | string | yes | — | TODO |
+| `abstract_game_state` | string | yes | `abstractGameState` | TODO |
+| `coded_game_state` | string | yes | `codedGameState` | TODO |
+| `detailed_state` | string | yes | `detailedState` | TODO |
+| `status_code` | string | yes | `statusCode` | Code of the status. (authored) |
+| `abstract_game_code` | string | yes | `abstractGameCode` | Code of the abstract game. (authored) |
+| `reason` | string | yes | — | TODO |
+| `spring_league_id` | int32 | yes | `springLeague.id` | MLBAM identifier of the spring league. (authored) |
+| `spring_league_name` | string | yes | `springLeague.name` | Name of the spring league. (authored) |
+| `spring_league_link` | string | yes | `springLeague.link` | Relative MLB Stats API path of the spring league resource (prefix https://statsapi.mlb.com). (authored) |
+| `spring_league_abbreviation` | string | yes | `springLeague.abbreviation` | Abbreviation of the spring league. (authored) |
+| `all_star_status` | string | yes | `allStarStatus` | TODO |
+| `venue_id` | int32 | yes | `venue.id` | MLBAM identifier of the venue. (authored) |
+| `venue_name` | string | yes | `venue.name` | Name of the venue. (authored) |
+| `venue_link` | string | yes | `venue.link` | Relative MLB Stats API path of the venue resource (prefix https://statsapi.mlb.com). (authored) |
+| `spring_venue_id` | int32 | yes | `springVenue.id` | MLBAM identifier of the spring venue. (authored) |
+| `spring_venue_link` | string | yes | `springVenue.link` | Relative MLB Stats API path of the spring venue resource (prefix https://statsapi.mlb.com). (authored) |
+| `team_code` | string | yes | `teamCode` | Code of the team. (authored) |
+| `file_code` | string | yes | `fileCode` | Code of the file. (authored) |
+| `abbreviation` | string | yes | — | TODO |
+| `team_name` | string | yes | `teamName` | Name of the team. (authored) |
+| `location_name` | string | yes | `locationName` | Name of the location. (authored) |
+| `first_year_of_play` | string | yes | `firstYearOfPlay` | TODO |
+| `league_id` | int32 | yes | `league.id` | MLBAM identifier of the league. (authored) |
+| `league_name` | string | yes | `league.name` | Name of the league. (authored) |
+| `league_link` | string | yes | `league.link` | Relative MLB Stats API path of the league resource (prefix https://statsapi.mlb.com). (authored) |
+| `division_id` | int32 | yes | `division.id` | MLBAM identifier of the division. (authored) |
+| `division_name` | string | yes | `division.name` | Name of the division. (authored) |
+| `division_link` | string | yes | `division.link` | Relative MLB Stats API path of the division resource (prefix https://statsapi.mlb.com). (authored) |
+| `sport_id` | int32 | yes | `sport.id` | MLBAM identifier of the sport. (authored) |
+| `sport_link` | string | yes | `sport.link` | Relative MLB Stats API path of the sport resource (prefix https://statsapi.mlb.com). (authored) |
+| `sport_name` | string | yes | `sport.name` | Name of the sport. (authored) |
+| `short_name` | string | yes | `shortName` | Name of the short. (authored) |
+| `franchise_name` | string | yes | `franchiseName` | Name of the franchise. (authored) |
+| `club_name` | string | yes | `clubName` | Name of the club. (authored) |
+| `color_space_full` | string | yes | `colorSpaceFull` | TODO |
+| `milestone_duration_id` | int32 | yes | `milestoneDurationId` | TODO |
+| `milestone_duration_code` | string | yes | `milestoneDurationCode` | TODO |
+| `milestone_duration_text` | string | yes | `milestoneDurationText` | TODO |
+| `resolution_short` | string | yes | `resolutionShort` | TODO |
+| `resolution_full` | string | yes | `resolutionFull` | TODO |
+| `job` | string | yes | — | TODO |
+| `sort_order` | int32 | yes | `sortOrder` | TODO |
+| `active_status` | bool | yes | `activeStatus` | TODO |
+| `value` | string | yes | — | TODO |
+| `lookup_name` | string | yes | `lookupName` | Name of the lookup. (authored) |
+| `parameter` | string | yes | — | TODO |
+| `prospect_list_type_id` | int32 | yes | `prospectListTypeId` | TODO |
+| `prospect_list_type_code` | string | yes | `prospectListTypeCode` | TODO |
+| `prospect_list_type_text` | string | yes | `prospectListTypeText` | TODO |
+| `public_status` | bool | yes | `publicStatus` | TODO |
+| `baseball_code` | string | yes | `baseballCode` | TODO |
+| `start_time_tbd` | string | yes | `startTimeTBD` | TODO |
+| `statistic_id` | int32 | yes | `statisticId` | TODO |
+| `statistic_text` | string | yes | `statisticText` | TODO |
+| `statistic_desc` | string | yes | `statisticDesc` | TODO |
+| `category` | string | yes | — | TODO |
+| `is_statcast_status` | bool | yes | `isStatcastStatus` | TODO |
+| `is_standard_status` | bool | yes | `isStandardStatus` | TODO |
+| `stat_abbr` | string | yes | `statAbbr` | TODO |
+| `stat_enum_name` | string | yes | `statEnum.name` | TODO |
+| `stat_enum_lookup_param` | string | yes | `statEnum.lookupParam` | TODO |
+| `stat_enum_is_counting` | bool | yes | `statEnum.isCounting` | TODO |
+| `stat_enum_stat_groups` | string | yes | `statEnum.statGroups` | TODO |
+| `stat_enum_org_types` | string | yes | `statEnum.orgTypes` | TODO |
+| `stat_enum_high_low_types` | string | yes | `statEnum.highLowTypes` | TODO |
+| `stat_enum_streak_levels` | string | yes | `statEnum.streakLevels` | TODO |
+| `stat_enum_label` | string | yes | `statEnum.label` | TODO |
+| `lookup_param` | string | yes | `lookupParam` | TODO |
+| `is_counting` | bool | yes | `isCounting` | TODO |
+| `label` | string | yes | — | TODO |
+| `stat_groups` | string | yes | `statGroups` | TODO |
+| `org_types` | string | yes | `orgTypes` | TODO |
+| `high_low_types` | string | yes | `highLowTypes` | TODO |
+| `streak_levels` | string | yes | `streakLevels` | TODO |
+| `full_name` | string | yes | `fullName` | Name of the full. (authored) |
+| `type` | string | yes | — | TODO |
+| `formal_name` | string | yes | `formalName` | Name of the formal. (authored) |
+| `outfield` | bool | yes | — | TODO |
+| `pitcher` | bool | yes | — | TODO |
+| `game_position` | bool | yes | `gamePosition` | TODO |
+| `fielder` | bool | yes | — | TODO |
+| `valid_compare_over` | bool | yes | `validCompareOver` | TODO |
+| `binapi_name` | string | yes | `binapiName` | TODO |
+| `name_short` | string | yes | `nameShort` | TODO |
+| `season_state` | string | yes | `seasonState` | TODO |
+| `has_wild_card` | bool | yes | `hasWildCard` | TODO |
+| `has_split_season` | bool | yes | `hasSplitSeason` | TODO |
+| `num_games` | int32 | yes | `numGames` | TODO |
+| `has_playoff_points` | bool | yes | `hasPlayoffPoints` | TODO |
+| `num_teams` | int32 | yes | `numTeams` | TODO |
+| `season_date_info_season_id` | string | yes | `seasonDateInfo.seasonId` | MLBAM identifier of the season date info season. (authored) |
+| `season_date_info_pre_season_start_date` | date32[day] | yes | `seasonDateInfo.preSeasonStartDate` | TODO |
+| `season_date_info_pre_season_end_date` | date32[day] | yes | `seasonDateInfo.preSeasonEndDate` | TODO |
+| `season_date_info_season_start_date` | date32[day] | yes | `seasonDateInfo.seasonStartDate` | TODO |
+| `season_date_info_regular_season_start_date` | date32[day] | yes | `seasonDateInfo.regularSeasonStartDate` | TODO |
+| `season_date_info_last_date1st_half` | date32[day] | yes | `seasonDateInfo.lastDate1stHalf` | TODO |
+| `season_date_info_all_star_date` | date32[day] | yes | `seasonDateInfo.allStarDate` | TODO |
+| `season_date_info_first_date2nd_half` | date32[day] | yes | `seasonDateInfo.firstDate2ndHalf` | TODO |
+| `season_date_info_regular_season_end_date` | date32[day] | yes | `seasonDateInfo.regularSeasonEndDate` | TODO |
+| `season_date_info_post_season_start_date` | date32[day] | yes | `seasonDateInfo.postSeasonStartDate` | TODO |
+| `season_date_info_post_season_end_date` | date32[day] | yes | `seasonDateInfo.postSeasonEndDate` | TODO |
+| `season_date_info_season_end_date` | date32[day] | yes | `seasonDateInfo.seasonEndDate` | TODO |
+| `season_date_info_offseason_start_date` | date32[day] | yes | `seasonDateInfo.offseasonStartDate` | TODO |
+| `season_date_info_off_season_end_date` | date32[day] | yes | `seasonDateInfo.offSeasonEndDate` | TODO |
+| `season_date_info_season_level_gameday_type` | string | yes | `seasonDateInfo.seasonLevelGamedayType` | TODO |
+| `season_date_info_game_level_gameday_type` | string | yes | `seasonDateInfo.gameLevelGamedayType` | TODO |
+| `season_date_info_qualifier_plate_appearances` | double | yes | `seasonDateInfo.qualifierPlateAppearances` | TODO |
+| `season_date_info_qualifier_outs_pitched` | double | yes | `seasonDateInfo.qualifierOutsPitched` | TODO |
+| `org_code` | string | yes | `orgCode` | Code of the org. (authored) |
+| `conferences_in_use` | bool | yes | `conferencesInUse` | TODO |
+| `divisions_in_use` | bool | yes | `divisionsInUse` | TODO |
+| `num_wildcard_teams` | int32 | yes | `numWildcardTeams` | TODO |
+| `season_date_info_spring_start_date` | date32[day] | yes | `seasonDateInfo.springStartDate` | TODO |
+| `season_date_info_spring_end_date` | date32[day] | yes | `seasonDateInfo.springEndDate` | TODO |
+| `navigation_menu` | string | yes | `navigationMenu` | TODO |
+| `team` | bool | yes | — | TODO |
+| `batting` | bool | yes | — | TODO |
+| `fielding` | bool | yes | — | TODO |
+| `pitching` | bool | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_lookup_values_all -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_media_state -->
+### Dataset: ref_media_state
+
+Media states.
+
+- **View:** `mlb_ref_media_state`
+- **Processed path:** `processed/mlb_api/ref_media_state/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `media_state_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `media_state_id` | int32 | yes | `mediaStateId` | TODO |
+| `media_state_code` | string | yes | `mediaStateCode` | TODO |
+| `media_state_text` | string | yes | `mediaStateText` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_media_state -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_milestone_durations -->
+### Dataset: ref_milestone_durations
+
+Milestone durations.
+
+- **View:** `mlb_ref_milestone_durations`
+- **Processed path:** `processed/mlb_api/ref_milestone_durations/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `milestone_duration_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `milestone_duration_id` | int32 | yes | `milestoneDurationId` | TODO |
+| `milestone_duration_code` | string | yes | `milestoneDurationCode` | TODO |
+| `milestone_duration_text` | string | yes | `milestoneDurationText` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_milestone_durations -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_milestone_lookups -->
+### Dataset: ref_milestone_lookups
+
+All milestone lookup lists in one answer (key = list name, index = position).
+
+- **View:** `mlb_ref_milestone_lookups`
+- **Processed path:** `processed/mlb_api/ref_milestone_lookups/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `key`, `index`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `key` | string | yes | — | TODO |
+| `index` | int32 | yes | — | TODO |
+| `achievement_type_id` | int32 | yes | `achievementTypeId` | TODO |
+| `achievement_type_code` | string | yes | `achievementTypeCode` | TODO |
+| `achievement_type_desc` | string | yes | `achievementTypeDesc` | TODO |
+| `achievement_type_text` | string | yes | `achievementTypeText` | TODO |
+| `milestone_type_id` | int32 | yes | `milestoneTypeId` | TODO |
+| `milestone_type_code` | string | yes | `milestoneTypeCode` | TODO |
+| `milestone_type_text` | string | yes | `milestoneTypeText` | TODO |
+| `statistic_id` | int32 | yes | `statisticId` | TODO |
+| `statistic_text` | string | yes | `statisticText` | TODO |
+| `statistic_desc` | string | yes | `statisticDesc` | TODO |
+| `category` | string | yes | — | TODO |
+| `is_statcast_status` | bool | yes | `isStatcastStatus` | TODO |
+| `is_standard_status` | bool | yes | `isStandardStatus` | TODO |
+| `stat_abbr` | string | yes | `statAbbr` | TODO |
+| `stat_enum_name` | string | yes | `statEnum.name` | TODO |
+| `stat_enum_lookup_param` | string | yes | `statEnum.lookupParam` | TODO |
+| `stat_enum_is_counting` | bool | yes | `statEnum.isCounting` | TODO |
+| `stat_enum_stat_groups` | string | yes | `statEnum.statGroups` | TODO |
+| `stat_enum_org_types` | string | yes | `statEnum.orgTypes` | TODO |
+| `stat_enum_high_low_types` | string | yes | `statEnum.highLowTypes` | TODO |
+| `stat_enum_streak_levels` | string | yes | `statEnum.streakLevels` | TODO |
+| `stat_enum_label` | string | yes | `statEnum.label` | TODO |
+| `milestone_duration_id` | int32 | yes | `milestoneDurationId` | TODO |
+| `milestone_duration_code` | string | yes | `milestoneDurationCode` | TODO |
+| `milestone_duration_text` | string | yes | `milestoneDurationText` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_milestone_lookups -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_milestone_statistics -->
+### Dataset: ref_milestone_statistics
+
+Milestone statistics.
+
+- **View:** `mlb_ref_milestone_statistics`
+- **Processed path:** `processed/mlb_api/ref_milestone_statistics/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `statistic_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `statistic_id` | int32 | yes | `statisticId` | TODO |
+| `statistic_text` | string | yes | `statisticText` | TODO |
+| `statistic_desc` | string | yes | `statisticDesc` | TODO |
+| `category` | string | yes | — | TODO |
+| `is_statcast_status` | bool | yes | `isStatcastStatus` | TODO |
+| `is_standard_status` | bool | yes | `isStandardStatus` | TODO |
+| `stat_abbr` | string | yes | `statAbbr` | TODO |
+| `stat_enum_name` | string | yes | `statEnum.name` | TODO |
+| `stat_enum_lookup_param` | string | yes | `statEnum.lookupParam` | TODO |
+| `stat_enum_is_counting` | bool | yes | `statEnum.isCounting` | TODO |
+| `stat_enum_stat_groups` | string | yes | `statEnum.statGroups` | TODO |
+| `stat_enum_org_types` | string | yes | `statEnum.orgTypes` | TODO |
+| `stat_enum_high_low_types` | string | yes | `statEnum.highLowTypes` | TODO |
+| `stat_enum_streak_levels` | string | yes | `statEnum.streakLevels` | TODO |
+| `stat_enum_label` | string | yes | `statEnum.label` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_milestone_statistics -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_milestone_types -->
+### Dataset: ref_milestone_types
+
+Milestone types.
+
+- **View:** `mlb_ref_milestone_types`
+- **Processed path:** `processed/mlb_api/ref_milestone_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `milestone_type_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `milestone_type_id` | int32 | yes | `milestoneTypeId` | TODO |
+| `milestone_type_code` | string | yes | `milestoneTypeCode` | TODO |
+| `milestone_type_text` | string | yes | `milestoneTypeText` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_milestone_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_mound_visit_types -->
+### Dataset: ref_mound_visit_types
+
+Mound visit types.
+
+- **View:** `mlb_ref_mound_visit_types`
+- **Processed path:** `processed/mlb_api/ref_mound_visit_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_mound_visit_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_performer_types -->
+### Dataset: ref_performer_types
+
+Performer types.
+
+- **View:** `mlb_ref_performer_types`
+- **Processed path:** `processed/mlb_api/ref_performer_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `name`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `name` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_performer_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_pitch_codes -->
+### Dataset: ref_pitch_codes
+
+Pitch result codes with swing/strike/ball flags.
+
+- **View:** `mlb_ref_pitch_codes`
+- **Processed path:** `processed/mlb_api/ref_pitch_codes/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `swing_status` | bool | yes | `swingStatus` | TODO |
+| `swing_miss_status` | bool | yes | `swingMissStatus` | TODO |
+| `swing_contact_status` | bool | yes | `swingContactStatus` | TODO |
+| `sort_order` | int32 | yes | `sortOrder` | TODO |
+| `strike_status` | bool | yes | `strikeStatus` | TODO |
+| `ball_status` | bool | yes | `ballStatus` | TODO |
+| `pitch_status` | bool | yes | `pitchStatus` | TODO |
+| `pitch_result_text` | string | yes | `pitchResultText` | TODO |
+| `bunt_attempt_status` | bool | yes | `buntAttemptStatus` | TODO |
+| `contact_status` | bool | yes | `contactStatus` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_pitch_codes -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_player_status_codes -->
+### Dataset: ref_player_status_codes
+
+Player status codes.
+
+- **View:** `mlb_ref_player_status_codes`
+- **Processed path:** `processed/mlb_api/ref_player_status_codes/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_player_status_codes -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_roof_types -->
+### Dataset: ref_roof_types
+
+Roof types.
+
+- **View:** `mlb_ref_roof_types`
+- **Processed path:** `processed/mlb_api/ref_roof_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `value`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `value` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_roof_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_rule_settings -->
+### Dataset: ref_rule_settings
+
+Rule settings.
+
+- **View:** `mlb_ref_rule_settings`
+- **Processed path:** `processed/mlb_api/ref_rule_settings/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `setting_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `setting_id` | int32 | yes | `settingId` | TODO |
+| `setting_name` | string | yes | `settingName` | TODO |
+| `setting_display_name` | string | yes | `settingDisplayName` | TODO |
+| `setting_description` | string | yes | `settingDescription` | TODO |
+| `value_type` | string | yes | `valueType` | TODO |
+| `setting_options` | string | yes | `settingOptions` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_rule_settings -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_runner_detail_types -->
+### Dataset: ref_runner_detail_types
+
+Runner detail types (stat names).
+
+- **View:** `mlb_ref_runner_detail_types`
+- **Processed path:** `processed/mlb_api/ref_runner_detail_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `stat_name`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `stat_name` | string | yes | `statName` | Name of the stat. (authored) |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_runner_detail_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_sky -->
+### Dataset: ref_sky
+
+Sky condition codes.
+
+- **View:** `mlb_ref_sky`
+- **Processed path:** `processed/mlb_api/ref_sky/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_sky -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_sort_modifiers -->
+### Dataset: ref_sort_modifiers
+
+Sort modifiers.
+
+- **View:** `mlb_ref_sort_modifiers`
+- **Processed path:** `processed/mlb_api/ref_sort_modifiers/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_sort_modifiers -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_stat_fields -->
+### Dataset: ref_stat_fields
+
+Stat field names.
+
+- **View:** `mlb_ref_stat_fields`
+- **Processed path:** `processed/mlb_api/ref_stat_fields/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `name`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `name` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_stat_fields -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_statcast_position_types -->
+### Dataset: ref_statcast_position_types
+
+Statcast position types.
+
+- **View:** `mlb_ref_statcast_position_types`
+- **Processed path:** `processed/mlb_api/ref_statcast_position_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `position_id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `position_id` | int32 | yes | `positionId` | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_statcast_position_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_stats_search_config -->
+### Dataset: ref_stats_search_config
+
+Stat search configuration lists in one answer (key = list name, index = position).
+
+- **View:** `mlb_ref_stats_search_config`
+- **Processed path:** `processed/mlb_api/ref_stats_search_config/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `key`, `index`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `key` | string | yes | — | TODO |
+| `index` | int32 | yes | — | TODO |
+| `code` | string | yes | — | TODO |
+| `filter_level` | string | yes | `filterLevel` | TODO |
+| `hitting` | bool | yes | — | TODO |
+| `pitching` | bool | yes | — | TODO |
+| `fielding` | bool | yes | — | TODO |
+| `catching` | bool | yes | — | TODO |
+| `running` | bool | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `sit_code` | string | yes | `sitCode` | TODO |
+| `navigation_menu` | string | yes | `navigationMenu` | TODO |
+| `category` | string | yes | — | TODO |
+| `abbreviation` | string | yes | — | TODO |
+| `sort_stat` | string | yes | `sortStat` | TODO |
+| `stat_fields_standard` | bool | yes | `statFields.standard` | TODO |
+| `stat_fields_advanced` | bool | yes | `statFields.advanced` | TODO |
+| `stat_fields_tracking` | bool | yes | `statFields.tracking` | TODO |
+| `stat_fields_expected` | bool | yes | `statFields.expected` | TODO |
+| `stat_group` | string | yes | `statGroup` | TODO |
+| `filter_levels_pitch` | bool | yes | `filterLevels.pitch` | TODO |
+| `filter_levels_at_bat` | bool | yes | `filterLevels.atBat` | TODO |
+| `filter_levels_inning` | bool | yes | `filterLevels.inning` | TODO |
+| `filter_levels_game` | bool | yes | `filterLevels.game` | TODO |
+| `filter_levels_season` | bool | yes | `filterLevels.season` | TODO |
+| `filter_levels_career` | bool | yes | `filterLevels.career` | TODO |
+| `is_counting` | bool | yes | `isCounting` | TODO |
+| `is_instance_stat` | bool | yes | `isInstanceStat` | TODO |
+| `sort_order` | string | yes | `sortOrder` | TODO |
+| `decimals` | int32 | yes | — | TODO |
+| `units` | string | yes | — | TODO |
+| `aggregation` | string | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `scope` | int32 | yes | — | TODO |
+| `person_stat_group` | string | yes | `personStatGroup` | TODO |
+| `primary_filter_level` | string | yes | `primaryFilterLevel` | TODO |
+| `secondary_filter_level` | string | yes | `secondaryFilterLevel` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_stats_search_config -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_stats_search_group_by_types -->
+### Dataset: ref_stats_search_group_by_types
+
+Stat search group-by types.
+
+- **View:** `mlb_ref_stats_search_group_by_types`
+- **Processed path:** `processed/mlb_api/ref_stats_search_group_by_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `name`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `name` | string | yes | — | TODO |
+| `valid_compare_over` | bool | yes | `validCompareOver` | TODO |
+| `binapi_name` | string | yes | `binapiName` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_stats_search_group_by_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_stats_search_params -->
+### Dataset: ref_stats_search_params
+
+Stat search parameters.
+
+- **View:** `mlb_ref_stats_search_params`
+- **Processed path:** `processed/mlb_api/ref_stats_search_params/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `filter_level` | string | yes | `filterLevel` | TODO |
+| `hitting` | bool | yes | — | TODO |
+| `pitching` | bool | yes | — | TODO |
+| `fielding` | bool | yes | — | TODO |
+| `catching` | bool | yes | — | TODO |
+| `running` | bool | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_stats_search_params -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_stats_search_stats -->
+### Dataset: ref_stats_search_stats
+
+Stat search stat catalog (description, group, sort stat, flags).
+
+- **View:** `mlb_ref_stats_search_stats`
+- **Processed path:** `processed/mlb_api/ref_stats_search_stats/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `description`, `stat_group`, `sort_stat`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `description` | string | yes | — | TODO |
+| `abbreviation` | string | yes | — | TODO |
+| `sort_stat` | string | yes | `sortStat` | TODO |
+| `stat_fields_standard` | bool | yes | `statFields.standard` | TODO |
+| `stat_fields_advanced` | bool | yes | `statFields.advanced` | TODO |
+| `stat_fields_tracking` | bool | yes | `statFields.tracking` | TODO |
+| `stat_fields_expected` | bool | yes | `statFields.expected` | TODO |
+| `stat_group` | string | yes | `statGroup` | TODO |
+| `filter_levels_pitch` | bool | yes | `filterLevels.pitch` | TODO |
+| `filter_levels_at_bat` | bool | yes | `filterLevels.atBat` | TODO |
+| `filter_levels_inning` | bool | yes | `filterLevels.inning` | TODO |
+| `filter_levels_game` | bool | yes | `filterLevels.game` | TODO |
+| `filter_levels_season` | bool | yes | `filterLevels.season` | TODO |
+| `filter_levels_career` | bool | yes | `filterLevels.career` | TODO |
+| `is_counting` | bool | yes | `isCounting` | TODO |
+| `is_instance_stat` | bool | yes | `isInstanceStat` | TODO |
+| `sort_order` | string | yes | `sortOrder` | TODO |
+| `decimals` | int32 | yes | — | TODO |
+| `units` | string | yes | — | TODO |
+| `aggregation` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_stats_search_stats -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_streaks_types -->
+### Dataset: ref_streaks_types
+
+Streak lookup lists in one answer (key = list name, index = position).
+
+- **View:** `mlb_ref_streaks_types`
+- **Processed path:** `processed/mlb_api/ref_streaks_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `key`, `index`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `key` | string | yes | — | TODO |
+| `index` | int32 | yes | — | TODO |
+| `value` | string | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `lookup_param` | string | yes | `lookupParam` | TODO |
+| `is_counting` | bool | yes | `isCounting` | TODO |
+| `label` | string | yes | — | TODO |
+| `stat_groups` | string | yes | `statGroups` | TODO |
+| `org_types` | string | yes | `orgTypes` | TODO |
+| `high_low_types` | string | yes | `highLowTypes` | TODO |
+| `streak_levels` | string | yes | `streakLevels` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_streaks_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_tracking_software_versions -->
+### Dataset: ref_tracking_software_versions
+
+Tracking software component versions.
+
+- **View:** `mlb_ref_tracking_software_versions`
+- **Processed path:** `processed/mlb_api/ref_tracking_software_versions/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `tracking_software_component_id`, `tracking_software_component_version_text`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `tracking_software_component_id` | int32 | yes | `trackingSoftwareComponentId` | TODO |
+| `tracking_software_component_text` | string | yes | `trackingSoftwareComponentText` | TODO |
+| `tracking_software_component_desc` | string | yes | `trackingSoftwareComponentDesc` | TODO |
+| `tracking_software_component_code` | string | yes | `trackingSoftwareComponentCode` | TODO |
+| `tracking_vendor_id` | int32 | yes | `trackingVendorId` | TODO |
+| `tracking_version_software_note_id` | int32 | yes | `trackingVersionSoftwareNoteId` | TODO |
+| `tracking_software_component_version_text` | string | yes | `trackingSoftwareComponentVersionText` | TODO |
+| `tracking_version_software_note` | string | yes | `trackingVersionSoftwareNote` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_tracking_software_versions -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_tracking_system_owners -->
+### Dataset: ref_tracking_system_owners
+
+Tracking system owners.
+
+- **View:** `mlb_ref_tracking_system_owners`
+- **Processed path:** `processed/mlb_api/ref_tracking_system_owners/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — | TODO |
+| `name` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_tracking_system_owners -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_tracking_vendors -->
+### Dataset: ref_tracking_vendors
+
+Tracking vendors.
+
+- **View:** `mlb_ref_tracking_vendors`
+- **Processed path:** `processed/mlb_api/ref_tracking_vendors/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_tracking_vendors -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_tracking_versions -->
+### Dataset: ref_tracking_versions
+
+Tracking system versions.
+
+- **View:** `mlb_ref_tracking_versions`
+- **Processed path:** `processed/mlb_api/ref_tracking_versions/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `id`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `id` | int32 | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `pitch_vendor_id` | int32 | yes | `pitchVendor.id` | TODO |
+| `pitch_vendor_description` | string | yes | `pitchVendor.description` | TODO |
+| `pitch_vendor_version` | string | yes | `pitchVendor.version` | TODO |
+| `hit_vendor_id` | int32 | yes | `hitVendor.id` | TODO |
+| `hit_vendor_description` | string | yes | `hitVendor.description` | TODO |
+| `hit_vendor_version` | string | yes | `hitVendor.version` | TODO |
+| `player_vendor_id` | int32 | yes | `playerVendor.id` | TODO |
+| `player_vendor_description` | string | yes | `playerVendor.description` | TODO |
+| `player_vendor_version` | string | yes | `playerVendor.version` | TODO |
+| `skeletal_vendor_id` | int32 | yes | `skeletalVendor.id` | TODO |
+| `skeletal_vendor_description` | string | yes | `skeletalVendor.description` | TODO |
+| `skeletal_vendor_version` | string | yes | `skeletalVendor.version` | TODO |
+| `bat_vendor_id` | int32 | yes | `batVendor.id` | TODO |
+| `bat_vendor_description` | string | yes | `batVendor.description` | TODO |
+| `bat_vendor_version` | string | yes | `batVendor.version` | TODO |
+| `biomechanics_vendor_id` | int32 | yes | `biomechanicsVendor.id` | TODO |
+| `biomechanics_vendor_description` | string | yes | `biomechanicsVendor.description` | TODO |
+| `biomechanics_vendor_version` | string | yes | `biomechanicsVendor.version` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_tracking_versions -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_transaction_types -->
+### Dataset: ref_transaction_types
+
+Transaction types.
+
+- **View:** `mlb_ref_transaction_types`
+- **Processed path:** `processed/mlb_api/ref_transaction_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_transaction_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_video_resolution_types -->
+### Dataset: ref_video_resolution_types
+
+Video resolution types.
+
+- **View:** `mlb_ref_video_resolution_types`
+- **Processed path:** `processed/mlb_api/ref_video_resolution_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `code` | string | yes | — | TODO |
+| `resolution_short` | string | yes | `resolutionShort` | TODO |
+| `resolution_full` | string | yes | `resolutionFull` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_video_resolution_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_violation_types -->
+### Dataset: ref_violation_types
+
+Violation types.
+
+- **View:** `mlb_ref_violation_types`
+- **Processed path:** `processed/mlb_api/ref_violation_types/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `violation_type_code`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `violation_type_desc` | string | yes | — | TODO |
+| `violation_type_desc_2` | string | yes | `violationTypeDesc` | TODO |
+| `violation_type_code` | string | yes | `violationTypeCode` | TODO |
+| `event_type` | string | yes | `eventType` | TODO |
+| `event_type_code` | string | yes | `eventTypeCode` | TODO |
+| `parent_id` | int32 | yes | `parentId` | TODO |
+| `violator_code` | string | yes | `violatorCode` | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_violation_types -->
+
+<!-- BEGIN GENERATED:mlb_api.ref_weather_trajectory_confidences -->
+### Dataset: ref_weather_trajectory_confidences
+
+Weather trajectory confidence values.
+
+- **View:** `mlb_ref_weather_trajectory_confidences`
+- **Processed path:** `processed/mlb_api/ref_weather_trajectory_confidences/part-<chunk>.parquet`
+- **Partitioning:** none (flat)
+- **Key:** `value`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `value` | string | yes | — | TODO |
+| `description` | string | yes | — | TODO |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.ref_weather_trajectory_confidences -->

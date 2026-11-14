@@ -351,3 +351,17 @@ def test_an_unparseable_raw_timestamp_is_not_clean_when_the_key_repeats(
         check = roundtrip_dataset(config, spec)
         assert check.status == "loss", (index, check.losses)
         assert [x.column for x in check.losses] == ["at"]
+
+
+def test_a_key_with_spaces_after_it_is_found_when_the_loader_kept_the_spaces(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The provider sends a key text with trailing spaces and the loader keeps them (MLB tracking versions)."""
+    spec = _spec(monkeypatch, [("code", "string"), ("v", "int32")], keys=("code",))
+    raw = b"code,v\nA   ,1\nB,2\n"
+    table = pa.Table.from_pylist(
+        [{"code": "A   ", "v": 1, "_extras": None}, {"code": "B", "v": 2, "_extras": None}],
+        schema=spec.schema,
+    )
+    check = roundtrip_dataset(_lake(tmp_path, spec, raw, table), spec)
+    assert not [loss for loss in check.losses if loss.kind == "row_missing"], check

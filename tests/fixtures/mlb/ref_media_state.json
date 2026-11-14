@@ -1,0 +1,17 @@
+[
+ {
+  "mediaStateId": 3,
+  "mediaStateCode": "MEDIA_ARCHIVE",
+  "mediaStateText": "Media Archive"
+ },
+ {
+  "mediaStateId": 1,
+  "mediaStateCode": "MEDIA_OFF",
+  "mediaStateText": "Media Off"
+ },
+ {
+  "mediaStateId": 2,
+  "mediaStateCode": "MEDIA_ON",
+  "mediaStateText": "Media On"
+ }
+]
