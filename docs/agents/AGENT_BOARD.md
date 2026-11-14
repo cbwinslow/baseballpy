@@ -18,6 +18,15 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Active Checkouts (Locked — Do Not Disturb)
 
+- **Task:** B-451
+  - **Agent:** claude
+  - **Claimed At:** 2026-11-14 18:42 UTC
+  - **Locked Areas:**
+    - `src/baseballpy/sources/mlb_api/endpoints.py`
+    - `src/baseballpy/sources/mlb_api/mlb_tables.py`
+    - `tests/fixtures/mlb`
+  - **Status:** lookup catalogs
+
 ---
 
 ## Recent Completed Handoffs
