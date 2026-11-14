@@ -281,6 +281,41 @@ _SCOPE_REQUESTS: dict[
 }
 
 
+def request_extra(endpoint: MlbEndpoint, ident: str) -> dict[str, str]:
+    """The ``Request.extra`` columns of a request, read back from its chunk id (as text).
+
+    The inverse of the fan-out builders above, so a stored raw answer can be flattened exactly as the
+    ingest did without knowing the request (the round-trip check). ``ValueError`` for an id the builders
+    cannot have made.
+    """
+    if endpoint.scope not in _SCOPE_REQUESTS:
+        return {}  # flat, since and query requests add no column
+    prefix = f"{endpoint.name}_"
+    if not ident.startswith(prefix):
+        raise ValueError(f"{ident!r} is not a request id of {endpoint.name}")
+    tail = ident[len(prefix) :]
+    if endpoint.scope == "game":
+        return {"game_pk": tail}
+    parts = tail.split("_", 1)
+    rest = parts[1] if len(parts) > 1 else ""
+    if endpoint.scope == "season":
+        if "{sport_id}" not in _all(endpoint):
+            return {}
+        if not rest.startswith("sport"):
+            raise ValueError(f"{ident!r}: a per-sport request id ends in _sport<id>")
+        return {"sport_id": rest.removeprefix("sport")}
+    if endpoint.scope == "team_season":
+        return {"team_id": rest}
+    if endpoint.scope == "award_season":
+        return {"request_award_id": rest}  # an award id may hold an underscore
+    if endpoint.scope == "person_season":
+        person, *combo = rest.split("_")
+        if len(combo) != len(endpoint.fan_out):
+            raise ValueError(f"{ident!r}: expected {len(endpoint.fan_out)} fan-out value(s)")
+        return {"person_id": person, **dict(zip(endpoint.fan_out, combo, strict=True))}
+    return {}  # teams_season: the team list is a parameter, not a column
+
+
 def requests_for(endpoint: MlbEndpoint, ctx: Context) -> Iterator[Request]:
     """The requests an endpoint needs for ``ctx`` (a fan-out per scope)."""
     if endpoint.scope == "flat":

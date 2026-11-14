@@ -8,7 +8,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | Spec | Requirements | Scenarios | Tests cited |
 |---|---|---|---|
 | `agent-runbooks` | 7 | 10 | 17 |
-| `audit-and-benchmarking` | 8 | 12 | 32 |
+| `audit-and-benchmarking` | 9 | 13 | 37 |
 | `bref-ingestion` | 3 | 3 | 10 |
 | `caching-and-invalidation` | 23 | 37 | 55 |
 | `catalog-audit` | 4 | 4 | 4 |
@@ -55,7 +55,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
 | `download-throughput` | 8 | 1 | 2.4 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 13 | 4 | 2.1, 4.1, 5.1, 5.2 |
+| `finish-mlb-history` | 14 | 3 | 2.1, 4.1, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 5 | 1 | 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
@@ -194,6 +194,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 126: Review Round 3: What Was Fixed, What Was Rejected, And Who Wrote It
 - ADR 127: Review Round 5: The Per-Season Lock Needed Four Follow-Ups
 - ADR 128: A Typed Column That Exists But Is Empty Is Filled From `_extras`; The Hydrate Route Keeps The Stats Block
+- ADR 129: A Cell-By-Cell Round-Trip Check For The MLB JSON Data
 
 ## Documentation pages (`docs/`)
 

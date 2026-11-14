@@ -7,14 +7,19 @@ cell with the stored value:
 * when they do not (a key that repeats, as in Lahman's award tables), all raw files of the season are compared with
   the processed rows column by column as multisets of values;
 * text exactly; an integer by its text (so ``01405134`` stored as ``1405134`` is caught); a float by value as a
-  64-bit float (so ``85.8`` stored as a 32-bit float is caught); a date by its declared format;
+  64-bit float (so ``85.8`` stored as a 32-bit float is caught); a date by its declared format; a timestamp by the
+  instant its text names;
 * a non-empty raw cell stored as NULL is ``lost_to_null`` (the quarantine rows of the dataset are reported beside it);
 * a raw row with no processed row is ``row_missing``;
 * a raw column that no schema column reads is ``unmapped_raw_column`` unless ``_extras`` holds it.
 
-It is offline and read-only. A source whose raw files are not CSV (JSON answers, event files, zip members) is
-``skipped`` with the reason, never reported as clean. :func:`register_raw_reader` lets a source supply its own raw
-tables (Retrosheet's zip members, Statcast's embedded-JSON pages).
+It is offline and read-only. A dataset with nothing to compare (no raw files, no reader for its raw format, an
+empty sample) is ``skipped`` with the reason, never reported as clean. A dataset where an error stopped the check
+(an unreadable raw file, a torn body) is ``error``, never ``skipped``: the command exits non-zero for it, as for a
+loss. :func:`register_raw_reader` lets a source supply its own raw tables (Retrosheet's zip members, Statcast's
+embedded-JSON pages, the MLB API's JSON answers flattened by the ingest's own code, see
+:mod:`baseballpy.core.roundtrip_json`); a reader can also return :class:`RawNote` items, which land in the
+verdict's ``notes`` (what it could not check).
 """
 
 import gzip
@@ -22,7 +27,7 @@ import re
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TypeAlias
+from typing import TypeAlias, TypeVar
 
 import pyarrow as pa
 import pyarrow.compute as pc
@@ -42,6 +47,10 @@ _SKIP = (EXTRAS, LINEAGE_COLUMN)
 Column: TypeAlias = pa.ChunkedArray | pa.Array
 
 
+class RoundtripRefusedError(ValueError):
+    """The check refused to run on purpose (a size limit): a ``skipped`` verdict with this message, not an error."""
+
+
 @dataclass(frozen=True)
 class Loss:
     """One kind of difference in one column, with how many cells and one example."""
@@ -58,6 +67,7 @@ class DatasetCheck:
 
     source: str
     dataset: str
+    #: ``ok``, ``loss``, ``skipped`` (nothing to compare) or ``error`` (an error stopped the check)
     status: str = "ok"
     reason: str = ""
     raw_rows: int = 0
@@ -80,6 +90,13 @@ class RawSample:
     stem: str = ""
 
 
+@dataclass(frozen=True)
+class RawNote:
+    """Something a raw reader could not check (a listed answer that is missing); it goes to ``DatasetCheck.notes``."""
+
+    text: str
+
+
 @dataclass
 class _Entry:
     count: int = 0
@@ -97,7 +114,9 @@ def _add(losses: _Losses, kind: str, column: str, count: int, example: str) -> N
 
 #: ``reader(config, spec, sample_files, season)``: the sampled raw files (``season=None``: spread over the seasons),
 #: or every raw file of one season
-RawReader = Callable[[LakeConfig, DatasetSpec, int, int | None, bool], Iterable[RawSample]]
+RawReader = Callable[
+    [LakeConfig, DatasetSpec, int, int | None, bool], Iterable[RawSample | RawNote]
+]
 _READERS: dict[str, RawReader] = {}
 #: ``(source, dataset)`` -> ``counter(config, season)``: rows the season must hold, counted from raw files that are not CSV
 CountCheck = Callable[[LakeConfig, int], int]
@@ -126,13 +145,27 @@ def _files(folder: Path, suffixes: Sequence[str]) -> list[Path]:
     )
 
 
-def _spread(items: list[Path], count: int) -> list[Path]:
-    """``count`` files spread evenly over the sorted list (first, middle, last, ...)."""
+_T = TypeVar("_T")
+
+
+def spread(items: list[_T], count: int) -> list[_T]:
+    """``count`` items spread evenly over the sorted list (first, middle, last, ...)."""
     if count >= len(items):
         return items
     if count <= 1:
         return items[:1]
     return [items[round(i * (len(items) - 1) / (count - 1))] for i in range(count)]
+
+
+def raw_files(
+    config: LakeConfig, spec: DatasetSpec, suffixes: Sequence[str], season: int | None = None
+) -> list[tuple[int | None, Path]]:
+    """The raw files of a dataset ending in ``suffixes``, with their season (all seasons when ``season`` is None)."""
+    out: list[tuple[int | None, Path]] = []
+    for folder_season, folder in _season_dirs(config, spec):
+        if season is None or folder_season == season:
+            out += [(folder_season, p) for p in _files(folder, suffixes)]
+    return out
 
 
 def _season_dirs(config: LakeConfig, spec: DatasetSpec) -> list[tuple[int | None, Path]]:
@@ -163,12 +196,9 @@ def csv_samples(
 
     ``decode`` turns the bytes of a file (after gunzip) into CSV bytes (a page with an embedded JSON array).
     """
-    candidates: list[tuple[int | None, Path]] = []
-    for folder_season, folder in _season_dirs(config, spec):
-        if season is None or folder_season == season:
-            candidates += [(folder_season, p) for p in _files(folder, suffixes)]
+    candidates = raw_files(config, spec, suffixes, season)
     paths = [p for _, p in candidates]
-    chosen = paths if every else _spread(paths, sample_files)
+    chosen = paths if every else spread(paths, sample_files)
     by_path = {p: s for s, p in candidates}
     out: list[RawSample] = []
     for path in chosen:
@@ -353,6 +383,34 @@ def _date_mismatch(raw: Column, out: Column, both: Column, fmt: str) -> Column:
     return pc.and_(both, differ)
 
 
+_CAST_ERRORS = (pa.ArrowInvalid, pa.ArrowNotImplementedError, pa.ArrowTypeError)
+
+
+def _parse_timestamp(raw: Column, type_: pa.DataType) -> Column:
+    """Raw text (ISO 8601 with a zone) as the column's timestamp type; a cell that does not parse becomes NULL."""
+    text = pc.utf8_trim_whitespace(raw)
+    try:
+        return pc.cast(text, type_, safe=True)
+    except _CAST_ERRORS:
+        pass
+    out: list[object] = []
+    for value in text.to_pylist():
+        try:
+            out.append(None if value is None else pa.array([value]).cast(type_)[0].as_py())
+        except _CAST_ERRORS:
+            out.append(None)  # not a timestamp: it then shows as a changed cell
+    return pa.array(out, type_)
+
+
+def _timestamp_mismatch(raw: Column, out: Column, both: Column, type_: pa.DataType) -> Column:
+    """A timestamp by the instant its raw text names (so a cut fraction or a shifted zone shows)."""
+    parsed = _parse_timestamp(raw, type_)
+    # a chunk written in another unit or zone is compared as the schema's type
+    stored = pc.cast(out, type_)
+    differ = pc.fill_null(pc.or_(pc.is_null(parsed), pc.not_equal(parsed, stored)), False)
+    return pc.and_(both, differ)
+
+
 _TRUE = ["true", "t", "1", "y", "yes"]
 _FALSE = ["false", "f", "0", "n", "no"]
 
@@ -370,6 +428,20 @@ def _bool_text(raw: Column) -> Column:
 def _bool_mismatch(raw: Column, out: Column, both: Column) -> Column:
     differ = pc.fill_null(pc.not_equal(_bool_text(raw), pc.cast(out, pa.string())), False)
     return pc.and_(both, differ)
+
+
+def _take_rows(table: pa.Table, indices: Column) -> pa.Table:
+    """The rows at ``indices``, with text columns as ``large_string``.
+
+    A season of one dataset can hold more than 2 GiB of text in one column (the MLB boxscore's player JSON), more
+    than a ``string`` array can address: ``Table.take`` joins the chunks of a column and fails with an offset
+    overflow. ``large_string`` has 64-bit offsets, so the comparison below works on it as it is.
+    """
+    columns = [
+        (col.cast(pa.large_string()) if pa.types.is_string(col.type) else col).take(indices)
+        for col in table.columns
+    ]
+    return pa.table(columns, names=table.column_names)
 
 
 def _compare_aligned(
@@ -398,10 +470,12 @@ def _compare_aligned(
         both = pc.and_(pc.invert(raw_null), pc.invert(out_null))
         type_ = field_.type
         if pa.types.is_dictionary(type_):
-            out_col = pc.cast(out_col, pa.string())
+            out_col = pc.cast(out_col, pa.large_string())
             type_ = pa.string()
         if pa.types.is_string(type_) or pa.types.is_large_string(type_):
-            out_text = pc.cast(out_col, pa.string())
+            # the stored text keeps its own width (large_string after _take_rows): casting it down overflows
+            out_text = out_col if pa.types.is_large_string(out_col.type) else _text(out_col)
+            raw_col = pc.cast(raw_col, out_text.type)
             bad = pc.and_(both, pc.fill_null(pc.not_equal(raw_col, out_text), False))
             same_trimmed = pc.equal(
                 pc.utf8_trim_whitespace(raw_col), pc.utf8_trim_whitespace(out_text)
@@ -421,6 +495,8 @@ def _compare_aligned(
             bad = _date_mismatch(raw_col, out_col, both, fmt)
         elif pa.types.is_boolean(type_):
             bad = _bool_mismatch(raw_col, out_col, both)
+        elif pa.types.is_timestamp(type_):
+            bad = _timestamp_mismatch(raw_col, out_col, both, type_)
         else:
             not_compared.add(f"{field_.name} ({type_})")
             continue
@@ -454,6 +530,13 @@ def _canonical_pair(field_: pa.Field, raw: Column, out: Column) -> tuple[Column,
         return pc.utf8_trim_whitespace(raw), pc.strftime(out, format=_date_format(field_, raw))
     if pa.types.is_boolean(type_):
         return _bool_text(raw), pc.cast(out, pa.string())
+    if pa.types.is_timestamp(type_):
+        # as text of the instant; a raw text that is no timestamp stays as written, so it is counted and shown
+        # (as NULL it would be dropped from the count and could match a stored NULL)
+        instant = pc.cast(_parse_timestamp(raw, type_), pa.string())
+        return pc.coalesce(instant, pc.utf8_trim_whitespace(raw)), pc.cast(
+            pc.cast(out, type_), pa.string()
+        )
     return None
 
 
@@ -593,22 +676,23 @@ def roundtrip_dataset(
     reader = _READERS.get(spec.source)
 
     def read(season: int | None, every: bool = False) -> list[RawSample]:
-        if reader is not None:
-            return list(reader(config, spec, sample_files, season, every))
-        return csv_samples(config, spec, sample_files, season, every)
+        if reader is None:
+            return csv_samples(config, spec, sample_files, season, every)
+        out: list[RawSample] = []
+        for item in reader(config, spec, sample_files, season, every):
+            if isinstance(item, RawNote):
+                if item.text not in check.notes:
+                    check.notes.append(item.text)
+            else:
+                out.append(item)
+        return out
 
     samples = read(None, full)
     if not samples and (spec.source, spec.name) in _COUNTS:
         return _count_check(config, spec, check)
     if not samples:
-        folder = config.raw_dir(spec.source, spec.name)
-        has_raw = folder.is_dir() and any(folder.rglob("*"))
         check.status = "skipped"
-        check.reason = (
-            "the raw files are not CSV (json, text or zip): this source needs its own raw reader"
-            if has_raw
-            else "no raw files held for this dataset"
-        )
+        check.reason = _no_sample_reason(config, spec, has_reader=reader is not None)
         return check
     check.quarantined = _quarantine_rows(config, spec)
     losses: _Losses = {}
@@ -656,7 +740,7 @@ def roundtrip_dataset(
                         f"key {example[0]!r} is not in the processed data",
                     )
                 raw_used = raw.filter(pc.is_valid(index))
-                out_used = processed.take(pc.drop_null(index))
+                out_used = _take_rows(processed, pc.drop_null(index))
             elif len(mine) == 1 and part_count == 1 and processed.num_rows == raw.num_rows:
                 raw_used, out_used = raw, processed
                 by_position = True
@@ -685,6 +769,31 @@ def roundtrip_dataset(
                         f"key {example[0]!r} is in the processed data only",
                     )
     return _finish(check, losses, not_compared, by_position)
+
+
+def _no_sample_reason(config: LakeConfig, spec: DatasetSpec, *, has_reader: bool) -> str:
+    """Why nothing of a dataset could be compared, in the words a reader of the report needs."""
+    folder = config.raw_dir(spec.source, spec.name)
+    if folder.is_dir() and any(
+        p.is_file() and not p.name.startswith("_") for p in folder.rglob("*")
+    ):
+        if has_reader:
+            return "the raw files hold no rows for this dataset (every sampled answer was empty)"
+        return "the raw files are not CSV (json, text or zip): this source needs its own raw reader"
+    source_raw = config.raw_root / spec.source
+    if has_reader and source_raw.is_dir() and any(p.is_file() for p in source_raw.rglob("*")):
+        # a source can keep answers outside a folder of the dataset (MLB game answers share a response log)
+        return (
+            "the source's raw files give no rows for this dataset (its answers may be kept in a log shared "
+            "by several datasets, not in a folder of the dataset); nothing was compared, so this is not a "
+            "clean verdict"
+        )
+    processed = config.processed_dir(spec.source, spec.name)
+    if processed.is_dir() and any(processed.rglob("*.parquet")):
+        return "no raw files held for this dataset (processed rows exist without their raw files)"
+    return (
+        "no raw files held for this dataset: it was never downloaded (no raw and no processed data)"
+    )
 
 
 def _finish(
@@ -785,14 +894,21 @@ def _explain_with_quarantine(check: DatasetCheck) -> None:
 def roundtrip_lake(
     config: LakeConfig, specs: Iterable[DatasetSpec], *, sample_files: int = 3, full: bool = False
 ) -> list[DatasetCheck]:
-    """:func:`roundtrip_dataset` for every spec (a dataset that cannot be read is a ``skipped`` verdict)."""
+    """:func:`roundtrip_dataset` for every spec.
+
+    A dataset the user's own limit refused (:class:`RoundtripRefusedError`) is ``skipped`` with the reason; any
+    other error (an unreadable raw file, a torn body) stops that dataset's check and is an ``error`` verdict,
+    which makes the command exit non-zero: an error is never a pass.
+    """
     out: list[DatasetCheck] = []
     for spec in specs:
         try:
             out.append(roundtrip_dataset(config, spec, sample_files=sample_files, full=full))
+        except RoundtripRefusedError as exc:
+            out.append(DatasetCheck(spec.source, spec.name, "skipped", str(exc)))
         except (OSError, ValueError, MemoryError, pa.ArrowException) as exc:
-            reason = f"could not be compared: {type(exc).__name__}: {exc}"
-            out.append(DatasetCheck(spec.source, spec.name, "skipped", reason))
+            reason = f"the check stopped on an error: {type(exc).__name__}: {exc}"
+            out.append(DatasetCheck(spec.source, spec.name, "error", reason))
     return out
 
 
@@ -804,10 +920,14 @@ __all__ = [
     "UNMAPPED_RAW_COLUMN",
     "DatasetCheck",
     "Loss",
+    "RawNote",
     "RawSample",
+    "RoundtripRefusedError",
     "csv_samples",
+    "raw_files",
     "register_count_check",
     "register_raw_reader",
     "roundtrip_dataset",
     "roundtrip_lake",
+    "spread",
 ]

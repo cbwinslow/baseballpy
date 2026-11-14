@@ -853,12 +853,15 @@ Usage: baseballpy verify-roundtrip [OPTIONS] [SOURCES]...
 
   Check that no value of the provider's text was lost or changed in our processed tables.
 
-  For each dataset it re-reads sampled raw CSV files as text and compares every cell with the stored
+  For each dataset it re-reads sampled raw files as text and compares every cell with the stored
   value (integers by their text, so a dropped leading zero shows; floats by value, so a 32-bit float
-  shows), lists non-empty raw cells stored as NULL, raw rows missing from the processed data, and
-  raw columns no schema column or _extras reads. Offline and read-only. Datasets whose raw files are
-  not CSV are reported as skipped with the reason, never as clean. Exit code 1 when any dataset
-  shows a loss.
+  shows; timestamps by the instant they name), lists non-empty raw cells stored as NULL, raw rows
+  missing from the processed data, and raw columns or JSON keys no schema column or _extras holds.
+  CSV files are read as they are; MLB API JSON answers (loose files and the raw response log) are
+  flattened by the same code the ingest uses, each scalar kept as the text the provider sent.
+  Offline and read-only. A dataset with no raw reader or no raw files is reported as skipped with
+  the reason, never as clean; a dataset where an error stopped the check is reported as error. Exit
+  code 1 when any dataset shows a loss or an error.
 
 Options:
   -d, --datasets TEXT    Dataset name(s) to check (repeatable; default: all).

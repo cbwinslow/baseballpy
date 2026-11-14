@@ -123,11 +123,14 @@ def verify_roundtrip_cmd(
 ) -> None:
     """Check that no value of the provider's text was lost or changed in our processed tables.
 
-    For each dataset it re-reads sampled raw CSV files as text and compares every cell with the stored value
-    (integers by their text, so a dropped leading zero shows; floats by value, so a 32-bit float shows),
-    lists non-empty raw cells stored as NULL, raw rows missing from the processed data, and raw columns no
-    schema column or _extras reads. Offline and read-only. Datasets whose raw files are not CSV are
-    reported as skipped with the reason, never as clean. Exit code 1 when any dataset shows a loss.
+    For each dataset it re-reads sampled raw files as text and compares every cell with the stored value
+    (integers by their text, so a dropped leading zero shows; floats by value, so a 32-bit float shows;
+    timestamps by the instant they name), lists non-empty raw cells stored as NULL, raw rows missing from
+    the processed data, and raw columns or JSON keys no schema column or _extras holds. CSV files are read
+    as they are; MLB API JSON answers (loose files and the raw response log) are flattened by the same code
+    the ingest uses, each scalar kept as the text the provider sent. Offline and read-only. A dataset with
+    no raw reader or no raw files is reported as skipped with the reason, never as clean; a dataset where an
+    error stopped the check is reported as error. Exit code 1 when any dataset shows a loss or an error.
     """
     catalog.register_all()
     register_all_adapters()  # the sources register how their raw files are read
@@ -151,15 +154,14 @@ def verify_roundtrip_cmd(
             "Source", "Dataset", "Status", "Files", "Raw rows", "Compared", "Quarantined", "Detail"
         )
         for c in checks:
-            detail = (
-                c.reason
-                or "; ".join(c.notes)
-                or "; ".join(
+            detail = c.reason or "; ".join(
+                [
                     f"{loss.kind} {loss.column or '-'} x{loss.count:,} ({loss.example})"
                     for loss in c.losses[:3]
-                )
+                ]
+                + c.notes
             )
-            colour = {"ok": "green", "loss": "red", "skipped": "yellow"}[c.status]
+            colour = {"ok": "green", "loss": "red", "skipped": "yellow", "error": "red"}[c.status]
             table.add_row(
                 c.source,
                 c.dataset,
@@ -171,11 +173,14 @@ def verify_roundtrip_cmd(
                 detail[:160],
             )
         console.print(table)
-        counts = {s: sum(1 for c in checks if c.status == s) for s in ("ok", "loss", "skipped")}
+        counts = {
+            s: sum(1 for c in checks if c.status == s) for s in ("ok", "loss", "skipped", "error")
+        }
         console.print(
-            f"{counts['ok']} clean, {counts['loss']} with a loss, {counts['skipped']} skipped"
+            f"{counts['ok']} clean, {counts['loss']} with a loss, {counts['skipped']} skipped, "
+            f"{counts['error']} stopped by an error"
         )
-    if any(c.status == "loss" for c in checks):
+    if any(c.status in ("loss", "error") for c in checks):
         raise SystemExit(1)
 
 

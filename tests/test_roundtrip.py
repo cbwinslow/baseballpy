@@ -15,6 +15,7 @@ The interface these tests fix (``baseballpy.core.roundtrip``):
 """
 
 import gzip
+from decimal import Decimal
 from pathlib import Path
 
 import pyarrow as pa
@@ -242,15 +243,16 @@ def test_a_true_false_column_is_compared_too(
 def test_a_column_of_a_type_that_is_not_compared_is_listed_not_hidden(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    spec = _spec(monkeypatch, [("id", "int32"), ("stamp", "timestamp")])
+    # timestamps are compared by the instant they name (added with the JSON round trip); a decimal still is not
+    spec = _spec(monkeypatch, [("id", "int32"), ("price", "decimal(9,2)")])
     config = LakeConfig(home=tmp_path)
-    RawStore(config).put(SOURCE, spec.name, "a.csv", b"id,stamp\n1,2024-03-01T01:02:03\n")
+    RawStore(config).put(SOURCE, spec.name, "a.csv", b"id,price\n1,1.25\n")
     table = pa.table(
-        {"id": pa.array([1], pa.int32()), "stamp": pa.array([1709254923], pa.timestamp("s"))}
+        {"id": pa.array([1], pa.int32()), "price": pa.array([Decimal("1.25")], pa.decimal128(9, 2))}
     )
     ProcessedStore(config).put(spec, table.append_column("_extras", pa.array([None], pa.string())))
     check = roundtrip_dataset(config, spec)
-    assert any("stamp" in note and "not compared" in note for note in check.notes), check.notes
+    assert any("price" in note and "not compared" in note for note in check.notes), check.notes
 
 
 def test_extras_must_hold_the_unread_column_by_name(
@@ -328,3 +330,24 @@ def test_spaces_round_a_raw_cell_are_a_note_not_a_loss(
     check = roundtrip_dataset(_lake(tmp_path, spec, raw, _good_table(spec)), spec)
     assert check.status == "ok", check
     assert any("only in the spaces round the text" in n for n in check.notes)
+
+
+def test_an_unparseable_raw_timestamp_is_not_clean_when_the_key_repeats(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Raw text that is no timestamp must be reported, whether stored as NULL or as another instant."""
+    spec = _spec(monkeypatch, [("id", "int32"), ("at", "timestamp")], keys=("id",))
+    raw = b"id,at\n1,2024-01-01T00:00:00Z\n1,not a time\n"
+    stamp = pa.timestamp("us", tz="UTC")
+    when = pa.array([1704067200000000, 1704067201000000], stamp)
+    ids = pa.array([1, 1], pa.int32())
+    for index, stored in enumerate([pa.array([1704067200000000, None], stamp), when]):
+        table = pa.table({"id": ids, "at": stored})
+        config = LakeConfig(home=tmp_path / str(index))
+        RawStore(config).put(SOURCE, spec.name, "a.csv", raw)
+        ProcessedStore(config).put(
+            spec, table.append_column("_extras", pa.array([None] * 2, pa.string()))
+        )
+        check = roundtrip_dataset(config, spec)
+        assert check.status == "loss", (index, check.losses)
+        assert [x.column for x in check.losses] == ["at"]

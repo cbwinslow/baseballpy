@@ -142,6 +142,23 @@ def test_a_blank_cell_is_missing_and_nan_text_is_a_float_and_neither_is_quaranti
     assert spy.written == []
 
 
+def test_number_text_from_json_is_kept_in_a_number_column_not_quarantined() -> None:
+    """MLB sends ``".286"`` for an average: valid text for a float64 column must not become NULL."""
+    spy = _Spy()
+    floats = safe_array(
+        [".286", "0.328", " 1e3 ", 0.5, "-.--"],
+        pa.float64(),
+        source="s",
+        dataset="d",
+        column="c",
+        quarantine=spy,
+    )
+    assert floats.to_pylist() == [0.286, 0.328, 1000.0, 0.5, None]
+    assert [row["value"] for row in spy.written] == ["-.--"]  # only the placeholder is quarantined
+    ints = safe_array(["5", 6], pa.int32(), source="s", dataset="d", column="c", quarantine=spy)
+    assert ints.to_pylist() == [5, 6]
+
+
 def test_a_value_that_is_really_wrong_is_still_quarantined() -> None:
     spy = _Spy()
     out = safe_array(["abc", 5], pa.int8(), source="s", dataset="d", column="c", quarantine=spy)

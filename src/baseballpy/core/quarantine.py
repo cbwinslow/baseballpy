@@ -216,6 +216,12 @@ def safe_array(
     for idx, raw in enumerate(values):
         value = _normalised(raw, target)
         try:
+            if isinstance(value, str) and not (
+                pa.types.is_string(target) or pa.types.is_large_string(target)
+            ):
+                # a JSON string for a number, date or flag (``".286"``): Arrow's own text parser reads it
+                # (``pa.array`` does not), so a valid provider value is kept, not quarantined
+                value = pa.array([value.strip()]).cast(target, safe=True)[0].as_py()
             pa.array([value], type=target)
             out.append(value)
         except (pa.ArrowInvalid, pa.ArrowTypeError, pa.ArrowNotImplementedError, OverflowError):

@@ -76,6 +76,9 @@ def register_all_adapters() -> None:
     from baseballpy.sources.retrosheet.roundtrip import raw_reader as retrosheet_raw_reader
 
     register_raw_reader("retrosheet", retrosheet_raw_reader)  # zips, headerless logs and rosters
+    from baseballpy.sources.mlb_api.roundtrip import raw_reader as mlb_raw_reader
+
+    register_raw_reader("mlb_api", mlb_raw_reader)  # JSON answers, flattened by the ingest's code
     from baseballpy.core.roundtrip import register_count_check
     from baseballpy.sources.retrosheet.linecounts import RULES, counter
 

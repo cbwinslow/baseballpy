@@ -5,6 +5,7 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 ## Unreleased
 
 ### Added
+- `verify-roundtrip` checks the MLB API datasets cell by cell from the raw JSON (loose files and response-log segments), read-only; an error on one answer exits 1 (ADR 129).
 - `v_pitches_unique`: a view with one row per Statcast pitch key; the dataset keeps the provider's repeated 2026 rows (ADR 115, 119).
 - `baseballpy run PLAN [--every 6h]`: a Python supervisor that keeps a plan running (child process per stage, retries with backoff, resumes after a restart, no OS scheduler; ADR 90), `baseballpy backfill --stage`, and the queue on the `status` screen.
 - Cross-platform behavior (ADR 89): LF line endings for every written text file and in every checkout (`.gitattributes`), `spawn` worker processes, UTF-8 console output, and `tests/test_portability.py` enforcing it.
@@ -35,6 +36,7 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 - `Retry-After: nan` no longer returns NaN and a timezone-less HTTP date no longer raises on Windows (found by the new property tests).
 - The Polars and dlt sinks write audit records; Retrosheet values that cannot be cast are quarantined under their real dataset name; the runner never submits more jobs than it has workers; an empty MLB fallback pool is provisional (ADR 126).
 - Compaction's cleanup and empty-part removal respect the per-season write lock; a running chunk write keeps its lock when an HTTP client closes (ADR 127).
+- A valid number sent by the provider as text (`".286"`) into a numeric column is parsed instead of being stored as NULL and quarantined (found by the new round-trip check).
 - `compact --migrate` fills a typed column that exists but is empty from its `_extras` key (the player slug of old minor-league stat pools), and the hydrate route keeps the stats block (ADR 128).
 
 ### Known behaviour
