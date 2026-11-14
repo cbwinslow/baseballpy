@@ -21,6 +21,12 @@ is from that probe, not from memory.
 
 **Result of the full check (2026-11-12):** `pitches` 15,007,133 rows and `pitches_minors` 4,536,245 rows equal the raw text after the 64-bit rebuild (the minor-league files also hold 91,845 rows that are other fetched versions of the same pitches, checked by key). **Known provider quirk:** in 2026 Savant returns every `hit_into_play` pitch twice, byte-identical (35,430 of 909,080 rows; no earlier season does). The lake keeps them, as the raw files have them; query the view `v_pitches_unique` (one row per `game_pk, at_bat_number, pitch_number`, ADR 119) when one row per pitch is needed. The ingest logs a duplicate-key warning for it.
 
+## Where the column types come from, and the latest check (2026-11-14)
+- **No provider gives types.** Savant's own CSV page (`baseballsavant.mlb.com/csv-docs`) defines each column but names no type; pybaseball has no type table; baseballr's reference lists R types (character, Date, numeric) that it regenerated from live answers in version 2.0.0. So the types here are read from the data, widened over samples of every season (`scripts/gen_savant_schemas.py`), and then proven against the raw text.
+- **Rules that follow from real losses:** decimals are 64-bit floats (never 32-bit: `85.8` once became `85.80000305175781`), identifiers and codes are text, an empty cell is NULL, a column the provider sends but nothing reads is kept in `_extras` (never dropped).
+- **Mixed number-and-text fields:** none was found in the pitch table. The text columns are team codes, pitch and event names, descriptions, `sv_id`, `umpire`, the fielding alignments and the old tracking fields that Savant still sends empty (`spin_dir`, `*_deprecated`: no value in any season, so nothing is lost).
+- **Check of 2026-11-14 (`baseballpy verify-roundtrip`, whole lake):** 48 Statcast datasets clean; `pitches` 56 raw files and 984,924 rows compared cell by cell with no loss and nothing quarantined. The same run found no loss in Retrosheet (36 datasets), Lahman (27), FanGraphs (10), Chadwick (4), Kalshi (4) and Polymarket (4).
+
 ## 1. Pitch-level search (`/statcast_search/csv`) - dataset `pitches`
 
 | Item | Value |

@@ -32,6 +32,8 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 - A write lock per dataset and season: a compaction of a season and an ingest of the same season can no longer overwrite each other's chunks (ADR 124).
 - A short MLB stat pool, a Retrosheet season built without a missing file and a boxscore taken while the game was live are no longer stored as finished (ADR 125).
 - A 429 or 503 pauses every request to that host; the Windows host lock is released explicitly; the audit log records returned errors as failures and keeps its records when a rotation fails (ADR 123).
+- `Retry-After: nan` no longer returns NaN and a timezone-less HTTP date no longer raises on Windows (found by the new property tests).
+- The Polars and dlt sinks write audit records; Retrosheet values that cannot be cast are quarantined under their real dataset name; the runner never submits more jobs than it has workers; an empty MLB fallback pool is provisional (ADR 126).
 
 ### Known behaviour
 - MLB `/v1/stats` league-wide pools answer HTTP 406 most of the time; the library fills them through `/v1/people?hydrate=stats` and re-fetches them when the route answers again (ADR 53, 117, 120).

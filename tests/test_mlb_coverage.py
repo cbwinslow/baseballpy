@@ -1069,3 +1069,37 @@ def test_a_short_page_before_the_announced_total_is_an_error_not_skipped_rows(
     respx.get(f"{MLB_BASE_URL}/{paginated.path}").mock(side_effect=page)
     with pytest.raises(IncompletePagesError, match="holds 1 of the 2 asked for"):
         extractor.ingest(paginated, Context(season=2024))
+
+
+@respx.mock
+def test_an_empty_player_list_makes_a_provisional_empty_pool_that_is_fetched_again(
+    tmp_path: Path,
+) -> None:
+    """A fallback over an empty player list (a glitch) must not freeze an empty pool as the final answer."""
+    ep = BY_NAME["stats_stat_splits_hitting"]
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    ctx = Context(season=2024, sport_ids=(1,), sit_codes=("vr",))
+    full = _fixture("stats_stat_splits_hitting")
+    one = full["stats"][0]["splits"][:1]
+    page = {**full, "stats": [{**full["stats"][0], "totalSplits": 1, "splits": one}]}
+    stats = respx.get(f"{MLB_BASE_URL}/v1/stats").mock(return_value=httpx.Response(406))
+    players = respx.get(f"{MLB_BASE_URL}/v1/sports/1/players").mock(
+        return_value=httpx.Response(200, json={"people": []})
+    )
+    extractor.ingest(ep, ctx)
+    manifest = lake.dataset_manifest("mlb_api", ep.name)
+    assert [e.get("via") for e in manifest.chunks().values()] == ["hydrate"], (
+        "the empty pool is provisional"
+    )
+    assert (
+        extractor._pool_player_ids("1", 2024) == [] and extractor._pool_player_ids("1", 2024) == []
+    )
+    assert players.call_count == 3, "an empty player list is asked for again, never remembered"
+    # the route answers again: the empty provisional chunk is fetched again on the direct route
+    assert extractor._stats_refused_at is not None
+    extractor._stats_refused_at -= generic.STATS_RETEST_SECONDS + 1
+    stats.mock(return_value=httpx.Response(200, json=page))
+    table = extractor.ingest(ep, ctx)
+    assert table.rows == 1 and stats.call_count == 2
+    assert [e.get("via") for e in manifest.chunks().values()] == ["direct"]

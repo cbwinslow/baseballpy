@@ -8,6 +8,7 @@ executes on one private event loop owned by the client.
 import asyncio
 import concurrent.futures
 import hashlib
+import math
 import os
 import threading
 import time
@@ -144,14 +145,28 @@ def _parse_retry_after(value: str | None) -> float | None:
         return None
     value = value.strip()
     try:
-        return min(max(float(value), 0.0), MAX_RETRY_AFTER_SECONDS)
+        seconds = float(value)
     except ValueError:
         pass
+    else:
+        if math.isnan(
+            seconds
+        ):  # "nan" parses as a float, escapes min/max and would crash the sleep
+            return None
+        return min(max(seconds, 0.0), MAX_RETRY_AFTER_SECONDS)
     try:
         when = parsedate_to_datetime(value)
     except (TypeError, ValueError):
         return None
-    return min(max(when.timestamp() - time.time(), 0.0), MAX_RETRY_AFTER_SECONDS)
+    if when.tzinfo is None:
+        when = when.replace(
+            tzinfo=UTC
+        )  # a date without a zone is GMT; naive .timestamp() uses the local clock
+    try:
+        stamp = when.timestamp()
+    except (OverflowError, OSError, ValueError):
+        return None
+    return min(max(stamp - time.time(), 0.0), MAX_RETRY_AFTER_SECONDS)
 
 
 #: What pybaseball sends (the ``requests`` default). ``statsapi.mlb.com`` began answering HTTP 403

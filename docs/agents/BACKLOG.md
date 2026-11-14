@@ -688,3 +688,4 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-447 | sample-compare 1.2: ingest/sample.py (compare_lakes, scratch ingest) and the verify-sample command | DONE | after B-446; the new tests pass |
 | B-448 | sample-compare 1.3: real sample runs, spec, ADR note, docs, gates, archive | DONE | after B-447; evidence in design.md |
 | B-449 | `finish-mlb-history 5.1`: review round 1 follow-ups (ADR 123): compaction/ingest write lock, paging vs totalSplits, Retrosheet fingerprint, boxscore status, empty player list, segrebuild memory, old_compact, parser dataset name, sink audit | OPEN | each item fixed with a test that fails without it, or rejected with evidence in design.md |
+| B-450 | `finish-mlb-history 5.2`: JSON cell-by-cell round-trip for the MLB API datasets (365 are skipped by verify-roundtrip today) | OPEN | verify-roundtrip reports each MLB dataset clean, with a loss, or skipped with an honest reason; real losses listed |

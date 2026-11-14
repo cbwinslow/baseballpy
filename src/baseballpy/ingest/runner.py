@@ -223,6 +223,8 @@ def _run_pool(
     def submit_ready() -> None:
         nonlocal held_logged
         for idx in sorted(i for i, needs in waiting.items() if not needs):
+            if len(running) >= concurrency:
+                return  # every worker has a job: a queued job is not "running" (the memory guard counts them)
             if governor is not None and running and not governor.may_start(len(running)):
                 if not held_logged:  # one line when a hold begins, not one per poll
                     held_logged = True

@@ -13,6 +13,8 @@ from typing import Any
 import dlt
 import pyarrow as pa
 
+from baseballpy.core.audit import default_audit_logger
+
 SUPPORTED_DESTINATIONS = ("duckdb", "postgres", "snowflake", "bigquery", "motherduck")
 
 _TEXT = frozenset({"varchar", "character varying", "text", "string"})
@@ -119,7 +121,7 @@ class DltSink:
         )
         self.last_load_info: Any = None
 
-    def write(
+    def _load_table(
         self,
         table: pa.Table,
         destination: str,
@@ -127,11 +129,6 @@ class DltSink:
         primary_key: Sequence[str] | None = None,
         **kwargs: Any,
     ) -> int:
-        """Load ``table`` into the dlt resource ``destination``; returns rows loaded.
-
-        ``merge`` needs ``primary_key`` (re-loading the same keys updates rows, never duplicates).
-        Key columns are declared not-null.
-        """
         if write_disposition not in ("append", "replace", "merge"):
             raise ValueError(f"unsupported write_disposition {write_disposition!r}")
         if write_disposition == "merge" and not primary_key:
@@ -150,22 +147,52 @@ class DltSink:
         self.last_load_info = self.pipeline.run(resource, **kwargs)
         return len(table)
 
+    def write(
+        self,
+        table: pa.Table,
+        destination: str,
+        write_disposition: str = "append",
+        primary_key: Sequence[str] | None = None,
+        **kwargs: Any,
+    ) -> int:
+        """Load ``table`` into the dlt resource ``destination``; returns rows loaded.
+
+        ``merge`` needs ``primary_key`` (re-loading the same keys updates rows, never duplicates).
+        Key columns are declared not-null.
+        """
+        with default_audit_logger.track(
+            operation="dlt_write", source="sink", destination=destination
+        ) as tracker:
+            rows = self._load_table(
+                table,
+                destination,
+                write_disposition=write_disposition,
+                primary_key=primary_key,
+                **kwargs,
+            )
+            tracker.set_records(rows)
+            return rows
+
     def write_stream(self, reader: pa.RecordBatchReader, destination: str, **kwargs: Any) -> int:
         """Load a record-batch stream (batches are passed to dlt as Arrow tables)."""
         total = 0
         first = True
         disposition = kwargs.pop("write_disposition", "append")
-        for batch in reader:
-            total += self.write(
-                pa.Table.from_batches([batch]),
-                destination,
-                write_disposition="replace"
-                if first and disposition == "replace"
-                else ("append" if disposition == "replace" else disposition),
-                **kwargs,
-            )
-            first = False
-        return total
+        with default_audit_logger.track(
+            operation="dlt_write_stream", source="sink", destination=destination
+        ) as tracker:
+            for batch in reader:
+                total += self._load_table(
+                    pa.Table.from_batches([batch]),
+                    destination,
+                    write_disposition="replace"
+                    if first and disposition == "replace"
+                    else ("append" if disposition == "replace" else disposition),
+                    **kwargs,
+                )
+                first = False
+            tracker.set_records(total)
+            return total
 
     def drop_if_columns_differ(self, table_name: str, schema: pa.Schema) -> bool:
         """Drop ``table_name`` when it exists with other columns than ``schema`` (returns True).

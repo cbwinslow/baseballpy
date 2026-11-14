@@ -319,3 +319,32 @@ def test_a_job_that_served_everything_from_the_cache_logs_a_cache_hit(tmp_path: 
     run_jobs([job], {"cached": CachedAdapter()}, audit=audit)
     events = [json.loads(line) for line in audit.log_path.read_text().splitlines()]
     assert [e["cache_hit"] for e in events if e["operation"] == "ingest_job"] == [True]
+
+
+def test_no_more_jobs_are_submitted_than_the_concurrency_allows() -> None:
+    """Queued jobs are not running: the memory guard is told how many really run, never more than the workers."""
+    asked: list[int] = []
+    observed: list[int] = []
+
+    class Governor:
+        def may_start(self, running: int) -> bool:
+            asked.append(running)
+            return True
+
+        def note_started(self) -> None:
+            pass
+
+        def observe(self, running: int) -> None:
+            observed.append(running)
+
+    class SlowAdapter(FakeAdapter):
+        def run(self, job: Job, *, refresh: bool = False) -> JobResult:
+            time.sleep(0.05)
+            return JobResult(job=job, status=JobStatus.COMPLETED, rows=1)
+
+    adapters = {"slow": SlowAdapter("slow")}
+    jobs = [make_job("slow", "t", id=i) for i in range(6)]
+    report = run_jobs(jobs, adapters, concurrency=2, governor=Governor())  # type: ignore[arg-type]
+    assert report.exit_code == 0 and len(report.results) == 6
+    assert max(asked) <= 1, "a job is submitted only while a worker is free"
+    assert max(observed) <= 2, "never more running than workers"

@@ -5,6 +5,8 @@ from typing import Any
 import polars as pl
 import pyarrow as pa
 
+from baseballpy.core.audit import default_audit_logger
+
 
 class PolarsSink:
     """Sink that converts PyArrow tables into Polars DataFrames or LazyFrames (zero copy)."""
@@ -25,9 +27,20 @@ class PolarsSink:
 
     def write(self, table: pa.Table, destination: str, **kwargs: Any) -> int:
         """SinkProtocol write: keeps the DataFrame in ``self.last`` and returns the row count."""
-        self.last = self.to_dataframe(table)
-        return len(self.last)
+        with default_audit_logger.track(
+            operation="polars_write", source="sink", destination=destination
+        ) as tracker:
+            self.last = self.to_dataframe(table)
+            count = len(self.last)
+            tracker.set_records(count)
+            return count
 
     def write_stream(self, reader: pa.RecordBatchReader, destination: str, **kwargs: Any) -> int:
         """SinkProtocol stream write: materializes the stream into ``self.last``."""
-        return self.write(reader.read_all(), destination, **kwargs)
+        with default_audit_logger.track(
+            operation="polars_write_stream", source="sink", destination=destination
+        ) as tracker:
+            self.last = self.to_dataframe(reader.read_all())
+            count = len(self.last)
+            tracker.set_records(count)
+            return count

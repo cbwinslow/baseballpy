@@ -367,9 +367,10 @@ class MlbEndpointExtractor:
         )
         people = result.json().get("people", [])
         ids = sorted({int(p["id"]) for p in people if "id" in p})
-        with self._pool_lock:
-            self._pool_ids[key] = ids
-            return ids
+        if ids:  # an empty list may be a glitch: it is asked for again, never remembered
+            with self._pool_lock:
+                self._pool_ids[key] = ids
+        return ids
 
     def _pool_pages_by_hydrate(
         self, endpoint: MlbEndpoint, request: Request
@@ -639,12 +640,15 @@ class MlbEndpointExtractor:
             if not pages:
                 empty = spec.schema.empty_table()
                 if self.cache_config.enabled:
+                    # a league-wide pool with no pages at all is the hydrate fallback over an empty player list:
+                    # provisional like every chunk the fallback fills (ADR 117), fetched again when the route answers
+                    fallback = endpoint.paginated and endpoint.path == "v1/stats"
                     self.store.put(
                         spec,
                         empty,
                         chunk_id=request.ident,
                         season=request.season,
-                        metadata={"empty": True},
+                        metadata={"empty": True, **({VIA_KEY: VIA_HYDRATE} if fallback else {})},
                     )
                 tracker.set_cache_hit(False)
                 tracker.set_records(0)

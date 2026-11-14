@@ -179,7 +179,6 @@ def _compact_group(
 
     sources: list[tuple[str, int]] = []  # (key, estimated bytes)
     parts: list[Path] = []
-    old_compact: set[str] = set()
     for key in sorted(keys):
         entry = entries[key]
         name = key.split("/", 1)[1] if season is not None else key
@@ -210,10 +209,8 @@ def _compact_group(
 
     report.groups += 1
     report.chunks += len(sources)
-    report.files_before += len(parts) + len(old_compact)
-    report.bytes_before += sum(p.stat().st_size for p in parts) + sum(
-        (root / rel).stat().st_size for rel in old_compact
-    )
+    report.files_before += len(parts)
+    report.bytes_before += sum(p.stat().st_size for p in parts)
     report.files_after += len(batches)
     if dry_run:
         return
@@ -256,9 +253,6 @@ def _compact_group(
     )
     for part in parts:
         _unlink(part)
-    still = {str(e[INTO]) for e in manifest.chunks().values() if e.get(INTO)}
-    for rel in old_compact - still:
-        _unlink(root / rel)
 
 
 def _drop_empty_parts(

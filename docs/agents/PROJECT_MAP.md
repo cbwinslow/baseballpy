@@ -55,7 +55,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
 | `download-throughput` | 8 | 1 | 2.4 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 13 | 3 | 2.1, 4.1, 5.1 |
+| `finish-mlb-history` | 13 | 4 | 2.1, 4.1, 5.1, 5.2 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 5 | 1 | 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
@@ -191,6 +191,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 123: Review Round 1 Fixes Only What The Code Showed; The Rest Is Tracked
 - ADR 124: A Write Lock Per Dataset And Season, Held Only While A Chunk Is Written Or A Season Is Compacted
 - ADR 125: A Short MLB Pool, A Retrosheet Season With A Missing File, And A Boxscore Taken While The Game Was Live Are Not Stored As Finished
+- ADR 126: Review Round 3: What Was Fixed, What Was Rejected, And Who Wrote It
 
 ## Documentation pages (`docs/`)
 

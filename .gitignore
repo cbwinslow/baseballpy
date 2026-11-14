@@ -80,3 +80,6 @@ polymarket*.txt
 # profiler output
 prof.out
 *.prof
+
+# worktrees of delegated agents (never committed)
+.claude/worktrees/

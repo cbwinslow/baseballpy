@@ -29,8 +29,9 @@ from baseballpy.sources.retrosheet.tables import RETROSHEET_DEFAULT_HEADERS
 logger = logging.getLogger(__name__)
 
 
-def _arr(values: list[Any], field: pa.Field) -> pa.Array:
-    return safe_array(values, field.type, source="retrosheet", dataset="parse", column=field.name)
+def _arr(values: list[Any], field: pa.Field, dataset: str) -> pa.Array:
+    """Build a PyArrow array, quarantining uncastable values under ``dataset``."""
+    return safe_array(values, field.type, source="retrosheet", dataset=dataset, column=field.name)
 
 
 def _safe_int(val: Any) -> int | None:
@@ -124,7 +125,7 @@ class RetrosheetEventParser:
                 values = [_safe_int(v) for v in values]
             else:
                 values = [v if v != "" else None for v in values]  # cwevent: empty means no value
-            arrays.append(_arr(values, field))
+            arrays.append(_arr(values, field, dataset="events"))
         arrays.append(_event_extras(rows, known))
         return pa.Table.from_arrays(arrays, schema=RETROSHEET_EVENT_SCHEMA)
 
@@ -249,19 +250,27 @@ class RetrosheetBoxScoreParser:
                         pitcher = pitcher.next
 
         # Build Arrow tables
-        def _build_table(records: list[dict[str, Any]], schema: pa.Schema) -> pa.Table:
+        def _build_table(
+            records: list[dict[str, Any]], schema: pa.Schema, dataset: str
+        ) -> pa.Table:
             if not records:
                 return pa.Table.from_batches([], schema=schema)
             arrays = []
             for field in schema:
                 name = field.name
                 col_vals = [r.get(name) for r in records]
-                arrays.append(_arr(col_vals, field))
+                arrays.append(_arr(col_vals, field, dataset=dataset))
             return pa.Table.from_arrays(arrays, schema=schema)
 
+        # RetrosheetBoxScoreParser feeds two registered datasets: batting lines belong to
+        # "boxscores_batting" and pitching lines belong to "boxscores_pitching".
         return (
-            _build_table(batting_records, RETROSHEET_BOX_BATTING_SCHEMA),
-            _build_table(pitching_records, RETROSHEET_BOX_PITCHING_SCHEMA),
+            _build_table(
+                batting_records, RETROSHEET_BOX_BATTING_SCHEMA, dataset="boxscores_batting"
+            ),
+            _build_table(
+                pitching_records, RETROSHEET_BOX_PITCHING_SCHEMA, dataset="boxscores_pitching"
+            ),
         )
 
 
@@ -306,7 +315,7 @@ class RetrosheetDailySplitsParser:
             name = field.name
             target_type = field.type
             col_vals = [r.get(name) for r in records]
-            arrays.append(_arr(col_vals, field))
+            arrays.append(_arr(col_vals, field, dataset="daily_splits"))
 
         return pa.Table.from_arrays(arrays, schema=RETROSHEET_DAILY_SPLITS_SCHEMA)
 
@@ -350,7 +359,7 @@ class RetrosheetSubstitutionsParser:
             name = field.name
             target_type = field.type
             col_vals = [r.get(name) for r in records]
-            arrays.append(_arr(col_vals, field))
+            arrays.append(_arr(col_vals, field, dataset="substitutions"))
 
         return pa.Table.from_arrays(arrays, schema=RETROSHEET_SUBSTITUTIONS_SCHEMA)
 
@@ -414,7 +423,7 @@ class RetrosheetGameLogParser:
             name = field.name
             target_type = field.type
             col_vals = [r.get(name) for r in records]
-            arrays.append(_arr(col_vals, field))
+            arrays.append(_arr(col_vals, field, dataset="gamelogs"))
 
         return pa.Table.from_arrays(arrays, schema=RETROSHEET_GAMELOG_SCHEMA)
 
@@ -473,7 +482,7 @@ class RetrosheetRosterParser:
         for field in RETROSHEET_ROSTER_SCHEMA:
             name = field.name
             col_vals = [r.get(name) for r in records]
-            arrays.append(_arr(col_vals, field))
+            arrays.append(_arr(col_vals, field, dataset="rosters"))
 
         return pa.Table.from_arrays(arrays, schema=RETROSHEET_ROSTER_SCHEMA)
 

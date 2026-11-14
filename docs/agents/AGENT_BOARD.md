@@ -18,6 +18,13 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Active Checkouts (Locked — Do Not Disturb)
 
+- **Task:** B-449
+  - **Agent:** blain
+  - **Claimed At:** 2026-11-14 07:20 UTC
+  - **Locked Areas:**
+    - `(none specified)`
+  - **Status:** In progress
+
 ---
 
 ## Recent Completed Handoffs

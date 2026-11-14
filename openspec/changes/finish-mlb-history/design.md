@@ -87,3 +87,11 @@ The wheel built from this checkout was installed in an empty virtual environment
 Statcast, one 5-day window (2024-06-04 to 2024-06-08) through `baseballpy statcast`: the Windows download made twice and the Linux download are identical to each other (19,787 rows, same 120 columns, no row differs). Against the lake the same window has the same 19,787 rows and columns; 11 rows differ, only in `pitch_type` and `pitch_name` (Savant relabelled Slider as Sweeper after the lake copy was made). So the code gives the same result on every machine tried; a difference with an older copy is the provider changing its data, which is expected for a live copy.
 
 Not covered: the MLB API on the second machine, and the full-season Statcast and Retrosheet downloads there.
+
+## Evidence: no value lost between the provider's text and the stored cells (2026-11-14)
+
+`baseballpy verify-roundtrip` over the whole lake: 510 datasets, 133 clean (about 173 million rows compared cell by cell: Statcast 48, Retrosheet 36, Lahman 27, FanGraphs 10, Chadwick 4, Kalshi 4, Polymarket 4), none with a loss, 377 skipped. The skipped ones are not proven: 365 MLB API datasets (145 with JSON raw files the check cannot read, 220 with raw bytes held only in response-log segments or not at all), 7 Retrosheet datasets with no raw files, 2 Baseball-Reference and 1 Kalshi dataset with non-CSV raw files, and 2 Statcast files with no processed rows for their season. A JSON cell-by-cell round-trip for the MLB API data is built as task 5.2 (below).
+
+## Evidence: the MLB API on the second machine (2026-11-14)
+
+`ingest mlb_api -s 2024 -d teams_season -d schedule_hydrated -d standings_regular_season -d draft_picks` ran in an empty folder on the homelab (Ubuntu Linux, wheel built from this checkout) and in an empty folder on the Windows PC a few minutes later: all 4 processed chunks and all 4 raw files are identical between the two (`compare_lakes`, sha256 for the raw files). Against the lake (downloaded earlier) 2 of the 4 chunks are identical; `draft_picks` differs in `person_current_age` (a player's age on the day of the download) and `schedule_hydrated` in `linescore_innings` (the provider updates linescores after the fact), both provider data changing over time, not the code. Not covered: the MLB game datasets (boxscores, play by play) and the league-wide stat pools on Linux.
