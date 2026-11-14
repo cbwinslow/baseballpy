@@ -27,7 +27,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `portability` | 3 | 3 | 7 |
 | `real-time-streaming` | 7 | 12 | 12 |
-| `retrosheet-ingestion` | 25 | 34 | 43 |
+| `retrosheet-ingestion` | 25 | 35 | 46 |
 | `statcast-ingestion` | 18 | 21 | 29 |
 
 ## Source review scorecard (where each source stands)

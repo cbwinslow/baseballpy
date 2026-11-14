@@ -140,6 +140,11 @@ Ingest MUST check key uniqueness, player ids against the Chadwick register and `
 - **THEN** the finding is reported with a count and examples
 - Verified by `tests/test_retrosheet_quality.py::test_orphan_player_ids_are_reported` (written by task 5.13).
 
+#### Scenario: A compacted chunk is still checked
+- **WHEN** a roster or data chunk has been compacted (no part file, the rows live in a compacted file)
+- **THEN** the parent lookup and the quality check read it through the store and produce the same findings; a chunk recorded with rows that no file holds raises `StoredChunkMissingError` instead of being skipped
+- Verified by `tests/test_retrosheet_quality_compacted.py::test_roster_chunk_stored_then_compacted_returns_player_ids`, `tests/test_retrosheet_quality_compacted.py::test_compacted_data_chunk_writes_quality_findings` and `tests/test_retrosheet_quality_compacted.py::test_chunk_recorded_with_rows_deleted_raises_missing_error`.
+
 ### Requirement: Every Operation Is Audit-Logged and Timed
 Every Retrosheet operation that lists the upstream tree, downloads a file, keeps provider documents, builds a dataset unit, checks data quality or ingests a season or the reference tables MUST write one structured event (operation, endpoint, destination, record count, duration, cache hit, status) to `logs/audit.jsonl`; a failure MUST be logged with status FAILURE and re-raised.
 

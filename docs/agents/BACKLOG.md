@@ -660,7 +660,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-421 | cache-check-through-store 1.1: tests first for compacted Statcast chunks (served from the lake; lost file downloads again; lacking chunk not cached) | DONE | the Statcast tests fail against the current code |
 | B-422 | cache-check-through-store 1.2: Statcast pitch extractor asks the store (has_part, read_part) | DONE | after B-421; the new tests and tests/test_statcast*.py pass |
 | B-423 | cache-check-through-store 1.3: spec, ADR 103, gates, close B-409, archive | DONE | after B-422; gates green, change archived |
-| B-424 | retrosheet quality check and parent lookup read part_path directly and skip a compacted chunk: use has_part and read_part (found by cache-check-through-store; no compaction of these chunks today) | READY | a test with a compacted roster chunk; gates green |
+| B-424 | retrosheet quality check and parent lookup read part_path directly and skip a compacted chunk: use has_part and read_part (found by cache-check-through-store; no compaction of these chunks today) | DONE | a test with a compacted roster chunk; gates green |
 | B-425 | deterministic-compaction 1.1: tests that compaction is deterministic (byte-identical files, rerun, staged) | DONE | the three tests pass; a sabotaged compact makes the first fail |
 | B-426 | deterministic-compaction 1.2: requirement, ADR 104, reword AGENTS.md s15 rule 1, close B-411 | DONE | after B-425; docs and spec checks pass |
 | B-427 | deterministic-compaction 1.3: gates, archive, commit | DONE | after B-426; gates green, change archived |

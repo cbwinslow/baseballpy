@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import Any
 
 import pyarrow as pa
-import pyarrow.parquet as pq
 
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
@@ -658,20 +657,31 @@ class RetrosheetSource:
         raise ValueError(f"unknown retrosheet dataset {name!r}; known: {known}")
 
     # ------------------------------------------------------------------ data quality
+    def _stored(self, spec: DatasetSpec, chunk_id: str, year: int) -> pa.Table | None:
+        """A stored chunk wherever it lives (part file or compacted file); ``None`` if never stored.
+
+        A chunk recorded with rows that no file holds raises ``StoredChunkMissingError`` (read_part),
+        it is never read as "no data".
+        """
+        entry = self.cache_config.dataset_manifest(spec.source, spec.name, "processed").get_chunk(
+            manifest_key(chunk_id, year)
+        )
+        if entry is None and not self.store.has_part(spec, chunk_id, year):
+            return None
+        return self.store.read_part(spec, chunk_id, year)
+
     def _parent(self, ref: str, year: int) -> pa.Table | None:
         """The parent table of a relationship (``<source>.<dataset>``); ``None`` if not stored or empty."""
         source, _, dataset = ref.partition(".")
         spec = get_dataset(source, dataset)
         if source == "retrosheet":
-            path = self.store.part_path(spec, f"rosters_{year}", year)
-            return pq.read_table(path, columns=["player_id"]) if path.exists() else None
+            table = self._stored(spec, f"rosters_{year}", year)
+            return table.select(["player_id"]) if table is not None and len(table) else None
         if not self._register_loaded:
             self._register_loaded = True
-            parts = self.store.files(spec)
-            if parts:
-                self._register_ids = pa.concat_tables(
-                    [pq.read_table(p, columns=["key_retro"]) for p in parts]
-                )
+            table = self.store.read(spec, columns=["key_retro"])
+            if len(table):
+                self._register_ids = table
         return self._register_ids
 
     def _quality(self, year: int, units: Sequence[str]) -> None:
@@ -688,10 +698,10 @@ class RetrosheetSource:
         for unit in units:
             for dataset, chunk in UNITS[unit][1]:
                 spec, chunk_id = _spec(dataset), chunk.format(y=year)
-                path = self.store.part_path(spec, chunk_id, year)
-                if not path.exists():
+                stored = self._stored(spec, chunk_id, year)
+                if stored is None:
                     continue
-                table = pq.read_table(path, columns=columns_needed(dataset, spec.keys))
+                table = stored.select(columns_needed(dataset, spec.keys))
                 findings = quality_report(
                     dataset, table, spec.keys, lambda ref: self._parent(ref, year)
                 )
