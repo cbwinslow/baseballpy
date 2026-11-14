@@ -122,3 +122,4 @@
 {"timestamp": "2026-11-12T02:26:04Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-454", "details": "Claimed task B-454 (files: none; note: In progress)"}
 {"timestamp": "2026-11-12T03:50:04Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-454", "details": "site datasets and logs built, ingested, audited; footer cache; changes archived"}
 {"timestamp": "2026-11-14T07:20:20Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_CLAIMED", "task_id": "B-449", "details": "Claimed task B-449 (files: none; note: In progress)"}
+{"timestamp": "2026-11-14T14:29:15Z", "agent": "blain", "session_id": "blain-session", "event": "TASK_COMPLETED", "task_id": "B-449", "details": "review follow-ups done: per-season lock, host pause, audit, JSON round-trip, offline re-parse (ADR 130), OS manifest lock (ADR 131)"}
