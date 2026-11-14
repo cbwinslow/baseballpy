@@ -693,9 +693,48 @@ def test_a_429_slows_every_request_to_that_host_not_only_the_one_that_was_refuse
     try:
         first = threading.Thread(target=lambda: client.get_sync("https://slow.example.com/a"))
         first.start()
-        time.sleep(0.3)  # the refusal has been answered; the host asked for one second of quiet
+        while not seen["a"]:  # wait until the first request has been refused
+            time.sleep(0.01)
+        time.sleep(0.2)  # let the refusal reach the client; the host asked for one second of quiet
         client.get_sync("https://slow.example.com/b")
         first.join()
     finally:
         client.close()
     assert seen["b"][0] - seen["a"][0] >= 0.9, "the second request waited for the host's pause"
+
+
+@respx.mock
+def test_a_single_502_does_not_pause_the_whole_host() -> None:
+    import threading
+    import time
+
+    seen: dict[str, list[float]] = {"a": [], "b": []}
+
+    def _a(request: httpx.Request) -> httpx.Response:
+        seen["a"].append(time.monotonic())
+        if len(seen["a"]) == 1:
+            return httpx.Response(502)  # no Retry-After: a blip of one request
+        return httpx.Response(200, content=b"a")
+
+    def _b(request: httpx.Request) -> httpx.Response:
+        seen["b"].append(time.monotonic())
+        return httpx.Response(200, content=b"b")
+
+    respx.get("https://blip.example.com/a").mock(side_effect=_a)
+    respx.get("https://blip.example.com/b").mock(side_effect=_b)
+    client = HttpClient(  # the refused request itself would wait seconds
+        RateLimitConfig(backoff_factor=2.0, max_retries=3), http2=False
+    )
+    try:
+        first = threading.Thread(target=lambda: client.get_sync("https://blip.example.com/a"))
+        first.start()
+        while not seen["a"]:
+            time.sleep(0.01)
+        time.sleep(0.2)
+        started = time.monotonic()
+        client.get_sync("https://blip.example.com/b")
+        elapsed = time.monotonic() - started
+        first.join(timeout=30)  # its own retry still succeeds
+    finally:
+        client.close()
+    assert elapsed < 1.0, "a 502 is retried by its own request; other requests to the host go on"

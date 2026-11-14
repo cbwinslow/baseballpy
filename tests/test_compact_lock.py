@@ -18,7 +18,7 @@ from baseballpy.core.compact import compact_dataset
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec, get_dataset
 from baseballpy.core.hostlock import HostBusyError, claim_named, release_all
-from baseballpy.core.stores import ProcessedStore
+from baseballpy.core.stores import ProcessedStore, write_lock_name
 from baseballpy.sources import catalog
 
 #: claims a lock name, says so, then waits for a line and ends abruptly with no clean-up (a crash)
@@ -73,11 +73,12 @@ def lake(tmp_path: Path, spec: DatasetSpec) -> LakeConfig:
     store = ProcessedStore(cfg)
     for chunk, speeds in (("a", [90.0, 91.0]), ("b", [92.0]), ("c", [93.0, 94.0])):
         store.put(spec, _pitches(speeds, 2023), chunk_id=chunk, season=2023)
+    release_all(cfg.locks_root)  # the process that downloaded the chunks has ended
     return cfg
 
 
-def _lock_name(spec: DatasetSpec) -> str:
-    return f"compact-{spec.source}-{spec.name}"
+def _lock_name(spec: DatasetSpec, season: int | None = 2023) -> str:
+    return write_lock_name(spec, season)
 
 
 def _snapshot(cfg: LakeConfig, spec: DatasetSpec) -> dict[str, str]:
@@ -160,3 +161,57 @@ def test_the_compact_command_skips_a_busy_dataset_and_fails(
     assert result.exit_code != 0
     assert "busy" in result.output
     assert _snapshot(lake, spec) == before
+
+
+def test_a_chunk_write_is_refused_while_another_process_holds_that_seasons_write_lock(
+    lake: LakeConfig, spec: DatasetSpec
+) -> None:
+    """An ingest write and a compaction of one season must never touch it at once (ADR 124)."""
+    before = _snapshot(lake, spec)
+    holder = _hold(lake.locks_root, _lock_name(spec, 2023))
+    try:
+        with pytest.raises(HostBusyError):
+            ProcessedStore(lake).put(spec, _pitches([99.0], 2023), chunk_id="d", season=2023)
+        assert _snapshot(lake, spec) == before, "the refused write changed nothing"
+        # the next season of the dataset is free: a queue downloads it while this one is compacted
+        ProcessedStore(lake).put(spec, _pitches([98.0], 2024), chunk_id="n", season=2024)
+    finally:
+        _crash(holder)
+    ProcessedStore(lake).put(spec, _pitches([99.0], 2023), chunk_id="d", season=2023)  # free again
+
+
+def test_a_season_is_compacted_while_another_process_writes_the_next_season(
+    lake: LakeConfig, spec: DatasetSpec
+) -> None:
+    """The queue compacts the finished season in one process while the next season downloads in another."""
+    holder = _hold(lake.locks_root, _lock_name(spec, 2024))  # a download of 2024 is running
+    try:
+        report = compact_dataset(spec, lake)
+        assert report.files_before == 3 and report.files_after == 1, "season 2023 was compacted"
+    finally:
+        _crash(holder)
+
+
+def test_the_write_lock_is_held_only_while_a_chunk_is_written(
+    lake: LakeConfig, spec: DatasetSpec
+) -> None:
+    """A process that wrote chunks does not keep the lock (no open file per dataset for the process lifetime)."""
+    ProcessedStore(lake).put(spec, _pitches([95.0], 2023), chunk_id="e", season=2023)
+    holder = _hold(
+        lake.locks_root, _lock_name(spec, 2023)
+    )  # would be refused if the writer still held it
+    _crash(holder)
+
+
+def test_a_chunk_recorded_with_rows_but_held_nowhere_is_an_error_not_an_empty_table(
+    lake: LakeConfig, spec: DatasetSpec
+) -> None:
+    from baseballpy.core.stores import StoredChunkMissingError
+
+    store = ProcessedStore(lake)
+    store.part_path(spec, "a", 2023).unlink()  # a crash after the part was taken away
+    with pytest.raises(StoredChunkMissingError, match="recorded with 2 rows"):
+        store.read_part(spec, "a", 2023)
+    assert len(store.read_part(spec, "never-downloaded", 2023)) == 0, (
+        "an unknown chunk is still empty"
+    )

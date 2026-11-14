@@ -28,6 +28,9 @@ def _isolated_baseballpy_home(
     get_quarantine.reset()
     reset_config()
     yield
+    from baseballpy.core.hostlock import release_all
+
+    release_all()  # the dataset write locks are held until the process ends: do not carry them to the next test
     get_audit_logger.reset()
     get_quarantine.reset()
     reset_config()

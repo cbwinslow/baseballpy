@@ -10,7 +10,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `agent-runbooks` | 7 | 10 | 17 |
 | `audit-and-benchmarking` | 8 | 12 | 32 |
 | `bref-ingestion` | 3 | 3 | 10 |
-| `caching-and-invalidation` | 22 | 36 | 51 |
+| `caching-and-invalidation` | 23 | 37 | 55 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 25 | 39 | 66 |
@@ -189,6 +189,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 121: The Game Crosswalk Keeps The Played Row Of Each Game And Matches Only Played MLB Games
 - ADR 122: A Refresh Replaces A Raw File And The Manifest Keeps A Record Of The Replaced Version
 - ADR 123: Review Round 1 Fixes Only What The Code Showed; The Rest Is Tracked
+- ADR 124: A Write Lock Per Dataset And Season, Held Only While A Chunk Is Written Or A Season Is Compacted
 
 ## Documentation pages (`docs/`)
 

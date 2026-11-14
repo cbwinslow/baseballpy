@@ -38,6 +38,8 @@ from baseballpy.core.lazy import lazy_singleton
 TransportError = httpx.TransportError
 
 RETRYABLE_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
+#: the statuses with which a host asks its clients to slow down: the whole host pauses, not one request
+SLOWDOWN_STATUSES = frozenset({429, 503})
 MAX_RETRY_AFTER_SECONDS = 120.0
 
 T = TypeVar("T")
@@ -213,7 +215,14 @@ class HttpClient:
                 self._client = None
                 self._semaphores = {}
                 self._limiters = {}
+                self._host_blocked_until = {}
             return self._loop
+
+    async def _wait_out_host_pause(self, host: str) -> None:
+        """Sleep until the quiet period a host asked for (429, 503) is over; nothing is held while waiting."""
+        pause = self._host_blocked_until.get(host, 0.0) - time.monotonic()
+        if pause > 0:
+            await asyncio.sleep(pause)
 
     @staticmethod
     def _run_loop(loop: asyncio.AbstractEventLoop) -> None:
@@ -311,18 +320,19 @@ class HttpClient:
                 delay = float(
                     wait_exponential_jitter(multiplier=self.rate.backoff_factor, max=60.0)(state)
                 )
-            if isinstance(exc, RetryableStatus):
+            if isinstance(exc, RetryableStatus) and exc.status in SLOWDOWN_STATUSES:
                 # the host asked for a slowdown (429, 503): every request to it waits, not only this one
+                # (a one-off 500, 502 or 504 is retried by that request alone)
                 self._host_blocked_until[host] = max(
                     self._host_blocked_until.get(host, 0.0), time.monotonic() + delay
                 )
             return delay
 
         async def _once() -> HttpResult:
-            pause = self._host_blocked_until.get(host, 0.0) - time.monotonic()
-            if pause > 0:
-                await asyncio.sleep(pause)
+            await self._wait_out_host_pause(host)
             async with semaphore, limiter:
+                # a request that queued for a slot before the host asked for quiet asks again once it has one
+                await self._wait_out_host_pause(host)
                 started = time.perf_counter()
                 sent_at = _now()
                 hook = self._header_hooks.get(host)
@@ -406,6 +416,7 @@ class HttpClient:
         part = dest.with_name(dest.name + ".part")
         digest = hashlib.sha256()
         size = 0
+        await self._wait_out_host_pause(host)
         async with self._semaphore_for(host), self._limiter_for(host):
             started = time.perf_counter()
             sent_at = _now()

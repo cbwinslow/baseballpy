@@ -15,6 +15,7 @@ Run it when no ingest is running.
 import logging
 import time
 from collections.abc import Iterable
+from contextlib import ExitStack, nullcontext
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -34,8 +35,7 @@ from baseballpy.core.compacted import (
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec
 from baseballpy.core.evolve import migrate_dataset
-from baseballpy.core.hostlock import claim_named, release_named
-from baseballpy.core.stores import ProcessedStore, part_filename, schema_matches
+from baseballpy.core.stores import ProcessedStore, part_filename, schema_matches, writing
 
 logger = logging.getLogger(__name__)
 
@@ -284,13 +284,15 @@ def _drop_empty_parts(
         season = _group_key(key)
         name = key.split("/", 1)[1] if season is not None else key
         part = config.processed_dir(spec.source, spec.name, season) / _part_name(spec, name, season)
-        if part.exists() and pq.read_metadata(part).num_rows == 0:
-            if not kept_one:
-                kept_one = True
-                continue
-            report.empty_files += 1
-            if not dry_run:
-                _unlink(part)
+        # looked at and removed under the season's write lock: an ingest may be filling this chunk
+        with nullcontext() if dry_run else writing(config, spec, season):
+            if part.exists() and pq.read_metadata(part).num_rows == 0:
+                if not kept_one:
+                    kept_one = True
+                    continue
+                report.empty_files += 1
+                if not dry_run:
+                    _unlink(part)
 
 
 def compact_dataset(
@@ -316,17 +318,7 @@ def compact_dataset(
         return report
     if dry_run:
         return _compact_dataset_locked(spec, cfg, report, True, target_bytes, migrate)
-    name = f"compact-{spec.source}-{spec.name}"
-    claim_named(
-        cfg.locks_root,
-        name,
-        f"another baseballpy process is compacting {spec.key}: two compactions pick the same "
-        "file numbers and overwrite each other. Wait for it to finish.",
-    )
-    try:
-        return _compact_dataset_locked(spec, cfg, report, False, target_bytes, migrate)
-    finally:
-        release_named(cfg.locks_root, name)
+    return _compact_dataset_locked(spec, cfg, report, False, target_bytes, migrate)
 
 
 def _compact_dataset_locked(
@@ -345,7 +337,13 @@ def _compact_dataset_locked(
     _drop_empty_parts(spec, cfg, manifest.chunks(), report, dry_run=dry_run)
     # files from before the schema gained columns first: only then do their chunks match the spec
     if migrate:
-        migrated = migrate_dataset(spec, cfg, dry_run=dry_run)
+        with (
+            ExitStack() as held
+        ):  # a migration rewrites files of every season: all of them are held
+            if not dry_run:
+                for season in _seasons(manifest.chunks()):
+                    held.enter_context(writing(cfg, spec, season))
+            migrated = migrate_dataset(spec, cfg, dry_run=dry_run)
         report.migrated_files = migrated.files_rewritten
         report.migrate_failed = len(migrated.failed)
     groups: dict[int | None, list[str]] = {}
@@ -358,10 +356,19 @@ def _compact_dataset_locked(
         ):
             groups.setdefault(_group_key(key), []).append(key)
     for season, keys in sorted(groups.items(), key=lambda kv: (kv[0] is None, kv[0] or 0)):
-        _compact_group(
-            store, spec, season, keys, dry_run=dry_run, target_bytes=target_bytes, report=report
-        )
+        # one season at a time holds its write lock (ADR 124): an ingest of the same season in another
+        # process is refused, and the next season of a queue can download meanwhile
+        with nullcontext() if dry_run else writing(cfg, spec, season):
+            _compact_group(
+                store, spec, season, keys, dry_run=dry_run, target_bytes=target_bytes, report=report
+            )
     return report
+
+
+def _seasons(chunks: dict[str, dict[str, Any]]) -> list[int | None]:
+    """The seasons a manifest has chunks for (``None`` for a dataset without seasons), in lock order."""
+    found = {_group_key(key) for key in chunks}
+    return sorted(found, key=lambda season: (season is None, season or 0))
 
 
 def compact_all(

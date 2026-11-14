@@ -271,3 +271,11 @@ download time, oldest first). The same bytes written again MUST add nothing, and
 - **WHEN** a raw file is written, written again with the same bytes, written with new bytes, and written with newer bytes
 - **THEN** the file holds the newest bytes, the entry's `sha256` is that of the newest bytes, and `previous` lists the two replaced versions once each with their sha256, size and download time
 - Verified by `tests/test_raw_refresh_history.py::test_a_refresh_replaces_the_bytes_and_keeps_a_record_of_each_replaced_version`.
+
+### Requirement: One Writer Per Dataset And Season: An Ingest And A Compaction Never Work On The Same Chunks At Once
+`ProcessedStore.put` and `put_stream` MUST hold the cross-process lock `write-<source>-<dataset>-<season>` while they write a chunk, and `compact_dataset` MUST hold the lock of a season while it compacts that season, so that a compaction of a season and an ingest of the same season in different processes are refused (`HostBusyError`) and change nothing, while another season of the dataset stays free. The lock MUST NOT stay held after the write. A chunk the manifest records with rows that no part file and no compacted file holds MUST raise `StoredChunkMissingError` when read, never return an empty table.
+
+#### Scenario: Same season refused, next season free, lock given back, vanished chunk
+- **WHEN** another process holds a season's write lock and a chunk of that season is written, then a chunk of the next season is written, a season is compacted while another process holds the next season's lock, a chunk is written and the lock is asked for afterwards, and a chunk recorded with rows has lost its part file
+- **THEN** the write of the held season is refused and changes nothing, the next season's write and the compaction succeed, the lock is free once the write ended, and the read of the vanished chunk raises instead of returning zero rows
+- Verified by `tests/test_compact_lock.py::test_a_chunk_write_is_refused_while_another_process_holds_that_seasons_write_lock`, `tests/test_compact_lock.py::test_a_season_is_compacted_while_another_process_writes_the_next_season`, `tests/test_compact_lock.py::test_the_write_lock_is_held_only_while_a_chunk_is_written` and `tests/test_compact_lock.py::test_a_chunk_recorded_with_rows_but_held_nowhere_is_an_error_not_an_empty_table`.

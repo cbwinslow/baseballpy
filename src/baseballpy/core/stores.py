@@ -4,7 +4,9 @@ import hashlib
 import logging
 import os
 import threading
+import time
 from collections.abc import Callable, Iterable, Mapping
+from contextlib import AbstractContextManager
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +22,7 @@ from baseballpy.core.compacted import (
 )
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec, with_lineage
+from baseballpy.core.hostlock import held_named
 from baseballpy.core.layout import ensure_version_file, hint_if_legacy
 from baseballpy.core.listing import dataset_files
 from baseballpy.core.rawfiles import (
@@ -38,6 +41,7 @@ logger = logging.getLogger(__name__)
 PARQUET_COMPRESSION = "zstd"
 #: times a read looks again after a concurrent refresh moved the chunk it was reading
 READ_RETRIES = 5
+READ_RETRY_SECONDS = 0.05  # between two looks at a chunk a writer is moving
 
 
 #: characters Windows forbids in a file name (a lake built on Linux must open on Windows)
@@ -196,6 +200,31 @@ def part_filename(dataset: str, chunk_id: str, season: int | None = None) -> str
 def manifest_key(name: str, season: int | None) -> str:
     """Manifest key for a chunk: ``season=YYYY/<name>`` when season-partitioned."""
     return f"season={season}/{name}" if season is not None else name
+
+
+class StoredChunkMissingError(RuntimeError):
+    """The manifest says a chunk holds rows but no part file and no compacted file holds them."""
+
+
+def write_lock_name(spec: DatasetSpec, season: int | None) -> str:
+    """The cross-process lock of one dataset and season (``all`` for a dataset without seasons): the ingest that
+    writes a chunk and the compaction that rewrites that season's files take it, so they never work on the same
+    chunks at once. Another season of the dataset is free: a queue compacts the finished season while the next
+    one downloads (ADR 124)."""
+    return f"write-{spec.source}-{spec.name}-{'all' if season is None else season}"
+
+
+def writing(
+    config: LakeConfig, spec: DatasetSpec, season: int | None
+) -> AbstractContextManager[None]:
+    """Hold the write lock of ``spec`` and ``season`` while a chunk is written or a season is compacted."""
+    where = "no season" if season is None else f"season {season}"
+    return held_named(
+        config.locks_root,
+        write_lock_name(spec, season),
+        f"another baseballpy process is writing {spec.key} ({where}), an ingest or a compaction: "
+        "two writers would overwrite each other's chunks. Wait for it to finish.",
+    )
 
 
 def _versions_after(entry: Mapping[str, Any] | None, new_sha256: str) -> list[dict[str, Any]]:
@@ -396,7 +425,31 @@ class ProcessedStore:
         source_ref: str | None = None,
         metadata: dict[str, Any] | None = None,
     ) -> Path:
-        """Atomically write ``table`` (footer validated) and record the chunk in the manifest."""
+        """Atomically write ``table`` (footer validated) and record the chunk in the manifest.
+
+        The write lock of the dataset and season is held while the chunk is written (ADR 124): a compaction of
+        that season in another process is refused, and this write is refused while one runs.
+        """
+        with writing(self.config, spec, season):
+            return self._put(
+                spec,
+                table,
+                chunk_id=chunk_id,
+                season=season,
+                source_ref=source_ref,
+                metadata=metadata,
+            )
+
+    def _put(
+        self,
+        spec: DatasetSpec,
+        table: pa.Table,
+        *,
+        chunk_id: str,
+        season: int | None,
+        source_ref: str | None,
+        metadata: dict[str, Any] | None,
+    ) -> Path:
         path = self.part_path(spec, chunk_id, season)
         self._refuse_name_clash(spec, chunk_id, season)
         ensure_version_file(self.config)
@@ -428,8 +481,28 @@ class ProcessedStore:
         """Stream tables into one atomic Parquet part (one row group per batch); returns rows.
 
         Nothing is written when the stream is empty. The footer row count is validated before
-        the atomic rename, exactly like :meth:`put`.
+        the atomic rename, exactly like :meth:`put`, and the write lock is held the same way.
         """
+        with writing(self.config, spec, season):
+            return self._put_stream(
+                spec,
+                batches,
+                chunk_id=chunk_id,
+                season=season,
+                source_ref=source_ref,
+                metadata=metadata,
+            )
+
+    def _put_stream(
+        self,
+        spec: DatasetSpec,
+        batches: Iterable[pa.Table],
+        *,
+        chunk_id: str,
+        season: int | None,
+        source_ref: str | None,
+        metadata: dict[str, Any] | None,
+    ) -> int:
         path = self.part_path(spec, chunk_id, season)
         self._refuse_name_clash(spec, chunk_id, season)
         ensure_version_file(self.config)
@@ -551,11 +624,26 @@ class ProcessedStore:
         path = self.part_path(spec, chunk_id, season)
         manifest = self.config.dataset_manifest(spec.source, spec.name, "processed")
         key = manifest_key(chunk_id, season)
+        missing: StoredChunkMissingError | None = None
         for _ in range(READ_RETRIES):
             if path.exists():
                 return pq.read_table(path)
             entry = manifest.get_chunk(key)
             if not (entry and holds_chunk(self._dataset_root(spec), entry, key)):
+                if (
+                    entry
+                    and entry.get("status") == "COMPLETED"
+                    and int(entry.get("records_count") or 0) > 0
+                ):
+                    # recorded with rows, held nowhere. A writer may be between taking the chunk out of its
+                    # compacted file and renaming the new part into place (milliseconds): look again; after a
+                    # crash it stays missing, and an empty table would read as "no pitches", so say so
+                    missing = StoredChunkMissingError(
+                        f"{spec.key}: chunk {key} is recorded with {entry['records_count']} rows but "
+                        "no part file or compacted file holds them; download it again with --refresh"
+                    )
+                    time.sleep(READ_RETRY_SECONDS)
+                    continue
                 return spec.schema.empty_table()
             try:
                 return read_chunk(self._dataset_root(spec), entry, key)
@@ -563,6 +651,8 @@ class ProcessedStore:
                 # a refresh took the chunk out of the compacted file (or the file was replaced)
                 # between the check and the read: it is a plain part now, so look again
                 continue
+        if missing is not None:
+            raise missing
         raise RuntimeError(f"{spec.key}: chunk {key} kept moving while it was read")
 
     def files(self, spec: DatasetSpec) -> list[Path]:
