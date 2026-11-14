@@ -1002,3 +1002,70 @@ def test_migrating_an_old_file_drops_the_retired_columns_and_keeps_every_row(
     rows = _rewrite(path, _Spec(), Quarantine(), {})  # type: ignore[arg-type]
     assert rows == 2
     assert pq.read_table(path).column_names == ["player_id", "_extras"]
+
+
+@respx.mock
+def test_an_empty_page_before_the_announced_total_is_an_error_not_a_short_table(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from baseballpy.sources.mlb_api.generic import IncompletePagesError
+
+    paginated = next((e for e in COVERED if e.paginated), None)
+    if paginated is None:
+        pytest.skip("no league-wide stats endpoint returned data when schemas were generated")
+    monkeypatch.setattr(generic, "PAGE_SIZE", 2)
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    base = _fixture(paginated.name)
+    splits = base["stats"][0]["splits"]
+    assert len(splits) >= 2
+
+    def page(request: httpx.Request) -> httpx.Response:
+        offset = int(request.url.params["offset"])
+        body = json.loads(json.dumps(base))
+        body["stats"][0]["splits"] = (
+            splits[:2] if offset == 0 else []
+        )  # the second page glitches empty
+        if offset == 0:
+            body["stats"][0]["totalSplits"] = 4
+        else:
+            body["stats"][0].pop("totalSplits", None)  # the glitching page leaves the total out too
+        return httpx.Response(200, json=body)
+
+    respx.get(f"{MLB_BASE_URL}/{paginated.path}").mock(side_effect=page)
+    with pytest.raises(IncompletePagesError, match="announces 4 rows"):
+        extractor.ingest(paginated, Context(season=2024))
+    assert not lake.dataset_manifest("mlb_api", paginated.name, "processed").chunks(), (
+        "nothing was stored as a finished pool"
+    )
+
+
+@respx.mock
+def test_a_short_page_before_the_announced_total_is_an_error_not_skipped_rows(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A page with fewer rows than asked for would make the next offset skip the rows it left out."""
+    from baseballpy.sources.mlb_api.generic import IncompletePagesError
+
+    paginated = next((e for e in COVERED if e.paginated), None)
+    if paginated is None:
+        pytest.skip("no league-wide stats endpoint returned data when schemas were generated")
+    monkeypatch.setattr(generic, "PAGE_SIZE", 2)
+    lake = LakeConfig(home=tmp_path, today=date(2026, 6, 1))
+    extractor = MlbEndpointExtractor(cache_config=lake)
+    base = _fixture(paginated.name)
+    splits = base["stats"][0]["splits"]
+    assert len(splits) >= 2
+
+    def page(request: httpx.Request) -> httpx.Response:
+        offset = int(request.url.params["offset"])
+        body = json.loads(json.dumps(base))
+        body["stats"][0]["splits"] = (
+            splits[:1] if offset == 0 else splits[:2]
+        )  # the first page is partial
+        body["stats"][0]["totalSplits"] = 4
+        return httpx.Response(200, json=body)
+
+    respx.get(f"{MLB_BASE_URL}/{paginated.path}").mock(side_effect=page)
+    with pytest.raises(IncompletePagesError, match="holds 1 of the 2 asked for"):
+        extractor.ingest(paginated, Context(season=2024))

@@ -624,3 +624,44 @@ def test_chadwick_changed_pinned_ref_invalidates_cache(tmp_path: Path) -> None:
     finally:
         http.close()
         http2.close()
+
+
+@respx.mock
+def test_mlb_boxscore_of_a_postponed_game_is_not_frozen_as_final(tmp_path: Path) -> None:
+    """The schedule calls a postponed game 'Final' in its abstract state; its box must still be fetched again."""
+    box = respx.get(f"{MLB_BASE_URL}/v1/game/99/boxscore").mock(
+        return_value=httpx.Response(200, json=_box_payload())
+    )
+    postponed = _sched_payload(99, "Final")
+    postponed["dates"][0]["games"][0]["status"]["detailedState"] = "Postponed"  # type: ignore[index]
+    respx.get(f"{MLB_BASE_URL}/v1/schedule").mock(return_value=httpx.Response(200, json=postponed))
+    extractor, http = _mlb(tmp_path, ttl_overrides={"boxscore": 0})
+    try:
+        extractor.extract_boxscore(99)
+        extractor.extract_boxscore(99)
+        assert box.call_count == 2, "not frozen: a postponed game is asked again"
+    finally:
+        http.close()
+
+
+@respx.mock
+def test_mlb_boxscore_status_is_read_before_the_box_is_fetched(tmp_path: Path) -> None:
+    """A game that ends between the two calls must not be frozen as final with a box taken while it was live."""
+    order: list[str] = []
+
+    def _box(request: httpx.Request) -> httpx.Response:
+        order.append("box")
+        return httpx.Response(200, json=_box_payload())
+
+    def _schedule(request: httpx.Request) -> httpx.Response:
+        order.append("schedule")
+        return httpx.Response(200, json=_sched_payload(99, "Live"))
+
+    respx.get(f"{MLB_BASE_URL}/v1/game/99/boxscore").mock(side_effect=_box)
+    respx.get(f"{MLB_BASE_URL}/v1/schedule").mock(side_effect=_schedule)
+    extractor, http = _mlb(tmp_path, ttl_overrides={"boxscore": 0})
+    try:
+        extractor.extract_boxscore(99)
+    finally:
+        http.close()
+    assert order == ["schedule", "box"]

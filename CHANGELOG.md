@@ -29,6 +29,9 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 - `v_game_crosswalk` keeps one row per `game_pk` (the played row of a postponed or rescheduled game) and matches only played MLB games to Retrosheet, so each game and each Retrosheet game appears once (ADR 121).
 - The source archive no longer carries local scratch folders and reference dumps (12.1 MB to 2.8 MB).
 - A schema migration no longer writes empty `_extras` objects (ADR 118).
+- A write lock per dataset and season: a compaction of a season and an ingest of the same season can no longer overwrite each other's chunks (ADR 124).
+- A short MLB stat pool, a Retrosheet season built without a missing file and a boxscore taken while the game was live are no longer stored as finished (ADR 125).
+- A 429 or 503 pauses every request to that host; the Windows host lock is released explicitly; the audit log records returned errors as failures and keeps its records when a rotation fails (ADR 123).
 
 ### Known behaviour
 - MLB `/v1/stats` league-wide pools answer HTTP 406 most of the time; the library fills them through `/v1/people?hydrate=stats` and re-fetches them when the route answers again (ADR 53, 117, 120).

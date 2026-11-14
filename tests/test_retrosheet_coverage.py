@@ -588,3 +588,67 @@ def test_original_schedule_is_its_own_dataset(tmp_path: Path, retro_repo: RetroR
     assert source.schedule_original(2020)["visitor_team"].to_pylist() == ["BAL"]
     assert source.schedule(2020)["visitor_team"].to_pylist() == ["NYA"]
     assert get_dataset("retrosheet", "schedule_original").view == "retrosheet_schedule_original"
+
+
+@respx.mock
+def test_a_season_built_without_a_missing_file_is_built_again_instead_of_staying_current(
+    tmp_path: Path, retro_repo: RetroRepo
+) -> None:
+    """A 404 for one event file must not leave the events chunk stamped as built from the whole season."""
+    import httpx
+
+    from baseballpy.core.sources_lock import get_source_ref
+
+    full_season(retro_repo).mount()
+    repo, pin = get_source_ref("retrosheet").repo, get_source_ref("retrosheet").ref
+    bal = f"https://raw.githubusercontent.com/{repo}/{pin}/seasons/2024/2024BAL.EVN"
+    respx.get(bal).mock(return_value=httpx.Response(404))
+    source = RetrosheetSource(cache_config=LakeConfig(home=tmp_path))
+
+    first = source.ingest_season(2024)
+    assert first.datasets["events"] == 1, "built from the one file that exists"
+    second = source.ingest_season(2024)
+    assert second.datasets["events"] == 1, (
+        "built again (not 'already current'): the file is still missing"
+    )
+
+    respx.get(bal).mock(
+        return_value=httpx.Response(200, content=retro_repo.files["seasons/2024/2024BAL.EVN"])
+    )
+    third = source.ingest_season(2024)
+    assert third.datasets["events"] == 2, "the file came back and the chunk has both games"
+    assert source.ingest_season(2024).datasets["events"] is None, "now it is current"
+
+
+@respx.mock
+def test_a_first_call_to_events_counts_only_the_files_that_are_really_missing(
+    tmp_path: Path, retro_repo: RetroRepo, caplog: pytest.LogCaptureFixture
+) -> None:
+    """The raw files are downloaded lazily inside the build: the check for missing files must run after it."""
+    import logging
+    import re
+
+    import httpx
+
+    from baseballpy.core.sources_lock import get_source_ref
+
+    full_season(retro_repo).mount()
+    repo, pin = get_source_ref("retrosheet").repo, get_source_ref("retrosheet").ref
+    respx.get(f"https://raw.githubusercontent.com/{repo}/{pin}/seasons/2024/2024BAL.EVN").mock(
+        return_value=httpx.Response(404)
+    )
+    source = RetrosheetSource(
+        cache_config=LakeConfig(home=tmp_path)
+    )  # an empty folder: nothing downloaded yet
+
+    with caplog.at_level(logging.WARNING, logger="baseballpy.sources.retrosheet.api"):
+        events = source.events(2024)
+    assert events["GAME_ID"].to_pylist() == ["BOS202404010"]
+    counted = [
+        tuple(map(int, m.groups()))
+        for r in caplog.records
+        if (m := re.search(r"(\d+) of (\d+) raw files are missing", r.getMessage()))
+    ]
+    assert counted and all(missing == 1 and missing < total for missing, total in counted), (
+        "one file is missing, not all of them"
+    )

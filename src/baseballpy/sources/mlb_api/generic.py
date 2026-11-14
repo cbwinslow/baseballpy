@@ -157,6 +157,10 @@ def stats_payload(payload: Any) -> dict[str, Any]:
     return {"stats": [{"splits": splits, "totalSplits": len(splits)}]}
 
 
+class IncompletePagesError(RuntimeError):
+    """A paginated answer announced more rows than it delivered: a later page came back empty."""
+
+
 class HeavyEndpointError(RuntimeError):
     """A paginated request would download an unexpectedly huge result (all-time stat pools)."""
 
@@ -541,6 +545,9 @@ class MlbEndpointExtractor:
         pages: list[tuple[str, HttpResult]] = []
         offset = 0
         size = PAGE_SIZE
+        announced: int | None = (
+            None  # the total an earlier page announced (an empty page may leave it out)
+        )
         while True:
             params = {**request.params, "limit": size, "offset": offset}
             try:
@@ -565,10 +572,24 @@ class MlbEndpointExtractor:
             payload = result.json()
             got = sum(1 for _ in iter_records(payload, endpoint.records))
             total = _total_splits(payload)
+            announced = total if total is not None else announced
             if total is not None and total > MAX_SPLITS and not allow_heavy and not pages[1:]:
                 raise HeavyEndpointError(
                     f"{endpoint.name} announces {total:,} rows (> {MAX_SPLITS:,}); it ignores the "
                     "season. Pass include_history=True / allow_heavy=True to download it anyway."
+                )
+            if (
+                (offset > 0 or got > 0)
+                and got < size
+                and announced is not None
+                and offset + got < announced
+            ):
+                # the provider said there are `announced` rows and answered a page with fewer than asked for
+                # (or none) before them: the next offset would skip the rows it left out, and storing the
+                # pages so far would freeze a short table as complete
+                raise IncompletePagesError(
+                    f"{endpoint.name}: the provider announces {announced:,} rows but the page at offset "
+                    f"{offset:,} holds {got:,} of the {size:,} asked for; {offset + got:,} rows were received"
                 )
             offset += size
             if (
@@ -799,11 +820,11 @@ class MlbEndpointExtractor:
             was_cached = self._is_cached(ep, request, refresh)
             try:
                 table = self.fetch_request(ep, request, refresh, allow_heavy, verify)
-            except (HttpStatusError, PoolFallbackUnavailableError) as exc:
+            except (HttpStatusError, PoolFallbackUnavailableError, IncompletePagesError) as exc:
                 if not keep_going:
                     raise
-                # one refused request (for example the league-wide 406, or a pool the fallback
-                # cannot reproduce) must not stop the rest
+                # one refused request (for example the league-wide 406, a pool the fallback cannot
+                # reproduce, or a pool whose pages came back short) must not stop the rest
                 logger.warning("%s: %s", ep.name, exc)
                 return _Outcome(0, False, self.missing, str(exc))
             return _Outcome(table.num_rows, was_cached, self.missing, None)

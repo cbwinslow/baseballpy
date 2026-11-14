@@ -190,6 +190,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 122: A Refresh Replaces A Raw File And The Manifest Keeps A Record Of The Replaced Version
 - ADR 123: Review Round 1 Fixes Only What The Code Showed; The Rest Is Tracked
 - ADR 124: A Write Lock Per Dataset And Season, Held Only While A Chunk Is Written Or A Season Is Compacted
+- ADR 125: A Short MLB Pool, A Retrosheet Season With A Missing File, And A Boxscore Taken While The Game Was Live Are Not Stored As Finished
 
 ## Documentation pages (`docs/`)
 

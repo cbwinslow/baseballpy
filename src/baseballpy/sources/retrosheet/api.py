@@ -11,6 +11,7 @@ import logging
 from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -193,6 +194,14 @@ class IngestReport:
         return not self.failures
 
 
+def _stamp(meta: dict[str, Any], built: Fingerprint | None) -> None:
+    """Put the fingerprint a chunk was built from into its (still open) manifest metadata."""
+    if built is None:
+        meta.pop("upstream", None)
+    else:
+        meta["upstream"] = built.to_dict()
+
+
 class RetrosheetSource:
     """Retrosheet dataset orchestrator: raw/ bytes, processed/ Parquet, pause/resume."""
 
@@ -289,15 +298,45 @@ class RetrosheetSource:
             return None
         if not self.cache_config.enabled:
             return int(sum(t.num_rows for t in batches()))
+        meta: dict[str, Any] = {"upstream": expected.to_dict()} if expected is not None else {}
+
+        def consumed() -> Iterator[pa.Table]:
+            yield from batches()
+            # the batches download and parse lazily: only now do the raw files exist or not
+            _stamp(meta, self._built_from(files, expected, f"{name} {chunk_id}"))
+
         rows: int = self.store.put_stream(
             spec,
-            batches(),
+            consumed(),
             chunk_id=chunk_id,
             season=season,
             source_ref=self._ref,
-            metadata={"upstream": expected.to_dict()} if expected is not None else None,
+            metadata=meta,  # read when the chunk is recorded, after the stream was consumed
         )
         return rows
+
+    def _built_from(
+        self, files: Sequence[RetroFile] | None, expected: Fingerprint | None, label: str
+    ) -> Fingerprint | None:
+        """The fingerprint a chunk built from ``files`` as they are now on disk must carry.
+
+        A listed file that is missing locally (the provider answered 404) was left out of the chunk, so the chunk
+        must not carry the fingerprint of the whole set: it then differs from the expected one on the next run,
+        which builds it again and asks for the missing file again.
+        """
+        if files is None:
+            return expected
+        present = [f for f in files if self.downloader.raw_path(f).exists()]
+        if len(present) == len(files):
+            return expected
+        logger.warning(
+            "retrosheet %s: %d of %d raw files are missing; the chunk is built from the rest and will be "
+            "built again on the next run",
+            label,
+            len(files) - len(present),
+            len(files),
+        )
+        return self._expected(present)
 
     def _read(
         self,
@@ -422,12 +461,14 @@ class RetrosheetSource:
         return batting, pitching
 
     def _boxscores_write(self, year: int, refresh: bool) -> dict[str, int | None]:
-        expected = self._expected(self._inputs("boxscores", year))
+        files = self._inputs("boxscores", year)
+        expected = self._expected(files)
         outputs = UNITS["boxscores"][1]
         if not refresh and all(self._current(d, c, year, expected) for d, c in outputs):
             return {d: None for d, _ in outputs}
         batting, pitching = self._boxscores_batches(year, refresh)
-        meta = {"upstream": expected.to_dict()} if expected is not None else None
+        built = self._built_from(files, expected, f"boxscores {year}")
+        meta = {"upstream": built.to_dict()} if built is not None else None
         counts: dict[str, int | None] = {}
         for (dataset, chunk), tables in zip(outputs, (batting, pitching), strict=True):
             counts[dataset] = self.store.put_stream(
@@ -468,14 +509,16 @@ class RetrosheetSource:
         return out
 
     def _box_accounts_write(self, year: int, refresh: bool) -> dict[str, int | None]:
-        expected = self._expected(self._inputs("box_accounts", year))
+        files = self._inputs("box_accounts", year)
+        expected = self._expected(files)
         outputs = UNITS["box_accounts"][1]
         if not refresh and all(
             self._current(d, c.format(y=year), year, expected) for d, c in outputs
         ):
             return {d: None for d, _ in outputs}
         tables = self._box_accounts_parsed(year, refresh)
-        meta = {"upstream": expected.to_dict()} if expected is not None else None
+        built = self._built_from(files, expected, f"box accounts {year}")
+        meta = {"upstream": built.to_dict()} if built is not None else None
         return {
             dataset: self.store.put_stream(
                 _spec(dataset),

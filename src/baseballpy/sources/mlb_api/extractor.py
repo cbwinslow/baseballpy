@@ -18,6 +18,8 @@ from baseballpy.sources.mlb_api.normalizer import MlbApiNormalizer
 
 MLB_BASE_URL = "https://statsapi.mlb.com/api"
 FINAL_STATES = frozenset({"Final", "Game Over", "Completed Early"})
+#: a game of these detailed states is not a played game, although its abstract state may say "Final"
+NOT_PLAYED_STATES = frozenset({"Postponed", "Cancelled"})
 
 
 class MlbApiExtractor:
@@ -153,7 +155,7 @@ class MlbApiExtractor:
             for game in day.get("games", []):
                 if game.get("gamePk") == game_pk:
                     status = game.get("status", {})
-                    final = (
+                    final = status.get("detailedState", "") not in NOT_PLAYED_STATES and (
                         status.get("abstractGameState", "") in FINAL_STATES
                         or status.get("detailedState", "") in FINAL_STATES
                     )
@@ -201,13 +203,17 @@ class MlbApiExtractor:
                 ),
             )
 
+        # the status is read BEFORE the boxscore: a game that ends between the two calls is then recorded as
+        # not final (and fetched again), never frozen with the partial box of a game still being played
+        is_final, game_season = (
+            self._game_info(game_pk) if self.cache_config.enabled else (False, None)
+        )
         result = self._fetch(endpoint)
         batting_table, pitching_table = self.normalizer.normalize_boxscore(
             result.json(), game_pk=game_pk
         )
 
         if self.cache_config.enabled:
-            is_final, game_season = self._game_info(game_pk)
             part_season = season or game_season or self.cache_config.today_or_now().year
             for name, table in (("box_batting", batting_table), ("box_pitching", pitching_table)):
                 if len(table) > 0:
