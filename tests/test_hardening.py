@@ -668,3 +668,34 @@ def test_stale_parts_are_swept_once_per_process_and_folder_not_once_per_job(
     other = tmp_path / "other"
     other.mkdir()
     assert cleanup_stale_parts_once(other) == [], "another folder is its own first call"
+
+
+@respx.mock
+def test_a_429_slows_every_request_to_that_host_not_only_the_one_that_was_refused() -> None:
+    import threading
+    import time
+
+    seen: dict[str, list[float]] = {"a": [], "b": []}
+
+    def _a(request: httpx.Request) -> httpx.Response:
+        seen["a"].append(time.monotonic())
+        if len(seen["a"]) == 1:
+            return httpx.Response(429, headers={"Retry-After": "1"})
+        return httpx.Response(200, content=b"a")
+
+    def _b(request: httpx.Request) -> httpx.Response:
+        seen["b"].append(time.monotonic())
+        return httpx.Response(200, content=b"b")
+
+    respx.get("https://slow.example.com/a").mock(side_effect=_a)
+    respx.get("https://slow.example.com/b").mock(side_effect=_b)
+    client = _client()
+    try:
+        first = threading.Thread(target=lambda: client.get_sync("https://slow.example.com/a"))
+        first.start()
+        time.sleep(0.3)  # the refusal has been answered; the host asked for one second of quiet
+        client.get_sync("https://slow.example.com/b")
+        first.join()
+    finally:
+        client.close()
+    assert seen["b"][0] - seen["a"][0] >= 0.9, "the second request waited for the host's pause"

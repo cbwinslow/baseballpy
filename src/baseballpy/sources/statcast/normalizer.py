@@ -14,6 +14,10 @@ from baseballpy.sources.statcast.schema import STATCAST_SCHEMA
 logger = logging.getLogger(__name__)
 
 
+class NotAPitchFileError(ValueError):
+    """Savant answered 200 with rows that are not Statcast pitches (for example an HTML error page)."""
+
+
 class StatcastNormalizer:
     """Normalizes raw Statcast CSV payloads into strongly-typed PyArrow Tables."""
 
@@ -60,6 +64,13 @@ class StatcastNormalizer:
 
         table = read_csv_strings(raw_bytes)
         num_rows = table.num_rows
+        if not {f.name for f in self._schema} & set(table.column_names):
+            # a 200 answer that shares no column with the pitch schema (an HTML error page, a notice) is not
+            # a pitch file; it must not become a finished window of empty cells or of zero rows
+            raise NotAPitchFileError(
+                f"the answer has no Statcast pitch column (columns: {table.column_names[:5]}); "
+                "it is not a Statcast pitch CSV"
+            )
         by_name = dict.fromkeys(table.column_names)
         final_columns: list[pa.ChunkedArray | pa.Array] = []
         for field in self._schema:

@@ -184,3 +184,11 @@ MUST stay listed as unsupported with the request tried and the answer.
 - **WHEN** the leaderboard registry, the generated schemas, the fixtures, the enum and the Statcast doc are compared
 - **THEN** every supported variant has all five, every unsupported one has its reason in the doc, and keys are columns of the schema
 - Verified by `tests/test_statcast_coverage.py::test_registry_schema_dataset_fixture_and_enum_agree` and `tests/test_statcast_coverage.py::test_statcast_doc_lists_every_variant_and_unsupported_route`.
+
+### Requirement: An Answer That Is Not A Pitch File Is Refused
+The Statcast normalizer MUST raise `NotAPitchFileError` when a non-empty answer shares no column with the pitch schema (an HTML error page or a notice answered with HTTP 200), and MUST NOT store it as a window of empty cells or of zero rows. An empty body and a header with no rows remain empty windows.
+
+#### Scenario: An HTML page answered with HTTP 200
+- **WHEN** the normalizer is given an HTML error page, an empty body, and a pitch header with no rows
+- **THEN** the HTML page raises `NotAPitchFileError`, the empty body gives zero rows, and the header-only file gives zero rows
+- Verified by `tests/test_statcast_pitches.py::test_an_answer_with_rows_but_no_pitch_columns_is_refused_not_stored_as_empty_cells`.

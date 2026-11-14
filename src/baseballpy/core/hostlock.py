@@ -40,6 +40,26 @@ def _try_lock(fd: int) -> bool:
     return True
 
 
+def _unlock(fd: int) -> None:
+    """Drop the OS lock taken by :func:`_try_lock` before the descriptor is closed.
+
+    Closing a descriptor with a byte-range lock on Windows leaves the release to the operating system
+    ("eventually"), so a process that gave a host up and asked for it again could be told it is busy.
+    """
+    try:
+        if sys.platform == "win32":
+            import msvcrt
+
+            os.lseek(fd, 0, os.SEEK_SET)
+            msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+
+            fcntl.flock(fd, fcntl.LOCK_UN)
+    except OSError:
+        pass  # the descriptor is closed next, which releases the lock in any case
+
+
 def claim_named(directory: Path, name: str, busy_message: str) -> None:
     """Claim ``name`` for this process (idempotent); raises :class:`HostBusyError` if taken.
 
@@ -77,14 +97,17 @@ def release_named(directory: Path, name: str) -> None:
     with _LOCK:
         fd = _HELD.pop((str(directory), name), None)
         if fd is not None:
-            os.close(fd)  # closing the descriptor drops the OS lock
+            _unlock(fd)
+            os.close(fd)
 
 
 def release_all(directory: Path | None = None) -> None:
     """Give up this process's claims (all of them, or those under one lock folder)."""
     with _LOCK:
         for key in [k for k in _HELD if directory is None or k[0] == str(directory)]:
-            os.close(_HELD.pop(key))  # closing the descriptor drops the OS lock
+            fd = _HELD.pop(key)
+            _unlock(fd)
+            os.close(fd)
 
 
 def busy_hosts(directory: Path) -> list[str]:
@@ -101,10 +124,12 @@ def busy_hosts(directory: Path) -> list[str]:
         except OSError:
             continue
         try:
-            if not _try_lock(fd):
+            if _try_lock(fd):
+                _unlock(fd)  # we only looked: give the lock back at once
+            else:
                 busy.append(path.name.removesuffix(".lock"))
         finally:
-            os.close(fd)  # closing drops a lock we just took
+            os.close(fd)
     return busy
 
 

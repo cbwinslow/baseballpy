@@ -100,3 +100,59 @@ def test_cli_audit_rotate_command(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
     result = runner.invoke(main, ["audit", "rotate", "--force"])
     assert result.exit_code == 0
     assert "Audit log rotated:" in result.output
+
+
+def _event(operation: str = "test_op") -> AuditEvent:
+    return AuditEvent(
+        timestamp_utc="2026-11-06T23:00:00Z",
+        operation=operation,
+        source="test_src",
+        status="SUCCESS",
+        records_count=1,
+    )
+
+
+def test_a_rotation_that_cannot_compress_loses_no_audit_record(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config = AuditConfig(log_dir_override=tmp_path / "logs", max_bytes=100, auto_rotate=False)
+    audit = AuditLogger(config)
+    for i in range(4):
+        audit.log(_event(f"before-{i}"))
+
+    def _disk_full(*args: object, **kwargs: object) -> None:
+        raise OSError(28, "No space left on device")
+
+    monkeypatch.setattr("baseballpy.core.audit.gzip.open", _disk_full)
+    with pytest.raises(OSError):
+        audit.rotate(max_bytes=100)
+    monkeypatch.undo()
+    audit.log(_event("after"))
+
+    operations = [e.operation for e in audit.read_events()]
+    assert operations == ["before-0", "before-1", "before-2", "before-3", "after"], (
+        "every record is still in the active log, in order"
+    )
+    assert not list(audit.log_path.parent.glob("*.rot")), "no orphan rotation file is left"
+
+
+def test_a_failed_audit_write_does_not_hide_the_error_that_ended_the_operation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    audit = AuditLogger(AuditConfig(log_dir_override=tmp_path / "logs"))
+
+    def _locked(self: AuditLogger, event: AuditEvent) -> None:
+        raise OSError("the log file is locked")
+
+    monkeypatch.setattr(AuditLogger, "log", _locked)
+    with pytest.raises(ValueError, match="the real failure"), audit.track("job", "src"):
+        raise ValueError("the real failure")
+
+
+def test_an_error_recorded_without_raising_is_audited_as_a_failure(tmp_path: Path) -> None:
+    audit = AuditLogger(AuditConfig(log_dir_override=tmp_path / "logs"))
+    with audit.track("ingest_job", "src", endpoint="job-1") as tracker:
+        tracker.error = "not run: prerequisite job job-0 did not finish"
+    (event,) = audit.read_events()
+    assert event.status == "FAILURE"
+    assert event.error == "not run: prerequisite job job-0 did not finish"

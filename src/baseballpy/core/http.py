@@ -181,6 +181,9 @@ class HttpClient:
         self._thread: threading.Thread | None = None
         self._client: httpx.AsyncClient | None = None
         self._semaphores: dict[str, asyncio.Semaphore] = {}
+        self._host_blocked_until: dict[
+            str, float
+        ] = {}  # host -> time.monotonic() it may be asked again
         self._start_lock = threading.Lock()
         self._header_hooks: dict[str, Callable[[str, str], Mapping[str, str]]] = {}
 
@@ -303,12 +306,22 @@ class HttpClient:
         def _wait(state: RetryCallState) -> float:
             exc = state.outcome.exception() if state.outcome else None
             if isinstance(exc, RetryableStatus) and exc.retry_after is not None:
-                return exc.retry_after
-            return float(
-                wait_exponential_jitter(multiplier=self.rate.backoff_factor, max=60.0)(state)
-            )
+                delay = exc.retry_after
+            else:
+                delay = float(
+                    wait_exponential_jitter(multiplier=self.rate.backoff_factor, max=60.0)(state)
+                )
+            if isinstance(exc, RetryableStatus):
+                # the host asked for a slowdown (429, 503): every request to it waits, not only this one
+                self._host_blocked_until[host] = max(
+                    self._host_blocked_until.get(host, 0.0), time.monotonic() + delay
+                )
+            return delay
 
         async def _once() -> HttpResult:
+            pause = self._host_blocked_until.get(host, 0.0) - time.monotonic()
+            if pause > 0:
+                await asyncio.sleep(pause)
             async with semaphore, limiter:
                 started = time.perf_counter()
                 sent_at = _now()

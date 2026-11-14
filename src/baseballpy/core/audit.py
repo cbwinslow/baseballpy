@@ -116,6 +116,11 @@ class _Run:
     def build_event(self) -> AuditEvent:
         """Finalize timings and build the event to persist."""
         tracker = self.tracker
+        if self.status == STATUS_SUCCESS and tracker.error:
+            # the caller recorded an error and returned instead of raising (a job that was not run because
+            # its prerequisite failed): the audit log must not call it a success
+            self.status = STATUS_FAILURE
+            self.error_msg = tracker.error
         duration = time.perf_counter() - self.start_perf
         completed_utc = datetime.now(UTC).isoformat()
         if tracker.download_seconds is not None and tracker.processing_seconds is None:
@@ -174,6 +179,14 @@ class AuditLogger:
                 except OSError:
                     pass
 
+    def _log_or_warn(self, event: AuditEvent) -> None:
+        """Write the event; a failed write (a full disk, a locked file) is a warning, never the error that
+        ends the operation: it would hide the real failure that is being propagated."""
+        try:
+            self.log(event)
+        except OSError as exc:
+            logger.warning("could not write the audit record of %s: %s", event.operation, exc)
+
     def _rotate_unlocked(self, threshold: int, force: bool) -> Path | None:
         """Rotate audit.jsonl into audit-YYYY-MM-DD[-N].jsonl.gz (must hold _lock)."""
         if not self.log_path.exists():
@@ -205,13 +218,24 @@ class AuditLogger:
             with open(rot_tmp, "rb") as f_in, gzip.open(part_path, "wb", compresslevel=6) as f_out:
                 shutil.copyfileobj(f_in, f_out)
             part_path.replace(candidate)
+        except BaseException:
+            # the compressed copy is not complete (a full disk, an interrupt): put the records back in front of
+            # what was written since, so the log loses nothing
+            self._restore_unlocked(rot_tmp)
+            raise
         finally:
-            if rot_tmp.exists():
-                rot_tmp.unlink(missing_ok=True)
-            if part_path.exists():
-                part_path.unlink(missing_ok=True)
-
+            part_path.unlink(missing_ok=True)
+        rot_tmp.unlink(missing_ok=True)
         return candidate
+
+    def _restore_unlocked(self, rot_tmp: Path) -> None:
+        """Make ``rot_tmp`` plus the lines written since the active file was replaced the active file again."""
+        try:
+            with open(rot_tmp, "ab") as merged, open(self.log_path, "rb") as newer:
+                shutil.copyfileobj(newer, merged)
+            rot_tmp.replace(self.log_path)
+        except OSError:
+            logger.error("audit rotation failed and the old records stay in %s", rot_tmp)
 
     def rotate(self, max_bytes: int | None = None, *, force: bool = False) -> Path | None:
         """Rotate and gzip-compress audit.jsonl if size >= max_bytes (or force=True)."""
@@ -236,7 +260,7 @@ class AuditLogger:
             run.record_exception(exc)
             raise
         finally:
-            self.log(run.build_event())
+            self._log_or_warn(run.build_event())
 
     @asynccontextmanager
     async def async_track(
@@ -257,7 +281,7 @@ class AuditLogger:
         finally:
             event = run.build_event()
             # shield so a cancelled caller still persists its CANCELLED event
-            await asyncio.shield(asyncio.to_thread(self.log, event))
+            await asyncio.shield(asyncio.to_thread(self._log_or_warn, event))
 
     def read_events(
         self,

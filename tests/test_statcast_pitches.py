@@ -330,3 +330,15 @@ def test_table_ingests_a_season_of_pitches_and_returns_it(tmp_path: Path) -> Non
     respx.get(SAVANT_BASE_URL).mock(side_effect=_by_window)
     pitches = access.table("pitches", 2024, cache_config=lake)
     assert pitches.num_rows == 15 and pitches.schema.equals(STATCAST_SCHEMA)
+
+
+def test_an_answer_with_rows_but_no_pitch_columns_is_refused_not_stored_as_empty_cells() -> None:
+    from baseballpy.sources.statcast.normalizer import NotAPitchFileError
+
+    normalizer = StatcastNormalizer()
+    html = b"<html><body><h1>Service Unavailable</h1><p>Try again later</p></body></html>"
+    with pytest.raises(NotAPitchFileError, match="no Statcast pitch column"):
+        normalizer.normalize(html)
+    assert len(normalizer.normalize(b"")) == 0, "an empty body is an empty window"
+    header_only = b"pitch_type,game_pk,at_bat_number\n"
+    assert len(normalizer.normalize(header_only)) == 0, "a header with no rows is an empty window"

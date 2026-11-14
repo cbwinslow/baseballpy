@@ -8,13 +8,13 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | Spec | Requirements | Scenarios | Tests cited |
 |---|---|---|---|
 | `agent-runbooks` | 7 | 10 | 17 |
-| `audit-and-benchmarking` | 7 | 11 | 29 |
+| `audit-and-benchmarking` | 8 | 12 | 32 |
 | `bref-ingestion` | 3 | 3 | 10 |
 | `caching-and-invalidation` | 22 | 36 | 51 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 25 | 39 | 66 |
-| `concurrency-and-rate-limiting` | 6 | 12 | 14 |
+| `concurrency-and-rate-limiting` | 7 | 13 | 15 |
 | `core-protocols` | 2 | 3 | 5 |
 | `data-export` | 6 | 9 | 23 |
 | `docs-generation` | 1 | 1 | 1 |
@@ -28,7 +28,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `portability` | 3 | 3 | 7 |
 | `real-time-streaming` | 7 | 12 | 12 |
 | `retrosheet-ingestion` | 25 | 34 | 43 |
-| `statcast-ingestion` | 17 | 20 | 28 |
+| `statcast-ingestion` | 18 | 21 | 29 |
 
 ## Source review scorecard (where each source stands)
 
@@ -42,7 +42,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 389/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
-| `statcast` | 50 | archived | yes | yes | yes | 321/1765 (18%) | 17 |
+| `statcast` | 50 | archived | yes | yes | yes | 321/1765 (18%) | 18 |
 | `mlb_api` | 365 | archived | yes | yes | yes | 9568/16926 (56%) | 28 |
 
 ## Active changes (`openspec/changes/`)
@@ -55,7 +55,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
 | `download-throughput` | 8 | 1 | 2.4 |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 13 | 2 | 2.1, 4.1 |
+| `finish-mlb-history` | 13 | 3 | 2.1, 4.1, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `lake-schema-evolution` | 5 | 1 | 1.6 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
@@ -188,6 +188,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 120: The Hydrate Fallback's Player List Is Complete Where It Can Be Checked; No Wider List Is Built
 - ADR 121: The Game Crosswalk Keeps The Played Row Of Each Game And Matches Only Played MLB Games
 - ADR 122: A Refresh Replaces A Raw File And The Manifest Keeps A Record Of The Replaced Version
+- ADR 123: Review Round 1 Fixes Only What The Code Showed; The Rest Is Tracked
 
 ## Documentation pages (`docs/`)
 

@@ -92,3 +92,11 @@ The per-host rate and in-flight caps are kept per process, so a process MUST cla
 - **WHEN** an `HttpClient` with a lock folder asks a host another process holds
 - **THEN** it is refused, a client with `allow_parallel_processes` is not, and a client with no lock folder never claims.
 - Verified by `tests/test_hostlock.py::test_the_http_client_claims_a_host_on_first_use_and_the_opt_out_skips_the_claim` and `tests/test_hostlock.py::test_a_client_without_a_lock_folder_never_claims`.
+
+### Requirement: A Slowdown Request Pauses The Whole Host
+When a host answers HTTP 429 or 503, `HttpClient` MUST hold back every later request to that host until the wait of the refused request has passed, not only the request that was refused. The host lock MUST be released with an explicit unlock before the descriptor is closed.
+
+#### Scenario: A second request arrives during the pause
+- **WHEN** one request to a host is refused with `Retry-After: 1` and another request to the same host starts 0.3 seconds later
+- **THEN** the second request reaches the server at least 0.9 seconds after the refused one
+- Verified by `tests/test_hardening.py::test_a_429_slows_every_request_to_that_host_not_only_the_one_that_was_refused`.

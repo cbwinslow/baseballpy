@@ -103,3 +103,11 @@ written with a leading zero or a plus sign MUST be typed as text.
 - **WHEN** the check runs on a Kalshi or Polymarket dataset whose raw files are gzipped JSON pages
 - **THEN** the distinct record ids in the raw pages are the rows the table must hold; a missing row is `row_missing`, an invented one `row_extra`, and the verdict says that rows were counted, not cells compared
 - Verified by `tests/test_kalshi.py::test_the_round_trip_check_counts_kalshi_pages_and_finds_a_lost_row`, `tests/test_page_counts.py::test_kalshi_candlesticks_count_both_page_shapes_and_a_repeated_candle_once`, `tests/test_page_counts.py::test_polymarket_prices_are_keyed_by_the_request_token_and_the_time` and `tests/test_page_counts.py::test_polymarket_outcomes_come_from_the_outcome_list_of_each_market`.
+
+### Requirement: The Audit Log Tells The Truth And Never Loses A Record
+`AuditLogger.track` MUST record an operation whose tracker holds an error as `FAILURE` with that error, even when the code returned instead of raising. A failed write of the audit record MUST NOT replace the error that ended the operation. A rotation that cannot finish compressing MUST leave every record in the active log, in order, and no orphan rotation file.
+
+#### Scenario: Not run, a full disk, and a locked log
+- **WHEN** a job records "not run: prerequisite failed" and returns, a rotation hits a full disk while compressing, and the log write fails inside a failing operation
+- **THEN** the job is audited as `FAILURE` with its message, the active log still holds every earlier record plus the new ones, and the caller sees the real exception
+- Verified by `tests/test_audit_rotate.py::test_an_error_recorded_without_raising_is_audited_as_a_failure`, `tests/test_audit_rotate.py::test_a_rotation_that_cannot_compress_loses_no_audit_record` and `tests/test_audit_rotate.py::test_a_failed_audit_write_does_not_hide_the_error_that_ended_the_operation`.
