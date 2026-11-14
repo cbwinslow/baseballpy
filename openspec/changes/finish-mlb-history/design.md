@@ -73,3 +73,17 @@ A trial `uv build` (before the v1 release steps, task 4.1) gave a 12.1 MB source
 `baseballpy verify-sample statcast -s 2024 -d pitches`: 51 weekly windows downloaded into a scratch home. 15 are identical row for row; 36 differ, and in every one only the column `pitch_type` differs. None of the 51 raw CSV files is byte-identical (the provider rewrites its files). One window was fetched again by hand (2024-06-04 to 2024-06-08): same 19,787 rows and the same keys; 11 pitches changed from `SL` (Slider) to `ST` (Sweeper). So Savant reclassifies pitches after the fact; this is provider drift, not a download or parsing defect, and the sample reports it as designed (a difference is information).
 
 Open policy question for the owner (not decided here): the lake keeps what it fetched first (raw is immutable). A finished season can be refreshed once with `ingest statcast -s Y --refresh`; whether that should be a routine step (for example once after each season ends) is the "Statcast revision policy" item in the backlog.
+
+## Evidence: the same download on a second machine and operating system (2026-11-14)
+
+The wheel built from this checkout was installed in an empty virtual environment on the homelab (Ubuntu Linux, Python 3.12, an empty folder) and four small downloads were run there; the result was copied back and compared with the lake on the Windows PC by `ingest.sample.compare_lakes` (processed chunks cell by cell, raw files by sha256):
+
+| Source | Processed chunks identical | Raw files identical |
+| --- | --- | --- |
+| Chadwick register | 4 of 4 | 20 of 20 |
+| Lahman | 27 of 27 | 27 of 27 |
+| Retrosheet (reference + 2023) | 29 of 29 | 47 of 47 |
+
+Statcast, one 5-day window (2024-06-04 to 2024-06-08) through `baseballpy statcast`: the Windows download made twice and the Linux download are identical to each other (19,787 rows, same 120 columns, no row differs). Against the lake the same window has the same 19,787 rows and columns; 11 rows differ, only in `pitch_type` and `pitch_name` (Savant relabelled Slider as Sweeper after the lake copy was made). So the code gives the same result on every machine tried; a difference with an older copy is the provider changing its data, which is expected for a live copy.
+
+Not covered: the MLB API on the second machine, and the full-season Statcast and Retrosheet downloads there.
