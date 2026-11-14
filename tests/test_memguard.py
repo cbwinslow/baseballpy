@@ -188,8 +188,12 @@ def test_this_process_is_alive_and_a_dead_pid_is_not() -> None:
     assert pid_alive(2_000_000_000) is False
 
 
-def test_a_shared_pool_is_sized_once_from_the_memory_left() -> None:
+def test_a_shared_pool_is_sized_once_from_the_memory_left(monkeypatch: pytest.MonkeyPatch) -> None:
     from baseballpy.sources.retrosheet import pool
+
+    monkeypatch.setattr(
+        "os.cpu_count", lambda: 8
+    )  # the CPU count is also a cap: a 3-CPU runner gave 3, not 4
 
     machine = Machine(total_gib=96, available_gib=16, private_gib=0.4)
     pool._sizes.clear()

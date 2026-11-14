@@ -61,6 +61,7 @@ uv run pytest                                   # network is blocked (pytest-soc
 uv run pytest tests/test_mlb_stream.py::test_apply_patch_all_operations -v
 uvx ruff check . && uvx ruff format .
 uv run mypy --strict src                         # use `uv run`: bare `uvx mypy` lacks the deps and reports false errors
+uv run mypy --strict --platform linux src       # CI type-checks on Linux; Windows-only calls need a sys.platform guard (also try --platform darwin)
 uv run baseballpy docs generate [--check]        # regenerates column dictionaries; tests fail on stale docs
 ```
 

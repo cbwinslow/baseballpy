@@ -52,6 +52,9 @@ class MemorySnapshot:
 
 
 def _windows_status() -> MemorySnapshot:
+    if sys.platform != "win32":
+        raise OSError("the Windows memory status exists only on Windows")
+
     class Status(ctypes.Structure):  # MEMORYSTATUSEX
         _fields_ = [
             ("dwLength", ctypes.c_uint32),
