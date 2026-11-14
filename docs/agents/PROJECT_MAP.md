@@ -193,6 +193,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 125: A Short MLB Pool, A Retrosheet Season With A Missing File, And A Boxscore Taken While The Game Was Live Are Not Stored As Finished
 - ADR 126: Review Round 3: What Was Fixed, What Was Rejected, And Who Wrote It
 - ADR 127: Review Round 5: The Per-Season Lock Needed Four Follow-Ups
+- ADR 128: A Typed Column That Exists But Is Empty Is Filled From `_extras`; The Hydrate Route Keeps The Stats Block
 
 ## Documentation pages (`docs/`)
 

@@ -60,7 +60,21 @@ uv run baseballpy ingest fangraphs -d projection -o download=yes
 <!-- BEGIN GENERATED:fangraphs.description_sources -->
 ### Description sources
 
-No column descriptions have been written for this source yet.
+- `babip`: https://library.fangraphs.com/offense/babip/
+- `batted_ball`: https://library.fangraphs.com/offense/batted-ball/
+- `fip`: https://library.fangraphs.com/pitching/fip/
+- `iso`: https://library.fangraphs.com/offense/iso/
+- `lob`: https://library.fangraphs.com/pitching/lob/
+- `plate_discipline`: https://library.fangraphs.com/offense/plate-discipline/
+- `rate_stats`: https://library.fangraphs.com/offense/rate-stats/
+- `siera`: https://library.fangraphs.com/pitching/siera/
+- `spd`: https://library.fangraphs.com/offense/spd/
+- `ubr`: https://library.fangraphs.com/offense/ubr/
+- `uzr`: https://library.fangraphs.com/defense/uzr/
+- `war`: https://library.fangraphs.com/misc/war/
+- `woba`: https://library.fangraphs.com/offense/woba/
+- `wrc`: https://library.fangraphs.com/offense/wrc/
+- `xfip`: https://library.fangraphs.com/pitching/xfip/
 
 <!-- END GENERATED:fangraphs.description_sources -->
 
@@ -115,26 +129,26 @@ FanGraphs season batting leaderboard (private research data): one row per player
 | `ifh` | int32 | yes | — | TODO |
 | `bu` | int32 | yes | — | TODO |
 | `buh` | int32 | yes | — | TODO |
-| `bb_` | double | yes | — | TODO |
-| `k_` | double | yes | — | TODO |
+| `bb_` | double | yes | — | Walk rate: the share of plate appearances that end in a walk (BB / PA). (src: rate_stats) |
+| `k_` | double | yes | — | Strikeout rate: the share of plate appearances that end in a strikeout (K / PA). (src: rate_stats) |
 | `bb_k` | double | yes | — | TODO |
 | `obp` | double | yes | — | TODO |
 | `slg` | double | yes | — | TODO |
 | `ops` | double | yes | — | TODO |
-| `iso` | double | yes | — | TODO |
-| `babip` | double | yes | — | TODO |
+| `iso` | double | yes | — | Isolated Power: a measure of a hitter's raw power, how often a player hits for extra bases. (src: iso) |
+| `babip` | double | yes | — | Batting Average on Balls In Play: how often a ball in play goes for a hit. (src: babip) |
 | `gb_fb` | double | yes | — | TODO |
-| `ld_` | double | yes | — | TODO |
-| `gb_` | double | yes | — | TODO |
-| `fb_` | double | yes | — | TODO |
-| `iffb_` | double | yes | — | TODO |
+| `ld_` | double | yes | — | Line Drive Percentage: line drives divided by balls in play. (src: batted_ball) |
+| `gb_` | double | yes | — | Ground Ball Percentage: ground balls divided by balls in play. (src: batted_ball) |
+| `fb_` | double | yes | — | Fly Ball Percentage: fly balls divided by balls in play. (src: batted_ball) |
+| `iffb_` | double | yes | — | Infield Fly Ball Percentage: infield fly balls divided by fly balls. (src: batted_ball) |
 | `hr_fb` | double | yes | — | TODO |
 | `ifh_` | double | yes | — | TODO |
 | `buh_` | double | yes | — | TODO |
 | `tto_` | decimal128(18, 8) | yes | — | TODO |
-| `woba` | double | yes | — | TODO |
-| `wraa` | double | yes | — | TODO |
-| `wrc` | double | yes | — | TODO |
+| `woba` | double | yes | — | Weighted On-Base Average: combines all the different aspects of hitting into one metric. (src: woba) |
+| `wraa` | double | yes | — | Weighted Runs Above Average: the non-park-adjusted version of Batting Runs. (src: woba) |
+| `wrc` | double | yes | — | Weighted Runs Created: an improved version of Bill James' Runs Created, in runs. (src: wrc) |
 | `batting` | double | yes | — | TODO |
 | `fielding` | double | yes | — | TODO |
 | `replacement` | double | yes | — | TODO |
@@ -144,12 +158,12 @@ FanGraphs season batting leaderboard (private research data): one row per player
 | `defense` | double | yes | — | TODO |
 | `offense` | double | yes | — | TODO |
 | `rar` | double | yes | — | TODO |
-| `war` | double | yes | — | TODO |
+| `war` | double | yes | — | Wins Above Replacement: an attempt to summarize a player's total contributions to the team. (src: war) |
 | `warold` | double | yes | — | TODO |
 | `dollars` | double | yes | — | TODO |
 | `baserunning` | double | yes | — | TODO |
-| `spd` | double | yes | — | TODO |
-| `wrc_` | double | yes | — | TODO |
+| `spd` | double | yes | — | Speed Score: a Bill James statistic that rates a player on speed and baserunning ability. (src: spd) |
+| `wrc_` | double | yes | — | wRC+: how a player's wRC compares with league average after controlling for park effects. (src: wrc) |
 | `wbsr` | double | yes | — | TODO |
 | `wpa` | double | yes | — | TODO |
 | `wpa_neg` | double | yes | — | TODO |
@@ -191,15 +205,15 @@ FanGraphs season batting leaderboard (private research data): one row per player
 | `wch_c` | double | yes | — | TODO |
 | `wsf_c` | double | yes | — | TODO |
 | `wkn_c` | double | yes | — | TODO |
-| `o_swing_` | decimal128(18, 8) | yes | — | TODO |
-| `z_swing_` | decimal128(18, 8) | yes | — | TODO |
-| `swing_` | decimal128(18, 8) | yes | — | TODO |
-| `o_contact_` | decimal128(18, 8) | yes | — | TODO |
-| `z_contact_` | decimal128(18, 8) | yes | — | TODO |
-| `contact_` | decimal128(18, 8) | yes | — | TODO |
-| `zone_` | decimal128(18, 8) | yes | — | TODO |
-| `f_strike_` | decimal128(18, 8) | yes | — | TODO |
-| `swstr_` | decimal128(18, 8) | yes | — | TODO |
+| `o_swing_` | decimal128(18, 8) | yes | — | Swings at pitches outside the zone divided by pitches outside the zone. (src: plate_discipline) |
+| `z_swing_` | decimal128(18, 8) | yes | — | Swings at pitches inside the zone divided by pitches inside the zone. (src: plate_discipline) |
+| `swing_` | decimal128(18, 8) | yes | — | Swings divided by pitches. (src: plate_discipline) |
+| `o_contact_` | decimal128(18, 8) | yes | — | Contact made on pitches outside the zone divided by swings on pitches outside the zone. (src: plate_discipline) |
+| `z_contact_` | decimal128(18, 8) | yes | — | Contact made on pitches inside the zone divided by swings on pitches inside the zone. (src: plate_discipline) |
+| `contact_` | decimal128(18, 8) | yes | — | Pitches on which contact was made divided by swings. (src: plate_discipline) |
+| `zone_` | decimal128(18, 8) | yes | — | Pitches in the strike zone divided by total pitches. (src: plate_discipline) |
+| `f_strike_` | decimal128(18, 8) | yes | — | First-pitch strikes divided by plate appearances. (src: plate_discipline) |
+| `swstr_` | decimal128(18, 8) | yes | — | Swings and misses divided by total pitches. (src: plate_discipline) |
 | `cstr_` | decimal128(18, 8) | yes | — | TODO |
 | `c_swstr_` | decimal128(18, 8) | yes | — | TODO |
 | `pull` | int32 | yes | — | TODO |
@@ -215,7 +229,7 @@ FanGraphs season batting leaderboard (private research data): one row per player
 | `soft_` | decimal128(18, 8) | yes | — | TODO |
 | `med_` | decimal128(18, 8) | yes | — | TODO |
 | `hard_` | decimal128(18, 8) | yes | — | TODO |
-| `ubr` | double | yes | — | TODO |
+| `ubr` | double | yes | — | Ultimate Base Running: the value a player adds through base running on non-stolen-base plays. (src: ubr) |
 | `gdpruns` | double | yes | — | TODO |
 | `avg_` | double | yes | — | TODO |
 | `bb__` | double | yes | — | TODO |
@@ -613,10 +627,10 @@ FanGraphs season fielding leaderboard (private research data): one row per playe
 | `cpp` | double | yes | — | TODO |
 | `rpp` | double | yes | — | TODO |
 | `arm` | double | yes | — | TODO |
-| `dpr` | double | yes | — | TODO |
-| `rngr` | double | yes | — | TODO |
-| `errr` | double | yes | — | TODO |
-| `uzr` | double | yes | — | TODO |
+| `dpr` | double | yes | — | Double-Play Runs: runs an infielder adds above average by turning double plays. (src: uzr) |
+| `rngr` | double | yes | — | Range Runs: whether a fielder reaches more balls than average at their position. (src: uzr) |
+| `errr` | double | yes | — | Error Runs: runs gained or lost by committing fewer or more errors than a league-average player at the position. (src: uzr) |
+| `uzr` | double | yes | — | Ultimate Zone Rating: puts a run value to defense. (src: uzr) |
 | `uzr_150` | double | yes | — | TODO |
 | `defense` | double | yes | — | TODO |
 | `made0` | int32 | yes | — | TODO |
@@ -672,7 +686,7 @@ FanGraphs Guts! constants (private research data): wOBA weights, FIP constant, r
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
 | `season` | int32 | yes | — | TODO |
-| `woba` | decimal128(9, 3) | yes | — | TODO |
+| `woba` | decimal128(9, 3) | yes | — | Weighted On-Base Average: combines all the different aspects of hitting into one metric. (src: woba) |
 | `wobascale` | decimal128(9, 3) | yes | — | TODO |
 | `wbb` | decimal128(9, 3) | yes | — | TODO |
 | `whbp` | decimal128(9, 3) | yes | — | TODO |
@@ -717,7 +731,7 @@ FanGraphs park factors (private research data): one row per season and team.
 | `fb` | int32 | yes | — | TODO |
 | `ld` | int32 | yes | — | TODO |
 | `iffb` | int32 | yes | — | TODO |
-| `fip` | int32 | yes | — | TODO |
+| `fip` | int32 | yes | — | Fielding Independent Pitching: what a pitcher's ERA would look like with typical results on balls in play. (src: fip) |
 | `_season` | int32 | yes | — | TODO |
 | `_loaded_at` | timestamp[us, tz=UTC] | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
@@ -813,14 +827,14 @@ FanGraphs season pitching leaderboard (private research data): one row per playe
 | `hr_9` | double | yes | — | TODO |
 | `avg` | double | yes | — | TODO |
 | `whip` | double | yes | — | TODO |
-| `babip` | double | yes | — | TODO |
-| `lob_` | decimal128(18, 8) | yes | — | TODO |
-| `fip` | double | yes | — | TODO |
+| `babip` | double | yes | — | Batting Average on Balls In Play: how often a ball in play goes for a hit. (src: babip) |
+| `lob_` | decimal128(18, 8) | yes | — | Left On Base Percentage: the percentage of base runners a pitcher strands on base. (src: lob) |
+| `fip` | double | yes | — | Fielding Independent Pitching: what a pitcher's ERA would look like with typical results on balls in play. (src: fip) |
 | `gb_fb` | double | yes | — | TODO |
-| `ld_` | double | yes | — | TODO |
-| `gb_` | double | yes | — | TODO |
-| `fb_` | double | yes | — | TODO |
-| `iffb_` | double | yes | — | TODO |
+| `ld_` | double | yes | — | Line Drive Percentage: line drives divided by balls in play. (src: batted_ball) |
+| `gb_` | double | yes | — | Ground Ball Percentage: ground balls divided by balls in play. (src: batted_ball) |
+| `fb_` | double | yes | — | Fly Ball Percentage: fly balls divided by balls in play. (src: batted_ball) |
+| `iffb_` | double | yes | — | Infield Fly Ball Percentage: infield fly balls divided by fly balls. (src: batted_ball) |
 | `hr_fb` | double | yes | — | TODO |
 | `ifh_` | double | yes | — | TODO |
 | `buh_` | double | yes | — | TODO |
@@ -831,14 +845,14 @@ FanGraphs season pitching leaderboard (private research data): one row per playe
 | `relieving` | double | yes | — | TODO |
 | `relief_ip` | double | yes | — | TODO |
 | `rar` | double | yes | — | TODO |
-| `war` | double | yes | — | TODO |
+| `war` | double | yes | — | Wins Above Replacement: an attempt to summarize a player's total contributions to the team. (src: war) |
 | `dollars` | double | yes | — | TODO |
 | `ra9_wins` | double | yes | — | TODO |
 | `lob_wins` | double | yes | — | TODO |
 | `bip_wins` | double | yes | — | TODO |
 | `bs_wins` | double | yes | — | TODO |
 | `tera` | double | yes | — | TODO |
-| `xfip` | double | yes | — | TODO |
+| `xfip` | double | yes | — | Expected FIP: a regressed version of FIP that uses the league-average HR/FB rate on fly balls. (src: xfip) |
 | `wpa` | double | yes | — | TODO |
 | `wpa_neg` | double | yes | — | TODO |
 | `wpa_pos` | double | yes | — | TODO |
@@ -882,15 +896,15 @@ FanGraphs season pitching leaderboard (private research data): one row per playe
 | `wch_c` | double | yes | — | TODO |
 | `wsf_c` | double | yes | — | TODO |
 | `wkn_c` | double | yes | — | TODO |
-| `o_swing_` | decimal128(18, 8) | yes | — | TODO |
-| `z_swing_` | decimal128(18, 8) | yes | — | TODO |
-| `swing_` | decimal128(18, 8) | yes | — | TODO |
-| `o_contact_` | decimal128(18, 8) | yes | — | TODO |
-| `z_contact_` | decimal128(18, 8) | yes | — | TODO |
-| `contact_` | decimal128(18, 8) | yes | — | TODO |
-| `zone_` | decimal128(18, 8) | yes | — | TODO |
-| `f_strike_` | decimal128(18, 8) | yes | — | TODO |
-| `swstr_` | decimal128(18, 8) | yes | — | TODO |
+| `o_swing_` | decimal128(18, 8) | yes | — | Swings at pitches outside the zone divided by pitches outside the zone. (src: plate_discipline) |
+| `z_swing_` | decimal128(18, 8) | yes | — | Swings at pitches inside the zone divided by pitches inside the zone. (src: plate_discipline) |
+| `swing_` | decimal128(18, 8) | yes | — | Swings divided by pitches. (src: plate_discipline) |
+| `o_contact_` | decimal128(18, 8) | yes | — | Contact made on pitches outside the zone divided by swings on pitches outside the zone. (src: plate_discipline) |
+| `z_contact_` | decimal128(18, 8) | yes | — | Contact made on pitches inside the zone divided by swings on pitches inside the zone. (src: plate_discipline) |
+| `contact_` | decimal128(18, 8) | yes | — | Pitches on which contact was made divided by swings. (src: plate_discipline) |
+| `zone_` | decimal128(18, 8) | yes | — | Pitches in the strike zone divided by total pitches. (src: plate_discipline) |
+| `f_strike_` | decimal128(18, 8) | yes | — | First-pitch strikes divided by plate appearances. (src: plate_discipline) |
+| `swstr_` | decimal128(18, 8) | yes | — | Swings and misses divided by total pitches. (src: plate_discipline) |
 | `cstr_` | decimal128(18, 8) | yes | — | TODO |
 | `c_swstr_` | decimal128(18, 8) | yes | — | TODO |
 | `hld` | int32 | yes | — | TODO |
@@ -899,10 +913,10 @@ FanGraphs season pitching leaderboard (private research data): one row per playe
 | `era_` | double | yes | — | TODO |
 | `fip_` | double | yes | — | TODO |
 | `xfip_` | double | yes | — | TODO |
-| `k_` | decimal128(18, 8) | yes | — | TODO |
-| `bb_` | decimal128(18, 8) | yes | — | TODO |
+| `k_` | decimal128(18, 8) | yes | — | Strikeout rate: the share of plate appearances that end in a strikeout (K / PA). (src: rate_stats) |
+| `bb_` | decimal128(18, 8) | yes | — | Walk rate: the share of plate appearances that end in a walk (BB / PA). (src: rate_stats) |
 | `k_minus_bb_pct` | decimal128(18, 8) | yes | — | TODO |
-| `siera` | double | yes | — | TODO |
+| `siera` | double | yes | — | Skill-Interactive ERA: an ERA estimator meant to show a pitcher's underlying skill level. (src: siera) |
 | `kwera` | double | yes | — | TODO |
 | `rs_9` | double | yes | — | TODO |
 | `e_f` | double | yes | — | TODO |
@@ -1351,24 +1365,24 @@ FanGraphs projection snapshots (private research data): a row per system, player
 | `obp` | decimal128(18, 7) | yes | — | TODO |
 | `slg` | decimal128(18, 6) | yes | — | TODO |
 | `ops` | decimal128(18, 6) | yes | — | TODO |
-| `woba` | decimal128(18, 6) | yes | — | TODO |
-| `bb_` | decimal128(18, 7) | yes | — | TODO |
-| `k_` | decimal128(18, 8) | yes | — | TODO |
+| `woba` | decimal128(18, 6) | yes | — | Weighted On-Base Average: combines all the different aspects of hitting into one metric. (src: woba) |
+| `bb_` | decimal128(18, 7) | yes | — | Walk rate: the share of plate appearances that end in a walk (BB / PA). (src: rate_stats) |
+| `k_` | decimal128(18, 8) | yes | — | Strikeout rate: the share of plate appearances that end in a strikeout (K / PA). (src: rate_stats) |
 | `bb_k` | decimal128(18, 7) | yes | — | TODO |
-| `iso` | decimal128(18, 7) | yes | — | TODO |
-| `spd` | decimal128(18, 6) | yes | — | TODO |
-| `babip` | decimal128(18, 7) | yes | — | TODO |
-| `ubr` | double | yes | — | TODO |
+| `iso` | decimal128(18, 7) | yes | — | Isolated Power: a measure of a hitter's raw power, how often a player hits for extra bases. (src: iso) |
+| `spd` | decimal128(18, 6) | yes | — | Speed Score: a Bill James statistic that rates a player on speed and baserunning ability. (src: spd) |
+| `babip` | decimal128(18, 7) | yes | — | Batting Average on Balls In Play: how often a ball in play goes for a hit. (src: babip) |
+| `ubr` | double | yes | — | Ultimate Base Running: the value a player adds through base running on non-stolen-base plays. (src: ubr) |
 | `gdpruns` | string | yes | — | TODO |
-| `wrc` | double | yes | — | TODO |
-| `wraa` | double | yes | — | TODO |
-| `uzr` | double | yes | — | TODO |
+| `wrc` | double | yes | — | Weighted Runs Created: an improved version of Bill James' Runs Created, in runs. (src: wrc) |
+| `wraa` | double | yes | — | Weighted Runs Above Average: the non-park-adjusted version of Batting Runs. (src: woba) |
+| `uzr` | double | yes | — | Ultimate Zone Rating: puts a run value to defense. (src: uzr) |
 | `wbsr` | double | yes | — | TODO |
 | `baserunning` | double | yes | — | TODO |
-| `war` | double | yes | — | TODO |
+| `war` | double | yes | — | Wins Above Replacement: an attempt to summarize a player's total contributions to the team. (src: war) |
 | `off` | double | yes | — | TODO |
 | `def` | double | yes | — | TODO |
-| `wrc_` | double | yes | — | TODO |
+| `wrc_` | double | yes | — | wRC+: how a player's wRC compares with league average after controlling for park effects. (src: wrc) |
 | `fpts` | double | yes | — | TODO |
 | `fpts_g` | double | yes | — | TODO |
 | `spts` | double | yes | — | TODO |
@@ -1430,9 +1444,9 @@ FanGraphs projection snapshots (private research data): a row per system, player
 | `k_bb` | decimal128(18, 7) | yes | — | TODO |
 | `hr_9` | decimal128(18, 6) | yes | — | TODO |
 | `k_minus_bb_pct` | double | yes | — | TODO |
-| `gb_` | decimal128(18, 6) | yes | — | TODO |
-| `lob_` | decimal128(18, 6) | yes | — | TODO |
-| `fip` | decimal128(18, 5) | yes | — | TODO |
+| `gb_` | decimal128(18, 6) | yes | — | Ground Ball Percentage: ground balls divided by balls in play. (src: batted_ball) |
+| `lob_` | decimal128(18, 6) | yes | — | Left On Base Percentage: the percentage of base runners a pitcher strands on base. (src: lob) |
+| `fip` | decimal128(18, 5) | yes | — | Fielding Independent Pitching: what a pitcher's ERA would look like with typical results on balls in play. (src: fip) |
 | `fpts_ip` | double | yes | — | TODO |
 | `spts_ip` | double | yes | — | TODO |
 | `ra9_war` | double | yes | — | TODO |
@@ -1484,7 +1498,7 @@ FanGraphs prospect board (private research data): scouting grades per player and
 | `hit` | string | yes | — | TODO |
 | `game` | string | yes | — | TODO |
 | `raw` | string | yes | — | TODO |
-| `spd` | string | yes | — | TODO |
+| `spd` | string | yes | — | Speed Score: a Bill James statistic that rates a player on speed and baserunning ability. (src: spd) |
 | `fld` | string | yes | — | TODO |
 | `fb` | string | yes | — | TODO |
 | `sl` | string | yes | — | TODO |
@@ -1621,18 +1635,18 @@ FanGraphs batting split leaderboards (private research data): a curated set of s
 | `teamnameabb` | string | yes | — | TODO |
 | `pa` | int32 | yes | — | TODO |
 | `avg` | double | yes | — | TODO |
-| `bb_` | double | yes | — | TODO |
-| `k_` | double | yes | — | TODO |
+| `bb_` | double | yes | — | Walk rate: the share of plate appearances that end in a walk (BB / PA). (src: rate_stats) |
+| `k_` | double | yes | — | Strikeout rate: the share of plate appearances that end in a strikeout (K / PA). (src: rate_stats) |
 | `bb_k` | double | yes | — | TODO |
 | `obp` | double | yes | — | TODO |
 | `slg` | double | yes | — | TODO |
 | `ops` | double | yes | — | TODO |
-| `iso` | double | yes | — | TODO |
-| `babip` | double | yes | — | TODO |
-| `wrc` | double | yes | — | TODO |
-| `wraa` | double | yes | — | TODO |
-| `woba` | double | yes | — | TODO |
-| `wrc_` | double | yes | — | TODO |
+| `iso` | double | yes | — | Isolated Power: a measure of a hitter's raw power, how often a player hits for extra bases. (src: iso) |
+| `babip` | double | yes | — | Batting Average on Balls In Play: how often a ball in play goes for a hit. (src: babip) |
+| `wrc` | double | yes | — | Weighted Runs Created: an improved version of Bill James' Runs Created, in runs. (src: wrc) |
+| `wraa` | double | yes | — | Weighted Runs Above Average: the non-park-adjusted version of Batting Runs. (src: woba) |
+| `woba` | double | yes | — | Weighted On-Base Average: combines all the different aspects of hitting into one metric. (src: woba) |
+| `wrc_` | double | yes | — | wRC+: how a player's wRC compares with league average after controlling for park effects. (src: wrc) |
 | `_season` | int32 | yes | — | TODO |
 | `_split` | string | yes | — | TODO |
 | `_scope` | string | yes | — | TODO |
@@ -1664,14 +1678,14 @@ FanGraphs pitching split leaderboards (private research data): a curated set of 
 | `bb_9` | decimal128(18, 8) | yes | — | TODO |
 | `k_bb` | decimal128(18, 8) | yes | — | TODO |
 | `hr_9` | decimal128(18, 8) | yes | — | TODO |
-| `k_` | decimal128(18, 8) | yes | — | TODO |
-| `bb_` | decimal128(18, 8) | yes | — | TODO |
+| `k_` | decimal128(18, 8) | yes | — | Strikeout rate: the share of plate appearances that end in a strikeout (K / PA). (src: rate_stats) |
+| `bb_` | decimal128(18, 8) | yes | — | Walk rate: the share of plate appearances that end in a walk (BB / PA). (src: rate_stats) |
 | `k_minus_bb_pct` | decimal128(18, 8) | yes | — | TODO |
 | `whip` | decimal128(18, 8) | yes | — | TODO |
-| `babip` | decimal128(18, 8) | yes | — | TODO |
-| `lob_` | decimal128(18, 8) | yes | — | TODO |
-| `xfip` | double | yes | — | TODO |
-| `fip` | double | yes | — | TODO |
+| `babip` | decimal128(18, 8) | yes | — | Batting Average on Balls In Play: how often a ball in play goes for a hit. (src: babip) |
+| `lob_` | decimal128(18, 8) | yes | — | Left On Base Percentage: the percentage of base runners a pitcher strands on base. (src: lob) |
+| `xfip` | double | yes | — | Expected FIP: a regressed version of FIP that uses the league-average HR/FB rate on fly balls. (src: xfip) |
+| `fip` | double | yes | — | Fielding Independent Pitching: what a pitcher's ERA would look like with typical results on balls in play. (src: fip) |
 | `_season` | int32 | yes | — | TODO |
 | `_split` | string | yes | — | TODO |
 | `_scope` | string | yes | — | TODO |

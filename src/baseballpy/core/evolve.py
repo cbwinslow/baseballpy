@@ -21,6 +21,7 @@ from typing import Any
 import duckdb
 import polars as pl
 import pyarrow as pa
+import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import atomic_write_parquet
@@ -56,11 +57,23 @@ class MigrateReport:
     failed: list[str] = field(default_factory=list)
 
 
-def _keys_of(column: pa.Field) -> list[str]:
-    """Upstream names a schema column can be found under in ``_extras``, best first."""
+def _keys_of(column: pa.Field, *, own_name: bool = True) -> list[str]:
+    """Upstream names a schema column can be found under in ``_extras``, best first.
+
+    ``own_name=False`` leaves out the column's own name when it has upstream names: a typed column that
+    exists but is empty is repaired only from its upstream name, never from a look-alike key.
+    """
     upstream = (column.metadata or {}).get(UPSTREAM_KEY, b"").decode("utf-8")
-    keys = [k for k in upstream.split("|") if k] + [column.name]
+    keys = [k for k in upstream.split("|") if k]
+    if own_name or not keys:
+        keys.append(column.name)
     return [k for k in dict.fromkeys(keys) if '"' not in k and "\\" not in k]
+
+
+def _merged(extras: pl.Series, keys: list[str], name: str) -> pl.Series:
+    """The first value found in ``_extras`` under any of ``keys`` (text, NULL when none)."""
+    values = [extras.str.json_path_match(f'$["{k}"]').alias(f"v{i}") for i, k in enumerate(keys)]
+    return pl.DataFrame(values).select(pl.coalesce(pl.all()).alias(name))[name]
 
 
 def promote_extras(
@@ -75,45 +88,73 @@ def promote_extras(
     """``table`` with exactly the columns of ``schema``; values found in ``_extras`` are moved.
 
     A schema column the table lacks is read from ``_extras`` under its upstream name (or its own),
-    cast with quarantine, and the key is removed from ``_extras``. A column with no value in
-    ``_extras`` stays empty. ``counts`` receives how many cells each column gained.
+    cast with quarantine, and the key is removed from ``_extras``. A column the table has but holds
+    NULL cells in is filled the same way for those cells only (a typed value is never overwritten, and
+    its row keeps its ``_extras`` key): one logical field must not live in two places depending on how
+    the row was written. A column with no value in ``_extras`` stays empty. ``counts`` receives how
+    many cells each column gained.
     """
     missing = [f for f in schema if f.name not in table.column_names and f.name != EXTRAS]
-    if not missing or EXTRAS not in table.column_names:
+    gaps = [
+        f
+        for f in schema
+        if f.name in table.column_names
+        and f.name != EXTRAS
+        and table.column(f.name).null_count > 0
+        and f.name not in {m.name for m in missing}
+    ]
+    if (not missing and not gaps) or EXTRAS not in table.column_names:
         return align_to_schema(table, schema)
     extras = pl.from_arrow(table[EXTRAS])
     if not isinstance(extras, pl.Series):
         raise TypeError("_extras must be one column")
-    found: dict[str, pl.Series] = {}
+    found: dict[str, pa.Array] = {}
     claimed: list[str] = []
     for column in missing:
         keys = _keys_of(column)
-        values = [
-            extras.str.json_path_match(f'$["{k}"]').alias(f"v{i}") for i, k in enumerate(keys)
-        ]
-        merged = pl.DataFrame(values).select(pl.coalesce(pl.all()).alias(column.name))[column.name]
+        merged = _merged(extras, keys, column.name)
         if merged.null_count() < len(merged):
-            found[column.name] = merged
+            found[column.name] = merged.to_arrow()
             claimed.extend(keys)
+    filled_rows: dict[str, tuple[pa.Array, list[str]]] = {}  # gap column -> (rows to fill, keys)
+    for column in gaps:
+        keys = _keys_of(column, own_name=False)
+        merged = _merged(extras, keys, column.name).to_arrow()
+        rows = pc.and_(pc.is_null(table.column(column.name).combine_chunks()), pc.is_valid(merged))
+        if pc.any(rows).as_py():
+            found[column.name] = pc.if_else(rows, merged, pa.scalar(None, merged.type))
+            filled_rows[column.name] = (rows, keys)
     if not found:
         return align_to_schema(table, schema)
-    strings = pa.table({name: series.to_arrow() for name, series in found.items()})
+    strings = pa.table(found)
     typed = map_to_schema(
         strings,
-        pa.schema([f for f in missing if f.name in found]),
+        pa.schema([f for f in schema if f.name in found]),
         source=source,
         dataset=dataset,
         quarantine=quarantine,
     )
     out = table
+    cleaned = table[EXTRAS]
     for name in typed.column_names:
-        out = out.append_column(schema.field(name), typed[name])
+        if name in filled_rows:
+            rows, keys = filled_rows[name]
+            old = table.column(name).cast(schema.field(name).type)
+            filled = pc.if_else(pc.is_valid(old), old, typed[name])
+            out = out.set_column(out.schema.get_field_index(name), schema.field(name), filled)
+            gained = pc.sum(pc.and_(rows, pc.is_valid(typed[name])).cast(pa.int64())).as_py() or 0
+            cleaned = pc.if_else(rows, _without_keys(cleaned, keys), cleaned)
+        else:
+            out = out.append_column(schema.field(name), typed[name])
+            gained = len(typed[name]) - typed[name].null_count
         if counts is not None:
-            counts[name] = counts.get(name, 0) + (len(typed[name]) - typed[name].null_count)
+            counts[name] = counts.get(name, 0) + gained
+    if claimed:
+        cleaned = _without_keys(cleaned, claimed)
     out = out.set_column(
         out.schema.get_field_index(EXTRAS),
         pa.field(EXTRAS, pa.string()),
-        _without_keys(table[EXTRAS], claimed),
+        cleaned,
     )
     return align_to_schema(out, schema)
 
@@ -161,6 +202,38 @@ def _has_null_only_extras(path: Path) -> bool:
     return bool(row and row[0])
 
 
+def _has_fillable_extras(path: Path, schema: pa.Schema) -> bool:
+    """True when a typed column of the file is NULL in a row whose ``_extras`` holds its upstream name."""
+    have = pq.read_schema(path).names
+    if EXTRAS not in have:
+        return False
+    con = duckdb.connect()
+    try:
+        in_extras = {
+            str(r[0])
+            for r in con.execute(
+                "SELECT DISTINCT unnest(json_keys(_extras)) FROM read_parquet(?) "
+                "WHERE _extras IS NOT NULL",
+                [str(path)],
+            ).fetchall()
+        }
+        tests = [
+            f'("{f.name}" IS NULL AND json_extract_string(_extras, \'$."{k}"\') IS NOT NULL)'
+            for f in schema
+            if f.name in have and f.name != EXTRAS
+            for k in _keys_of(f, own_name=False)
+            if k in in_extras
+        ]
+        if not tests:
+            return False
+        # column names and keys come from the registered schema (keys with quotes are dropped)
+        query = "SELECT count(*) FROM read_parquet(?) WHERE " + " OR ".join(tests)  # noqa: S608
+        row = con.execute(query, [str(path)]).fetchone()
+    finally:
+        con.close()
+    return bool(row and row[0])
+
+
 def _clear_null_only_extras(table: pa.Table) -> pa.Table:
     """``table`` with every null-only ``_extras`` object turned into NULL (an older migration wrote them)."""
     if EXTRAS not in table.column_names:
@@ -198,7 +271,7 @@ def _rewrite(path: Path, spec: DatasetSpec, quarantine: Quarantine, counts: dict
     ) in old_cols:  # nothing already typed may change (a retired column is dropped on purpose)
         if name in RETIRED_COLUMNS:
             continue
-        if not _same(table[name], done[name]):
+        if not _same(table[name], _only_where_valid(table[name], done[name])):
             raise ValueError(f"{path.name}: column {name} changed during migration")
     if spans is None:
         atomic_write_parquet(done, path, compression=_COMPRESSION)
@@ -209,6 +282,16 @@ def _rewrite(path: Path, spec: DatasetSpec, quarantine: Quarantine, counts: dict
             [(key, done.slice(first, count)) for key, (first, count) in spans.items()],
         )
     return int(done.num_rows)
+
+
+def _only_where_valid(before: pa.ChunkedArray, after: pa.ChunkedArray) -> pa.ChunkedArray:
+    """``after`` where ``before`` had a value, NULL elsewhere: a migration may fill empty cells only."""
+    if pa.types.is_dictionary(before.type):
+        before = before.cast(before.type.value_type)
+    if pa.types.is_dictionary(after.type):
+        after = after.cast(after.type.value_type)
+    after = after.cast(before.type)
+    return pc.if_else(pc.is_valid(before), after, pa.scalar(None, before.type))
 
 
 def _same(before: pa.ChunkedArray, after: pa.ChunkedArray) -> bool:
@@ -247,7 +330,11 @@ def migrate_dataset(
         if path.name.startswith("seg-"):
             continue  # a segment file is rebuilt from raw, never rewritten: its commit line names its sha256
         report.files_checked += 1
-        if not _differs(path, spec.schema) and not _has_null_only_extras(path):
+        if (
+            not _differs(path, spec.schema)
+            and not _has_null_only_extras(path)
+            and not _has_fillable_extras(path, spec.schema)
+        ):
             continue
         old_print = spec_fingerprint(replace(spec, schema=pq.read_schema(path)))
         report.files_rewritten += 1

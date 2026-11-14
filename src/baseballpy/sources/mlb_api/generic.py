@@ -148,13 +148,20 @@ def stats_payload(payload: Any) -> dict[str, Any]:
     """A ``/v1/people?hydrate=stats(...)`` payload as the ``/v1/stats`` shape (``stats[].splits``).
 
     Both carry the same split objects (player, team, league, sport, stat); the splits of every
-    person are gathered into one list so the normal flattening and schemas apply.
+    person are gathered into one list so the normal flattening and schemas apply. The fields of the
+    stats block around the splits (``type``, ``group``, ``exemptions``, ...) are carried over too, so a
+    row reads the same whichever route fetched it (without them ``stats.type.displayName`` and
+    ``stats.group.displayName`` stayed empty on every fallback row).
     """
     splits: list[Any] = []
+    block_fields: dict[str, Any] = {}
     for person in payload.get("people", []) if isinstance(payload, dict) else []:
-        for block in person.get("stats", []):
+        for block in person.get("stats") or []:  # a person with "stats": null has no stat blocks
             splits.extend(block.get("splits", []))
-    return {"stats": [{"splits": splits, "totalSplits": len(splits)}]}
+            for key, value in block.items():
+                if key != "splits":
+                    block_fields.setdefault(key, value)
+    return {"stats": [{**block_fields, "splits": splits, "totalSplits": len(splits)}]}
 
 
 class IncompletePagesError(RuntimeError):

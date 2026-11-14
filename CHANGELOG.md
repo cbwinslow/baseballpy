@@ -35,6 +35,7 @@ All notable changes. The version is bumped at release time (see `docs/RELEASING.
 - `Retry-After: nan` no longer returns NaN and a timezone-less HTTP date no longer raises on Windows (found by the new property tests).
 - The Polars and dlt sinks write audit records; Retrosheet values that cannot be cast are quarantined under their real dataset name; the runner never submits more jobs than it has workers; an empty MLB fallback pool is provisional (ADR 126).
 - Compaction's cleanup and empty-part removal respect the per-season write lock; a running chunk write keeps its lock when an HTTP client closes (ADR 127).
+- `compact --migrate` fills a typed column that exists but is empty from its `_extras` key (the player slug of old minor-league stat pools), and the hydrate route keeps the stats block (ADR 128).
 
 ### Known behaviour
 - MLB `/v1/stats` league-wide pools answer HTTP 406 most of the time; the library fills them through `/v1/people?hydrate=stats` and re-fetches them when the route answers again (ADR 53, 117, 120).

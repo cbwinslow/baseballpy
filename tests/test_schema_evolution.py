@@ -251,3 +251,50 @@ def test_compact_can_skip_the_migration(spec: DatasetSpec, lake: LakeConfig) -> 
     skipped = compact_dataset(spec, lake, migrate=False)
     assert skipped.migrated_files == 0
     assert compact_dataset(spec, lake).migrated_files == 1  # still there for a run that asks
+
+
+def _gappy(spec: DatasetSpec) -> pa.Table:
+    """A current-schema table whose slug column exists but is empty for three rows (``_extras`` has values)."""
+    table = _full(spec, 4, slug=False, season=2008)
+    extras = [
+        json.dumps({KEY: "from-extras-0", "other": 1}),
+        json.dumps({KEY: "extras-must-lose"}),  # the typed value below wins
+        None,
+        json.dumps({KEY: "from-extras-3"}),
+    ]
+    table = table.set_column(
+        table.schema.get_field_index(EXTRAS), EXTRAS, pa.array(extras, pa.string())
+    )
+    slugs = pa.array([None, "typed-1", None, None], pa.string())
+    return table.set_column(table.schema.get_field_index(SLUG), SLUG, slugs)
+
+
+def test_promote_fills_an_empty_typed_column_from_extras_and_never_overwrites(
+    spec: DatasetSpec,
+) -> None:
+    counts: dict[str, int] = {}
+    new = promote_extras(
+        _gappy(spec), spec.schema, source="mlb_api", dataset=spec.name, counts=counts
+    )
+    assert new[SLUG].to_pylist() == ["from-extras-0", "typed-1", None, "from-extras-3"]
+    assert [json.loads(x) if x else None for x in new[EXTRAS].to_pylist()] == [
+        {"other": 1},
+        {KEY: "extras-must-lose"},  # a typed value is never overwritten and its extras stay
+        None,
+        None,  # emptied object becomes NULL (ADR 118)
+    ]
+    assert counts == {SLUG: 2}
+
+
+def test_migration_repairs_an_empty_typed_column_and_is_idempotent(
+    spec: DatasetSpec, tmp_path: Path
+) -> None:
+    cfg = LakeConfig(home=tmp_path)
+    store = ProcessedStore(cfg)
+    store.put(spec, _gappy(spec), chunk_id="c", season=2008)
+    report = migrate_dataset(spec, cfg)
+    assert report.files_rewritten == 1 and not report.failed
+    assert report.promoted == {SLUG: 2}
+    again = pq.read_table(store.part_path(spec, "c", 2008))
+    assert again[SLUG].to_pylist() == ["from-extras-0", "typed-1", None, "from-extras-3"]
+    assert migrate_dataset(spec, cfg).files_rewritten == 0, "a second pass rewrites nothing"
