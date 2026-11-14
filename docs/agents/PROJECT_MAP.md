@@ -40,7 +40,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | Source | Datasets | Review | Track cards | Shared currency | Fingerprints | Column descriptions | Spec requirements |
 |---|---|---|---|---|---|---|---|
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
-| `lahman` | 27 | archived | yes | yes | yes | 388/399 (97%) | 12 |
+| `lahman` | 27 | archived | yes | yes | yes | 389/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
 | `statcast` | 50 | archived | yes | yes | yes | 321/1765 (18%) | 17 |
 | `mlb_api` | 365 | archived | yes | yes | yes | 9568/16926 (56%) | 28 |

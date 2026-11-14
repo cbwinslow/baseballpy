@@ -1701,7 +1701,7 @@ Lahman Teams table.
 | `BPF` | int16 | yes | — | Three-year park factor for batters (src: lahman_readme) |
 | `PPF` | int16 | yes | — | Three-year park factor for pitchers (src: lahman_readme) |
 | `teamIDBR` | string | yes | — | Team ID used by Baseball Reference website (src: lahman_readme) |
-| `teamIDlahman45` | string | yes | — | TODO |
+| `teamIDlahman45` | string | yes | — | Team ID used in Lahman database version 4.5 (src: lahman_readme) |
 | `teamIDretro` | string | yes | — | Team ID used by Retrosheet (src: lahman_readme) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 

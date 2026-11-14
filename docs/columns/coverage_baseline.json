@@ -1,7 +1,11 @@
 {
+  "bref": 2,
   "chadwick": 56,
-  "lahman": 388,
-  "mlb_api": 9443,
-  "retrosheet": 1012,
-  "statcast": 293
+  "fangraphs": 10,
+  "kalshi": 5,
+  "lahman": 389,
+  "mlb_api": 9568,
+  "polymarket": 4,
+  "retrosheet": 1030,
+  "statcast": 321
 }
