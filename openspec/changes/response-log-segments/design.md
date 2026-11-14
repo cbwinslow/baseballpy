@@ -296,3 +296,11 @@ first run stopped on a non-game URL (awards) in a raw segment (a non-game unit n
 hidden the old files of datasets the segments do not write (the hiding is now limited to the datasets the source says it
 writes); after a partial run the old files stay hidden and a rerun resumes. Time: about 12 minutes for the rebuild plus
 about 3 minutes for the conversion; disk 12 GB free before, 12 GB after (old raw not yet removed).
+
+### 7.aa Real-lake run of season 2024, non-destructive (2026-11-14, after a read-only second opinion from Gemini)
+
+- Plan: raw conversion without `--remove-old`, then the processed rebuild without `--remove-legacy`; no old file is deleted. Free disk 10.5 GB before and after (about 13 MB used).
+- `convert-raw mlb_api --season 2024`: dry run 53,946 old files, 18,160 URLs, 24,935 distinct bodies, 29,011 copies, 1,031 URLs with more than one body, nothing skipped. `--apply` exited 0 and added one raw segment (`seg-0032`, 5.7 MB): 31 segments of the season were already there from the earlier real-season run (task 4.4), so only the answers not yet stored were written. Raw of the season: 376 MB in 32 segments.
+- `rebuild-segments mlb_api --season 2024` (dry run, then `--apply`): 3 segments, 3,022 units, old part rows 0 (the processed files of 2024 are already segments), new rows 1,982,868, same: yes. Counts before and after are identical (2,959 games in `game_boxscore_info`, 221,814 plays in `game_feed_plays`), so rebuilding from raw gives back what was stored.
+- `verify-roundtrip` on `game_feed_plays`, `game_boxscore_info`, `game_linescore`, `game_win_probability` (3 files each): 4 clean, 0 with a loss.
+- Gemini's review found, and the code confirms: `--remove-old` is not reversible and `RawStore.get()` has no segment fallback, so it stays off; the rebuild's comparison is row counts only (the value check is `verify-roundtrip`); `ingest` on the old parts path does not take the `segments-*` lock, so nothing may ingest during a conversion; `rebuild_season` moves files with a bare `replace`, so no DuckDB reader may be open on Windows. Not yet done: other seasons, `--remove-old`, `--remove-legacy`, task 7.

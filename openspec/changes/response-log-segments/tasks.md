@@ -35,7 +35,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [x] 5.1 tests first: `tests/test_raw_convert.py::test_the_dry_run_reports_and_changes_nothing`, `::test_every_sha256_is_checked_against_the_old_manifest`, `::test_distinct_bodies_are_all_kept`, `::test_copies_are_removed_only_after_the_whole_season_verifies`, `::test_a_rerun_changes_nothing`
 - [x] 5.2 converter command with `--dry-run` (per season: files, copies, distinct bodies, bytes to save)
 - [x] 5.3 real conversion: read back every row, then remove the old copies of that season
-- [ ] 5.4 dry run on the real lake, then the real run season by season; disk before and after in design.md (replaces the guessed raw size)
+- [ ] 5.4 (season 2024 done non-destructively on 2026-11-14, design 7.aa; other seasons open) dry run on the real lake, then the real run season by season; disk before and after in design.md (replaces the guessed raw size)
 
 ## 6. Rebuild processed segments from raw
 - [x] 6.0 the converter groups raw rows by the writer's unit (a registry resolver: MLB game number); a unit is never split across segments (design 7.z option A, step 1)
