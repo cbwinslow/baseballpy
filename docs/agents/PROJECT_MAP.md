@@ -22,7 +22,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
 | `lake-access` | 19 | 28 | 73 |
-| `mlb-api-ingestion` | 32 | 46 | 58 |
+| `mlb-api-ingestion` | 33 | 47 | 60 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `portability` | 3 | 3 | 7 |
@@ -43,7 +43,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 389/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
 | `statcast` | 50 | archived | yes | yes | yes | 402/1765 (22%) | 18 |
-| `mlb_api` | 403 | archived | yes | yes | yes | 9643/17368 (55%) | 32 |
+| `mlb_api` | 403 | archived | yes | yes | yes | 9643/17368 (55%) | 33 |
 
 ## Active changes (`openspec/changes/`)
 
@@ -197,6 +197,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 131: The Manifest Lock Is An Operating-System Lock, Not A Lock File That Is Broken When Old
 - ADR 132: The MLB Lookup Lists Are Table Rows; A Dict Of Lists Is Keyed By List Name And Position
 - ADR 133: Dataset Groups Come From The Adapter, Not From The Estimate
+- ADR 134: New Game Downloads Use Segments By Default
 
 ## Documentation pages (`docs/`)
 

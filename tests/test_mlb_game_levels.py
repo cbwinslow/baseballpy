@@ -99,17 +99,16 @@ def test_parse_game_storage() -> None:
         parse_game_storage("files")
 
 
-def test_the_storage_option_reaches_the_source_and_the_default_changes_no_job_id() -> None:
+def test_the_default_storage_is_segments_and_parts_is_the_opt_in_option() -> None:
+    """ADR 134: a plain games job stores segments (no parameter); ``storage=parts`` is the opt-in."""
     source = _Source()
     adapter = MlbApiAdapter(source, calendar=_Calendar())
     default = _games_job(adapter)
-    segments = _games_job(adapter, ("storage", "segments"))
-    assert default.param("storage") is None, (
-        "the default adds no parameter, so job ids stay the same"
-    )
-    assert segments.param("storage") == "segments" and segments.job_id != default.job_id
+    parts = _games_job(adapter, ("storage", "parts"))
+    assert default.param("storage") is None, "the default adds no parameter"
+    assert parts.param("storage") == "parts" and parts.job_id != default.job_id
     adapter.run(default)
-    adapter.run(segments)
-    assert [kw.get("game_segments", False) for _, kw in source.calls] == [False, True]
+    adapter.run(parts)
+    assert [kw.get("game_segments", False) for _, kw in source.calls] == [True, False]
     with pytest.raises(ValueError, match="bad --option storage"):
         _games_job(adapter, ("storage", "files"))

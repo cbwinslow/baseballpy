@@ -15,10 +15,12 @@ ALL_LEVELS = "all"
 #: how the per-game datasets are stored: one chunk per game and dataset, or segments (ADR 95)
 GAME_STORAGE_PARTS = "parts"
 GAME_STORAGE_SEGMENTS = "segments"
+#: what a plain `ingest -d games` uses; segments since ADR 134 (parts stay available as `storage=parts`)
+GAME_STORAGE_DEFAULT = GAME_STORAGE_SEGMENTS
 
 
 def parse_game_storage(text: str) -> str:
-    """The value of ``--option storage=...``: ``parts`` (default) or ``segments``."""
+    """The value of ``--option storage=...``: ``segments`` (default, ADR 134) or ``parts``."""
     cleaned = text.strip().lower()
     if cleaned not in (GAME_STORAGE_PARTS, GAME_STORAGE_SEGMENTS):
         raise ValueError(
@@ -194,10 +196,10 @@ class MlbApiAdapter:
                 if "games" in wanted:
                     sports = selection.option("sports", MAJOR_LEAGUES)
                     parse_game_sports(sports)  # a typo fails the plan, not the job hours later
-                    storage = parse_game_storage(selection.option("storage", GAME_STORAGE_PARTS))
+                    storage = parse_game_storage(selection.option("storage", GAME_STORAGE_DEFAULT))
                     # only a non-default value is a parameter, so the ids of existing jobs do not change
                     extra: dict[str, Any] = (
-                        {} if storage == GAME_STORAGE_PARTS else {"storage": storage}
+                        {} if storage == GAME_STORAGE_DEFAULT else {"storage": storage}
                     )
                     jobs.append(
                         make_job(
@@ -258,7 +260,7 @@ class MlbApiAdapter:
                 # passed only when asked for, so a source without the option keeps working
                 **(
                     {"game_segments": True}
-                    if job.param("storage", GAME_STORAGE_PARTS) == GAME_STORAGE_SEGMENTS
+                    if job.param("storage", GAME_STORAGE_DEFAULT) == GAME_STORAGE_SEGMENTS
                     else {}
                 ),
             )

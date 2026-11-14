@@ -46,7 +46,7 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 
 ## 7. Remove the old per-game path
 - [ ] 7.1 tests first: `tests/test_mlb_segments.py::test_the_per_game_path_writes_no_part_files`, `tests/test_queue.py::test_the_queue_does_not_compact_sources_that_write_segments`
-- [ ] 7.2 remove the per-game `part-*` writes and the queue's compaction step for sources that write segments; `compact` stays for part files
+- [ ] 7.2 (default switched to segments on 2026-11-14, ADR 134; the removal of the part path waits for the old seasons of the real lake) remove the per-game `part-*` writes and the queue's compaction step for sources that write segments; `compact` stays for part files
 - [ ] 7.3 `catalog layout` treats segment files as normal (no TINY_FILES for them); docs (`docs/sources/mlb_api.md`, README, CLI docs) updated
 
 ## 8. Round-trip check and moving raw

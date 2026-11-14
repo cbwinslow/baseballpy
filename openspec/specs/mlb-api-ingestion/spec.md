@@ -384,3 +384,11 @@ The flattener MUST NOT copy the `splitsTiedWithOffset` and `splitsTiedWithLimit`
 - **WHEN** a stats page whose wrapper holds tied-split lists is flattened, and an old chunk that still has the two columns is rewritten
 - **THEN** no row carries the two fields, the other wrapper fields stay on the rows, the old chunk keeps every row and loses only the retired columns, and any other unknown column is still refused
 - Verified by `tests/test_mlb_coverage.py::test_page_boundary_copies_are_not_repeated_on_every_row_of_a_stats_page`, `tests/test_mlb_coverage.py::test_an_old_chunk_with_the_retired_page_boundary_columns_is_aligned_and_other_extras_still_refuse` and `tests/test_mlb_coverage.py::test_migrating_an_old_file_drops_the_retired_columns_and_keeps_every_row`.
+
+### Requirement: Per-Game Datasets Are Stored As Segments By Default
+`ingest mlb_api -d games` MUST store the per-game datasets as segments (each response stored once, a few large Parquet files per dataset) unless `--option storage=parts` asks for one chunk per game and dataset. The default MUST add no job parameter; `parts` MUST be a parameter, so the two jobs have different ids. A fresh download into an empty home, in an old season (2011) and in the shortened 2020 season, MUST pass `cache check`, `verify-roundtrip` and leave the quarantine empty.
+
+#### Scenario: The default is segments
+- **WHEN** a games job is planned with no storage option and with `storage=parts`
+- **THEN** the first carries no `storage` parameter and runs the segment path, the second carries `storage=parts` and runs the part path, and an unknown value is refused
+- Verified by `tests/test_mlb_game_levels.py::test_the_default_storage_is_segments_and_parts_is_the_opt_in_option` and `tests/test_mlb_game_levels.py::test_parse_game_storage`.

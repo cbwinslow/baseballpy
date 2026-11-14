@@ -328,6 +328,7 @@ class FakeMlbApiSource:
         include_people_stats: bool = False,
         max_people: int | None = None,
         game_sport_ids: tuple[int, ...] | None = (1,),
+        game_segments: bool = False,
         refresh: bool = False,
     ) -> list[FakeEndpointReport]:
         self.game_sport_calls.append(game_sport_ids)
