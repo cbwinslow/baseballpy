@@ -204,3 +204,13 @@ def test_a_chunk_with_an_old_schema_digest_is_rebuilt_too(tmp_path: Path) -> Non
     manifest.put_entry(key, {**entry, "schema_sha256": "old"})
     assert extractor._rebuild_stale_hydrate(ep, stale) is not None
     assert extractor._rebuild_stale_hydrate(ep, stale) is None
+
+
+def test_force_rebuilds_a_chunk_that_is_not_stale(tmp_path: Path) -> None:
+    """A chunk rebuilt with a wrong request can be redone from raw: ``force`` skips the stale test."""
+    _, extractor, _, stale = _lake(tmp_path)
+    ep = BY_NAME[DATASET]
+    extractor.fetch_request(ep, stale)  # repaired: no longer stale
+    assert extractor._rebuild_stale_hydrate(ep, stale) is None
+    table = extractor._rebuild_stale_hydrate(ep, stale, force=True)
+    assert table is not None and table.num_rows > 0

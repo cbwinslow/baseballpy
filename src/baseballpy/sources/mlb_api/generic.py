@@ -388,14 +388,17 @@ class MlbEndpointExtractor:
             self.raw.exists("mlb_api", endpoint.name, direct, request.season)
         )
 
-    def _rebuild_stale_hydrate(self, endpoint: MlbEndpoint, request: Request) -> pa.Table | None:
+    def _rebuild_stale_hydrate(
+        self, endpoint: MlbEndpoint, request: Request, force: bool = False
+    ) -> pa.Table | None:
         """A stale hydrate pool chunk parsed again from its stored raw pages, or ``None`` (ADR 130).
 
         Stale means the chunk was built by an older hydrate parser (no ``parse_rev`` of today, or a schema digest that is not today's). The
         raw pages are immutable, so the repair needs no download; a refetch would be wrong while
         ``/v1/stats`` is refused (it would swap complete direct chunks for the smaller fallback data).
         Direct chunks are never touched. Nothing is changed unless every raw page passes its checksum
-        and the rebuilt rows match the stored row count.
+        and the rebuilt rows match the stored row count. ``force`` rebuilds a chunk that is not stale
+        (to redo one that was rebuilt with a wrong request).
         """
         if not self.cache_config.enabled:
             return None
@@ -405,7 +408,11 @@ class MlbEndpointExtractor:
         )
         if (
             entry is None
-            or (entry.get(PARSE_REV_KEY) == HYDRATE_PARSE_REV and schema_matches(spec, entry))
+            or (
+                not force
+                and entry.get(PARSE_REV_KEY) == HYDRATE_PARSE_REV
+                and schema_matches(spec, entry)
+            )
             or not self._is_hydrate_chunk(endpoint, request, entry)
             or not self.store.has_part(spec, request.ident, request.season)
             or not self.cache_config.is_fresh(
