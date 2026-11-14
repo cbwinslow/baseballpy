@@ -67,3 +67,9 @@ Processed `mlb_api` size per season on 2026-11-13 (compacted, zstd), and the tim
 ## Release hygiene: the source archive (2026-11-13)
 
 A trial `uv build` (before the v1 release steps, task 4.1) gave a 12.1 MB source archive. 34 MB of it was `.delta/worktrees` (scratch copies of the repository from a tool, untracked and not ignored) and 17 MB was `docs/references`. `[tool.hatch.build.targets.sdist]` now excludes `.delta`, `.claude`, `.baseballpy` and `docs/references`; the archive is 2.8 MB, the wheel is unchanged (593 KB). The wheel installed in an empty environment, `baseballpy --version` printed 0.1.0, and a Chadwick download into an empty home gave 526,894 register rows, the same as the real lake. Test: `tests/test_packaging.py`. Not verified: an upload to TestPyPI (the owner's step, B-331), and CI, which has never run (`docs/agents/BACKLOG.md` notes it, and 54 commits are ahead of origin/main).
+
+## Evidence: fresh Statcast 2024 pitches against the lake (2026-11-13)
+
+`baseballpy verify-sample statcast -s 2024 -d pitches`: 51 weekly windows downloaded into a scratch home. 15 are identical row for row; 36 differ, and in every one only the column `pitch_type` differs. None of the 51 raw CSV files is byte-identical (the provider rewrites its files). One window was fetched again by hand (2024-06-04 to 2024-06-08): same 19,787 rows and the same keys; 11 pitches changed from `SL` (Slider) to `ST` (Sweeper). So Savant reclassifies pitches after the fact; this is provider drift, not a download or parsing defect, and the sample reports it as designed (a difference is information).
+
+Open policy question for the owner (not decided here): the lake keeps what it fetched first (raw is immutable). A finished season can be refreshed once with `ingest statcast -s Y --refresh`; whether that should be a routine step (for example once after each season ends) is the "Statcast revision policy" item in the backlog.
