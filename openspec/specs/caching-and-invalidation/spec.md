@@ -260,3 +260,14 @@ file is missing or no longer lists it MUST count as not stored and be downloaded
 - **WHEN** the records call a chunk compacted but the compacted file no longer lists it
 - **THEN** the store reports it as not cached
 - Verified by `tests/test_cache_through_store.py::test_a_chunk_its_compacted_file_lacks_is_not_cached`.
+
+### Requirement: A Refresh Replaces A Raw File And The Manifest Keeps A Record Of The Replaced Version
+When a raw file is written again with different bytes (a refresh), `RawStore.put` MUST write the new bytes in
+place and the manifest entry of that file MUST list every version it replaced under `previous` (sha256, size and
+download time, oldest first). The same bytes written again MUST add nothing, and a first download MUST have no
+`previous`.
+
+#### Scenario: A file is refreshed twice
+- **WHEN** a raw file is written, written again with the same bytes, written with new bytes, and written with newer bytes
+- **THEN** the file holds the newest bytes, the entry's `sha256` is that of the newest bytes, and `previous` lists the two replaced versions once each with their sha256, size and download time
+- Verified by `tests/test_raw_refresh_history.py::test_a_refresh_replaces_the_bytes_and_keeps_a_record_of_each_replaced_version`.

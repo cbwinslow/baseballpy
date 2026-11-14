@@ -198,8 +198,29 @@ def manifest_key(name: str, season: int | None) -> str:
     return f"season={season}/{name}" if season is not None else name
 
 
+def _versions_after(entry: Mapping[str, Any] | None, new_sha256: str) -> list[dict[str, Any]]:
+    """The earlier versions of a raw file that a manifest entry remembers, plus the one it holds now.
+
+    A refresh replaces the file's bytes (ADR 122), so the manifest keeps what the replaced version was:
+    its sha256, size and download time. The same bytes fetched again add nothing.
+    """
+    if not entry or entry.get("status") != "COMPLETED":
+        return []
+    history = [dict(v) for v in entry.get("previous", []) if isinstance(v, Mapping)]
+    old = entry.get("sha256")
+    if old and old != new_sha256:
+        history.append(
+            {"sha256": old, "bytes": entry.get("bytes"), "fetched_at": entry.get("fetched_at")}
+        )
+    return history
+
+
 class RawStore:
-    """Immutable upstream bytes under ``raw/<source>/<dataset>/[season=YYYY/]``."""
+    """Upstream bytes under ``raw/<source>/<dataset>/[season=YYYY/]``.
+
+    A file is never edited. A refresh writes the new answer in its place and the manifest entry keeps
+    the sha256, size and download time of every version it replaced (``previous``, ADR 122).
+    """
 
     def __init__(self, config: LakeConfig | None = None) -> None:
         self.config = config or LakeConfig()
@@ -242,14 +263,18 @@ class RawStore:
             part.write_bytes(stored)
         # a refresh may change the form: never leave both forms of one file behind
         (path if packed else path.with_name(path.name + GZIP_SUFFIX)).unlink(missing_ok=True)
-        self.config.dataset_manifest(source, dataset, "raw", season).set_completed(
+        manifest = self.config.dataset_manifest(source, dataset, "raw", season)
+        digest = hashlib.sha256(data).hexdigest()
+        history = _versions_after(manifest.get_chunk(name), digest)
+        manifest.set_completed(
             name,
             records_count=records or 0,
             etag=etag,
             metadata={
                 **(extra or {}),
+                **({"previous": history} if history else {}),
                 "bytes": len(data),
-                "sha256": hashlib.sha256(data).hexdigest(),
+                "sha256": digest,
                 **({"stored": GZIP, "stored_bytes": len(stored)} if packed else {}),
                 "season": season,
                 "source_ref": source_ref,

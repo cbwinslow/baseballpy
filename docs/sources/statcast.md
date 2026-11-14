@@ -141,7 +141,8 @@ example 24 pitches in the window 2024-07-19 to 2024-07-23 changed from `SL`/Slid
 not change; the provider did. What this means for users:
 
 - A closed season is treated as final, so it is not downloaded again by itself (the freshness policy). To pick up
-  Savant's revisions, run `baseballpy ingest statcast -s <year> -d pitches --refresh`.
+  Savant's revisions, run `baseballpy ingest statcast -s <year> -d pitches --refresh`. The refresh replaces the raw file and the manifest keeps the sha256, size and time of the version it
+  replaced (`previous`, ADR 122).
 - Two users who downloaded the same season at different times can hold different `pitch_type` values for a small
   share of pitches. The raw files keep exactly what each download received (`raw/statcast/pitches/season=YYYY/`,
   sha256 in the manifest), so the difference is traceable.

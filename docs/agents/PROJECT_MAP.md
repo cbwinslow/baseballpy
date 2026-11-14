@@ -10,7 +10,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `agent-runbooks` | 7 | 10 | 17 |
 | `audit-and-benchmarking` | 7 | 11 | 29 |
 | `bref-ingestion` | 3 | 3 | 10 |
-| `caching-and-invalidation` | 21 | 35 | 50 |
+| `caching-and-invalidation` | 22 | 36 | 51 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 25 | 39 | 66 |
@@ -187,6 +187,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 119: A Key-Unique View Over Pitches (The Dataset Keeps The Provider's Repeats)
 - ADR 120: The Hydrate Fallback's Player List Is Complete Where It Can Be Checked; No Wider List Is Built
 - ADR 121: The Game Crosswalk Keeps The Played Row Of Each Game And Matches Only Played MLB Games
+- ADR 122: A Refresh Replaces A Raw File And The Manifest Keeps A Record Of The Replaced Version
 
 ## Documentation pages (`docs/`)
 
