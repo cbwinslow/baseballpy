@@ -75,6 +75,11 @@ def claim_named(directory: Path, name: str, busy_message: str) -> bool:
     """
     key = (str(directory), name)
     with _LOCK:
+        if key in _SCOPED:
+            raise RuntimeError(
+                f"lock {name!r} is held by a held_named block of this process: claim_named cannot take it over "
+                "(use one family of calls per lock name)"
+            )
         if key in _HELD:
             return False
         _claim_locked(directory, name, busy_message)
@@ -86,8 +91,14 @@ def _claim_locked(directory: Path, name: str, busy_message: str) -> None:
     directory.mkdir(parents=True, exist_ok=True)
     path = directory / f"{_SAFE.sub('_', name)}.lock"
     fd = os.open(path, os.O_CREAT | os.O_RDWR)
-    if os.fstat(fd).st_size == 0:
-        os.write(fd, b"\0")  # Windows locks a byte range, so the file needs a byte to lock
+    try:
+        if os.fstat(fd).st_size == 0:
+            os.write(fd, b"\0")  # Windows locks a byte range, so the file needs a byte to lock
+    except (
+        PermissionError
+    ):  # Windows: another process locked that byte between our check and our write
+        os.close(fd)
+        raise HostBusyError(busy_message) from None
     if not _try_lock(fd):
         os.close(fd)
         raise HostBusyError(busy_message)
@@ -149,7 +160,10 @@ def held_named(directory: Path, name: str, busy_message: str) -> Iterator[None]:
 def release_named(directory: Path, name: str) -> None:
     """Give up this process's claim on ``name`` (nothing happens when it holds no such claim)."""
     with _LOCK:
-        fd = _HELD.pop((str(directory), name), None)
+        key = (str(directory), name)
+        if key in _SCOPED:
+            return  # owned by a held_named block, which gives it back itself
+        fd = _HELD.pop(key, None)
         if fd is not None:
             _unlock(fd)
             os.close(fd)
@@ -158,7 +172,9 @@ def release_named(directory: Path, name: str) -> None:
 def release_all(directory: Path | None = None) -> None:
     """Give up this process's claims (all of them, or those under one lock folder)."""
     with _LOCK:
-        for key in [k for k in _HELD if directory is None or k[0] == str(directory)]:
+        for key in [
+            k for k in _HELD if k not in _SCOPED and (directory is None or k[0] == str(directory))
+        ]:  # a lock of a running held_named block is not ours to give up (HttpClient.close calls this)
             fd = _HELD.pop(key)
             _unlock(fd)
             os.close(fd)

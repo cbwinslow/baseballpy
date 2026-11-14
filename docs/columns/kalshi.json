@@ -1,0 +1,427 @@
+{
+ "markets": {
+  "market_type": {
+   "source": "kalshi_get_market",
+   "text": "Identifies the type of market."
+  },
+  "yes_sub_title": {
+   "source": "kalshi_get_market",
+   "text": "Shortened title for the yes side of this market."
+  },
+  "no_sub_title": {
+   "source": "kalshi_get_market",
+   "text": "Deprecated; use yes_sub_title instead."
+  },
+  "updated_time": {
+   "source": "kalshi_get_market",
+   "text": "Time of the last non-trading metadata update."
+  },
+  "expected_expiration_time": {
+   "source": "kalshi_get_market",
+   "text": "Time when this market is expected to expire."
+  },
+  "latest_expiration_time": {
+   "source": "kalshi_get_market",
+   "text": "Latest possible time for this market to expire."
+  },
+  "settlement_timer_seconds": {
+   "source": "kalshi_get_market",
+   "text": "The amount of time after determination that the market settles."
+  },
+  "status": {
+   "source": "kalshi_get_market",
+   "text": "The current status of the market in its lifecycle."
+  },
+  "yes_bid_dollars": {
+   "source": "kalshi_get_market",
+   "text": "Price for the highest YES buy offer on this market in dollars."
+  },
+  "yes_bid_size_fp": {
+   "source": "kalshi_get_market",
+   "text": "Total contract size of orders to buy YES at the best bid price."
+  },
+  "yes_ask_dollars": {
+   "source": "kalshi_get_market",
+   "text": "Price for the lowest YES sell offer on this market in dollars."
+  },
+  "yes_ask_size_fp": {
+   "source": "kalshi_get_market",
+   "text": "Total contract size of orders to sell YES at the best ask price."
+  },
+  "no_bid_dollars": {
+   "source": "kalshi_get_market",
+   "text": "Price for the highest NO buy offer on this market in dollars."
+  },
+  "no_ask_dollars": {
+   "source": "kalshi_get_market",
+   "text": "Price for the lowest NO sell offer on this market in dollars."
+  },
+  "last_price_dollars": {
+   "source": "kalshi_get_market",
+   "text": "Price for the last traded YES contract on this market in dollars."
+  },
+  "volume_fp": {
+   "source": "kalshi_get_market",
+   "text": "String representation of the market volume in contracts."
+  },
+  "volume_24h_fp": {
+   "source": "kalshi_get_market",
+   "text": "String representation of the 24h market volume in contracts."
+  },
+  "open_interest_fp": {
+   "source": "kalshi_get_market",
+   "text": "String representation of the number of contracts bought on this market."
+  },
+  "notional_value_dollars": {
+   "source": "kalshi_get_market",
+   "text": "The total value of a single contract at settlement in dollars."
+  },
+  "previous_yes_bid_dollars": {
+   "source": "kalshi_get_market",
+   "text": "Price for the highest YES buy offer on this market a day ago in dollars."
+  },
+  "previous_yes_ask_dollars": {
+   "source": "kalshi_get_market",
+   "text": "Price for the lowest YES sell offer on this market a day ago in dollars."
+  },
+  "previous_price_dollars": {
+   "source": "kalshi_get_market",
+   "text": "Price for the last traded YES contract on this market a day ago in dollars."
+  },
+  "settlement_value_dollars": {
+   "source": "kalshi_get_market",
+   "text": "Only filled after determination."
+  },
+  "settlement_ts": {
+   "source": "kalshi_get_market",
+   "text": "Timestamp when the market was settled."
+  },
+  "settlement_bounds_type": {
+   "source": "kalshi_get_market",
+   "text": "Which settlement bounds apply to this market."
+  },
+  "expiration_value": {
+   "source": "kalshi_get_market",
+   "text": "The value that was considered for the settlement."
+  },
+  "occurrence_datetime": {
+   "source": "kalshi_get_market",
+   "text": "The recorded datetime when the underlying event occurred, if available."
+  },
+  "early_close_condition": {
+   "source": "kalshi_get_market",
+   "text": "The condition under which the market can close early."
+  },
+  "strike_type": {
+   "source": "kalshi_get_market",
+   "text": "Strike type defines how the market strike is defined and evaluated."
+  },
+  "floor_strike": {
+   "source": "kalshi_get_market",
+   "text": "Minimum expiration value that leads to a YES settlement."
+  },
+  "cap_strike": {
+   "source": "kalshi_get_market",
+   "text": "Maximum expiration value that leads to a YES settlement."
+  },
+  "custom_strike": {
+   "source": "kalshi_get_market",
+   "text": "Expiration value for each target that leads to a YES settlement."
+  },
+  "rules_primary": {
+   "source": "kalshi_get_market",
+   "text": "A plain language description of the most important market terms."
+  },
+  "rules_secondary": {
+   "source": "kalshi_get_market",
+   "text": "A plain language description of secondary market terms."
+  },
+  "price_level_structure": {
+   "source": "kalshi_get_market",
+   "text": "Price level structure for this market, defining price ranges and tick sizes."
+  },
+  "price_ranges": {
+   "source": "kalshi_get_market",
+   "text": "Valid price ranges for orders on this market."
+  },
+  "exchange_index": {
+   "source": "kalshi_get_market",
+   "text": "Identifier for an exchange shard."
+  }
+ },
+ "events": {
+  "event_ticker": {
+   "source": "kalshi_get_event",
+   "text": "Unique identifier for this event."
+  },
+  "series_ticker": {
+   "source": "kalshi_get_event",
+   "text": "Unique identifier for the series this event belongs to."
+  },
+  "sub_title": {
+   "source": "kalshi_get_event",
+   "text": "Shortened descriptive title for the event."
+  },
+  "title": {
+   "source": "kalshi_get_event",
+   "text": "Full title of the event."
+  },
+  "collateral_return_type": {
+   "source": "kalshi_get_event",
+   "text": "Collateral-return netting type for this event."
+  },
+  "mutually_exclusive": {
+   "source": "kalshi_get_event",
+   "text": "True only when collateral_return_type is MECNET, meaning at most one market in this event can resolve to yes."
+  },
+  "category": {
+   "source": "kalshi_get_event",
+   "text": "Event category; deprecated in favor of the series-level category."
+  },
+  "strike_period": {
+   "source": "kalshi_get_event",
+   "text": "The time period this event covers."
+  },
+  "product_metadata": {
+   "source": "kalshi_get_event",
+   "text": "Additional metadata for the event."
+  },
+  "settlement_sources": {
+   "source": "kalshi_get_event",
+   "text": "The official sources used for the determination of markets within this event."
+  },
+  "last_updated_ts": {
+   "source": "kalshi_get_event",
+   "text": "Timestamp of when this event's metadata was last updated."
+  },
+  "fee_type_override": {
+   "source": "kalshi_get_event",
+   "text": "Fee type override for this event."
+  },
+  "fee_multiplier_override": {
+   "source": "kalshi_get_event",
+   "text": "Fee multiplier override for this event."
+  },
+  "exchange_index": {
+   "source": "kalshi_get_event",
+   "text": "Identifier for an exchange shard."
+  }
+ },
+ "series": {
+  "ticker": {
+   "source": "kalshi_get_series",
+   "text": "Ticker that identifies this series."
+  },
+  "frequency": {
+   "source": "kalshi_get_series",
+   "text": "Description of the frequency of the series."
+  },
+  "title": {
+   "source": "kalshi_get_series",
+   "text": "Title describing the series."
+  },
+  "category": {
+   "source": "kalshi_get_series",
+   "text": "The primary category of this series."
+  },
+  "categories": {
+   "source": "kalshi_get_series",
+   "text": "The list of discovery categories for this series."
+  },
+  "tags": {
+   "source": "kalshi_get_series",
+   "text": "The subjects that this series relates to."
+  },
+  "settlement_sources": {
+   "source": "kalshi_get_series",
+   "text": "The official sources used for the determination of markets within the series."
+  },
+  "contract_url": {
+   "source": "kalshi_get_series",
+   "text": "A direct link to the original filing of the contract which underlies the series."
+  },
+  "contract_terms_url": {
+   "source": "kalshi_get_series",
+   "text": "The URL to the current terms of the contract underlying the series."
+  },
+  "fee_type": {
+   "source": "kalshi_get_series",
+   "text": "A string representing the series' fee structure."
+  },
+  "fee_multiplier": {
+   "source": "kalshi_get_series",
+   "text": "A floating point multiplier applied to the fee calculations."
+  },
+  "additional_prohibitions": {
+   "source": "kalshi_get_series",
+   "text": "A list of additional trading prohibitions for this series."
+  },
+  "last_updated_ts": {
+   "source": "kalshi_get_series",
+   "text": "Timestamp of when this series' metadata was last updated."
+  },
+  "exchange_index": {
+   "source": "kalshi_get_series",
+   "text": "Identifier for an exchange shard."
+  }
+ },
+ "trades": {
+  "trade_id": {
+   "source": "kalshi_get_trades",
+   "text": "Unique identifier for this trade."
+  },
+  "ticker": {
+   "source": "kalshi_get_trades",
+   "text": "Unique identifier for the market."
+  },
+  "count_fp": {
+   "source": "kalshi_get_trades",
+   "text": "String representation of the number of contracts bought or sold in this trade."
+  },
+  "yes_price_dollars": {
+   "source": "kalshi_get_trades",
+   "text": "Yes price for this trade in dollars."
+  },
+  "no_price_dollars": {
+   "source": "kalshi_get_trades",
+   "text": "No price for this trade in dollars."
+  },
+  "taker_side": {
+   "source": "kalshi_get_trades",
+   "text": "Deprecated; use taker_outcome_side (or taker_book_side) instead."
+  },
+  "taker_outcome_side": {
+   "source": "kalshi_get_trades",
+   "text": "The outcome side the taker is positioned for."
+  },
+  "taker_book_side": {
+   "source": "kalshi_get_trades",
+   "text": "Same directional bit as taker_outcome_side in book vocabulary."
+  },
+  "created_time": {
+   "source": "kalshi_get_trades",
+   "text": "Timestamp when this trade was executed."
+  },
+  "is_block_trade": {
+   "source": "kalshi_get_trades",
+   "text": "True if this trade was matched off-book as a block trade."
+  }
+ },
+ "candlesticks": {
+  "end_period_ts": {
+   "source": "kalshi_get_candlesticks",
+   "text": "Unix timestamp for the inclusive end of the candlestick period."
+  },
+  "volume_fp": {
+   "source": "kalshi_get_candlesticks",
+   "text": "String representation of the number of contracts bought on the market during the candlestick period."
+  },
+  "open_interest_fp": {
+   "source": "kalshi_get_candlesticks",
+   "text": "String representation of the number of contracts bought on the market by end of the candlestick period."
+  },
+  "price_open": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The open of the open/high/low/close data for trade YES contract prices on the market during the candlestick period."
+  },
+  "price_open_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The open of the open/high/low/close data for trade YES contract prices on the market during the candlestick period."
+  },
+  "price_high": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The high of the open/high/low/close data for trade YES contract prices on the market during the candlestick period."
+  },
+  "price_high_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The high of the open/high/low/close data for trade YES contract prices on the market during the candlestick period."
+  },
+  "price_low": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The low of the open/high/low/close data for trade YES contract prices on the market during the candlestick period."
+  },
+  "price_low_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The low of the open/high/low/close data for trade YES contract prices on the market during the candlestick period."
+  },
+  "price_close": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The close of the open/high/low/close data for trade YES contract prices on the market during the candlestick period."
+  },
+  "price_close_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The close of the open/high/low/close data for trade YES contract prices on the market during the candlestick period."
+  },
+  "yes_bid_open": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The open of the open/high/low/close data for YES buy offers on the market during the candlestick period."
+  },
+  "yes_bid_open_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The open of the open/high/low/close data for YES buy offers on the market during the candlestick period."
+  },
+  "yes_bid_high": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The high of the open/high/low/close data for YES buy offers on the market during the candlestick period."
+  },
+  "yes_bid_high_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The high of the open/high/low/close data for YES buy offers on the market during the candlestick period."
+  },
+  "yes_bid_low": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The low of the open/high/low/close data for YES buy offers on the market during the candlestick period."
+  },
+  "yes_bid_low_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The low of the open/high/low/close data for YES buy offers on the market during the candlestick period."
+  },
+  "yes_bid_close": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The close of the open/high/low/close data for YES buy offers on the market during the candlestick period."
+  },
+  "yes_bid_close_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The close of the open/high/low/close data for YES buy offers on the market during the candlestick period."
+  },
+  "yes_ask_open": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The open of the open/high/low/close data for YES sell offers on the market during the candlestick period."
+  },
+  "yes_ask_open_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The open of the open/high/low/close data for YES sell offers on the market during the candlestick period."
+  },
+  "yes_ask_high": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The high of the open/high/low/close data for YES sell offers on the market during the candlestick period."
+  },
+  "yes_ask_high_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The high of the open/high/low/close data for YES sell offers on the market during the candlestick period."
+  },
+  "yes_ask_low": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The low of the open/high/low/close data for YES sell offers on the market during the candlestick period."
+  },
+  "yes_ask_low_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The low of the open/high/low/close data for YES sell offers on the market during the candlestick period."
+  },
+  "yes_ask_close": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The close of the open/high/low/close data for YES sell offers on the market during the candlestick period."
+  },
+  "yes_ask_close_dollars": {
+   "source": "kalshi_get_candlesticks",
+   "text": "The close of the open/high/low/close data for YES sell offers on the market during the candlestick period."
+  }
+ },
+ "_sources": {
+  "kalshi_get_market": "https://docs.kalshi.com/api-reference/market/get-market",
+  "kalshi_get_event": "https://docs.kalshi.com/api-reference/events/get-event",
+  "kalshi_get_series": "https://docs.kalshi.com/api-reference/market/get-series",
+  "kalshi_get_trades": "https://docs.kalshi.com/api-reference/market/get-trades",
+  "kalshi_get_candlesticks": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks"
+ }
+}

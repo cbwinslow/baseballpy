@@ -254,7 +254,7 @@ Pitch-level Statcast search results.
 | `hit_distance_sc` | double | yes | — | TODO |
 | `hc_x` | double | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
 | `hc_y` | double | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
-| `bat_speed` | double | yes | — | TODO |
+| `bat_speed` | double | yes | — | Bat speed is measured at the sweet-spot of the bat. Average bat speed is the average of the top 90% of a player's swings. (src: savant_csv_docs) |
 | `swing_length` | double | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
 | `estimated_ba_using_speedangle` | double | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
 | `estimated_woba_using_speedangle` | double | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
@@ -421,7 +421,7 @@ Fielder arm strength (max and per-base average) per player-season.
 | `total_throws_rf` | int16 | yes | — | TODO |
 | `total_throws_inf` | int16 | yes | — | TODO |
 | `total_throws_of` | int16 | yes | — | TODO |
-| `max_arm_strength` | double | yes | — | TODO |
+| `max_arm_strength` | double | yes | — | Arm strength is how hard, in miles per hour, a fielder throws the ball. (src: savant_csv_docs) |
 | `arm_1b` | double | yes | — | TODO |
 | `arm_2b` | double | yes | — | TODO |
 | `arm_3b` | double | yes | — | TODO |
@@ -431,7 +431,7 @@ Fielder arm strength (max and per-base average) per player-season.
 | `arm_rf` | double | yes | — | TODO |
 | `arm_inf` | double | yes | — | TODO |
 | `arm_of` | double | yes | — | TODO |
-| `arm_overall` | double | yes | — | TODO |
+| `arm_overall` | double | yes | — | Arm strength is how hard, in miles per hour, a fielder throws the ball. (src: savant_csv_docs) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:statcast.leaderboard_arm_strength -->
@@ -564,18 +564,18 @@ Bat speed, swing length, squared-up and blast rates per batter-season (2023+).
 | `swings_competitive` | int16 | yes | — | TODO |
 | `percent_swings_competitive` | double | yes | — | TODO |
 | `contact` | int16 | yes | — | TODO |
-| `avg_bat_speed` | double | yes | — | TODO |
+| `avg_bat_speed` | double | yes | — | Bat speed is measured at the sweet-spot of the bat. Average bat speed is the average of the top 90% of a player's swings. (src: savant_csv_docs) |
 | `hard_swing_rate` | double | yes | — | TODO |
-| `squared_up_per_bat_contact` | double | yes | — | TODO |
-| `squared_up_per_swing` | double | yes | — | TODO |
-| `blast_per_bat_contact` | double | yes | — | TODO |
-| `blast_per_swing` | double | yes | — | TODO |
+| `squared_up_per_bat_contact` | double | yes | — | Squared-up: how much exit velocity was obtained compared to the maximum possible exit velocity available. (src: savant_csv_docs) |
+| `squared_up_per_swing` | double | yes | — | Squared-up: how much exit velocity was obtained compared to the maximum possible exit velocity available. (src: savant_csv_docs) |
+| `blast_per_bat_contact` | double | yes | — | Blasts: batted balls that were both squared-up and hit with a fast swing. (src: savant_csv_docs) |
+| `blast_per_swing` | double | yes | — | Blasts: batted balls that were both squared-up and hit with a fast swing. (src: savant_csv_docs) |
 | `swing_length` | double | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
-| `swords` | int16 | yes | — | TODO |
+| `swords` | int16 | yes | — | A bat tracking metric that quantifies when a pitcher forces a batter to take a non-competitive, ugly-looking swing. (src: savant_csv_docs) |
 | `batter_run_value` | double | yes | — | TODO |
 | `whiffs` | int16 | yes | — | TODO |
 | `whiff_per_swing` | double | yes | — | TODO |
-| `batted_ball_events` | int16 | yes | — | TODO |
+| `batted_ball_events` | int16 | yes | — | A Batted Ball Event represents any batted ball that produces a result. (src: savant_csv_docs) |
 | `batted_ball_event_per_swing` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -596,7 +596,7 @@ Batted-ball profile (pull/straight/oppo, ground/line/fly rates) per batter-seaso
 | `id` | int32 | yes | — | TODO |
 | `name` | string | yes | — | TODO |
 | `year` | int16 | yes | — | TODO |
-| `bbe` | int16 | yes | — | TODO |
+| `bbe` | int16 | yes | — | A Batted Ball Event represents any batted ball that produces a result. (src: savant_csv_docs) |
 | `gb_rate` | double | yes | — | TODO |
 | `air_rate` | double | yes | — | TODO |
 | `fb_rate` | double | yes | — | TODO |
@@ -700,20 +700,20 @@ Exit velocity, launch angle and barrels per batter-season (batted-ball events).
 | `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
 | `player_id` | int32 | yes | — | TODO |
 | `attempts` | int16 | yes | — | TODO |
-| `avg_hit_angle` | double | yes | — | TODO |
+| `avg_hit_angle` | double | yes | — | Average launch angle: how high or low, in degrees, a ball was hit by a batter. (src: savant_csv_docs) |
 | `anglesweetspotpercent` | double | yes | — | Colloquially, a player who hits the ball solidly is said to have gotten the "sweet spot" of the bat on the ball. (src: mlb_glossary_sweet_spot) |
 | `max_hit_speed` | double | yes | — | TODO |
-| `avg_hit_speed` | double | yes | — | TODO |
-| `ev50` | double | yes | — | TODO |
+| `avg_hit_speed` | double | yes | — | Average exit velocity: how fast, in miles per hour, a ball was hit by a batter. (src: savant_csv_docs) |
+| `ev50` | double | yes | — | For a batter, EV50 is an average of the hardest 50% of his batted balls. (src: savant_csv_docs) |
 | `fbld` | double | yes | — | TODO |
 | `gb` | double | yes | — | TODO |
 | `max_distance` | int16 | yes | — | TODO |
 | `avg_distance` | int16 | yes | — | TODO |
 | `avg_hr_distance` | int16 | yes | — | TODO |
-| `ev95plus` | int16 | yes | — | TODO |
-| `ev95percent` | double | yes | — | TODO |
+| `ev95plus` | int16 | yes | — | Hard-hit balls: Statcast defines a hard-hit ball as one hit with an exit velocity of 95 mph or higher. (src: savant_csv_docs) |
+| `ev95percent` | double | yes | — | Hard-hit balls: Statcast defines a hard-hit ball as one hit with an exit velocity of 95 mph or higher. (src: savant_csv_docs) |
 | `barrels` | int16 | yes | — | The Barrel classification is assigned to batted-ball events whose comparable hit types (in terms of exit velocity and launch angle) have led to a minimum .500 batting average and 1.500 slugging percentage since Statcast was implemented Major League wide in 2015. (src: mlb_glossary_barrel) |
-| `brl_percent` | double | yes | — | TODO |
+| `brl_percent` | double | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
 | `brl_pa` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -734,20 +734,20 @@ Exit velocity and barrels per batting team-season.
 | `team` | string | yes | — | TODO |
 | `team_id` | string | yes | — | TODO |
 | `attempts` | int16 | yes | — | TODO |
-| `avg_hit_angle` | double | yes | — | TODO |
+| `avg_hit_angle` | double | yes | — | Average launch angle: how high or low, in degrees, a ball was hit by a batter. (src: savant_csv_docs) |
 | `anglesweetspotpercent` | double | yes | — | Colloquially, a player who hits the ball solidly is said to have gotten the "sweet spot" of the bat on the ball. (src: mlb_glossary_sweet_spot) |
 | `max_hit_speed` | double | yes | — | TODO |
-| `avg_hit_speed` | double | yes | — | TODO |
-| `ev50` | double | yes | — | TODO |
+| `avg_hit_speed` | double | yes | — | Average exit velocity: how fast, in miles per hour, a ball was hit by a batter. (src: savant_csv_docs) |
+| `ev50` | double | yes | — | For a batter, EV50 is an average of the hardest 50% of his batted balls. (src: savant_csv_docs) |
 | `fbld` | double | yes | — | TODO |
 | `gb` | double | yes | — | TODO |
 | `max_distance` | int16 | yes | — | TODO |
 | `avg_distance` | int16 | yes | — | TODO |
 | `avg_hr_distance` | int16 | yes | — | TODO |
-| `ev95plus` | int16 | yes | — | TODO |
-| `ev95percent` | double | yes | — | TODO |
+| `ev95plus` | int16 | yes | — | Hard-hit balls: Statcast defines a hard-hit ball as one hit with an exit velocity of 95 mph or higher. (src: savant_csv_docs) |
+| `ev95percent` | double | yes | — | Hard-hit balls: Statcast defines a hard-hit ball as one hit with an exit velocity of 95 mph or higher. (src: savant_csv_docs) |
 | `barrels` | int16 | yes | — | The Barrel classification is assigned to batted-ball events whose comparable hit types (in terms of exit velocity and launch angle) have led to a minimum .500 batting average and 1.500 slugging percentage since Statcast was implemented Major League wide in 2015. (src: mlb_glossary_barrel) |
-| `brl_percent` | double | yes | — | TODO |
+| `brl_percent` | double | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
 | `brl_pa` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -768,20 +768,20 @@ Exit velocity, launch angle and barrels allowed per pitcher-season.
 | `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
 | `player_id` | int32 | yes | — | TODO |
 | `attempts` | int16 | yes | — | TODO |
-| `avg_hit_angle` | double | yes | — | TODO |
+| `avg_hit_angle` | double | yes | — | Average launch angle: how high or low, in degrees, a ball was hit by a batter. (src: savant_csv_docs) |
 | `anglesweetspotpercent` | double | yes | — | Colloquially, a player who hits the ball solidly is said to have gotten the "sweet spot" of the bat on the ball. (src: mlb_glossary_sweet_spot) |
 | `max_hit_speed` | double | yes | — | TODO |
-| `avg_hit_speed` | double | yes | — | TODO |
-| `ev50` | double | yes | — | TODO |
+| `avg_hit_speed` | double | yes | — | Average exit velocity: how fast, in miles per hour, a ball was hit by a batter. (src: savant_csv_docs) |
+| `ev50` | double | yes | — | For a batter, EV50 is an average of the hardest 50% of his batted balls. (src: savant_csv_docs) |
 | `fbld` | double | yes | — | TODO |
 | `gb` | double | yes | — | TODO |
 | `max_distance` | int16 | yes | — | TODO |
 | `avg_distance` | int16 | yes | — | TODO |
 | `avg_hr_distance` | int16 | yes | — | TODO |
-| `ev95plus` | int16 | yes | — | TODO |
-| `ev95percent` | double | yes | — | TODO |
+| `ev95plus` | int16 | yes | — | Hard-hit balls: Statcast defines a hard-hit ball as one hit with an exit velocity of 95 mph or higher. (src: savant_csv_docs) |
+| `ev95percent` | double | yes | — | Hard-hit balls: Statcast defines a hard-hit ball as one hit with an exit velocity of 95 mph or higher. (src: savant_csv_docs) |
 | `barrels` | int16 | yes | — | The Barrel classification is assigned to batted-ball events whose comparable hit types (in terms of exit velocity and launch angle) have led to a minimum .500 batting average and 1.500 slugging percentage since Statcast was implemented Major League wide in 2015. (src: mlb_glossary_barrel) |
-| `brl_percent` | double | yes | — | TODO |
+| `brl_percent` | double | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
 | `brl_pa` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -802,20 +802,20 @@ Exit velocity and barrels allowed per pitching team-season.
 | `team` | string | yes | — | TODO |
 | `team_id` | string | yes | — | TODO |
 | `attempts` | int16 | yes | — | TODO |
-| `avg_hit_angle` | double | yes | — | TODO |
+| `avg_hit_angle` | double | yes | — | Average launch angle: how high or low, in degrees, a ball was hit by a batter. (src: savant_csv_docs) |
 | `anglesweetspotpercent` | double | yes | — | Colloquially, a player who hits the ball solidly is said to have gotten the "sweet spot" of the bat on the ball. (src: mlb_glossary_sweet_spot) |
 | `max_hit_speed` | double | yes | — | TODO |
-| `avg_hit_speed` | double | yes | — | TODO |
-| `ev50` | double | yes | — | TODO |
+| `avg_hit_speed` | double | yes | — | Average exit velocity: how fast, in miles per hour, a ball was hit by a batter. (src: savant_csv_docs) |
+| `ev50` | double | yes | — | For a batter, EV50 is an average of the hardest 50% of his batted balls. (src: savant_csv_docs) |
 | `fbld` | double | yes | — | TODO |
 | `gb` | double | yes | — | TODO |
 | `max_distance` | int16 | yes | — | TODO |
 | `avg_distance` | int16 | yes | — | TODO |
 | `avg_hr_distance` | int16 | yes | — | TODO |
-| `ev95plus` | int16 | yes | — | TODO |
-| `ev95percent` | double | yes | — | TODO |
+| `ev95plus` | int16 | yes | — | Hard-hit balls: Statcast defines a hard-hit ball as one hit with an exit velocity of 95 mph or higher. (src: savant_csv_docs) |
+| `ev95percent` | double | yes | — | Hard-hit balls: Statcast defines a hard-hit ball as one hit with an exit velocity of 95 mph or higher. (src: savant_csv_docs) |
 | `barrels` | int16 | yes | — | The Barrel classification is assigned to batted-ball events whose comparable hit types (in terms of exit velocity and launch angle) have led to a minimum .500 batting average and 1.500 slugging percentage since Statcast was implemented Major League wide in 2015. (src: mlb_glossary_barrel) |
-| `brl_percent` | double | yes | — | TODO |
+| `brl_percent` | double | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
 | `brl_pa` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -839,13 +839,13 @@ Expected stats (xBA, xSLG, xwOBA) per batter-season.
 | `pa` | int16 | yes | — | TODO |
 | `bip` | int16 | yes | — | TODO |
 | `ba` | double | yes | — | TODO |
-| `est_ba` | double | yes | — | TODO |
+| `est_ba` | double | yes | — | xBA measures the likelihood that a batted ball will become a hit. (src: savant_csv_docs) |
 | `est_ba_minus_ba_diff` | double | yes | — | TODO |
 | `slg` | double | yes | — | TODO |
 | `est_slg` | double | yes | — | TODO |
 | `est_slg_minus_slg_diff` | double | yes | — | TODO |
 | `woba` | double | yes | — | TODO |
-| `est_woba` | double | yes | — | TODO |
+| `est_woba` | double | yes | — | xwOBA is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: savant_csv_docs) |
 | `est_woba_minus_woba_diff` | double | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -869,13 +869,13 @@ Expected stats (xBA, xSLG, xwOBA, xERA) per pitcher-season.
 | `pa` | int16 | yes | — | TODO |
 | `bip` | int16 | yes | — | TODO |
 | `ba` | double | yes | — | TODO |
-| `est_ba` | double | yes | — | TODO |
+| `est_ba` | double | yes | — | xBA measures the likelihood that a batted ball will become a hit. (src: savant_csv_docs) |
 | `est_ba_minus_ba_diff` | double | yes | — | TODO |
 | `slg` | double | yes | — | TODO |
 | `est_slg` | double | yes | — | TODO |
 | `est_slg_minus_slg_diff` | double | yes | — | TODO |
 | `woba` | double | yes | — | TODO |
-| `est_woba` | double | yes | — | TODO |
+| `est_woba` | double | yes | — | xwOBA is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: savant_csv_docs) |
 | `est_woba_minus_woba_diff` | double | yes | — | TODO |
 | `era` | double | yes | — | TODO |
 | `xera` | double | yes | — | Expected ERA, or xERA, is a simple 1:1 translation of Expected Weighted On-Base Average (xwOBA), converted to the ERA scale. xwOBA takes into account the amount of contact (strikeouts, walks, hit by pitch) and the quality of that contact (exit velocity and launch angle), in an attempt to credit the pitcher or hitter for the moment of contact, not for what might happen to that contact thanks to other factors like ballpark, weather, or defense. (src: mlb_glossary_expected_era) |
@@ -928,7 +928,7 @@ Outfielder jump (reaction, burst and routing distance) per fielder-season.
 | `last_name_first_name` | string | yes | `last_name, first_name` | TODO |
 | `resp_fielder_id` | int32 | yes | — | TODO |
 | `year` | int16 | yes | — | TODO |
-| `outs_above_average` | int16 | yes | — | TODO |
+| `outs_above_average` | int16 | yes | — | A range-based metric of skill that shows how many outs a player has saved over his peers. (src: savant_csv_docs) |
 | `outs_per_play` | double | yes | — | TODO |
 | `rel_league_burst_distance` | double | yes | — | TODO |
 | `rel_league_reaction_distance` | double | yes | — | TODO |
@@ -959,7 +959,7 @@ Outs Above Average (OAA) and fielding runs prevented per fielder-position-season
 | `year` | int16 | yes | — | TODO |
 | `primary_pos_formatted` | string | yes | — | TODO |
 | `fielding_runs_prevented` | int16 | yes | — | TODO |
-| `outs_above_average` | int16 | yes | — | TODO |
+| `outs_above_average` | int16 | yes | — | A range-based metric of skill that shows how many outs a player has saved over his peers. (src: savant_csv_docs) |
 | `outs_above_average_infront` | int16 | yes | — | TODO |
 | `outs_above_average_lateral_toward3bline` | int16 | yes | — | TODO |
 | `outs_above_average_lateral_toward1bline` | int16 | yes | — | TODO |
@@ -1039,8 +1039,8 @@ Statcast percentile inputs per batter-season.
 | `xslg` | int16 | yes | — | Expected Slugging Percentage (xSLG) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_slugging_percentage) |
 | `xiso` | int16 | yes | — | TODO |
 | `xobp` | int16 | yes | — | TODO |
-| `brl` | int16 | yes | — | TODO |
-| `brl_percent` | int16 | yes | — | TODO |
+| `brl` | int16 | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
+| `brl_percent` | int16 | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
 | `exit_velocity` | int16 | yes | — | TODO |
 | `max_ev` | int16 | yes | — | TODO |
 | `hard_hit_percent` | int16 | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
@@ -1051,7 +1051,7 @@ Statcast percentile inputs per batter-season.
 | `arm_strength` | int16 | yes | — | On an individual play, Arm Strength is defined as the maximum velocity of any throw made by a fielder -- with the max velocity always being at the release point, due to physics. (src: mlb_glossary_arm_strength) |
 | `sprint_speed` | int16 | yes | — | Introduced during the 2017 season, Sprint Speed is a Statcast metric that aims to more precisely quantify speed by measuring how many feet per second a player runs in his fastest one-second window. (src: mlb_glossary_sprint_speed) |
 | `oaa` | int16 | yes | — | Outs Above Average (OAA) is a range-based metric of skill that shows how many outs a player has saved. (src: mlb_glossary_outs_above_average) |
-| `bat_speed` | int16 | yes | — | TODO |
+| `bat_speed` | int16 | yes | — | Bat speed is measured at the sweet-spot of the bat. Average bat speed is the average of the top 90% of a player's swings. (src: savant_csv_docs) |
 | `squared_up_rate` | int16 | yes | — | A swing’s squared-up rate tells us how much of the highest possible exit velocity available (based on the physics related to the swing speed and pitch speed) a batter was able to obtain – it is, at its simplest, how much exit velocity did you get as a share of how much exit velocity was possible based on your swing speed and the speed of the pitch. (src: mlb_glossary_squared_up) |
 | `swing_length` | int16 | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
@@ -1078,8 +1078,8 @@ Statcast percentile inputs per pitcher-season.
 | `xslg` | int16 | yes | — | Expected Slugging Percentage (xSLG) is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: mlb_glossary_expected_slugging_percentage) |
 | `xiso` | int16 | yes | — | TODO |
 | `xobp` | int16 | yes | — | TODO |
-| `brl` | int16 | yes | — | TODO |
-| `brl_percent` | int16 | yes | — | TODO |
+| `brl` | int16 | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
+| `brl_percent` | int16 | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
 | `exit_velocity` | int16 | yes | — | TODO |
 | `max_ev` | int16 | yes | — | TODO |
 | `hard_hit_percent` | int16 | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
@@ -1124,9 +1124,9 @@ Results (run value, BA, SLG, wOBA, whiff%) per pitcher and pitch type.
 | `whiff_percent` | double | yes | — | TODO |
 | `k_percent` | double | yes | — | TODO |
 | `put_away` | double | yes | — | TODO |
-| `est_ba` | double | yes | — | TODO |
+| `est_ba` | double | yes | — | xBA measures the likelihood that a batted ball will become a hit. (src: savant_csv_docs) |
 | `est_slg` | double | yes | — | TODO |
-| `est_woba` | double | yes | — | TODO |
+| `est_woba` | double | yes | — | xwOBA is formulated using exit velocity, launch angle and, on certain types of batted balls, Sprint Speed. (src: savant_csv_docs) |
 | `hard_hit_percent` | double | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
@@ -1413,7 +1413,7 @@ Swing path: attack angle, attack direction and swing tilt per batter-season (202
 | `id` | int32 | yes | — | TODO |
 | `name` | string | yes | — | TODO |
 | `side` | string | yes | — | TODO |
-| `avg_bat_speed` | double | yes | — | TODO |
+| `avg_bat_speed` | double | yes | — | Bat speed is measured at the sweet-spot of the bat. Average bat speed is the average of the top 90% of a player's swings. (src: savant_csv_docs) |
 | `swing_tilt` | double | yes | — | Swing path is a metric that tells you the shape of a hitter's swing on the way toward contact. (src: mlb_glossary_swing_path_tilt) |
 | `attack_angle` | double | yes | — | Attack angle measures the vertical direction that the sweet spot of the bat is traveling at the moment it hits the baseball. (src: mlb_glossary_attack_angle) |
 | `attack_direction` | double | yes | — | Attack direction measures the horizontal direction that the sweet spot of the bat is moving at the point of contact with the baseball (or the point the bat and ball cross paths on a swing-and-miss). (src: mlb_glossary_attack_direction) |
@@ -1604,7 +1604,7 @@ Minor-league pitch-level Statcast search results (minors=true, 2021 onwards).
 | `hit_distance_sc` | double | yes | — | TODO |
 | `hc_x` | double | yes | — | Hit coordinate X of batted ball. (src: savant_csv_docs) |
 | `hc_y` | double | yes | — | Hit coordinate Y of batted ball. (src: savant_csv_docs) |
-| `bat_speed` | double | yes | — | TODO |
+| `bat_speed` | double | yes | — | Bat speed is measured at the sweet-spot of the bat. Average bat speed is the average of the top 90% of a player's swings. (src: savant_csv_docs) |
 | `swing_length` | double | yes | — | Swing length is a metric intended to identify if a batter has a short or long swing. (src: mlb_glossary_swing_length) |
 | `estimated_ba_using_speedangle` | double | yes | — | Estimated Batting Avg based on launch angle and exit velocity. (src: savant_csv_docs) |
 | `estimated_woba_using_speedangle` | double | yes | — | Estimated wOBA based on launch angle and exit velocity. (src: savant_csv_docs) |
@@ -1804,7 +1804,7 @@ Catcher throwing (stolen-base runs, caught stealing) per catcher.
 | `cs_aa_per_throw` | double | yes | — | TODO |
 | `seasonal_runner_speed` | double | yes | — | TODO |
 | `runner_distance_from_second` | double | yes | — | TODO |
-| `pop_time` | double | yes | — | TODO |
+| `pop_time` | double | yes | — | How quickly, in seconds, a catcher can get the ball out of his glove and to the base on a stolen base or pickoff attempt. (src: savant_csv_docs) |
 | `exchange_time` | double | yes | — | TODO |
 | `arm_strength` | double | yes | — | On an individual play, Arm Strength is defined as the maximum velocity of any throw made by a fielder -- with the max velocity always being at the release point, due to physics. (src: mlb_glossary_arm_strength) |
 | `n_xcs_with_flight_over_xcs` | double | yes | — | TODO |
@@ -1909,11 +1909,11 @@ Hot Stove leaderboard: batters of the season with Statcast batting metrics.
 | `xbadiff` | double | yes | — | TODO |
 | `xslgdiff` | double | yes | — | TODO |
 | `wobadiff` | double | yes | — | TODO |
-| `exit_velocity_avg` | double | yes | — | TODO |
-| `launch_angle_avg` | double | yes | — | TODO |
-| `sweet_spot_percent` | double | yes | — | TODO |
-| `barrel` | int16 | yes | — | TODO |
-| `barrel_batted_rate` | double | yes | — | TODO |
+| `exit_velocity_avg` | double | yes | — | Average exit velocity: how fast, in miles per hour, a ball was hit by a batter. (src: savant_csv_docs) |
+| `launch_angle_avg` | double | yes | — | Average launch angle: how high or low, in degrees, a ball was hit by a batter. (src: savant_csv_docs) |
+| `sweet_spot_percent` | double | yes | — | Launch angle sweet-spot: a batted-ball event with a launch angle between eight and 32 degrees. (src: savant_csv_docs) |
+| `barrel` | int16 | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
+| `barrel_batted_rate` | double | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
 | `solidcontact_percent` | double | yes | — | TODO |
 | `flareburner_percent` | double | yes | — | TODO |
 | `poorlyunder_percent` | double | yes | — | TODO |
@@ -1921,7 +1921,7 @@ Hot Stove leaderboard: batters of the season with Statcast batting metrics.
 | `poorlyweak_percent` | double | yes | — | TODO |
 | `hard_hit_percent` | double | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
 | `avg_best_speed` | double | yes | — | TODO |
-| `avg_hyper_speed` | double | yes | — | TODO |
+| `avg_hyper_speed` | double | yes | — | Adjusted EV averages the maximum of 88 and the actual exit velocity of each batted ball event. (src: savant_csv_docs) |
 | `z_swing_percent` | double | yes | — | TODO |
 | `z_swing_miss_percent` | double | yes | — | TODO |
 | `oz_swing_percent` | double | yes | — | TODO |
@@ -1959,21 +1959,21 @@ Hot Stove leaderboard: batters of the season with Statcast batting metrics.
 | `linedrives` | int16 | yes | — | TODO |
 | `popups_percent` | double | yes | — | TODO |
 | `popups` | int16 | yes | — | TODO |
-| `avg_swing_length` | double | yes | — | TODO |
+| `avg_swing_length` | double | yes | — | Swing length is the total (sum) distance in feet traveled by the head of the bat. (src: savant_csv_docs) |
 | `avg_swing_speed` | double | yes | — | TODO |
-| `blasts_contact` | double | yes | — | TODO |
-| `blasts_swing` | double | yes | — | TODO |
-| `squared_up_contact` | double | yes | — | TODO |
-| `squared_up_swing` | double | yes | — | TODO |
-| `swords` | int16 | yes | — | TODO |
-| `fast_swing_rate` | double | yes | — | TODO |
+| `blasts_contact` | double | yes | — | Blasts: batted balls that were both squared-up and hit with a fast swing. (src: savant_csv_docs) |
+| `blasts_swing` | double | yes | — | Blasts: batted balls that were both squared-up and hit with a fast swing. (src: savant_csv_docs) |
+| `squared_up_contact` | double | yes | — | Squared-up: how much exit velocity was obtained compared to the maximum possible exit velocity available. (src: savant_csv_docs) |
+| `squared_up_swing` | double | yes | — | Squared-up: how much exit velocity was obtained compared to the maximum possible exit velocity available. (src: savant_csv_docs) |
+| `swords` | int16 | yes | — | A bat tracking metric that quantifies when a pitcher forces a batter to take a non-competitive, ugly-looking swing. (src: savant_csv_docs) |
+| `fast_swing_rate` | double | yes | — | A fast swing is one that has 75 MPH or more of bat speed. (src: savant_csv_docs) |
 | `attack_angle` | double | yes | — | Attack angle measures the vertical direction that the sweet spot of the bat is traveling at the moment it hits the baseball. (src: mlb_glossary_attack_angle) |
 | `attack_direction` | double | yes | — | Attack direction measures the horizontal direction that the sweet spot of the bat is moving at the point of contact with the baseball (or the point the bat and ball cross paths on a swing-and-miss). (src: mlb_glossary_attack_direction) |
-| `ideal_angle_rate` | double | yes | — | TODO |
+| `ideal_angle_rate` | double | yes | — | Ideal attack angle is when a ball is hit with a 5-20 degree attack angle. (src: savant_csv_docs) |
 | `vertical_swing_path` | double | yes | — | TODO |
 | `swing_take_run_value` | int16 | yes | — | TODO |
 | `runner_run_value` | int16 | yes | — | TODO |
-| `fielding_run_value` | int16 | yes | — | TODO |
+| `fielding_run_value` | int16 | yes | — | Statcast's overall metric for capturing a player's measurable defensive performance onto a run-based scale. (src: savant_csv_docs) |
 | `pitch_run_value_fastball` | double | yes | — | TODO |
 | `pitch_run_value_breaking` | double | yes | — | TODO |
 | `pitch_run_value_offspeed` | double | yes | — | TODO |
@@ -2138,11 +2138,11 @@ Hot Stove leaderboard: pitchers of the season with Statcast pitching metrics.
 | `xbadiff` | double | yes | — | TODO |
 | `xslgdiff` | double | yes | — | TODO |
 | `wobadiff` | double | yes | — | TODO |
-| `exit_velocity_avg` | double | yes | — | TODO |
-| `launch_angle_avg` | double | yes | — | TODO |
-| `sweet_spot_percent` | double | yes | — | TODO |
-| `barrel` | int16 | yes | — | TODO |
-| `barrel_batted_rate` | double | yes | — | TODO |
+| `exit_velocity_avg` | double | yes | — | Average exit velocity: how fast, in miles per hour, a ball was hit by a batter. (src: savant_csv_docs) |
+| `launch_angle_avg` | double | yes | — | Average launch angle: how high or low, in degrees, a ball was hit by a batter. (src: savant_csv_docs) |
+| `sweet_spot_percent` | double | yes | — | Launch angle sweet-spot: a batted-ball event with a launch angle between eight and 32 degrees. (src: savant_csv_docs) |
+| `barrel` | int16 | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
+| `barrel_batted_rate` | double | yes | — | Barrels: a batted ball with the perfect combination of exit velocity and launch angle. (src: savant_csv_docs) |
 | `solidcontact_percent` | double | yes | — | TODO |
 | `flareburner_percent` | double | yes | — | TODO |
 | `poorlyunder_percent` | double | yes | — | TODO |
@@ -2150,7 +2150,7 @@ Hot Stove leaderboard: pitchers of the season with Statcast pitching metrics.
 | `poorlyweak_percent` | double | yes | — | TODO |
 | `hard_hit_percent` | double | yes | — | Statcast defines a 'hard-hit ball' as one hit with an exit velocity of 95 mph or higher, and a player's "hard-hit rate" is simply showing the percentage of batted balls that were hit at 95 mph or more. (src: mlb_glossary_hard_hit_rate) |
 | `avg_best_speed` | double | yes | — | TODO |
-| `avg_hyper_speed` | double | yes | — | TODO |
+| `avg_hyper_speed` | double | yes | — | Adjusted EV averages the maximum of 88 and the actual exit velocity of each batted ball event. (src: savant_csv_docs) |
 | `z_swing_percent` | double | yes | — | TODO |
 | `z_swing_miss_percent` | double | yes | — | TODO |
 | `oz_swing_percent` | double | yes | — | TODO |
@@ -2188,21 +2188,21 @@ Hot Stove leaderboard: pitchers of the season with Statcast pitching metrics.
 | `linedrives` | int16 | yes | — | TODO |
 | `popups_percent` | double | yes | — | TODO |
 | `popups` | int16 | yes | — | TODO |
-| `avg_swing_length` | double | yes | — | TODO |
+| `avg_swing_length` | double | yes | — | Swing length is the total (sum) distance in feet traveled by the head of the bat. (src: savant_csv_docs) |
 | `avg_swing_speed` | double | yes | — | TODO |
-| `blasts_contact` | double | yes | — | TODO |
-| `blasts_swing` | double | yes | — | TODO |
-| `squared_up_contact` | double | yes | — | TODO |
-| `squared_up_swing` | double | yes | — | TODO |
-| `swords` | int16 | yes | — | TODO |
-| `fast_swing_rate` | double | yes | — | TODO |
+| `blasts_contact` | double | yes | — | Blasts: batted balls that were both squared-up and hit with a fast swing. (src: savant_csv_docs) |
+| `blasts_swing` | double | yes | — | Blasts: batted balls that were both squared-up and hit with a fast swing. (src: savant_csv_docs) |
+| `squared_up_contact` | double | yes | — | Squared-up: how much exit velocity was obtained compared to the maximum possible exit velocity available. (src: savant_csv_docs) |
+| `squared_up_swing` | double | yes | — | Squared-up: how much exit velocity was obtained compared to the maximum possible exit velocity available. (src: savant_csv_docs) |
+| `swords` | int16 | yes | — | A bat tracking metric that quantifies when a pitcher forces a batter to take a non-competitive, ugly-looking swing. (src: savant_csv_docs) |
+| `fast_swing_rate` | double | yes | — | A fast swing is one that has 75 MPH or more of bat speed. (src: savant_csv_docs) |
 | `attack_angle` | double | yes | — | Attack angle measures the vertical direction that the sweet spot of the bat is traveling at the moment it hits the baseball. (src: mlb_glossary_attack_angle) |
 | `attack_direction` | double | yes | — | Attack direction measures the horizontal direction that the sweet spot of the bat is moving at the point of contact with the baseball (or the point the bat and ball cross paths on a swing-and-miss). (src: mlb_glossary_attack_direction) |
-| `ideal_angle_rate` | double | yes | — | TODO |
+| `ideal_angle_rate` | double | yes | — | Ideal attack angle is when a ball is hit with a 5-20 degree attack angle. (src: savant_csv_docs) |
 | `vertical_swing_path` | double | yes | — | TODO |
 | `swing_take_run_value` | int16 | yes | — | TODO |
 | `runner_run_value` | string | yes | — | TODO |
-| `fielding_run_value` | string | yes | — | TODO |
+| `fielding_run_value` | string | yes | — | Statcast's overall metric for capturing a player's measurable defensive performance onto a run-based scale. (src: savant_csv_docs) |
 | `pitch_run_value_fastball` | double | yes | — | TODO |
 | `pitch_run_value_breaking` | double | yes | — | TODO |
 | `pitch_run_value_offspeed` | double | yes | — | TODO |

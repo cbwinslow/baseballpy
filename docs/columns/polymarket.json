@@ -1,0 +1,25 @@
+{
+ "markets": {
+  "condition_id": {
+   "source": "polymarket_gamma_structure",
+   "text": "Unique identifier for the market's resolvable condition."
+  },
+  "question_id": {
+   "source": "polymarket_gamma_structure",
+   "text": "Hash of the market question used for resolution."
+  },
+  "enable_order_book": {
+   "source": "polymarket_gamma_structure",
+   "text": "Markets can only be traded via the CLOB if this is true."
+  }
+ },
+ "outcomes": {
+  "condition_id": {
+   "source": "polymarket_gamma_structure",
+   "text": "Unique identifier for the market's resolvable condition."
+  }
+ },
+ "_sources": {
+  "polymarket_gamma_structure": "https://docs.polymarket.com/developers/gamma-markets-api/gamma-structure"
+ }
+}

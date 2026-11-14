@@ -92,8 +92,9 @@ def call_opencode_api(prompt: str, provider_id: str, model_id: str) -> str:
         )
     finally:
         brief.unlink(missing_ok=True)
-    text = re.sub(r"\x1b\[[0-9;]*m", "", res.stdout)
-    if res.returncode != 0 or "Free usage limit reached" in text:
+    text = re.sub(r"\x1b(?:\[[0-9;?]*[ -/]*[@-~]|\][^\x07\x1b]*(?:\x07|\x1b\\))", "", res.stdout)
+    # the quota message only counts as the answer when the answer is that short: a real answer may quote it
+    if res.returncode != 0 or ("Free usage limit reached" in text and len(text) < 3000):
         print(f"[OpenCode Error {res.returncode}] {res.stderr.strip()}", file=sys.stderr)
         if text.strip():
             print(f"[OpenCode Body] {text.strip()[-1500:]}", file=sys.stderr)

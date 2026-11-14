@@ -167,7 +167,18 @@ def test_run_jobs_concurrency_overlap() -> None:
 
     adapters = {"barrier": BarrierAdapter("barrier")}
     jobs = [make_job("barrier", "t", id=1), make_job("barrier", "t", id=2)]
-    report = run_jobs(jobs, adapters, concurrency=2)
+
+    class Governor:  # the real memory guard holds a second job back when the machine is short of memory
+        def may_start(self, running: int) -> bool:
+            return True
+
+        def note_started(self) -> None:
+            pass
+
+        def observe(self, running: int) -> None:
+            pass
+
+    report = run_jobs(jobs, adapters, concurrency=2, governor=Governor())  # type: ignore[arg-type]
     assert len(report.results) == 2
     assert report.exit_code == 0
 

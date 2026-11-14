@@ -309,3 +309,22 @@ def test_exception_in_inner_block_keeps_outer_lock_held_until_outer_exits(
         _crash(holder)
     finally:
         release_all(tmp_path)
+
+
+def test_release_all_does_not_give_up_the_lock_of_a_running_block(tmp_path: Path) -> None:
+    """HttpClient.close() calls release_all on the locks folder: a chunk write in another thread keeps its lock."""
+    with held_named(tmp_path, "scoped-res", "scoped-res is busy"):
+        release_all(tmp_path)
+        res = _try_claim(tmp_path, "scoped-res")
+        assert res.returncode != 0 and "HostBusyError" in res.stderr, (
+            "the block still holds the lock"
+        )
+    assert _try_claim(tmp_path, "scoped-res").returncode == 0, "free once the block ended"
+
+
+def test_claim_named_cannot_take_over_the_lock_of_a_running_block(tmp_path: Path) -> None:
+    with (
+        held_named(tmp_path, "scoped-res", "scoped-res is busy"),
+        pytest.raises(RuntimeError, match="held_named"),
+    ):
+        claim_named(tmp_path, "scoped-res", "scoped-res is busy")

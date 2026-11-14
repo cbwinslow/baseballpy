@@ -215,3 +215,39 @@ def test_a_chunk_recorded_with_rows_but_held_nowhere_is_an_error_not_an_empty_ta
     assert len(store.read_part(spec, "never-downloaded", 2023)) == 0, (
         "an unknown chunk is still empty"
     )
+
+
+def test_a_season_another_process_writes_does_not_stop_the_compaction_of_a_finished_season(
+    lake: LakeConfig, spec: DatasetSpec
+) -> None:
+    """The queue compacts 2023 while 2024 downloads: an empty chunk recorded for 2024 must not abort it."""
+    ProcessedStore(lake).put(
+        spec, _pitches([], 2024), chunk_id="empty", season=2024
+    )  # recorded, zero rows
+    holder = _hold(lake.locks_root, _lock_name(spec, 2024))  # a download of 2024 is running
+    try:
+        report = compact_dataset(spec, lake, migrate=False)  # must not raise HostBusyError
+        assert report.files_before == 3 and report.files_after == 1, "season 2023 was compacted"
+    finally:
+        _crash(holder)
+
+
+def test_cleanup_leaves_an_unrecorded_compacted_file_of_a_season_another_process_holds(
+    lake: LakeConfig, spec: DatasetSpec
+) -> None:
+    """A compaction that wrote a compacted file and has not yet recorded it owns it: another one must not delete it."""
+    ProcessedStore(lake).put(spec, _pitches([90.0], 2024), chunk_id="x", season=2024)
+    orphan = lake.processed_dir(spec.source, spec.name, 2024) / "compact-0099.parquet"
+    orphan.write_bytes(b"not yet recorded")
+    holder = _hold(
+        lake.locks_root, _lock_name(spec, 2024)
+    )  # the other compaction is working on 2024
+    try:
+        compact_dataset(spec, lake, migrate=False)
+        assert orphan.exists(), "the file of a season someone else holds is left alone"
+    finally:
+        _crash(holder)
+    compact_dataset(spec, lake, migrate=False)
+    assert not orphan.exists(), (
+        "once nobody holds the season, an unreferenced compacted file is removed"
+    )

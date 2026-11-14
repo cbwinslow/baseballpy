@@ -180,11 +180,16 @@ class AuditLogger:
                     pass
 
     def _log_or_warn(self, event: AuditEvent) -> None:
-        """Write the event; a failed write (a full disk, a locked file) is a warning, never the error that
-        ends the operation: it would hide the real failure that is being propagated."""
+        """Write the event; a failed write (a full disk, a locked file, an unencodable message) is a warning,
+        never the error that ends the operation: it would hide the real failure that is being propagated."""
         try:
             self.log(event)
-        except OSError as exc:
+        except (
+            OSError,
+            ValueError,
+            TypeError,
+            msgspec.MsgspecError,
+        ) as exc:  # writing a record never ends the operation
             logger.warning("could not write the audit record of %s: %s", event.operation, exc)
 
     def _rotate_unlocked(self, threshold: int, force: bool) -> Path | None:

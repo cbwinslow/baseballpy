@@ -1,0 +1,277 @@
+{
+ "war_batting": {
+  "PA": {
+   "source": "bref_war_glossary",
+   "text": "Plate appearances."
+  },
+  "G": {
+   "source": "bref_war_glossary",
+   "text": "Games played."
+  },
+  "Inn": {
+   "source": "bref_war_glossary",
+   "text": "Innings played in the field."
+  },
+  "runs_bat": {
+   "source": "bref_war_glossary",
+   "text": "Batting runs from our modified wRAA."
+  },
+  "runs_br": {
+   "source": "bref_war_glossary",
+   "text": "Baserunning runs, includes SB and CS runs."
+  },
+  "runs_dp": {
+   "source": "bref_war_glossary",
+   "text": "Runs from avoiding GIDPs in double-play-situation ground balls."
+  },
+  "runs_field": {
+   "source": "bref_war_glossary",
+   "text": "Total fielding runs from TZR and DRS."
+  },
+  "runs_infield": {
+   "source": "bref_war_glossary",
+   "text": "Defensive double-play turn runs."
+  },
+  "runs_outfield": {
+   "source": "bref_war_glossary",
+   "text": "Outfield arm ratings."
+  },
+  "runs_catcher": {
+   "source": "bref_war_glossary",
+   "text": "Catcher defense."
+  },
+  "runs_good_plays": {
+   "source": "bref_war_glossary",
+   "text": "Superlative defensive plays."
+  },
+  "runs_defense": {
+   "source": "bref_war_glossary",
+   "text": "Overall defensive ability."
+  },
+  "runs_position": {
+   "source": "bref_war_glossary",
+   "text": "Runs from the position they play (non-pitching)."
+  },
+  "runs_position_p": {
+   "source": "bref_war_glossary",
+   "text": "Adjustment to zero out the negative contribution of pitcher offense."
+  },
+  "runs_replacement": {
+   "source": "bref_war_glossary",
+   "text": "The replacement level adjustment for the league."
+  },
+  "runs_above_rep": {
+   "source": "bref_war_glossary",
+   "text": "The sum of the above components (double-counting excluded)."
+  },
+  "runs_above_avg": {
+   "source": "bref_war_glossary",
+   "text": "Same as runs_above_rep without runs_replacement."
+  },
+  "runs_above_avg_off": {
+   "source": "bref_war_glossary",
+   "text": "Same as runs_above_avg without defense."
+  },
+  "runs_above_avg_def": {
+   "source": "bref_war_glossary",
+   "text": "Defense plus position."
+  },
+  "WAA": {
+   "source": "bref_war_glossary",
+   "text": "Wins above average."
+  },
+  "WAA_off": {
+   "source": "bref_war_glossary",
+   "text": "Wins above average using runs_above_avg_off."
+  },
+  "WAA_def": {
+   "source": "bref_war_glossary",
+   "text": "Wins above average using runs_above_avg_def."
+  },
+  "WAR": {
+   "source": "bref_war_glossary",
+   "text": "Wins above replacement, the final number."
+  },
+  "WAR_def": {
+   "source": "bref_war_glossary",
+   "text": "Just defense and position."
+  },
+  "WAR_off": {
+   "source": "bref_war_glossary",
+   "text": "Just offense, position and replacement level."
+  },
+  "WAR_rep": {
+   "source": "bref_war_glossary",
+   "text": "WAR attributable to replacement level."
+  },
+  "pitcher": {
+   "source": "bref_war_glossary",
+   "text": "Yes or no."
+  },
+  "teamRpG": {
+   "source": "bref_war_glossary",
+   "text": "An average team's runs scored with this player."
+  },
+  "oppRpG": {
+   "source": "bref_war_glossary",
+   "text": "An average team's runs allowed with this player."
+  },
+  "oppRpPA_rep": {
+   "source": "bref_war_glossary",
+   "text": "An average team's runs allowed per PA by a replacement player."
+  },
+  "oppRpG_rep": {
+   "source": "bref_war_glossary",
+   "text": "An average team's runs allowed per game by a replacement player."
+  },
+  "pyth_exponent": {
+   "source": "bref_war_glossary",
+   "text": "Pythagenpat exponent based on run environment for average teams."
+  },
+  "pyth_exponent_rep": {
+   "source": "bref_war_glossary",
+   "text": "Pythagenpat exponent based on a run environment for a replacement player."
+  },
+  "waa_win_perc": {
+   "source": "bref_war_glossary",
+   "text": "The win percentage using the pyth_exponent and team and opponent R/G."
+  },
+  "waa_win_perc_off": {
+   "source": "bref_war_glossary",
+   "text": "Win percentage, just for offense."
+  },
+  "waa_win_perc_def": {
+   "source": "bref_war_glossary",
+   "text": "Win percentage, just for defense."
+  },
+  "waa_win_perc_rep": {
+   "source": "bref_war_glossary",
+   "text": "How a replacement player would do."
+  }
+ },
+ "war_pitching": {
+  "IPouts": {
+   "source": "bref_war_glossary",
+   "text": "IP * 3."
+  },
+  "IPouts_start": {
+   "source": "bref_war_glossary",
+   "text": "Outs recorded as a starter."
+  },
+  "IPouts_relief": {
+   "source": "bref_war_glossary",
+   "text": "Outs recorded as a reliever."
+  },
+  "RA": {
+   "source": "bref_war_glossary",
+   "text": "Actual runs allowed."
+  },
+  "xRA": {
+   "source": "bref_war_glossary",
+   "text": "Expected runs allowed based on offenses faced and interleague play."
+  },
+  "xRA_sprp_adj": {
+   "source": "bref_war_glossary",
+   "text": "Adjustment based on whether innings were as a starter or reliever."
+  },
+  "xRA_def_pitcher": {
+   "source": "bref_war_glossary",
+   "text": "Adjustment based on the quality of the pitcher's defense behind them."
+  },
+  "xRA_extras_adj": {
+   "source": "bref_war_glossary",
+   "text": "The park-adjusted run expectancy of a runner on second with no outs, multiplied by the number of such innings they started."
+  },
+  "PPF": {
+   "source": "bref_war_glossary",
+   "text": "The pitcher's team park factor."
+  },
+  "PPF_custom": {
+   "source": "bref_war_glossary",
+   "text": "The park factor based on where they pitched."
+  },
+  "xRA_final": {
+   "source": "bref_war_glossary",
+   "text": "xRA with all needed adjustments."
+  },
+  "BIP": {
+   "source": "bref_war_glossary",
+   "text": "Balls in play."
+  },
+  "BIP_perc": {
+   "source": "bref_war_glossary",
+   "text": "Percentage of the team's balls in play (used for defensive adjustment)."
+  },
+  "RS_def_total": {
+   "source": "bref_war_glossary",
+   "text": "The team's defensive runs saved."
+  },
+  "runs_above_avg": {
+   "source": "bref_war_glossary",
+   "text": "xRA_final - RA."
+  },
+  "runs_above_avg_adj": {
+   "source": "bref_war_glossary",
+   "text": "Adjustment, so the runs_above_avg equal zero."
+  },
+  "runs_above_rep": {
+   "source": "bref_war_glossary",
+   "text": "runs_above_avg multiplied by the league replacement level factor."
+  },
+  "RpO_replacement": {
+   "source": "bref_war_glossary",
+   "text": "Runs per out for a replacement level pitcher."
+  },
+  "GR_leverage_index_avg": {
+   "source": "bref_war_glossary",
+   "text": "Leverage in relief games."
+  },
+  "WAR": {
+   "source": "bref_war_glossary",
+   "text": "Wins above replacement."
+  },
+  "teamRpG": {
+   "source": "bref_war_glossary",
+   "text": "The R/G for an average team in games this pitcher pitched."
+  },
+  "oppRpG": {
+   "source": "bref_war_glossary",
+   "text": "An average opponent's R/G in games this pitcher pitched."
+  },
+  "pyth_exponent": {
+   "source": "bref_war_glossary",
+   "text": "Pythagenpat exponent."
+  },
+  "waa_win_perc": {
+   "source": "bref_war_glossary",
+   "text": "Wins above average W-L percentage."
+  },
+  "WAA": {
+   "source": "bref_war_glossary",
+   "text": "Wins above average."
+  },
+  "WAA_adj": {
+   "source": "bref_war_glossary",
+   "text": "Adjustment to make these sum to zero."
+  },
+  "oppRpG_rep": {
+   "source": "bref_war_glossary",
+   "text": "The run scoring of an average team facing a replacement level pitcher."
+  },
+  "pyth_exponent_rep": {
+   "source": "bref_war_glossary",
+   "text": "That Pythagenpat exponent (for the replacement level pitcher)."
+  },
+  "waa_win_perc_rep": {
+   "source": "bref_war_glossary",
+   "text": "Their W-L percentage (replacement level pitcher)."
+  },
+  "WAR_rep": {
+   "source": "bref_war_glossary",
+   "text": "The amount of WAR attributable to replacement level."
+  }
+ },
+ "_sources": {
+  "bref_war_glossary": "https://www.baseball-reference.com/about/war_explained_glossary.shtml"
+ }
+}

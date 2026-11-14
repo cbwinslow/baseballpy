@@ -42,7 +42,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `chadwick` | 4 | archived | yes | yes | yes | 56/68 (82%) | 8 |
 | `lahman` | 27 | archived | yes | yes | yes | 389/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
-| `statcast` | 50 | archived | yes | yes | yes | 321/1765 (18%) | 18 |
+| `statcast` | 50 | archived | yes | yes | yes | 402/1765 (22%) | 18 |
 | `mlb_api` | 365 | archived | yes | yes | yes | 9568/16926 (56%) | 28 |
 
 ## Active changes (`openspec/changes/`)
@@ -192,6 +192,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 124: A Write Lock Per Dataset And Season, Held Only While A Chunk Is Written Or A Season Is Compacted
 - ADR 125: A Short MLB Pool, A Retrosheet Season With A Missing File, And A Boxscore Taken While The Game Was Live Are Not Stored As Finished
 - ADR 126: Review Round 3: What Was Fixed, What Was Rejected, And Who Wrote It
+- ADR 127: Review Round 5: The Per-Season Lock Needed Four Follow-Ups
 
 ## Documentation pages (`docs/`)
 

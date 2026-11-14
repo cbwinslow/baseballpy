@@ -29,7 +29,7 @@
 <!-- BEGIN GENERATED:bref.description_sources -->
 ### Description sources
 
-No column descriptions have been written for this source yet.
+- `bref_war_glossary`: https://www.baseball-reference.com/about/war_explained_glossary.shtml
 
 <!-- END GENERATED:bref.description_sources -->
 
@@ -53,44 +53,44 @@ Baseball-Reference WAR, batting side: one row per player, season and stint.
 | `team_ID` | string | yes | — | TODO |
 | `stint_ID` | int32 | yes | — | TODO |
 | `lg_ID` | string | yes | — | TODO |
-| `PA` | int32 | yes | — | TODO |
-| `G` | int32 | yes | — | TODO |
-| `Inn` | decimal128(9, 1) | yes | — | TODO |
-| `runs_bat` | decimal128(9, 2) | yes | — | TODO |
-| `runs_br` | decimal128(9, 2) | yes | — | TODO |
-| `runs_dp` | decimal128(9, 2) | yes | — | TODO |
-| `runs_field` | decimal128(9, 2) | yes | — | TODO |
-| `runs_infield` | decimal128(9, 2) | yes | — | TODO |
-| `runs_outfield` | decimal128(9, 2) | yes | — | TODO |
-| `runs_catcher` | decimal128(9, 2) | yes | — | TODO |
-| `runs_good_plays` | decimal128(9, 2) | yes | — | TODO |
-| `runs_defense` | decimal128(9, 2) | yes | — | TODO |
-| `runs_position` | decimal128(9, 2) | yes | — | TODO |
-| `runs_position_p` | decimal128(9, 2) | yes | — | TODO |
-| `runs_replacement` | decimal128(9, 2) | yes | — | TODO |
-| `runs_above_rep` | decimal128(9, 1) | yes | — | TODO |
-| `runs_above_avg` | decimal128(9, 1) | yes | — | TODO |
-| `runs_above_avg_off` | decimal128(9, 1) | yes | — | TODO |
-| `runs_above_avg_def` | decimal128(9, 1) | yes | — | TODO |
-| `WAA` | decimal128(9, 2) | yes | — | TODO |
-| `WAA_off` | decimal128(9, 2) | yes | — | TODO |
-| `WAA_def` | decimal128(9, 2) | yes | — | TODO |
-| `WAR` | decimal128(9, 2) | yes | — | TODO |
-| `WAR_def` | decimal128(9, 2) | yes | — | TODO |
-| `WAR_off` | decimal128(9, 2) | yes | — | TODO |
-| `WAR_rep` | decimal128(9, 2) | yes | — | TODO |
+| `PA` | int32 | yes | — | Plate appearances. (src: bref_war_glossary) |
+| `G` | int32 | yes | — | Games played. (src: bref_war_glossary) |
+| `Inn` | decimal128(9, 1) | yes | — | Innings played in the field. (src: bref_war_glossary) |
+| `runs_bat` | decimal128(9, 2) | yes | — | Batting runs from our modified wRAA. (src: bref_war_glossary) |
+| `runs_br` | decimal128(9, 2) | yes | — | Baserunning runs, includes SB and CS runs. (src: bref_war_glossary) |
+| `runs_dp` | decimal128(9, 2) | yes | — | Runs from avoiding GIDPs in double-play-situation ground balls. (src: bref_war_glossary) |
+| `runs_field` | decimal128(9, 2) | yes | — | Total fielding runs from TZR and DRS. (src: bref_war_glossary) |
+| `runs_infield` | decimal128(9, 2) | yes | — | Defensive double-play turn runs. (src: bref_war_glossary) |
+| `runs_outfield` | decimal128(9, 2) | yes | — | Outfield arm ratings. (src: bref_war_glossary) |
+| `runs_catcher` | decimal128(9, 2) | yes | — | Catcher defense. (src: bref_war_glossary) |
+| `runs_good_plays` | decimal128(9, 2) | yes | — | Superlative defensive plays. (src: bref_war_glossary) |
+| `runs_defense` | decimal128(9, 2) | yes | — | Overall defensive ability. (src: bref_war_glossary) |
+| `runs_position` | decimal128(9, 2) | yes | — | Runs from the position they play (non-pitching). (src: bref_war_glossary) |
+| `runs_position_p` | decimal128(9, 2) | yes | — | Adjustment to zero out the negative contribution of pitcher offense. (src: bref_war_glossary) |
+| `runs_replacement` | decimal128(9, 2) | yes | — | The replacement level adjustment for the league. (src: bref_war_glossary) |
+| `runs_above_rep` | decimal128(9, 1) | yes | — | The sum of the above components (double-counting excluded). (src: bref_war_glossary) |
+| `runs_above_avg` | decimal128(9, 1) | yes | — | Same as runs_above_rep without runs_replacement. (src: bref_war_glossary) |
+| `runs_above_avg_off` | decimal128(9, 1) | yes | — | Same as runs_above_avg without defense. (src: bref_war_glossary) |
+| `runs_above_avg_def` | decimal128(9, 1) | yes | — | Defense plus position. (src: bref_war_glossary) |
+| `WAA` | decimal128(9, 2) | yes | — | Wins above average. (src: bref_war_glossary) |
+| `WAA_off` | decimal128(9, 2) | yes | — | Wins above average using runs_above_avg_off. (src: bref_war_glossary) |
+| `WAA_def` | decimal128(9, 2) | yes | — | Wins above average using runs_above_avg_def. (src: bref_war_glossary) |
+| `WAR` | decimal128(9, 2) | yes | — | Wins above replacement, the final number. (src: bref_war_glossary) |
+| `WAR_def` | decimal128(9, 2) | yes | — | Just defense and position. (src: bref_war_glossary) |
+| `WAR_off` | decimal128(9, 2) | yes | — | Just offense, position and replacement level. (src: bref_war_glossary) |
+| `WAR_rep` | decimal128(9, 2) | yes | — | WAR attributable to replacement level. (src: bref_war_glossary) |
 | `salary` | int32 | yes | — | TODO |
-| `pitcher` | string | yes | — | TODO |
-| `teamRpG` | decimal128(18, 5) | yes | — | TODO |
-| `oppRpG` | decimal128(18, 5) | yes | — | TODO |
-| `oppRpPA_rep` | decimal128(18, 5) | yes | — | TODO |
-| `oppRpG_rep` | decimal128(18, 5) | yes | — | TODO |
-| `pyth_exponent` | decimal128(9, 3) | yes | — | TODO |
-| `pyth_exponent_rep` | decimal128(9, 3) | yes | — | TODO |
-| `waa_win_perc` | decimal128(9, 4) | yes | — | TODO |
-| `waa_win_perc_off` | decimal128(9, 4) | yes | — | TODO |
-| `waa_win_perc_def` | decimal128(9, 4) | yes | — | TODO |
-| `waa_win_perc_rep` | decimal128(9, 4) | yes | — | TODO |
+| `pitcher` | string | yes | — | Yes or no. (src: bref_war_glossary) |
+| `teamRpG` | decimal128(18, 5) | yes | — | An average team's runs scored with this player. (src: bref_war_glossary) |
+| `oppRpG` | decimal128(18, 5) | yes | — | An average team's runs allowed with this player. (src: bref_war_glossary) |
+| `oppRpPA_rep` | decimal128(18, 5) | yes | — | An average team's runs allowed per PA by a replacement player. (src: bref_war_glossary) |
+| `oppRpG_rep` | decimal128(18, 5) | yes | — | An average team's runs allowed per game by a replacement player. (src: bref_war_glossary) |
+| `pyth_exponent` | decimal128(9, 3) | yes | — | Pythagenpat exponent based on run environment for average teams. (src: bref_war_glossary) |
+| `pyth_exponent_rep` | decimal128(9, 3) | yes | — | Pythagenpat exponent based on a run environment for a replacement player. (src: bref_war_glossary) |
+| `waa_win_perc` | decimal128(9, 4) | yes | — | The win percentage using the pyth_exponent and team and opponent R/G. (src: bref_war_glossary) |
+| `waa_win_perc_off` | decimal128(9, 4) | yes | — | Win percentage, just for offense. (src: bref_war_glossary) |
+| `waa_win_perc_def` | decimal128(9, 4) | yes | — | Win percentage, just for defense. (src: bref_war_glossary) |
+| `waa_win_perc_rep` | decimal128(9, 4) | yes | — | How a replacement player would do. (src: bref_war_glossary) |
 | `OPS_plus` | decimal128(18, 10) | yes | — | TODO |
 | `TOB_lg` | decimal128(18, 3) | yes | — | TODO |
 | `TB_lg` | decimal128(18, 3) | yes | — | TODO |
@@ -120,37 +120,37 @@ Baseball-Reference WAR, pitching side: one row per player, season and stint.
 | `lg_ID` | string | yes | — | TODO |
 | `G` | int32 | yes | — | TODO |
 | `GS` | int32 | yes | — | TODO |
-| `IPouts` | int32 | yes | — | TODO |
-| `IPouts_start` | int32 | yes | — | TODO |
-| `IPouts_relief` | int32 | yes | — | TODO |
-| `RA` | int32 | yes | — | TODO |
-| `xRA` | decimal128(18, 3) | yes | — | TODO |
-| `xRA_sprp_adj` | decimal128(9, 3) | yes | — | TODO |
-| `xRA_extras_adj` | decimal128(9, 3) | yes | — | TODO |
-| `xRA_def_pitcher` | decimal128(9, 3) | yes | — | TODO |
-| `PPF` | int32 | yes | — | TODO |
-| `PPF_custom` | decimal128(18, 3) | yes | — | TODO |
-| `xRA_final` | decimal128(18, 3) | yes | — | TODO |
-| `BIP` | int32 | yes | — | TODO |
-| `BIP_perc` | decimal128(9, 4) | yes | — | TODO |
-| `RS_def_total` | decimal128(18, 3) | yes | — | TODO |
-| `runs_above_avg` | decimal128(18, 3) | yes | — | TODO |
-| `runs_above_avg_adj` | decimal128(18, 3) | yes | — | TODO |
-| `runs_above_rep` | decimal128(18, 3) | yes | — | TODO |
-| `RpO_replacement` | decimal128(9, 3) | yes | — | TODO |
-| `GR_leverage_index_avg` | decimal128(18, 4) | yes | — | TODO |
-| `WAR` | decimal128(9, 2) | yes | — | TODO |
+| `IPouts` | int32 | yes | — | IP * 3. (src: bref_war_glossary) |
+| `IPouts_start` | int32 | yes | — | Outs recorded as a starter. (src: bref_war_glossary) |
+| `IPouts_relief` | int32 | yes | — | Outs recorded as a reliever. (src: bref_war_glossary) |
+| `RA` | int32 | yes | — | Actual runs allowed. (src: bref_war_glossary) |
+| `xRA` | decimal128(18, 3) | yes | — | Expected runs allowed based on offenses faced and interleague play. (src: bref_war_glossary) |
+| `xRA_sprp_adj` | decimal128(9, 3) | yes | — | Adjustment based on whether innings were as a starter or reliever. (src: bref_war_glossary) |
+| `xRA_extras_adj` | decimal128(9, 3) | yes | — | The park-adjusted run expectancy of a runner on second with no outs, multiplied by the number of such innings they started. (src: bref_war_glossary) |
+| `xRA_def_pitcher` | decimal128(9, 3) | yes | — | Adjustment based on the quality of the pitcher's defense behind them. (src: bref_war_glossary) |
+| `PPF` | int32 | yes | — | The pitcher's team park factor. (src: bref_war_glossary) |
+| `PPF_custom` | decimal128(18, 3) | yes | — | The park factor based on where they pitched. (src: bref_war_glossary) |
+| `xRA_final` | decimal128(18, 3) | yes | — | xRA with all needed adjustments. (src: bref_war_glossary) |
+| `BIP` | int32 | yes | — | Balls in play. (src: bref_war_glossary) |
+| `BIP_perc` | decimal128(9, 4) | yes | — | Percentage of the team's balls in play (used for defensive adjustment). (src: bref_war_glossary) |
+| `RS_def_total` | decimal128(18, 3) | yes | — | The team's defensive runs saved. (src: bref_war_glossary) |
+| `runs_above_avg` | decimal128(18, 3) | yes | — | xRA_final - RA. (src: bref_war_glossary) |
+| `runs_above_avg_adj` | decimal128(18, 3) | yes | — | Adjustment, so the runs_above_avg equal zero. (src: bref_war_glossary) |
+| `runs_above_rep` | decimal128(18, 3) | yes | — | runs_above_avg multiplied by the league replacement level factor. (src: bref_war_glossary) |
+| `RpO_replacement` | decimal128(9, 3) | yes | — | Runs per out for a replacement level pitcher. (src: bref_war_glossary) |
+| `GR_leverage_index_avg` | decimal128(18, 4) | yes | — | Leverage in relief games. (src: bref_war_glossary) |
+| `WAR` | decimal128(9, 2) | yes | — | Wins above replacement. (src: bref_war_glossary) |
 | `salary` | int32 | yes | — | TODO |
-| `teamRpG` | decimal128(18, 5) | yes | — | TODO |
-| `oppRpG` | decimal128(18, 5) | yes | — | TODO |
-| `pyth_exponent` | decimal128(9, 3) | yes | — | TODO |
-| `waa_win_perc` | decimal128(9, 4) | yes | — | TODO |
-| `WAA` | decimal128(18, 4) | yes | — | TODO |
-| `WAA_adj` | decimal128(9, 4) | yes | — | TODO |
-| `oppRpG_rep` | decimal128(18, 5) | yes | — | TODO |
-| `pyth_exponent_rep` | decimal128(9, 3) | yes | — | TODO |
-| `waa_win_perc_rep` | decimal128(9, 4) | yes | — | TODO |
-| `WAR_rep` | decimal128(9, 4) | yes | — | TODO |
+| `teamRpG` | decimal128(18, 5) | yes | — | The R/G for an average team in games this pitcher pitched. (src: bref_war_glossary) |
+| `oppRpG` | decimal128(18, 5) | yes | — | An average opponent's R/G in games this pitcher pitched. (src: bref_war_glossary) |
+| `pyth_exponent` | decimal128(9, 3) | yes | — | Pythagenpat exponent. (src: bref_war_glossary) |
+| `waa_win_perc` | decimal128(9, 4) | yes | — | Wins above average W-L percentage. (src: bref_war_glossary) |
+| `WAA` | decimal128(18, 4) | yes | — | Wins above average. (src: bref_war_glossary) |
+| `WAA_adj` | decimal128(9, 4) | yes | — | Adjustment to make these sum to zero. (src: bref_war_glossary) |
+| `oppRpG_rep` | decimal128(18, 5) | yes | — | The run scoring of an average team facing a replacement level pitcher. (src: bref_war_glossary) |
+| `pyth_exponent_rep` | decimal128(9, 3) | yes | — | That Pythagenpat exponent (for the replacement level pitcher). (src: bref_war_glossary) |
+| `waa_win_perc_rep` | decimal128(9, 4) | yes | — | Their W-L percentage (replacement level pitcher). (src: bref_war_glossary) |
+| `WAR_rep` | decimal128(9, 4) | yes | — | The amount of WAR attributable to replacement level. (src: bref_war_glossary) |
 | `ERA_plus` | decimal128(38, 13) | yes | — | TODO |
 | `ER_lg` | decimal128(18, 3) | yes | — | TODO |
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |

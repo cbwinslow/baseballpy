@@ -35,6 +35,7 @@ from baseballpy.core.compacted import (
 from baseballpy.core.config import LakeConfig
 from baseballpy.core.datasets import DatasetSpec
 from baseballpy.core.evolve import migrate_dataset
+from baseballpy.core.hostlock import HostBusyError
 from baseballpy.core.stores import ProcessedStore, part_filename, schema_matches, writing
 
 logger = logging.getLogger(__name__)
@@ -149,15 +150,37 @@ def _part_name(spec: DatasetSpec, name: str, season: int | None) -> str:
     return part_filename(spec.name, name, season)
 
 
-def _cleanup(root: Path, chunks: dict[str, dict[str, Any]]) -> int:
-    """Delete leftovers of an interrupted run: parts already inside a compacted file and
-    compacted files no manifest entry points at. Returns the number of files removed."""
+def _cleanup(config: LakeConfig, spec: DatasetSpec) -> int:
+    """Delete compacted files no manifest entry points at (leftovers of an interrupted run).
+
+    One season at a time, under that season's write lock and with the manifest read inside the lock (ADR 124): a
+    compaction in another process that has written a compacted file and not yet recorded it must not lose it. A
+    season someone else is writing or compacting is skipped. Returns the number of files removed.
+    """
+    root = config.processed_dir(spec.source, spec.name)
+    manifest = config.dataset_manifest(spec.source, spec.name, "processed")
+    folders: list[tuple[int | None, Path]] = [(None, root)]
+    for folder in sorted(root.glob("season=*")):
+        year = folder.name.removeprefix("season=")
+        if folder.is_dir() and year.isdigit():
+            folders.append((int(year), folder))
     removed = 0
-    referenced = {str(e[INTO]) for e in chunks.values() if e.get(INTO)}
-    for path in root.rglob(f"{COMPACT_PREFIX}*.parquet"):
-        if _rel(root, path) not in referenced:
-            _unlink(path)
-            removed += 1
+    for season, folder in folders:
+        if not any(folder.glob(f"{COMPACT_PREFIX}*.parquet")):
+            continue
+        try:
+            with writing(config, spec, season):
+                referenced = {str(e[INTO]) for e in manifest.chunks().values() if e.get(INTO)}
+                for path in sorted(folder.glob(f"{COMPACT_PREFIX}*.parquet")):
+                    if _rel(root, path) not in referenced:
+                        _unlink(path)
+                        removed += 1
+        except HostBusyError:
+            logger.info(
+                "%s: season %s is being written; its compacted files are left alone",
+                spec.key,
+                season,
+            )
     return removed
 
 
@@ -278,15 +301,24 @@ def _drop_empty_parts(
         season = _group_key(key)
         name = key.split("/", 1)[1] if season is not None else key
         part = config.processed_dir(spec.source, spec.name, season) / _part_name(spec, name, season)
-        # looked at and removed under the season's write lock: an ingest may be filling this chunk
-        with nullcontext() if dry_run else writing(config, spec, season):
-            if part.exists() and pq.read_metadata(part).num_rows == 0:
-                if not kept_one:
-                    kept_one = True
-                    continue
-                report.empty_files += 1
-                if not dry_run:
-                    _unlink(part)
+        # looked at and removed under the season's write lock: an ingest may be filling this chunk. A season
+        # another process is writing is skipped (its empty part stays for a later compaction), never an error
+        # that stops the compaction of a finished season (the queue downloads the next one meanwhile).
+        try:
+            with nullcontext() if dry_run else writing(config, spec, season):
+                if part.exists() and pq.read_metadata(part).num_rows == 0:
+                    if not kept_one:
+                        kept_one = True
+                        continue
+                    report.empty_files += 1
+                    if not dry_run:
+                        _unlink(part)
+        except HostBusyError:
+            logger.info(
+                "%s: season %s is being written; its empty part is left for a later run",
+                spec.key,
+                season,
+            )
 
 
 def compact_dataset(
@@ -324,10 +356,9 @@ def _compact_dataset_locked(
     migrate: bool,
 ) -> CompactReport:
     store = ProcessedStore(cfg)
-    root = cfg.processed_dir(spec.source, spec.name)
     manifest = cfg.dataset_manifest(spec.source, spec.name, "processed")
     if not dry_run:
-        _cleanup(root, manifest.chunks())
+        _cleanup(cfg, spec)
     _drop_empty_parts(spec, cfg, manifest.chunks(), report, dry_run=dry_run)
     # files from before the schema gained columns first: only then do their chunks match the spec
     if migrate:
@@ -351,10 +382,24 @@ def _compact_dataset_locked(
             groups.setdefault(_group_key(key), []).append(key)
     for season, keys in sorted(groups.items(), key=lambda kv: (kv[0] is None, kv[0] or 0)):
         # one season at a time holds its write lock (ADR 124): an ingest of the same season in another
-        # process is refused, and the next season of a queue can download meanwhile
-        with nullcontext() if dry_run else writing(cfg, spec, season):
-            _compact_group(
-                store, spec, season, keys, dry_run=dry_run, target_bytes=target_bytes, report=report
+        # process is refused, and the next season of a queue can download meanwhile. A season someone else
+        # is writing is left for later.
+        try:
+            with nullcontext() if dry_run else writing(cfg, spec, season):
+                _compact_group(
+                    store,
+                    spec,
+                    season,
+                    keys,
+                    dry_run=dry_run,
+                    target_bytes=target_bytes,
+                    report=report,
+                )
+        except HostBusyError:
+            logger.info(
+                "%s: season %s is being written; its compaction is left for later",
+                spec.key,
+                season,
             )
     return report
 

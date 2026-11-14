@@ -38,7 +38,7 @@
 <!-- BEGIN GENERATED:polymarket.description_sources -->
 ### Description sources
 
-No column descriptions have been written for this source yet.
+- `polymarket_gamma_structure`: https://docs.polymarket.com/developers/gamma-markets-api/gamma-structure
 
 <!-- END GENERATED:polymarket.description_sources -->
 
@@ -154,14 +154,14 @@ Polymarket MLB markets (one row per question, with its token ids and volume).
 | `closed_time` | timestamp[us, tz=UTC] | yes | — | TODO |
 | `combo_status` | string | yes | — | TODO |
 | `competitive` | double | yes | — | TODO |
-| `condition_id` | string | yes | — | TODO |
+| `condition_id` | string | yes | — | Unique identifier for the market's resolvable condition. (src: polymarket_gamma_structure) |
 | `created_at` | timestamp[us, tz=UTC] | yes | — | TODO |
 | `custom_liveness` | int32 | yes | — | TODO |
 | `cyom` | bool | yes | — | TODO |
 | `deploying` | bool | yes | — | TODO |
 | `deploying_timestamp` | timestamp[us, tz=UTC] | yes | — | TODO |
 | `description` | string | yes | — | TODO |
-| `enable_order_book` | bool | yes | — | TODO |
+| `enable_order_book` | bool | yes | — | Markets can only be traded via the CLOB if this is true. (src: polymarket_gamma_structure) |
 | `end_date` | timestamp[us, tz=UTC] | yes | — | TODO |
 | `end_date_iso` | date32[day] | yes | — | TODO |
 | `event_id` | int32 | yes | — | TODO |
@@ -209,7 +209,7 @@ Polymarket MLB markets (one row per question, with its token ids and volume).
 | `pending_deployment` | bool | yes | — | TODO |
 | `position_ids` | string | yes | — | TODO |
 | `question` | string | yes | — | TODO |
-| `question_id` | string | yes | — | TODO |
+| `question_id` | string | yes | — | Hash of the market question used for resolution. (src: polymarket_gamma_structure) |
 | `ready` | bool | yes | — | TODO |
 | `ready_for_cron` | bool | yes | — | TODO |
 | `resolution_mechanism` | string | yes | — | TODO |
@@ -273,7 +273,7 @@ Polymarket MLB outcomes (one row per outcome token of a market: label, token id,
 
 | Column | Type | Nullable | Upstream name | Description |
 | --- | --- | --- | --- | --- |
-| `condition_id` | string | yes | — | TODO |
+| `condition_id` | string | yes | — | Unique identifier for the market's resolvable condition. (src: polymarket_gamma_structure) |
 | `market_id` | int32 | yes | — | TODO |
 | `outcome` | string | yes | — | TODO |
 | `outcome_index` | int32 | yes | — | TODO |
