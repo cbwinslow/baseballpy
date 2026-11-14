@@ -136,3 +136,7 @@ markers = [
   "smoke_live: live end-to-end smoke tests (manual)",
   "slow: slow tests",
 ]
+
+[tool.hatch.build.targets.sdist]
+# the source archive carries the code, tests, docs and specs, not local scratch folders or reference dumps
+exclude = [".delta", ".claude", ".baseballpy", "docs/references"]

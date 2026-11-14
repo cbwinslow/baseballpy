@@ -63,3 +63,7 @@ Processed `mlb_api` size per season on 2026-11-13 (compacted, zstd), and the tim
 | 2017 | 1,096 | 776 | | total | 21,165 | |
 
 2025 and 2026 are larger because they include the minor-league games (sports 11 to 17 plus the others the fan-out asks for).
+
+## Release hygiene: the source archive (2026-11-13)
+
+A trial `uv build` (before the v1 release steps, task 4.1) gave a 12.1 MB source archive. 34 MB of it was `.delta/worktrees` (scratch copies of the repository from a tool, untracked and not ignored) and 17 MB was `docs/references`. `[tool.hatch.build.targets.sdist]` now excludes `.delta`, `.claude`, `.baseballpy` and `docs/references`; the archive is 2.8 MB, the wheel is unchanged (593 KB). The wheel installed in an empty environment, `baseballpy --version` printed 0.1.0, and a Chadwick download into an empty home gave 526,894 register rows, the same as the real lake. Test: `tests/test_packaging.py`. Not verified: an upload to TestPyPI (the owner's step, B-331), and CI, which has never run (`docs/agents/NEXT_GOAL.md` notes 96 unpushed commits).
