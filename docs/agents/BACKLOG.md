@@ -690,7 +690,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-449 | `finish-mlb-history 5.1`: review round 1 follow-ups (ADR 123): compaction/ingest write lock, paging vs totalSplits, Retrosheet fingerprint, boxscore status, empty player list, segrebuild memory, old_compact, parser dataset name, sink audit | OPEN | each item fixed with a test that fails without it, or rejected with evidence in design.md |
 | B-450 | finish-mlb-history 5.2: JSON cell-by-cell round-trip for the MLB API datasets (365 are skipped by verify-roundtrip today) | DONE | verify-roundtrip reports each MLB dataset clean, with a loss, or skipped with an honest reason; real losses listed |
 | B-451 | finish-mlb-history 6.1: register the MLB lookup catalogs the provider serves and the registry lacks (about 35 `/v1/<name>` lists: pitchCodes, roofTypes, statFields, milestoneTypes, playerStatusCodes, transactionTypes, ...), found by comparing with a community path list | DONE | each route answers 200 live and is a `ref_*` dataset with a probed schema, docs and a test; routes that refuse stay `unsupported` with probe evidence |
-| B-467 | `live-mlb-capture 0.1`: owner decision on where live rows land (separate live dataset recommended) | READY | the ADR exists and design section 5 says which |
+| B-467 | live-mlb-capture 0.1: owner decision on where live rows land (separate live dataset recommended) | DONE | the ADR exists and design section 5 says which |
 | B-468 | `live-mlb-capture 1.1`: tests first for the durable live journal | READY | after B-467; the tests fail for the missing journal |
 | B-469 | `live-mlb-capture 1.2`: live journal and streamer wiring | READY | after B-468; tests pass; `tests/test_mlb_stream.py` still passes |
 | B-470 | `live-mlb-capture 2.1`: tests first for live segments and the live view | READY | after B-469; the tests fail for the right reason |
@@ -698,5 +698,5 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-472 | `live-mlb-capture 3.1`: tests first for the live supervisor on a fake clock | READY | after B-471; the tests fail for the right reason |
 | B-473 | `live-mlb-capture 3.2`: the `baseballpy live` command (watcher, task per game, supervisor, memory gate) | READY | after B-472; tests pass; CLI docs regenerated |
 | B-474 | `live-mlb-capture 3.3`: in-season check on real games: latency, request rate, websocket probe | READY (needs live games, owner machine) | after B-473; numbers in design.md |
-| B-475 | `live-mlb-capture 4.1`: tests first for the Final hand-off | READY | after B-473; the tests fail for the right reason |
-| B-476 | `live-mlb-capture 4.2`: hand-off at Final and the JSONL tail broadcast (SSE or websocket only with an ADR) | READY | after B-475; tests pass; documented in the quickstart |
+| B-475 | `live-mlb-capture 4.1`: tests first for the open-games view (no double count) | READY | after B-473; the tests fail for the right reason |
+| B-476 | `live-mlb-capture 4.2`: the open-games view, optional prune and auto ingest at Final, the JSONL tail broadcast (SSE or websocket only with an ADR) | READY | after B-475; tests pass; documented in the quickstart |

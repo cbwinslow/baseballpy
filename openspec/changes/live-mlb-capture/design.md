@@ -47,7 +47,36 @@ No broker. NATS, Redis Streams and Kafka add fan-out, retention and cross-machin
 machine, tens of events per second, and the lake is the durable store. A broker would be a service every PyPI user
 must install. Revisit only if someone needs many remote subscribers.
 
-## 5. The one decision (owner): where do live rows land?
+## 5. DECIDED (owner, 2026-11-15, ADR 137): live rows land in a separate table; the normal ingest stores the game later
+
+The owner chose option A and asked for no complex stop measure. Thought through:
+
+- **The two tables do not have the same shape.** A live event (`LiveEvent`, about 50 typed columns, one row per pitch or
+  action) is not a row of `game_feed_plays` (69 columns) or `game_feed_play_events` (167 wide columns). So live rows
+  cannot be mixed into the long-term tables row for row; separate tables are the honest layout, not only the safe one.
+- **No double count without deleting anything.** The finished-game ingest stores a game completely or not at all (a
+  game counts as stored only when its line is in `segments.json`, ADR 95). So "is this game in the long-term table?" is
+  an exact yes or no. The view `mlb_live_events_open` is the live table minus games already in `game_feed_plays`
+  (an anti-join on `game_pk`). A model reads history from the long-term tables and in-progress games from the open
+  view; the two never overlap, whatever the timing, a crash or a late ingest. Nothing has to be dropped for the numbers
+  to be right.
+- **Housekeeping, not correctness.** `baseballpy live` may prune live rows of games that are already stored and older
+  than a few days (default 7). Skipping the prune changes nothing but disk. The raw journal is never pruned.
+- **The ingestor stays the one source of truth for finished games.** Nothing new stores long-term data. After a game,
+  the regular `baseballpy ingest mlb_api -d season,games` (or the optional automatic call of the same
+  `ingest_game_segments` for that game_pk once the status is Final) stores it. If `live` is not running, or crashes, the
+  next regular ingest catches up; it is idempotent.
+- **Known limit, same as today:** a game is stored once when it is Final; later scoring corrections need the usual
+  `--refresh`. Live capture does not change that.
+- **Statcast pitch rows are separate.** The live table is MLB API data; Statcast pitches reach the lake through
+  `ingest statcast` later, as now.
+
+Alternative B (straight into the canonical table) rejected: different shapes, replacing rows the writer did not write,
+half games after a crash.
+
+### 5.1 Earlier text of this section (options)
+- **A. Separate live dataset.** Pro: the canonical tables never hold half a game; easy to explain and roll back.
+- **B. Straight into `game_feed_play_events`.** Pro: one table. Con: see above.
 - **A. Separate live dataset (recommended).** `game_live_events` and its own view; dropped per game when the final
   game is stored. Pro: the canonical tables never hold half a game; no double count; easy to explain and to roll
   back. Con: a model that wants "live plus history" in one query unions two views (we ship a helper view).
@@ -63,7 +92,7 @@ check. Local only by default (127.0.0.1).
 ## 7. Tests (no live games needed)
 Replay recorded feeds and the real patch fixtures of `tests/fixtures/mlb/` against a fake clock: two games at once, a
 restart in the middle (no duplicate and no gap), a stale feed, a rain delay, a torn journal record, a slow sink (the
-queue stalls polling), Final hand-off row for row equal to a batch ingest of the same game. One in-season live check
+queue stalls polling), the open view never shows a stored game. One in-season live check
 per slice (owner's machine, real games).
 
 ## 8. Open questions

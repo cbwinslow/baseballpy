@@ -17,8 +17,8 @@
 3. **`baseballpy live`.** One process, one event loop: a schedule watcher finds games about to start, one task per
    live game shares the HTTP client (rate limit, in-flight gate), a supervisor restarts or stops tasks (stale feed,
    delay, Final), the memory governor gates work, `Ctrl-C` stops cleanly.
-4. **Hand-off and broadcast.** At Final the finished-game segment path stores the authoritative game and the live
-   rows of that game are dropped from the live dataset (no double count, proved by a test). Local broadcast: a JSONL
+4. **No double count, then broadcast.** The finished game is stored by the normal ingest; a view hides live rows of
+   games already stored (nothing is deleted for the numbers to be right; ADR 137). Local broadcast: a JSONL
    tail file first; Server-Sent Events or a websocket server only after an ADR approves the library.
 
 ## Not in this change
