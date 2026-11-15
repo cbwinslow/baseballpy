@@ -6,6 +6,7 @@ Everything is fake (schedule, event streams, sink, clock), so no network and no 
 import asyncio
 import logging
 import threading
+import time
 from collections.abc import AsyncIterator, Sequence
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
@@ -277,8 +278,10 @@ async def test_a_slow_sink_stalls_polling_instead_of_growing_memory() -> None:
             await asyncio.sleep(0)
         checked.append(pulled["n"])  # the writer is stuck in the slow sink here
         gate.set()
-        for _ in range(600):
-            await asyncio.sleep(0)
+        # wait for the sink to catch up (real threads write on their own time, so do not count loop turns)
+        deadline = time.monotonic() + 30.0
+        while len(sink.rows.get(1, [])) < 300 and time.monotonic() < deadline:
+            await asyncio.sleep(0.01)
         stop.set()
 
     watch = asyncio.create_task(watcher())
