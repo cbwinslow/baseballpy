@@ -693,7 +693,7 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Alternatives rejected:** a pool per step (measured slower at 32 workers); all cores without a cap (48 workers was no faster than 32); running the steps of a season on threads (little gain once seasons overlap, shared state in the source object); a default of 0 as before (uses one core of 56).
 
 ## ADR 62: The Default Data Folder Is `.baseballpy` in the Project Folder
-- **Status:** Accepted (owner, 2026-11-04; change `project-local-data-folder`).
+- **Status:** Superseded by ADR 135 (2026-11-14). Was: Accepted (owner, 2026-11-04; change `project-local-data-folder`).
 - **Context:** the default was `~/.baseballpy`, away from the code; the owner wants the data close, tidy and compact inside the project.
 - **Decision:** with no `BASEBALLPY_HOME` or `BASEBALLPY_CACHE_DIR`, the data folder is `.baseballpy/` in the nearest folder above the working directory that holds `pyproject.toml` or `.git`; with no such folder it is `~/.baseballpy/`. The folder is git-ignored. Backfill ranges: Lahman, Chadwick and Retrosheet all history; Statcast and the MLB API 2008 to the current year, taken from the clock.
 - **Consequences:** a fresh clone writes inside itself; two projects never share data unless `BASEBALLPY_HOME` says so; the data can be deleted with the folder.

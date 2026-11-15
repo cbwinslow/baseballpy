@@ -58,6 +58,31 @@ def test_a_pyproject_without_the_setting_or_with_broken_toml_is_skipped(
     assert resolve_home()[0] == (tmp_path / "outer" / "elsewhere").resolve()
 
 
+@pytest.mark.parametrize(
+    "toml_text",
+    [
+        '[tool]\nbaseballpy = "foo"\n',
+        "[tool.baseballpy]\nhome = 5\n",
+        '[tool.baseballpy]\nhome = "   "\n',
+        'tool = "x"\n',
+    ],
+)
+def test_odd_pyproject_settings_fall_back_to_the_global_folder(
+    toml_text: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / "pyproject.toml").write_text(toml_text)
+    monkeypatch.chdir(tmp_path)
+    assert resolve_home()[1] == "the global default"
+
+
+def test_a_project_home_may_use_a_tilde(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    (tmp_path / "pyproject.toml").write_text('[tool.baseballpy]\nhome = "~/lake"\n')
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("HOME", str(tmp_path / "userhome"))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path / "userhome"))
+    assert resolve_home()[0] == (tmp_path / "userhome" / "lake").resolve()
+
+
 def test_environment_variables_win_over_the_project_setting(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -82,6 +107,18 @@ def test_the_home_command_says_where_and_why(
     assert str(lake.resolve()) in result.output.replace("\n", "")
     assert "BASEBALLPY_HOME environment variable" in result.output.replace("\n", " ")
     assert "Exists:" in result.output and "yes" in result.output
+
+
+def test_home_command_warns_about_an_old_project_folder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    project = tmp_path / "proj"
+    (project / ".baseballpy" / "raw").mkdir(parents=True)
+    (project / "pyproject.toml").write_text("[project]\nname='x'\n")
+    monkeypatch.chdir(project)
+    result = CliRunner().invoke(main, ["home"])
+    assert result.exit_code == 0, result.output
+    assert "older per-project default" in " ".join(result.output.split())
 
 
 def test_the_repository_ignores_its_own_data_folder() -> None:

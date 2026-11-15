@@ -23,7 +23,7 @@ from baseballpy.cli_status import register_status_command
 from baseballpy.cli_stream import register_stream_command
 from baseballpy.clidocs import CLI_DOC_NAME, generate_cli_doc
 from baseballpy.core.audit import default_audit_logger
-from baseballpy.core.config import LakeConfig, resolve_home
+from baseballpy.core.config import LakeConfig, find_project_root, resolve_home
 from baseballpy.core.migrate import migrate_layout
 from baseballpy.core.sources_lock import ENV_OVERRIDES, get_source_ref, load_lock, update_lock
 from baseballpy.database import BaseballDatabase
@@ -84,6 +84,14 @@ def home_cmd() -> None:
     if exists:
         console.print(
             "Layout:      " + ", ".join(sorted(p.name for p in home.iterdir() if p.is_dir())[:8])
+        )
+    root = find_project_root()
+    old = root / ".baseballpy" if root else None
+    if old is not None and old.is_dir() and old.resolve() != home:
+        console.print(
+            f"[yellow]Note:[/yellow] {old} is a data folder from the older per-project default "
+            "(ADR 62) and is no longer used. Move it to the folder above, or point "
+            "BASEBALLPY_HOME at it."
         )
 
 

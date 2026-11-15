@@ -64,9 +64,11 @@ def _project_setting(start: Path | None = None) -> tuple[Path, Path] | None:
             data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             continue
-        value = data.get("tool", {}).get("baseballpy", {}).get("home")
-        if isinstance(value, str) and value:
-            return (folder / Path(value).expanduser()).resolve(), pyproject
+        tool = data.get("tool")
+        section = tool.get("baseballpy") if isinstance(tool, dict) else None
+        value = section.get("home") if isinstance(section, dict) else None
+        if isinstance(value, str) and value.strip():
+            return (folder / Path(value.strip()).expanduser()).resolve(), pyproject
     return None
 
 
