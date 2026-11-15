@@ -57,6 +57,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `finish-mlb-history` | 15 | 3 | 2.1, 4.1, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
+| `live-mlb-capture` | 0 | 10 | 0.1, 1.1, 1.2, 2.1, 2.2, 3.1, 3.2, 3.3, 4.1, 4.2 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `product-mandate-reproducible-outputs` | 7 | 1 | 2.5 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
