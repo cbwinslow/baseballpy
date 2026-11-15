@@ -381,3 +381,23 @@ def _view_count(cfg: LakeConfig, spec: DatasetSpec) -> int:
         return int(con.execute(f"SELECT count(*) FROM {spec.view}").fetchone()[0])  # type: ignore[index]  # noqa: S608
     finally:
         con.close()
+
+
+def test_compact_leaves_segment_files_alone(lake: LakeConfig, spec: DatasetSpec) -> None:
+    """Task 7.1/7.2: segments are written once and never merged, so a compact run is a no-op for them."""
+    from baseballpy.core.datasets import with_lineage
+
+    folder = lake.processed_dir("statcast", "pitches") / "season=2023"
+    folder.mkdir(parents=True, exist_ok=True)
+    schema = with_lineage(spec.schema)
+    table = _pitches([90.0], 2023)
+    columns = {name: table[name] for name in table.column_names}
+    columns["_raw_sha256"] = pa.array(["a" * 64], schema.field("_raw_sha256").type)
+    segment = pa.table(columns, schema=schema)
+    for index in range(1, 14):
+        pq.write_table(segment, folder / f"seg-{index:04d}.parquet")
+    before = sorted((p.name, p.stat().st_mtime_ns) for p in folder.glob("seg-*.parquet"))
+    report = compact_dataset(spec, lake)
+    after = sorted((p.name, p.stat().st_mtime_ns) for p in folder.glob("seg-*.parquet"))
+    assert after == before, "no segment file was rewritten, merged or removed"
+    assert report.groups == 1, "only the three part files of the fixture were merged"

@@ -238,3 +238,33 @@ def test_a_segment_run_becomes_one_report_per_dataset_and_a_capped_list_of_failu
     assert (
         len(errors) == 21 and errors[-1] == "... and 30 more" and errors[0] == "game 100: HTTP 404"
     )
+
+
+def test_the_per_game_path_writes_no_part_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Task 7.1 (ADR 134): a games run goes only through segments; no per-game, per-dataset chunk."""
+    from baseballpy.sources.mlb_api import api as api_module
+    from baseballpy.sources.mlb_api.api import MlbApiSource
+
+    source = MlbApiSource(LakeConfig(home=tmp_path, today=date(2026, 6, 1)))
+    ingested: list[str] = []
+    seen: dict[str, Any] = {}
+
+    def fake_ingest(endpoint: Any, ctx: Any, **kwargs: Any) -> Any:
+        name = endpoint if isinstance(endpoint, str) else endpoint.name
+        ingested.append(name)
+        return generic.EndpointReport(name, 0, 0, 0)
+
+    def fake_segments(extractor: Any, season: int, pks: tuple[int, ...]) -> Any:
+        seen["pks"] = pks
+        return _api().GameSegmentReport()
+
+    monkeypatch.setattr(source.endpoints, "ingest", fake_ingest)
+    monkeypatch.setattr(source, "final_game_pks", lambda season, sports=None: PKS)
+    monkeypatch.setattr(api_module, "ingest_game_segments", fake_segments)
+    monkeypatch.setattr(api_module, "game_segment_reports", lambda outcome, n: [])
+    source.ingest_season(SEASON, include_games=True, include_season=False)
+    assert seen["pks"] == PKS, "the games went to the segment writer"
+    game_endpoints = {e.name for e in SUPPORTED if e.scope == "game"}
+    assert not game_endpoints & set(ingested), "no game dataset is written one chunk at a time"

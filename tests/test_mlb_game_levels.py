@@ -91,24 +91,20 @@ def test_a_games_run_fetches_only_the_games_not_the_season_datasets_again() -> N
     assert source.calls[1][1]["include_season"] is True
 
 
-def test_parse_game_storage() -> None:
-    from baseballpy.sources.mlb_api.adapter import parse_game_storage
-
-    assert parse_game_storage("parts") == "parts" and parse_game_storage(" Segments ") == "segments"
-    with pytest.raises(ValueError, match="bad --option storage"):
-        parse_game_storage("files")
-
-
-def test_the_default_storage_is_segments_and_parts_is_the_opt_in_option() -> None:
-    """ADR 134: a plain games job stores segments (no parameter); ``storage=parts`` is the opt-in."""
+def test_a_games_job_has_no_storage_choice_and_the_old_option_is_refused() -> None:
+    """ADR 134/136: per-game datasets are always segments; the old ``storage=`` option fails loudly."""
     source = _Source()
     adapter = MlbApiAdapter(source, calendar=_Calendar())
-    default = _games_job(adapter)
-    parts = _games_job(adapter, ("storage", "parts"))
-    assert default.param("storage") is None, "the default adds no parameter"
-    assert parts.param("storage") == "parts" and parts.job_id != default.job_id
-    adapter.run(default)
-    adapter.run(parts)
-    assert [kw.get("game_segments", False) for _, kw in source.calls] == [True, False]
-    with pytest.raises(ValueError, match="bad --option storage"):
-        _games_job(adapter, ("storage", "files"))
+    job = _games_job(adapter)
+    assert job.param("storage") is None, "no storage parameter in any job"
+    adapter.run(job)
+    assert "game_segments" not in source.calls[0][1], "the source is not told how to store"
+    for value in ("parts", "segments", "files"):
+        with pytest.raises(ValueError, match="storage=... was removed"):
+            _games_job(adapter, ("storage", value))
+
+
+def test_a_saved_job_with_the_old_storage_parameter_fails_instead_of_running() -> None:
+    adapter = MlbApiAdapter(_Source(), calendar=_Calendar())
+    with pytest.raises(ValueError, match="storage=... was removed"):
+        adapter.run(make_job("mlb_api", "season", games=True, season=2024, storage="parts"))

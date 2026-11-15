@@ -132,3 +132,19 @@ def test_a_segment_file_with_the_lineage_column_is_not_a_mixed_schema(
     short = segment.drop_columns(["release_speed"])
     pq.write_table(short, folder / "seg-0002.parquet")
     assert LayoutKind.MIXED_SCHEMA in _kinds(lake)
+
+
+def test_many_small_segment_files_are_a_normal_layout(lake: LakeConfig, spec: DatasetSpec) -> None:
+    """Segments are commit units (ADR 95): a season of them is not 'tiny files' and needs no compact."""
+    from baseballpy.core.datasets import with_lineage
+
+    folder = lake.processed_dir("statcast", "pitches") / "season=2023"
+    folder.mkdir(parents=True)
+    schema = with_lineage(spec.schema)
+    table = _pitches([90.0, 91.0], 2023)
+    columns = {name: table[name] for name in table.column_names}
+    columns["_raw_sha256"] = pa.array(["a" * 64, "b" * 64], schema.field("_raw_sha256").type)
+    segment = pa.table(columns, schema=schema)
+    for index in range(1, 14):
+        pq.write_table(segment, folder / f"seg-{index:04d}.parquet", row_group_size=1)
+    assert audit_layout(lake, ("statcast",)) == []

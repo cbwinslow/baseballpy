@@ -304,3 +304,38 @@ about 3 minutes for the conversion; disk 12 GB free before, 12 GB after (old raw
 - `rebuild-segments mlb_api --season 2024` (dry run, then `--apply`): 3 segments, 3,022 units, old part rows 0 (the processed files of 2024 are already segments), new rows 1,982,868, same: yes. Counts before and after are identical (2,959 games in `game_boxscore_info`, 221,814 plays in `game_feed_plays`), so rebuilding from raw gives back what was stored.
 - `verify-roundtrip` on `game_feed_plays`, `game_boxscore_info`, `game_linescore`, `game_win_probability` (3 files each): 4 clean, 0 with a loss.
 - Gemini's review found, and the code confirms: `--remove-old` is not reversible and `RawStore.get()` has no segment fallback, so it stays off; the rebuild's comparison is row counts only (the value check is `verify-roundtrip`); `ingest` on the old parts path does not take the `segments-*` lock, so nothing may ingest during a conversion; `rebuild_season` moves files with a bare `replace`, so no DuckDB reader may be open on Windows. Not yet done: other seasons, `--remove-old`, `--remove-legacy`, task 7.
+
+### 7.ab Real lake, all MLB seasons on segments (logs of the runs of 2026-11-14, evidence for tasks 5.4, 6.3, 6.4)
+
+Every season of `raw/mlb_api` (2008 to 2026) was converted with `convert-raw` (non-destructive: the column
+"removed" was 0 in every run, so the old gzip files and their manifests are all still on disk, the owner's
+choice) and its processed tables were rebuilt with `rebuild-segments --apply`; the old processed files of a
+season were removed with `--remove-legacy` only after the row counts and keys matched (2024: design 7.aa). Dry-run
+numbers per season (files, URLs, distinct bodies, copies, URLs with several bodies, old size MB, segments written):
+
+| Season | Files | URLs | Bodies | Copies | Multi | Segs |
+|---|---|---|---|---|---|---|
+| 2008 | 49,500 | 17,305 | 21,842 | 27,658 | 612 | 25 |
+| 2010 | 49,221 | 17,201 | 21,623 | 27,598 | 580 | 26 |
+| 2011 | 49,635 | 17,351 | 21,844 | 27,791 | 578 | 26 |
+| 2012 | 50,057 | 17,419 | 22,096 | 27,961 | 607 | 26 |
+| 2013 | 50,593 | 17,663 | 22,337 | 28,256 | 609 | 27 |
+| 2014 | 49,532 | 17,231 | 21,866 | 27,666 | 593 | 26 |
+| 2015 | 49,804 | 17,344 | 21,988 | 27,816 | 593 | 27 |
+| 2016 | 50,697 | 17,509 | 22,600 | 28,097 | 656 | 27 |
+| 2017 | 51,611 | 17,834 | 22,992 | 28,619 | 664 | 30 |
+| 2018 | 50,994 | 17,575 | 22,786 | 28,208 | 670 | 29 |
+| 2019 | 50,824 | 17,487 | 22,707 | 28,117 | 647 | 30 |
+| 2020 | 26,166 | 8,906 | 12,834 | 13,332 | 672 | 13 |
+| 2021 | 51,216 | 17,432 | 23,277 | 27,939 | 754 | 28 |
+| 2022 | 50,443 | 16,908 | 23,148 | 27,295 | 791 | 28 |
+| 2023 | 53,736 | 18,175 | 24,633 | 29,103 | 855 | 31 |
+| 2024 | 53,890 | 18,160 | 24,893 | 28,997 | 1,031 | 31 |
+| 2025 | about 170,000 | 62,430 | 70,121 | about 100,000 | 1,349 | 99 |
+| 2026 | about 174,000 | 69,096 | 80,402 | 93,637 | 1,784 | 115 |
+
+(2009 was converted in a combined run whose log was not kept as a table; its `raw/mlb_api/season=2009/` holds
+`seg-*.parquet`.) No `_legacy/` folder exists in the real lake now (checked with `find`, 2026-11-14), so task 6.4
+has nothing left to delete. No disk was freed because the old raw copies stay. Read-only `catalog layout` on
+2026-11-14 still listed the old per-game tables as TINY_FILES and SMALL_ROW_GROUPS because it counted `seg-*` files
+(small tables such as `game_linescore` are about 28 files of about 33 KB per season); ADR 136 stops counting them.

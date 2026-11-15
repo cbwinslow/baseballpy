@@ -183,7 +183,6 @@ class MlbApiSource:
         max_people: int | None = None,
         game_sport_ids: tuple[int, ...] | None = (1,),
         refresh: bool = False,
-        game_segments: bool = False,
     ) -> list[EndpointReport]:
         """Ingest every season-scoped endpoint (and, optionally, per-game endpoints) of a season.
 
@@ -199,9 +198,8 @@ class MlbApiSource:
         types (``career*``, ``yearByYear*``) ignore the season and take minutes per request, so they
         run only with ``include_history=True``.
 
-        ``game_segments=True`` stores the per-game datasets as segments (ADR 95: each URL once, one
-        raw copy, large Parquet files) instead of one chunk per game and dataset. It is opt-in until
-        a real season has been measured with it (task 4.4).
+        The per-game datasets are always stored as segments (ADR 95, ADR 136: each URL once, one
+        raw copy, large Parquet files); there is no one-chunk-per-game path any more.
         """
         reports = self.ingest_reference(refresh) if include_season else []
         sports = sport_ids if sport_ids is not None else self.all_sport_ids()
@@ -250,33 +248,8 @@ class MlbApiSource:
         if include_games:
             pks = self.final_game_pks(season, game_sport_ids)
             pks = pks[:max_games] if max_games is not None else pks
-            if game_segments:
-                outcome = ingest_game_segments(self.endpoints, season, pks)
-                reports.extend(game_segment_reports(outcome, len(pks)))
-                return reports
-            game_ctx = self._context(season, sports, pks)
-            game_eps = sorted(
-                (e for e in SUPPORTED if e.scope == "game"), key=lambda e: (e.path, e.name)
-            )
-            if max_workers > 1 and len(game_eps) > 1:
-                # one thread per dataset: datasets cut from the same URL (six from the boxscore,
-                # four from the live feed) must run side by side to share one request per game;
-                # requests in flight stay capped by the HTTP client
-                with concurrent.futures.ThreadPoolExecutor(max_workers=len(game_eps)) as pool:
-                    game_reports = list(
-                        pool.map(
-                            lambda e: self.endpoints.ingest(
-                                e, game_ctx, refresh=refresh, keep_going=True
-                            ),
-                            game_eps,
-                        )
-                    )
-                reports.extend(game_reports)
-            else:
-                reports.extend(
-                    self.endpoints.ingest(e, game_ctx, refresh=refresh, keep_going=True)
-                    for e in game_eps
-                )
+            outcome = ingest_game_segments(self.endpoints, season, pks)
+            reports.extend(game_segment_reports(outcome, len(pks)))
         return reports
 
     def all_sport_ids(self) -> tuple[int, ...]:

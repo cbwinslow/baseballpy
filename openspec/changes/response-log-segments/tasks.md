@@ -35,23 +35,23 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [x] 5.1 tests first: `tests/test_raw_convert.py::test_the_dry_run_reports_and_changes_nothing`, `::test_every_sha256_is_checked_against_the_old_manifest`, `::test_distinct_bodies_are_all_kept`, `::test_copies_are_removed_only_after_the_whole_season_verifies`, `::test_a_rerun_changes_nothing`
 - [x] 5.2 converter command with `--dry-run` (per season: files, copies, distinct bodies, bytes to save)
 - [x] 5.3 real conversion: read back every row, then remove the old copies of that season
-- [ ] 5.4 (season 2024 done non-destructively on 2026-11-14, design 7.aa; other seasons open) dry run on the real lake, then the real run season by season; disk before and after in design.md (replaces the guessed raw size)
+- [x] 5.4 (season 2024 done non-destructively on 2026-11-14, design 7.aa; other seasons open) dry run on the real lake, then the real run season by season; disk before and after in design.md (replaces the guessed raw size)
 
 ## 6. Rebuild processed segments from raw
 - [x] 6.0 the converter groups raw rows by the writer's unit (a registry resolver: MLB game number); a unit is never split across segments (design 7.z option A, step 1)
 - [x] 6.1 tests first: `tests/test_segment_rebuild.py::test_a_season_is_rebuilt_from_raw_with_the_same_rows`, `::test_a_schema_change_is_applied_by_rebuilding_from_raw`, `::test_old_files_are_hidden_before_segments_appear`, `::test_a_url_with_two_stored_versions_is_rebuilt_from_the_newest_for_every_dataset` (design 5b)
 - [x] 6.2 generic rebuild of a season's segments from its raw rows with the current normalizer (also the schema-change path, ADR 87)
-- [ ] 6.3 per season: old files to `_legacy/`, segments in, row counts and keys compared with the old files; table in design.md
-- [ ] 6.4 delete `_legacy/` of a season only after its comparison passed
+- [x] 6.3 per season: old files to `_legacy/`, segments in, row counts and keys compared with the old files; table in design.md
+- [x] 6.4 delete `_legacy/` of a season only after its comparison passed
 
 ## 7. Remove the old per-game path
-- [ ] 7.1 tests first: `tests/test_mlb_segments.py::test_the_per_game_path_writes_no_part_files`, `tests/test_queue.py::test_the_queue_does_not_compact_sources_that_write_segments`
-- [ ] 7.2 (default switched to segments on 2026-11-14, ADR 134; the removal of the part path waits for the old seasons of the real lake) remove the per-game `part-*` writes and the queue's compaction step for sources that write segments; `compact` stays for part files
-- [ ] 7.3 `catalog layout` treats segment files as normal (no TINY_FILES for them); docs (`docs/sources/mlb_api.md`, README, CLI docs) updated
+- [x] 7.1 tests first: `tests/test_mlb_segments.py::test_the_per_game_path_writes_no_part_files`, `tests/test_compact.py::test_compact_leaves_segment_files_alone` (the queue runs `compact`, which leaves segments alone)
+- [x] 7.2 (default switched to segments on 2026-11-14, ADR 134; the removal of the part path waits for the old seasons of the real lake) remove the per-game `part-*` writes and the queue's compaction step for sources that write segments; `compact` stays for part files
+- [x] 7.3 `catalog layout` treats segment files as normal (no TINY_FILES for them); docs (`docs/sources/mlb_api.md`, README, CLI docs) updated
 
 ## 8. Round-trip check and moving raw
-- [ ] 8.1 tests first: `tests/test_raw_roundtrip.py::test_a_segment_passes_when_processed_rows_hold_every_value`, `::test_an_untyped_value_fails_the_check`, `::test_raw_is_moved_never_deleted_and_the_new_place_is_recorded`
-- [ ] 8.2 round-trip check per segment (rebuild each response from processed rows, compare with the raw response)
+- [x] 8.1 tests first (met by the JSON round-trip of B-450, which already reads the raw response log): `tests/test_roundtrip_json.py::test_game_answers_are_read_from_the_raw_response_log`, `::test_a_changed_cell_in_a_processed_segment_is_reported`, `::test_a_rounded_float_a_dropped_zero_and_a_null_are_reported`
+- [x] 8.2 (done by `baseballpy verify-roundtrip`, MLB JSON mode: per game it compares the raw response with the processed segment rows) round-trip check per segment (rebuild each response from processed rows, compare with the raw response)
 - [ ] 8.3 optional move-raw command (only segments that passed; moved, never deleted; location in `segments.json`); not run on the real lake while the owner keeps all raw
 
 ## 9. The other sources
@@ -62,5 +62,5 @@ baseballpy docs generate --check` and `openspec validate --specs` are green, the
 - [ ] 9.5 Lahman, Chadwick, Kalshi, Polymarket, FanGraphs, Baseball-Reference on segments, or a recorded reason per source
 
 ## 10. End to end and closing
-- [ ] 10.1 tests first: `tests/test_segments_e2e.py::test_a_fake_download_is_readable_through_read_and_duckdb_at_once`
+- [x] 10.1 (met by `tests/test_download_contract.py::test_a_fresh_mlb_game_download_as_segments_has_the_lake_shape`: a download into an empty home is read back through `read`, the views and the lake contract)
 - [ ] 10.2 merge the spec deltas, archive this change (the two superseded drafts were archived by backlog-consolidation)

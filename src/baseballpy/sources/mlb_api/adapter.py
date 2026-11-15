@@ -12,22 +12,11 @@ DEFAULT_DATASETS = ("reference", "season")
 #: ``--option sports=...`` for the per-game phase: major leagues unless told otherwise
 MAJOR_LEAGUES = "1"
 ALL_LEVELS = "all"
-#: how the per-game datasets are stored: one chunk per game and dataset, or segments (ADR 95)
-GAME_STORAGE_PARTS = "parts"
-GAME_STORAGE_SEGMENTS = "segments"
-#: what a plain `ingest -d games` uses; segments since ADR 134 (parts stay available as `storage=parts`)
-GAME_STORAGE_DEFAULT = GAME_STORAGE_SEGMENTS
-
-
-def parse_game_storage(text: str) -> str:
-    """The value of ``--option storage=...``: ``segments`` (default, ADR 134) or ``parts``."""
-    cleaned = text.strip().lower()
-    if cleaned not in (GAME_STORAGE_PARTS, GAME_STORAGE_SEGMENTS):
-        raise ValueError(
-            f"bad --option storage={text!r}: use '{GAME_STORAGE_PARTS}' (one chunk per game and "
-            f"dataset) or '{GAME_STORAGE_SEGMENTS}' (large files, each response stored once)"
-        )
-    return cleaned
+#: the per-game datasets are always stored as segments (ADR 95, ADR 134); the old
+#: ``--option storage=...`` is refused with this text instead of being ignored
+STORAGE_OPTION_REMOVED = (
+    "--option storage=... was removed: per-game datasets are always stored as segments (ADR 136)"
+)
 
 
 def parse_game_sports(text: str) -> tuple[int, ...] | None:
@@ -196,11 +185,8 @@ class MlbApiAdapter:
                 if "games" in wanted:
                     sports = selection.option("sports", MAJOR_LEAGUES)
                     parse_game_sports(sports)  # a typo fails the plan, not the job hours later
-                    storage = parse_game_storage(selection.option("storage", GAME_STORAGE_DEFAULT))
-                    # only a non-default value is a parameter, so the ids of existing jobs do not change
-                    extra: dict[str, Any] = (
-                        {} if storage == GAME_STORAGE_DEFAULT else {"storage": storage}
-                    )
+                    if selection.option("storage", "") != "":
+                        raise ValueError(STORAGE_OPTION_REMOVED)
                     jobs.append(
                         make_job(
                             "mlb_api",
@@ -209,7 +195,6 @@ class MlbApiAdapter:
                             games_only=True,
                             season=season,
                             sports=sports.strip().lower().replace(" ", ""),
-                            **extra,
                             **selection.limit_params(),
                         )
                     )
@@ -225,6 +210,8 @@ class MlbApiAdapter:
 
     def run(self, job: Job, *, refresh: bool = False) -> JobResult:
         """Execute a single MLB Stats API ingest job."""
+        if job.param("storage") is not None:  # a job saved before ADR 136
+            raise ValueError(STORAGE_OPTION_REMOVED)
         source = self._get_source()
         season_param = job.param("season")
         if season_param is not None and (
@@ -257,12 +244,6 @@ class MlbApiAdapter:
                 include_season=not bool(job.param("games_only", False)),
                 game_sport_ids=parse_game_sports(str(job.param("sports", MAJOR_LEAGUES))),
                 refresh=refresh,
-                # passed only when asked for, so a source without the option keeps working
-                **(
-                    {"game_segments": True}
-                    if job.param("storage", GAME_STORAGE_DEFAULT) == GAME_STORAGE_SEGMENTS
-                    else {}
-                ),
             )
             return _result(job, reports)
 

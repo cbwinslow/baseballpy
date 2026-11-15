@@ -612,21 +612,21 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-371 | response-log-segments 5.1: tests first: tests/test_raw_convert.py | DONE | after B-355; the tests exist and fail for the right reason |
 | B-372 | response-log-segments 5.2: converter command with `--dry-run` | DONE | after B-371; dry-run test passes |
 | B-373 | response-log-segments 5.3: real conversion: read back every row, then remove the old copies of the season | DONE | after B-372; tests/test_raw_convert.py passes |
-| B-374 | `response-log-segments 5.4`: dry run, then the real conversion of the lake, season by season | LONG | after B-373; disk before and after in design.md; `cache check` clean |
-| B-377 | `response-log-segments 6.3`: per season: old files to `_legacy/`, segments in, counts and keys compared | LONG | after B-376; table in design.md |
-| B-378 | `response-log-segments 6.4`: delete a season's `_legacy/` only after its comparison passed | READY | after B-377; freed disk recorded |
-| B-379 | `response-log-segments 7.1`: tests first: no part files on the per-game path; the queue does not compact segment sources | READY | after B-378; the tests exist and fail for the right reason |
-| B-380 | `response-log-segments 7.2`: remove the per-game part writes and the queue's compaction for segment sources | READY | after B-379; tests pass; `compact` still works for part files |
-| B-381 | `response-log-segments 7.3`: catalog layout treats segments as normal (the schema check is done, 2026-11-11; no TINY_FILES for segments and the docs are still open); docs updated | READY | after B-380; `catalog layout` clean on a segment lake; `docs generate --check` green |
-| B-382 | `response-log-segments 8.1`: tests first: tests/test_raw_roundtrip.py | READY | after B-373; the tests exist and fail for the right reason |
-| B-383 | `response-log-segments 8.2`: round-trip check per segment | READY | after B-382; its tests pass; result for one real season in design.md |
+| B-374 | response-log-segments 5.4: dry run, then the real conversion of the lake, season by season | DONE | after B-373; disk before and after in design.md; `cache check` clean |
+| B-377 | response-log-segments 6.3: per season: old files to `_legacy/`, segments in, counts and keys compared | DONE | after B-376; table in design.md |
+| B-378 | response-log-segments 6.4: delete a season's `_legacy/` only after its comparison passed | DONE | after B-377; freed disk recorded |
+| B-379 | response-log-segments 7.1: tests first: no part files on the per-game path; the queue does not compact segment sources | DONE | after B-378; the tests exist and fail for the right reason |
+| B-380 | response-log-segments 7.2: remove the per-game part writes (compact already leaves segments alone, tested) | DONE | after B-379; tests pass; `compact` still works for part files |
+| B-381 | response-log-segments 7.3: catalog layout treats segments as normal (the schema check is done, 2026-11-11; no TINY_FILES for segments and the docs are still open); docs updated | DONE | after B-380; `catalog layout` clean on a segment lake; `docs generate --check` green |
+| B-382 | response-log-segments 8.1: tests first: tests/test_raw_roundtrip.py | DONE | after B-373; the tests exist and fail for the right reason |
+| B-383 | response-log-segments 8.2: round-trip check per segment | DONE | after B-382; its tests pass; result for one real season in design.md |
 | B-384 | `response-log-segments 8.3`: optional move-raw command (moved, never deleted; location recorded) | READY | after B-383; its tests pass; not run on the real lake (owner keeps all raw) |
 | B-385 | `response-log-segments 9.1`: tests first: tests/test_segment_sources.py (a fake source through the registry only) | READY | after B-380; the test exists and fails for the right reason |
 | B-386 | `response-log-segments 9.2`: one generic function plus the registry field for responses and datasets | READY | after B-385; test passes; tests/test_architecture.py passes |
 | B-387 | `response-log-segments 9.3`: Statcast on segments | READY | after B-386; Statcast tests pass and one real window stored |
 | B-388 | `response-log-segments 9.4`: Retrosheet on segments | READY | after B-386; Retrosheet tests pass and one real season stored |
 | B-389 | `response-log-segments 9.5`: Lahman, Chadwick, Kalshi, Polymarket, FanGraphs, Baseball-Reference on segments, or a recorded reason per source | READY | after B-386; each source done or its reason in design.md |
-| B-390 | `response-log-segments 10.1`: tests first: tests/test_segments_e2e.py (a fake download readable through read and DuckDB at once) | READY | after B-369; the test passes |
+| B-390 | response-log-segments 10.1: tests first: tests/test_segments_e2e.py (a fake download readable through read and DuckDB at once) | DONE | after B-369; the test passes |
 | B-391 | `response-log-segments 10.2`: merge the spec deltas and archive this change (the two drafts were archived by backlog-consolidation) | DONE-WHEN-LAST | change archived; `openspec validate --specs` valid |
 | B-392 | fix: a read of a compacted chunk raised KeyError when a refresh moved the chunk between the check and the read (CI Ubuntu 3.13, `test_threads_refreshing_chunks_of_one_compacted_file_lose_and_duplicate_nothing`) | DONE | `ProcessedStore.read_part` looks again (up to 5 times) and raises if the chunk keeps moving; two tests in tests/test_compact.py |
 | B-393 | lake-inventory-columns 1.1: tests first for the inventory columns of v_season_catalog | DONE | the new test fails for the missing columns |

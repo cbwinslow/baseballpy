@@ -21,8 +21,8 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `fangraphs-ingestion` | 5 | 6 | 25 |
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
-| `lake-access` | 19 | 28 | 73 |
-| `mlb-api-ingestion` | 33 | 47 | 60 |
+| `lake-access` | 19 | 28 | 74 |
+| `mlb-api-ingestion` | 33 | 47 | 61 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `portability` | 3 | 3 | 7 |
@@ -60,7 +60,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `product-mandate-reproducible-outputs` | 7 | 1 | 2.5 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
-| `response-log-segments` | 24 | 16 | 5.4, 6.3, 6.4, 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2 |
+| `response-log-segments` | 33 | 7 | 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
 
 ## Decisions (`docs/DECISIONS.md`)
@@ -199,6 +199,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 133: Dataset Groups Come From The Adapter, Not From The Estimate
 - ADR 134: New Game Downloads Use Segments By Default
 - ADR 135: The Data Folder Is Global By Default (Replaces ADR 62)
+- ADR 136: The Per-Game Part Path Is Removed; Segments Are A Normal Layout
 
 ## Documentation pages (`docs/`)
 

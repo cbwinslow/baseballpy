@@ -108,7 +108,12 @@ def _processed_findings(config: LakeConfig, sources: set[str]) -> list[LayoutFin
         for path in visible_parquet(root):  # a segment being written is not a tiny file
             by_folder[path.parent].append(path)
         parts = [p for files in by_folder.values() for p in files if p.name.startswith("part-")]
-        crowded = {f: len(fs) for f, fs in by_folder.items() if len(fs) > MAX_PART_FILES}
+        # segments are commit units (ADR 95), not leftovers of a download: only part files crowd a folder
+        crowded = {
+            f: n
+            for f, fs in by_folder.items()
+            if (n := sum(1 for p in fs if not p.name.startswith("seg-"))) > MAX_PART_FILES
+        }
         if crowded:
             total = sum(crowded.values())
             findings.append(
@@ -168,6 +173,8 @@ def _row_group_findings(
     small = 0
     for files in by_folder.values():
         for path in files:
+            if path.name.startswith("seg-"):
+                continue  # a segment's row groups follow its games (ADR 95)
             meta = pq.read_metadata(path)
             if meta.num_row_groups > 1 and meta.num_rows / meta.num_row_groups < MIN_ROW_GROUP_ROWS:
                 small += 1
