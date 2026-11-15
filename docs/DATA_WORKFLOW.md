@@ -36,8 +36,9 @@ File names: a part is named after its chunk without the dataset name and the sea
 Reading it yourself:
 
 - DuckDB: `baseballpy db sync`, then `SELECT * FROM retrosheet_events`.
-- polars: `pl.scan_parquet('.baseballpy/processed/retrosheet/events/**/*.parquet', hive_partitioning=True)`.
-- pandas: `pd.read_parquet('.baseballpy/processed/retrosheet/events')`. If a table has its own `season` column, pandas and pyarrow also see the `season=YYYY` folder as a column named `season`: read the files one by one or use DuckDB.
+- the simplest way, which finds the folder for you: `bp.read("retrosheet.events", seasons=2023)` (Polars; `backend="pandas"` for pandas).
+- polars by hand: `pl.scan_parquet(str(Path.home() / ".baseballpy/processed/retrosheet/events/**/*.parquet"), hive_partitioning=True)` (that is the global folder; run `baseballpy home` to see yours).
+- pandas by hand: `pd.read_parquet(Path.home() / ".baseballpy/processed/retrosheet/events")`. If a table has its own `season` column, pandas and pyarrow also see the `season=YYYY` folder as a column named `season`: read the files one by one or use DuckDB.
 
 Move or split the lake with environment variables: `BASEBALLPY_HOME` moves everything;
 `BASEBALLPY_RAW_ROOT_OVERRIDE`, `BASEBALLPY_PROCESSED_ROOT_OVERRIDE`, `BASEBALLPY_QUARANTINE_ROOT_OVERRIDE`,
