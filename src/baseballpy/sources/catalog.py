@@ -272,7 +272,7 @@ def register_all() -> dict[str, DatasetSpec]:
         _add(
             "mlb_api",
             "game_live_events",
-            "mlb_live_play_events",
+            "mlb_game_live_events",
             history.schema,
             history.keys,
             "Pitch and action events of MLB games in progress, one file per game rewritten while the "

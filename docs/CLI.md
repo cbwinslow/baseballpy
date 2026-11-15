@@ -30,6 +30,7 @@ Commands:
   export            Export cached datasets: SPECS are `source` or `source:dataset[,dataset]`.
   home              Show which data folder (the lake) is in use, why, and whether it exists.
   ingest            Execute ingestion jobs across registered adapters with planning and...
+  live              Follow the games being played and keep their rows in the lake (Ctrl-C stops...
   migrate-layout    Migrate a v1 data lake (cache/<source>/...) to layout v2 (raw/ + processed/).
   probe             Check every provider route in seconds (run it before a long ingest).
   quarantine        Inspect and display dead-letter quarantine files and unparseable records.
@@ -603,6 +604,26 @@ Options:
   --sync-db / --no-sync-db  Automatically update DuckDB views after successful ingestion (default:
                             true).
   --help                    Show this message and exit.
+```
+
+## `baseballpy live`
+
+```text
+Usage: baseballpy live [OPTIONS]
+
+  Follow the games being played and keep their rows in the lake (Ctrl-C stops it cleanly).
+
+  Every poll answer is kept in a journal under raw/mlb_api/_live; the rows are readable at once as
+  the dataset game_live_events (view mlb_game_live_events). After a game, the normal `ingest -d
+  games` stores it in the long-term tables. Settings: BASEBALLPY_STREAM_* (poll interval, lead time,
+  queue size, restarts).
+
+Options:
+  --sports TEXT           Levels to follow: sport ids (1 = the major leagues).  [default: 1]
+  --dry-run               List the games it would follow now and stop (one schedule request).
+  --max-games INTEGER     Most games followed at once (default: the setting).
+  --commit-seconds FLOAT  Seconds between writes to the lake.
+  --help                  Show this message and exit.
 ```
 
 ## `baseballpy migrate-layout`

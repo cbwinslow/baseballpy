@@ -604,6 +604,31 @@ class StreamingConfig(EnvSettings):
     enable_conditional_etag: bool = Field(
         default=True, description="Whether to send If-None-Match ETag headers to minimize bandwidth"
     )
+    schedule_interval_seconds: float = Field(
+        default=60.0, description="`baseballpy live`: seconds between looks at today's schedule"
+    )
+    commit_seconds: float = Field(
+        default=10.0,
+        description="`baseballpy live`: seconds between writes of live rows to the lake",
+    )
+    max_live_games: int = Field(
+        default=20, description="`baseballpy live`: most games followed at the same time"
+    )
+    lead_minutes: int = Field(
+        default=30,
+        description="`baseballpy live`: start following a game this long before its first pitch",
+    )
+    queue_size: int = Field(
+        default=50,
+        description="`baseballpy live`: events waiting for the writer; when full, polling slows down",
+    )
+    restart_limit: int = Field(
+        default=3,
+        description="`baseballpy live`: restarts of one game's stream before it is given up",
+    )
+    restart_backoff_seconds: float = Field(
+        default=5.0, description="`baseballpy live`: wait before a game's stream is restarted"
+    )
     journal: bool = Field(
         default=False,
         description=(

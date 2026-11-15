@@ -59,7 +59,7 @@ def lake(tmp_path: Path) -> LakeConfig:
     return LakeConfig(home=tmp_path)
 
 
-def _rows(lake: LakeConfig, sql: str = "SELECT count(*) FROM mlb_live_play_events") -> Any:
+def _rows(lake: LakeConfig, sql: str = "SELECT count(*) FROM mlb_game_live_events") -> Any:
     con = BaseballDatabase(cache_config=lake).connect()  # a read-write connect syncs the views
     try:
         return con.execute(sql).fetchall()
@@ -72,7 +72,7 @@ def test_the_live_dataset_is_registered_with_the_schema_of_the_history_table() -
     live = get_dataset(*DATASET)
     history = get_dataset("mlb_api", "game_feed_play_events")
     assert live.schema.equals(history.schema) and live.keys == history.keys
-    assert live.view == "mlb_live_play_events" and live.partition == "season"
+    assert live.view == "mlb_game_live_events" and live.partition == "season"
 
 
 def test_rows_are_readable_mid_game_and_grow_without_double_counting(lake: LakeConfig) -> None:
@@ -89,7 +89,7 @@ def test_a_restart_that_sends_the_same_events_again_does_not_double_count(lake: 
     LiveGameSink(lake).write(SEASON, 8, _events(8, range(0, 4)))
     after_restart = LiveGameSink(lake)  # a new process: it knows only the file
     assert after_restart.write(SEASON, 8, _events(8, range(2, 6))) == 6
-    assert _rows(lake, "SELECT count(*), count(DISTINCT index) FROM mlb_live_play_events") == [
+    assert _rows(lake, "SELECT count(*), count(DISTINCT index) FROM mlb_game_live_events") == [
         (6, 6)
     ]
 
@@ -106,7 +106,7 @@ def test_games_are_separate_files_and_a_game_rewrite_leaves_the_others_alone(
     sink.write(SEASON, 2, _events(2, range(3, 4)))
     assert (folder / "live-1.parquet").read_bytes() == before
     assert _rows(
-        lake, "SELECT game_pk, count(*) FROM mlb_live_play_events GROUP BY 1 ORDER BY 1"
+        lake, "SELECT game_pk, count(*) FROM mlb_game_live_events GROUP BY 1 ORDER BY 1"
     ) == [
         (1, 2),
         (2, 4),

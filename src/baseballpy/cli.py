@@ -15,6 +15,7 @@ from baseballpy.cli_compact import register_compact_command
 from baseballpy.cli_db import register_db_commands
 from baseballpy.cli_export import register_export_command
 from baseballpy.cli_ingest import register_commands
+from baseballpy.cli_live import register_live_command
 from baseballpy.cli_quarantine import register_quarantine_commands
 from baseballpy.cli_queue import register_queue_command
 from baseballpy.cli_sample import register_sample_command
@@ -628,6 +629,7 @@ register_db_commands(db)
 register_compact_command(main)
 register_sample_command(main)
 register_stream_command(main)
+register_live_command(main)
 register_quarantine_commands(main)
 register_agent_commands(main)
 register_status_command(main)

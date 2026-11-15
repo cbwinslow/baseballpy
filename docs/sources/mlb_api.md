@@ -23801,7 +23801,7 @@ Weather trajectory confidence values.
 
 Pitch and action events of MLB games in progress, one file per game rewritten while the game is live (same columns as game_feed_play_events; a game stored there is no longer live).
 
-- **View:** `mlb_live_play_events`
+- **View:** `mlb_game_live_events`
 - **Processed path:** `processed/mlb_api/game_live_events/season=YYYY/part-<chunk>.parquet`
 - **Partitioning:** Hive `season=YYYY`
 - **Key:** `game_pk`, `all_plays_about_at_bat_index`, `index`

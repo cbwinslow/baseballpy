@@ -213,6 +213,8 @@ baseballpy cache check --upstream                  # raw files intact? changed u
 
 # Live games, dead letters and housekeeping
 baseballpy stream 745789 --duckdb live.duckdb      # --replay re-emits a finished game
+baseballpy live --dry-run                          # the games it would follow now (one schedule request)
+baseballpy live                                    # follow every game while it is played; rows go to the lake
 baseballpy quarantine list
 baseballpy audit summary --status FAILURE --since 2026-10-01
 baseballpy doctor

@@ -57,7 +57,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `finish-mlb-history` | 15 | 3 | 2.1, 4.1, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
-| `live-mlb-capture` | 5 | 5 | 3.1, 3.2, 3.3, 4.1, 4.2 |
+| `live-mlb-capture` | 7 | 3 | 3.3, 4.1, 4.2 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `product-mandate-reproducible-outputs` | 7 | 1 | 2.5 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
@@ -204,6 +204,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 137: Live Games Go To A Separate Table; The Normal Ingest Stores The Finished Game
 - ADR 138: The Live Journal Reuses The Response-Log Record Format And Lives Under `raw/<source>/_live/`
 - ADR 139: Live Game Rows Are One Rewritten File Per Game, In The History Table's Schema
+- ADR 140: One Process Follows All Live Games With Bounded Buffering (`baseballpy live`)
 
 ## Documentation pages (`docs/`)
 

@@ -11,11 +11,11 @@ Order: 0.1 first (owner decision), then slices 1 to 4 in order. Each slice is us
   Done when 1.1 passes and `tests/test_mlb_stream.py` still passes.
 - [x] 2.1 Tests first: `tests/test_live_segments.py` (a DuckDB query sees rows mid-game; no double count after a
   crash and restart; schema equals the registered one; the view and docs come from the registry).
-- [x] 2.2 Register `mlb_api.game_live_events`, the live segment writer, the view `mlb_live_play_events`, generated
+- [x] 2.2 Register `mlb_api.game_live_events`, the live segment writer, the view `mlb_game_live_events`, generated
   docs. Done when 2.1 passes, `docs generate --check` and `openspec validate --specs` pass.
-- [ ] 3.1 Tests first: `tests/test_live_supervisor.py` (two fixture games on a fake clock, a restart in the middle,
+- [x] 3.1 Tests first: `tests/test_live_supervisor.py` (two fixture games on a fake clock, a restart in the middle,
   a stale feed stops, a rain delay backs off, a slow sink stalls polling, Ctrl-C stops cleanly).
-- [ ] 3.2 `baseballpy live` (schedule watcher, task per game, supervisor, memory gate, audit records).
+- [x] 3.2 `baseballpy live` (schedule watcher, task per game, supervisor, memory gate, audit records).
   Done when 3.1 passes and `docs/CLI.md` is regenerated.
 - [ ] 3.3 In-season check on real games (owner machine): latency measured, request rate, no 429; the numbers go
   into design section 1; the websocket probe result is recorded.

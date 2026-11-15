@@ -12,7 +12,7 @@
    flushed to a per-game journal in the lake before it is used, so a crash loses nothing and a replay gives the same
    events (same idea as the response log of ADR 95).
 2. **Live dataset in the lake.** A new dataset `mlb_api.game_live_events` (own schema from `LiveEvent`, its own view
-   `mlb_live_play_events`) written as committed segments while the game runs, readable by DuckDB and
+   `mlb_game_live_events`) written as committed segments while the game runs, readable by DuckDB and
    `baseballpy.read` at once. The canonical game datasets are not touched while the game is live.
 3. **`baseballpy live`.** One process, one event loop: a schedule watcher finds games about to start, one task per
    live game shares the HTTP client (rate limit, in-flight gate), a supervisor restarts or stops tasks (stale feed,

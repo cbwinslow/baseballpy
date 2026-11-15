@@ -134,3 +134,15 @@ for the tiny-file and row-group rules (ADR 139); the open-games view is task 4.2
 (atomic replace with a footer check), `to_arrow` (the historical flattener), the dataset registry and generated docs,
 pyarrow `group_by` (one row per key). Custom code: `last_row_per_key` and the per-game sink, because no store merges
 rewritten per-game files. Not verified: write cost and file counts over a season (task 3.3).
+
+### 10.3 Slice 3, the supervisor and `baseballpy live` (tasks 3.1 and 3.2, 2026-11-15)
+Tests (written first; the modules were missing so they failed at collection): `tests/test_live_supervisor.py` (11),
+`tests/test_live_schedule.py` (3), `tests/test_live_cli.py` (3) and `tests/test_live_e2e.py` (1: two fixture games through the
+real streamer with the journal on, the supervisor, the sink and a DuckDB query, then replay from the journals). Found by the
+tests: the first draft of the writer drained the queue into unbounded buffers while the sink was stuck, so polling did not
+stall; the writer now also flushes when a game's buffer reaches `queue_size`. Found by the end-to-end test: with the real
+`HttpClient` (it runs requests on its own loop thread) a run that stops before the games finish cancels them, as designed;
+the test stops only when both games are done. Reuse check: `HttpClient` (rate limit, retries, gate), `MemoryGovernor`
+(ADR 114), `StreamingConfig` (pydantic-settings), `core/audit.py`, `LiveGameSink`, click and rich. Custom code: the
+supervisor loop and the schedule parser (nothing in the repository watches a schedule and follows games). Not verified:
+real games, real request rate and latency, the websocket probe (task 3.3, in season).

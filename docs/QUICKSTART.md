@@ -344,3 +344,15 @@ baseballpy audit tail -n 20
 # View throughput and cache-hit statistics
 baseballpy audit stats
 ```
+
+### Following live games (ADR 137, 140)
+```bash
+baseballpy live --dry-run   # which games it would follow right now (reads the schedule only)
+baseballpy live             # follow every game while it is played; Ctrl-C stops it cleanly
+```
+While a game is on, its pitch and action events are in the lake as `mlb_api.game_live_events` (view
+`mlb_game_live_events`, same columns as `mlb_game_feed_play_events`), and every answer from MLB is kept in a journal
+under `raw/mlb_api/_live/`. Read the rows live with `baseballpy.sql("SELECT * FROM mlb_game_live_events")`. After a game
+is over, run the normal `baseballpy ingest mlb_api -d season,games` to store it in the long-term tables; the live rows
+are a separate table and are never mixed into those. Settings: `BASEBALLPY_STREAM_*` (schedule interval, lead time,
+commit interval, queue size, restarts).

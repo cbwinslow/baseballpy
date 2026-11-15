@@ -22,6 +22,10 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-15 10:52 UTC [blain]:**
+  - **Tasks:** `B-472`.
+  - **Summary:** live-mlb-capture 3.1-3.2: live supervisor, schedule source, baseballpy live (ADR 140)
+
 - **2026-11-15 10:03 UTC [blain]:**
   - **Tasks:** `B-470`.
   - **Summary:** live-mlb-capture 2.1-2.2: live dataset game_live_events, per-game sink, layout rule (ADR 139)

@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Games In Progress Are Readable From One Live Dataset
-The dataset `mlb_api.game_live_events` MUST have exactly the schema and keys of `mlb_api.game_feed_play_events` and its own view `mlb_live_play_events`. The live capture MUST write one file per game, `live-<game_pk>.parquet` under `season=Y/`, by merging the new pitch and action events into the file's rows (a key seen again keeps its last row) and replacing the file atomically; the rows MUST be readable through DuckDB and `baseballpy.read` as soon as the write returns, MUST never be counted twice after a restart that sends events again, and a failed write MUST leave the previous file whole and no `.part` file. `catalog layout` MUST NOT count `live-*` files as tiny files or small row groups.
+The dataset `mlb_api.game_live_events` MUST have exactly the schema and keys of `mlb_api.game_feed_play_events` and its own view `mlb_game_live_events`. The live capture MUST write one file per game, `live-<game_pk>.parquet` under `season=Y/`, by merging the new pitch and action events into the file's rows (a key seen again keeps its last row) and replacing the file atomically; the rows MUST be readable through DuckDB and `baseballpy.read` as soon as the write returns, MUST never be counted twice after a restart that sends events again, and a failed write MUST leave the previous file whole and no `.part` file. `catalog layout` MUST NOT count `live-*` files as tiny files or small row groups.
 
 #### Scenario: Mid-game reads, restarts and failures
 - **WHEN** a game's events are written in two batches, a new process sends overlapping events, another game is rewritten, and a write fails on a full disk

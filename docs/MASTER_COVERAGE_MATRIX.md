@@ -4,8 +4,8 @@ This document provides an exhaustive catalog of all baseball datasets across the
 ecosystem, comparing `baseballpy` against `pybaseball`, `baseballr`, `MLB-StatsAPI`, and the
 official MLB OpenAPI specification.
 
-- **Total Registered Datasets in baseballpy:** 548
-- **MLB Stats API:** 403 datasets across 65 API routes
+- **Total Registered Datasets in baseballpy:** 549
+- **MLB Stats API:** 404 datasets across 65 API routes
 - **Statcast (Baseball Savant):** 50 datasets (MLB pitches, Minor League pitches, 36 leaderboards)
 - **Retrosheet:** 43 datasets (PBP events, game logs, boxscores, rosters)
 - **Lahman Database:** 27 datasets (complete historical database 1871–present)
@@ -133,7 +133,7 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `pitches` | `statcast_pitches` | `season` | 120 | `game_pk`, `at_bat_number`, `pitch_number` | Pitch-level Statcast search results. |
 | `pitches_minors` | `statcast_pitches_minors` | `season` | 120 | `game_pk`, `at_bat_number`, `pitch_number` | Minor-league pitch-level Statcast search results (minors=true, 2021 onwards). |
 
-### MLB_API (403 datasets)
+### MLB_API (404 datasets)
 
 | Dataset Name | View Name | Partition | Columns | Primary Keys | Description |
 | :--- | :--- | :--- | :---: | :--- | :--- |
@@ -157,6 +157,7 @@ or train any derived sabermetric metric without web scraping dependencies.
 | `game_feed_play_events` | `mlb_game_feed_play_events` | `season` | 167 | `game_pk`, `all_plays_about_at_bat_index`, `index` | Every pitch/action event of a final game (pitchData, hitData, details, count) with its plate appearance's context. |
 | `game_feed_plays` | `mlb_game_feed_plays` | `season` | 69 | `game_pk`, `about_at_bat_index` | Every plate appearance of a final game from the live feed (result, about, count, matchup). |
 | `game_linescore` | `mlb_game_linescore` | `season` | 12 | `game_pk`, `num` | Inning-by-inning linescore of a game. |
+| `game_live_events` | `mlb_game_live_events` | `season` | 167 | `game_pk`, `all_plays_about_at_bat_index`, `index` | Pitch and action events of MLB games in progress, one file per game rewritten while the game is live (same columns as game_feed_play_events; a game stored there is no longer live). |
 | `game_play_by_play` | `mlb_game_play_by_play` | `season` | 69 | `game_pk`, `at_bat_index` | Every play of a game (matchup, result, count, runners as JSON). |
 | `game_win_probability` | `mlb_game_win_probability` | `season` | 76 | `game_pk`, `at_bat_index` | Win probability after every play. |
 | `jobs_datacasters` | `mlb_jobs_datacasters` | `none` | 9 | `person_id` | Current datacasters (the upstream listing repeats some people, so the key is not unique). |
