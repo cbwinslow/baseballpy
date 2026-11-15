@@ -7,7 +7,7 @@ A complete reference guide mapping every dataset to its designated Python functi
 ## Start here
 
 Five steps from install to your first query. Everything lands under one folder (`$BASEBALLPY_HOME`, by default
-`.baseballpy`): `raw/` keeps what the provider sent, `processed/<source>/<dataset>/` holds typed Parquet, and
+`~/.baseballpy`, shared by all your projects; `baseballpy home` shows it): `raw/` keeps what the provider sent, `processed/<source>/<dataset>/` holds typed Parquet, and
 `databases/baseball.duckdb` holds views over it.
 
 1. **Install.** `pip install baseballpy` (or `uv add baseballpy`).
@@ -92,7 +92,7 @@ uv add "baseballpy[all]"  # Includes pandas and the Postgres/Snowflake dlt desti
 All paths and rate limits are managed via Pydantic Settings (`BASEBALLPY_*`):
 
 ```bash
-# optional: without it the data goes to .baseballpy in your project folder
+# optional: without it the data goes to the global ~/.baseballpy (a project can set [tool.baseballpy] home in its pyproject.toml)
 export BASEBALLPY_HOME="~/.baseballpy"
 export BASEBALLPY_PROCESSED_ROOT_OVERRIDE="/fast-disk/baseball/processed"  # optional: move one tier
 export BASEBALLPY_RATE_MAX_CONCURRENCY=8

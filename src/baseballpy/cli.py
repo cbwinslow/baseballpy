@@ -23,7 +23,7 @@ from baseballpy.cli_status import register_status_command
 from baseballpy.cli_stream import register_stream_command
 from baseballpy.clidocs import CLI_DOC_NAME, generate_cli_doc
 from baseballpy.core.audit import default_audit_logger
-from baseballpy.core.config import LakeConfig
+from baseballpy.core.config import LakeConfig, resolve_home
 from baseballpy.core.migrate import migrate_layout
 from baseballpy.core.sources_lock import ENV_OVERRIDES, get_source_ref, load_lock, update_lock
 from baseballpy.database import BaseballDatabase
@@ -71,6 +71,20 @@ def use_utf8_streams() -> None:
 def main() -> None:
     """baseballpy: Fast, modular, and strongly-typed baseball data ingestion layer."""
     use_utf8_streams()
+
+
+@main.command("home")
+def home_cmd() -> None:
+    """Show which data folder (the lake) is in use, why, and whether it exists."""
+    home, reason = resolve_home()
+    exists = home.is_dir()
+    console.print(f"Data folder: [cyan]{home}[/cyan]")
+    console.print(f"Chosen by:   {reason}")
+    console.print(f"Exists:      {'yes' if exists else 'no (it is created by the first download)'}")
+    if exists:
+        console.print(
+            "Layout:      " + ", ".join(sorted(p.name for p in home.iterdir() if p.is_dir())[:8])
+        )
 
 
 @main.command("statcast")

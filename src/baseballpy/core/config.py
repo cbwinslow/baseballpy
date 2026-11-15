@@ -1,6 +1,7 @@
 """Configuration models for downloaders, cache managers, and sinks powered by Pydantic Settings."""
 
 import os
+import tomllib
 import warnings
 from datetime import date
 from functools import lru_cache
@@ -32,7 +33,7 @@ class EnvSettings(BaseSettings):
 
 #: marks the root of a project folder (ADR 62)
 PROJECT_MARKERS = ("pyproject.toml", ".git")
-#: the data folder inside a project folder, and the fallback inside the user's home
+#: the global data folder in the user's home (ADR 135; a project folder only with [tool.baseballpy] home)
 DATA_DIRNAME = ".baseballpy"
 #: manifest file name: the leading underscore makes pandas/pyarrow folder reads skip it (ADR 63)
 MANIFEST_NAME = "_manifest.json"
@@ -48,18 +49,51 @@ def find_project_root(start: Path | None = None) -> Path | None:
     return None
 
 
-def get_default_base_dir() -> Path:
-    """Resolve the data folder: ``BASEBALLPY_HOME``, then the cache override, then ``<project>/.baseballpy``.
+def _project_setting(start: Path | None = None) -> tuple[Path, Path] | None:
+    """``(home, pyproject)`` from the nearest ``[tool.baseballpy] home`` setting at or above ``start``.
 
-    ``<project>`` is the nearest folder above the working directory with a ``pyproject.toml`` or
-    ``.git``; outside any project the folder is ``~/.baseballpy`` (ADR 62).
+    A relative ``home`` is taken relative to the folder of that ``pyproject.toml``. A file that cannot
+    be read as TOML is skipped.
+    """
+    here = (start or Path.cwd()).resolve()
+    for folder in (here, *here.parents):
+        pyproject = folder / "pyproject.toml"
+        if not pyproject.is_file():
+            continue
+        try:
+            data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        value = data.get("tool", {}).get("baseballpy", {}).get("home")
+        if isinstance(value, str) and value:
+            return (folder / Path(value).expanduser()).resolve(), pyproject
+    return None
+
+
+def resolve_home() -> tuple[Path, str]:
+    """The data folder and the reason it was chosen, in this order (ADR 135):
+
+    1. the ``BASEBALLPY_HOME`` environment variable;
+    2. the legacy ``BASEBALLPY_CACHE_DIR`` variable (its parent folder);
+    3. ``home = "..."`` under ``[tool.baseballpy]`` in the nearest ``pyproject.toml`` (a project that
+       wants its own copy of the data);
+    4. the global folder ``~/.baseballpy``, shared by every project (like pybaseball's global cache).
     """
     if env_home := os.getenv("BASEBALLPY_HOME"):
-        return Path(env_home).expanduser().resolve()
+        return Path(env_home).expanduser().resolve(), "the BASEBALLPY_HOME environment variable"
     if env_cache := os.getenv("BASEBALLPY_CACHE_DIR"):
-        return Path(env_cache).expanduser().resolve().parent
-    root = find_project_root()
-    return ((root or Path.home()) / DATA_DIRNAME).resolve()
+        return (
+            Path(env_cache).expanduser().resolve().parent,
+            "the legacy BASEBALLPY_CACHE_DIR environment variable",
+        )
+    if setting := _project_setting():
+        return setting[0], f"[tool.baseballpy] home in {setting[1]}"
+    return (Path.home() / DATA_DIRNAME).resolve(), "the global default"
+
+
+def get_default_base_dir() -> Path:
+    """The data folder (see :func:`resolve_home`): no project folder is used unless it says so."""
+    return resolve_home()[0]
 
 
 LAYOUT_VERSION = 2
@@ -96,7 +130,7 @@ class LakeConfig(EnvSettings):
 
     home: Path = Field(
         default_factory=get_default_base_dir,
-        description="Lake root (BASEBALLPY_HOME; default <project>/.baseballpy, else ~/.baseballpy)",
+        description="Lake root (BASEBALLPY_HOME; else [tool.baseballpy] home of the project; else ~/.baseballpy)",
     )
     enabled: bool = Field(default=True, description="Whether persisting to the lake is enabled")
     ttl_seconds: int = Field(

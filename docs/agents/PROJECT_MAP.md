@@ -10,7 +10,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `agent-runbooks` | 7 | 10 | 17 |
 | `audit-and-benchmarking` | 9 | 13 | 37 |
 | `bref-ingestion` | 3 | 3 | 10 |
-| `caching-and-invalidation` | 24 | 40 | 58 |
+| `caching-and-invalidation` | 24 | 40 | 60 |
 | `catalog-audit` | 4 | 4 | 4 |
 | `chadwick-register` | 8 | 17 | 26 |
 | `cli-and-ingest` | 26 | 40 | 69 |
@@ -198,6 +198,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 132: The MLB Lookup Lists Are Table Rows; A Dict Of Lists Is Keyed By List Name And Position
 - ADR 133: Dataset Groups Come From The Adapter, Not From The Estimate
 - ADR 134: New Game Downloads Use Segments By Default
+- ADR 135: The Data Folder Is Global By Default (Replaces ADR 62)
 
 ## Documentation pages (`docs/`)
 
@@ -211,6 +212,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - `docs/DECISIONS.md`
 - `docs/ENDPOINT_CATALOG.md`
 - `docs/MASTER_COVERAGE_MATRIX.md`
+- `docs/MODELING.md`
 - `docs/QUICKSTART.md`
 - `docs/RELEASING.md`
 - `docs/ROADMAP.md`

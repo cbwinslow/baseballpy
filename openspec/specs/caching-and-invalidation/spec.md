@@ -6,13 +6,14 @@ Defines directory layout, source-based partitioning, hash-based invalidation mec
 ## Requirements
 
 ### Requirement: Four-Tier Local Layout
-All persisted data MUST live under `$BASEBALLPY_HOME` (default `.baseballpy/` in the nearest project folder, else `~/.baseballpy/`; ADR 62) in `raw/`, `processed/`, `quarantine/`, `cache/http/`, `databases/` and `logs/`, with a `VERSION` file holding the layout version (2). Datasets MUST live only in `raw/` and `processed/`: `raw/<source>/<dataset>/[season=YYYY/]` holds immutable upstream bytes and `processed/<source>/<dataset>/[season=YYYY/]part-<chunk>.parquet` holds typed Parquet, one dataset per directory. Path helpers MUST NOT create directories; writers create them on write. Locations are configurable with `BASEBALLPY_HOME` and the per-tier `BASEBALLPY_*_OVERRIDE` settings of `LakeConfig`.
+All persisted data MUST live under `$BASEBALLPY_HOME` (default the global `~/.baseballpy/`; a project may set `[tool.baseballpy] home` in its `pyproject.toml`; ADR 135, which replaces ADR 62) in `raw/`, `processed/`, `quarantine/`, `cache/http/`, `databases/` and `logs/`, with a `VERSION` file holding the layout version (2). Datasets MUST live only in `raw/` and `processed/`: `raw/<source>/<dataset>/[season=YYYY/]` holds immutable upstream bytes and `processed/<source>/<dataset>/[season=YYYY/]part-<chunk>.parquet` holds typed Parquet, one dataset per directory. Path helpers MUST NOT create directories; writers create them on write. Locations are configurable with `BASEBALLPY_HOME` and the per-tier `BASEBALLPY_*_OVERRIDE` settings of `LakeConfig`.
 
-#### Scenario: The default data folder lives in the project
-- **GIVEN** `BASEBALLPY_HOME` is not set and the working directory is inside a folder with `pyproject.toml` or `.git`
-- **THEN** the data folder is `.baseballpy/` in the nearest such folder, and outside any project it is `~/.baseballpy/`
-- **AND** `BASEBALLPY_HOME` still wins when set.
-- Verified by `tests/test_default_home.py::test_default_is_dot_baseballpy_in_the_nearest_project_folder`, `tests/test_default_home.py::test_outside_any_project_the_home_folder_is_used` and `tests/test_default_home.py::test_environment_variables_still_win`.
+#### Scenario: The default data folder is global
+- **GIVEN** `BASEBALLPY_HOME` is not set
+- **THEN** the data folder is `~/.baseballpy/`, also when the working directory is inside a project folder (`pyproject.toml` or `.git`)
+- **AND** `[tool.baseballpy] home = "..."` in the nearest `pyproject.toml` that has it (relative to that file) overrides the default, and `BASEBALLPY_HOME` (then the legacy `BASEBALLPY_CACHE_DIR`) wins over both
+- **AND** `baseballpy home` prints the folder in use and the reason.
+- Verified by `tests/test_default_home.py::test_the_default_is_the_global_folder_even_inside_a_project`, `tests/test_default_home.py::test_a_project_can_ask_for_its_own_folder_in_pyproject`, `tests/test_default_home.py::test_a_pyproject_without_the_setting_or_with_broken_toml_is_skipped`, `tests/test_default_home.py::test_environment_variables_win_over_the_project_setting` and `tests/test_default_home.py::test_the_home_command_says_where_and_why`.
 
 #### Scenario: Cache deletion is safe
 - **GIVEN** a populated lake

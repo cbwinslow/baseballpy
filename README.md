@@ -42,7 +42,7 @@ Linux, macOS and Windows behave the same (ADR 89). CI runs the whole test suite 
 
 - Text files are UTF-8 with LF line endings on every OS; the lake itself can be copied between systems.
 - Only one baseballpy process downloads from a host at a time (an OS file lock: `fcntl` on Linux and macOS, `msvcrt` on Windows). The lock does not work on some network shares (NFS); keep `BASEBALLPY_HOME` on a local disk.
-- Set `BASEBALLPY_HOME` to put the lake somewhere other than `~/.baseballpy`.
+- Set `BASEBALLPY_HOME` to put the lake somewhere other than `~/.baseballpy`, or put `[tool.baseballpy] home = "..."` in a project's `pyproject.toml`. Run `baseballpy home` to see which folder is used.
 - macOS is expected to work (same code path as Linux) but is not part of CI yet.
 
 **Older CPUs without AVX2** (for example a Xeon E5-2660 v2): the default Polars and DuckDB 2.x wheels die with an illegal-instruction error (exit code 132). Install `"polars[rtcompat]"` and `"duckdb<2"` (1.4.4 was tested) next to baseballpy; everything else is unchanged.
@@ -234,7 +234,7 @@ Each stage of the plan runs in its own child process, so a crash ends one attemp
 
 ## Data Lake Layout
 
-Everything lives under `$BASEBALLPY_HOME` (default: `.baseballpy` in the project folder, else `~/.baseballpy`), layout version 2 (see
+Everything lives under `$BASEBALLPY_HOME` (default: the global `~/.baseballpy`, shared by every project; a project can ask for its own folder with `[tool.baseballpy] home` in its `pyproject.toml`; `baseballpy home` shows which folder is in use and why, ADR 135), layout version 2 (see
 [docs/examples/layout.txt](docs/examples/layout.txt) for a real listing):
 
 ```text

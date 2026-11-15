@@ -251,6 +251,8 @@ run's row, page and timing numbers are evidence in
 `openspec/changes/archive/2026-10-31-mlb-pool-fallback-completion/design.md` ("As built"), not here: a
 count typed into this page goes stale, while the probe JSON is generated and that evidence is dated.
 
+**What to rely on when modelling (2026-11-14).** Sport 1 (the major leagues) of every season was fetched on the direct route while it answered 200 (2026-11-12). The minor-league levels (sport ids 11 and up) hold the fallback data: the same player-season rows, built from the per-person route, shown to be complete against Statcast for levels 11 and 14, 2023 to 2025 (ADR 120). Fields that only the direct route returns are NULL or kept in `_extras` for those levels, and chunks the fallback filled are marked `via=hydrate` (provisional) in the manifest, so a later successful direct fetch replaces them. 28 hourly probes on 2026-11-14 all answered 406; the owner closed the wait for a 200 (ADR 117, B-35). For per-game data (feed, boxscore, linescore, win probability) there is no such split: it comes from the per-game routes, which work.
+
 ### Per-endpoint status
 
 The status of every registered endpoint is recorded in `docs/mlb_probe.json` (written by
@@ -288,7 +290,7 @@ fetched through `/v1/people?hydrate=stats(...)` instead (ADR 53, ADR 55).
 ## Telemetry
 
 Every download, parse and store of this source writes one structured event per logical operation to
-`$BASEBALLPY_HOME/logs/audit.jsonl` (default `.baseballpy` in the project folder, ADR 22 and 62). The event carries
+`$BASEBALLPY_HOME/logs/audit.jsonl` (default the global `~/.baseballpy`, ADR 22 and 135). The event carries
 `operation`, `source="mlb_api"`, `endpoint`, `destination`, `records_count`, `duration_seconds`,
 `download_seconds`, `processing_seconds`, `throughput_rps`, `cache_hit`, `status` and `error`.
 

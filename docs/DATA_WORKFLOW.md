@@ -20,7 +20,7 @@ Because `raw/` is kept, the typed Parquet can be rebuilt offline if a parser cha
 
 ## Where the files live
 
-Everything is under one folder, `$BASEBALLPY_HOME` (default: `.baseballpy` in the project folder, else `~/.baseballpy`):
+Everything is under one folder, `$BASEBALLPY_HOME` (default: the global `~/.baseballpy`, shared by every project; a project can ask for its own folder with `[tool.baseballpy] home` in its `pyproject.toml`; `baseballpy home` shows which folder is in use and why, ADR 135):
 
 | Folder | What is in it |
 |---|---|

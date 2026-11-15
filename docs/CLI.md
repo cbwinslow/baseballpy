@@ -28,6 +28,7 @@ Commands:
   docs              Generate the per-dataset column dictionaries in docs/sources/*.md.
   doctor            Diagnose data lake layout, disk usage, package versions, and orphan files.
   export            Export cached datasets: SPECS are `source` or `source:dataset[,dataset]`.
+  home              Show which data folder (the lake) is in use, why, and whether it exists.
   ingest            Execute ingestion jobs across registered adapters with planning and...
   migrate-layout    Migrate a v1 data lake (cache/<source>/...) to layout v2 (raw/ + processed/).
   probe             Check every provider route in seconds (run it before a long ingest).
@@ -565,6 +566,17 @@ Options:
   --no-verify                     Skip the read-back check.
   --json                          Print one JSON object per dataset.
   --help                          Show this message and exit.
+```
+
+## `baseballpy home`
+
+```text
+Usage: baseballpy home [OPTIONS]
+
+  Show which data folder (the lake) is in use, why, and whether it exists.
+
+Options:
+  --help  Show this message and exit.
 ```
 
 ## `baseballpy ingest`
