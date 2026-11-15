@@ -28,6 +28,7 @@ from baseballpy.core.config import LakeConfig, StreamingConfig
 from baseballpy.core.http import HttpClient, HttpStatusError, get_http_client
 from baseballpy.core.quarantine import Quarantine, get_quarantine
 from baseballpy.sources.mlb_api.field_sets import expand_fields, required_containers
+from baseballpy.sources.mlb_api.live.journal import JournalingHttp
 
 logger = logging.getLogger(__name__)
 
@@ -374,6 +375,9 @@ class GamedayLiveStreamer:
         quarantine: Quarantine | None = None,
         lake: LakeConfig | None = None,
         use_diff_patch: bool = True,
+        journal: bool | None = None,
+        persist_state: bool = True,
+        audit_operation: str = "mlb_stream",
     ) -> None:
         self.config = config or StreamingConfig()
         self.poll_interval = (
@@ -383,6 +387,14 @@ class GamedayLiveStreamer:
         self._quarantine = quarantine
         self.lake = lake
         self.use_diff_patch = use_diff_patch
+        self.journal_enabled = self.config.journal if journal is None else journal
+        #: what the stream loop asks: the journalling wrapper when the journal is on (snapshots use ``http``)
+        self._stream_http: Any = (
+            JournalingHttp(self.http, lake or LakeConfig()) if self.journal_enabled else self.http
+        )
+        #: a replay keeps the resume state and the audit name of a live run untouched
+        self.persist_state = persist_state
+        self.audit_operation = audit_operation
 
     # -- resume state -------------------------------------------------------------------------
 
@@ -392,11 +404,13 @@ class GamedayLiveStreamer:
 
     def _load(self, game_pk: int, resume: bool) -> _State:
         path = self._state_path(game_pk)
-        if resume and path.exists():
+        if self.persist_state and resume and path.exists():
             return msgspec.json.decode(path.read_bytes(), type=_State)
         return _State()
 
     def _save(self, game_pk: int, state: _State) -> None:
+        if not self.persist_state:
+            return
         path = self._state_path(game_pk)
         path.parent.mkdir(parents=True, exist_ok=True)
         with atomic_write(path) as part:
@@ -482,7 +496,7 @@ class GamedayLiveStreamer:
         return data if isinstance(data, dict) else None
 
     async def _full_feed(self, url: str, etag: str | None) -> tuple[bytes | None, str | None]:
-        result = await self.http.get(url, etag=etag, allow=(200, 304))
+        result = await self._stream_http.get(url, etag=etag, allow=(200, 304))
         if result.not_modified:
             return None, etag
         return result.content, result.etag or etag
@@ -492,7 +506,7 @@ class GamedayLiveStreamer:
         current = doc.get("metaData", {}).get("timeStamp")
         if current is None:
             return None
-        stamps = await self.http.get(f"{url}/timestamps", allow=(200, 404))
+        stamps = await self._stream_http.get(f"{url}/timestamps", allow=(200, 404))
         if stamps.status != 200:
             return None
         try:
@@ -506,7 +520,7 @@ class GamedayLiveStreamer:
             return doc
         if current not in listed:
             return None  # the patch window is unknown to the server: resync
-        patch = await self.http.get(
+        patch = await self._stream_http.get(
             f"{url}/diffPatch",
             params={"startTimecode": current, "endTimecode": newest},
             allow=(200, 400, 404, 500),
@@ -647,7 +661,14 @@ class GamedayLiveStreamer:
         last_activity = time.monotonic()
         emitted = 0
         async with default_audit_logger.async_track(
-            operation="mlb_stream", source="mlb_api", endpoint=url
+            operation=self.audit_operation,
+            source="mlb_api",
+            endpoint=url,
+            destination=(
+                str((self.lake or LakeConfig()).live_journal_path("mlb_api", game_pk))
+                if self.journal_enabled
+                else ""
+            ),
         ) as tracker:
             while True:
                 sleep_for = self.poll_interval

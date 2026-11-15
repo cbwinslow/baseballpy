@@ -37,6 +37,8 @@ PROJECT_MARKERS = ("pyproject.toml", ".git")
 DATA_DIRNAME = ".baseballpy"
 #: manifest file name: the leading underscore makes pandas/pyarrow folder reads skip it (ADR 63)
 MANIFEST_NAME = "_manifest.json"
+#: folder below ``raw/<source>/`` that holds the journals of live games (ADR 138); hidden by its underscore
+LIVE_DIRNAME = "_live"
 LEGACY_MANIFEST_NAME = "manifest.json"
 
 
@@ -261,6 +263,13 @@ class LakeConfig(EnvSettings):
     ) -> Path:
         """``raw/<source>/<dataset>/[season=YYYY/]`` (created only when ``create``)."""
         return self._dir(self.raw_root, source, dataset, season, create)
+
+    def live_journal_path(self, source: str, game_pk: int) -> Path:
+        """``raw/<source>/_live/<game_pk>.journal.zst``: the append-only journal of one live game (ADR 138).
+
+        The underscore folder is hidden from readers and the converter; never created here.
+        """
+        return self.raw_root / source / LIVE_DIRNAME / f"{game_pk}.journal.zst"
 
     def processed_dir(
         self, source: str, dataset: str, season: int | None = None, *, create: bool = False
@@ -594,6 +603,13 @@ class StreamingConfig(EnvSettings):
     )
     enable_conditional_etag: bool = Field(
         default=True, description="Whether to send If-None-Match ETag headers to minimize bandwidth"
+    )
+    journal: bool = Field(
+        default=False,
+        description=(
+            "Keep every poll answer of a live game in an append-only journal under "
+            "raw/<source>/_live (ADR 138); `baseballpy live` turns it on"
+        ),
     )
 
 

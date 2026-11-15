@@ -691,8 +691,8 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-450 | finish-mlb-history 5.2: JSON cell-by-cell round-trip for the MLB API datasets (365 are skipped by verify-roundtrip today) | DONE | verify-roundtrip reports each MLB dataset clean, with a loss, or skipped with an honest reason; real losses listed |
 | B-451 | finish-mlb-history 6.1: register the MLB lookup catalogs the provider serves and the registry lacks (about 35 `/v1/<name>` lists: pitchCodes, roofTypes, statFields, milestoneTypes, playerStatusCodes, transactionTypes, ...), found by comparing with a community path list | DONE | each route answers 200 live and is a `ref_*` dataset with a probed schema, docs and a test; routes that refuse stay `unsupported` with probe evidence |
 | B-467 | live-mlb-capture 0.1: owner decision on where live rows land (separate live dataset recommended) | DONE | the ADR exists and design section 5 says which |
-| B-468 | `live-mlb-capture 1.1`: tests first for the durable live journal | READY | after B-467; the tests fail for the missing journal |
-| B-469 | `live-mlb-capture 1.2`: live journal and streamer wiring | READY | after B-468; tests pass; `tests/test_mlb_stream.py` still passes |
+| B-468 | live-mlb-capture 1.1: tests first for the durable live journal | DONE | after B-467; the tests fail for the missing journal |
+| B-469 | live-mlb-capture 1.2: live journal and streamer wiring | DONE | after B-468; tests pass; `tests/test_mlb_stream.py` still passes |
 | B-470 | `live-mlb-capture 2.1`: tests first for live segments and the live view | READY | after B-469; the tests fail for the right reason |
 | B-471 | `live-mlb-capture 2.2`: register `game_live_events`, the live segment writer, the view and generated docs | READY | after B-470; tests, `docs generate --check`, `openspec validate --specs` pass |
 | B-472 | `live-mlb-capture 3.1`: tests first for the live supervisor on a fake clock | READY | after B-471; the tests fail for the right reason |

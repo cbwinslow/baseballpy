@@ -4,10 +4,10 @@ Order: 0.1 first (owner decision), then slices 1 to 4 in order. Each slice is us
 
 - [x] 0.1 Owner decision (2026-11-15): live rows in a separate dataset, the regular ingest stores the game later; ADR 137.
   Done: ADR 137 and design section 5.
-- [ ] 1.1 Tests first: `tests/test_live_journal.py` (every poll answer is on disk before it is used; a replay gives
+- [x] 1.1 Tests first: `tests/test_live_journal.py` (every poll answer is on disk before it is used; a replay gives
   the same events; a torn last record is cut safely; a restart never repeats an event).
   Done when the tests fail for the missing journal.
-- [ ] 1.2 `sources/mlb_api/live/journal.py` and wiring in the streamer; spec delta with `Verified by`.
+- [x] 1.2 `sources/mlb_api/live/journal.py` and wiring in the streamer; spec delta with `Verified by`.
   Done when 1.1 passes and `tests/test_mlb_stream.py` still passes.
 - [ ] 2.1 Tests first: `tests/test_live_segments.py` (a DuckDB query sees rows mid-game; no double count after a
   crash and restart; schema equals the registered one; the view and docs come from the registry).

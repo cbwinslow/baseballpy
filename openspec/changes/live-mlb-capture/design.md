@@ -51,9 +51,12 @@ must install. Revisit only if someone needs many remote subscribers.
 
 The owner chose option A and asked for no complex stop measure. Thought through:
 
-- **The two tables do not have the same shape.** A live event (`LiveEvent`, about 50 typed columns, one row per pitch or
-  action) is not a row of `game_feed_plays` (69 columns) or `game_feed_play_events` (167 wide columns). So live rows
-  cannot be mixed into the long-term tables row for row; separate tables are the honest layout, not only the safe one.
+- **Same schema, separate table (corrected 2026-11-15).** `to_arrow` already gives a live pitch or action event the
+  exact schema of `game_feed_play_events` (the historical flattener runs on the live play); `play_result` and
+  `game_status` events have no row there. So `game_live_events` uses that schema and a model can `UNION ALL BY NAME`
+  history and `mlb_live_events_open`. The first draft of this section said the shapes differ; that was wrong for pitch
+  and action events and the decision does not depend on it. Separate tables stay because of the next point and
+  because a half game must never sit in a table models read.
 - **No double count without deleting anything.** The finished-game ingest stores a game completely or not at all (a
   game counts as stored only when its line is in `segments.json`, ADR 95). So "is this game in the long-term table?" is
   an exact yes or no. The view `mlb_live_events_open` is the live table minus games already in `game_feed_plays`
@@ -105,3 +108,18 @@ asyncio loop with a task per game on the shared `HttpClient`, a durable journal 
 read mid-game, hand-off to the finished-game path at Final, JSONL tail before any websocket. They differ on latency
 (2 to 4 s versus 5 to 10 s) and both put the same single question to the owner (section 5). Claude Opus was not used
 (usage budget).
+
+## 10. Evidence (filled in as tasks land)
+
+### 10.1 Slice 1, the live journal (tasks 1.1 and 1.2, 2026-11-15)
+`tests/test_live_journal.py` (8 tests, written before the code) pass: each decoded answer is already in the journal; a
+replay gives the same events as the live run, also with a refused status; a torn last record is cut, logged and new
+records follow whole ones; a restart continues one journal with no gap and no repeated event; a replay leaves the resume
+state untouched; the audit record names the journal and the replay logs as `mlb_stream_replay`; the layout audit ignores
+the folder. `tests/test_mlb_stream.py` (existing streamer tests) still passes. Reuse check: `core/responselog.py` record
+format and `read_journal` (torn-tail rule), `HttpClient` (rate limit, retries, gate), `msgspec` (existing events),
+`pydantic-settings` (`StreamingConfig.journal`), `core/audit.py`. Custom code: the per-answer wrapper and the replay
+client, because no existing helper journals HTTP answers per game. As built: the replay client raises
+`JournalExhaustedError` at the end of a journal that stopped before the game ended; a cut journal therefore logs one audit
+`FAILURE` for the replay operation. Not verified: a real live game (off-season); the journal write cost with 15 games at
+once (task 3.3).
