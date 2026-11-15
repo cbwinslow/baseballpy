@@ -12,6 +12,7 @@ The finished game is stored by the normal ingest in ``game_feed_play_events``; t
 """
 
 from collections.abc import Sequence
+from datetime import datetime
 from pathlib import Path
 
 import pyarrow as pa
@@ -20,7 +21,8 @@ import pyarrow.parquet as pq
 
 from baseballpy.core.atomic import atomic_write_parquet
 from baseballpy.core.config import LakeConfig
-from baseballpy.core.datasets import DatasetSpec, get_dataset
+from baseballpy.core.datasets import LIVE_TO_STORED_DATASET, DatasetSpec, get_dataset
+from baseballpy.core.listing import dataset_files
 from baseballpy.sources import catalog
 from baseballpy.sources.mlb_api.stream import LiveEvent, to_arrow
 
@@ -53,6 +55,36 @@ class LiveGameSink:
         return (
             self.config.processed_dir(SOURCE, DATASET, season) / f"{FILE_PREFIX}{game_pk}.parquet"
         )
+
+    def stored_games(self, season: int) -> set[int]:
+        """The games of a season that the normal ingest has stored (their ``game_pk`` in the long-term dataset)."""
+        source, name = LIVE_TO_STORED_DATASET[self.spec.key].split(".")
+        folder = self.config.processed_dir(source, name, season)
+        games: set[int] = set()
+        for file in dataset_files(folder, by_season=False):
+            column = pc.unique(pq.read_table(file, columns=["game_pk"])["game_pk"])
+            games.update(int(pk) for pk in column.drop_null().to_pylist())
+        return games
+
+    def prune(self, season: int, older_than_days: int, now: datetime) -> list[int]:
+        """Delete the live files of games that are stored in the long-term dataset and older than the limit.
+
+        Housekeeping only: the open-games view already hides stored games, so no count changes. Returns the game_pks.
+        """
+        folder = self.config.processed_dir(SOURCE, DATASET, season)
+        if not folder.is_dir():
+            return []
+        stored = self.stored_games(season)
+        if not stored:
+            return []
+        cutoff = now.timestamp() - older_than_days * 86400
+        removed: list[int] = []
+        for path in sorted(folder.glob(f"{FILE_PREFIX}*.parquet")):
+            game_pk = int(path.stem.removeprefix(FILE_PREFIX))
+            if game_pk in stored and path.stat().st_mtime < cutoff:
+                path.unlink()
+                removed.append(game_pk)
+        return removed
 
     def write(self, season: int, game_pk: int, events: Sequence[LiveEvent]) -> int:
         """Merge ``events`` into the game's file and return the rows the file now holds.

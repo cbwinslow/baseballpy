@@ -2,6 +2,7 @@
 
 import asyncio
 from datetime import UTC, datetime
+from pathlib import Path
 
 import click
 from rich.console import Console
@@ -10,6 +11,7 @@ from rich.table import Table
 from baseballpy.core.config import LakeConfig, StreamingConfig
 from baseballpy.core.http import get_http_client
 from baseballpy.core.memguard import MemoryGovernor
+from baseballpy.sources.mlb_api.live.broadcast import JsonlBroadcast
 from baseballpy.sources.mlb_api.live.schedule import MlbScheduleSource
 from baseballpy.sources.mlb_api.live.sink import LiveGameSink
 from baseballpy.sources.mlb_api.live.supervisor import LiveSupervisor, ScheduledGame, is_due
@@ -31,6 +33,16 @@ def _sports(text: str) -> tuple[int, ...]:
     if not ids:
         raise click.BadParameter("name at least one sport id")
     return ids
+
+
+def _prune(sink: LiveGameSink, lake: LakeConfig, days: int) -> int:
+    """Delete the live files of stored games older than ``days`` in every season that has live files."""
+    folder = lake.processed_dir("mlb_api", "game_live_events")
+    seasons = sorted(
+        int(p.name.removeprefix("season=")) for p in folder.glob("season=*") if p.is_dir()
+    )
+    now = datetime.now(UTC)
+    return sum(len(sink.prune(season, days, now)) for season in seasons)
 
 
 async def _games_now(source: MlbScheduleSource) -> list[ScheduledGame]:
@@ -73,10 +85,29 @@ def _show_games(games: list[ScheduledGame], lead_minutes: int) -> None:
     help="Most games followed at once (default: the setting).",
 )
 @click.option(
+    "--jsonl",
+    "jsonl_path",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=None,
+    help="Also append every event as one JSON line to this file (follow it with tail -f).",
+)
+@click.option(
+    "--prune-days",
+    type=int,
+    default=7,
+    show_default=True,
+    help="At start, delete live files of games the normal ingest has stored and that are older than this (0 = never).",
+)
+@click.option(
     "--commit-seconds", type=float, default=None, help="Seconds between writes to the lake."
 )
 def live_cmd(
-    sports: str, dry_run: bool, max_games: int | None, commit_seconds: float | None
+    sports: str,
+    dry_run: bool,
+    max_games: int | None,
+    jsonl_path: Path | None,
+    prune_days: int,
+    commit_seconds: float | None,
 ) -> None:
     """Follow the games being played and keep their rows in the lake (Ctrl-C stops it cleanly).
 
@@ -98,9 +129,18 @@ def live_cmd(
         _show_games(asyncio.run(_games_now(source)), config.lead_minutes)
         return
     lake = LakeConfig()
+    sink = LiveGameSink(lake)
+    if prune_days > 0:
+        pruned = _prune(sink, lake, prune_days)
+        if pruned:
+            console.print(
+                f"Removed live files of {pruned} games that are stored in the long-term tables."
+            )
+    broadcast = JsonlBroadcast(jsonl_path) if jsonl_path is not None else None
     streamer = GamedayLiveStreamer(config=config, lake=lake)
     supervisor = LiveSupervisor(
-        sink=LiveGameSink(lake),
+        sink=sink,
+        broadcast=broadcast,
         schedule=source,
         stream=streamer.stream_live_events,
         config=config,
@@ -120,6 +160,9 @@ def live_cmd(
         asyncio.run(main())
     except KeyboardInterrupt:
         console.print(f"Stopped. {supervisor.report}")
+    finally:
+        if broadcast is not None:
+            broadcast.close()
 
 
 def register_live_command(main: click.Group) -> None:

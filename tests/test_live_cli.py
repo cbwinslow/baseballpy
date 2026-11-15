@@ -69,3 +69,60 @@ def test_a_run_turns_the_journal_on_and_raises_the_idle_limit(
     assert config.max_inactivity_minutes >= cli_live.MIN_IDLE_MINUTES
     assert seen["stream"].__self__.journal_enabled is True
     assert seen["sink"].spec.key == "mlb_api.game_live_events"
+
+
+def test_a_run_prunes_stored_games_and_opens_the_jsonl_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import os
+    import time
+
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    from baseballpy.core.config import LakeConfig
+    from baseballpy.core.datasets import get_dataset
+    from baseballpy.sources import catalog
+    from baseballpy.sources.mlb_api.live.sink import LiveGameSink
+    from baseballpy.sources.mlb_api.stream import LiveEvent
+
+    catalog.register_all()
+    lake = LakeConfig(home=tmp_path)
+    sink = LiveGameSink(lake)
+    play = {"about": {"atBatIndex": 0}, "matchup": {}, "result": {}, "count": {}}
+    for pk in (1, 2):
+        event = LiveEvent(
+            game_pk=pk,
+            at_bat_index=0,
+            event_index=0,
+            event_kind="pitch",
+            raw_play=play,
+            raw_event={"index": 0, "isPitch": True},
+        )
+        sink.write(2026, pk, [event])
+        old = time.time() - 30 * 86400
+        os.utime(sink.path(2026, pk), (old, old))
+    spec = get_dataset("mlb_api", "game_feed_plays")
+    columns = {f.name: pa.nulls(1, f.type) for f in spec.schema}
+    columns["game_pk"] = pa.array([1], spec.schema.field("game_pk").type)
+    folder = lake.processed_dir("mlb_api", "game_feed_plays", 2026, create=True)
+    pq.write_table(pa.table(columns, schema=spec.schema), folder / "part-a.parquet")
+
+    class FakeSupervisor:
+        def __init__(self, **kwargs: Any) -> None:
+            self.kwargs = kwargs
+            self.report = LiveReport()
+
+        async def run(self, stop: Any) -> LiveReport:
+            return self.report
+
+    monkeypatch.setattr(cli_live, "LiveSupervisor", FakeSupervisor)
+    out = tmp_path / "feed" / "live.jsonl"
+    result = CliRunner().invoke(main, ["live", "--jsonl", str(out)])
+    assert result.exit_code == 0, result.output
+    assert not sink.path(2026, 1).exists() and sink.path(2026, 2).exists(), (
+        "only the stored game was pruned"
+    )
+    assert out.exists(), "the broadcast file is opened"
+    result = CliRunner().invoke(main, ["live", "--prune-days", "0"])
+    assert result.exit_code == 0 and sink.path(2026, 2).exists()

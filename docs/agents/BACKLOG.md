@@ -698,5 +698,5 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-472 | live-mlb-capture 3.1: tests first for the live supervisor on a fake clock | DONE | after B-471; the tests fail for the right reason |
 | B-473 | live-mlb-capture 3.2: the `baseballpy live` command (watcher, task per game, supervisor, memory gate) | DONE | after B-472; tests pass; CLI docs regenerated |
 | B-474 | `live-mlb-capture 3.3`: in-season check on real games: latency, request rate, websocket probe | READY (needs live games, owner machine) | after B-473; numbers in design.md |
-| B-475 | `live-mlb-capture 4.1`: tests first for the open-games view (no double count) | READY | after B-473; the tests fail for the right reason |
-| B-476 | `live-mlb-capture 4.2`: the open-games view, optional prune and auto ingest at Final, the JSONL tail broadcast (SSE or websocket only with an ADR) | READY | after B-475; tests pass; documented in the quickstart |
+| B-475 | live-mlb-capture 4.1: tests first for the open-games view (no double count) | DONE | after B-473; the tests fail for the right reason |
+| B-476 | live-mlb-capture 4.2: the open-games view, optional prune and auto ingest at Final, the JSONL tail broadcast (SSE or websocket only with an ADR) | DONE | after B-475; tests pass; documented in the quickstart |

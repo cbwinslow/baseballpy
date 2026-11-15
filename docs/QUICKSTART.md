@@ -349,10 +349,14 @@ baseballpy audit stats
 ```bash
 baseballpy live --dry-run   # which games it would follow right now (reads the schedule only)
 baseballpy live             # follow every game while it is played; Ctrl-C stops it cleanly
+baseballpy live --jsonl live.jsonl   # also one JSON line per event, for tail -f or a model process
 ```
 While a game is on, its pitch and action events are in the lake as `mlb_api.game_live_events` (view
 `mlb_game_live_events`, same columns as `mlb_game_feed_play_events`), and every answer from MLB is kept in a journal
-under `raw/mlb_api/_live/`. Read the rows live with `baseballpy.sql("SELECT * FROM mlb_game_live_events")`. After a game
+under `raw/mlb_api/_live/`. Read the rows live with `baseballpy.sql("SELECT * FROM mlb_game_live_events_open")` (the open view: live games that the normal ingest has not stored yet). After a game
 is over, run the normal `baseballpy ingest mlb_api -d season,games` to store it in the long-term tables; the live rows
-are a separate table and are never mixed into those. Settings: `BASEBALLPY_STREAM_*` (schedule interval, lead time,
+are a separate table and are never mixed into those. For history plus games in progress in one query, use
+`SELECT ... FROM mlb_game_feed_play_events UNION ALL BY NAME SELECT ... FROM mlb_game_live_events_open`: a game is in
+one of the two, never both. `baseballpy live` removes the live files of stored games older than 7 days at start
+(`--prune-days 0` keeps them); the open view gives the same rows either way. Settings: `BASEBALLPY_STREAM_*` (schedule interval, lead time,
 commit interval, queue size, restarts).

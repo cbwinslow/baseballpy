@@ -622,6 +622,10 @@ Options:
   --sports TEXT           Levels to follow: sport ids (1 = the major leagues).  [default: 1]
   --dry-run               List the games it would follow now and stop (one schedule request).
   --max-games INTEGER     Most games followed at once (default: the setting).
+  --jsonl FILE            Also append every event as one JSON line to this file (follow it with tail
+                          -f).
+  --prune-days INTEGER    At start, delete live files of games the normal ingest has stored and that
+                          are older than this (0 = never).  [default: 7]
   --commit-seconds FLOAT  Seconds between writes to the lake.
   --help                  Show this message and exit.
 ```

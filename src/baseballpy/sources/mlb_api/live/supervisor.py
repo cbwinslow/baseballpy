@@ -104,6 +104,14 @@ class Governor(Protocol):
         ...
 
 
+class Broadcast(Protocol):
+    """Where each event goes the moment it arrives (``JsonlBroadcast``)."""
+
+    def write(self, season: int, event: LiveEvent) -> None:
+        """Publish one event."""
+        ...
+
+
 StreamFactory = Callable[[int], AsyncIterator[LiveEvent]]
 
 
@@ -146,8 +154,10 @@ class LiveSupervisor:
         now: Callable[[], datetime] = lambda: datetime.now(UTC),
         sleep: Callable[[float], Awaitable[None]] | None = None,
         destination: str = "",
+        broadcast: Broadcast | None = None,
     ) -> None:
         self.sink = sink
+        self.broadcast = broadcast
         self.schedule = schedule
         self.stream = stream
         self.config = config or StreamingConfig()
@@ -317,6 +327,8 @@ class LiveSupervisor:
                     return
                 continue
             game, event = item
+            if self.broadcast is not None:
+                self.broadcast.write(game.season, event)
             held = buffers.setdefault(game.game_pk, (game, []))[1]
             held.append(event)
             if len(held) >= max(1, self.config.queue_size):

@@ -54,12 +54,12 @@ The owner chose option A and asked for no complex stop measure. Thought through:
 - **Same schema, separate table (corrected 2026-11-15).** `to_arrow` already gives a live pitch or action event the
   exact schema of `game_feed_play_events` (the historical flattener runs on the live play); `play_result` and
   `game_status` events have no row there. So `game_live_events` uses that schema and a model can `UNION ALL BY NAME`
-  history and `mlb_live_events_open`. The first draft of this section said the shapes differ; that was wrong for pitch
+  history and `mlb_game_live_events_open`. The first draft of this section said the shapes differ; that was wrong for pitch
   and action events and the decision does not depend on it. Separate tables stay because of the next point and
   because a half game must never sit in a table models read.
 - **No double count without deleting anything.** The finished-game ingest stores a game completely or not at all (a
   game counts as stored only when its line is in `segments.json`, ADR 95). So "is this game in the long-term table?" is
-  an exact yes or no. The view `mlb_live_events_open` is the live table minus games already in `game_feed_plays`
+  an exact yes or no. The view `mlb_game_live_events_open` is the live table minus games already in `game_feed_plays`
   (an anti-join on `game_pk`). A model reads history from the long-term tables and in-progress games from the open
   view; the two never overlap, whatever the timing, a crash or a late ingest. Nothing has to be dropped for the numbers
   to be right.
@@ -146,3 +146,15 @@ the test stops only when both games are done. Reuse check: `HttpClient` (rate li
 (ADR 114), `StreamingConfig` (pydantic-settings), `core/audit.py`, `LiveGameSink`, click and rich. Custom code: the
 supervisor loop and the schedule parser (nothing in the repository watches a schedule and follows games). Not verified:
 real games, real request rate and latency, the websocket probe (task 3.3, in season).
+
+### 10.4 Slice 4, the open-games view, the clean-up and the broadcast (tasks 4.1 and 4.2, 2026-11-15)
+Tests (written first; the broadcast module was missing so collection failed): `tests/test_live_open_view.py` (6),
+`tests/test_live_broadcast.py` (3), plus one more in `tests/test_live_cli.py`. They show: with nothing stored every live game
+is open; a stored game leaves the open view and the live table keeps its rows; history plus the open view counts each game
+once; a game whose ingest never ran stays open; the prune removes only stored games older than the limit and the open view is
+identical before and after it; one whole JSON line per event, appended, on disk when the write returns. Reuse check: the
+dataset registry (one pairing table drives the view and the prune), DuckDB views in `database.py`, pyarrow `unique`,
+`msgspec` for the lines, `core/listing.dataset_files`. Custom code: `JsonlBroadcast` (a 15-line appender; no approved
+library does a flushed JSON-lines append). Decision recorded: no automatic ingest at Final (ADR 141). Not verified: with a
+real season of stored games the cost of the `NOT EXISTS` over `mlb_game_feed_plays` (a hash anti-join on `game_pk`;
+measure in task 3.3), and any consumer of the JSONL file other than tests.

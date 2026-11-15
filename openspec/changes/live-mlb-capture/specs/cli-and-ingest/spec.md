@@ -12,3 +12,11 @@
 - **WHEN** the command runs with `--dry-run`, with a bad sport list, and for real with a fake supervisor, and two fixture games run through the real streamer, journal, supervisor, sink and a DuckDB query
 - **THEN** the dry run lists the games and writes no data, the bad list is refused, a run turns the journal on and raises the idle limit above a rain delay, and the rows of both games are in the live view and replay from their journals
 - Verified by `tests/test_live_cli.py::test_the_dry_run_lists_the_games_and_writes_nothing`, `tests/test_live_cli.py::test_a_bad_sport_list_is_refused`, `tests/test_live_cli.py::test_a_run_turns_the_journal_on_and_raises_the_idle_limit`, `tests/test_live_schedule.py::test_games_are_parsed_and_an_entry_without_a_game_pk_is_logged`, `tests/test_live_schedule.py::test_one_request_per_day_with_the_levels_and_the_date` and `tests/test_live_e2e.py::test_two_games_flow_from_the_feed_into_the_lake_and_back_out_through_duckdb`.
+
+### Requirement: `baseballpy live` Can Broadcast Events To A JSON-Lines File And Clean Up Stored Games
+With `--jsonl FILE`, `baseballpy live` MUST append every event as one whole JSON line (the typed fields of `LiveEvent` plus `season`) the moment the supervisor receives it, flushed before the next event, to a file opened for append, so that a restart continues it and a follower never sees half a line. At start, unless `--prune-days 0`, it MUST delete the live files of games that the normal ingest has stored and that are older than the limit (default 7 days).
+
+#### Scenario: Whole lines, appended, and a start-up clean-up
+- **WHEN** events are written, the command restarts, and a run starts with stored and unstored live games
+- **THEN** each event is one JSON line on disk when the write returns, the file is appended not truncated, only the stored old game's file is removed, and `--prune-days 0` removes nothing
+- Verified by `tests/test_live_broadcast.py::test_each_event_is_one_whole_json_line_and_the_file_is_appended_never_truncated`, `tests/test_live_broadcast.py::test_a_line_is_on_disk_when_write_returns`, `tests/test_live_broadcast.py::test_the_supervisor_broadcasts_every_event_as_it_arrives` and `tests/test_live_cli.py::test_a_run_prunes_stored_games_and_opens_the_jsonl_file`.

@@ -20,7 +20,7 @@ import pyarrow.parquet as pq
 
 from baseballpy.core.audit import default_audit_logger
 from baseballpy.core.config import LakeConfig
-from baseballpy.core.datasets import DATASETS, with_lineage
+from baseballpy.core.datasets import DATASETS, LIVE_TO_STORED_DATASET, with_lineage
 from baseballpy.core.layout import hint_if_legacy
 from baseballpy.core.listing import dataset_files, dataset_glob, visible_parquet
 from baseballpy.core.sql import quote_ident, quote_literal
@@ -38,6 +38,8 @@ VENUE_CROSSWALK_VIEW = "v_venue_crosswalk"
 #: dataset view -> view with one row per dataset key (ADR 119). Savant sends every 2026 ``hit_into_play``
 #: pitch twice, byte-identical; the dataset keeps the rows as sent, this view drops the repeats.
 UNIQUE_KEY_VIEWS = {"statcast_pitches": "v_pitches_unique"}
+#: suffix of the open-games view of a live dataset: its rows minus the games already stored (ADR 137)
+OPEN_VIEW_SUFFIX = "_open"
 #: the schedule lists a postponed or rescheduled game once per date it was on the calendar (same game_pk);
 #: the crosswalk keeps the row of the date it was played (a postponed or cancelled row only when nothing else exists)
 _ONE_ROW_PER_GAME = (
@@ -358,6 +360,15 @@ class BaseballDatabase:
             f"bytes, last_written_at)"
         )
 
+    @staticmethod
+    def _open_views() -> list[str]:
+        """Names of the open-games views (one per live dataset in the registry)."""
+        return [
+            DATASETS[key].view + OPEN_VIEW_SUFFIX
+            for key in LIVE_TO_STORED_DATASET
+            if key in DATASETS
+        ]
+
     def _drop_stale_views(self, con: duckdb.DuckDBPyConnection) -> None:
         """Drop views whose data folder is gone (after a rename or a deleted dataset).
 
@@ -372,6 +383,7 @@ class BaseballDatabase:
             VENUE_CROSSWALK_VIEW,
             SEASON_CATALOG_VIEW,
             *UNIQUE_KEY_VIEWS.values(),
+            *self._open_views(),
         }
         for (name,) in con.execute(
             "SELECT table_name FROM information_schema.tables WHERE table_type = 'VIEW'"
@@ -533,6 +545,21 @@ class BaseballDatabase:
                             f"(PARTITION BY {', '.join(quote_ident(k) for k in spec.keys)}) = 1"
                         )
                         views_registered += 1
+                for live_key, stored_key in LIVE_TO_STORED_DATASET.items():
+                    live = DATASETS.get(live_key)
+                    stored = DATASETS.get(stored_key)
+                    if live is None or live.view not in existing:
+                        continue
+                    hide = (
+                        f" WHERE NOT EXISTS (SELECT 1 FROM {quote_ident(stored.view)} s WHERE s.game_pk = l.game_pk)"  # noqa: S608 - identifiers are quoted with quote_ident
+                        if stored is not None and stored.view in existing
+                        else ""
+                    )
+                    con.execute(
+                        f"CREATE OR REPLACE VIEW {quote_ident(live.view + OPEN_VIEW_SUFFIX)} AS "  # noqa: S608 - identifiers are quoted with quote_ident
+                        f"SELECT * FROM {quote_ident(live.view)} l{hide}"
+                    )
+                    views_registered += 1
                 self._create_season_catalog(con)
                 views_registered += 1
                 self._drop_stale_views(con)

@@ -96,3 +96,9 @@ def get_dataset(source: str, name: str) -> DatasetSpec:
 def datasets_for(source: str) -> list[DatasetSpec]:
     """All registered datasets of one source, ordered by name."""
     return sorted((d for d in DATASETS.values() if d.source == source), key=lambda d: d.name)
+
+
+#: a dataset of games in progress -> the long-term dataset the finished game is stored in (ADR 137). The open-games
+#: view of the live dataset hides every game whose ``game_pk`` is in the long-term one; the clean-up of live files
+#: uses the same pair.
+LIVE_TO_STORED_DATASET: dict[str, str] = {"mlb_api.game_live_events": "mlb_api.game_feed_plays"}
