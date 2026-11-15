@@ -43,7 +43,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 389/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
 | `statcast` | 50 | archived | yes | yes | yes | 402/1765 (22%) | 18 |
-| `mlb_api` | 403 | archived | yes | yes | yes | 9643/17368 (55%) | 33 |
+| `mlb_api` | 404 | archived | yes | yes | yes | 9680/17535 (55%) | 33 |
 
 ## Active changes (`openspec/changes/`)
 
@@ -57,7 +57,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `finish-mlb-history` | 15 | 3 | 2.1, 4.1, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
-| `live-mlb-capture` | 3 | 7 | 2.1, 2.2, 3.1, 3.2, 3.3, 4.1, 4.2 |
+| `live-mlb-capture` | 5 | 5 | 3.1, 3.2, 3.3, 4.1, 4.2 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
 | `product-mandate-reproducible-outputs` | 7 | 1 | 2.5 |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
@@ -203,6 +203,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 136: The Per-Game Part Path Is Removed; Segments Are A Normal Layout
 - ADR 137: Live Games Go To A Separate Table; The Normal Ingest Stores The Finished Game
 - ADR 138: The Live Journal Reuses The Response-Log Record Format And Lives Under `raw/<source>/_live/`
+- ADR 139: Live Game Rows Are One Rewritten File Per Game, In The History Table's Schema
 
 ## Documentation pages (`docs/`)
 

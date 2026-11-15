@@ -693,8 +693,8 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-467 | live-mlb-capture 0.1: owner decision on where live rows land (separate live dataset recommended) | DONE | the ADR exists and design section 5 says which |
 | B-468 | live-mlb-capture 1.1: tests first for the durable live journal | DONE | after B-467; the tests fail for the missing journal |
 | B-469 | live-mlb-capture 1.2: live journal and streamer wiring | DONE | after B-468; tests pass; `tests/test_mlb_stream.py` still passes |
-| B-470 | `live-mlb-capture 2.1`: tests first for live segments and the live view | READY | after B-469; the tests fail for the right reason |
-| B-471 | `live-mlb-capture 2.2`: register `game_live_events`, the live segment writer, the view and generated docs | READY | after B-470; tests, `docs generate --check`, `openspec validate --specs` pass |
+| B-470 | live-mlb-capture 2.1: tests first for live segments and the live view | DONE | after B-469; the tests fail for the right reason |
+| B-471 | live-mlb-capture 2.2: register `game_live_events`, the live segment writer, the view and generated docs | DONE | after B-470; tests, `docs generate --check`, `openspec validate --specs` pass |
 | B-472 | `live-mlb-capture 3.1`: tests first for the live supervisor on a fake clock | READY | after B-471; the tests fail for the right reason |
 | B-473 | `live-mlb-capture 3.2`: the `baseballpy live` command (watcher, task per game, supervisor, memory gate) | READY | after B-472; tests pass; CLI docs regenerated |
 | B-474 | `live-mlb-capture 3.3`: in-season check on real games: latency, request rate, websocket probe | READY (needs live games, owner machine) | after B-473; numbers in design.md |

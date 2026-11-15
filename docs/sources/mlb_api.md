@@ -23795,3 +23795,185 @@ Weather trajectory confidence values.
 | `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
 
 <!-- END GENERATED:mlb_api.ref_weather_trajectory_confidences -->
+
+<!-- BEGIN GENERATED:mlb_api.game_live_events -->
+### Dataset: game_live_events
+
+Pitch and action events of MLB games in progress, one file per game rewritten while the game is live (same columns as game_feed_play_events; a game stored there is no longer live).
+
+- **View:** `mlb_live_play_events`
+- **Processed path:** `processed/mlb_api/game_live_events/season=YYYY/part-<chunk>.parquet`
+- **Partitioning:** Hive `season=YYYY`
+- **Key:** `game_pk`, `all_plays_about_at_bat_index`, `index`
+
+| Column | Type | Nullable | Upstream name | Description |
+| --- | --- | --- | --- | --- |
+| `game_pk` | int32 | yes | — | TODO |
+| `all_plays_result_type` | string | yes | `allPlays.result.type` | TODO |
+| `all_plays_result_event` | string | yes | `allPlays.result.event` | TODO |
+| `all_plays_result_event_type` | string | yes | `allPlays.result.eventType` | TODO |
+| `all_plays_result_description` | string | yes | `allPlays.result.description` | TODO |
+| `all_plays_result_rbi` | int32 | yes | `allPlays.result.rbi` | TODO |
+| `all_plays_result_away_score` | int32 | yes | `allPlays.result.awayScore` | TODO |
+| `all_plays_result_home_score` | int32 | yes | `allPlays.result.homeScore` | TODO |
+| `all_plays_result_is_out` | bool | yes | `allPlays.result.isOut` | TODO |
+| `all_plays_about_at_bat_index` | int32 | yes | `allPlays.about.atBatIndex` | TODO |
+| `all_plays_about_half_inning` | string | yes | `allPlays.about.halfInning` | TODO |
+| `all_plays_about_is_top_inning` | bool | yes | `allPlays.about.isTopInning` | TODO |
+| `all_plays_about_inning` | int32 | yes | `allPlays.about.inning` | TODO |
+| `all_plays_about_start_time` | timestamp[us, tz=UTC] | yes | `allPlays.about.startTime` | TODO |
+| `all_plays_about_end_time` | timestamp[us, tz=UTC] | yes | `allPlays.about.endTime` | TODO |
+| `all_plays_about_is_complete` | bool | yes | `allPlays.about.isComplete` | TODO |
+| `all_plays_about_is_scoring_play` | bool | yes | `allPlays.about.isScoringPlay` | TODO |
+| `all_plays_about_has_review` | bool | yes | `allPlays.about.hasReview` | TODO |
+| `all_plays_about_has_out` | bool | yes | `allPlays.about.hasOut` | TODO |
+| `all_plays_about_captivating_index` | int32 | yes | `allPlays.about.captivatingIndex` | TODO |
+| `all_plays_count_balls` | int32 | yes | `allPlays.count.balls` | TODO |
+| `all_plays_count_strikes` | int32 | yes | `allPlays.count.strikes` | TODO |
+| `all_plays_count_outs` | int32 | yes | `allPlays.count.outs` | TODO |
+| `all_plays_matchup_batter_id` | int32 | yes | `allPlays.matchup.batter.id` | MLBAM identifier of the all plays matchup batter. (authored) |
+| `all_plays_matchup_batter_full_name` | string | yes | `allPlays.matchup.batter.fullName` | Full name of the all plays matchup batter. (authored) |
+| `all_plays_matchup_batter_link` | string | yes | `allPlays.matchup.batter.link` | Relative MLB Stats API path of the all plays matchup batter resource (prefix https://statsapi.mlb.com). (authored) |
+| `all_plays_matchup_batter_name_slug` | string | yes | `allPlays.matchup.batter.nameSlug` | TODO |
+| `all_plays_matchup_bat_side_code` | string | yes | `allPlays.matchup.batSide.code` | Code of the all plays matchup bat side. (authored) |
+| `all_plays_matchup_bat_side_description` | string | yes | `allPlays.matchup.batSide.description` | TODO |
+| `all_plays_matchup_pitcher_id` | int32 | yes | `allPlays.matchup.pitcher.id` | MLBAM identifier of the all plays matchup pitcher. (authored) |
+| `all_plays_matchup_pitcher_full_name` | string | yes | `allPlays.matchup.pitcher.fullName` | Full name of the all plays matchup pitcher. (authored) |
+| `all_plays_matchup_pitcher_link` | string | yes | `allPlays.matchup.pitcher.link` | Relative MLB Stats API path of the all plays matchup pitcher resource (prefix https://statsapi.mlb.com). (authored) |
+| `all_plays_matchup_pitcher_name_slug` | string | yes | `allPlays.matchup.pitcher.nameSlug` | TODO |
+| `all_plays_matchup_pitch_hand_code` | string | yes | `allPlays.matchup.pitchHand.code` | Code of the all plays matchup pitch hand. (authored) |
+| `all_plays_matchup_pitch_hand_description` | string | yes | `allPlays.matchup.pitchHand.description` | TODO |
+| `all_plays_matchup_batter_hot_cold_zones` | string | yes | `allPlays.matchup.batterHotColdZones` | TODO |
+| `all_plays_matchup_pitcher_hot_cold_zones` | string | yes | `allPlays.matchup.pitcherHotColdZones` | TODO |
+| `all_plays_matchup_splits_batter` | string | yes | `allPlays.matchup.splits.batter` | TODO |
+| `all_plays_matchup_splits_pitcher` | string | yes | `allPlays.matchup.splits.pitcher` | TODO |
+| `all_plays_matchup_splits_men_on_base` | string | yes | `allPlays.matchup.splits.menOnBase` | TODO |
+| `all_plays_pitch_index` | string | yes | `allPlays.pitchIndex` | TODO |
+| `all_plays_action_index` | string | yes | `allPlays.actionIndex` | TODO |
+| `all_plays_runner_index` | string | yes | `allPlays.runnerIndex` | TODO |
+| `all_plays_runners` | string | yes | `allPlays.runners` | TODO |
+| `all_plays_play_end_time` | timestamp[us, tz=UTC] | yes | `allPlays.playEndTime` | TODO |
+| `all_plays_at_bat_index` | int32 | yes | `allPlays.atBatIndex` | TODO |
+| `details_description` | string | yes | `details.description` | TODO |
+| `details_event` | string | yes | `details.event` | TODO |
+| `details_event_type` | string | yes | `details.eventType` | TODO |
+| `details_away_score` | int32 | yes | `details.awayScore` | TODO |
+| `details_home_score` | int32 | yes | `details.homeScore` | TODO |
+| `details_is_scoring_play` | bool | yes | `details.isScoringPlay` | TODO |
+| `details_is_out` | bool | yes | `details.isOut` | TODO |
+| `details_has_review` | bool | yes | `details.hasReview` | TODO |
+| `count_balls` | int32 | yes | `count.balls` | TODO |
+| `count_strikes` | int32 | yes | `count.strikes` | TODO |
+| `count_outs` | int32 | yes | `count.outs` | TODO |
+| `index` | int32 | yes | — | TODO |
+| `start_time` | timestamp[us, tz=UTC] | yes | `startTime` | TODO |
+| `end_time` | timestamp[us, tz=UTC] | yes | `endTime` | TODO |
+| `is_pitch` | bool | yes | `isPitch` | TODO |
+| `type` | string | yes | — | TODO |
+| `player_id` | int32 | yes | `player.id` | MLBAM identifier of the player. (authored) |
+| `player_link` | string | yes | `player.link` | Relative MLB Stats API path of the player resource (prefix https://statsapi.mlb.com). (authored) |
+| `details_call_code` | string | yes | `details.call.code` | Code of the details call. (authored) |
+| `details_call_description` | string | yes | `details.call.description` | TODO |
+| `details_code` | string | yes | `details.code` | Code of the details. (authored) |
+| `details_ball_color` | string | yes | `details.ballColor` | TODO |
+| `details_trail_color` | string | yes | `details.trailColor` | TODO |
+| `details_is_in_play` | bool | yes | `details.isInPlay` | TODO |
+| `details_is_strike` | bool | yes | `details.isStrike` | TODO |
+| `details_is_ball` | bool | yes | `details.isBall` | TODO |
+| `details_type_code` | string | yes | `details.type.code` | Pitch type code: FA = Fastball, FF = Four-seam FB, FT = Two-seam FB, FC = Cutter, FS = Splitter, FO = Forkball, SI = Sinker, ST = Sweeper, SL = Slider, CU = Curveball, KC = Knuckle Curve, SC = Screwball, GY = Gyroball, SV = Slurve, CS = Slow Curve, CH = Changeup, KN = Knuckleball, EP = Eephus Pitch, UN = Unknown, IN = Intentional Ball, PO = Pitchout, AB = Automatic Ball, AS = Automatic Strike, NP = No Pitch. (src: mlb_pitch_types) |
+| `details_type_description` | string | yes | `details.type.description` | TODO |
+| `pitch_data_start_speed` | double | yes | `pitchData.startSpeed` | TODO |
+| `pitch_data_end_speed` | double | yes | `pitchData.endSpeed` | TODO |
+| `pitch_data_strike_zone_top` | double | yes | `pitchData.strikeZoneTop` | TODO |
+| `pitch_data_strike_zone_bottom` | double | yes | `pitchData.strikeZoneBottom` | TODO |
+| `pitch_data_coordinates_a_y` | double | yes | `pitchData.coordinates.aY` | TODO |
+| `pitch_data_coordinates_a_z` | double | yes | `pitchData.coordinates.aZ` | TODO |
+| `pitch_data_coordinates_pfx_x` | double | yes | `pitchData.coordinates.pfxX` | TODO |
+| `pitch_data_coordinates_pfx_z` | double | yes | `pitchData.coordinates.pfxZ` | TODO |
+| `pitch_data_coordinates_p_x` | double | yes | `pitchData.coordinates.pX` | TODO |
+| `pitch_data_coordinates_p_z` | double | yes | `pitchData.coordinates.pZ` | TODO |
+| `pitch_data_coordinates_v_x0` | double | yes | `pitchData.coordinates.vX0` | TODO |
+| `pitch_data_coordinates_v_y0` | double | yes | `pitchData.coordinates.vY0` | TODO |
+| `pitch_data_coordinates_v_z0` | double | yes | `pitchData.coordinates.vZ0` | TODO |
+| `pitch_data_coordinates_x` | double | yes | `pitchData.coordinates.x` | TODO |
+| `pitch_data_coordinates_y` | double | yes | `pitchData.coordinates.y` | TODO |
+| `pitch_data_coordinates_x0` | double | yes | `pitchData.coordinates.x0` | TODO |
+| `pitch_data_coordinates_y0` | double | yes | `pitchData.coordinates.y0` | TODO |
+| `pitch_data_coordinates_z0` | double | yes | `pitchData.coordinates.z0` | TODO |
+| `pitch_data_coordinates_a_x` | double | yes | `pitchData.coordinates.aX` | TODO |
+| `pitch_data_breaks_break_angle` | double | yes | `pitchData.breaks.breakAngle` | TODO |
+| `pitch_data_breaks_break_length` | double | yes | `pitchData.breaks.breakLength` | TODO |
+| `pitch_data_breaks_break_y` | double | yes | `pitchData.breaks.breakY` | TODO |
+| `pitch_data_breaks_break_vertical` | double | yes | `pitchData.breaks.breakVertical` | TODO |
+| `pitch_data_breaks_break_vertical_induced` | double | yes | `pitchData.breaks.breakVerticalInduced` | TODO |
+| `pitch_data_breaks_break_horizontal` | double | yes | `pitchData.breaks.breakHorizontal` | TODO |
+| `pitch_data_breaks_spin_rate` | int32 | yes | `pitchData.breaks.spinRate` | TODO |
+| `pitch_data_breaks_spin_direction` | int32 | yes | `pitchData.breaks.spinDirection` | TODO |
+| `pitch_data_zone` | int32 | yes | `pitchData.zone` | TODO |
+| `pitch_data_type_confidence` | double | yes | `pitchData.typeConfidence` | TODO |
+| `pitch_data_plate_time` | double | yes | `pitchData.plateTime` | TODO |
+| `pitch_data_extension` | double | yes | `pitchData.extension` | TODO |
+| `play_id` | string | yes | `playId` | MLBAM identifier of the play. (authored) |
+| `pitch_number` | int32 | yes | `pitchNumber` | TODO |
+| `hit_data_launch_speed` | double | yes | `hitData.launchSpeed` | TODO |
+| `hit_data_launch_angle` | double | yes | `hitData.launchAngle` | TODO |
+| `hit_data_total_distance` | double | yes | `hitData.totalDistance` | TODO |
+| `hit_data_trajectory` | string | yes | `hitData.trajectory` | TODO |
+| `hit_data_hardness` | string | yes | `hitData.hardness` | TODO |
+| `hit_data_location` | string | yes | `hitData.location` | TODO |
+| `hit_data_coordinates_coord_x` | double | yes | `hitData.coordinates.coordX` | TODO |
+| `hit_data_coordinates_coord_y` | double | yes | `hitData.coordinates.coordY` | TODO |
+| `all_plays_matchup_post_on_second_id` | int32 | yes | `allPlays.matchup.postOnSecond.id` | MLBAM identifier of the all plays matchup post on second. (authored) |
+| `all_plays_matchup_post_on_second_full_name` | string | yes | `allPlays.matchup.postOnSecond.fullName` | Full name of the all plays matchup post on second. (authored) |
+| `all_plays_matchup_post_on_second_link` | string | yes | `allPlays.matchup.postOnSecond.link` | Relative MLB Stats API path of the all plays matchup post on second resource (prefix https://statsapi.mlb.com). (authored) |
+| `all_plays_matchup_post_on_second_name_slug` | string | yes | `allPlays.matchup.postOnSecond.nameSlug` | TODO |
+| `all_plays_matchup_post_on_first_id` | int32 | yes | `allPlays.matchup.postOnFirst.id` | MLBAM identifier of the all plays matchup post on first. (authored) |
+| `all_plays_matchup_post_on_first_full_name` | string | yes | `allPlays.matchup.postOnFirst.fullName` | Full name of the all plays matchup post on first. (authored) |
+| `all_plays_matchup_post_on_first_link` | string | yes | `allPlays.matchup.postOnFirst.link` | Relative MLB Stats API path of the all plays matchup post on first resource (prefix https://statsapi.mlb.com). (authored) |
+| `all_plays_matchup_post_on_first_name_slug` | string | yes | `allPlays.matchup.postOnFirst.nameSlug` | TODO |
+| `details_runner_going` | bool | yes | `details.runnerGoing` | TODO |
+| `details_from_catcher` | bool | yes | `details.fromCatcher` | TODO |
+| `details_disengagement_num` | int32 | yes | `details.disengagementNum` | TODO |
+| `all_plays_matchup_post_on_third_id` | int32 | yes | `allPlays.matchup.postOnThird.id` | MLBAM identifier of the all plays matchup post on third. (authored) |
+| `all_plays_matchup_post_on_third_full_name` | string | yes | `allPlays.matchup.postOnThird.fullName` | Full name of the all plays matchup post on third. (authored) |
+| `all_plays_matchup_post_on_third_link` | string | yes | `allPlays.matchup.postOnThird.link` | Relative MLB Stats API path of the all plays matchup post on third resource (prefix https://statsapi.mlb.com). (authored) |
+| `all_plays_matchup_post_on_third_name_slug` | string | yes | `allPlays.matchup.postOnThird.nameSlug` | TODO |
+| `action_play_id` | string | yes | `actionPlayId` | MLBAM identifier of the action play. (authored) |
+| `is_base_running_play` | bool | yes | `isBaseRunningPlay` | TODO |
+| `is_substitution` | bool | yes | `isSubstitution` | TODO |
+| `position_code` | string | yes | `position.code` | Code of the position. (authored) |
+| `position_name` | string | yes | `position.name` | Name of the position. (authored) |
+| `position_type` | string | yes | `position.type` | TODO |
+| `position_abbreviation` | string | yes | `position.abbreviation` | Position abbreviation: P = Pitcher, C = Catcher, 1B = First Base, 2B = Second Base, 3B = Third Base, SS = Shortstop, LF = Outfielder, CF = Outfielder, RF = Outfielder, DH = Designated Hitter, PH = Pinch Hitter, PR = Pinch Runner, EH = Extra Hitter, BR = Base Runner, OF = Outfield, IF = Infield, SP = Starting Pitcher, RP = Relief Pitcher, CP = Closer, UT = Utility, UI = Utility Infielder, UO = Utility Outfielder, RHP = Right-Handed Pitcher, LHP = Left-Handed Pitcher, RHS = Right-Handed Starter, LHS = Left-Handed Starter, LHR = Left-Handed Reliever, RHR = Right-Handed Reliever, P-IF = Pitcher - Infielder, P-OF = Pitcher - Outfielder, P-UT = Pitcher - Utility, TWP = Two-Way Player, B = Batter, X = Unknown, R1 = Runner on First, R2 = Runner on Second, R3 = Runner on Third. (src: mlb_positions) |
+| `all_plays_review_details_is_overturned` | bool | yes | `allPlays.reviewDetails.isOverturned` | TODO |
+| `all_plays_review_details_in_progress` | bool | yes | `allPlays.reviewDetails.inProgress` | TODO |
+| `all_plays_review_details_review_type` | string | yes | `allPlays.reviewDetails.reviewType` | TODO |
+| `all_plays_review_details_challenge_team_id` | int32 | yes | `allPlays.reviewDetails.challengeTeamId` | MLBAM identifier of the all plays review details challenge team. (authored) |
+| `batting_order` | string | yes | `battingOrder` | TODO |
+| `replaced_player_id` | int32 | yes | `replacedPlayer.id` | MLBAM identifier of the replaced player. (authored) |
+| `replaced_player_link` | string | yes | `replacedPlayer.link` | Relative MLB Stats API path of the replaced player resource (prefix https://statsapi.mlb.com). (authored) |
+| `base` | int32 | yes | — | TODO |
+| `details_violation_type` | string | yes | `details.violation.type` | TODO |
+| `details_violation_description` | string | yes | `details.violation.description` | TODO |
+| `details_violation_player_id` | int32 | yes | `details.violation.player.id` | MLBAM identifier of the details violation player. (authored) |
+| `details_violation_player_full_name` | string | yes | `details.violation.player.fullName` | Full name of the details violation player. (authored) |
+| `pitch_data_strike_zone_width` | double | yes | `pitchData.strikeZoneWidth` | TODO |
+| `pitch_data_strike_zone_depth` | double | yes | `pitchData.strikeZoneDepth` | TODO |
+| `review_details_is_overturned` | bool | yes | `reviewDetails.isOverturned` | TODO |
+| `review_details_in_progress` | bool | yes | `reviewDetails.inProgress` | TODO |
+| `review_details_review_type` | string | yes | `reviewDetails.reviewType` | TODO |
+| `review_details_challenge_team_id` | int32 | yes | `reviewDetails.challengeTeamId` | MLBAM identifier of the review details challenge team. (authored) |
+| `all_plays_review_details_additional_reviews` | string | yes | `allPlays.reviewDetails.additionalReviews` | TODO |
+| `all_plays_review_details_player_id` | int32 | yes | `allPlays.reviewDetails.player.id` | TODO |
+| `all_plays_review_details_player_full_name` | string | yes | `allPlays.reviewDetails.player.fullName` | TODO |
+| `all_plays_review_details_player_link` | string | yes | `allPlays.reviewDetails.player.link` | TODO |
+| `review_details_player_id` | int32 | yes | `reviewDetails.player.id` | TODO |
+| `review_details_player_full_name` | string | yes | `reviewDetails.player.fullName` | TODO |
+| `review_details_player_link` | string | yes | `reviewDetails.player.link` | TODO |
+| `injury_type` | string | yes | `injuryType` | TODO |
+| `pfx_id` | string | yes | `pfxId` | MLBAM identifier of the pfx. (authored) |
+| `umpire_id` | int32 | yes | `umpire.id` | MLBAM identifier of the umpire. (authored) |
+| `umpire_link` | string | yes | `umpire.link` | Relative MLB Stats API path of the umpire resource (prefix https://statsapi.mlb.com). (authored) |
+| `_extras` | string | yes | — | Upstream fields without a typed column, as JSON (schema-drift safety net). (authored) |
+
+<!-- END GENERATED:mlb_api.game_live_events -->

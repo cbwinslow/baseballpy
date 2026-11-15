@@ -112,7 +112,8 @@ def _processed_findings(config: LakeConfig, sources: set[str]) -> list[LayoutFin
         crowded = {
             f: n
             for f, fs in by_folder.items()
-            if (n := sum(1 for p in fs if not p.name.startswith("seg-"))) > MAX_PART_FILES
+            if (n := sum(1 for p in fs if not p.name.startswith(("seg-", "live-"))))
+            > MAX_PART_FILES
         }
         if crowded:
             total = sum(crowded.values())
@@ -173,7 +174,7 @@ def _row_group_findings(
     small = 0
     for files in by_folder.values():
         for path in files:
-            if path.name.startswith("seg-"):
+            if path.name.startswith(("seg-", "live-")):
                 continue  # a segment's row groups follow its games (ADR 95)
             meta = pq.read_metadata(path)
             if meta.num_row_groups > 1 and meta.num_rows / meta.num_row_groups < MIN_ROW_GROUP_ROWS:

@@ -123,3 +123,14 @@ client, because no existing helper journals HTTP answers per game. As built: the
 `JournalExhaustedError` at the end of a journal that stopped before the game ended; a cut journal therefore logs one audit
 `FAILURE` for the replay operation. Not verified: a real live game (off-season); the journal write cost with 15 games at
 once (task 3.3).
+
+### 10.2 Slice 2, the live dataset (tasks 2.1 and 2.2, 2026-11-15)
+`tests/test_live_segments.py` (10 tests, written first; the module was missing so they failed at collection) pass:
+registered with the history schema and keys; readable through a DuckDB view and `baseballpy.read` mid-game; a restart
+that sends events again does not double count; one file per game and a rewrite leaves the others byte-identical; the file
+has exactly the registered columns; a failed write leaves the old file and no `.part`; non-row events add nothing; fifteen
+live files give a clean `catalog layout`; an empty write creates no file. As built: the layout audit skips `live-*` files
+for the tiny-file and row-group rules (ADR 139); the open-games view is task 4.2. Reuse check: `atomic_write_parquet`
+(atomic replace with a footer check), `to_arrow` (the historical flattener), the dataset registry and generated docs,
+pyarrow `group_by` (one row per key). Custom code: `last_row_per_key` and the per-game sink, because no store merges
+rewritten per-game files. Not verified: write cost and file counts over a season (task 3.3).

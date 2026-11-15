@@ -265,6 +265,25 @@ def register_all() -> dict[str, DatasetSpec]:
             revision=_mlb_revision(endpoint),
         )
 
+    # games in progress (ADR 137): the schema and keys of the history table, filled by the live capture only;
+    # the finished game is stored by the normal ingest, never merged into this dataset
+    history = _datasets_module.DATASETS.get("mlb_api.game_feed_play_events")
+    if history is not None:
+        _add(
+            "mlb_api",
+            "game_live_events",
+            "mlb_live_play_events",
+            history.schema,
+            history.keys,
+            "Pitch and action events of MLB games in progress, one file per game rewritten while the "
+            "game is live (same columns as game_feed_play_events; a game stored there is no longer live).",
+            "sources/mlb_api.md#2-real-time-live-gameday-feed-v11gamegame_pkfeedlive",
+            "season",
+            "api_only",
+            "filled by the live capture (`baseballpy live`), not by ingest; the normal ingest stores the "
+            "finished game in game_feed_play_events",
+        )
+
     for table, schema in LAHMAN_SCHEMAS.items():
         table_name = str(table)  # the underscore name, e.g. ``batting_post``
         _add(

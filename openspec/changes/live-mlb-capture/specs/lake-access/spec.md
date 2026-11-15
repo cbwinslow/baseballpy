@@ -1,0 +1,9 @@
+## ADDED Requirements
+
+### Requirement: Games In Progress Are Readable From One Live Dataset
+The dataset `mlb_api.game_live_events` MUST have exactly the schema and keys of `mlb_api.game_feed_play_events` and its own view `mlb_live_play_events`. The live capture MUST write one file per game, `live-<game_pk>.parquet` under `season=Y/`, by merging the new pitch and action events into the file's rows (a key seen again keeps its last row) and replacing the file atomically; the rows MUST be readable through DuckDB and `baseballpy.read` as soon as the write returns, MUST never be counted twice after a restart that sends events again, and a failed write MUST leave the previous file whole and no `.part` file. `catalog layout` MUST NOT count `live-*` files as tiny files or small row groups.
+
+#### Scenario: Mid-game reads, restarts and failures
+- **WHEN** a game's events are written in two batches, a new process sends overlapping events, another game is rewritten, and a write fails on a full disk
+- **THEN** each read shows the rows so far with no duplicate key, the other game's file is byte-identical, the failed write leaves the old file and no `.part`, and the layout audit is clean with many live files
+- Verified by `tests/test_live_segments.py::test_rows_are_readable_mid_game_and_grow_without_double_counting`, `tests/test_live_segments.py::test_a_restart_that_sends_the_same_events_again_does_not_double_count`, `tests/test_live_segments.py::test_games_are_separate_files_and_a_game_rewrite_leaves_the_others_alone`, `tests/test_live_segments.py::test_a_write_that_fails_leaves_the_old_file_whole_and_no_part_file`, `tests/test_live_segments.py::test_the_file_has_exactly_the_registered_columns`, `tests/test_live_segments.py::test_the_live_dataset_is_registered_with_the_schema_of_the_history_table` and `tests/test_live_segments.py::test_many_live_files_are_a_normal_layout`.

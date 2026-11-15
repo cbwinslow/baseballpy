@@ -9,9 +9,9 @@ Order: 0.1 first (owner decision), then slices 1 to 4 in order. Each slice is us
   Done when the tests fail for the missing journal.
 - [x] 1.2 `sources/mlb_api/live/journal.py` and wiring in the streamer; spec delta with `Verified by`.
   Done when 1.1 passes and `tests/test_mlb_stream.py` still passes.
-- [ ] 2.1 Tests first: `tests/test_live_segments.py` (a DuckDB query sees rows mid-game; no double count after a
+- [x] 2.1 Tests first: `tests/test_live_segments.py` (a DuckDB query sees rows mid-game; no double count after a
   crash and restart; schema equals the registered one; the view and docs come from the registry).
-- [ ] 2.2 Register `mlb_api.game_live_events`, the live segment writer, the view `mlb_live_play_events`, generated
+- [x] 2.2 Register `mlb_api.game_live_events`, the live segment writer, the view `mlb_live_play_events`, generated
   docs. Done when 2.1 passes, `docs generate --check` and `openspec validate --specs` pass.
 - [ ] 3.1 Tests first: `tests/test_live_supervisor.py` (two fixture games on a fake clock, a restart in the middle,
   a stale feed stops, a rain delay backs off, a slow sink stalls polling, Ctrl-C stops cleanly).
