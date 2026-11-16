@@ -86,6 +86,14 @@ Descriptions come only from cited text (README of the register for the id system
 
 The Chadwick Bureau also publishes event-file tools (`cwevent`, `cwgame`, ...). They belong to the Retrosheet source: `baseballpy` reaches them only through `chadwickpy` in `sources/retrosheet/_chadwick_adapter.py` (a GPL boundary, ADR 26) and the register code does not use them.
 
+## Determinism: what is pinned, what is live, what varies (audited 2026-11-15)
+
+- **Pinned:** `chadwickbureau/register` at one commit (`sources_lock.json`, key `chadwick_register`). A branch name given through `BASEBALLPY_CHADWICK_REF` floats on purpose and is revalidated with one API call.
+- **Live (cannot be pinned):** nothing, unless the user chooses a floating ref.
+- **Kept, so a rebuild is identical:** the 16 `people-*.csv` shards, `names.csv`, `links.csv` and `countries.csv` as downloaded, with sha256 (`raw/chadwick/`); a missing shard is a hard error, never a partial register.
+- **What varies between runs:** nothing for the same pin; a new pin brings the upstream changes (new people, new ids).
+- **Proof:** `baseballpy cache check` and `baseballpy verify-sample chadwick` (row counts, schema digest, content).
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:chadwick.description_sources -->

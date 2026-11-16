@@ -22,5 +22,5 @@ done or in progress by hand; they map the work and keep its evidence).
   `award_recipients`). Done when `catalog layout --source mlb_api` shows no ORPHAN_COMPACT.
 - [x] 2.3 (done 2026-11-15: every MLB game table is segments; layout clean) Compact the eight mixed-shape MLB game tables one at a time with row-count checks.
   Done when `catalog layout --source mlb_api` shows no MIXED_SCHEMA.
-- [ ] 2.4 The 2011 stage: probe the HTTP 500 games and record them as empty with evidence.
+- [x] 2.4 The 2011 stage: probe the HTTP 500 games and record them as unavailable, with evidence (done 2026-11-15, ADR 142).
   Done when the queue plan no longer retries them.

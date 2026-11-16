@@ -24,6 +24,14 @@
 - A header the generator has not seen goes to `_extras` with a one-time `schema_drift` warning; rerun the generator to type it.
 - `player_ID` is Baseball-Reference's id (`judgeaa01`); `mlb_ID` is the MLBAM id and joins to `statcast` and `mlb_api`; the Chadwick register maps the others.
 
+## Determinism: what is pinned, what is live, what varies (audited 2026-11-15)
+
+- **Pinned:** nothing. The two WAR files (`war_daily_bat.txt`, `war_daily_pitch.txt`) are replaced upstream as the season goes.
+- **Live (cannot be pinned):** Baseball-Reference revises past seasons; the daily archive (`war_archive-YYYY-MM-DD.zip`) would give WAR as of each day but is not ingested yet.
+- **Kept, so a rebuild is identical:** each file as gzip with the sha256 of the original and the download time (`raw/bref/`); a file downloaded in the last 12 hours is read from raw instead of asked for again.
+- **What varies between runs:** the whole table, by download date.
+- **Proof:** deferred source (owner 2026-11-11, backlog B-433); its download test and lake contract are open there.
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:bref.description_sources -->

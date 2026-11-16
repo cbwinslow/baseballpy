@@ -640,7 +640,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-401 | compact-one-writer 2.1: repair mlb_api.game_boxscore_players season 2019 from the saved raw | DONE | 225,837 rows, 2,965 games, 0 duplicates on the registered key (design.md section 6) |
 | B-402 | compact-one-writer 2.2: repair the three season-2023 orphans (team_roster_all_time, team_roster_coach, award_recipients) | DONE (2026-11-15: `catalog layout --source mlb_api` printed "Layout is clean.") | catalog layout --source mlb_api shows no ORPHAN_COMPACT |
 | B-403 | compact-one-writer 2.3: compact the eight mixed-shape MLB game tables, one at a time, with row-count checks | DONE (2026-11-15: all MLB game tables are segments and the layout check is clean) | after B-398; catalog layout --source mlb_api shows no MIXED_SCHEMA |
-| B-404 | `compact-one-writer 2.4`: probe the 2011 HTTP 500 games and record them as empty with evidence | READY | the queue plan no longer retries them |
+| B-404 | compact-one-writer 2.4: probe the 2011 HTTP 500 games and record them as empty with evidence | DONE | the queue plan no longer retries them |
 | B-405 | product-mandate-reproducible-outputs 1.1: test first for the mission and reproducibility sections of the contract | DONE | the test fails for the missing sections |
 | B-406 | product-mandate-reproducible-outputs 1.2: contract text (AGENTS 0 and 15, CLAUDE, project.md, README), ADR 100, spec requirement | DONE | after B-405; the test, docs generate --check and openspec validate --specs pass |
 | B-407 | product-mandate-reproducible-outputs 1.3: gates, archive and commit | DONE | after B-406; gates green, change archived |
@@ -648,7 +648,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-409 | product-mandate-reproducible-outputs 2.2: ingest re-fetches a chunk its compacted file lacks | DONE | test passes (fix if it fails first) |
 | B-410 | product-mandate-reproducible-outputs 2.3: the queue never marks a stage done when its after-step failed | DONE | a test shows the stage stays failed and retries |
 | B-411 | product-mandate-reproducible-outputs 2.4: compaction output is deterministic | DONE | a test compares two runs byte for byte |
-| B-412 | `product-mandate-reproducible-outputs 2.5`: determinism audit of each source in docs/sources | READY | every source page states what is pinned, live and varying |
+| B-412 | product-mandate-reproducible-outputs 2.5: determinism audit of each source in docs/sources | DONE | every source page states what is pinned, live and varying |
 | B-413 | queue-after-step-failure 1.1: tests first for a failed after-step failing the stage | DONE | the new tests fail against the current code |
 | B-414 | queue-after-step-failure 1.2: settle marks the stage failed; the round settles before the report | DONE | after B-413; test_queue passes |
 | B-415 | queue-after-step-failure 1.3: spec, ADR 101, gates, archive (closes B-410) | DONE | after B-414; gates green, change archived |

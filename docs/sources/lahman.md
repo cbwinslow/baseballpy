@@ -136,6 +136,14 @@ top_hr_seasons = con.execute("""
 print(top_hr_seasons)
 ```
 
+## Determinism: what is pinned, what is live, what varies (audited 2026-11-15)
+
+- **Pinned:** the files come from `cbwinslow/lahman-database-csv` at one commit (`sources_lock.json`, key `lahman`). Never from `chadwickbureau/baseballdatabank`.
+- **Live (cannot be pinned):** nothing. A user who supplies the official SABR zip (`lahman.import_archive`) pins the data by the file they hold.
+- **Kept, so a rebuild is identical:** the 27 CSV files and the release's data dictionary as downloaded, with sha256 (`raw/lahman/`).
+- **What varies between runs:** nothing for the same pin or the same zip; a new release (a new year) changes rows and adds a season.
+- **Proof:** `baseballpy cache check` and `baseballpy verify-sample lahman`.
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:lahman.description_sources -->

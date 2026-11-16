@@ -162,6 +162,14 @@ not change; the provider did. What this means for users:
 - Python: `baseballpy.sources.statcast.table(name, season)` returns any registered dataset (`table("pitches", 2024)` ingests the season first, `table("leaderboard_sprint_speed", 2024)` fetches one leaderboard); `datasets()` lists the names.
 - Export (`baseballpy export statcast --to parquet|csv|duckdb|postgres`): see the checks recorded in the review's design notes.
 
+## Determinism: what is pinned, what is live, what varies (audited 2026-11-15)
+
+- **Pinned:** nothing: Baseball Savant is live. What is fixed is the request plan: 5-day windows on one grid per year (`grid_windows`), bisected at the 25,000-row cap, so two users ask the same questions.
+- **Live (cannot be pinned):** Savant corrects and reclassifies past pitches (found 2026-11-11: about 65 windows of 2024 differ in a few dozen `pitch_type` values), repeats some 2026 `hit_into_play` rows (the view `v_pitches_unique` drops them, ADR 119), and its leaderboards change daily.
+- **Kept, so a rebuild is identical:** every response as raw gzip with the sha256 of the original (`raw/statcast/`); a refresh keeps the sha256, size and time of the version it replaced (`previous`, ADR 122). A rebuild from raw gives the same rows.
+- **What varies between runs:** two users who downloaded the same season at different times can hold different values for a small share of pitches; the raw files and manifests show which download each holds. A closed season is not downloaded again by itself (`--refresh` picks up Savant's revisions).
+- **Proof:** `baseballpy verify-sample statcast` shows which windows differ and in which column; `baseballpy verify-roundtrip` proves every raw cell is in the typed table.
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:statcast.description_sources -->

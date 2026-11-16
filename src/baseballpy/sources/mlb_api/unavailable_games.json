@@ -1,0 +1,30 @@
+{
+  "305461": {
+    "season": 2011,
+    "status": 500,
+    "probed": "2026-11-15",
+    "first_seen": "2026-11-09",
+    "game": "2011-02-25, exhibition (game_type E): Florida Southern Moccasins at Detroit Tigers",
+    "urls": [
+      "https://statsapi.mlb.com/api/v1.1/game/305461/feed/live",
+      "https://statsapi.mlb.com/api/v1/game/305461/boxscore",
+      "https://statsapi.mlb.com/api/v1/game/305461/playByPlay",
+      "https://statsapi.mlb.com/api/v1/game/305461/winProbability"
+    ],
+    "evidence": "Audit log 2026-11-09 to 2026-11-11: HTTP 500 on all four URLs, about 2,800 attempts with retries, never a 200. One request on 2026-11-15 to /v1/game/305461/boxscore: HTTP 500 (113 bytes); a neighbouring game answered 200."
+  },
+  "308207": {
+    "season": 2011,
+    "status": 500,
+    "probed": "2026-11-15",
+    "first_seen": "2026-11-09",
+    "game": "2011-03-04, exhibition (game_type E): (no away team in the schedule) at Toronto Blue Jays",
+    "urls": [
+      "https://statsapi.mlb.com/api/v1.1/game/308207/feed/live",
+      "https://statsapi.mlb.com/api/v1/game/308207/boxscore",
+      "https://statsapi.mlb.com/api/v1/game/308207/playByPlay",
+      "https://statsapi.mlb.com/api/v1/game/308207/winProbability"
+    ],
+    "evidence": "Audit log 2026-11-09 to 2026-11-11: HTTP 500 on all four URLs, about 2,800 attempts with retries, never a 200 (one 503 on playByPlay). One request on 2026-11-15 to /v1/game/308207/boxscore: HTTP 500 (113 bytes); a neighbouring game answered 200."
+  }
+}

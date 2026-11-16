@@ -12,6 +12,7 @@ URL answered 200 with a body that decodes, or answered 404 for a dataset whose e
 again on the next run.
 """
 
+import json
 import re
 import time
 from collections import deque
@@ -19,6 +20,8 @@ from collections.abc import Callable, Mapping, Sequence
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 import msgspec
@@ -42,6 +45,17 @@ from baseballpy.sources.mlb_api.mlb_schema import MLB_SCHEMAS
 
 SEGMENT_GAMES = 250
 SEGMENT_SECONDS = 600.0
+#: games the provider cannot serve (B-404, ADR 142): data, shipped with the package, one entry per game with its evidence
+UNAVAILABLE_GAMES_FILE = Path(__file__).with_name("unavailable_games.json")
+
+
+@lru_cache(maxsize=1)
+def known_unavailable_games() -> dict[int, dict[str, Any]]:
+    """``{game_pk: entry}`` of the games that answer HTTP 500 on every URL (status, season, probe date, evidence)."""
+    raw = json.loads(UNAVAILABLE_GAMES_FILE.read_text(encoding="utf-8"))
+    return {int(pk): dict(entry) for pk, entry in raw.items()}
+
+
 SOURCE = "mlb_api"
 
 
@@ -169,6 +183,8 @@ class GameSegmentReport:
     already: int = 0
     #: ``{game_pk: why}`` for games that are not stored; they are fetched again next time
     failed: dict[int, str] = field(default_factory=dict)
+    #: games skipped because the provider is known to refuse them (``known_unavailable_games``): not requested, not failed
+    unavailable: list[int] = field(default_factory=list)
     segments: int = 0
     #: rows cut per dataset by this call (a game replayed from the journal counts again)
     rows: dict[str, int] = field(default_factory=dict)
@@ -194,7 +210,16 @@ def game_segment_reports(report: GameSegmentReport, games: int) -> list[Endpoint
             *errors[:MAX_LISTED_FAILURES],
             f"... and {len(errors) - MAX_LISTED_FAILURES} more",
         ]
-    reports.append(EndpointReport("game_segments", games, 0, report.already, errors=tuple(errors)))
+    reports.append(
+        EndpointReport(
+            "game_segments",
+            games,
+            0,
+            report.already,
+            missing=len(report.unavailable),
+            errors=tuple(errors),
+        )
+    )
     return reports
 
 
@@ -255,8 +280,11 @@ def ingest_game_segments(
         extractor.cache_config, SOURCE, season, tally, row_group_units=row_group_units
     )
     stored = writer.stored()
-    todo = [pk for pk in game_pks if str(pk) not in stored]
-    report.already = len(game_pks) - len(todo)
+    unavailable = known_unavailable_games()
+    report.unavailable = [pk for pk in game_pks if pk in unavailable and str(pk) not in stored]
+    skipped = set(report.unavailable)
+    todo = [pk for pk in game_pks if str(pk) not in stored and pk not in skipped]
+    report.already = len(game_pks) - len(todo) - len(skipped)
     size = max(1, workers or extractor.http.limit_for(STATSAPI_HOST))
     open_since = clock()
     open_games = len(

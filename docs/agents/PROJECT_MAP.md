@@ -22,7 +22,7 @@ from `docs/agents/BACKLOG.md`; this file shows where everything lives.
 | `kalshi-ingestion` | 7 | 13 | 25 |
 | `lahman-database` | 12 | 19 | 31 |
 | `lake-access` | 19 | 28 | 74 |
-| `mlb-api-ingestion` | 33 | 47 | 61 |
+| `mlb-api-ingestion` | 34 | 48 | 66 |
 | `multi-target-sinks` | 3 | 4 | 4 |
 | `polymarket-ingestion` | 5 | 5 | 15 |
 | `portability` | 3 | 3 | 7 |
@@ -43,23 +43,22 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `lahman` | 27 | archived | yes | yes | yes | 389/399 (97%) | 12 |
 | `retrosheet` | 43 | archived | yes | yes | yes | 1030/2091 (49%) | 25 |
 | `statcast` | 50 | archived | yes | yes | yes | 402/1765 (22%) | 18 |
-| `mlb_api` | 404 | archived | yes | yes | yes | 9680/17535 (55%) | 33 |
+| `mlb_api` | 404 | archived | yes | yes | yes | 9680/17535 (55%) | 34 |
 
 ## Active changes (`openspec/changes/`)
 
-100 changes are archived under `openspec/changes/archive/`.
+101 changes are archived under `openspec/changes/archive/`.
 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `compact-one-writer` | 7 | 1 | 2.4 |
 | `download-throughput` | 9 | 0 | none |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `finish-mlb-history` | 15 | 3 | 2.1, 4.1, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `live-mlb-capture` | 9 | 1 | 3.3 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |
-| `product-mandate-reproducible-outputs` | 7 | 1 | 2.5 |
+| `product-mandate-reproducible-outputs` | 8 | 0 | none |
 | `repo-hygiene-and-docs-sync` | 33 | 2 | 6.4 |
 | `response-log-segments` | 33 | 7 | 8.3, 9.1, 9.2, 9.3, 9.4, 9.5, 10.2 |
 | `retrosheet-box-accounts` | 10 | 5 | 1.1, 1.2, 2.3 |
@@ -206,6 +205,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 - ADR 139: Live Game Rows Are One Rewritten File Per Game, In The History Table's Schema
 - ADR 140: One Process Follows All Live Games With Bounded Buffering (`baseballpy live`)
 - ADR 141: The Open-Games View, The Optional Clean-Up And The JSON-Lines Broadcast
+- ADR 142: Games The Provider Cannot Serve Are A Shipped List, Not A Retry Loop
 
 ## Documentation pages (`docs/`)
 

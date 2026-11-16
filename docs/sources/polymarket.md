@@ -33,6 +33,14 @@
 ## How the data is verified (2026-11-12)
 `baseballpy verify-roundtrip polymarket` counts the distinct ids in the raw JSON pages and compares them with the stored rows: `events` 11,653 and `markets` 233,923 (nested in the event pages) are exact. `outcomes` (467,846: every entry of each market's outcome list) and `prices` (16,043,908 distinct token and time pairs) are exact too.
 
+## Determinism: what is pinned, what is live, what varies (audited 2026-11-15)
+
+- **Pinned:** nothing. The sport is looked up in `GET /sports`, never hard-coded.
+- **Live (cannot be pinned):** events, markets and prices change; price history is read in windows of at most 14 days cut from each market's life, so the same market gives the same windows.
+- **Kept, so a rebuild is identical:** every raw answer as gzip (`raw/polymarket/`, sha256 in the manifest).
+- **What varies between runs:** open markets and the latest prices, by download date.
+- **Proof:** deferred source (owner 2026-11-11, backlog B-433); its download test and lake contract are open there.
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:polymarket.description_sources -->

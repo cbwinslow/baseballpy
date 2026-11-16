@@ -84,3 +84,12 @@ the backup once the owner agrees.
   `uv run mypy --strict src`: no issues in 180 source files; `docs generate --check`: up to date;
   `openspec validate --specs`: 22 passed, 0 failed.
 - The change stays in `openspec/changes/` (not archived) until the repair tasks 2.2 to 2.4 are done.
+
+## 8. Task 2.4, the 2011 games (2026-11-15)
+Evidence: the audit logs of 2026-11-09 to 2026-11-11 show two games, 305461 (2011-02-25, exhibition, Florida Southern at
+Detroit) and 308207 (2011-03-04, exhibition, Toronto at home), answering HTTP 500 on feed/live, boxscore, playByPlay and
+winProbability, about 2,800 attempts each with retries and no 200. One request on 2026-11-15 to each boxscore gave HTTP 500
+(113 bytes); a neighbouring game gave 200. The other 5xx answers in the logs (three winProbability 503 on 2026-11-07, one
+playByPlay 503) were transient and are not listed. Decision and mechanism: ADR 142 (a shipped list, not a retry loop).
+Tests: `tests/test_mlb_unavailable_games.py` (5). Not verified: whether the provider will repair the games (the probe script
+says so when it does).

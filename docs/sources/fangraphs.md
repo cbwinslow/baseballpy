@@ -55,6 +55,14 @@ uv run baseballpy ingest fangraphs -d projection -o download=yes
 - **Baseball-Reference WAR** is built (`docs/sources/bref.md`); **Statcast** leaderboards and the **MLB Stats API** stat pools are in the lake.
 - **A member export** (click FanGraphs' own Export Data button) follows FanGraphs' rules exactly and works with the same inbox.
 
+## Determinism: what is pinned, what is live, what varies (audited 2026-11-15)
+
+- **Pinned:** nothing. FanGraphs serves its website's JSON and baseballpy asks one request every two seconds; the files a user supplies are pinned by the user.
+- **Live (cannot be pinned):** leaderboards and projections change as the season goes; projection systems are re-run (a snapshot stores only changed rows).
+- **Kept, so a rebuild is identical:** every answer as gzip with its sha256 (`raw/fangraphs/`).
+- **What varies between runs:** the values, by download date. Private data: baseballpy ships none.
+- **Proof:** deferred source (owner 2026-11-11, backlog B-433); its download test and lake contract are open there.
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:fangraphs.description_sources -->

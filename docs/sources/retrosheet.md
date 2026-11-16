@@ -125,6 +125,14 @@ After the datasets of a season are stored, `ingest` checks them and records the 
 
 **Export** (`baseballpy export retrosheet --to parquet|csv|duckdb|postgres`, checked 2026-10-30 on the 2015-2026 lake with read-back verification): all 23 stored datasets verify as Parquet (6.67 million rows, 40 s, peak memory 1.3 GB); 22 verify as CSV, DuckDB and PostgreSQL. The one exception is `box_records` as CSV, which is refused because its `fields` column is a list (Parquet, DuckDB and PostgreSQL keep it; PostgreSQL stores it as JSON). Seasons are exported one after another, so a season subset with `--mode replace` leaves only those seasons in the table. `--mode merge` uses the registry keys, which are unique on the real data. Empty event text is stored as NULL so the CSV round trip is exact (ADR 51).
 
+## Determinism: what is pinned, what is live, what varies (audited 2026-11-15)
+
+- **Pinned:** the files come from the git tree of `chadwickbureau/retrosheet` at one commit (`src/baseballpy/core/sources_lock.json`, key `retrosheet`; `BASEBALLPY_RETROSHEET_REF` overrides). Two users on the same pin read byte-identical raw files.
+- **Live (cannot be pinned):** the opt-in site datasets from `retrosheet.org` (one request every 4 seconds, `robots.txt` obeyed): the site can change at any time, so every download is kept raw with its sha256.
+- **Kept, so a rebuild is identical:** every raw file with its `sha256`, size and the `source_ref` of the pin (`raw/retrosheet/`); processing (the `chadwickpy` engine, sort order, chunk names) depends only on the files and the registry.
+- **What varies between runs:** nothing for the same pin. A new pin (`baseballpy refs update`) changes only the files whose git blob SHA changed; rows can differ then, and the manifest says which pin each file came from.
+- **Proof:** `baseballpy cache check` (stored fingerprints against the pinned tree) and the rebuild check of `baseballpy verify-sample retrosheet` (a sample into a scratch home, compared with the lake).
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:retrosheet.description_sources -->

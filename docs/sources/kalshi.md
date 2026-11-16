@@ -47,6 +47,14 @@
 ## How the data is verified (2026-11-12)
 `baseballpy verify-roundtrip kalshi` counts the distinct ids in the raw JSON pages and compares them with the stored rows: `events` 55,197 and `markets` 900,555 are exact. `trades` (110,994,885 distinct trade ids) and `candlesticks` (14,903,320 distinct ticker and end-of-period pairs, read from both the single-market and the batch pages) are exact too. `series` is not counted on purpose: the raw pages list every series (4,156), the table keeps the 189 MLB ones.
 
+## Determinism: what is pinned, what is live, what varies (audited 2026-11-15)
+
+- **Pinned:** nothing. Markets open, trade and settle continuously.
+- **Live (cannot be pinned):** market prices and status; settled markets older than the historical cutoff only exist in the archived list, and the downloader keeps, per ticker, the row with the newest `updated_time`.
+- **Kept, so a rebuild is identical:** every raw page (`raw/kalshi/`, sha256 in the manifest); processing is by series and ticker, never by thread timing.
+- **What varies between runs:** every value that moves with the market, by download date.
+- **Proof:** deferred source (owner 2026-11-11, backlog B-433); its download test and lake contract are open there.
+
 ## Dataset reference (generated)
 
 <!-- BEGIN GENERATED:kalshi.events -->

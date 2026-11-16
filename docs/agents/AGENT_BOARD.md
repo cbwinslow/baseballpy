@@ -22,6 +22,14 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-16 01:29 UTC [blain]:**
+  - **Tasks:** `B-404`.
+  - **Summary:** compact-one-writer 2.4: the two 2011 games listed as unavailable with evidence (ADR 142); change archived
+
+- **2026-11-16 01:26 UTC [blain]:**
+  - **Tasks:** `B-412`.
+  - **Summary:** product-mandate-reproducible-outputs 2.5: determinism section on every source page, with a test
+
 - **2026-11-15 11:16 UTC [blain]:**
   - **Tasks:** `B-475`.
   - **Summary:** live-mlb-capture 4.1-4.2: open-games view, prune, JSONL broadcast (ADR 141)
