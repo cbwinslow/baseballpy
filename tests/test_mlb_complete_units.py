@@ -150,3 +150,19 @@ def test_a_game_that_is_not_in_the_requested_list_is_left_alone(tmp_path: Path) 
     report = game_segments.ingest_game_segments(extractor, SEASON, ())
     assert not any(r.call_count for r in routes.values()) and report.completed == 0
     assert json.dumps(sorted(report.failed)) is not None
+
+
+@respx.mock
+def test_a_stored_game_that_the_provider_cannot_serve_is_not_completed_and_not_a_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A known-unavailable game that is stored with a few URLs (from old raw files) is left as it is."""
+    extractor = _extractor(tmp_path)
+    _store_partial(extractor, ["v1/game/{pk}/boxscore"])
+    monkeypatch.setattr(
+        game_segments, "known_unavailable_games", lambda: {PK: {"status": 500, "season": SEASON}}
+    )
+    routes = _mock({"v1.1/game/{pk}/feed/live": 500})
+    report = game_segments.ingest_game_segments(extractor, SEASON, (PK,))
+    assert not any(r.call_count for r in routes.values())
+    assert report.failed == {} and report.unavailable == [PK] and report.completed == 0

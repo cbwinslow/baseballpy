@@ -55,7 +55,7 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | `download-throughput` | 9 | 0 | none |
 | `easy-downloads` | 5 | 0 | none |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
-| `finish-mlb-history` | 15 | 4 | 2.1, 4.1, 5.1, 7.1 |
+| `finish-mlb-history` | 16 | 3 | 2.1, 4.1, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |
 | `live-mlb-capture` | 9 | 1 | 3.3 |
 | `market-sources` | 5 | 6 | 1.2, 2.4, 2.5, 3.1, 3.2, 4.1 |

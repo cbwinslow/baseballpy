@@ -700,7 +700,7 @@ only with the four gates, `docs generate --check` and `openspec validate --specs
 | B-474 | `live-mlb-capture 3.3`: in-season check on real games: latency, request rate, websocket probe | READY (needs live games, owner machine) | after B-473; numbers in design.md |
 | B-475 | live-mlb-capture 4.1: tests first for the open-games view (no double count) | DONE | after B-473; the tests fail for the right reason |
 | B-476 | live-mlb-capture 4.2: the open-games view, optional prune and auto ingest at Final, the JSONL tail broadcast (SSE or websocket only with an ADR) | DONE | after B-475; tests pass; documented in the quickstart |
-| B-477 | `finish-mlb-history 7.1`: complete stored games that lack some of their five URLs (2026 and 2025 at all levels, older seasons for the major leagues) | READY | the completion tests pass, the real runs are in design.md, cache check and layout check are clean |
+| B-477 | finish-mlb-history 7.1: complete stored games that lack some of their five URLs (2026 and 2025 at all levels, older seasons for the major leagues) | DONE | the completion tests pass, the real runs are in design.md, cache check and layout check are clean |
 | B-478 | easy-downloads 1.1: tests first for plan stage options, newest-first seasons and the built-in plans `minors` and `minors-all` | DONE | the tests fail for the missing key |
 | B-479 | easy-downloads 1.2: plan stage `options`, newest-first order, built-in plans `minors` and `minors-all` | DONE | after B-478; tests pass |
 | B-480 | easy-downloads 2.1: tests first for the Python interface (`download`, `update`, `backfill`) | DONE | after B-479; the tests fail for the right reason |

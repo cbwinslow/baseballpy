@@ -268,7 +268,8 @@ def _complete_stored_games(
     missing URLs are requested; a refresh rewrites the segment with the old and the new answers (raw keeps
     every old row). A game whose missing URLs cannot be fetched stays as it was and is reported failed.
     """
-    wanted = {str(pk) for pk in game_pks}
+    unavailable = known_unavailable_games()
+    wanted = {str(pk) for pk in game_pks if pk not in unavailable}
     for segment, line in sorted(writer.log.latest_lines().items()):
         if not wanted & set(line["units"]):
             continue
@@ -336,10 +337,10 @@ def ingest_game_segments(
     _complete_stored_games(extractor, writer, groups, game_pks, report, size)
     stored = writer.stored()
     unavailable = known_unavailable_games()
-    report.unavailable = [pk for pk in game_pks if pk in unavailable and str(pk) not in stored]
+    report.unavailable = [pk for pk in game_pks if pk in unavailable]
     skipped = set(report.unavailable)
     todo = [pk for pk in game_pks if str(pk) not in stored and pk not in skipped]
-    report.already = len(game_pks) - len(todo) - len(skipped)
+    report.already = len(game_pks) - len(todo) - sum(1 for pk in skipped if str(pk) not in stored)
     open_since = clock()
     open_games = len(
         writer.log.open_units()

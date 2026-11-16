@@ -99,3 +99,20 @@ Not covered: the MLB API on the second machine, and the full-season Statcast and
 ## Evidence: the JSON round-trip over every MLB API dataset (2026-11-14)
 
 `verify-roundtrip` with the new JSON reader (loose raw files and raw response-log segments, `--files 2`) over all 365 `mlb_api` datasets: 122 clean, 17 with a loss, 226 skipped. The 17 are one finding: `player_name_slug` NULL while the raw `player.nameSlug` sits in `_extras` (ADR 128; not a loss of data). Skips: 220 datasets never downloaded (no raw and no processed data), 3 `stats_last_x_games_*` without a key column, 2 standings datasets whose sampled answers were empty (`standings_first_half`, `standings_second_half`), 1 not comparable (`game_boxscore_teams`: Arrow offset overflow on a very large text column).
+
+## Task 7.1, completing partly stored games on the real lake (2026-11-16)
+Found: a count of the URLs on record per game in each season's raw segments showed 5,196 incomplete games in 2026
+(`feed/live` missing for 5,093, `playByPlay` 4,934, `linescore` 4,305, `winProbability` 193) and 1,085 in 2025, and only
+`winProbability` for 3 to 26 games a season in 2008 to 2024 (a tolerated 404). Games of the minor leagues 2021 to 2026 were
+stored only with what the old workflow had downloaded; 2008 to 2020 minor-league games were never downloaded.
+Fix: ADR 143 (the ingest completes stored games). A real trial first: game 843894 (level 16) gained 69 plays and 7 linescore
+rows. Real runs (all through the library: `ingest` for 2026 and 2025 at all levels, `ingest` for 2012 to 2024 majors,
+`backfill minors --min-free-gb 12` for 2021 to 2026 at all levels): the 2011 run failed on the two known-unavailable games
+(305461 and 308207, ADR 142) because they were stored partly; the completion step now skips known-unavailable games and
+reports them as unavailable (test added). After the runs: every stored game of every season has all five URLs on record
+except those two games (gap check of the raw segments, 2026-11-16). Games scheduled Final without any play in
+`mlb_game_feed_plays`: 2026 193 of 16,028, 2025 191 of 16,859, 2024 212 of 16,884, 2023 244 of 17,086, 2022 199 of
+17,044, 2021 318 of 14,949 (level 16: 48 of 2,354 in 2026); their feeds hold no plays (provider facts, all five answers
+are on record). The plan run reported 33,851,891 rows and 12.72 GB for the four seasons 2021 to 2024.
+Not done: the minor-league games of 2008 to 2020 (about 190,000 games, about 80 GB; owner decision 2026-11-16: 2021
+onward first; `baseballpy backfill minors-all` is the command when disk allows).
