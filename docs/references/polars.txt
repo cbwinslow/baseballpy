@@ -708,7 +708,7 @@ Source: https://github.com/pola-rs/polars/blob/main/docs/source/user-guide/io/ex
 Installs the external parsing engines needed to read Excel files in Python. Polars defaults to fastexcel for performance, with xlsx2csv and openpyxl available as alternatives.
 
 ```shell
-$ pip install fastexcel xlsx2csv openpyxl 
+$ pip install fastexcel xlsx2csv openpyxl
 ```
 
 --------------------------------
@@ -2631,7 +2631,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Generates an interactive kernel density estimation (KDE) area plot for the series.
 
 ```python
->>> s.plot.kde()  
+>>> s.plot.kde()
 ```
 
 --------------------------------
@@ -2702,7 +2702,7 @@ Initializes a Series and generates an interactive histogram using binned values.
 
 ```python
 >>> s = pl.Series([1, 4, 4, 6, 2, 4, 3, 5, 5, 7, 1])
->>> s.plot.hist()  
+>>> s.plot.hist()
 ```
 
 --------------------------------
@@ -4130,7 +4130,7 @@ Construct a DataFrame and generate an interactive scatter plot mapped by length,
 ...         "species": ["setosa", "setosa", "versicolor"],
 ...     }
 ... )
->>> df.plot.point(x="length", y="width", color="species")  
+>>> df.plot.point(x="length", y="width", color="species")
 ```
 
 --------------------------------
@@ -4322,7 +4322,7 @@ Syntactic sugar for calculating the quantile of a column or expression.
 ### quantile(column, quantile[, interpolation])
 
 #### Description
-Syntactic sugar for `pl.col("foo").quantile(..)`. 
+Syntactic sugar for `pl.col("foo").quantile(..)`.
 
 #### Parameters
 - **column**: Column name or expression.
@@ -6509,7 +6509,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Generates an interactive line plot plotting the series values against the row index.
 
 ```python
->>> s.plot.line()  
+>>> s.plot.line()
 ```
 
 --------------------------------
@@ -9110,7 +9110,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Formats numeric values in a specified column to a set number of decimal places.
 
 ```pycon
->>> df.style.fmt_number("measure_b", decimals=2)  
+>>> df.style.fmt_number("measure_b", decimals=2)
 ```
 
 --------------------------------
@@ -10748,7 +10748,7 @@ Generate a faceted bar chart using day, value, and group columns.
 ... )
 >>> df.plot.bar(
 ...     x="day", y="value", color="day", column="group"
-... )  
+... )
 ```
 
 --------------------------------
@@ -11045,7 +11045,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Emphasizes the specified column as row names (stub) in the styled table.
 
 ```pycon
->>> df.style.tab_stub(rowname_col="site_id")  
+>>> df.style.tab_stub(rowname_col="site_id")
 ```
 
 --------------------------------
@@ -11542,7 +11542,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Generate a stacked bar chart mapping color to the grouping column.
 
 ```python
->>> df.plot.bar(x="day", y="value", color="group")  
+>>> df.plot.bar(x="day", y="value", color="group")
 ```
 
 --------------------------------
@@ -12366,7 +12366,7 @@ Fills the background color for rows meeting a specific condition, such as matchi
 >>> df.style.tab_style(
 ...     style.fill("yellow"),
 ...     loc.body(rows=pl.col("measure_a") == pl.col("measure_a").max()),
-... )  
+... )
 ```
 
 --------------------------------
@@ -13349,7 +13349,7 @@ Places a high-level label (spanner) across columns matching a selector pattern.
 ```pycon
 >>> df.style.tab_spanner(
 ...     "Measures", cs.starts_with("measure")
-... )  
+... )
 ```
 
 --------------------------------
@@ -18473,7 +18473,7 @@ Customize the x-axis title in a point plot using Altair's X encoding helper.
 >>> import altair as alt
 >>> df.plot.point(
 ...     x=alt.X("length", title="Length"), y="width", color="species"
-... )  
+... )
 ```
 
 --------------------------------
@@ -18636,7 +18636,7 @@ Plot time series or sequence data across groups using DataFrame.plot.line.
 ...         "stock": ["a", "a", "a", "b", "b", "b"],
 ...     }
 ... )
->>> df.plot.line(x="date", y="price", color="stock")  
+>>> df.plot.line(x="date", y="price", color="stock")
 ```
 
 --------------------------------
@@ -23748,7 +23748,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Emphasizes the specified column as row names (stub) in the styled table.
 
 ```pycon
->>> df.style.tab_stub(rowname_col="site_id")  
+>>> df.style.tab_stub(rowname_col="site_id")
 ```
 
 --------------------------------
@@ -24719,7 +24719,7 @@ Fills the background color for rows meeting a specific condition, such as matchi
 >>> df.style.tab_style(
 ...     style.fill("yellow"),
 ...     loc.body(rows=pl.col("measure_a") == pl.col("measure_a").max()),
-... )  
+... )
 ```
 
 --------------------------------
@@ -30112,7 +30112,7 @@ Places a high-level label (spanner) across columns matching a selector pattern.
 ```pycon
 >>> df.style.tab_spanner(
 ...     "Measures", cs.starts_with("measure")
-... )  
+... )
 ```
 
 --------------------------------
@@ -31894,7 +31894,7 @@ Syntactic sugar for calculating the quantile of a column or expression.
 ### quantile(column, quantile[, interpolation])
 
 #### Description
-Syntactic sugar for `pl.col("foo").quantile(..)`. 
+Syntactic sugar for `pl.col("foo").quantile(..)`.
 
 #### Parameters
 - **column**: Column name or expression.
@@ -32165,7 +32165,7 @@ Initializes a Series and generates an interactive histogram using binned values.
 
 ```python
 >>> s = pl.Series([1, 4, 4, 6, 2, 4, 3, 5, 5, 7, 1])
->>> s.plot.hist()  
+>>> s.plot.hist()
 ```
 
 --------------------------------
@@ -33073,7 +33073,7 @@ Construct a DataFrame and generate an interactive scatter plot mapped by length,
 ...         "species": ["setosa", "setosa", "versicolor"],
 ...     }
 ... )
->>> df.plot.point(x="length", y="width", color="species")  
+>>> df.plot.point(x="length", y="width", color="species")
 ```
 
 --------------------------------
@@ -33532,7 +33532,7 @@ Source: https://github.com/pola-rs/polars/blob/main/docs/source/user-guide/io/ex
 Installs the external parsing engines needed to read Excel files in Python. Polars defaults to fastexcel for performance, with xlsx2csv and openpyxl available as alternatives.
 
 ```shell
-$ pip install fastexcel xlsx2csv openpyxl 
+$ pip install fastexcel xlsx2csv openpyxl
 ```
 
 --------------------------------
@@ -34786,7 +34786,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Formats numeric values in a specified column to a set number of decimal places.
 
 ```pycon
->>> df.style.fmt_number("measure_b", decimals=2)  
+>>> df.style.fmt_number("measure_b", decimals=2)
 ```
 
 --------------------------------
@@ -34993,7 +34993,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Generate a stacked bar chart mapping color to the grouping column.
 
 ```python
->>> df.plot.bar(x="day", y="value", color="group")  
+>>> df.plot.bar(x="day", y="value", color="group")
 ```
 
 --------------------------------
@@ -35874,7 +35874,7 @@ Customize the x-axis title in a point plot using Altair's X encoding helper.
 >>> import altair as alt
 >>> df.plot.point(
 ...     x=alt.X("length", title="Length"), y="width", color="species"
-... )  
+... )
 ```
 
 --------------------------------
@@ -38563,7 +38563,7 @@ Generate a faceted bar chart using day, value, and group columns.
 ... )
 >>> df.plot.bar(
 ...     x="day", y="value", color="day", column="group"
-... )  
+... )
 ```
 
 --------------------------------
@@ -42316,7 +42316,7 @@ Syntactic sugar for calculating the quantile of a column or expression.
 ### quantile(column, quantile[, interpolation])
 
 #### Description
-Syntactic sugar for `pl.col("foo").quantile(..)`. 
+Syntactic sugar for `pl.col("foo").quantile(..)`.
 
 #### Parameters
 - **column**: Column name or expression.
@@ -43785,7 +43785,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Formats numeric values in a specified column to a set number of decimal places.
 
 ```pycon
->>> df.style.fmt_number("measure_b", decimals=2)  
+>>> df.style.fmt_number("measure_b", decimals=2)
 ```
 
 --------------------------------
@@ -45101,7 +45101,7 @@ Construct a DataFrame and generate an interactive scatter plot mapped by length,
 ...         "species": ["setosa", "setosa", "versicolor"],
 ...     }
 ... )
->>> df.plot.point(x="length", y="width", color="species")  
+>>> df.plot.point(x="length", y="width", color="species")
 ```
 
 --------------------------------
@@ -53155,7 +53155,7 @@ Initializes a Series and generates an interactive histogram using binned values.
 
 ```python
 >>> s = pl.Series([1, 4, 4, 6, 2, 4, 3, 5, 5, 7, 1])
->>> s.plot.hist()  
+>>> s.plot.hist()
 ```
 
 --------------------------------
@@ -55602,7 +55602,7 @@ Source: https://github.com/pola-rs/polars/blob/main/docs/source/user-guide/io/ex
 Installs the external parsing engines needed to read Excel files in Python. Polars defaults to fastexcel for performance, with xlsx2csv and openpyxl available as alternatives.
 
 ```shell
-$ pip install fastexcel xlsx2csv openpyxl 
+$ pip install fastexcel xlsx2csv openpyxl
 ```
 
 --------------------------------
@@ -56032,7 +56032,7 @@ Generate a faceted bar chart using day, value, and group columns.
 ... )
 >>> df.plot.bar(
 ...     x="day", y="value", color="day", column="group"
-... )  
+... )
 ```
 
 --------------------------------
@@ -60644,7 +60644,7 @@ Fills the background color for rows meeting a specific condition, such as matchi
 >>> df.style.tab_style(
 ...     style.fill("yellow"),
 ...     loc.body(rows=pl.col("measure_a") == pl.col("measure_a").max()),
-... )  
+... )
 ```
 
 --------------------------------
@@ -64230,7 +64230,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Formats numeric values in a specified column to a set number of decimal places.
 
 ```pycon
->>> df.style.fmt_number("measure_b", decimals=2)  
+>>> df.style.fmt_number("measure_b", decimals=2)
 ```
 
 --------------------------------
@@ -65949,7 +65949,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Emphasizes the specified column as row names (stub) in the styled table.
 
 ```pycon
->>> df.style.tab_stub(rowname_col="site_id")  
+>>> df.style.tab_stub(rowname_col="site_id")
 ```
 
 --------------------------------
@@ -66611,7 +66611,7 @@ Syntactic sugar for calculating the quantile of a column or expression.
 ### quantile(column, quantile[, interpolation])
 
 #### Description
-Syntactic sugar for `pl.col("foo").quantile(..)`. 
+Syntactic sugar for `pl.col("foo").quantile(..)`.
 
 #### Parameters
 - **column**: Column name or expression.
@@ -67758,7 +67758,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Generates an interactive kernel density estimation (KDE) area plot for the series.
 
 ```python
->>> s.plot.kde()  
+>>> s.plot.kde()
 ```
 
 --------------------------------
@@ -68231,7 +68231,7 @@ Construct a DataFrame and generate an interactive scatter plot mapped by length,
 ...         "species": ["setosa", "setosa", "versicolor"],
 ...     }
 ... )
->>> df.plot.point(x="length", y="width", color="species")  
+>>> df.plot.point(x="length", y="width", color="species")
 ```
 
 --------------------------------
@@ -70004,7 +70004,7 @@ Customize the x-axis title in a point plot using Altair's X encoding helper.
 >>> import altair as alt
 >>> df.plot.point(
 ...     x=alt.X("length", title="Length"), y="width", color="species"
-... )  
+... )
 ```
 
 --------------------------------
@@ -70212,7 +70212,7 @@ Source: https://github.com/pola-rs/polars/blob/main/docs/source/user-guide/io/ex
 Installs the external parsing engines needed to read Excel files in Python. Polars defaults to fastexcel for performance, with xlsx2csv and openpyxl available as alternatives.
 
 ```shell
-$ pip install fastexcel xlsx2csv openpyxl 
+$ pip install fastexcel xlsx2csv openpyxl
 ```
 
 --------------------------------
@@ -71811,7 +71811,7 @@ Places a high-level label (spanner) across columns matching a selector pattern.
 ```pycon
 >>> df.style.tab_spanner(
 ...     "Measures", cs.starts_with("measure")
-... )  
+... )
 ```
 
 --------------------------------
@@ -74963,7 +74963,7 @@ Initializes a Series and generates an interactive histogram using binned values.
 
 ```python
 >>> s = pl.Series([1, 4, 4, 6, 2, 4, 3, 5, 5, 7, 1])
->>> s.plot.hist()  
+>>> s.plot.hist()
 ```
 
 --------------------------------
@@ -76744,7 +76744,7 @@ Source: https://github.com/pola-rs/polars/blob/main/py-polars/docs/source/refere
 Generate a stacked bar chart mapping color to the grouping column.
 
 ```python
->>> df.plot.bar(x="day", y="value", color="group")  
+>>> df.plot.bar(x="day", y="value", color="group")
 ```
 
 --------------------------------
