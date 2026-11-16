@@ -341,7 +341,7 @@ Baseball researchers, data engineers, and automated agent pipelines operate acro
 
 ### Context
 1. **Lahman Database Distribution Limitations:**
-   The legacy `chadwickbureau/baseballdatabank` repository is defunct and discontinued at 2021, while the official Society for American Baseball Research (SABR) distribution utilizes `sabr.app.box.com` which employs dynamic session tokens, breaking automated scrapers. 
+   The legacy `chadwickbureau/baseballdatabank` repository is defunct and discontinued at 2021, while the official Society for American Baseball Research (SABR) distribution utilizes `sabr.app.box.com` which employs dynamic session tokens, breaking automated scrapers.
 2. **Chadwick Register Upstream Sharding:**
    Upstream `chadwickbureau/register` deprecated and removed the monolithic `data/people.csv` (returning HTTP 404), replacing it with 16 hexadecimal partitions (`people-0.csv` through `people-f.csv`) alongside metadata files `names.csv` (nicknames and aliases) and `links.csv` (external entity URLs).
 
@@ -1285,6 +1285,3 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Decision:** (1) a plan stage has `options` (a table of name = value, turned into the same option pairs as `ingest --option`) and `order` (`newest-first` default, or `oldest-first`); (2) built-in plans `minors` (MLB games of every level, 2021 to now) and `minors-all` (from 2008); (3) `baseballpy.download(source, seasons, datasets, **options)`, `update()` and `backfill(plan)` in `baseballpy/easy.py`: plan, check the disk, run through the same adapters and runner as the commands, sync the DuckDB views when something was stored and return the report; the commands and the functions share the planning and running code, not copies; (4) the docs lead with the few commands and Python lines.
 - **Consequences:** a user gets any slice of the lake with one call or one command, the same for every user; resumable and disk-guarded; the job order of a plan changed to newest first (the budget and resume tests fix `oldest-first`). The functions raise `ValueError` (`BackfillError` is one) for a bad source or plan, so a script can catch one error type.
 - **Alternatives rejected:** shell scripts per task (they are not in the package and differ by machine); a second download engine in Python (two code paths); a global default of oldest-first (the owner prefers recent seasons).
-
-
-

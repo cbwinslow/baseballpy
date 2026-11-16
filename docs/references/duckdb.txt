@@ -1964,7 +1964,7 @@ SELECT * FROM sazgar_memory(unit := 'GB');
 -- Returns: total_memory, used_memory, available_memory, usage_percent
 
 -- Check if system is under memory pressure
-SELECT 
+SELECT
     CASE WHEN usage_percent > 90 THEN 'CRITICAL'
          WHEN usage_percent > 70 THEN 'WARNING'
          ELSE 'OK' END as status,
@@ -1980,7 +1980,7 @@ SELECT * FROM sazgar_cpu();
 -- Returns: core_id, frequency_mhz, usage_percent, vendor, brand
 
 -- Average CPU usage across all cores
-SELECT 
+SELECT
     COUNT(*) as num_cores,
     ROUND(AVG(usage_percent), 2) as avg_usage,
     MAX(usage_percent) as max_core_usage
@@ -1999,7 +1999,7 @@ SELECT * FROM sazgar_disks(unit := 'GB');
 -- Returns: name, mount_point, file_system, total_space, used_space, available_space, usage_percent
 
 -- Find disks running low on space
-SELECT name, mount_point, 
+SELECT name, mount_point,
        ROUND(usage_percent, 1) || '%' as used,
        available_space || ' GB free' as free_space
 FROM sazgar_disks(unit := 'GB')
@@ -2015,7 +2015,7 @@ SELECT * FROM sazgar_network();
 -- Returns: interface, mac_address, rx_bytes, tx_bytes, rx_packets, tx_packets, rx_errors, tx_errors
 
 -- Network traffic in MB
-SELECT 
+SELECT
     interface,
     ROUND(rx_bytes / 1048576.0, 2) as rx_mb,
     ROUND(tx_bytes / 1048576.0, 2) as tx_mb
@@ -2104,8 +2104,8 @@ FROM brew_packages()
 WHERE dependencies IS NOT NULL
 ORDER BY name;
 
-SELECT 
-  tap, 
+SELECT
+  tap,
   count(*) as package_count
 FROM brew_packages
 GROUP BY tap
@@ -6702,18 +6702,18 @@ Source: https://github.com/duckdb/duckdb-web/blob/main/_posts/2024-01-26-multi-d
 Running EXPLAIN on the cross-database join shows how DuckDB combines scans from SQLite, Postgres, and MySQL into the final result.
 
 ```text
-┌───────────────────────────┐                                                          
-│         PROJECTION        │                                                          
-│   ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   │                                                          
-│         first_name        │                                                          
-│         last_name         │                                                          
-└─────────────┬─────────────┘                                                          
-┌─────────────┴─────────────┐                                                          
-│         HASH_JOIN         │                                                          
-│   ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   │                                                          
-│           INNER           │                                                          
-│     film_id = film_id     ├───────────────────────────────────────────┐              
-└─────────────┬─────────────┘                                           │              
+┌───────────────────────────┐
+│         PROJECTION        │
+│   ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   │
+│         first_name        │
+│         last_name         │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         HASH_JOIN         │
+│   ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   │
+│           INNER           │
+│     film_id = film_id     ├───────────────────────────────────────────┐
+└─────────────┬─────────────┘                                           │
 ┌─────────────┴─────────────┐                             ┌─────────────┴─────────────┐
 │         HASH_JOIN         │                             │           FILTER          │
 │   ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   │                             │   ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   │
@@ -7626,10 +7626,10 @@ FROM GRAPH_TABLE (snb
 )
 LIMIT 1;
 
-FROM GRAPH_TABLE (snb 
-  MATCH p = ANY SHORTEST (a:person)-[k:knows]->{1,3}(b:Person) 
+FROM GRAPH_TABLE (snb
+  MATCH p = ANY SHORTEST (a:person)-[k:knows]->{1,3}(b:Person)
   COLUMNS (a.id, b.id, path_length(p))
-) 
+)
 LIMIT 1;
 
 FROM local_clustering_coefficient(snb, person, knows);
@@ -10646,17 +10646,17 @@ CALL dq_run_tests();
 
 -- View test results
 SELECT t.test_name, r.status, r.executed_at
-  FROM dq_tests t 
+  FROM dq_tests t
   LEFT JOIN dq_test_results r ON t.test_id = r.test_id;
 
--- View test results of the last execution 
+-- View test results of the last execution
 SELECT t.test_name, r.status, r.executed_at
-  FROM dq_tests t 
+  FROM dq_tests t
   LEFT JOIN dq_test_results r ON t.test_id = r.test_id
   QUALIFY ROW_NUMBER() OVER (PARTITION BY t.test_name ORDER BY r.executed_at DESC NULLS LAST) = 1;
 
--- view all compiled sql of the last execution 
-SELECT t.test_name, r.status, r.compiled_sql  FROM dq_tests t 
+-- view all compiled sql of the last execution
+SELECT t.test_name, r.status, r.compiled_sql  FROM dq_tests t
   LEFT JOIN dq_test_results r ON t.test_id = r.test_id
   QUALIFY ROW_NUMBER() OVER (PARTITION BY t.test_name ORDER BY r.executed_at DESC NULLS LAST) = 1;
 ```
@@ -17164,7 +17164,7 @@ en_passant_move_count AS (
     SELECT
         SUM(
             move_details(movedata).filter(lambda m: m.is_en_passant).length()
-        ) AS nb_ep_moves 
+        ) AS nb_ep_moves
     FROM lichess_2013_01
 )
 
@@ -17985,7 +17985,7 @@ import TabularData
 
 extension ExoplanetStore {
 
-    // Retrieves the number of exoplanets discovered by year  
+    // Retrieves the number of exoplanets discovered by year
     func groupedByDiscoveryYear() async throws -> DataFrame {
 
         // Issue the query we described above
@@ -19561,10 +19561,10 @@ FROM GRAPH_TABLE (snb
 )
 LIMIT 1;
 
-FROM GRAPH_TABLE (snb 
-  MATCH p = ANY SHORTEST (a:person)-[k:knows]->{1,3}(b:Person) 
+FROM GRAPH_TABLE (snb
+  MATCH p = ANY SHORTEST (a:person)-[k:knows]->{1,3}(b:Person)
   COLUMNS (a.id, b.id, path_length(p))
-) 
+)
 LIMIT 1;
 
 FROM local_clustering_coefficient(snb, person, knows);
@@ -22570,7 +22570,7 @@ FROM read_eth(
     'USDT',
     'Transfer',
     20034078,
-    20034100, 
+    20034100,
     blocks_per_thread = 1
 );
 ```
@@ -28848,7 +28848,7 @@ Builds a comprehensive system health view by combining hostname, memory usage pe
 -- ════════════════════════════════════════════════════════════════════
 
 -- Create a comprehensive system health view
-SELECT 
+SELECT
     (SELECT hostname FROM sazgar_system()) as host,
     (SELECT ROUND(usage_percent, 1) FROM sazgar_memory(unit := 'GB')) as mem_pct,
     (SELECT ROUND(AVG(usage_percent), 1) FROM sazgar_cpu()) as cpu_pct,
@@ -31215,13 +31215,13 @@ CREATE OR REPLACE SECRET dynamo_secret (
   TYPE dynamodb
 );
 
--- Query a DynamoDB table called 'orders'. The table has a GSI on status, to which this query restricts results. 
+-- Query a DynamoDB table called 'orders'. The table has a GSI on status, to which this query restricts results.
 FROM dynamodb_scan('orders')
 WHERE status='ACTIVE';
 
 -- Perform a SUM aggregation on a full table, without a GSI or PK. This requires setting allow_full_scan to true.
-SELECT SUM(amount) 
-FROM dynamodb_scan('orders', allow_full_scan=True) 
+SELECT SUM(amount)
+FROM dynamodb_scan('orders', allow_full_scan=True)
 WHERE createdAt::timestamp > '2026-05-01 00:00:00'::TIMESTAMP;
 
 ```
@@ -31241,7 +31241,7 @@ import TabularData
 
 extension ExoplanetStore {
 
-    // Retrieves the number of exoplanets discovered by year  
+    // Retrieves the number of exoplanets discovered by year
     func groupedByDiscoveryYear() async throws -> DataFrame {
 
         // Issue the query we described above
@@ -36155,7 +36155,7 @@ Source: https://github.com/duckdb/duckdb-web/blob/main/_posts/2025-03-28-using-d
 Creates the `services` and `stations` tables from remote CSV files if they do not exist. Call this function after establishing a DuckDB connection to load the required data.
 
 ```python
-def prepare_duckdb(duckdb_conn):  
+def prepare_duckdb(duckdb_conn):
 
     duckdb_conn.sql("""
         create table if not exists services as
@@ -47177,7 +47177,7 @@ Source: https://github.com/duckdb/duckdb-web/blob/main/_posts/2025-03-28-using-d
 Creates the `services` and `stations` tables from remote CSV files if they do not exist. Call this function after establishing a DuckDB connection to load the required data.
 
 ```python
-def prepare_duckdb(duckdb_conn):  
+def prepare_duckdb(duckdb_conn):
 
     duckdb_conn.sql("""
         create table if not exists services as
@@ -48308,7 +48308,7 @@ Combines the stations and services relations into a single query that joins on s
 
 ```python
 def get_stations_services_query(duckdb_conn):
-    
+
     # create a relation for the station selection
     stations_selection = ...
 
@@ -56001,8 +56001,8 @@ SISTAT_Read(table_id, language := 'en')
 
 ### Usage Example
 ```sql
-SELECT * 
-FROM SISTAT_Read('05C1002S', language := 'en') 
+SELECT *
+FROM SISTAT_Read('05C1002S', language := 'en')
 LIMIT 10;
 ```
 ```
@@ -57505,7 +57505,7 @@ SELECT jwt_decode_payload('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0
 
 ##### Extract claim from token payload
 ```sql
-SELECT 
+SELECT
   json_extract(
     jwt_decode_payload('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'),
     '$.sub'
@@ -59598,16 +59598,16 @@ SELECT * FROM delta_share_list_all_tables('my_share');              -- every tab
 SELECT * FROM delta_share_list('my_share', 'my_schema', 'my_table');-- a table's columns
 
 -- Reading Tables
-SELECT * FROM delta_share_read('my_share', 'my_schema', 'my_table') 
-WHERE year = 2024 
+SELECT * FROM delta_share_read('my_share', 'my_schema', 'my_table')
+WHERE year = 2024
 LIMIT 100;
 
 -- Time Travel
-SELECT count(*) 
+SELECT count(*)
 FROM delta_share_read('my_share', 'my_schema', 'my_table', '2024-04-09 12:00:00');
 
 -- Change Data Feed (CDF)
-SELECT * 
+SELECT *
 FROM delta_share_change_data_feed('my_share', 'my_schema', 'my_table', 10);
 ```
 
@@ -66657,7 +66657,7 @@ FROM read_eth(
     'USDT',
     'Transfer',
     20034078,
-    20034100, 
+    20034100,
     blocks_per_thread = 1
 );
 ```
@@ -67802,8 +67802,8 @@ SISTAT_Read(table_id, language := 'en')
 
 ### Usage Example
 ```sql
-SELECT * 
-FROM SISTAT_Read('05C1002S', language := 'en') 
+SELECT *
+FROM SISTAT_Read('05C1002S', language := 'en')
 LIMIT 10;
 ```
 ```
@@ -68161,7 +68161,7 @@ import TabularData
 
 extension ExoplanetStore {
 
-    // Retrieves the number of exoplanets discovered by year  
+    // Retrieves the number of exoplanets discovered by year
     func groupedByDiscoveryYear() async throws -> DataFrame {
 
         // Issue the query we described above
@@ -72752,12 +72752,12 @@ Table function
 
 ### Example
 ```sql
-SELECT 
-  ResellerKey, 
-  "Business Type", 
-  Reseller, 
-  "Reseller ID" 
-FROM pbix_read('Adventure Works DW 2020.pbix','Reseller') 
+SELECT
+  ResellerKey,
+  "Business Type",
+  Reseller,
+  "Reseller ID"
+FROM pbix_read('Adventure Works DW 2020.pbix','Reseller')
 LIMIT 10;
 ```
 ```
