@@ -52,8 +52,8 @@ currency = uses the shared `is_current()` check; fingerprints = stores upstream 
 | Change | Tasks done | Tasks open | Open leaf tasks |
 |---|---|---|---|
 | `column-descriptions-retrosheet-and-leaderboards` | 5 | 4 | 1.3, 3.1 |
-| `compact-one-writer` | 5 | 3 | 2.2, 2.3, 2.4 |
-| `download-throughput` | 8 | 1 | 2.4 |
+| `compact-one-writer` | 7 | 1 | 2.4 |
+| `download-throughput` | 9 | 0 | none |
 | `fangraphs-and-bref` | 5 | 2 | 2.2, 3.2 |
 | `finish-mlb-history` | 15 | 3 | 2.1, 4.1, 5.1 |
 | `historical-backfill-plan` | 6 | 4 | 3.1, 3.2, 3.3 |

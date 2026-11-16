@@ -18,9 +18,9 @@ done or in progress by hand; they map the work and keep its evidence).
   Done when output is pasted in `design.md` and the change is archived.
 - [x] 2.1 Repair `mlb_api.game_boxscore_players` season 2019 (rows rebuilt from the saved raw; 225,837
   rows, 2,965 games, 0 duplicates on the registered key). Done: evidence in `design.md` section 6.
-- [ ] 2.2 Repair the three season-2023 orphans (`team_roster_all_time`, `team_roster_coach`,
+- [x] 2.2 (done 2026-11-15: `catalog layout --source mlb_api` printed "Layout is clean.") Repair the three season-2023 orphans (`team_roster_all_time`, `team_roster_coach`,
   `award_recipients`). Done when `catalog layout --source mlb_api` shows no ORPHAN_COMPACT.
-- [ ] 2.3 Compact the eight mixed-shape MLB game tables one at a time with row-count checks.
+- [x] 2.3 (done 2026-11-15: every MLB game table is segments; layout clean) Compact the eight mixed-shape MLB game tables one at a time with row-count checks.
   Done when `catalog layout --source mlb_api` shows no MIXED_SCHEMA.
 - [ ] 2.4 The 2011 stage: probe the HTTP 500 games and record them as empty with evidence.
   Done when the queue plan no longer retries them.

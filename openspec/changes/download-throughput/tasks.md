@@ -7,5 +7,5 @@
 - [x] 2.2 deferred manifest saves in bulk runs and an index for the name-clash check, in place of one full-manifest copy and rewrite per chunk (ADR 93)
 - [x] 2.2b batched chunk writes: many games in one Parquet file per dataset with the same resume guarantees (own OpenSpec change `batched-chunk-writes`, ADR); worth about 110 ms of the remaining 520 ms per game
 - [x] 2.3 SUPERSEDED by response-log-segments (ADR 95: a response is parsed once, no per-game small files); not done. cheaper normalization of the per-game payloads (414 ms per game without any storage). Normalizing in 8 worker processes gave only 100 ms (630 to 530 ms per game) for about 2.4 GB more committed memory, so it was not kept; look for less Python per record instead
-- [ ] 2.4 owner decision: worker processes that share the host's rate limit (the host lock allows one downloader per host today)
+- [x] 2.4 CLOSED 2026-11-15: not needed, segments made per-game work cheap (ADR 95, 136). owner decision: worker processes that share the host's rate limit (the host lock allows one downloader per host today)
 - [x] 2.5 SUPERSEDED by response-log-segments (ADR 95); not done. after 2.2 and 2.3, rerun `baseballpy speed` during a season and record the requests per second before and after
