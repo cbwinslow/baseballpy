@@ -5,12 +5,19 @@ on:
     branches: [main]
   pull_request:
 
+# Cancel in-progress runs on the same branch or pull request when a new commit is pushed.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    # Guard against stuck linting processes.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
@@ -22,6 +29,8 @@ jobs:
 
   types:
     runs-on: ubuntu-latest
+    # Guard against type checker hangs.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
@@ -32,6 +41,8 @@ jobs:
 
   test:
     runs-on: ${{ matrix.os }}
+    # Guard against test suite deadlocks across OS/Python combinations.
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -44,11 +55,14 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: uv sync --all-extras
       # The socket guard is on by default (pyproject addopts); live tests are opt-in.
-      - run: uv run pytest -m "not live" --cov=baseballpy --cov-fail-under=90
+      # Report the 25 slowest tests to monitor runtime performance regressions.
+      - run: uv run pytest -m "not live" --durations=25 --cov=baseballpy --cov-fail-under=90
 
   # Service containers exist only on Linux runners, so the real-PostgreSQL tests run in this job.
   test-postgres:
     runs-on: ubuntu-latest
+    # Guard against service container or database migration timeouts.
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:16
@@ -69,6 +83,8 @@ jobs:
 
   docs:
     runs-on: ubuntu-latest
+    # Guard against doc generation and mkdocs build timeouts.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
@@ -83,6 +99,8 @@ jobs:
 
   specs:
     runs-on: ubuntu-latest
+    # Guard against specification validator hangs.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -93,8 +111,23 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    # Guard against packaging or twine check hangs.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
       - run: uv build
       - run: uvx twine check dist/*
+
+  # Verify that non-Python data files and plans are included in the distribution wheel.
+  package-data:
+    runs-on: ubuntu-latest
+    # Guard against wheel inspection timeouts.
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - run: uv build
+      - run: python -c "import glob, sys, zipfile; wheels = glob.glob('dist/*.whl'); assert wheels, 'No wheel found in dist/'; z = zipfile.ZipFile(wheels[0]); req = ['baseballpy/core/sources_lock.json', 'baseballpy/sources/mlb_api/unavailable_games.json', 'baseballpy/ingest/plans/daily.toml', 'baseballpy/ingest/plans/full.toml', 'baseballpy/ingest/plans/minors.toml', 'baseballpy/ingest/plans/minors-all.toml']; m = [p for p in req if p not in z.namelist()]; (print('Missing package data in wheel:', m), sys.exit(1)) if m else print('All package data verified in wheel')"
