@@ -35,6 +35,7 @@ from baseballpy.core.segments import (
     DatasetRows,
     SegmentWriter,
 )
+from baseballpy.core.segrebuild import segment_units
 from baseballpy.sources.mlb_api.endpoints import MLB_BASE_URL, SUPPORTED, MlbEndpoint
 from baseballpy.sources.mlb_api.generic import (
     EndpointReport,
@@ -185,6 +186,8 @@ class GameSegmentReport:
     failed: dict[int, str] = field(default_factory=dict)
     #: games skipped because the provider is known to refuse them (``known_unavailable_games``): not requested, not failed
     unavailable: list[int] = field(default_factory=list)
+    #: stored games that lacked some URLs (converted from partial old raw files) and were completed by this call
+    completed: int = 0
     segments: int = 0
     #: rows cut per dataset by this call (a game replayed from the journal counts again)
     rows: dict[str, int] = field(default_factory=dict)
@@ -250,6 +253,56 @@ def _fetch_game(
     return responses
 
 
+def _complete_stored_games(
+    extractor: MlbEndpointExtractor,
+    writer: SegmentWriter,
+    groups: Sequence[UrlGroup],
+    game_pks: Sequence[int],
+    report: GameSegmentReport,
+    size: int,
+) -> None:
+    """Fetch the URLs that stored games of ``game_pks`` lack and refresh their segments.
+
+    A game stored from partial old raw files (the conversion keeps only what the old workflow had downloaded)
+    is whole only when every URL has an answer on record: a 200, or a 404 of a URL that tolerates it. Only the
+    missing URLs are requested; a refresh rewrites the segment with the old and the new answers (raw keeps
+    every old row). A game whose missing URLs cannot be fetched stays as it was and is reported failed.
+    """
+    wanted = {str(pk) for pk in game_pks}
+    for segment, line in sorted(writer.log.latest_lines().items()):
+        if not wanted & set(line["units"]):
+            continue
+        units = {u: list(r) for u, r in segment_units(writer.log, line, game_unit).items()}
+        lacking: dict[str, list[UrlGroup]] = {}
+        for unit, responses in units.items():
+            if unit not in wanted:
+                continue
+            have = {r.url for r in responses}
+            missing = [g for g in groups if g.url(int(unit)) not in have]
+            if missing:
+                lacking[unit] = missing
+        if not lacking:
+            continue
+        with ThreadPoolExecutor(max_workers=size) as pool:
+            futures = {
+                unit: pool.submit(_fetch_game, extractor, missing, int(unit))
+                for unit, missing in lacking.items()
+            }
+            changed = False
+            for unit, future in futures.items():
+                outcome = future.result()
+                if isinstance(outcome, str):
+                    report.failed[int(unit)] = f"completing the stored game: {outcome}"
+                    continue
+                units[unit].extend(outcome)
+                report.completed += 1
+                changed = True
+        if changed:
+            rows_before = dict(report.rows)
+            writer.refresh(segment, units)
+            report.rows = rows_before  # the refresh re-cuts the whole segment; its rows are not new
+
+
 def ingest_game_segments(
     extractor: MlbEndpointExtractor,
     season: int,
@@ -279,13 +332,14 @@ def ingest_game_segments(
     writer = SegmentWriter(
         extractor.cache_config, SOURCE, season, tally, row_group_units=row_group_units
     )
+    size = max(1, workers or extractor.http.limit_for(STATSAPI_HOST))
+    _complete_stored_games(extractor, writer, groups, game_pks, report, size)
     stored = writer.stored()
     unavailable = known_unavailable_games()
     report.unavailable = [pk for pk in game_pks if pk in unavailable and str(pk) not in stored]
     skipped = set(report.unavailable)
     todo = [pk for pk in game_pks if str(pk) not in stored and pk not in skipped]
     report.already = len(game_pks) - len(todo) - len(skipped)
-    size = max(1, workers or extractor.http.limit_for(STATSAPI_HOST))
     open_since = clock()
     open_games = len(
         writer.log.open_units()

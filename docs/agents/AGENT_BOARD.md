@@ -22,6 +22,14 @@ This board coordinates parallel and multi-session AI agents (Claude Code, Gemini
 
 ## Recent Completed Handoffs
 
+- **2026-11-16 04:28 UTC [blain]:**
+  - **Tasks:** `B-478`.
+  - **Summary:** easy-downloads: plan options and newest-first order, minors plans, Python download/update/backfill (ADR 144)
+
+- **2026-11-16 04:21 UTC [blain]:**
+  - **Tasks:** `B-477`.
+  - **Summary:** finish-mlb-history 7.1 code and records done; real lake completion running (not yet verified)
+
 - **2026-11-16 01:29 UTC [blain]:**
   - **Tasks:** `B-404`.
   - **Summary:** compact-one-writer 2.4: the two 2011 games listed as unavailable with evidence (ADR 142); change archived

@@ -62,10 +62,23 @@ class FakeAdapter:
         return JobResult(job=job, status=JobStatus.COMPLETED, rows=10)
 
 
+#: these tests are about the disk budget and resuming, so the season order is fixed to the old one
 PLAN: dict[str, Any] = {
     "stage": [
-        {"name": "a", "sources": ["fake"], "seasons": "2000-2001", "estimate_gb": 1},
-        {"name": "b", "sources": ["fake"], "seasons": "2002", "estimate_gb": 1},
+        {
+            "name": "a",
+            "sources": ["fake"],
+            "seasons": "2000-2001",
+            "estimate_gb": 1,
+            "order": "oldest-first",
+        },
+        {
+            "name": "b",
+            "sources": ["fake"],
+            "seasons": "2002",
+            "estimate_gb": 1,
+            "order": "oldest-first",
+        },
     ]
 }
 
@@ -141,7 +154,9 @@ def test_the_run_stops_when_free_space_falls_below_the_floor() -> None:
     disk = [6 * GB]
     adapter = FakeAdapter(disk, cost=2 * GB)
     report = run_backfill(
-        parse_plan({"stage": [{"sources": ["fake"], "seasons": "2000-2002"}]}),
+        parse_plan(
+            {"stage": [{"sources": ["fake"], "seasons": "2000-2002", "order": "oldest-first"}]}
+        ),
         {"fake": adapter},
         free_bytes=lambda: disk[0],
         min_free_gb=5,

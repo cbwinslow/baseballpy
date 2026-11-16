@@ -33,7 +33,8 @@ from baseballpy.ingest.selection import parse_seasons
 from baseballpy.ingest.types import Job, JobResult, JobStatus, Selection
 
 GB = 1_000_000_000
-_STAGE_KEYS = {"name", "sources", "seasons", "datasets", "limit", "estimate_gb"}
+_STAGE_KEYS = {"name", "sources", "seasons", "datasets", "limit", "estimate_gb", "options", "order"}
+SEASON_ORDERS = ("newest-first", "oldest-first")
 
 
 class BackfillError(ValueError):
@@ -51,6 +52,10 @@ class Stage:
     limit: int | None = None
     #: expected growth of the lake in GB, used by the free-space pre-flight
     estimate_gb: float = 0.0
+    #: source switches, the same ``name = value`` pairs as ``ingest --option`` (for example ``sports = "all"``)
+    options: tuple[tuple[str, str], ...] = ()
+    #: which season goes first: recent seasons matter most, so ``newest-first`` is the default
+    order: str = "newest-first"
 
 
 @dataclass(frozen=True)
@@ -165,6 +170,10 @@ def parse_plan(data: Mapping[str, Any]) -> BackfillPlan:
         estimate = raw.get("estimate_gb", 0.0)
         if not isinstance(estimate, int | float) or estimate < 0:
             raise BackfillError(f"stage {index}: `estimate_gb` must be a number >= 0")
+        options = _parse_options(raw.get("options", {}), index)
+        order = str(raw.get("order", "newest-first"))
+        if order not in SEASON_ORDERS:
+            raise BackfillError(f"stage {index}: `order` must be one of {', '.join(SEASON_ORDERS)}")
         stages.append(
             Stage(
                 name=str(raw.get("name", f"stage {index}")),
@@ -173,9 +182,31 @@ def parse_plan(data: Mapping[str, Any]) -> BackfillPlan:
                 datasets=tuple(raw.get("datasets", ())),
                 limit=limit,
                 estimate_gb=float(estimate),
+                options=options,
+                order=order,
             )
         )
     return BackfillPlan(tuple(stages))
+
+
+def _parse_options(raw: Any, index: int) -> tuple[tuple[str, str], ...]:
+    """The ``options`` table of a stage as (name, text) pairs; numbers and booleans become text."""
+    if not isinstance(raw, Mapping):
+        raise BackfillError(f"stage {index}: `options` must be a table of name = value pairs")
+    pairs = []
+    for name, value in raw.items():
+        if not isinstance(name, str) or not name.strip():
+            raise BackfillError(f"stage {index}: options: every option needs a name")
+        if isinstance(value, bool):
+            text = "true" if value else "false"
+        elif isinstance(value, str | int | float):
+            text = str(value)
+        else:
+            raise BackfillError(
+                f"stage {index}: options: {name!r} must be text, a number or a boolean"
+            )
+        pairs.append((name.strip(), text))
+    return tuple(pairs)
 
 
 def select_stages(plan: BackfillPlan, wanted: Sequence[str]) -> BackfillPlan:
@@ -232,11 +263,12 @@ def plan_stage(stage: Stage, adapters: Mapping[str, IngestAdapter], *, refresh: 
             else parse_seasons(stage.seasons, all_seasons=adapter.all_seasons)
         )
         selection = Selection(
-            seasons=seasons,
+            seasons=tuple(sorted(seasons, reverse=stage.order == "newest-first")),
             sources=(source,),
             datasets=_datasets_for(stage, source),
             refresh=refresh,
             limit=stage.limit,
+            options=stage.options,
         )
         jobs.extend(plan_jobs({source: adapter}, selection))
     return jobs

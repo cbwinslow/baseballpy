@@ -118,6 +118,13 @@ def _committed_rows(log: ResponseLog) -> dict[str, int]:
     return counts
 
 
+def segment_units(
+    log: ResponseLog, line: Mapping[str, object], unit_of: UnitResolver
+) -> Mapping[str, Sequence[Response]]:
+    """The units of a committed segment with their newest response per URL, read from its raw file."""
+    return _units_of(log, line, unit_of)
+
+
 def rebuild_season(
     config: LakeConfig,
     source: str,

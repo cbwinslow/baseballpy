@@ -1,0 +1,11 @@
+# Built-in plan "minors-all": the MLB games of every level back to 2008, newest season first (about 100 GB and two
+# days in all; the minor-league games before 2021 were never in the lake). Run `baseballpy backfill minors-all
+# --dry-run` first; on a small disk, run `minors` first and this later, or set BASEBALLPY_HOME to a bigger drive.
+
+[[stage]]
+name = "mlb-api-all-levels"
+sources = ["mlb_api"]
+datasets = ["games"]
+seasons = "2008-current"
+estimate_gb = 100.0
+options = { sports = "all" }

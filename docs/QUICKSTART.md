@@ -34,6 +34,37 @@ First command per source (add `--dry-run` to preview):
 Tip: `baseballpy status` shows what is running or held, and `baseballpy catalog list` lists every dataset with
 its columns.
 
+### The whole thing in a few lines (Python or command line)
+
+Everything the commands do is also one Python call (`baseballpy.download`, `update`, `backfill`): each plans the jobs,
+checks the disk, downloads politely, syncs the DuckDB views and returns a report, so you can read the data right away.
+
+```python
+import baseballpy
+
+baseballpy.download("statcast", seasons="2023-2024")  # one source, some seasons (newest first)
+baseballpy.download(
+    "mlb_api", seasons=2024, datasets=["games"], sports="all"
+)  # source switches as keywords
+baseballpy.update()  # this season of everything live
+baseballpy.backfill("full", min_free_gb=20)  # a whole plan, with a disk guard; rerun to resume
+df = baseballpy.read("statcast.pitches", seasons=2024)  # and use it
+```
+
+| I want | Command | Python |
+|---|---|---|
+| one source and seasons | `baseballpy ingest statcast -s 2023-2024` | `baseballpy.download("statcast", seasons="2023-2024")` |
+| this season of everything live | `baseballpy update` | `baseballpy.update()` |
+| every free source, whole history | `baseballpy backfill full --dry-run`, then without it | `baseballpy.backfill("full", dry_run=True)` |
+| the MLB games of every level since 2021 (minor leagues too) | `baseballpy backfill minors` | `baseballpy.backfill("minors")` |
+| the same back to 2008 (about 100 GB) | `baseballpy backfill minors-all` | `baseballpy.backfill("minors-all")` |
+| a plan that retries and repeats by itself | `baseballpy run full --every 1d` | (the command) |
+| live games as they are played | `baseballpy live` | (the command) |
+
+A plan is a short TOML file of stages (`sources`, `seasons`, `datasets`, `options`, `estimate_gb`); the built-in ones
+are `daily`, `full`, `minors` and `minors-all`. Every plan skips what the lake already holds, completes games that were
+stored partly, stops before the disk fills (`--min-free-gb`, `--max-gb`) and runs the newest season first.
+
 ---
 
 ## 0. Load data from the lake (two doors)

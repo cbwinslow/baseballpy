@@ -1,0 +1,12 @@
+# Built-in plan "minors": the MLB games of every level (the minor leagues too), from 2021 on, newest season first.
+# Statcast already has minor-league pitches from 2021; this adds the MLB feed, box scores and play-by-play of those
+# games. About 6 GB and 2 to 3 hours per season at the provider's rate limit (docs/BACKFILL.md). Resumable and
+# safe to stop: run `baseballpy backfill minors --dry-run` first, add `--min-free-gb 12` to keep room free.
+
+[[stage]]
+name = "mlb-api-all-levels"
+sources = ["mlb_api"]
+datasets = ["games"]
+seasons = "2021-current"
+estimate_gb = 28.0
+options = { sports = "all" }

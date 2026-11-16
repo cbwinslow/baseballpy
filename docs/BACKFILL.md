@@ -104,6 +104,32 @@ estimate_gb = 8.5
 Run it with `baseballpy backfill plan.toml --max-gb 15 --dry-run` first (it prints the stages and
 refuses to start when the free space would fall under the floor).
 
+## Built-in plans (2026-11-16)
+
+Run any of them with `baseballpy backfill NAME` (add `--dry-run` first) or from Python with `bp.backfill("NAME")`;
+`baseballpy run NAME` retries what fails and can repeat on a timer. Every plan skips what the lake holds, completes
+games that were stored partly, stops before the disk fills (`--min-free-gb`, `--max-gb`) and runs the newest season first
+(`order = "oldest-first"` in a stage reverses it).
+
+| Plan | What it gets | Size and time |
+|---|---|---|
+| `daily` (`baseballpy update`) | this season of Statcast and the MLB API, the live Kalshi and Polymarket markets | a few hundred MB, minutes |
+| `full` | Lahman, Chadwick, Retrosheet (all), Baseball-Reference, Statcast and the MLB API 2008 to now, the markets | see the table above; MLB API is the long stage |
+| `minors` | the MLB games of every level (minor leagues too), 2021 to now: feed, box scores, play-by-play | about 6 GB and 2 to 3 hours a season (measured on 2026: 10,800 games, 4.6 GB) |
+| `minors-all` | the same back to 2008 | about 100 GB and two days (the minor-league games before 2021 are not in a lake that started with the major leagues) |
+
+A stage can carry source switches: `options = { sports = "all" }` is `--option sports=all`. Example stage:
+
+```toml
+[[stage]]
+name = "mlb-api-all-levels"
+sources = ["mlb_api"]
+datasets = ["games"]
+seasons = "2021-current"
+estimate_gb = 28.0
+options = { sports = "all" }
+```
+
 ## Decisions only the owner can make
 
 1. **Permanent location of the lake** (`BASEBALLPY_HOME`): this PC lacks the space for stage 4, the

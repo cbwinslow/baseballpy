@@ -32,6 +32,7 @@ from baseballpy.core.protocols import (
     StreamExtractorProtocol,
 )
 from baseballpy.database import BaseballDatabase, connect_db, sync_database
+from baseballpy.easy import backfill, download, update
 from baseballpy.frames import scan, to_dataframe
 from baseballpy.sinks import (
     CompressionCodec,
@@ -238,6 +239,9 @@ __all__ = [
     "MigrationReport",
     "migrate_layout",
     "read",
+    "download",
+    "update",
+    "backfill",
     "scan",
     "sql",
     "to_dataframe",
