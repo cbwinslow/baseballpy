@@ -36,6 +36,22 @@ def _isolated_baseballpy_home(
     reset_config()
 
 
+@pytest.fixture(autouse=True)
+def _zero_retry_backoff(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
+    """Exercise the HTTP retries without sleeping seconds for them (test only).
+
+    ``HttpClient`` waits ``wait_exponential_jitter(multiplier=backoff_factor, max=60)`` between the retries of a
+    429/5xx/transport error; one fully retried HTTP 500 is about 24 s of pure sleep, and six of the slowest tests were
+    exactly such chains. The attempt counts, the ``Retry-After`` header and the host-wide pause are untouched.
+    """
+    import tenacity
+
+    from baseballpy.core import http
+
+    monkeypatch.setattr(http, "wait_exponential_jitter", lambda **kwargs: tenacity.wait_fixed(0))
+    yield
+
+
 def _git_blob_sha(content: bytes) -> str:
     """The SHA git gives a file of this content, so a changed file has a different blob SHA."""
     import hashlib
