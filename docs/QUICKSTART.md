@@ -57,7 +57,7 @@ df = baseballpy.read("statcast.pitches", seasons=2024)  # and use it
 | this season of everything live | `baseballpy update` | `baseballpy.update()` |
 | every free source, whole history | `baseballpy backfill full --dry-run`, then without it | `baseballpy.backfill("full", dry_run=True)` |
 | the MLB games of every level since 2021 (minor leagues too) | `baseballpy backfill minors` | `baseballpy.backfill("minors")` |
-| the same back to 2008 (about 100 GB) | `baseballpy backfill minors-all` | `baseballpy.backfill("minors-all")` |
+| the same back to 2008 (about 60 GB; slice it with `--seasons 2014-2019`) | `baseballpy backfill minors-all` | `baseballpy.backfill("minors-all")` |
 | a plan that retries and repeats by itself | `baseballpy run full --every 1d` | (the command) |
 | live games as they are played | `baseballpy live` | (the command) |
 

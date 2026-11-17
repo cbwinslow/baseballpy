@@ -28,6 +28,7 @@ from baseballpy.ingest.backfill import (
     plan_stage,
     run_backfill,
     select_stages,
+    with_seasons,
 )
 from baseballpy.ingest.runner import plan_jobs, run_jobs
 from baseballpy.ingest.selection import parse_seasons
@@ -122,6 +123,7 @@ def backfill(
     plan: BackfillPlan | str | Path = "full",
     *,
     stages: Sequence[str] = (),
+    seasons: str | None = None,
     max_gb: float | None = None,
     min_free_gb: float = 5.0,
     refresh: bool = False,
@@ -136,13 +138,16 @@ def backfill(
     """Run a plan: stages of sources, seasons and datasets, with a disk guard, stage by stage.
 
     ``plan`` is a built-in name (``daily``, ``full``, ``minors``, ``minors-all``), the path of a TOML plan file or a
-    :class:`BackfillPlan`. ``stages`` runs only the named stages. ``min_free_gb`` and ``max_gb`` stop the run before
-    the disk fills; running the plan again resumes (finished work is skipped). ``dry_run`` plans and runs nothing: the
-    report has each stage's planned job count. Raises :class:`BackfillError` when the plan does not fit the disk.
+    :class:`BackfillPlan`. ``stages`` runs only the named stages. ``seasons`` overrides the seasons for every stage
+    that has them and scales the size estimate. ``min_free_gb`` and ``max_gb`` stop the run before the disk fills;
+    running the plan again resumes (finished work is skipped). ``dry_run`` plans and runs nothing: the report has each
+    stage's planned job count. Raises :class:`BackfillError` when the plan does not fit the disk.
     """
     config = config or LakeConfig()
     chosen_plan = plan if isinstance(plan, BackfillPlan) else load_plan(plan)
     chosen_plan = select_stages(chosen_plan, stages)
+    if seasons is not None:
+        chosen_plan = with_seasons(chosen_plan, seasons)
     sources = sorted({s for stage in chosen_plan.stages for s in stage.sources})
     chosen = _adapters(sources, adapters)
     free = free_bytes or (lambda: free_disk_bytes(config.home))

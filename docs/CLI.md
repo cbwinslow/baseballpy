@@ -213,6 +213,9 @@ Options:
   --json                          Print one JSON object per stage.
   --stage TEXT                    Run only this stage of the plan (its name or 1-based number);
                                   repeatable.
+  --seasons TEXT                  Run the plan for these seasons instead (for example 2014-2019,
+                                  2024,current); the size estimate follows. Stages without seasons
+                                  are unchanged.
   --help                          Show this message and exit.
 ```
 
@@ -880,6 +883,9 @@ Options:
   --json                          Print one JSON object per stage.
   --stage TEXT                    Run only this stage of the plan (its name or 1-based number);
                                   repeatable.
+  --seasons TEXT                  Run the plan for these seasons instead (for example 2014-2019,
+                                  2024,current); the size estimate follows. Stages without seasons
+                                  are unchanged.
   --help                          Show this message and exit.
 ```
 

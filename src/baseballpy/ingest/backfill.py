@@ -20,9 +20,11 @@ the jobs, so a finished chunk is skipped by the adapter on a re-run and a plan r
 again. Disk use is measured as the drop in free space, because that is what the lake costs.
 """
 
+import re
 import tomllib
 from collections.abc import Callable, Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
+from datetime import date
 from importlib import resources
 from pathlib import Path
 from typing import Any
@@ -230,6 +232,66 @@ def select_stages(plan: BackfillPlan, wanted: Sequence[str]) -> BackfillPlan:
     return BackfillPlan(tuple(stage for i, stage in enumerate(plan.stages) if i in chosen))
 
 
+def _season_count(text: str | None, current_year: int | None = None) -> int | None:
+    """The number of seasons in ``text``, or None if unknown (e.g. 'all' or None)."""
+    if text is None:
+        return None
+    cleaned = text.strip()
+    if cleaned.lower() == "all":
+        return None
+    effective_year = date.today().year if current_year is None else current_year
+    expanded = re.sub(r"\bcurrent\b", str(effective_year), cleaned, flags=re.IGNORECASE)
+    try:
+        years = parse_seasons(expanded, all_seasons=lambda: [2000])
+    except ValueError:
+        return None
+    return len(years)
+
+
+def with_seasons(
+    plan: BackfillPlan, seasons: str, *, current_year: int | None = None
+) -> BackfillPlan:
+    """Return a copy of the plan with ``seasons`` overridden and estimates scaled.
+
+    For every stage that has ``seasons`` set, replaces it with ``seasons``. The stage's
+    ``estimate_gb`` is scaled by ``new_count / old_count`` (based on the number of seasons).
+    Stages with ``seasons = "all"``, or where the count cannot be determined, keep their
+    original estimate. Stages without ``seasons`` (reference tables) are left unchanged.
+
+    Args:
+        plan: The original backfill plan.
+        seasons: Season expression to apply to stages with seasons (for example "2014-2019").
+        current_year: Optional calendar year to use when resolving "current". Defaults to
+            today's calendar year.
+
+    Returns:
+        A new BackfillPlan with updated stages.
+
+    Raises:
+        BackfillError: If ``seasons`` is invalid.
+    """
+    effective_year = date.today().year if current_year is None else current_year
+    expanded = re.sub(r"\bcurrent\b", str(effective_year), seasons, flags=re.IGNORECASE)
+    try:
+        parse_seasons(expanded, all_seasons=lambda: [2000])
+    except ValueError as exc:
+        raise BackfillError(f"--seasons: {exc}") from exc
+
+    new_count = _season_count(seasons, current_year=effective_year)
+    new_stages: list[Stage] = []
+    for stage in plan.stages:
+        if stage.seasons is None:
+            new_stages.append(stage)
+            continue
+        old_count = _season_count(stage.seasons, current_year=effective_year)
+        if old_count is not None and old_count > 0 and new_count is not None and new_count > 0:
+            new_estimate = stage.estimate_gb * (new_count / old_count)
+        else:
+            new_estimate = stage.estimate_gb
+        new_stages.append(replace(stage, seasons=seasons, estimate_gb=new_estimate))
+    return BackfillPlan(tuple(new_stages))
+
+
 def _datasets_for(stage: Stage, source: str) -> tuple[str, ...]:
     """The stage's ``datasets`` that belong to ``source`` (``source:name`` or a bare name)."""
     names = []
@@ -348,4 +410,5 @@ __all__ = [
     "preflight",
     "run_backfill",
     "select_stages",
+    "with_seasons",
 ]

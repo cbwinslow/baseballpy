@@ -18,6 +18,7 @@ from baseballpy.ingest.backfill import (
     plan_stage,
     run_backfill,
     select_stages,
+    with_seasons,
 )
 from baseballpy.ingest.types import JobStatus
 from baseballpy.sources.adapters import register_all_adapters
@@ -75,6 +76,15 @@ def _print_plan(plan: BackfillPlan, counts: dict[str, int], free_bytes: int) -> 
     multiple=True,
     help="Run only this stage of the plan (its name or 1-based number); repeatable.",
 )
+@click.option(
+    "--seasons",
+    type=str,
+    default=None,
+    help=(
+        "Run the plan for these seasons instead (for example 2014-2019, 2024,current); "
+        "the size estimate follows. Stages without seasons are unchanged."
+    ),
+)
 @click.pass_context
 def backfill_cmd(
     ctx: click.Context,
@@ -86,6 +96,7 @@ def backfill_cmd(
     concurrency: int,
     as_json: bool,
     stages: tuple[str, ...],
+    seasons: str | None = None,
 ) -> None:
     """Run a plan of ingest stages (sources, seasons, datasets) into the lake.
 
@@ -101,6 +112,8 @@ def backfill_cmd(
 
     try:
         plan = select_stages(load_plan(plan_file), stages)
+        if seasons is not None:
+            plan = with_seasons(plan, seasons)
         sources = sorted({s for stage in plan.stages for s in stage.sources})
         adapters = get_adapters(sources)
         if dry_run:

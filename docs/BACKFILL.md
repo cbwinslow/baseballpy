@@ -115,8 +115,8 @@ games that were stored partly, stops before the disk fills (`--min-free-gb`, `--
 |---|---|---|
 | `daily` (`baseballpy update`) | this season of Statcast and the MLB API, the live Kalshi and Polymarket markets | a few hundred MB, minutes |
 | `full` | Lahman, Chadwick, Retrosheet (all), Baseball-Reference, Statcast and the MLB API 2008 to now, the markets | see the table above; MLB API is the long stage |
-| `minors` | the MLB games of every level (minor leagues too), 2021 to now: feed, box scores, play-by-play | about 6 GB and 2 to 3 hours a season (measured on 2026: 10,800 games, 4.6 GB) |
-| `minors-all` | the same back to 2008 | about 100 GB and two days (the minor-league games before 2021 are not in a lake that started with the major leagues) |
+| `minors` | the MLB games of every level (minor leagues too), 2021 to now: feed, box scores, play-by-play | about 3 GB and 2 hours a season (measured 2021 to 2024: 12.7 GB, 8 hours for four seasons) |
+| `minors-all` | the same back to 2008 | about 60 GB and a day and a half; on a small disk run it in slices: `baseballpy backfill minors-all --seasons 2014-2019 --min-free-gb 10` (the size estimate follows the seasons; run again with other seasons later) |
 
 A stage can carry source switches: `options = { sports = "all" }` is `--option sports=all`. Example stage:
 

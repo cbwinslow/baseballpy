@@ -23,3 +23,9 @@ minor-league loop with a disk check, a raw clean-up loop) are replaced by `baseb
 automatic completion in `ingest_game_segments` (ADR 143) and `baseballpy convert-raw --apply --remove-old` (a one-time
 migration of lakes from before segments; a new user never needs it). Not verified: a real run of the built-in `minors`
 plan (the same work is running through `ingest --option sports=all`, which the plan calls).
+
+### 3.2 The seasons override (2026-11-16)
+Found: `baseballpy backfill minors-all --dry-run` refused to start on 30 GB free because the whole plan estimated 100 GB.
+Added `--seasons` (Gemini wrote it from a brief; reviewed, `mypy --strict`, ruff and 52 backfill and API tests pass) and
+corrected the estimates to the measured 3.2 GB per season (`minors` 19 GB for 2021 to now, `minors-all` 61 GB). Real use:
+`baseballpy backfill minors-all --seasons 2014-2019 --min-free-gb 10` plans 6 jobs and 19.3 GB with 31.4 GB free, and runs.
