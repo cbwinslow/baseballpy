@@ -1795,7 +1795,7 @@ if __name__ == '__main__':
 
 --------------------------------
 
-### Eager --version Flag with Callback 
+### Eager --version Flag with Callback
 
 Source: https://github.com/pallets/click/blob/main/docs/advanced.md
 
@@ -1995,8 +1995,8 @@ def encode(password):
 
 ```shell-session
 $ encode
-Password: 
-Repeat for confirmation: 
+Password:
+Repeat for confirmation:
 encoded: frperg
 
 ```
@@ -4207,7 +4207,7 @@ Hello Default!
 $ hello --name Value
 Hello Value!
 $ hello --name
-Name [Default]: 
+Name [Default]:
 ```
 
 --------------------------------
