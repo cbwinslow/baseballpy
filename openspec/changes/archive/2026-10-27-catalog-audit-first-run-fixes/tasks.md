@@ -19,4 +19,3 @@
 ## Verification (2026-10-27)
 - Live: `active_spin` 708 rows (2024) / 562 (2020), `catch_probability` 301 (2024) / 295 (2018, no null ids), roster types `allTime` 1,854 / `coach` 11 / `gameday` 42 rows for one team, `currentHalf` 30 team records; `baseballpy catalog audit` now reports only NO_DATA findings (26 stat types, tracked by `mlb-parameterized-stat-types`).
 - Gates: 718+ tests, ruff and mypy --strict clean, docs generate --check up to date.
-
