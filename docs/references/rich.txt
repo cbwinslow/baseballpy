@@ -3209,7 +3209,7 @@ console.print(table)
 ```
 
 ```console
-                           Star Wars Movies                           
+                           Star Wars Movies
 ┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
 ┃     Released ┃ Title                             ┃     Box Office ┃
 ┡━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
@@ -15703,7 +15703,7 @@ console.print(table)
 ```
 
 ```console
-                           Star Wars Movies                           
+                           Star Wars Movies
 ┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
 ┃     Released ┃ Title                             ┃     Box Office ┃
 ┡━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩

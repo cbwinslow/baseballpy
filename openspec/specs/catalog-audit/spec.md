@@ -38,5 +38,3 @@ When `baseballpy catalog coverage` is run with `--fix`, the command MUST plan an
 - **WHEN** `baseballpy catalog coverage --season 2024 --fix` is invoked
 - **THEN** it triggers ingestion jobs for the missing entities and updates the held count.
 - Verified by `tests/test_coverage_audit.py::test_catalog_coverage_fix_flag`.
-
-

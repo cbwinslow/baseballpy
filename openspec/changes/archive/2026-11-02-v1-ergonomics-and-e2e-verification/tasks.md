@@ -9,4 +9,3 @@
 - [x] 1.4 Perform live end-to-end test on 2024 MLB data (ingest, DuckDB SQL query, coverage check, caching verification).
 
 - [x] 1.5 Verify all quality gates (`pytest`, `ruff`, `mypy`, `openspec validate --specs`), update documentation, and archive change.
-
