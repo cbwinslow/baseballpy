@@ -341,7 +341,7 @@ Baseball researchers, data engineers, and automated agent pipelines operate acro
 
 ### Context
 1. **Lahman Database Distribution Limitations:**
-   The legacy `chadwickbureau/baseballdatabank` repository is defunct and discontinued at 2021, while the official Society for American Baseball Research (SABR) distribution utilizes `sabr.app.box.com` which employs dynamic session tokens, breaking automated scrapers. 
+   The legacy `chadwickbureau/baseballdatabank` repository is defunct and discontinued at 2021, while the official Society for American Baseball Research (SABR) distribution utilizes `sabr.app.box.com` which employs dynamic session tokens, breaking automated scrapers.
 2. **Chadwick Register Upstream Sharding:**
    Upstream `chadwickbureau/register` deprecated and removed the monolithic `data/people.csv` (returning HTTP 404), replacing it with 16 hexadecimal partitions (`people-0.csv` through `people-f.csv`) alongside metadata files `names.csv` (nicknames and aliases) and `links.csv` (external entity URLs).
 
@@ -1286,6 +1286,3 @@ Baseball data is frequently downloaded across multiple sessions (e.g. fetching 2
 - **Consequences:** a user gets any slice of the lake with one call or one command, the same for every user; resumable and disk-guarded; the job order of a plan changed to newest first (the budget and resume tests fix `oldest-first`). The functions raise `ValueError` (`BackfillError` is one) for a bad source or plan, so a script can catch one error type.
 - **Alternatives rejected:** shell scripts per task (they are not in the package and differ by machine); a second download engine in Python (two code paths); a global default of oldest-first (the owner prefers recent seasons).
 - **Amendment (2026-11-16):** `--seasons TEXT` on `backfill` (and `seasons=` in Python) runs a plan for a slice of seasons and scales the estimate, so `minors-all` (about 60 GB, measured at 3.2 GB per season) can be run in slices on a small disk; the plan estimates use the measured size of the 2021 to 2024 fill (12.72 GB, 8 hours).
-
-
-
